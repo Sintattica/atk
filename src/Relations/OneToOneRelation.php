@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Relations;
+<?php
+
+namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
@@ -20,29 +22,26 @@ use Sintattica\Atk\Core\Node;
  * even notice that the data he's editing comes from 2 separate tables.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage relations
- *
  */
 class OneToOneRelation extends Relation
 {
     /**
-     * flags specific for atkOneToOneRelation
+     * flags specific for atkOneToOneRelation.
      */
     /**
-     * Override the default no add flag
+     * Override the default no add flag.
      */
     const AF_ONETOONE_ADD = 33554432;
 
     /**
-     * Enable error notifications / triggers
+     * Enable error notifications / triggers.
      */
     const AF_ONETOONE_ERROR = 67108864;
 
     /**
      * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
      * If the relation is integrated, no divider is drawn, and the section heading is suppressed.
-     * (Integration does not affect the way data is stored or manipulated, only how it is displayed.)
+     * (Integration does not affect the way data is stored or manipulated, only how it is displayed.).
      */
     const AF_ONETOONE_INTEGRATE = 134217728;
 
@@ -58,16 +57,15 @@ class OneToOneRelation extends Relation
      */
     const AF_ONETOONE_RESPECT_TABS = 536870912;
 
-
-    /**
+    /*
      * The name of the referential key attribute in the target node.
      * @access private
      * @var String
      */
-    var $m_refKey = "";
+    public $m_refKey = '';
 
     /**
-     * Default Constructor
+     * Default Constructor.
      *
      * The atkOneToOneRelation supports two configurations:
      * - Master mode: The current node is considered the master, and the
@@ -84,29 +82,29 @@ class OneToOneRelation extends Relation
      * $this->add(new atkOneToOneRelation("child", "mymod.childnode", "parent_id"));
      * </code>
      *
-     * @param string $name The unique name of the attribute. In slave mode,
-     *                     this corresponds to the foreign key field in the
-     *                     database table.  (The name is also used as the section
-     *                     heading.)
+     * @param string $name        The unique name of the attribute. In slave mode,
+     *                            this corresponds to the foreign key field in the
+     *                            database table.  (The name is also used as the section
+     *                            heading.)
      * @param string $destination the destination node (in module.nodename
      *                            notation)
-     * @param string $refKey In master mode, this specifies the foreign key
-     *                       field from the destination node that points to
-     *                       the master record. In slave mode, this parameter
-     *                       should be empty.
-     * @param int $flags Attribute flags that influence this attributes'
-     *                   behavior.
+     * @param string $refKey      In master mode, this specifies the foreign key
+     *                            field from the destination node that points to
+     *                            the master record. In slave mode, this parameter
+     *                            should be empty.
+     * @param int    $flags       Attribute flags that influence this attributes'
+     *                            behavior.
      */
-    function __construct($name, $destination, $refKey = "", $flags = 0)
+    public function __construct($name, $destination, $refKey = '', $flags = 0)
     {
         parent::__construct($name, $destination, $flags | self::AF_ONETOONE_LAZY);
         $this->m_refKey = $refKey;
     }
 
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         if ($mode == 'view') {
-            return null;
+            return;
         }
 
         $myrecord = $record[$this->fieldName()];
@@ -127,17 +125,16 @@ class OneToOneRelation extends Relation
      * Because of the self::AF_INTEGRATE feature, the edit() method has a void
      * implementation. The actual edit code is handled by addToEditArray().
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
-
     }
 
     /**
-     * Set the initial values of this attribute
+     * Set the initial values of this attribute.
      *
      * @return array Array with initial values
      */
-    function initialValue()
+    public function initialValue()
     {
         if ($this->m_initialValue !== null) {
             return parent::initialValue();
@@ -147,44 +144,45 @@ class OneToOneRelation extends Relation
             return $this->m_destInstance->initial_values();
         }
 
-        return null;
+        return;
     }
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($this->createDestination()) {
-            if ($mode != "update" && $mode != "add") {
+            if ($mode != 'update' && $mode != 'add') {
                 if ($this->hasFlag(self::AF_ONETOONE_LAZY)) {
-                    if ($this->m_refKey == "") {
+                    if ($this->m_refKey == '') {
                         parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
+
                         return;
                     }
                 }
 
                 if ($tablename != '') {
-                    $tablename .= ".";
+                    $tablename .= '.';
                 }
 
-                if ($this->m_refKey != "") {
+                if ($this->m_refKey != '') {
                     // Foreign key is in the destination node.
-                    $condition = $tablename . $this->m_ownerInstance->m_primaryKey[0] . "=" . $fieldaliasprefix . $this->fieldName() . "." . $this->m_refKey;
+                    $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0].'='.$fieldaliasprefix.$this->fieldName().'.'.$this->m_refKey;
                 } else {
                     // Foreign key is in the source node
-                    $condition = $tablename . $this->fieldName() . "=" . $fieldaliasprefix . $this->fieldName() . "." . $this->m_destInstance->m_primaryKey[0];
+                    $condition = $tablename.$this->fieldName().'='.$fieldaliasprefix.$this->fieldName().'.'.$this->m_destInstance->m_primaryKey[0];
                 }
 
                 $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
-                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix . $this->fieldName(), $condition, true, $mode);
+                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true, $mode);
 
                 // we pass true as the last param to addToQuery, because we need all fields..
-                $this->m_destInstance->addToQuery($query, $fieldaliasprefix . $this->fieldName(), $level + 1, true, $mode);
+                $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level + 1, true, $mode);
             }
 
             // When storing, we don't add to the query.. we have our own store() method..
             // With one exception. If the foreign key is in the source node, we also need to update
             // the refkey value.
-            if ($this->m_refKey == "" && $mode == "add") {
-                $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]], "", "", !$this->hasFlag(self::AF_NO_QUOTES));
+            if ($this->m_refKey == '' && $mode == 'add') {
+                $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]], '', '', !$this->hasFlag(self::AF_NO_QUOTES));
             }
         }
     }
@@ -194,9 +192,9 @@ class OneToOneRelation extends Relation
      *
      * Called by the framework to load the detail records.
      *
-     * @param Db $db The database used by the node.
-     * @param array $record The master record
-     * @param string $mode The mode for loading (admin, select, copy, etc)
+     * @param Db     $db     The database used by the node.
+     * @param array  $record The master record
+     * @param string $mode   The mode for loading (admin, select, copy, etc)
      *
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
@@ -204,24 +202,25 @@ class OneToOneRelation extends Relation
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    function load(&$db, $record, $mode)
+    public function load(&$db, $record, $mode)
     {
         if ($this->createDestination()) {
-            if ($this->m_refKey == "") {
+            if ($this->m_refKey == '') {
                 // Foreign key in owner
                 //$condition = $this->m_destInstance->m_primaryKey[0]."=".$record[$this->fieldName()];
-                $condition = $this->m_destInstance->m_table . '.' . $this->m_destInstance->m_primaryKey[0] .
-                    "='" . $record[$this->fieldName()] . "'";
+                $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0].
+                    "='".$record[$this->fieldName()]."'";
             } else {
                 // Foreign key in destination
-                $condition = $this->m_destInstance->m_table . '.' . $this->m_refKey . "='" .
-                    $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record) . "'";
+                $condition = $this->m_destInstance->m_table.'.'.$this->m_refKey."='".
+                    $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record)."'";
 
                 $destfilter = $this->getDestinationFilter();
-                if (is_string($destfilter) && $destfilter != "") {
-                    $condition .= " AND " . $this->m_destInstance->m_table . "." . $destfilter;
+                if (is_string($destfilter) && $destfilter != '') {
+                    $condition .= ' AND '.$this->m_destInstance->m_table.'.'.$destfilter;
                 }
             }
+
             return $this->m_destInstance->select($condition)->mode($mode)->getFirstRow();
         }
     }
@@ -229,20 +228,22 @@ class OneToOneRelation extends Relation
     /**
      * Construct the filter statement for filters that are set for the
      * destination node (m_destinationFilter).
-     * @access private
+     *
      * @param string $fieldaliasprefix
-     * @return String A where clause condition.
+     *
+     * @return string A where clause condition.
      */
-    function getDestinationFilterCondition($fieldaliasprefix = "")
+    public function getDestinationFilterCondition($fieldaliasprefix = '')
     {
-        $condition = "";
+        $condition = '';
         if (is_array($this->m_destinationFilter)) {
-            for ($i = 0, $_i = count($this->m_destinationFilter); $i < $_i; $i++) {
-                $condition .= " AND " . $fieldaliasprefix . $this->m_name . "." . $this->m_destinationFilter[$i];
+            for ($i = 0, $_i = count($this->m_destinationFilter); $i < $_i; ++$i) {
+                $condition .= ' AND '.$fieldaliasprefix.$this->m_name.'.'.$this->m_destinationFilter[$i];
             }
-        } elseif ($this->m_destinationFilter != "") {
-            $condition .= " AND " . $fieldaliasprefix . $this->m_name . "." . $this->m_destinationFilter;
+        } elseif ($this->m_destinationFilter != '') {
+            $condition .= ' AND '.$fieldaliasprefix.$this->m_name.'.'.$this->m_destinationFilter;
         }
+
         return $condition;
     }
 
@@ -255,23 +256,24 @@ class OneToOneRelation extends Relation
      * record belonging to the master record is deleted.
      *
      * @param array $record The record that is deleted.
-     * @return boolean true if cleanup was successful, false otherwise.
+     *
+     * @return bool true if cleanup was successful, false otherwise.
      */
-    function delete($record)
+    public function delete($record)
     {
         $atk = Atk::getInstance();
         $classname = $this->m_destination;
-        $cache_id = $this->m_owner . "." . $this->m_name;
+        $cache_id = $this->m_owner.'.'.$this->m_name;
         $rel = $atk->atkGetNode($classname, true, $cache_id);
-        Tools::atkdebug("O2O DELETE for $classname: " . $this->m_refKey . "=" . $record[$this->m_ownerInstance->primaryKeyField()]);
+        Tools::atkdebug("O2O DELETE for $classname: ".$this->m_refKey.'='.$record[$this->m_ownerInstance->primaryKeyField()]);
 
-        if ($this->m_refKey != "") {
+        if ($this->m_refKey != '') {
             // Foreign key is in the destination node
-            $condition = $rel->m_table . '.' . $this->m_refKey . "=" .
+            $condition = $rel->m_table.'.'.$this->m_refKey.'='.
                 $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
         } else {
             // Foreign key is in the source node.
-            $condition = $rel->m_table . '.' . $rel->m_primaryKey[0] . "=" . $record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
+            $condition = $rel->m_table.'.'.$rel->m_primaryKey[0].'='.$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
         }
 
         return $rel->deleteDb($condition);
@@ -287,13 +289,14 @@ class OneToOneRelation extends Relation
      * This is the exact opposite of the db2value method.
      *
      * @param array $rec The record that holds this attribute's value.
-     * @return String The database compatible value
+     *
+     * @return string The database compatible value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         // we need to pass all values to the destination node, so it can
         // run it's db2value stuff over it..
-        if ($this->hasFlag(self::AF_ONETOONE_LAZY) && $this->m_refKey == "") {
+        if ($this->hasFlag(self::AF_ONETOONE_LAZY) && $this->m_refKey == '') {
             return parent::db2value($rec);
         }
 
@@ -302,24 +305,26 @@ class OneToOneRelation extends Relation
                 ?
                 $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
                 : $pkval = null;
-            if ($pkval != null && $pkval != "") { // If primary key is not filled, there was no record, so we
+            if ($pkval != null && $pkval != '') { // If primary key is not filled, there was no record, so we
                 // should return NULL.
                 foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                     $p_attrib = $this->m_destInstance->m_attribList[$attribname];
                     $rec[$this->fieldName()][$attribname] = $p_attrib->db2value($rec[$this->fieldName()]);
                 }
                 // also set the primkey..
-                $rec[$this->fieldName()]["atkprimkey"] = $this->m_destInstance->primaryKey($rec[$this->fieldName()]);
+                $rec[$this->fieldName()]['atkprimkey'] = $this->m_destInstance->primaryKey($rec[$this->fieldName()]);
+
                 return $rec[$this->fieldName()];
             }
         }
-        return null;
+
+        return;
     }
 
     /**
      * Initialize this destinations attribute sizes.
      */
-    function fetchMeta()
+    public function fetchMeta()
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE)) {
             $this->createDestination();
@@ -336,9 +341,10 @@ class OneToOneRelation extends Relation
      *
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
-     * @return String The internal value
+     *
+     * @return string The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         // we need to pass all values to the destination node, so it can
         // run it's fetchValue stuff over it..
@@ -348,6 +354,7 @@ class OneToOneRelation extends Relation
                     $p_attrib = $this->m_destInstance->m_attribList[$attribname];
                     $postvars[$this->fieldName()][$attribname] = $p_attrib->fetchValue($postvars[$this->fieldName()]);
                 }
+
                 return $postvars[$this->fieldName()];
             }
         }
@@ -371,7 +378,7 @@ class OneToOneRelation extends Relation
      *             self::POSTSTORE  when in master mode.
      *             self::PRESTORE|self::ADDTOQUERY when in slave mode.
      */
-    function storageType($mode)
+    public function storageType($mode)
     {
         // Mode specific storage type.
         if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null) {
@@ -381,7 +388,7 @@ class OneToOneRelation extends Relation
             if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null) {
                 return $this->m_storageType[null];
             } else {
-                if ($this->m_refKey != "") {
+                if ($this->m_refKey != '') {
                     // foreign key is in destination node, so we must store the
                     // destination AFTER we stored the master record.
                     return self::POSTSTORE;
@@ -414,7 +421,7 @@ class OneToOneRelation extends Relation
      *             self::POSTLOAD|self::ADDTOQUERY when self::AF_ONETOONE_LAZY is set.
      *             self::ADDTOQUERY when self::AF_ONETOONE_LAZY is not set.
      */
-    function loadType($mode)
+    public function loadType($mode)
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
             return $this->m_loadType[$mode];
@@ -434,18 +441,19 @@ class OneToOneRelation extends Relation
     /**
      * Store detail record in the database.
      *
-     * @param Db $db The database used by the node.
-     * @param array $record The master record which has the detail records
-     *                      embedded.
-     * @param string $mode The mode we're in ("add", "edit", "copy")
-     * @return boolean true if store was successful, false otherwise.
+     * @param Db     $db     The database used by the node.
+     * @param array  $record The master record which has the detail records
+     *                       embedded.
+     * @param string $mode   The mode we're in ("add", "edit", "copy")
+     *
+     * @return bool true if store was successful, false otherwise.
      */
-    function store(&$db, &$record, $mode)
+    public function store(&$db, &$record, $mode)
     {
         if ($this->createDestination()) {
             $vars = $this->_getStoreValue($record);
-            if ($vars["mode"] == "edit") {
-                Tools::atkdebug("Updating existing one2one record");
+            if ($vars['mode'] == 'edit') {
+                Tools::atkdebug('Updating existing one2one record');
                 // we put the vars in the postvars, because there is information
                 // like atkorgkey in it that is vital.
                 // but we restore the postvars after we're done updating
@@ -453,9 +461,10 @@ class OneToOneRelation extends Relation
                 $this->m_destInstance->m_postvars = $vars;
                 $res = $this->m_destInstance->updateDb($vars);
                 $this->m_destInstance->m_postvars = $oldpost;
+
                 return $res;
-            } elseif ($vars["mode"] == "add" || $mode == "add" || $mode == "copy") {
-                if (!empty($vars["atkprimkey"]) && $mode != "copy") {
+            } elseif ($vars['mode'] == 'add' || $mode == 'add' || $mode == 'copy') {
+                if (!empty($vars['atkprimkey']) && $mode != 'copy') {
                     // destination record already exists, and we are not copying.
                     $result = true;
                 } else {
@@ -463,13 +472,15 @@ class OneToOneRelation extends Relation
                     $this->m_destInstance->preAdd($vars);
                     $result = $this->m_destInstance->addDb($vars, true, $mode);
                 }
-                if ($this->m_refKey == "") {
+                if ($this->m_refKey == '') {
                     // Foreign key is in source node, so we must update the record value with
                     $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = $vars[$this->m_destInstance->m_primaryKey[0]];
                 }
+
                 return $result;
             } else {
-                Tools::atkdebug("atkonetoonerelation->store(): Nothing to store in one2one record");
+                Tools::atkdebug('atkonetoonerelation->store(): Nothing to store in one2one record');
+
                 return true;
             }
         }
@@ -479,9 +490,10 @@ class OneToOneRelation extends Relation
      * Needs update?
      *
      * @param array $record the record
-     * @return boolean needs update
+     *
+     * @return bool needs update
      */
-    function needsUpdate($record)
+    public function needsUpdate($record)
     {
         return $this->m_forceupdate ||
         (parent::needsUpdate($record) &&
@@ -490,15 +502,16 @@ class OneToOneRelation extends Relation
     }
 
     /**
-     * Gets the value to store for the onetoonerelation
+     * Gets the value to store for the onetoonerelation.
      *
      * @param array &$record The record to get the value from
+     *
      * @return mixed The value to store
      */
-    function &_getStoreValue(&$record)
+    public function &_getStoreValue(&$record)
     {
         $vars = &$record[$this->fieldName()];
-        if ($this->m_refKey != "") {
+        if ($this->m_refKey != '') {
             // Foreign key is in destination node
             if ($this->destinationHasRelation()) {
                 $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
@@ -507,7 +520,7 @@ class OneToOneRelation extends Relation
                 // experimental, will the next line always work?
                 $refattr = $this->m_destInstance->getAttribute($this->m_refKey);
                 if ($refattr->m_destination) {
-                    /**
+                    /*
                      * If we have a destination, the ref key is a non-onetoone relation!
                      * So we have to treat the record as such... this is specifically geared towards
                      * the manytoone relation and may not work for others
@@ -523,6 +536,7 @@ class OneToOneRelation extends Relation
             // Foreign key is in source node
             // After add, we must store the key value.
         }
+
         return $vars;
     }
 
@@ -533,10 +547,11 @@ class OneToOneRelation extends Relation
      * there may be a regular Attribute for the referential key, or an
      * atkOneToOneRelation pointing back at the source. This method discovers
      * which of the 2 cases we are dealing with.
-     * @return boolean True if the attribute on the other side is a
-     *                 relation, false if not.
+     *
+     * @return bool True if the attribute on the other side is a
+     *              relation, false if not.
      */
-    function destinationHasRelation()
+    public function destinationHasRelation()
     {
         if ($this->createDestination()) {
             if (isset($this->m_refKey) && !empty($this->m_refKey)) {
@@ -547,47 +562,51 @@ class OneToOneRelation extends Relation
                 // of the target node.
                 $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[0]];
             }
-            if (is_object($attrib) && strpos(get_class($attrib), "elation") !== false) {
+            if (is_object($attrib) && strpos(get_class($attrib), 'elation') !== false) {
                 return true;
             }
         }
+
         return false;
     }
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its values. (<input type="hidden">)
+     * while still posting its values. (<input type="hidden">).
      *
-     * @param array $record
+     * @param array  $record
      * @param string $fieldprefix
      * @param string $mode
+     *
      * @return string html
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        Tools::atkdebug("hide called for " . $this->fieldName());
+        Tools::atkdebug('hide called for '.$this->fieldName());
         if ($this->createDestination()) {
             if ($record[$this->fieldName()] != null) {
                 $myrecord = $record[$this->fieldName()];
 
                 if ($myrecord[$this->m_destInstance->primaryKeyField()] == null) {
                     // rec has no primkey yet, so we must add instead of update..
-                    $mode = "add";
+                    $mode = 'add';
                 } else {
-                    $mode = "edit";
-                    $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
+                    $mode = 'edit';
+                    $myrecord['atkprimkey'] = $this->m_destInstance->primaryKey($myrecord);
                 }
             } else {
-                $mode = "add";
+                $mode = 'add';
             }
 
-            $output = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[mode]" value="' . $mode . '">';
+            $output = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
             $forceList = Tools::decodeKeyValueSet($this->getFilter());
             $output .= $this->m_destInstance->hideform($mode, $myrecord, $forceList,
-                $fieldprefix . $this->fieldName() . "_AE_");
+                $fieldprefix.$this->fieldName().'_AE_');
+
             return $output;
         }
-        return "";
+
+        return '';
     }
 
     /**
@@ -600,36 +619,36 @@ class OneToOneRelation extends Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param string $mode the edit mode ("add" or "edit")
-     * @param array $arr pointer to the edit array
-     * @param array $defaults pointer to the default values array
-     * @param array $error pointer to the error array
+     * @param string $mode        the edit mode ("add" or "edit")
+     * @param array  $arr         pointer to the edit array
+     * @param array  $defaults    pointer to the default values array
+     * @param array  $error       pointer to the error array
      * @param string $fieldprefix the fieldprefix
      */
-    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    public function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         /* hide */
-        if (($mode == "edit" && $this->hasFlag(self::AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_HIDE_ADD))) {
+        if (($mode == 'edit' && $this->hasFlag(self::AF_HIDE_EDIT)) || ($mode == 'add' && $this->hasFlag(self::AF_HIDE_ADD))) {
             /* when adding, there's nothing to hide... */
-            if ($mode == "edit" || ($mode == "add" && !$this->isEmpty($defaults))) {
-                $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
+            if ($mode == 'edit' || ($mode == 'add' && !$this->isEmpty($defaults))) {
+                $arr['hide'][] = $this->hide($defaults, $fieldprefix, $mode);
             }
         } /* edit */
         else {
             /* we first check if there is no edit override method, if there
              * is this method has the same behaviour as the Attribute's method
              */
-            if (method_exists($this->m_ownerInstance, $this->m_name . "_edit") ||
+            if (method_exists($this->m_ownerInstance, $this->m_name.'_edit') ||
                 $this->edit($defaults, $fieldprefix, $mode) !== null
             ) {
                 self::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
             } /* how we handle 1:1 relations normally */ else {
-                if (!$this->createDestination()) {
-                    return;
-                }
+     if (!$this->createDestination()) {
+         return;
+     }
 
                 /* readonly */
-                if ($this->m_destInstance->hasFlag(Node::NF_READONLY) || ($mode == "edit" && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_READONLY_ADD))) {
+                if ($this->m_destInstance->hasFlag(Node::NF_READONLY) || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == 'add' && $this->hasFlag(self::AF_READONLY_ADD))) {
                     $this->createDestination();
                     $attrNames = $this->m_destInstance->getAttributeNames();
                     foreach ($attrNames as $attrName) {
@@ -644,35 +663,35 @@ class OneToOneRelation extends Relation
                     $myrecord = $defaults[$this->fieldName()];
 
                     if (empty($myrecord[$this->m_destInstance->primaryKeyField()])) {
-                        $mode = "add";
+                        $mode = 'add';
                     } /* record exists! */ else {
-                        $mode = "edit";
-                        $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
-                    }
+     $mode = 'edit';
+     $myrecord['atkprimkey'] = $this->m_destInstance->primaryKey($myrecord);
+ }
                 } /* record does not exist */ else {
-                    $mode = "add";
-                }
+     $mode = 'add';
+ }
 
                 /* mode */
-                $arr["hide"][] = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[mode]" value="' . $mode . '">';
+                $arr['hide'][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
 
                 /* add fields */
 
                 $forceList = Tools::decodeKeyValueSet($this->m_destinationFilter);
-                if ($this->m_refKey != "") {
-                    if ($this->destinationHasRelation()) {
-                        $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
-                    } else {
-                        // its possible that the destination has no relation back. In that case the refKey is just an attribute
+     if ($this->m_refKey != '') {
+         if ($this->destinationHasRelation()) {
+             $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
+         } else {
+             // its possible that the destination has no relation back. In that case the refKey is just an attribute
                         $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
-                    }
-                }
+         }
+     }
 
-                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(),
-                    $fieldprefix . $this->fieldName() . "_AE_", false, false);
+     $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(),
+                    $fieldprefix.$this->fieldName().'_AE_', false, false);
 
                 /* hidden fields */
-                $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
+                $arr['hide'] = array_merge($arr['hide'], $a['hide']);
 
                 /* editable fields, if self::AF_NOLABEL is specified or if there is just 1 field with the
                  * same name as the relation we don't display a label
@@ -681,25 +700,25 @@ class OneToOneRelation extends Relation
                 if (!is_array($arr['fields'])) {
                     $arr['fields'] = array();
                 }
-                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
-                    /* separator and name */
+     if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+         /* separator and name */
                     if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
-                        $arr["fields"][] = array(
-                            "html" => "-",
-                            "tabs" => $this->m_tabs,
-                            'sections' => $this->getSections()
+                        $arr['fields'][] = array(
+                            'html' => '-',
+                            'tabs' => $this->m_tabs,
+                            'sections' => $this->getSections(),
                         );
                     }
-                    $arr["fields"][] = array(
-                        "line" => "<b>" . Tools::atktext($this->m_name, $this->m_ownerInstance->m_module,
-                                $this->m_ownerInstance->m_type) . "</b>",
-                        "tabs" => $this->m_tabs,
-                        'sections' => $this->getSections()
+         $arr['fields'][] = array(
+                        'line' => '<b>'.Tools::atktext($this->m_name, $this->m_ownerInstance->m_module,
+                                $this->m_ownerInstance->m_type).'</b>',
+                        'tabs' => $this->m_tabs,
+                        'sections' => $this->getSections(),
                     );
-                }
+     }
 
-                if (is_array($a["fields"])) {
-                    // in non-integration mode we move all the fields to the one-to-one relations tabs/sections
+     if (is_array($a['fields'])) {
+         // in non-integration mode we move all the fields to the one-to-one relations tabs/sections
                     if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS)) {
                         foreach (array_keys($a['fields']) as $key) {
                             $a['fields'][$key]['tabs'] = $this->m_tabs;
@@ -707,23 +726,23 @@ class OneToOneRelation extends Relation
                         }
                     }
 
-                    $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
-                }
+         $arr['fields'] = array_merge($arr['fields'], $a['fields']);
+     }
 
-                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
-                    /* separator */
-                    $arr["fields"][] = array(
-                        "html" => "-",
-                        "tabs" => $this->m_tabs,
-                        'sections' => $this->getSections()
+     if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+         /* separator */
+                    $arr['fields'][] = array(
+                        'html' => '-',
+                        'tabs' => $this->m_tabs,
+                        'sections' => $this->getSections(),
                     );
-                }
+     }
 
-                $fields = $arr['fields'];
-                foreach ($fields as &$field) {
-                    $field['attribute'] = '';
-                }
-            }
+     $fields = $arr['fields'];
+     foreach ($fields as &$field) {
+         $field['attribute'] = '';
+     }
+ }
         }
     }
 
@@ -735,11 +754,11 @@ class OneToOneRelation extends Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param string $mode the mode ("view")
-     * @param array $arr pointer to the view array
-     * @param array $defaults pointer to the default values array
+     * @param string $mode     the mode ("view")
+     * @param array  $arr      pointer to the view array
+     * @param array  $defaults pointer to the default values array
      */
-    function addToViewArray($mode, &$arr, &$defaults)
+    public function addToViewArray($mode, &$arr, &$defaults)
     {
         if ($this->hasFlag(self::AF_HIDE_VIEW)) {
             return;
@@ -748,17 +767,17 @@ class OneToOneRelation extends Relation
         /* we first check if there is no display override method, if there
          * is this method has the same behaviour as the Attribute's method
          */
-        if (method_exists($this->m_ownerInstance, $this->m_name . "_display") ||
+        if (method_exists($this->m_ownerInstance, $this->m_name.'_display') ||
             $this->display($defaults, 'view') !== null
         ) {
             $this->addToViewArray($mode, $arr, $defaults);
         } /* how we handle 1:1 relations normally */ else {
-            if (!$this->createDestination()) {
-                return;
-            }
+     if (!$this->createDestination()) {
+         return;
+     }
 
-            $record = $defaults[$this->fieldName()];
-            $a = $this->m_destInstance->viewArray($mode, $record, false);
+     $record = $defaults[$this->fieldName()];
+     $a = $this->m_destInstance->viewArray($mode, $record, false);
 
             /* editable fields, if self::AF_NOLABEL is specified or if there is just 1 field with the
              * same name as the relation we don't display a label
@@ -767,49 +786,51 @@ class OneToOneRelation extends Relation
             if (!is_array($arr['fields'])) {
                 $arr['fields'] = array();
             }
-            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
-                /* separator and name */
+     if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+         /* separator and name */
                 if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
-                    $arr["fields"][] = array(
-                        "html" => "-",
-                        "tabs" => $this->m_tabs,
-                        'sections' => $this->getSections()
+                    $arr['fields'][] = array(
+                        'html' => '-',
+                        'tabs' => $this->m_tabs,
+                        'sections' => $this->getSections(),
                     );
                 }
-                $arr["fields"][] = array(
-                    "line" => "<b>" . Tools::atktext($this->m_name, $this->m_ownerInstance->m_module,
-                            $this->m_ownerInstance->m_type) . "</b>",
-                    "tabs" => $this->m_tabs,
-                    'sections' => $this->getSections()
+         $arr['fields'][] = array(
+                    'line' => '<b>'.Tools::atktext($this->m_name, $this->m_ownerInstance->m_module,
+                            $this->m_ownerInstance->m_type).'</b>',
+                    'tabs' => $this->m_tabs,
+                    'sections' => $this->getSections(),
                 );
-            }
+     }
 
-            if (is_array($a["fields"])) {
-                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS)) {
-                    foreach (array_keys($a['fields']) as $key) {
+     if (is_array($a['fields'])) {
+         if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS)) {
+             foreach (array_keys($a['fields']) as $key) {
+                 $a['fields'][$key]['tabs'] = $this->m_tabs;
+                 $a['fields'][$key]['sections'] = $this->getSections();
+             }
+         }
+         $arr['fields'] = array_merge($arr['fields'], $a['fields']);
+     }
 
-                        $a['fields'][$key]['tabs'] = $this->m_tabs;
-                        $a['fields'][$key]['sections'] = $this->getSections();
-                    }
-                }
-                $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
-            }
-
-            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name)) {
-                /* separator */
-                $arr["fields"][] = array("html" => "-", "tabs" => $this->m_tabs, 'sections' => $this->getSections());
-            }
-        }
+     if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+         /* separator */
+                $arr['fields'][] = array('html' => '-', 'tabs' => $this->m_tabs, 'sections' => $this->getSections());
+     }
+ }
     }
 
     /**
      * Check if a record has an empty value for this attribute.
+     *
      * @param array $record The record that holds this attribute's value.
+     *
      * @todo This method is not currently implemented properly and returns
      *       false in all cases.
-     * @return boolean
+     *
+     * @return bool
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         return false;
     }
@@ -820,30 +841,30 @@ class OneToOneRelation extends Relation
      * For the atkOneToOneRelation, this method delegates the actual
      * validation of values to the destination node.
      *
-     * @param array $record The record that holds the value for this
-     *                      attribute. If an error occurs, the error will
-     *                      be stored in the 'atkerror' field of the record.
-     * @param string $mode The mode for which should be validated ("add" or
-     *                     "update")
+     * @param array  $record The record that holds the value for this
+     *                       attribute. If an error occurs, the error will
+     *                       be stored in the 'atkerror' field of the record.
+     * @param string $mode   The mode for which should be validated ("add" or
+     *                       "update")
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         // zitten self::AF_ONETOONE_ERROR en self::AF_OBLIGATORY elkaar soms in de weg
         if ($this->hasFlag(self::AF_ONETOONE_ERROR) &&
-            ($mode != "add" || !$this->hasFlag(self::AF_HIDE_ADD)) &&
+            ($mode != 'add' || !$this->hasFlag(self::AF_HIDE_ADD)) &&
             $this->createDestination()
         ) {
             $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
 
             // only add 'atkerror' record when 1:1 relation contains error
-            if (!isset($record[$this->fieldName()]["atkerror"])) {
+            if (!isset($record[$this->fieldName()]['atkerror'])) {
                 return;
             }
 
-            foreach ($record[$this->fieldName()]["atkerror"] as $error) {
+            foreach ($record[$this->fieldName()]['atkerror'] as $error) {
                 $error['tab'] = $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS) ? $this->m_tabs[0]
                     : $error['tab'];
-                $record["atkerror"][] = $error;
+                $record['atkerror'][] = $error;
             }
         }
     }
@@ -851,17 +872,18 @@ class OneToOneRelation extends Relation
     /**
      * @deprecated Use getDestinationFilterCondition() instead.
      */
-    function getFilter()
+    public function getFilter()
     {
         $filter = $this->m_destinationFilter;
         if (is_array($filter)) {
-            $tmp_filter = "";
-            for ($i = 0, $_i = count($filter); $i < $_i; $i++) {
-                if ($tmp_filter != "") {
-                    $tmp_filter .= " AND ";
+            $tmp_filter = '';
+            for ($i = 0, $_i = count($filter); $i < $_i; ++$i) {
+                if ($tmp_filter != '') {
+                    $tmp_filter .= ' AND ';
                 }
                 $tmp_filter .= $filter[$i];
             }
+
             return $tmp_filter;
         } else {
             return $filter;
@@ -879,19 +901,22 @@ class OneToOneRelation extends Relation
      *
      * @param string $action The action for which additional tabs should be
      *                       loaded.
+     *
      * @return array The list of tabs to add to the screen.
      */
-    function getAdditionalTabs($action = null)
+    public function getAdditionalTabs($action = null)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $detailtabs = $this->m_destInstance->getTabs($action);
-            if (count($detailtabs) == 1 && $detailtabs[0] == "default") {
+            if (count($detailtabs) == 1 && $detailtabs[0] == 'default') {
                 // All elements in the relation are on the default tab. That means we should
                 // inherit the tab from the onetoonerelation itself.
                 return parent::getAdditionalTabs($action);
             }
+
             return $detailtabs;
         }
+
         return parent::getAdditionalTabs($action);
     }
 
@@ -899,9 +924,10 @@ class OneToOneRelation extends Relation
      * Check if the attribute wants to be shown on a certain tab.
      *
      * @param string $tab The name of the tab to check.
-     * @return boolean
+     *
+     * @return bool
      */
-    function showOnTab($tab)
+    public function showOnTab($tab)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
@@ -915,6 +941,7 @@ class OneToOneRelation extends Relation
             // this tab.
             return parent::showOnTab($tab);
         }
+
         return parent::showOnTab($tab);
     }
 
@@ -923,15 +950,16 @@ class OneToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
+     * @param string $action      the action that is being performed on the node
+     * @param array  $arr         reference to the the recordlist array
      * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby the current ATK orderby string (if not empty)
+     * @param int    $flags       the recordlist flags
+     * @param array  $atksearch   the current ATK search list (if not empty)
+     * @param string $atkorderby  the current ATK orderby string (if not empty)
+     *
      * @see Node::listArray
      */
-    function addToListArrayHeader(
+    public function addToListArrayHeader(
         $action,
         &$arr,
         $fieldprefix,
@@ -949,15 +977,16 @@ class OneToOneRelation extends Relation
             // regular behaviour.
             parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $columnConfig, $grid,
                 $column);
+
             return;
         } else {
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-                throw new \Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+                throw new \Exception("Invalid list column {$column} for atkOneToOneRelation ".$this->getOwnerInstance()->atkNodeUri().'::'.$this->fieldName());
             }
         }
 
         // integrated version, don't add ourselves, but add all columns from the destination.
-        $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+        $prefix = $fieldprefix.$this->fieldName().'_AE_';
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
             if ($column != '*' && $column != $attribname) {
                 continue;
@@ -974,14 +1003,15 @@ class OneToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param int $nr the current row number
+     * @param string $action      the action that is being performed on the node
+     * @param array  $arr         reference to the the recordlist array
+     * @param int    $nr          the current row number
      * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
+     * @param int    $flags       the recordlist flags
+     *
      * @see Node::listArray
      */
-    function addToListArrayRow(
+    public function addToListArrayRow(
         $action,
         &$arr,
         $nr,
@@ -997,22 +1027,22 @@ class OneToOneRelation extends Relation
 
         if ((!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $column == '*') || $column == null) {
             parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags, $edit, $grid, $column);
+
             return;
         } else {
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || ($column != '*' && $this->getDestination()->getAttribute($column) == null)) {
-                throw new \Exception("Invalid list column {$column} for atkOneToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+                throw new \Exception("Invalid list column {$column} for atkOneToOneRelation ".$this->getOwnerInstance()->atkNodeUri().'::'.$this->fieldName());
             }
         }
-
 
         // integrated version, don't add ourselves, but add all columns from the destination
         // small trick, the destination record is in a subarray. The destination
         // addToListArrayRow will not expect this though, so we have to modify the
         // record a bit before passing it to the detail columns.
-        $oldrecord = $arr["rows"][$nr]["record"];
-        $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
+        $oldrecord = $arr['rows'][$nr]['record'];
+        $arr['rows'][$nr]['record'] = $arr['rows'][$nr]['record'][$this->fieldName()];
 
-        $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+        $prefix = $fieldprefix.$this->fieldName().'_AE_';
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
             if ($column != '*' && $column != $attribname) {
                 continue;
@@ -1022,7 +1052,7 @@ class OneToOneRelation extends Relation
             $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
         }
 
-        $arr["rows"][$nr]["record"] = $oldrecord;
+        $arr['rows'][$nr]['record'] = $oldrecord;
     }
 
     /**
@@ -1030,16 +1060,17 @@ class OneToOneRelation extends Relation
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                              is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param Query  $query      The query object where the search condition should be placed on
+     * @param string $table      The name of the table in which this attribute
+     *                           is stored
+     * @param mixed  $value      The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
-     *                              of the supported modes, as returned by this
-     *                              attribute's getSearchModes() method.
-     * @return String The searchcondition to use.
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     *
+     * @return string The searchcondition to use.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if ($this->createDestination() && is_array($value)) {
             // we are a relation, so instead of hooking ourselves into the
@@ -1047,7 +1078,7 @@ class OneToOneRelation extends Relation
             foreach ($value as $key => $val) {
                 // if we aren't searching for anything in this field, there is no need
                 // to look any further:
-                if ($val === "" || $val === null) {
+                if ($val === '' || $val === null) {
                     continue;
                 }
 
@@ -1109,18 +1140,20 @@ class OneToOneRelation extends Relation
 
     /**
      * Returns the condition which can be used when calling Query's addJoin() method
-     * Joins the relation's owner with the destination
+     * Joins the relation's owner with the destination.
      *
-     * @param Query $query The query object
-     * @param string $tablename The name of the table
+     * @param Query  $query      The query object
+     * @param string $tablename  The name of the table
      * @param string $fieldalias The field alias
-     * @return  string  condition the condition that can be pasted into the query
+     *
+     * @return string condition the condition that can be pasted into the query
      */
-    function getJoinCondition(&$query, $tablename = "", $fieldalias = "")
+    public function getJoinCondition(&$query, $tablename = '', $fieldalias = '')
     {
-        $condition = $this->m_ownerInstance->m_table . "." . $this->fieldName();
-        $condition .= "=";
-        $condition .= $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField();
+        $condition = $this->m_ownerInstance->m_table.'.'.$this->fieldName();
+        $condition .= '=';
+        $condition .= $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField();
+
         return $condition;
     }
 
@@ -1128,24 +1161,24 @@ class OneToOneRelation extends Relation
      * Overridden method; in the integrated version, we should let the destination
      * attributes hook themselves into the fieldlist instead of hooking the relation
      * in it.
-     * For original documentation for this method, please see the Attribute class
+     * For original documentation for this method, please see the Attribute class.
      *
-     * @param array $fields The array containing fields to use in the
-     *                                   extended search
-     * @param Node $node The node where the field is in
-     * @param array $record A record containing default values to put
-     *                                   into the search fields.
-     * @param array $fieldprefix search / mode field prefix
+     * @param array $fields            The array containing fields to use in the
+     *                                 extended search
+     * @param Node  $node              The node where the field is in
+     * @param array $record            A record containing default values to put
+     *                                 into the search fields.
+     * @param array $fieldprefix       search / mode field prefix
      * @param array $currentSearchMode current search mode
      */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode = array())
+    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $currentSearchMode = array())
     {
         if (!is_array($currentSearchMode)) {
             $currentSearchMode = array();
         }
 
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
-            $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+            $prefix = $fieldprefix.$this->fieldName().'_AE_';
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
 
@@ -1160,12 +1193,13 @@ class OneToOneRelation extends Relation
     }
 
     /**
-     * Convert the internal value to the database value
+     * Convert the internal value to the database value.
      *
      * @param array $rec The record that holds the value for this attribute
+     *
      * @return mixed The database value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
             if (is_array($rec[$this->fieldName()])) {
@@ -1174,9 +1208,7 @@ class OneToOneRelation extends Relation
                 return $rec[$this->fieldName()];
             }
         }
-        return null;
+
+        return;
     }
-
 }
-
-

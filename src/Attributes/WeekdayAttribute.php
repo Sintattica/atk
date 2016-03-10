@@ -1,26 +1,23 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
-
 
 /**
  * Attribute for selection the days of the week.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
- * @package atk
- * @subpackage attributes
- *
  */
 class WeekdayAttribute extends NumberAttribute
 {
     /**
-     * Flags for atkWeekdayAttribute
+     * Flags for atkWeekdayAttribute.
      */
     const AF_WEEKDAY_SMALL_EDIT = 33554432;
 
     /**
      * Bitwise flags for weekdays.
-     * @access private
      */
     const WD_MONDAY = 1;
     const WD_TUESDAY = 2;
@@ -30,30 +27,29 @@ class WeekdayAttribute extends NumberAttribute
     const WD_SATURDAY = 32;
     const WD_SUNDAY = 64;
 
-    var $m_mapping = array(
+    public $m_mapping = array(
         1 => 'monday',
         2 => 'tuesday',
         4 => 'wednesday',
         8 => 'thursday',
         16 => 'friday',
         32 => 'saturday',
-        64 => 'sunday'
+        64 => 'sunday',
     );
-    var $m_extra = array();
+    public $m_extra = array();
 
     /**
      * Constructor.
      *
-     * @param string $name Name of the attribute (unique within a node, and
-     *                     corresponds to the name of the datetime field
-     *                     in the database where the stamp is stored.
-     * @param int $extraOrFlags Flags for the attribute or array of extra options
-     *                           these options will be numbered from 2^7 (128) to 2^x.
-     * @param int $flags Flags for the attribute. Only used if no set in previous param.
+     * @param string $name         Name of the attribute (unique within a node, and
+     *                             corresponds to the name of the datetime field
+     *                             in the database where the stamp is stored.
+     * @param int    $extraOrFlags Flags for the attribute or array of extra options
+     *                             these options will be numbered from 2^7 (128) to 2^x.
+     * @param int    $flags        Flags for the attribute. Only used if no set in previous param.
      */
-    function __construct($name, $extraOrFlags = 0, $flags = 0)
+    public function __construct($name, $extraOrFlags = 0, $flags = 0)
     {
-
         if (is_numeric($extraOrFlags)) {
             $flags = $extraOrFlags;
         } elseif (is_array($extraOrFlags)) {
@@ -72,9 +68,10 @@ class WeekdayAttribute extends NumberAttribute
      *
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
-     * @return String The internal value
+     *
+     * @return string The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         if (!is_array($postvars) || !is_array($postvars[$this->fieldName()])) {
             return 0;
@@ -83,18 +80,18 @@ class WeekdayAttribute extends NumberAttribute
         }
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $result = '';
 
-        $name = $fieldprefix . $this->fieldName();
-        $value = (int)$record[$this->fieldName()];
+        $name = $fieldprefix.$this->fieldName();
+        $value = (int) $record[$this->fieldName()];
 
         $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;'
             : '<br>';
 
         $max = 7 + count($this->m_extra);
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $day = pow(2, $i - 1);
 
             if ($i <= 7) {
@@ -111,7 +108,7 @@ class WeekdayAttribute extends NumberAttribute
 
             $checked = Tools::hasFlag($value, $day) ? ' checked' : '';
 
-            $result .= '<span title="' . $fullWeekday . '"><input type="checkbox" id="' . $name . '" name="' . $name . '[' . $i . ']" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $day . '" ' . $checked . '> ' . $weekday . '</span>' . ($i < $max
+            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$name.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute('atkcheckbox').' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max
                     ? $separator : '');
         }
 
@@ -123,21 +120,22 @@ class WeekdayAttribute extends NumberAttribute
      *
      * In this case, the timestamp is returned in human readable format.
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists). The regular
-     *                     Attribute does not use this parameter, but
-     *                     derived attributes may use it to distinguish
-     *                     between the two display modes.
-     * @return String HTML String
+     * @param array  $record The record that holds the value for this attribute
+     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     *                       for displaying in recordlists). The regular
+     *                       Attribute does not use this parameter, but
+     *                       derived attributes may use it to distinguish
+     *                       between the two display modes.
+     *
+     * @return string HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $result = '';
-        $value = (int)$record[$this->fieldName()];
+        $value = (int) $record[$this->fieldName()];
 
         $max = 7 + count($this->m_extra);
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $day = pow(2, $i - 1);
 
             if (Tools::hasFlag($value, $day)) {
@@ -151,7 +149,7 @@ class WeekdayAttribute extends NumberAttribute
                     $weekday = $this->m_extra[$i - 8];
                 }
 
-                $result .= (empty($result) ? '' : ($mode == 'list' ? ', ' : '<br>')) . $weekday;
+                $result .= (empty($result) ? '' : ($mode == 'list' ? ', ' : '<br>')).$weekday;
             }
         }
 
@@ -161,6 +159,4 @@ class WeekdayAttribute extends NumberAttribute
             return $result;
         }
     }
-
 }
-

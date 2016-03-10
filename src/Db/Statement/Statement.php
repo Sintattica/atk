@@ -1,6 +1,8 @@
-<?php namespace Sintattica\Atk\Db\Statement;
+<?php
 
-use \IteratorAggregate;
+namespace Sintattica\Atk\Db\Statement;
+
+use IteratorAggregate;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Core\Tools;
 
@@ -28,9 +30,6 @@ use Sintattica\Atk\Core\Tools;
  * $stmt->close();
  *
  * @author Peter C. Verhage <peter@achievo.org>
- *
- * @package atk
- * @subpackage db.statement
  */
 abstract class Statement implements IteratorAggregate
 {
@@ -69,16 +68,15 @@ abstract class Statement implements IteratorAggregate
      */
     private $m_latestParams = array();
 
-
     /**
-     * @var int $m_affectedRowCount
+     * @var int
      */
     private $m_affectedRowCount = 0;
 
     /**
      * Constructs a new statement for the given query.
      *
-     * @param Db $db database instance
+     * @param Db     $db    database instance
      * @param string $query SQL query
      */
     public function __construct($db, $query)
@@ -166,38 +164,38 @@ abstract class Statement implements IteratorAggregate
     /**
      * Prepares the statement for execution.
      */
-    protected abstract function _prepare();
+    abstract protected function _prepare();
 
     /**
      * Executes the statement using the given bind parameters.
      *
      * @param array $params bind parameters
      */
-    protected abstract function _execute($params);
+    abstract protected function _execute($params);
 
     /**
      * Fetches the next row from the result set.
      *
      * @return array next row from the result set (false if no other rows exist)
      */
-    protected abstract function _fetch();
+    abstract protected function _fetch();
 
     /**
      * Resets the statement so that it can be re-used again.
      */
-    protected abstract function _reset();
+    abstract protected function _reset();
 
     /**
      * Frees up all resources for this statement. The statement cannot be
      * re-used anymore.
      */
-    protected abstract function _close();
+    abstract protected function _close();
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE
      * or DELETE query. Called immediately after Statement::_execute().
      */
-    protected abstract function _getAffectedRowCount();
+    abstract protected function _getAffectedRowCount();
 
     /**
      * Resets this statement so that it can be re-used again.
@@ -233,7 +231,7 @@ abstract class Statement implements IteratorAggregate
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
+            throw new StatementException('Statement has not been executed yet.',
                 StatementException::STATEMENT_NOT_EXECUTED);
         }
 
@@ -247,14 +245,15 @@ abstract class Statement implements IteratorAggregate
      * Validates if all bind parameters are supplied.
      *
      * @param array $params bind parameters
+     *
      * @throws StatementException on Missing bind parameter
      */
     protected function _validateParams($params)
     {
         foreach ($this->_getBindPositions() as $position => $param) {
             if (!array_key_exists($param, $params)) {
-                throw new StatementException("Missing bind parameter " . (!is_numeric($param)
-                        ? ':' : '') . $param . ".", StatementException::MISSING_BIND_PARAMETER);
+                throw new StatementException('Missing bind parameter '.(!is_numeric($param)
+                        ? ':' : '').$param.'.', StatementException::MISSING_BIND_PARAMETER);
             }
         }
     }
@@ -277,12 +276,13 @@ abstract class Statement implements IteratorAggregate
      * Fetches the next row from the result set.
      *
      * @throws StatementException
+     *
      * @return mixed next row or false if there are no more rows
      */
     public function fetch()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
+            throw new StatementException('Statement has not been executed yet.',
                 StatementException::STATEMENT_NOT_EXECUTED);
         }
 
@@ -308,6 +308,7 @@ abstract class Statement implements IteratorAggregate
     public function getIterator()
     {
         $this->rewind();
+
         return new StatementIterator($this);
     }
 
@@ -327,7 +328,7 @@ abstract class Statement implements IteratorAggregate
         if ($row = $this->fetch()) {
             return $row;
         } else {
-            return null;
+            return;
         }
     }
 
@@ -372,7 +373,7 @@ abstract class Statement implements IteratorAggregate
 
         $result = array();
 
-        for ($i = 0; $row = $this->fetch(); $i++) {
+        for ($i = 0; $row = $this->fetch(); ++$i) {
             if ($keyColumn === null) {
                 $key = $i;
             } else {
@@ -397,7 +398,7 @@ abstract class Statement implements IteratorAggregate
      * result in the query to be executed multiple times.
      *
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param mixed $fallback fallback value if no result
+     * @param mixed      $fallback    fallback value if no result
      *
      * @return mixed first value
      */
@@ -450,7 +451,7 @@ abstract class Statement implements IteratorAggregate
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
      *
-     * @param int|string $keyColumn column index / name (default first column) to be used as key
+     * @param int|string $keyColumn   column index / name (default first column) to be used as key
      * @param int|string $valueColumn column index / name (default first column) to be used as value
      *
      * @return array rows
@@ -476,11 +477,10 @@ abstract class Statement implements IteratorAggregate
     public function getAffectedRowCount()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
+            throw new StatementException('Statement has not been executed yet.',
                 StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         return $this->m_affectedRowCount;
     }
-
 }

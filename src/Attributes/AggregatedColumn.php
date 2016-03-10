@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
 
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
@@ -16,42 +17,40 @@ use Sintattica\Atk\Core\Config;
  * This attribute shows in recordlist only.
  *
  * @author Yury Golovnya <ygolovnya@kyiv.utel.com.ua>
- * @package atk
- * @subpackage attributes
- *
  */
 class AggregatedColumn extends Attribute
 {
-    /**
+    /*
      * The display/sort template
      * @var String
      * @access private
      */
-    var $m_template;
+    public $m_template;
 
-    /**
+    /*
      * The array with searchs fileds
      * @var array
      * @access private
      */
-    var $m_searchfields = array();
+    public $m_searchfields = array();
 
-    /**
+    /*
      * The array with displays fileds
      * @var array
      * @access private
      */
-    var $m_displayfields = array();
+    public $m_displayfields = array();
 
     /**
-     * Constructor
-     * @param string $name Name of the attribute
-     * @param string $template Display/sort template.
-     * @param int $flags Flags for this attribute
-     * @param array $searchfields Array with fields, in which search will be perform
+     * Constructor.
+     *
+     * @param string $name         Name of the attribute
+     * @param string $template     Display/sort template.
+     * @param int    $flags        Flags for this attribute
+     * @param array  $searchfields Array with fields, in which search will be perform
      *                             If ommited, fields from $template will be used
      */
-    function __construct($name, $template, $flags = 0, $searchfields = array())
+    public function __construct($name, $template, $flags = 0, $searchfields = array())
     {
         parent::__construct($name, $flags | self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_VIEW); // base class constructor
         $this->m_template = $template;
@@ -67,82 +66,83 @@ class AggregatedColumn extends Attribute
     }
 
     /**
-     * The display function for this attribute
+     * The display function for this attribute.
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists, "edit" for
-     *                     displaying in editscreens, "add" for displaying in
-     *                     add screens. "csv" for csv files. Applications can
-     *                     use additional modes.
+     * @param array  $record The record that holds the value for this attribute
+     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     *                       for displaying in recordlists, "edit" for
+     *                       displaying in editscreens, "add" for displaying in
+     *                       add screens. "csv" for csv files. Applications can
+     *                       use additional modes.
+     *
      * @return string html code to display the value of this attribute
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $rec = array();
         foreach ($this->m_displayfields as $field) {
-
             $p_attrib = $this->m_ownerInstance->getAttribute($field);
 
             $rec[$field] = $p_attrib->display($record[$this->fieldName()], $mode);
         }
         $parser = new StringParser($this->m_template);
+
         return $parser->parse($rec);
     }
 
     /**
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
+     * @param string $action      the action that is being performed on the node
+     * @param array  $arr         reference to the the recordlist array
      * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby Order by string
+     * @param int    $flags       the recordlist flags
+     * @param array  $atksearch   the current ATK search list (if not empty)
+     * @param string $atkorderby  Order by string
+     *
      * @see Node::listArray
      */
-    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
-        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
-            $arr["heading"][$fieldprefix . $this->fieldName()]["title"] = $this->label();
+        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
+            $arr['heading'][$fieldprefix.$this->fieldName()]['title'] = $this->label();
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
                 $rec = array();
                 foreach ($this->m_displayfields as $field) {
-                    $rec[] = $this->m_ownerInstance->m_table . "." . $field;
+                    $rec[] = $this->m_ownerInstance->m_table.'.'.$field;
                 }
-                $order = implode(", ", $rec);
+                $order = implode(', ', $rec);
                 if ($atkorderby == $order) {
-                    $order = implode(" DESC,", $rec);
-                    $order .= " DESC";
+                    $order = implode(' DESC,', $rec);
+                    $order .= ' DESC';
                 }
                 $sm = SessionManager::getInstance();
-                $arr["heading"][$fieldprefix . $this->fieldName()]["url"] = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->m_ownerInstance->atkNodeUri() . '&atkaction=' . $action . '&atkorderby=' . rawurlencode($order));
+                $arr['heading'][$fieldprefix.$this->fieldName()]['url'] = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_ownerInstance->atkNodeUri().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
             }
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
-                $arr["search"][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr["search"][$fieldprefix . $this->fieldName()] .= '<input type="hidden" name="atksearchmode[' . $this->fieldName() . ']" value="' . $this->getSearchMode(false) . '">';
+                $arr['search'][$fieldprefix.$this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
+                $arr['search'][$fieldprefix.$this->fieldName()] .= '<input type="hidden" name="atksearchmode['.$this->fieldName().']" value="'.$this->getSearchMode(false).'">';
             }
         }
     }
 
     /**
-     * We do not want this attribute to store anything in the database, so we implement an empty store function
+     * We do not want this attribute to store anything in the database, so we implement an empty store function.
      *
-     * @return boolean to indicate if store went succesfull
+     * @return bool to indicate if store went succesfull
      */
-    function store()
+    public function store()
     {
         return true;
     }
 
-
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode !== 'add' && $mode != 'edit') {
             $allfields = Tools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
-            $alias = $fieldaliasprefix . $this->fieldName() . "_AE_";
+            $alias = $fieldaliasprefix.$this->fieldName().'_AE_';
             foreach ($allfields as $field) {
                 /** @var Attribute $p_attrib */
                 $p_attrib = $this->m_ownerInstance->m_attribList[$field];
@@ -155,16 +155,16 @@ class AggregatedColumn extends Attribute
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
-     * @param Query $query The query to which the condition will be added.
-     * @param string $table The name of the table in which this attribute
-     *                      is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                           of the supported modes, as returned by this
-     *                           attribute's getSearchModes() method.
+     * @param Query  $query            The query to which the condition will be added.
+     * @param string $table            The name of the table in which this attribute
+     *                                 is stored
+     * @param mixed  $value            The value the user has entered in the searchbox
+     * @param string $searchmode       The searchmode to use. This can be any one
+     *                                 of the supported modes, as returned by this
+     *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fiedalias in the table
      */
-    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
         $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
         if (!empty($searchcondition)) {
@@ -172,7 +172,7 @@ class AggregatedColumn extends Attribute
         }
     }
 
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $searchconditions = array();
         // Get search condition for all searchFields
@@ -194,7 +194,7 @@ class AggregatedColumn extends Attribute
             $data = array();
             foreach ($this->m_searchfields as $field) {
                 if (strpos($field, '.') == false) {
-                    $data[$field] = $table . "." . $field;
+                    $data[$field] = $table.'.'.$field;
                 } else {
                     $data[$field] = $field;
                 }
@@ -209,15 +209,16 @@ class AggregatedColumn extends Attribute
             // we remove all these separators (defined in the node with new atkAggregatedColumn)
             // so we can search for just the concatenated tags in concat_ws [Jeroen]
             foreach ($concatSeparators as $separator) {
-                $value = str_replace($separator, "", $value);
+                $value = str_replace($separator, '', $value);
             }
 
             $db = $this->getDb();
-            $condition = "UPPER(" . $db->func_concat_ws($concatTags, "", true) . ") LIKE UPPER('%" . $value . "%')";
+            $condition = 'UPPER('.$db->func_concat_ws($concatTags, '', true).") LIKE UPPER('%".$value."%')";
 
             $searchconditions[] = $condition;
         }
-        return "(" . implode(" OR ", $searchconditions) . ")";
+
+        return '('.implode(' OR ', $searchconditions).')';
     }
 
     /**
@@ -225,21 +226,19 @@ class AggregatedColumn extends Attribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
-        return array("exact", "substring", "wildcard", "regexp");
+        return array('exact', 'substring', 'wildcard', 'regexp');
     }
 
     /**
      * Return the database field type of the attribute.
      *
-     * @return String The 'generic' type of the database field for this
+     * @return string The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
-        return "";
+        return '';
     }
-
 }
-

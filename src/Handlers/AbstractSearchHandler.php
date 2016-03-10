@@ -1,20 +1,19 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 
 /**
- * Abstract class for implementing an atkSearchHandler
- *
- * @package atk
- * @subpackage testcases
+ * Abstract class for implementing an atkSearchHandler.
  */
 abstract class AbstractSearchHandler extends ActionHandler
 {
     /**
      * Holds the table name of the searchcriteria
      * table. Due some BC issues of the atkSmartSearchHandler
-     * this value can be overwritten by the checkTable function
+     * this value can be overwritten by the checkTable function.
      *
      * @var string
      */
@@ -23,34 +22,34 @@ abstract class AbstractSearchHandler extends ActionHandler
     /**
      * Indicates if the table
      * atk_searchcriteria exists
-     * use the function tableExists
+     * use the function tableExists.
      *
-     * @var boolean
+     * @var bool
      */
     protected $m_table_exists = null;
 
     /**
      * Return the criteria based on the postvarse
-     * used for storing
+     * used for storing.
      *
      * @return array
      */
-    abstract function fetchCriteria();
+    abstract public function fetchCriteria();
 
     /**
-     * Return the type of the atkSmartSearchHandler
+     * Return the type of the atkSmartSearchHandler.
      *
      * @return string
      */
-    function getSearchHandlerType()
+    public function getSearchHandlerType()
     {
         return strtolower(get_class($this));
     }
 
     /**
-     * check if database table exists
+     * check if database table exists.
      *
-     * @return boolean
+     * @return bool
      */
     protected function tableExist()
     {
@@ -61,7 +60,7 @@ abstract class AbstractSearchHandler extends ActionHandler
         $db = $this->m_node->getDb();
         $this->m_table_exists = $db->tableExists($this->m_table);
 
-        Tools::atkdebug('tableExists checking table: ' . $this->m_table . ' exists : ' . print_r($this->m_table_exists,
+        Tools::atkdebug('tableExists checking table: '.$this->m_table.' exists : '.print_r($this->m_table_exists,
                 true));
 
         return $this->m_table_exists;
@@ -72,7 +71,7 @@ abstract class AbstractSearchHandler extends ActionHandler
      *
      * @return array criteria list
      */
-    function listCriteria()
+    public function listCriteria()
     {
         if (!$this->tableExist()) {
             return array();
@@ -95,7 +94,7 @@ abstract class AbstractSearchHandler extends ActionHandler
      *
      * @param string $name name of the search criteria
      */
-    function forgetCriteria($name)
+    public function forgetCriteria($name)
     {
         if (!$this->tableExist()) {
             return false;
@@ -115,10 +114,10 @@ abstract class AbstractSearchHandler extends ActionHandler
      * NOTE:
      * This method will overwrite existing criteria with the same name.
      *
-     * @param string $name name for the search criteria
-     * @param array $criteria search criteria data
+     * @param string $name     name for the search criteria
+     * @param array  $criteria search criteria data
      */
-    function saveCriteria($name, $criteria)
+    public function saveCriteria($name, $criteria)
     {
         if (!$this->tableExist()) {
             return false;
@@ -136,9 +135,10 @@ abstract class AbstractSearchHandler extends ActionHandler
      * Load search criteria.
      *
      * @param string $name name of the search criteria
+     *
      * @return array search criteria
      */
-    function loadCriteria($name)
+    public function loadCriteria($name)
     {
         if (!$this->tableExist()) {
             return array();
@@ -155,6 +155,7 @@ abstract class AbstractSearchHandler extends ActionHandler
         $criteria = $row == null ? null : unserialize($row['criteria']);
 
         Tools::atk_var_dump($criteria, 'loadCriteria criteria');
+
         return $criteria;
     }
 
@@ -163,7 +164,7 @@ abstract class AbstractSearchHandler extends ActionHandler
      *
      * @return array search criteria
      */
-    function loadBaseCriteria()
+    public function loadBaseCriteria()
     {
         return array(array('attrs' => array()));
     }
@@ -173,13 +174,14 @@ abstract class AbstractSearchHandler extends ActionHandler
      * refresh the smart search page with the loaded criteria.
      *
      * @param string $current The current load criteria
-     * @return String criteria load HTML
+     *
+     * @return string criteria load HTML
      */
-    function getLoadCriteria($current)
+    public function getLoadCriteria($current)
     {
         $criteria = $this->listCriteria();
         if (count($criteria) == 0) {
-            return null;
+            return;
         }
 
         $result = '
@@ -187,23 +189,25 @@ abstract class AbstractSearchHandler extends ActionHandler
         <option value=""></option>';
 
         foreach ($criteria as $name) {
-            $result .= '<option value="' . htmlentities($name) . '"' . ($name == $current
-                    ? ' selected' : '') . '>' . htmlentities($name) . '</option>';
+            $result .= '<option value="'.htmlentities($name).'"'.($name == $current
+                    ? ' selected' : '').'>'.htmlentities($name).'</option>';
         }
 
         $result .= '</select>';
+
         return $result;
     }
 
     /**
      * Take the necessary 'saved criteria' actions based on the
      * posted variables.
-     * Returns the name of the saved criteria
+     * Returns the name of the saved criteria.
      *
      * @param array $criteria array with the current criteria
+     *
      * @return string name of the saved criteria
      */
-    function handleSavedCriteria($criteria)
+    public function handleSavedCriteria($criteria)
     {
         $name = array_key_exists('load_criteria', $this->m_postvars) ? $this->m_postvars['load_criteria']
             : '';
@@ -218,18 +222,20 @@ abstract class AbstractSearchHandler extends ActionHandler
                 $name = $save;
             }
         }
+
         return $name;
     }
 
     /**
      * Returns an array with all the saved criteria
      * information. This information will be parsed
-     * to the different
+     * to the different.
      *
      * @param string $current
+     *
      * @return array
      */
-    function getSavedCriteria($current)
+    public function getSavedCriteria($current)
     {
         // check if table is present
         if (!$this->tableExist()) {
@@ -243,9 +249,9 @@ abstract class AbstractSearchHandler extends ActionHandler
             'save_criteria' => $this->getSaveCriteria($current),
             'label_load_criteria' => htmlentities(Tools::atktext('load_criteria', 'atk')),
             'label_forget_criteria' => htmlentities(Tools::atktext('forget_criteria', 'atk')),
-            'label_save_criteria' => '<label for="toggle_save_criteria">' . htmlentities(Tools::atktext('save_criteria',
-                    'atk')) . '</label>',
-            'text_save_criteria' => htmlentities(Tools::atktext('save_criteria', 'atk'))
+            'label_save_criteria' => '<label for="toggle_save_criteria">'.htmlentities(Tools::atktext('save_criteria',
+                    'atk')).'</label>',
+            'text_save_criteria' => htmlentities(Tools::atktext('save_criteria', 'atk')),
         );
     }
 
@@ -254,14 +260,16 @@ abstract class AbstractSearchHandler extends ActionHandler
      * nothing (valid) is selected nothing is returned.
      *
      * @param string $current currently loaded criteria
-     * @return String forget url
+     *
+     * @return string forget url
      */
-    function getForgetCriteria($current)
+    public function getForgetCriteria($current)
     {
         if (empty($current) || $this->loadCriteria($current) == null) {
-            return null;
+            return;
         } else {
             $sm = SessionManager::getInstance();
+
             return $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->m_action,
                 array('forget_criteria' => $current)), SessionManager::SESSION_REPLACE);
         }
@@ -272,7 +280,7 @@ abstract class AbstractSearchHandler extends ActionHandler
      *
      * @return string HTML
      */
-    function getToggleSaveCriteria()
+    public function getToggleSaveCriteria()
     {
         return '<input id="toggle_save_criteria" type="checkbox" class="atkcheckbox" onclick="$(save_criteria).disabled = !$(save_criteria).disabled">';
     }
@@ -281,11 +289,11 @@ abstract class AbstractSearchHandler extends ActionHandler
      * Returns a textfield for entering a name to save the search criteria as.
      *
      * @param string $current currently loaded criteria
+     *
      * @@return string HTML
      */
-    function getSaveCriteria($current)
+    public function getSaveCriteria($current)
     {
-        return '<input id="save_criteria" class="form-control" type="text" size="30" name="save_criteria" value="' . htmlentities($current) . '" disabled="disabled">';
+        return '<input id="save_criteria" class="form-control" type="text" size="30" name="save_criteria" value="'.htmlentities($current).'" disabled="disabled">';
     }
-
 }

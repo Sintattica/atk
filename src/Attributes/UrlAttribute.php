@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 
@@ -7,9 +9,6 @@ use Sintattica\Atk\Core\Tools;
  *
  * @author Przemek Piotrowski <przemek.piotrowski@nic.com.pl>
  * @author Jeroen van Sluijs <jeroenvs@ibuildings.nl>
- *
- * @package atk
- * @subpackage attributes
  */
 class UrlAttribute extends Attribute
 {
@@ -24,24 +23,24 @@ class UrlAttribute extends Attribute
     const AF_URL_STRIPHTTP = 67108864;
 
     /**
-     * Check if URL is a valid absolute URL
+     * Check if URL is a valid absolute URL.
      */
     const ABSOLUTE = 1;
 
     /**
-     * Check if URL is a valid relative URL
+     * Check if URL is a valid relative URL.
      */
     const RELATIVE = 2;
 
     /**
-     * Check if URL is a valid anchor
+     * Check if URL is a valid anchor.
      */
     const ANCHOR = 4;
 
-    var $m_accepts_url_flag = 0;
-    var $m_newWindow = false;
-    var $m_allowWrap = false;
-    var $m_stripHttp = false;
+    public $m_accepts_url_flag = 0;
+    public $m_newWindow = false;
+    public $m_allowWrap = false;
+    public $m_stripHttp = false;
 
     /**
      * base url. Set it by
@@ -53,19 +52,20 @@ class UrlAttribute extends Attribute
     public $m_baseUrl = null;
 
     /**
-     * The atk url attribute
+     * The atk url attribute.
      *
-     * @param string $name Name of the attribute (unique within a node, and
-     *                     for most attributes, corresponds to a field in
-     *                     the database.
-     * @param int $flags Flags for the attribute.
-     * @param mixed $size The size(s) of the attribute. See the $size
-     *                     parameter of the setAttribSize() method for more
-     *                     information on the possible values of this
-     *                     parameter.
+     * @param string $name  Name of the attribute (unique within a node, and
+     *                      for most attributes, corresponds to a field in
+     *                      the database.
+     * @param int    $flags Flags for the attribute.
+     * @param mixed  $size  The size(s) of the attribute. See the $size
+     *                      parameter of the setAttribSize() method for more
+     *                      information on the possible values of this
+     *                      parameter.
+     *
      * @return UrlAttribute
      */
-    function __construct($name, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $size = 0)
     {
         if (self::AF_POPUP === ($flags & self::AF_POPUP)) {
             $this->m_newWindow = true;
@@ -88,15 +88,16 @@ class UrlAttribute extends Attribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists, "edit" for
-     *                     displaying in editscreens, "add" for displaying in
-     *                     add screens. "csv" for csv files. Applications can
-     *                     use additional modes.
-     * @return String HTML String
+     * @param array  $record The record that holds the value for this attribute
+     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     *                       for displaying in recordlists, "edit" for
+     *                       displaying in editscreens, "add" for displaying in
+     *                       add screens. "csv" for csv files. Applications can
+     *                       use additional modes.
+     *
+     * @return string HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $output = '';
 
@@ -108,14 +109,14 @@ class UrlAttribute extends Attribute
                 $target = ' target="_new"';
             }
 
-            /**
+            /*
              * prepend a custom hostname to make the link
              * go to a custom domain. But only when you are using relative
              * urls.
              */
             if (($this->getBaseUrl()) && (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE)) {
                 $base = $this->getBaseUrl();
-                $url = $base . $url;
+                $url = $base.$url;
             }
 
             $text = $record[$this->fieldName()];
@@ -127,14 +128,14 @@ class UrlAttribute extends Attribute
                 $text = preg_replace('/([?&].)/', ' \1', $text);
             }
 
-            $output = '<a href="' . $url . '"' . $target . '">' . $text . '</a>';
+            $output = '<a href="'.$url.'"'.$target.'">'.$text.'</a>';
         }
 
         return $output;
     }
 
     /**
-     * Return the base url (if set)
+     * Return the base url (if set).
      */
     public function getBaseUrl()
     {
@@ -144,7 +145,7 @@ class UrlAttribute extends Attribute
     /**
      * Set the base url to
      * help the display function
-     * set the correct domain
+     * set the correct domain.
      *
      * @param string $baseUrl http://my.domain.com
      */
@@ -154,14 +155,14 @@ class UrlAttribute extends Attribute
     }
 
     /**
-     * Specify which URL-types are allowed
+     * Specify which URL-types are allowed.
      *
      * Example: acceptUrls(ABSOLUTE) - only absolute are accepted
      *          acceptUrls(ABSOLUTE|ANCHOR) - accept absolute URL's, anchors and an absolute URL followed by an anchor
      *
      * @param int $accepts_flag
      */
-    function acceptUrls($accepts_flag)
+    public function acceptUrls($accepts_flag)
     {
         $this->m_accepts_url_flag = $accepts_flag;
     }
@@ -169,27 +170,27 @@ class UrlAttribute extends Attribute
     /**
      * Checks if a value is valid.
      *
-     * @param array $record The record that holds the value for this
-     *                      attribute. If an error occurs, the error will
-     *                      be stored in the 'atkerror' field of the record.
-     * @param string $mode The mode for which should be validated ("add" or
-     *                     "update")
+     * @param array  $record The record that holds the value for this
+     *                       attribute. If an error occurs, the error will
+     *                       be stored in the 'atkerror' field of the record.
+     * @param string $mode   The mode for which should be validated ("add" or
+     *                       "update")
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         $this->validateUrl($record, $mode, true);
     }
 
     /**
-     * Validates absolute, relative and anchor URL through regular expression
+     * Validates absolute, relative and anchor URL through regular expression.
      *
-     * @param array $record Record that contains value to be validated.
-     *                      Errors are saved in this record, in the 'atkerror'
-     *                      field.
-     * @param string $mode Validation mode. Can be either "add" or "update"
-     * @param boolean $show_error fire a triggerError when validation fails
+     * @param array  $record     Record that contains value to be validated.
+     *                           Errors are saved in this record, in the 'atkerror'
+     *                           field.
+     * @param string $mode       Validation mode. Can be either "add" or "update"
+     * @param bool   $show_error fire a triggerError when validation fails
      */
-    function validateUrl(&$record, $mode, $show_error = false)
+    public function validateUrl(&$record, $mode, $show_error = false)
     {
         $result = false;
 
@@ -202,34 +203,33 @@ class UrlAttribute extends Attribute
         $relative_url_regex = "[a-zA-Z0-9\.\-\_\/?&=%]";
         $relative_url_regex_with_anchor = "[a-zA-Z0-9\.\-\_\/?&=%#]";
 
-
-        /**
+        /*
          * Validate URL, check if format is absolute (external URL's) and has no anchor
          *
          * Example: http://www2-dev.test_url.com
          * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
          */
         if (($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) {
-            $absolute_result = preg_match("/^" . $base_url_regex . $relative_url_regex . "*$/Ui",
+            $absolute_result = preg_match('/^'.$base_url_regex.$relative_url_regex.'*$/Ui',
                 $record[$this->fieldName()])
                 ? true : false;
 
             $result = $result || $absolute_result;
         }
 
-        /**
+        /*
          * Validate URL, check if format is a valid anchor
          *
          * Example: #internal_bookmark
          */
         if (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR) {
-            $anchor_result = preg_match("/^#" . $relative_url_regex . "*$/Ui", $record[$this->fieldName()])
+            $anchor_result = preg_match('/^#'.$relative_url_regex.'*$/Ui', $record[$this->fieldName()])
                 ? true : false;
 
             $result = $result || $anchor_result;
         }
 
-        /**
+        /*
          * Validate URL, check if format is absolute (external URL's) and has (optional) anchor
          *
          * Example: http://www2-dev.test_url.com
@@ -237,27 +237,26 @@ class UrlAttribute extends Attribute
          * or:      https://www2-dev.test_url.com/index.php?/history.html#bookmark
          */
         if ((($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) && (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR)) {
-            $absolute_anchor_result = preg_match("/^" . $base_url_regex . $relative_url_regex_with_anchor . "*$/Ui",
+            $absolute_anchor_result = preg_match('/^'.$base_url_regex.$relative_url_regex_with_anchor.'*$/Ui',
                 $record[$this->fieldName()])
                 ? true : false;
 
             $result = $result || $absolute_anchor_result;
         }
 
-        /**
+        /*
          * Validate URL, check if format is relative
          *
          * Example: /mysite/guestbook/index.html
          */
         if (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE) {
-            $relative_result = preg_match("/^" . $relative_url_regex_with_anchor . "+$/Ui", $record[$this->fieldName()])
+            $relative_result = preg_match('/^'.$relative_url_regex_with_anchor.'+$/Ui', $record[$this->fieldName()])
                 ? true : false;
 
             $result = $result || $relative_result;
         }
 
-
-        /**
+        /*
          * If an error occured, show applicable message(s)
          */
         if (!$result && $show_error) {
@@ -279,9 +278,7 @@ class UrlAttribute extends Attribute
                     Tools::atktext('invalid_relative_url'));
             }
         }
-        return ($result || parent::validate($record, $mode));
+
+        return $result || parent::validate($record, $mode);
     }
-
 }
-
-

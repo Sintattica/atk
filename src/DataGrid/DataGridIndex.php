@@ -1,17 +1,15 @@
-<?php namespace Sintattica\Atk\DataGrid;
+<?php
 
+namespace Sintattica\Atk\DataGrid;
 
 /**
  * The data grid index. Can be used to render an alphanumeric index
  * for an ATK data grid.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage datagrid
  */
 class DataGridIndex extends DataGridComponent
 {
-
     /**
      * Returns the available indices.
      *
@@ -41,7 +39,7 @@ class DataGridIndex extends DataGridComponent
                 'type' => 'index',
                 'title' => $title,
                 'call' => $call,
-                'current' => "{$char}*" == $current
+                'current' => "{$char}*" == $current,
             );
         }
 
@@ -68,7 +66,7 @@ class DataGridIndex extends DataGridComponent
 
         $links = $this->getLinks();
         $result = $this->getUi()->render('dgindex.tpl', array('links' => $links));
+
         return $result;
     }
-
 }

@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -24,14 +26,12 @@ use Sintattica\Atk\Ui\Ui;
  * which is called by the framework to execute the action.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage handlers
  * @abstract
  */
 class ActionHandler
 {
     /**
-     * Some defines for return behaviour
+     * Some defines for return behaviour.
      */
     const ATK_ACTION_STAY = 0;
     const ATK_ACTION_BACK = 1;
@@ -44,64 +44,62 @@ class ActionHandler
      * function.
      */
     /**
-     * The action is cancelled
+     * The action is cancelled.
      *
      * action status flag
      */
     const ACTION_CANCELLED = 1;
 
     /**
-     * The action failed to accomplish it's goal
+     * The action failed to accomplish it's goal.
      *
      * action status flag
      */
     const ACTION_FAILED = 2;
 
     /**
-     * The action is a success
+     * The action is a success.
      *
      * action status flag
      */
     const ACTION_SUCCESS = 4;
 
-    /**
+    /*
      * @var Node
      * @access private
      */
-    var $m_node = null;
+    public $m_node = null;
 
-    /** @access private */
-    var $m_action = "";
+    /* @access private */
+    public $m_action = '';
 
-    /** @access private */
-    var $m_partial = null;
+    /* @access private */
+    public $m_partial = null;
 
-    /** @access private */
-    var $m_renderBoxVars = array();
+    /* @access private */
+    public $m_renderBoxVars = array();
 
-    /** @access private */
-    var $m_rejecting = false;
+    /* @access private */
+    public $m_rejecting = false;
 
-    /** @access private */
-    var $m_returnbehaviour = self::ATK_ACTION_STAY;
+    /* @access private */
+    public $m_returnbehaviour = self::ATK_ACTION_STAY;
 
-    var $m_postvars;
+    public $m_postvars;
 
-    /** @access protected */
-    protected $m_boxTemplate = "box";
+    
+    protected $m_boxTemplate = 'box';
 
-    /**
+    /*
      * Render mode, defaults to "box"
      *
      * @var string
      * @access protected
      */
-    var $m_renderMode = 'box';
+    public $m_renderMode = 'box';
 
-
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
@@ -113,23 +111,22 @@ class ActionHandler
      * for the action we don't invoke the action_$action override but
      * instead let the partial method handle the action.
      *
-     * @param Node $node The node on which the action should be performed.
-     * @param string $action The action that is being performed.
-     * @param array $postvars Any variables from the request
-     *
+     * @param Node   $node     The node on which the action should be performed.
+     * @param string $action   The action that is being performed.
+     * @param array  $postvars Any variables from the request
      */
-    function handle(&$node, $action, &$postvars)
+    public function handle(&$node, $action, &$postvars)
     {
         $this->m_postvars = $postvars;
         $this->m_node = $node;
         $this->m_action = $action;
         $this->m_partial = $node->m_partial;
 
-        $this->invoke("action_" . $action);
+        $this->invoke('action_'.$action);
 
         // when we're finished, cleanup any atkrejects (that we haven't set ourselves).
         if (!$this->m_rejecting) {
-            Tools::atkdebug("clearing the stuff");
+            Tools::atkdebug('clearing the stuff');
             $this->getRejectInfo(); // this will clear it.
         }
     }
@@ -147,24 +144,25 @@ class ActionHandler
     /**
      * Get the reject info from the session
      * This is used by the atkAddHandler and atkEditHandler to
-     * show the validation errors
+     * show the validation errors.
      *
      * @return array The reject info
      */
-    function getRejectInfo()
+    public function getRejectInfo()
     {
         $sm = SessionManager::getInstance();
+
         return $sm->stackVar('atkreject');
     }
 
     /**
      * Store the reject info in the session
      * This is used by the atkSaveHandler and atkUpdateHandler to
-     * store the record if the record is not validated
+     * store the record if the record is not validated.
      *
      * @param array $data The reject information
      */
-    function setRejectInfo($data)
+    public function setRejectInfo($data)
     {
         $sm = SessionManager::getInstance();
         $sm->stackVar('atkreject', $data, $sm->atkPrevLevel());
@@ -173,9 +171,10 @@ class ActionHandler
 
     /**
      * Set the calling node of the current action.
+     *
      * @param Node $node The node on which the action should be performed.
      */
-    function setNode(&$node)
+    public function setNode(&$node)
     {
         $this->m_node = $node;
         $this->m_partial = $node->m_partial;
@@ -184,34 +183,35 @@ class ActionHandler
 
     /**
      * Sets the current action.
+     *
      * @param string $action The action name.
      */
-    function setAction($action)
+    public function setAction($action)
     {
         $this->m_action = $action;
     }
 
     /**
      * Set postvars of the the calling node of the current action.
+     *
      * @param array $postvars Postvars of the node on which the action should be performed.
      */
-    function setPostvars(&$postvars)
+    public function setPostvars(&$postvars)
     {
         $this->m_postvars = &$postvars;
     }
-
 
     /**
      * Returns the render mode.
      *
      * @return string render mode
      */
-    function getRenderMode()
+    public function getRenderMode()
     {
         return $this->m_renderMode;
     }
 
-    function setBoxTemplate($tpl)
+    public function setBoxTemplate($tpl)
     {
         $this->m_boxTemplate = $tpl;
     }
@@ -221,7 +221,7 @@ class ActionHandler
      *
      * @return Page The active page instance.
      */
-    function &getPage()
+    public function &getPage()
     {
         return $this->m_node->getPage();
     }
@@ -231,7 +231,7 @@ class ActionHandler
      *
      * @return Ui An Ui instance for drawing and templating.
      */
-    function &getUi()
+    public function &getUi()
     {
         return $this->m_node->getUi();
     }
@@ -266,10 +266,11 @@ class ActionHandler
      * no override.
      *
      * @param string $methodname The name of the method to call.
+     *
      * @return mixed The method returns the return value of the invoked
      *               method.
      */
-    function invoke($methodname)
+    public function invoke($methodname)
     {
         $arguments = func_get_args(); // Put arguments in a variable (php won't let us pass func_get_args() to other functions directly.
         // the first argument is $methodname, which we already defined by name.
@@ -283,12 +284,14 @@ class ActionHandler
             return call_user_func_array(array($this->m_node, $methodname), $arguments);
         } else {
             if (method_exists($this, $methodname)) {
-                Tools::atkdebug("Invoking '$methodname' on ActionHandler for action " . $this->m_action);
+                Tools::atkdebug("Invoking '$methodname' on ActionHandler for action ".$this->m_action);
+
                 return call_user_func_array(array(&$this, $methodname), $arguments);
             }
         }
         Tools::atkerror("Undefined method '$methodname' in ActionHandler");
-        return null;
+
+        return;
     }
 
     /**
@@ -299,24 +302,26 @@ class ActionHandler
      * handler is instantiated and returned. The default handler assumes that
      * the node has an action_.... method, that will be called when the
      * actionhandler's handle() mehod is called.
+     *
      * @param string $action
      *
      * @return ActionHandler
      */
     public static function getDefaultHandler($action)
     {
-        $class = __NAMESPACE__ . "\\" . ucfirst($action) . "Handler";
+        $class = __NAMESPACE__.'\\'.ucfirst($action).'Handler';
         if (class_exists($class)) {
             return new $class();
         }
-        return new ActionHandler();
+
+        return new self();
     }
 
     /**
      * Modify grid.
      *
      * @param DataGrid $grid grid
-     * @param int $mode CREATE or RESUME
+     * @param int      $mode CREATE or RESUME
      */
     protected function modifyDataGrid(DataGrid $grid, $mode)
     {
@@ -327,11 +332,11 @@ class ActionHandler
     }
 
     /**
-     * Get the cached recordlist
+     * Get the cached recordlist.
      *
      * @return RecordListCache object
      */
-    function getRecordlistCache()
+    public function getRecordlistCache()
     {
         static $recordlistcache;
         if (!$recordlistcache) {
@@ -339,14 +344,14 @@ class ActionHandler
             $recordlistcache->setNode($this->m_node);
             $recordlistcache->setPostvars($this->m_postvars);
         }
+
         return $recordlistcache;
     }
 
     /**
-     * Clear the recordlist cache
-     *
+     * Clear the recordlist cache.
      */
-    function clearCache()
+    public function clearCache()
     {
         if ($this->m_node->hasFlag(Node::NF_CACHE_RECORDLIST)) {
             $recordlistcache = $this->getRecordlistCache();
@@ -357,43 +362,43 @@ class ActionHandler
     }
 
     /**
-     * Notify the node that an action has occured
+     * Notify the node that an action has occured.
      *
      * @param string $action The action that occurred
-     * @param array $record The record on which the action was performed
+     * @param array  $record The record on which the action was performed
      */
-    function notify($action, $record)
+    public function notify($action, $record)
     {
         $this->m_node->notify($action, $record);
     }
 
     /**
-     * Add a variable to the renderbox
+     * Add a variable to the renderbox.
      *
      * @param string $key
      * @param string $value
      */
-    function addRenderBoxVar($key, $value)
+    public function addRenderBoxVar($key, $value)
     {
         $this->m_renderBoxVars[$key] = $value;
     }
 
     /**
-     * Set the returnbehaviour of this action
+     * Set the returnbehaviour of this action.
      *
-     * @param Integer $returnbehaviour The return behaviour (possible values: ActionHandler::ATK_ACTION_BACK and ActionHandler::ATK_ACTION_STAY)
+     * @param int $returnbehaviour The return behaviour (possible values: ActionHandler::ATK_ACTION_BACK and ActionHandler::ATK_ACTION_STAY)
      */
-    function setReturnBehaviour($returnbehaviour)
+    public function setReturnBehaviour($returnbehaviour)
     {
         $this->m_returnbehaviour = $returnbehaviour;
     }
 
     /**
-     * Get the returnbehaviour of this action
+     * Get the returnbehaviour of this action.
      *
-     * @return String the return behaviour
+     * @return string the return behaviour
      */
-    function getReturnBehaviour()
+    public function getReturnBehaviour()
     {
         return $this->m_returnbehaviour;
     }
@@ -402,9 +407,10 @@ class ActionHandler
      * Current action allowed on the given record?
      *
      * @param array $record record
-     * @return boolean is action allowed on record?
+     *
+     * @return bool is action allowed on record?
      */
-    function allowed($record)
+    public function allowed($record)
     {
         return $this->m_node->allowed($this->m_action, $record);
     }
@@ -412,43 +418,43 @@ class ActionHandler
     /**
      * Render access denied page.
      */
-    function renderAccessDeniedPage()
+    public function renderAccessDeniedPage()
     {
         $page = $this->m_node->getPage();
         $page->addContent($this->_getAccessDeniedPage());
     }
 
     /**
-     * Get the access denied page
+     * Get the access denied page.
      *
-     * @return String the HTML code of the access denied page
+     * @return string the HTML code of the access denied page
      */
-    function _getAccessDeniedPage()
+    public function _getAccessDeniedPage()
     {
         $ui = $this->m_node->getUi();
-        $content = "<br><br>" . Tools::atktext("error_node_action_access_denied", "", $this->m_node->getType()) . "<br><br><br>";
+        $content = '<br><br>'.Tools::atktext('error_node_action_access_denied', '', $this->m_node->getType()).'<br><br><br>';
         $blocks = [
             $ui->renderBox(array(
-                "title" => Tools::atktext('access_denied'),
-                "content" => $content
-            ), 'dispatch')
+                'title' => Tools::atktext('access_denied'),
+                'content' => $content,
+            ), 'dispatch'),
         ];
-        return $ui->render("action.tpl", array("blocks"=>$blocks, "title"=> Tools::atktext('access_denied')));
-    }
 
+        return $ui->render('action.tpl', array('blocks' => $blocks, 'title' => Tools::atktext('access_denied')));
+    }
 
     /**
      * Handle partial.
      *
      * @param string $partial full partial
      */
-    function partial($partial)
+    public function partial($partial)
     {
-        $parts = explode(".", $partial);
-        $method = "partial_" . $parts[0];
+        $parts = explode('.', $partial);
+        $method = 'partial_'.$parts[0];
 
         if (!method_exists($this, $method)) {
-            $content = '<span style="color: red; font-weight: bold">Invalid partial \'' . $this->m_partial . '\'!</span>';
+            $content = '<span style="color: red; font-weight: bold">Invalid partial \''.$this->m_partial.'\'!</span>';
         } else {
             $content = $this->$method($partial);
         }
@@ -482,12 +488,13 @@ class ActionHandler
     /**
      * Checks whatever the given CSRF token matches the one stored in the
      * session stack.
+     *
      * @param string $token
-     * @return boolean is valid CSRF token?
+     *
+     * @return bool is valid CSRF token?
      */
     protected function isValidCSRFToken($token)
     {
         return $this->getCSRFToken() == $token;
     }
-
 }

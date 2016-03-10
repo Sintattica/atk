@@ -1,7 +1,8 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
 
+namespace Sintattica\Atk\Utils;
 
-use \Exception;
+use Exception;
 
 /**
  * ATK JSON wrapper.
@@ -25,22 +26,20 @@ use \Exception;
  * JavaScript, Perl, TCL, and many others. These properties make JSON an
  * ideal data-interchange language.
  *
- * @package atk
- * @subpackage utils
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-class JSON
+class Json
 {
     /**
-     * Maximum recursion depth for conversion of data for encoding to UTF-8
+     * Maximum recursion depth for conversion of data for encoding to UTF-8.
      */
     const UTF8_CONVERSION_RECURSION_LIMIT = 30;
-
 
     /**
      * Encode to JSON.
      *
      * @param mixed $var PHP variable
+     *
      * @return string JSON string
      */
     public static function encode($var)
@@ -56,15 +55,18 @@ class JSON
     }
 
     /**
-     * Convert a mixed type variable to UTF-8
-     * @param mixed $data PHP variable
-     * @param int $depth
+     * Convert a mixed type variable to UTF-8.
+     *
+     * @param mixed $data  PHP variable
+     * @param int   $depth
+     *
      * @return mixed
+     *
      * @throws Exception
      */
     private function _utf8json($data, $depth = 0)
     {
-        $depth++;
+        ++$depth;
         if ($depth >= self::UTF8_CONVERSION_RECURSION_LIMIT) {
             throw new Exception('atkJSON recustion limit reached');
         }
@@ -86,7 +88,7 @@ class JSON
                     /* return utf8 encoded array */
                     return $newArray;
                 } else {
-                    throw new Exception("Unrecognized datatype for UTF-8 conversion in atkJSON");
+                    throw new Exception('Unrecognized datatype for UTF-8 conversion in atkJSON');
                 }
             }
         }
@@ -96,12 +98,12 @@ class JSON
      * Decode JSON string.
      *
      * @param string $string JSON string
-     * @param boolean $assoc return as associative array (instead of objects)
+     * @param bool   $assoc  return as associative array (instead of objects)
+     *
      * @return mixed PHP value
      */
     public static function decode($string, $assoc = false)
     {
         return json_decode($string, $assoc);
     }
-
 }

@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\Relations;
+<?php
 
+namespace Sintattica\Atk\Relations;
 
 /**
  * Many-to-many list relation.
@@ -8,8 +9,6 @@
  * from which multiple records can be selected.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage relations
  */
 class ManyToManyListRelation extends ManyToManyRelation
 {
@@ -21,7 +20,7 @@ class ManyToManyListRelation extends ManyToManyRelation
      * Auto calculate rows based on the available rows. The set
      * rows will be used as maximum. This is enabled by default.
      *
-     * @param boolean $enable enable?
+     * @param bool $enable enable?
      */
     public function setAutoCalculateRows($enable)
     {
@@ -31,7 +30,7 @@ class ManyToManyListRelation extends ManyToManyRelation
     /**
      * Is auto calculate rows enabled?
      *
-     * @return boolean auto-calculate rows enabled?
+     * @return bool auto-calculate rows enabled?
      */
     public function autoCalculateRows()
     {
@@ -81,10 +80,10 @@ class ManyToManyListRelation extends ManyToManyRelation
     /**
      * Return a piece of html code to edit the attribute.
      *
-     * @param array $record The record that holds the value for this attribute.
+     * @param array  $record      The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
+     * @param string $mode        The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code
      */
@@ -101,11 +100,11 @@ class ManyToManyListRelation extends ManyToManyRelation
         }
 
         $id = $this->getHtmlId($fieldprefix);
-        $name = $fieldprefix . $this->fieldName();
+        $name = $fieldprefix.$this->fieldName();
 
         $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows())
             : $this->getRows();
-        $result = '<select class="form-control" id="' . $id . '" name="' . $name . '[][' . $this->getRemoteKey() . ']" multiple="multiple" size="' . $size . '" style="width: ' . $this->getWidth() . 'px">';
+        $result = '<select class="form-control" id="'.$id.'" name="'.$name.'[]['.$this->getRemoteKey().']" multiple="multiple" size="'.$size.'" style="width: '.$this->getWidth().'px">';
 
         foreach ($selectable as $row) {
             $key = $this->m_destInstance->primaryKey($row);
@@ -113,12 +112,11 @@ class ManyToManyListRelation extends ManyToManyRelation
             $selectedStr = in_array($key, $selected) ? ' selected="selected"' : '';
             $value = $row[$this->m_destInstance->primaryKeyField()];
 
-            $result .= '<option value="' . htmlentities($value) . '"' . $selectedStr . '>' . $label . '</option>';
+            $result .= '<option value="'.htmlentities($value).'"'.$selectedStr.'>'.$label.'</option>';
         }
 
         $result .= '</select>';
 
         return $result;
     }
-
 }

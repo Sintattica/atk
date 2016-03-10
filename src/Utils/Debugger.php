@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
+
+namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
@@ -12,19 +14,16 @@ use Sintattica\Atk\Db\Db;
  * performed in a page.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage utils
- *
  */
 class Debugger
 {
-    var $m_isconsole = true;
-    var $m_redirectUrl = null;
+    public $m_isconsole = true;
+    public $m_redirectUrl = null;
     private static $s_queryCount = 0;
     private static $s_systemQueryCount = 0;
 
     /**
-     * Get an instance of this class
+     * Get an instance of this class.
      *
      * @return Debugger Instance of atkDebugger
      */
@@ -33,51 +32,53 @@ class Debugger
         static $s_instance = null;
         if ($s_instance == null) {
             if (!SessionManager::getInstance()) {
-                Tools::atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
+                Tools::atkwarning('Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!');
             }
-            $s_instance = new Debugger();
+            $s_instance = new self();
         }
+
         return $s_instance;
     }
 
     /**
-     * Constructor
-     *
+     * Constructor.
      */
     public function __construct()
     {
-        $this->m_isconsole = (strpos($_SERVER['SCRIPT_NAME'], "debugger.php") !== false);
+        $this->m_isconsole = (strpos($_SERVER['SCRIPT_NAME'], 'debugger.php') !== false);
         if (!$this->m_isconsole) {
             $link = $this->consoleLink('Open console', '', array(), true);
             $data = $this->getDebuggerData(true);
             $data = array(); // start clean
             global $g_debug_msg;
-            $g_debug_msg[] = Tools::atkGetTimingInfo() . "Debugger initialized. [" . $link . "]";
+            $g_debug_msg[] = Tools::atkGetTimingInfo().'Debugger initialized. ['.$link.']';
         }
     }
 
     /**
-     * Add a debug statement
+     * Add a debug statement.
      *
      * @param string $txt The debug statement
+     *
      * @return bool Indication if statement is added
      */
     public static function addStatement($txt)
     {
         if (SessionManager::getInstance()) {
-            $instance = Debugger::getInstance();
+            $instance = self::getInstance();
             if (is_object($instance)) {
                 return $instance->_addStatement($txt);
             }
         }
+
         return false;
     }
 
     /**
-     * Add a query string to the debugger
+     * Add a query string to the debugger.
      *
      * @param string $query
-     * @param boolean $system is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     * @param bool   $system is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
      *
      * @return bool Indication if query is added
      */
@@ -88,22 +89,25 @@ class Debugger
 
         if (Config::getGlobal('debug') > 2) {
             if (SessionManager::getInstance()) {
-                $instance = Debugger::getInstance();
+                $instance = self::getInstance();
                 if (is_object($instance)) {
                     return $instance->_addQuery($query);
                 }
             }
         } else {
             Tools::atkdebug(htmlentities($query));
+
             return true;
         }
+
         return false;
     }
 
     /**
-     * Add a debug statement
+     * Add a debug statement.
      *
      * @param string $txt The debug statement
+     *
      * @return bool Indication if statement is added
      */
     protected function _addStatement($txt)
@@ -111,19 +115,22 @@ class Debugger
         if (!$this->m_isconsole) {
             $data = $this->getDebuggerData();
             global $g_debug_msg;
-            $data["statements"][] = array("statement" => $txt, "trace" => Tools::atkGetTrace());
-            $link = $this->consoleLink("trace", "statement", array("stmt_id" => count($data["statements"]) - 1), true);
+            $data['statements'][] = array('statement' => $txt, 'trace' => Tools::atkGetTrace());
+            $link = $this->consoleLink('trace', 'statement', array('stmt_id' => count($data['statements']) - 1), true);
             $txt = preg_replace("|MB\]|", "MB] [$link]", $txt, 1);
             $g_debug_msg[] = $txt;
+
             return true;
         }
+
         return false;
     }
 
     /**
-     * Add a query string to the debugger
+     * Add a query string to the debugger.
      *
      * @param string $query
+     *
      * @return bool Indication if query is added
      */
     protected function _addQuery($query)
@@ -131,27 +138,29 @@ class Debugger
         if (!$this->m_isconsole) { // don't add queries executed by the console itself
             $data = $this->getDebuggerData();
 
-            $data["queries"][] = array("query" => $query, "trace" => Tools::atkGetTrace());
+            $data['queries'][] = array('query' => $query, 'trace' => Tools::atkGetTrace());
 
-            Tools::atkdebug("[" . $this->consoleLink("query&nbsp;details", "query",
-                    array("query_id" => count($data["queries"]) - 1), true) . "] " . htmlentities($query));
+            Tools::atkdebug('['.$this->consoleLink('query&nbsp;details', 'query',
+                    array('query_id' => count($data['queries']) - 1), true).'] '.htmlentities($query));
 
             return true;
         }
+
         return false;
     }
 
     /**
-     * Create the console link
+     * Create the console link.
      *
-     * @param string $text The name of the link
-     * @param string $action The action
-     * @param array $params Array with parameters to add to the url
-     * @param bool $popup IS this a popup link?
-     * @param int $stackId The stack id
+     * @param string $text    The name of the link
+     * @param string $action  The action
+     * @param array  $params  Array with parameters to add to the url
+     * @param bool   $popup   IS this a popup link?
+     * @param int    $stackId The stack id
+     *
      * @return string HTML code with the console link
      */
-    public function consoleLink($text, $action = "", $params = array(), $popup = false, $stackId = null)
+    public function consoleLink($text, $action = '', $params = array(), $popup = false, $stackId = null)
     {
         if ($stackId == null) {
             $sm = SessionManager::getInstance();
@@ -159,41 +168,45 @@ class Debugger
         }
 
         static $s_first = true;
-        $res = "";
-        $url = './debugger.php?atkstackid=' . $stackId . '&action=' . $action . '&atkprevlevel=' . $sm->atkLevel() . $this->urlParams($params);
+        $res = '';
+        $url = './debugger.php?atkstackid='.$stackId.'&action='.$action.'&atkprevlevel='.$sm->atkLevel().$this->urlParams($params);
 
         if ($popup) {
             if ($s_first) {
-                $res .= '<script type="text/javascript" language="JavaScript" src="' . Config::getGlobal("assets_url") . 'javascript/newwindow.js"></script>';
+                $res .= '<script type="text/javascript" language="JavaScript" src="'.Config::getGlobal('assets_url').'javascript/newwindow.js"></script>';
                 $s_first = false;
             }
-            $res .= '<a href="javascript:NewWindow(\'' . $url . '\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">' . $text . '</a>';
+            $res .= '<a href="javascript:NewWindow(\''.$url.'\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">'.$text.'</a>';
         } else {
-            $res .= '<a href="' . $url . '">' . $text . '</a>';
+            $res .= '<a href="'.$url.'">'.$text.'</a>';
         }
+
         return $res;
     }
 
     /**
-     * Convert a params array to a querystring to add to the url
+     * Convert a params array to a querystring to add to the url.
      *
      * @param array $params
+     *
      * @return string
      */
     public function urlParams($params)
     {
         if (count($params)) {
-            $res = "";
+            $res = '';
             foreach ($params as $key => $value) {
-                $res .= '&' . $key . "=" . rawurlencode($value);
+                $res .= '&'.$key.'='.rawurlencode($value);
             }
+
             return $res;
         }
-        return "";
+
+        return '';
     }
 
     /**
-     * Render the console
+     * Render the console.
      *
      * @return string The HTML code
      */
@@ -201,121 +214,130 @@ class Debugger
     {
         $page = Page::getInstance();
         $data = $this->getDebuggerData(false, $_REQUEST['atkstackid']);
-        $res = $this->consoleControls() . '<br/><br/>';
-        switch ($_REQUEST["action"]) {
-            case "query":
-                $res .= $this->queryDetails($data["queries"], $_REQUEST["query_id"]);
+        $res = $this->consoleControls().'<br/><br/>';
+        switch ($_REQUEST['action']) {
+            case 'query':
+                $res .= $this->queryDetails($data['queries'], $_REQUEST['query_id']);
                 break;
-            case "statement":
-                $res .= $this->statementDetails($data["statements"], $_REQUEST["stmt_id"]);
+            case 'statement':
+                $res .= $this->statementDetails($data['statements'], $_REQUEST['stmt_id']);
                 break;
             default: {
-                $res .= $this->renderQueryList($data["queries"]);
-                $res .= $this->renderStatementList($data["statements"]);
+                $res .= $this->renderQueryList($data['queries']);
+                $res .= $this->renderStatementList($data['statements']);
             }
         }
         $page->addContent($res);
+
         return $page->render('Console');
     }
 
     /**
-     * Get the HTML code for the console controls
+     * Get the HTML code for the console controls.
      *
      * @return string The HTML code
      */
     public function consoleControls()
     {
-        return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">' . $this->consoleLink('Console index',
+        return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index',
             '', array(), false,
-            $_REQUEST['atkstackid']) . ' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
+            $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
 
     /**
-     * Get details for the query
+     * Get details for the query.
      *
      * @param array $queries Array with queries
-     * @param int $id The index in the queries array we want the details from
+     * @param int   $id      The index in the queries array we want the details from
+     *
      * @return string The query details
      */
     public function queryDetails($queries, $id)
     {
-        $output = "<h1>Query</h1>";
-        $query = $queries[$id]["query"];
+        $output = '<h1>Query</h1>';
+        $query = $queries[$id]['query'];
         $output .= $this->highlightQuery($query);
         $db = Db::getInstance();
-        if (strtolower(substr(trim($query), 0, 6)) == "select") {
+        if (strtolower(substr(trim($query), 0, 6)) == 'select') {
             $output .= '<h1>Resultset</h1>';
             $result = $db->getrows($query);
             if (count($result)) {
-                $output .= $this->arrToTable($result, $_REQUEST["full"], $id);
+                $output .= $this->arrToTable($result, $_REQUEST['full'], $id);
             } else {
-                $output .= "Query returned no rows";
+                $output .= 'Query returned no rows';
             }
             $output .= '<h1>Explain plan</h1>';
-            $result = $db->getrows("EXPLAIN " . $query);
+            $result = $db->getrows('EXPLAIN '.$query);
             $output .= $this->arrToTable($result);
         }
-        if ($queries[$id]["trace"] != "") {
+        if ($queries[$id]['trace'] != '') {
             $output .= '<h1>Backtrace</h1>';
-            $output .= $queries[$id]["trace"];
+            $output .= $queries[$id]['trace'];
         }
+
         return $output;
     }
 
     /**
-     * Get the statement details
+     * Get the statement details.
      *
      * @param array $stmts Array with statements
-     * @param int $id The index in the statements array we want the details from
+     * @param int   $id    The index in the statements array we want the details from
+     *
      * @return string The statement details
      */
     public function statementDetails($stmts, $id)
     {
-        $output = "<h1>Debug Statement</h1>";
-        $stmt = $stmts[$id]["statement"];
-        $output .= "<b>" . $stmt . "</b>";
+        $output = '<h1>Debug Statement</h1>';
+        $stmt = $stmts[$id]['statement'];
+        $output .= '<b>'.$stmt.'</b>';
 
-        if ($stmts[$id]["trace"] != "") {
+        if ($stmts[$id]['trace'] != '') {
             $output .= '<h1>Backtrace</h1>';
-            $output .= $stmts[$id]["trace"];
+            $output .= $stmts[$id]['trace'];
         }
+
         return $output;
     }
 
     /**
-     * Convert an array to a table
+     * Convert an array to a table.
      *
      * @param array $result The array to convert
-     * @param bool $full All results?
-     * @param int $id
+     * @param bool  $full   All results?
+     * @param int   $id
+     *
      * @return string HTML table
      */
-    public function arrToTable($result, $full = true, $id = "")
+    public function arrToTable($result, $full = true, $id = '')
     {
         if (count($result)) {
             $cols = array_keys($result[0]);
             $data = '<table border="1"><tr>';
             foreach ($cols as $col) {
-                $data .= '<th>' . $col . '</th>';
+                $data .= '<th>'.$col.'</th>';
             }
             $data .= '</tr>';
-            for ($i = 0, $_i = count($result); $i < $_i && ($i < 10 || $full); $i++) {
-                $data .= '<tr><td>' . implode('</td><td>', $result[$i]) . '</td></tr>';
+            for ($i = 0, $_i = count($result); $i < $_i && ($i < 10 || $full); ++$i) {
+                $data .= '<tr><td>'.implode('</td><td>', $result[$i]).'</td></tr>';
             }
             $data .= '</table>';
             if ($i != $_i) {
-                $data .= ($_i - $i) . ' more results. ' . $this->consoleLink('Full result', 'query',
+                $data .= ($_i - $i).' more results. '.$this->consoleLink('Full result', 'query',
                         array('query_id' => $id, 'full' => 1));
             }
+
             return $data;
         }
-        return "";
+
+        return '';
     }
 
     /**
-     * Highlight a query
+     * Highlight a query.
      *
      * @param string $query The query to highlight
+     *
      * @return string The highlighted query
      */
     public function highlightQuery($query)
@@ -332,14 +354,16 @@ class Debugger
         $query = str_replace('update ', '<b>UPDATE</b> ', $query);
         $query = str_replace(' set ', ' <b>SET</b> ', $query);
         $query = str_replace('delete from', '<b>DELETE FROM</b>', $query);
-        return '<span class="query">' . nl2br($query) . '</span>';
+
+        return '<span class="query">'.nl2br($query).'</span>';
     }
 
     /**
-     * Get debugger data
+     * Get debugger data.
      *
      * @param bool $clean
-     * @param int $stackId
+     * @param int  $stackId
+     *
      * @return array Array with data
      */
     public function &getDebuggerData($clean = false, $stackId = null)
@@ -355,59 +379,64 @@ class Debugger
             if ($clean) {
                 $session['debugger'] = array();
             }
-            $var = &$session["debugger"][$stackId];
+            $var = &$session['debugger'][$stackId];
+
             return $var;
         }
         $data = array();
+
         return $data;
     }
 
     /**
-     * Render query list
+     * Render query list.
      *
      * @param array $queries
+     *
      * @return string HTML code with the query list
      */
     public function renderQueryList($queries)
     {
-        $output = 'Number of queries performed: ' . count($queries);
+        $output = 'Number of queries performed: '.count($queries);
         if (count($queries)) {
             $output .= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Query</th></tr>';
 
-            for ($i = 0, $_i = count($queries); $i < $_i; $i++) {
-                $query = $queries[$i]["query"];
-                if ($query == "") {
+            for ($i = 0, $_i = count($queries); $i < $_i; ++$i) {
+                $query = $queries[$i]['query'];
+                if ($query == '') {
                     $detaillink = 'EMPTY QUERY!';
                 } else {
-                    $detaillink = $this->consoleLink("details", "query", array("query_id" => $i));
+                    $detaillink = $this->consoleLink('details', 'query', array('query_id' => $i));
                 }
-                $output .= '<tr><td valign="top">' . ($i + 1) . '</td><td>' . $detaillink . '</td><td>' . $this->highlightQuery($query) . '</td></tr>';
+                $output .= '<tr><td valign="top">'.($i + 1).'</td><td>'.$detaillink.'</td><td>'.$this->highlightQuery($query).'</td></tr>';
             }
 
             $output .= '</table>';
+
             return $output;
         }
     }
 
     /**
-     * Render statement list
+     * Render statement list.
      *
      * @param array $statements
+     *
      * @return string HTML code with the statement list
      */
     public function renderStatementList($statements)
     {
-        $output = 'Number of debug statements: ' . count($statements);
+        $output = 'Number of debug statements: '.count($statements);
         if (count($statements)) {
             $output .= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Statement</th></tr>';
 
-            for ($i = 0, $_i = count($statements); $i < $_i; $i++) {
-
-                $detaillink = $this->consoleLink("details", "statement", array("stmt_id" => $i));
-                $output .= '<tr><td valign="top">' . ($i + 1) . '</td><td>' . $detaillink . '</td><td>' . $statements[$i]["statement"] . '</td></tr>';
+            for ($i = 0, $_i = count($statements); $i < $_i; ++$i) {
+                $detaillink = $this->consoleLink('details', 'statement', array('stmt_id' => $i));
+                $output .= '<tr><td valign="top">'.($i + 1).'</td><td>'.$detaillink.'</td><td>'.$statements[$i]['statement'].'</td></tr>';
             }
 
             $output .= '</table>';
+
             return $output;
         }
     }
@@ -423,10 +452,10 @@ class Debugger
         global $g_error_msg;
 
         if (php_sapi_name() == 'cli') {
-            $output = "error: " . implode("\nerror: ", $g_error_msg) . "\n";
+            $output = 'error: '.implode("\nerror: ", $g_error_msg)."\n";
         } else {
-            $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: ' . implode("<br>\nerror: ",
-                    $g_error_msg) . '</div>';
+            $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",
+                    $g_error_msg).'</div>';
         }
 
         return $output;
@@ -436,6 +465,7 @@ class Debugger
      * Render debug block for the current debug information.
      *
      * @param bool $expanded Display debugblock expanded?
+     *
      * @return string debug block string
      * @private
      */
@@ -443,28 +473,28 @@ class Debugger
     {
         global $g_debug_msg, $g_error_msg, $g_startTime;
 
-        $time = strftime("%H:%M:%S", $g_startTime);
-        $duration = sprintf("%02.05f", Debugger::getMicroTime() - $g_startTime);
-        $usage = function_exists("memory_get_usage") ? sprintf("%02.02f", (memory_get_usage() / 1024 / 1024))
-            : "? ";
+        $time = strftime('%H:%M:%S', $g_startTime);
+        $duration = sprintf('%02.05f', self::getMicroTime() - $g_startTime);
+        $usage = function_exists('memory_get_usage') ? sprintf('%02.02f', (memory_get_usage() / 1024 / 1024))
+            : '? ';
         $method = $_SERVER['REQUEST_METHOD'];
         $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off'
             ? 'http' : 'https';
-        $url = $protocol . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['SERVER_PORT'] != 80
-                ? ':' . $_SERVER['SERVER_PORT'] : '') . $_SERVER['REQUEST_URI'];
+        $url = $protocol.'://'.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80
+                ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
 
-        $label = "[{$time}h / {$duration}s / {$usage}MB / " . self::$s_queryCount . " Queries / " . self::$s_systemQueryCount . " System Queries] $method $url";
+        $label = "[{$time}h / {$duration}s / {$usage}MB / ".self::$s_queryCount.' Queries / '.self::$s_systemQueryCount." System Queries] $method $url";
 
         $output = '
-        <div class="atkDebugBlock' . (count($g_error_msg) > 0 ? " atkDebugBlockContainsErrors"
-                : "") . ' atkDebug' . ($expanded ? 'Expanded' : 'Collapsed') . '">
+        <div class="atkDebugBlock'.(count($g_error_msg) > 0 ? ' atkDebugBlockContainsErrors'
+                : '').' atkDebug'.($expanded ? 'Expanded' : 'Collapsed').'">
           <div class="atkDebugToggle" onclick="ATK.Debug.toggle(this)">
-           ' . $label . '
+           '.$label.'
           </div>
           <div class="atkDebugData">
-            ' . (count($g_debug_msg) > 0 ? '<div class="atkDebugLine">' . implode($g_debug_msg,
-                    '</div><div class="atkDebugLine">') . '</div>'
-                : '') . '
+            '.(count($g_debug_msg) > 0 ? '<div class="atkDebugLine">'.implode($g_debug_msg,
+                    '</div><div class="atkDebugLine">').'</div>'
+                : '').'
           </div>
         </div>';
 
@@ -474,8 +504,8 @@ class Debugger
     /**
      * Set redirect URL.
      *
-     * @param string $url The redirect url
-     * @param bool $force Force to set this redirect url
+     * @param string $url   The redirect url
+     * @param bool   $force Force to set this redirect url
      */
     public function setRedirectUrl($url, $force = false)
     {
@@ -497,7 +527,7 @@ class Debugger
 
         $output = '
         <div class="atkDebugRedirect">
-           Non-debug version would have redirected to <a href="' . $this->m_redirectUrl . '">' . $this->m_redirectUrl . '</a>
+           Non-debug version would have redirected to <a href="'.$this->m_redirectUrl.'">'.$this->m_redirectUrl.'</a>
         </div>';
 
         return $output;
@@ -511,7 +541,6 @@ class Debugger
     public function renderDebugAndErrorMessages()
     {
         global $ATK_VARS, $g_debug_msg, $g_error_msg;
-
 
         // check if this is an Ajax request
         $isPartial = isset($ATK_VARS['atkpartial']);
@@ -536,19 +565,19 @@ class Debugger
 
         if ($isPartial) {
             $output = '<script type="text/javascript">
-            ATK.Debug.addContent(' . JSON::encode($block) . ');
+            ATK.Debug.addContent('.JSON::encode($block).');
            </script>';
         } else {
             $ui = Ui::getInstance();
-            $script = Config::getGlobal('assets_url') . 'javascript/class.atkdebug.js';
+            $script = Config::getGlobal('assets_url').'javascript/class.atkdebug.js';
 
             $redirect = $this->renderRedirectLink();
 
             $output = '
-          <script type="text/javascript" src="' . $script . '"></script>
+          <script type="text/javascript" src="'.$script.'"></script>
           <div id="atk_debugging_div">
-            ' . $redirect . '
-            ' . $block . '
+            '.$redirect.'
+            '.$block.'
           </div>';
         }
 
@@ -556,18 +585,21 @@ class Debugger
     }
 
     /**
-     * Gets the microtime
+     * Gets the microtime.
+     *
      * @static
+     *
      * @return int the microtime
      */
     public static function getMicroTime()
     {
-        list($usec, $sec) = explode(" ", microtime());
-        return ((float)$usec + (float)$sec);
+        list($usec, $sec) = explode(' ', microtime());
+
+        return (float) $usec + (float) $sec;
     }
 
     /**
-     * Gets the elapsed time
+     * Gets the elapsed time.
      *
      * @return string The elapsed time
      */
@@ -582,12 +614,10 @@ class Debugger
             $previous = $offset;
         }
 
-        $new = Debugger::getMicroTime();
-        $res = "+" . sprintf("%02.05f", $new - $offset) . "s / " . sprintf("%02.05f", $new - $previous) . "s";
+        $new = self::getMicroTime();
+        $res = '+'.sprintf('%02.05f', $new - $offset).'s / '.sprintf('%02.05f', $new - $previous).'s';
         $previous = $new;
+
         return $res;
     }
-
 }
-
-

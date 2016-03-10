@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Core;
+<?php
+
+namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Attributes\NumberAttribute;
 
@@ -11,19 +13,17 @@ use Sintattica\Atk\Attributes\NumberAttribute;
  * data dynamically.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
- * @package atk
  */
 class DataNode extends Node
 {
-
     /** @var array data array */
     private $m_data = array();
 
     /**
      * Constructor.
      *
-     * @param string $type node type (by default the class name)
-     * @param int $flags node flags
+     * @param string $type  node type (by default the class name)
+     * @param int    $flags node flags
      *
      * @return DataNode
      */
@@ -57,14 +57,14 @@ class DataNode extends Node
      * Select records using the given criteria.
      *
      * @param string $selector selector string
-     * @param string $order order string
-     * @param array $limit limit array
+     * @param string $order    order string
+     * @param array  $limit    limit array
      *
      * @return array selected records
      */
     public function select($selector = null, $order = null, $limit = null)
     {
-        Tools::atkdebug(get_class($this) . '::select(' . $selector . ')');
+        Tools::atkdebug(get_class($this).'::select('.$selector.')');
 
         if ($order == null) {
             $order = $this->getOrder();
@@ -76,11 +76,12 @@ class DataNode extends Node
             'offset' => isset($limit['offset']) ? $limit['offset'] : 0,
             'limit' => isset($limit['limit']) ? $limit['limit'] : -1,
             'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                : null
+                : null,
         );
 
         $result = $this->findData($params);
-        Tools::atkdebug('Result ' . get_class($this) . '::select(' . $selector . ') => ' . count($result) . ' row(s)');
+        Tools::atkdebug('Result '.get_class($this).'::select('.$selector.') => '.count($result).' row(s)');
+
         return $result;
     }
 
@@ -96,7 +97,7 @@ class DataNode extends Node
         $params = array(
             'selector' => $selector,
             'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                : null
+                : null,
         );
 
         return $this->countData($params);
@@ -140,6 +141,7 @@ class DataNode extends Node
         $data = $this->filterData($data, $criteria, $search);
         $data = $this->sortData($data, $order);
         $data = $this->limitData($data, $limit, $offset);
+
         return $data;
     }
 
@@ -205,7 +207,7 @@ class DataNode extends Node
             return $criteria;
         }
 
-        $selectors = explode(") OR (", $selector);
+        $selectors = explode(') OR (', $selector);
         foreach ($selectors as $selector) {
             $keyValueSet = Tools::decodeKeyValueSet($selector);
             foreach ($keyValueSet as $column => $value) {
@@ -222,7 +224,7 @@ class DataNode extends Node
                 $value = stripslashes(Tools::stripQuotes($value));
 
                 if (isset($criteria[$column]) && $criteria[$column] != $value) {
-                    $criteria[$column] = array_merge((array)$criteria[$column], (array)$value);
+                    $criteria[$column] = array_merge((array) $criteria[$column], (array) $value);
                 } else {
                     $criteria[$column] = $value;
                 }
@@ -235,9 +237,9 @@ class DataNode extends Node
     /**
      * Filter data using the given selector.
      *
-     * @param array $data data list
+     * @param array $data     data list
      * @param array $criteria selector criteria list
-     * @param array $search search fields / values
+     * @param array $search   search fields / values
      *
      * @return array filtered data
      */
@@ -257,11 +259,11 @@ class DataNode extends Node
     /**
      * Check if record is valid using the given selector criteria and search params.
      *
-     * @param array $record record
+     * @param array $record   record
      * @param array $criteria selector criteria list
-     * @param array $search search fields / values
+     * @param array $search   search fields / values
      *
-     * @return boolean is valid?
+     * @return bool is valid?
      */
     protected function isValidRecord($record, $criteria, $search)
     {
@@ -285,7 +287,8 @@ class DataNode extends Node
      * is invalid false is returned.
      *
      * @param string $order order string
-     * @return array|boolean array 1st element column, 2nd element ascending? or false
+     *
+     * @return array|bool array 1st element column, 2nd element ascending? or false
      */
     protected function translateOrder($order)
     {
@@ -316,7 +319,7 @@ class DataNode extends Node
     /**
      * Sort data by the given order string.
      *
-     * @param array $data data list
+     * @param array  $data  data list
      * @param string $order order string
      *
      * @return array data list
@@ -330,10 +333,10 @@ class DataNode extends Node
 
             if ($attr instanceof NumberAttribute) {
                 usort($data, create_function('$a, $b',
-                    'return $a["' . $column . '"] == $b["' . $column . '"] ? 0 : ($a["' . $column . '"] < $b["' . $column . '"] ? -1 : 1);'));
+                    'return $a["'.$column.'"] == $b["'.$column.'"] ? 0 : ($a["'.$column.'"] < $b["'.$column.'"] ? -1 : 1);'));
             } else {
                 usort($data,
-                    create_function('$a, $b', 'return strcasecmp($a["' . $column . '"], $b["' . $column . '"]);'));
+                    create_function('$a, $b', 'return strcasecmp($a["'.$column.'"], $b["'.$column.'"]);'));
             }
 
             if (!$asc) {
@@ -347,9 +350,9 @@ class DataNode extends Node
     /**
      * Limit data using the given limit and offset.
      *
-     * @param array $data data list
-     * @param int $limit limit
-     * @param int $offset offset
+     * @param array $data   data list
+     * @param int   $limit  limit
+     * @param int   $offset offset
      *
      * @return array limited data
      */
@@ -367,7 +370,7 @@ class DataNode extends Node
     /**
      * Add is not supported.
      *
-     * @return boolean false
+     * @return bool false
      */
     public function addDb()
     {
@@ -377,7 +380,7 @@ class DataNode extends Node
     /**
      * Update is not supported.
      *
-     * @return boolean false
+     * @return bool false
      */
     public function updateDb()
     {
@@ -387,7 +390,7 @@ class DataNode extends Node
     /**
      * Delete is not supported.
      *
-     * @return boolean false
+     * @return bool false
      */
     public function deleteDb()
     {
@@ -399,7 +402,5 @@ class DataNode extends Node
      */
     public function setAttribSizes()
     {
-
     }
-
 }

@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\Security;
+<?php
 
+namespace Sintattica\Atk\Security;
 
 use Sintattica\Atk\Core\Tools;
 
@@ -24,7 +25,7 @@ class SqlWhereclauseBlacklistChecker
     private $_whereclause;
 
     /**
-     * Blacklisted parts of SQL for where clause
+     * Blacklisted parts of SQL for where clause.
      *
      * @var array
      */
@@ -46,7 +47,7 @@ class SqlWhereclauseBlacklistChecker
     );
 
     /**
-     * Create a new checker object for a given WHERE clause
+     * Create a new checker object for a given WHERE clause.
      *
      * @param string $whereclause
      */
@@ -70,12 +71,12 @@ class SqlWhereclauseBlacklistChecker
         $double_quote_mode = false;
         $clause_length = strlen($this->_whereclause);
 
-        for ($i = 0; $i < $clause_length; $i++) {
-            /**
+        for ($i = 0; $i < $clause_length; ++$i) {
+            /*
              * Check for quotes (single and double) and set a 'mode' flag
              * accordingly.
              */
-            if ($this->_whereclause[$i] === "'" && $this->_whereclause[$i - 1] !== "\\") {
+            if ($this->_whereclause[$i] === "'" && $this->_whereclause[$i - 1] !== '\\') {
                 if (!$single_quote_mode) {
                     $single_quote_mode = true;
                 } else {
@@ -83,7 +84,7 @@ class SqlWhereclauseBlacklistChecker
                 }
             }
 
-            if ($this->_whereclause[$i] === "'" && $this->_whereclause[$i - 1] !== "\\") {
+            if ($this->_whereclause[$i] === "'" && $this->_whereclause[$i - 1] !== '\\') {
                 if (!$double_quote_mode) {
                     $double_quote_mode = true;
                 } else {
@@ -97,7 +98,7 @@ class SqlWhereclauseBlacklistChecker
                 continue;
             }
 
-            /**
+            /*
              * Look back at the string we have and check for disallowed SQL.
              */
             foreach ($this->_disallowed as $disallowed) {
@@ -112,25 +113,24 @@ class SqlWhereclauseBlacklistChecker
         return true;
     }
 
-
     /**
      * Filter a request variable, containing a WHERE clause, from the globals
      * if it is blacklisted.
      *
      * @param string $variable
+     *
      * @example filter_request_where_clause('atkselector')
      */
-    static public function filter_request_where_clause($variable)
+    public static function filter_request_where_clause($variable)
     {
         if (isset($_REQUEST[$variable])) {
-            $values = (array)$_REQUEST[$variable];
+            $values = (array) $_REQUEST[$variable];
             foreach ($values as $value) {
                 $checker = new self($value);
                 if (!$checker->isSafe()) {
-                    Tools::atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
+                    Tools::atkhalt('Unsafe WHERE clause in REQUEST variable: '.$variable, 'critical');
                 }
             }
         }
     }
-
 }

@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\IpUtils;
@@ -9,13 +11,11 @@ use Sintattica\Atk\Utils\IpUtils;
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
  * @author Guido van Biemen <guido@ibuildings.nl>
- * @package atk
- * @subpackage attributes
  */
 class IpAttribute extends Attribute
 {
     /**
-     * Flags for the atkIpAttribute
+     * Flags for the atkIpAttribute.
      */
     const AF_IP_ALLOW_WILDCARDS = 33554432;
     const AF_IP_STORENUMERIC = 67108864;
@@ -24,10 +24,10 @@ class IpAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name attribute name
-     * @param int $flags attribute flags.
+     * @param string $name  attribute name
+     * @param int    $flags attribute flags.
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags, 15);
     }
@@ -39,24 +39,24 @@ class IpAttribute extends Attribute
      *
      * @return string fetched value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
             return parent::fetchValue($postvars[$this->fieldName()]);
         }
         if (!$this->isPosted($postvars)) {
-            return null;
+            return;
         }
 
         $parts = array();
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 4; ++$i) {
             $parts[$i] = $postvars[$this->fieldName()][$i];
         }
 
         return implode('.', $parts);
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
             return parent::edit($record, $fieldprefix, $mode);
@@ -65,31 +65,31 @@ class IpAttribute extends Attribute
         $inputs = array();
         $values = empty($record[$this->fieldName()]) ? null : explode('.', $record[$this->fieldName()]);
 
-        for ($i = 0; $i < 4; $i++) {
-            $name = $fieldprefix . $this->fieldName() . '[' . $i . ']';
+        for ($i = 0; $i < 4; ++$i) {
+            $name = $fieldprefix.$this->fieldName().'['.$i.']';
             $value = isset($values[$i]) ? $values[$i] : '';
-            $inputs[] = '<input type="text" name="' . $name . '" value="' . $value . '" maxlength="3" size="3" />';
+            $inputs[] = '<input type="text" name="'.$name.'" value="'.$value.'" maxlength="3" size="3" />';
         }
 
         return implode('.', $inputs);
     }
 
     /**
-     * Checks if the value is a valid IP address
+     * Checks if the value is a valid IP address.
      *
-     * @param array $record The record that holds the value for this
-     *                      attribute. If an error occurs, the error will
-     *                      be stored in the 'atkerror' field of the record.
-     * @param string $mode The mode for which should be validated ("add" or
-     *                     "update")
+     * @param array  $record The record that holds the value for this
+     *                       attribute. If an error occurs, the error will
+     *                       be stored in the 'atkerror' field of the record.
+     * @param string $mode   The mode for which should be validated ("add" or
+     *                       "update")
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         // Check for valid ip string
-        $strvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
+        $strvalue = Tools::atkArrayNvl($record, $this->fieldName(), '');
         if ($strvalue != '' && $strvalue != '...') {
             if ($this->hasFlag(self::AF_IP_ALLOW_WILDCARDS) && !$this->hasFlag(self::AF_IP_STORENUMERIC)) {
-                $strvalue = str_replace("*", "0", $strvalue);
+                $strvalue = str_replace('*', '0', $strvalue);
             }
             $num = '(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
             if (preg_match("/^$num\\.$num\\.$num\\.$num$/", $strvalue, $matches) <= 0) {
@@ -104,9 +104,10 @@ class IpAttribute extends Attribute
      * database.
      *
      * @param array $rec The record that holds this attribute's value.
-     * @return String The database compatible value
+     *
+     * @return string The database compatible value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
@@ -121,9 +122,10 @@ class IpAttribute extends Attribute
      * Converts a database value to an internal value.
      *
      * @param array $rec The database record that holds this attribute's value
+     *
      * @return mixed The internal value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
@@ -137,11 +139,11 @@ class IpAttribute extends Attribute
     /**
      * Return the database field type of the attribute.
      *
-     * @return String The 'generic' type of the database field for this attribute.
+     * @return string The 'generic' type of the database field for this attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
-        return $this->hasFlag(self::AF_IP_STORENUMERIC) ? "int" : "string";
+        return $this->hasFlag(self::AF_IP_STORENUMERIC) ? 'int' : 'string';
     }
 
     /**
@@ -149,11 +151,8 @@ class IpAttribute extends Attribute
      *
      * @return int The database field size
      */
-    function dbFieldSize()
+    public function dbFieldSize()
     {
         return $this->hasFlag(self::AF_IP_STORENUMERIC) ? 32 : 15;
     }
-
 }
-
-

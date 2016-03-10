@@ -1,8 +1,8 @@
-<?php namespace Sintattica\Atk\Db;
+<?php
+
+namespace Sintattica\Atk\Db;
 
 use Sintattica\Atk\Core\Config;
-
-
 
 /**
  * MySQL 4.1+ ddl driver.
@@ -10,13 +10,10 @@ use Sintattica\Atk\Core\Config;
  * Implements mysql specific ddl statements.
  *
  * @author Rene van den Ouden <rene@ibuildings.nl>
- * @package atk
- * @subpackage db
- *
  */
 class MySqliDdl extends Ddl
 {
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
@@ -26,41 +23,43 @@ class MySqliDdl extends Ddl
      *
      * @param string $generictype The datatype to convert.
      */
-    function getType($generictype)
+    public function getType($generictype)
     {
-        $config = Config::getGlobal('db_mysql_default_' . $generictype . '_columntype');
+        $config = Config::getGlobal('db_mysql_default_'.$generictype.'_columntype');
         if ($config) {
             return $config;
         }
 
         switch ($generictype) {
-            case "number":
-                return "INT";
-            case "decimal":
-                return "DECIMAL";
-            case "string":
-                return "VARCHAR";
-            case "date":
-                return "DATE";
-            case "text":
-                return "TEXT";
-            case "datetime":
-                return "DATETIME";
-            case "time":
-                return "TIME";
-            case "boolean":
-                return "NUMBER(1,0)"; // size is added fixed. (because a boolean has no size of its own)
+            case 'number':
+                return 'INT';
+            case 'decimal':
+                return 'DECIMAL';
+            case 'string':
+                return 'VARCHAR';
+            case 'date':
+                return 'DATE';
+            case 'text':
+                return 'TEXT';
+            case 'datetime':
+                return 'DATETIME';
+            case 'time':
+                return 'TIME';
+            case 'boolean':
+                return 'NUMBER(1,0)'; // size is added fixed. (because a boolean has no size of its own)
         }
-        return ""; // in case we have an unsupported type.
+
+        return ''; // in case we have an unsupported type.
     }
 
     /**
      * Convert an database specific type to an ATK generic datatype.
      *
      * @param string $type The database specific datatype to convert.
+     *
      * @return string
      */
-    function getGenericType($type)
+    public function getGenericType($type)
     {
         $type = strtolower($type);
         switch ($type) {
@@ -70,57 +69,60 @@ class MySqliDdl extends Ddl
             case MYSQLI_TYPE_LONGLONG:
             case MYSQLI_TYPE_INT24:
             case MYSQLI_TYPE_YEAR:
-                return "number";
+                return 'number';
             case MYSQLI_TYPE_DECIMAL:
             case MYSQLI_TYPE_NEWDECIMAL:
             case MYSQLI_TYPE_FLOAT:
             case MYSQLI_TYPE_DOUBLE:
-                return "decimal";
+                return 'decimal';
             case MYSQLI_TYPE_VAR_STRING:
             case MYSQLI_TYPE_STRING:
-                return "string";
+                return 'string';
             case MYSQLI_TYPE_DATE:
-                return "date";
+                return 'date';
             case MYSQLI_TYPE_TINY_BLOB:
             case MYSQLI_TYPE_MEDIUM_BLOB:
             case MYSQLI_TYPE_LONG_BLOB:
             case MYSQLI_TYPE_BLOB:
-                return "text";
+                return 'text';
             case MYSQLI_TYPE_TIME:
-                return "time";
+                return 'time';
             case MYSQLI_TYPE_TIMESTAMP:
             case MYSQLI_TYPE_DATETIME:
-                return "datetime";
+                return 'datetime';
             case MYSQLI_TYPE_NEWDATE:
             case MYSQLI_TYPE_ENUM:
             case MYSQLI_TYPE_SET:
             case MYSQLI_TYPE_GEOMETRY:
-                return ""; // NOT SUPPORTED FIELD TYPES 
+                return ''; // NOT SUPPORTED FIELD TYPES 
         }
-        return ""; // in case we have an unsupported type.      
+
+        return ''; // in case we have an unsupported type.      
     }
 
     /**
-     * Build CREATE VIEW query
+     * Build CREATE VIEW query.
      *
-     * @param string $name - name of view
-     * @param string $select - SQL SELECT statement
+     * @param string $name              - name of view
+     * @param string $select            - SQL SELECT statement
      * @param string $with_check_option - use SQL WITH CHECK OPTION
+     *
      * @return string CREATE VIEW query string
      */
-    function buildView($name, $select, $with_check_option)
+    public function buildView($name, $select, $with_check_option)
     {
-        return "CREATE VIEW $name AS " . $select . ($with_check_option ? " WITH CHECK OPTION"
-            : "");
+        return "CREATE VIEW $name AS ".$select.($with_check_option ? ' WITH CHECK OPTION'
+            : '');
     }
 
     /**
-     * Build DROP VIEW query
+     * Build DROP VIEW query.
      *
      * @param string $name - name of view
+     *
      * @return string CREATE VIEW query string
      */
-    function dropView($name)
+    public function dropView($name)
     {
         return "DROP VIEW $name";
     }
@@ -132,25 +134,25 @@ class MySqliDdl extends Ddl
      * number of databases. Databases that won't work with this syntax,
      * should override this method in the database specific ddl class.
      *
-     * @param string $name The name of the field
+     * @param string $name        The name of the field
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
-     * @param int $size The size of the field (if appropriate)
-     * @param int $flags The self::DDL_ flags for this field.
-     * @param mixed $default The default value to be used when inserting new
-     *                         rows.
+     * @param int    $size        The size of the field (if appropriate)
+     * @param int    $flags       The self::DDL_ flags for this field.
+     * @param mixed  $default     The default value to be used when inserting new
+     *                            rows.
      */
-    function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
+    public function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
-        if ($generictype == "string" && $size > 255) {
-            $generictype = "text";
+        if ($generictype == 'string' && $size > 255) {
+            $generictype = 'text';
         }
 
         $result = parent::buildField($name, $generictype, $size, $flags, $default);
 
         // add binary option after varchar declaration to make sure field
         // values are compared in case-sensitive fashion
-        if ($generictype == "string") {
+        if ($generictype == 'string') {
             $result = preg_replace('/VARCHAR\(([0-9]+)\)/i', 'VARCHAR(\1) BINARY', $result);
         }
 
@@ -163,10 +165,10 @@ class MySqliDdl extends Ddl
      *
      * @param array $tablemeta table meta data array
      */
-    function loadMetaData($tablemeta)
+    public function loadMetaData($tablemeta)
     {
         parent::loadMetaData($tablemeta);
-        $this->setTableType($tablemeta[0]["table_type"]);
+        $this->setTableType($tablemeta[0]['table_type']);
     }
 
     /**
@@ -175,7 +177,7 @@ class MySqliDdl extends Ddl
      *
      * @param string $type
      */
-    function setTableType($type)
+    public function setTableType($type)
     {
         $this->m_table_type = $type;
     }
@@ -185,64 +187,68 @@ class MySqliDdl extends Ddl
      *
      * @return The CREATE TABLE query.
      */
-    function buildCreate()
+    public function buildCreate()
     {
         $query = parent::buildCreate();
 
         if (!empty($this->m_db->m_charset)) {
-            $query .= ' DEFAULT CHARACTER SET ' . $this->m_db->m_charset;
+            $query .= ' DEFAULT CHARACTER SET '.$this->m_db->m_charset;
             if (!empty($this->m_db->m_collate)) {
-                $query .= ' COLLATE ' . $this->m_db->m_collate;
+                $query .= ' COLLATE '.$this->m_db->m_collate;
             }
         }
 
         if (!empty($query) && !empty($this->m_table_type)) {
-            $query .= " TYPE=" . $this->m_table_type;
+            $query .= ' TYPE='.$this->m_table_type;
         }
+
         return $query;
     }
 
     /**
-     * Drop sequence
+     * Drop sequence.
      *
      * @param string $name Sequence name
-     * @return boolean
+     *
+     * @return bool
      */
-    function dropSequence($name)
+    public function dropSequence($name)
     {
         $table = $this->m_db->quoteIdentifier($this->db->m_seq_table);
-        return $this->m_db->query("DELETE FROM $table WHERE " . $this->m_db->quoteIdentifier($this->m_db->m_seq_namefield) . " = '" . $this->escapeSQL($name) . "'");
+
+        return $this->m_db->query("DELETE FROM $table WHERE ".$this->m_db->quoteIdentifier($this->m_db->m_seq_namefield)." = '".$this->escapeSQL($name)."'");
     }
 
     /**
-     * Rename sequence
+     * Rename sequence.
      *
-     * @param string $name Sequence name
+     * @param string $name     Sequence name
      * @param string $new_name New sequence name
-     * @return boolean
+     *
+     * @return bool
      */
-    function renameSequence($name, $new_name)
+    public function renameSequence($name, $new_name)
     {
         $name = $this->m_db->escapeSQL($name);
         $new_name = $this->m_db->escapeSQL($new_name);
+
         return $this->m_db->query("UPDATE db_sequence SET seq_name='$new_name'
                 WHERE seq_name='$name'");
     }
 
     /**
-     * Rename table name
+     * Rename table name.
      *
-     * @param string $name Table name
+     * @param string $name     Table name
      * @param string $new_name New table name
-     * @return boolean
+     *
+     * @return bool
      */
-    function renameTable($name, $new_name)
+    public function renameTable($name, $new_name)
     {
         $name = $this->m_db->quoteIdentifier($name);
         $new_name = $this->m_db->quoteIdentifier($new_name);
+
         return $this->m_db->query("ALTER TABLE $name RENAME $new_name");
     }
-
 }
-
-

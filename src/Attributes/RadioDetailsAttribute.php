@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
@@ -9,13 +11,11 @@ use Sintattica\Atk\Core\Tools;
  * selections once certain options are selected.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage attributes
  */
 class RadioDetailsAttribute extends Attribute
 {
     /**
-     * Options
+     * Options.
      *
      * @var array
      */
@@ -39,16 +39,16 @@ class RadioDetailsAttribute extends Attribute
      * value of another attribute which renders the detail selection for the
      * given option.
      *
-     * @param string $name attribute name
+     * @param string $name    attribute name
      * @param string $options can either be an array of values or a key/value
      *                        array in which case the key is used for the
      *                        translation and value is the value which is saved
      *                        in the database
-     * @param array $details allows you to specify attributes that should be
+     * @param array  $details allows you to specify attributes that should be
      *                        used for the detail selection for certain options
      *                        the key should be the option value and the value
      *                        should be the attribute name
-     * @param int $flags
+     * @param int    $flags
      */
     public function __construct($name, $options, $details, $flags = 0)
     {
@@ -58,7 +58,7 @@ class RadioDetailsAttribute extends Attribute
 
         // Cast single detail attributes to arrays
         foreach ($details as $value => $detail) {
-            $this->m_details[$value] = (array)$detail;
+            $this->m_details[$value] = (array) $detail;
         }
     }
 
@@ -80,9 +80,9 @@ class RadioDetailsAttribute extends Attribute
 
     public function edit($record, $fieldprefix, $mode)
     {
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkradiodetailsattribute.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkradiodetailsattribute.js');
 
-        $name = $fieldprefix . $this->fieldName();
+        $name = $fieldprefix.$this->fieldName();
 
         $result = '<div class="atkradiodetailsattribute-selection">';
 
@@ -93,20 +93,20 @@ class RadioDetailsAttribute extends Attribute
 
             if ($attrNames != null) {
                 $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode,
-                    'attribute.' . $this->fieldName() . '.details',
+                    'attribute.'.$this->fieldName().'.details',
                     array('value' => $value, 'fieldprefix' => $fieldprefix));
                 $onChange = "ATK.RadioDetailsAttribute.select(this, '{$url}');";
             } else {
-                $onChange = "ATK.RadioDetailsAttribute.select(this);";
+                $onChange = 'ATK.RadioDetailsAttribute.select(this);';
             }
 
             $result .= '
-        <input type="radio" class="atkradiodetailsattribute-option" name="' . $name . '" id="' . $name . '_' . $value . '" value="' . $value . '" onchange="' . $onChange . '"' . $checked . '/>
-        <label for="' . $name . '_' . $value . '">' . $this->text($label) . '</label><br/>
+        <input type="radio" class="atkradiodetailsattribute-option" name="'.$name.'" id="'.$name.'_'.$value.'" value="'.$value.'" onchange="'.$onChange.'"'.$checked.'/>
+        <label for="'.$name.'_'.$value.'">'.$this->text($label).'</label><br/>
       ';
 
             if ($attrNames != null) {
-                $result .= '<div id="' . $name . '_' . $value . '_details" class="atkradiodetailsattribute-details">';
+                $result .= '<div id="'.$name.'_'.$value.'_details" class="atkradiodetailsattribute-details">';
 
                 if ($isSelected) {
                     foreach ($attrNames as $attrName) {
@@ -115,7 +115,7 @@ class RadioDetailsAttribute extends Attribute
                             continue;
                         }
 
-                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix, $mode) . '&nbsp;' . htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
+                        $result .= '<blockquote>'.$attr->edit($record, $fieldprefix, $mode).'&nbsp;'.htmlentities($attr->getLabel($record, $mode)).'</blockquote>';
                     }
                 }
                 $result .= '</div>';
@@ -127,7 +127,7 @@ class RadioDetailsAttribute extends Attribute
         return $result;
     }
 
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
         $options = array_flip($this->m_options);
@@ -145,8 +145,8 @@ class RadioDetailsAttribute extends Attribute
                     $label = $attr->getLabel($record, $mode);
                     $result .= '
             <blockquote>
-              ' . (!empty($label) ? htmlentities($label) . ':' : '') . '
-              ' . $attr->display($record, $mode) . '
+              '.(!empty($label) ? htmlentities($label).':' : '').'
+              '.$attr->display($record, $mode).'
             </blockquote>';
                 }
             }
@@ -156,9 +156,10 @@ class RadioDetailsAttribute extends Attribute
     }
 
     /**
-     * Partial details
+     * Partial details.
      *
      * @param string $mode
+     *
      * @return string html code
      */
     public function partial_details($mode)
@@ -178,11 +179,10 @@ class RadioDetailsAttribute extends Attribute
                 continue;
             }
 
-            $result .= '<blockquote>' . $attr->edit(array(), $fieldprefix, $mode) . '&nbsp;' . $attr->getLabel(array(),
-                    $mode) . '</blockquote>';
+            $result .= '<blockquote>'.$attr->edit(array(), $fieldprefix, $mode).'&nbsp;'.$attr->getLabel(array(),
+                    $mode).'</blockquote>';
         }
 
         return $result;
     }
-
 }

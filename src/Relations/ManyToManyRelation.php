@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\Relations;
+<?php
 
+namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
@@ -7,8 +8,6 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db\Query;
-
-
 
 /**
  * Many to many relation. Should not be used directly.
@@ -23,48 +22,46 @@ use Sintattica\Atk\Db\Query;
  *       multi-field support into account.
  *
  * @abstract
- * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage relations
  *
+ * @author Ivo Jansch <ivo@achievo.org>
  */
 class ManyToManyRelation extends Relation
 {
-
     const AF_MANYTOMANY_DETAILVIEW = 536870912;
 
-    var $m_localKey = "";
-    var $m_remoteKey = "";
-    var $m_link = "";
+    public $m_localKey = '';
+    public $m_remoteKey = '';
+    public $m_link = '';
 
-    /** @var Node null  */
-    var $m_linkInstance = null;
+    /* @var Node null  */
+    public $m_linkInstance = null;
 
-    var $m_store_deletion_filter = "";
-    var $m_localFilter = null;
+    public $m_store_deletion_filter = '';
+    public $m_localFilter = null;
     protected $m_ownerFields = null;
     protected $m_limit;
     private $m_selectableRecordsCache = array();
     private $m_selectableRecordCountCache = array();
 
     /**
-     * Constructor
-     * @param string $name The name of the relation
-     * @param string $link The full name of the node that is used as
-     *                     intermediairy node. The intermediairy node is
-     *                     assumed to have 2 attributes that are named
-     *                     after the nodes at both ends of the relation.
-     *                     For example, if node 'project' has a M2M relation
-     *                     with 'activity', then the intermediairy node
-     *                     'project_activity' is assumed to have an attribute
-     *                     named 'project' and one that is named 'activity'.
-     *                     You can set your own keys by calling setLocalKey()
-     *                     and setRemoteKey()
+     * Constructor.
+     *
+     * @param string $name        The name of the relation
+     * @param string $link        The full name of the node that is used as
+     *                            intermediairy node. The intermediairy node is
+     *                            assumed to have 2 attributes that are named
+     *                            after the nodes at both ends of the relation.
+     *                            For example, if node 'project' has a M2M relation
+     *                            with 'activity', then the intermediairy node
+     *                            'project_activity' is assumed to have an attribute
+     *                            named 'project' and one that is named 'activity'.
+     *                            You can set your own keys by calling setLocalKey()
+     *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int $flags Flags for the relation.
+     * @param int    $flags       Flags for the relation.
      */
-    function __construct($name, $link, $destination, $flags = 0)
+    public function __construct($name, $link, $destination, $flags = 0)
     {
         $this->m_link = $link;
         parent::__construct($name, $destination, $flags | self::AF_CASCADE_DELETE | self::AF_NO_SORT);
@@ -74,15 +71,15 @@ class ManyToManyRelation extends Relation
      * Returns the selectable records. Checks for an override in the owner instance
      * with name <attribname>_selection.
      *
-     * @param array $record
+     * @param array  $record
      * @param string $mode
-     * @param bool $force
+     * @param bool   $force
      *
      * @return array
      */
-    function _getSelectableRecords($record = array(), $mode = "", $force = false)
+    public function _getSelectableRecords($record = array(), $mode = '', $force = false)
     {
-        $method = $this->fieldName() . "_selection";
+        $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
         } else {
@@ -99,9 +96,9 @@ class ManyToManyRelation extends Relation
      */
     private function parseDestinationFilter($record)
     {
-        $filter = "";
+        $filter = '';
 
-        if ($this->m_destinationFilter != "") {
+        if ($this->m_destinationFilter != '') {
             $filter = $this->parseFilter($this->m_destinationFilter, $record);
         }
 
@@ -111,14 +108,14 @@ class ManyToManyRelation extends Relation
     /**
      * Returns the selectable record count.
      *
-     * @param array $record
+     * @param array  $record
      * @param string $mode
      *
      * @return int
      */
-    protected function _getSelectableRecordCount($record = array(), $mode = "")
+    protected function _getSelectableRecordCount($record = array(), $mode = '')
     {
-        $method = $this->fieldName() . "_selection";
+        $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
             return count($this->_getSelectableRecords($record, $mode));
         } else {
@@ -128,11 +125,11 @@ class ManyToManyRelation extends Relation
 
     /**
      * Returns the selectable record count. The count is cached unless the
-     * $force parameter is set to true
+     * $force parameter is set to true.
      *
-     * @param array $record
+     * @param array  $record
      * @param string $mode
-     * @param boolean $force
+     * @param bool   $force
      *
      * @return int
      */
@@ -158,13 +155,13 @@ class ManyToManyRelation extends Relation
      * Returns the selectable records for this relation. The records are cached
      * unless the $force parameter is set to true.
      *
-     * @param array $record
+     * @param array  $record
      * @param string $mode
-     * @param boolean $force
+     * @param bool   $force
      *
      * @return array selectable records
      */
-    public function getSelectableRecords($record = array(), $mode = "", $force = false)
+    public function getSelectableRecords($record = array(), $mode = '', $force = false)
     {
         if (!$this->createDestination()) {
             return array();
@@ -202,12 +199,12 @@ class ManyToManyRelation extends Relation
      *
      * @return array list of selected record keys
      */
-    function getSelectedRecords($record)
+    public function getSelectedRecords($record)
     {
         $keys = array();
 
         if (isset($record[$this->fieldName()])) {
-            for ($i = 0; $i < count($record[$this->fieldName()]); $i++) {
+            for ($i = 0; $i < count($record[$this->fieldName()]); ++$i) {
                 if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
                     $key = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
                 } else {
@@ -226,9 +223,10 @@ class ManyToManyRelation extends Relation
      *
      * If succesful, the instance is stored in the m_linkInstance member
      * variable.
-     * @return boolean True if successful, false if not.
+     *
+     * @return bool True if successful, false if not.
      */
-    function createLink()
+    public function createLink()
     {
         if ($this->m_linkInstance == null) {
             $atk = Atk::getInstance();
@@ -236,8 +234,9 @@ class ManyToManyRelation extends Relation
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_linkInstance)) {
-                Tools::atkerror("Relation with unknown nodetype '" . $this->m_link . "' (in node '" . $this->m_owner . "')");
+                Tools::atkerror("Relation with unknown nodetype '".$this->m_link."' (in node '".$this->m_owner."')");
                 $this->m_linkInstance = null;
+
                 return false;
             }
         }
@@ -260,22 +259,25 @@ class ManyToManyRelation extends Relation
     /**
      * Get the name of the attribute of the intermediairy node that points
      * to the master node.
-     * @return String The name of the attribute.
+     *
+     * @return string The name of the attribute.
      */
-    function getLocalKey()
+    public function getLocalKey()
     {
-        if ($this->m_localKey == "") {
+        if ($this->m_localKey == '') {
             $this->m_localKey = $this->determineKeyName($this->m_owner);
         }
+
         return $this->m_localKey;
     }
 
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the master node.
+     *
      * @param string $attributename The name of the attribute.
      */
-    function setLocalKey($attributename)
+    public function setLocalKey($attributename)
     {
         $this->m_localKey = $attributename;
     }
@@ -283,16 +285,18 @@ class ManyToManyRelation extends Relation
     /**
      * Get the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.
-     * @return String The name of the attribute.
+     *
+     * @return string The name of the attribute.
      */
-    function getRemoteKey()
+    public function getRemoteKey()
     {
         $this->createDestination();
 
-        if ($this->m_remoteKey == "") {
-            list($module, $nodename) = explode(".", $this->m_destination);
+        if ($this->m_remoteKey == '') {
+            list($module, $nodename) = explode('.', $this->m_destination);
             $this->m_remoteKey = $this->determineKeyName($nodename);
         }
+
         return $this->m_remoteKey;
     }
 
@@ -319,6 +323,7 @@ class ManyToManyRelation extends Relation
         if (is_array($this->m_ownerFields) && count($this->m_ownerFields) > 0) {
             return $this->m_ownerFields;
         }
+
         return $this->m_ownerInstance->m_primaryKey;
     }
 
@@ -327,9 +332,10 @@ class ManyToManyRelation extends Relation
      *  relation.
      *
      * @param string $name the name of the relation
+     *
      * @return string the probable name of the foreign key
      */
-    function determineKeyName($name)
+    public function determineKeyName($name)
     {
         if ($this->createLink()) {
             if (isset($this->m_linkInstance->m_attribList[$name])) {
@@ -337,20 +343,22 @@ class ManyToManyRelation extends Relation
                 return $name;
             } else {
                 // find out if there's a field with the same name with _id appended to it
-                if (isset($this->m_linkInstance->m_attribList[$name . "_id"])) {
-                    return $name . "_id";
+                if (isset($this->m_linkInstance->m_attribList[$name.'_id'])) {
+                    return $name.'_id';
                 }
             }
         }
+
         return $name;
     }
 
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.
+     *
      * @param string $attributename The name of the attribute.
      */
-    function setRemoteKey($attributename)
+    public function setRemoteKey($attributename)
     {
         $this->m_remoteKey = $attributename;
     }
@@ -358,91 +366,97 @@ class ManyToManyRelation extends Relation
     /**
      * Returns a displayable string for this value.
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists, "edit" for
-     *                     displaying in editscreens, "add" for displaying in
-     *                     add screens. "csv" for csv files. Applications can
-     *                     use additional modes.
+     * @param array  $record The record that holds the value for this attribute
+     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     *                       for displaying in recordlists, "edit" for
+     *                       displaying in editscreens, "add" for displaying in
+     *                       add screens. "csv" for csv files. Applications can
+     *                       use additional modes.
+     *
      * @return string a displayable string for this value
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $result = '';
         if ($this->createDestination() && Tools::atk_value_in_array($record[$this->fieldName()])) {
             $recordset = array();
             $remotekey = $this->getRemoteKey();
-            for ($i = 0; $i < count($record[$this->fieldName()]); $i++) {
+            for ($i = 0; $i < count($record[$this->fieldName()]); ++$i) {
                 $rec = $record[$this->fieldName()][$i][$remotekey];
                 if (!is_array($rec)) {
-                    $selector = $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField() . "= '$rec'";
+                    $selector = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField()."= '$rec'";
                     $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
                     $descr = $this->m_destInstance->descriptor($rec);
                 } else {
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
-                if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed("view")) {
+                if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
                     $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view',
                         array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SessionManager::SESSION_NESTED);
                 }
                 $recordset[] = $descr;
             }
-            if (!in_array($mode, array("csv", "plain"))) {
-                $result = "<ul><li>" . implode("<li>", $recordset) . "</ul>";
+            if (!in_array($mode, array('csv', 'plain'))) {
+                $result = '<ul><li>'.implode('<li>', $recordset).'</ul>';
             } else {
-                $result = implode(", ", $recordset);
+                $result = implode(', ', $recordset);
             }
         } else {
-            if (!in_array($mode, array("csv", "plain"))) {
+            if (!in_array($mode, array('csv', 'plain'))) {
                 $result = $this->text('none');
             }
         }
+
         return $result;
     }
 
     /**
-     * Dummy function
+     * Dummy function.
      *
-     * @param array $record The record that holds the value for this attribute.
+     * @param array  $record      The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return String A piece of htmlcode for editing this attribute
+     * @param string $mode        The mode we're in ('add' or 'edit')
+     *
+     * @return string A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
-
     }
 
-
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         // we don't add ourselves to the query;
     }
 
     /**
-     * load function
+     * load function.
+     *
      * @param mixed $notused
      * @param array $record
+     *
      * @return array
      */
-    function load($notused, $record)
+    public function load($notused, $record)
     {
         if ($this->createLink()) {
             $where = $this->_getLoadWhereClause($record);
             $rel = $this->m_linkInstance;
+
             return $rel->select($where)->getAllRows();
         }
+
         return array();
     }
 
     /**
-     * Get where clause for loading the record
+     * Get where clause for loading the record.
      *
      * @param array $record The record
+     *
      * @return string The where clause
      */
-    function _getLoadWhereClause($record)
+    public function _getLoadWhereClause($record)
     {
         $whereelems = array();
         $localkey = $this->getLocalKey();
@@ -452,11 +466,11 @@ class ManyToManyRelation extends Relation
 
         $ownerfields = $this->getOwnerFields();
 
-        for ($i = 0, $_i = count($localkey); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($localkey); $i < $_i; ++$i) {
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
-                $whereelems[] = $this->m_linkInstance->m_table . "." . $localkey[$i] . "='" . $primkeyattr->value2db($record) . "'";
+                $whereelems[] = $this->m_linkInstance->m_table.'.'.$localkey[$i]."='".$primkeyattr->value2db($record)."'";
             }
         }
 
@@ -464,16 +478,17 @@ class ManyToManyRelation extends Relation
             $whereelems[] = $this->m_localFilter;
         }
 
-        return "(" . implode(") AND (", $whereelems) . ")";
+        return '('.implode(') AND (', $whereelems).')';
     }
 
     /**
      * delete relational records..
      *
      * @param $record array $record The record
+     *
      * @return bool
      */
-    function delete($record)
+    public function delete($record)
     {
         if ($this->createLink()) {
             $rel = $this->m_linkInstance;
@@ -482,6 +497,7 @@ class ManyToManyRelation extends Relation
                 return $rel->deleteDb($where);
             }
         }
+
         return false;
     }
 
@@ -489,9 +505,10 @@ class ManyToManyRelation extends Relation
      * Returns an array with the existing records indexed by their
      * primary key selector string.
      *
-     * @param Db $db database instance
-     * @param array $record record
-     * @param string $mode mode
+     * @param Db     $db     database instance
+     * @param array  $record record
+     * @param string $mode   mode
+     *
      * @return array
      */
     protected function _getExistingRecordsByKey($db, $record, $mode)
@@ -516,6 +533,7 @@ class ManyToManyRelation extends Relation
      * this relation and index them by their primary key selector string.
      *
      * @param array $record record
+     *
      * @return array
      */
     protected function _extractSelectedRecordsByKey($record)
@@ -523,7 +541,6 @@ class ManyToManyRelation extends Relation
         $selectedRecordsByKey = array();
 
         if (isset($record[$this->fieldName()])) {
-
             foreach ($record[$this->fieldName()] as $selectedRecord) {
                 $selectedKey = is_array($selectedRecord[$this->getRemoteKey()]) ?
                     $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()]
@@ -541,6 +558,7 @@ class ManyToManyRelation extends Relation
      * Delete existing link record.
      *
      * @param array $record link record
+     *
      * @return bool
      */
     protected function _deleteRecord($record)
@@ -549,6 +567,7 @@ class ManyToManyRelation extends Relation
 
         if (empty($selector)) {
             Tools::atkerror('primaryKey-selector for link node is empty. Did you add an self::AF_PRIMARY flag to the primary key field(s) of the intermediate node? Deleting records aborted to prevent dataloss.');
+
             return false;
         }
 
@@ -564,7 +583,8 @@ class ManyToManyRelation extends Relation
      * Update existing link record.
      *
      * @param array $record link record
-     * @param int $index (new) index (0-based)
+     * @param int   $index  (new) index (0-based)
+     *
      * @return bool
      */
     protected function _updateRecord($record, $index)
@@ -576,10 +596,10 @@ class ManyToManyRelation extends Relation
     /**
      * Create new link record.
      *
-     * @param string $selectedKey primary key selector string of destination record
-     * @param array $selectedRecord selected destination record (might only contain the key attributes)
-     * @param array $ownerRecord owner instance record
-     * @param int $index (new) index (0-based)
+     * @param string $selectedKey    primary key selector string of destination record
+     * @param array  $selectedRecord selected destination record (might only contain the key attributes)
+     * @param array  $ownerRecord    owner instance record
+     * @param int    $index          (new) index (0-based)
      *
      * @return array new link record (not saved yet!)
      */
@@ -592,7 +612,7 @@ class ManyToManyRelation extends Relation
         $localKey = $this->getLocalKey();
 
         if (is_array($localKey)) {
-            for ($j = 0; $j < count($localKey); $j++) {
+            for ($j = 0; $j < count($localKey); ++$j) {
                 $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[$j]]);
                 $record[$localKey[0]][$ownerFields[$j]] = $locKey;
             }
@@ -607,9 +627,10 @@ class ManyToManyRelation extends Relation
     /**
      * Add new link record to the database.
      *
-     * @param array $record link record
-     * @param int $index (new) index (0-based)
-     * @param string $mode storage mode
+     * @param array  $record link record
+     * @param int    $index  (new) index (0-based)
+     * @param string $mode   storage mode
+     *
      * @return bool
      */
     protected function _addRecord($record, $index, $mode)
@@ -618,14 +639,15 @@ class ManyToManyRelation extends Relation
     }
 
     /**
-     * Stores the values in the database
+     * Stores the values in the database.
      *
-     * @param Db $db database instance
-     * @param array $record owner instance record
-     * @param string $mode storage mode
+     * @param Db     $db     database instance
+     * @param array  $record owner instance record
+     * @param string $mode   storage mode
+     *
      * @return bool
      */
-    function store($db, $record, $mode)
+    public function store($db, $record, $mode)
     {
         $this->createLink();
         $this->createDestination();
@@ -660,72 +682,75 @@ class ManyToManyRelation extends Relation
                 }
             }
 
-            $index++;
+            ++$index;
         }
 
         return true;
     }
 
     /**
-     * Check if the attribute is empty
+     * Check if the attribute is empty.
      *
      * @param array $postvars
+     *
      * @return true if it's empty
      */
-    function isEmpty($postvars)
+    public function isEmpty($postvars)
     {
-        return (!is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()]) == 0);
+        return !is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()]) == 0;
     }
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its value. (<input type="hidden">)
+     * while still posting its value. (<input type="hidden">).
      *
-     * @param array $record
+     * @param array  $record
      * @param string $fieldprefix
      * @param string $mode
+     *
      * @return string html
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        $result = "";
+        $result = '';
         if (is_array(Tools::atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {
             $ownerFields = $this->getOwnerFields();
-            for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; $i++) {
+            for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; ++$i) {
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey())) {
-                    $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() .
-                        '[' . $i . '][' . $this->getLocalKey() . ']" value="' .
+                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().
+                        '['.$i.']['.$this->getLocalKey().']" value="'.
                         $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
-                            $ownerFields[0]) . '">';
+                            $ownerFields[0]).'">';
                 }
 
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getRemoteKey())) {
-                    $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() .
-                        '[' . $i . '][' . $this->getRemoteKey() . ']" value="' .
+                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().
+                        '['.$i.']['.$this->getRemoteKey().']" value="'.
                         $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()],
-                            $this->m_destInstance->primaryKeyField()) . '">';
+                            $this->m_destInstance->primaryKeyField()).'">';
                 }
             }
         }
+
         return $result;
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to search
+     * Returns a piece of html code that can be used in a form to search.
      *
-     * @param array $record Array with values
-     * @param boolean $extended if set to false, a simple search input is
-     *                          returned for use in the searchbar of the
-     *                          recordlist. If set to true, a more extended
-     *                          search may be returned for the 'extended'
-     *                          search page. The Attribute does not
-     *                          make a difference for $extended is true, but
-     *                          derived attributes may reimplement this.
+     * @param array  $record      Array with values
+     * @param bool   $extended    if set to false, a simple search input is
+     *                            returned for use in the searchbar of the
+     *                            recordlist. If set to true, a more extended
+     *                            search may be returned for the 'extended'
+     *                            search page. The Attribute does not
+     *                            make a difference for $extended is true, but
+     *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
      * @return string Piece of html code
      */
-    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->createDestination();
 
@@ -735,76 +760,80 @@ class ManyToManyRelation extends Relation
             ->getAllRows();
         $result = '<select class="form-control"';
         if ($extended) {
-            $result .= 'multiple="multiple" size="' . min(5, count($recordset) + 1) . '"';
+            $result .= 'multiple="multiple" size="'.min(5, count($recordset) + 1).'"';
         }
 
-        $result .= 'name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+        $result .= 'name="'.$this->getSearchFieldName($fieldprefix).'[]">';
 
         $pkfield = $this->m_destInstance->primaryKeyField();
 
         if (!$extended) {
-            $result .= '<option value="">' . Tools::atktext("search_all", "atk") . '</option>';
+            $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         }
 
-        for ($i = 0; $i < count($recordset); $i++) {
+        for ($i = 0; $i < count($recordset); ++$i) {
             $pk = $recordset[$i][$pkfield];
             if (Tools::atk_in_array($pk, $record[$this->fieldName()])) {
                 $sel = ' selected="selected"';
             } else {
-                $sel = "";
+                $sel = '';
             }
-            $result .= '<option value="' . $pk . '"' . $sel . '>' . $this->m_destInstance->descriptor($recordset[$i]) . '</option>';
+            $result .= '<option value="'.$pk.'"'.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]).'</option>';
         }
         $result .= '</select>';
+
         return $result;
     }
 
     /**
-     * Creates an search condition for a given search value
+     * Creates an search condition for a given search value.
      *
-     * @param Query $query The query to which the condition will be added.
-     * @param string $table The name of the table in which this attribute
-     *                      is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                           of the supported modes, as returned by this
-     *                           attribute's getSearchModes() method.
+     * @param Query  $query            The query to which the condition will be added.
+     * @param string $table            The name of the table in which this attribute
+     *                                 is stored
+     * @param mixed  $value            The value the user has entered in the searchbox
+     * @param string $searchmode       The searchmode to use. This can be any one
+     *                                 of the supported modes, as returned by this
+     *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
         $ownerFields = $this->getOwnerFields();
 
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $this->createLink();
             $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(),
-                $table . "." . $ownerFields[0] . "=" . $this->fieldName() . "." . $this->getLocalKey(), false);
+                $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(), false);
             $query->setDistinct(true);
 
             if (count($value) == 1) { // exactly one value
-                $query->addSearchCondition($query->exactCondition($this->fieldName() . "." . $this->getRemoteKey(),
+                $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(),
                     $this->escapeSQL($value[0])));
             } else { // search for more values using IN()
-                $query->addSearchCondition($this->fieldName() . "." . $this->getRemoteKey() . " IN ('" . implode("','",
-                        $value) . "')");
+                $query->addSearchCondition($this->fieldName().'.'.$this->getRemoteKey()." IN ('".implode("','",
+                        $value)."')");
             }
         }
     }
 
     /**
-     * Checks if a key is not an array
-     * @param string $key field containing the key values
+     * Checks if a key is not an array.
+     *
+     * @param string $key   field containing the key values
      * @param string $field field to return if an array
+     *
      * @return string of $field
      */
-    function checkKeyDimension($key, $field = "id")
+    public function checkKeyDimension($key, $field = 'id')
     {
         if (is_array($key)) {
             return $key[$field];
         }
+
         return $key;
     }
 
@@ -813,11 +842,13 @@ class ManyToManyRelation extends Relation
      * of nothing.
      *
      * @param array $postvars
+     *
      * @return mixed
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         $value = parent::fetchValue($postvars);
+
         return $value == null ? array() : $value;
     }
 
@@ -834,7 +865,7 @@ class ManyToManyRelation extends Relation
      *
      * @param string $filter The filter that is used when deleting records in the store function.
      */
-    function setStoreDeletionFilter($filter)
+    public function setStoreDeletionFilter($filter)
     {
         $this->m_store_deletion_filter = $filter;
     }
@@ -846,11 +877,9 @@ class ManyToManyRelation extends Relation
      *
      * @param string $filter filter
      */
-    function setLocalFilter($filter)
+    public function setLocalFilter($filter)
     {
         $this->setStoreDeletionFilter($filter);
         $this->m_localFilter = $filter;
     }
-
 }
-

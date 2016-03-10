@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
@@ -14,8 +16,7 @@ use Sintattica\Atk\Session\SessionStore;
  * fails, the edit handler is invoked again.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage handlers
+ *
  * @todo Add locking check for when an application calls an action_update on a locked node
  */
 class UpdateHandler extends ActionHandler
@@ -35,8 +36,9 @@ class UpdateHandler extends ActionHandler
         // clear old reject info
         $this->setRejectInfo(null);
 
-        if (isset($this->m_partial) && $this->m_partial != "") {
+        if (isset($this->m_partial) && $this->m_partial != '') {
             $this->partial($this->m_partial);
+
             return;
         } else {
             $this->doUpdate();
@@ -68,7 +70,7 @@ class UpdateHandler extends ActionHandler
     }
 
     /**
-     * Perform the update action
+     * Perform the update action.
      */
     public function doUpdate()
     {
@@ -77,21 +79,22 @@ class UpdateHandler extends ActionHandler
         // allowed to update record?
         if (!$this->allowed($record)) {
             $this->handleAccessDenied();
+
             return;
         }
-
 
         $prefix = '';
         if (isset($this->m_postvars['atkfieldprefix'])) {
             $prefix = $this->m_postvars['atkfieldprefix'];
         }
 
-        $csrfToken = isset($this->m_postvars[$prefix . 'atkcsrftoken']) ? $this->m_postvars[$prefix . 'atkcsrftoken']
+        $csrfToken = isset($this->m_postvars[$prefix.'atkcsrftoken']) ? $this->m_postvars[$prefix.'atkcsrftoken']
             : null;
 
         // check for CSRF token
         if (!$this->isValidCSRFToken($csrfToken)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -107,8 +110,8 @@ class UpdateHandler extends ActionHandler
                 // something other than one of the three buttons was pressed. Let's just refresh.
                 $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(),
                     $this->getEditAction(), array(
-                        "atkselector" => $this->m_node->primaryKey($record),
-                        "atktab" => $this->m_node->getActiveTab()
+                        'atkselector' => $this->m_node->primaryKey($record),
+                        'atktab' => $this->m_node->getActiveTab(),
                     )), SessionManager::SESSION_REPLACE);
                 $this->m_node->redirect($location);
             }
@@ -116,7 +119,7 @@ class UpdateHandler extends ActionHandler
     }
 
     /**
-     * Get the record for updating
+     * Get the record for updating.
      *
      * @return array The record to update
      */
@@ -135,29 +138,30 @@ class UpdateHandler extends ActionHandler
     }
 
     /**
-     * Called when the user clicks cancel
+     * Called when the user clicks cancel.
      *
      * @param array $record
      */
     public function handleCancel($record)
     {
-        $location = $this->m_node->feedbackUrl("update", self::ACTION_CANCELLED, $record, '', 2);
+        $location = $this->m_node->feedbackUrl('update', self::ACTION_CANCELLED, $record, '', 2);
         $this->m_node->redirect($location);
     }
 
     /**
-     * Process a record (preUpdate/validate/store)
+     * Process a record (preUpdate/validate/store).
      *
-     * @param array $record Record to store
-     * @param string $errorHandler Error handler method to call on current handler
+     * @param array  $record         Record to store
+     * @param string $errorHandler   Error handler method to call on current handler
      * @param string $successHandler Success handler method to call on current handler
-     * @param array $extraParams Extra params to pass along to error/success handler methods
+     * @param array  $extraParams    Extra params to pass along to error/success handler methods
+     *
      * @return bool Wether the process succeeded in storing the record
      */
     public function handleProcess(
         $record,
         $errorHandler = 'handleUpdateError',
-        $successHandler = "handleUpdateSuccess",
+        $successHandler = 'handleUpdateSuccess',
         $extraParams = array()
     ) {
         // empty the postvars because we don't want to use these
@@ -169,15 +173,15 @@ class UpdateHandler extends ActionHandler
         $this->getNode()->m_postvars = $postvars;
 
         // just before we validate the record we call the preUpdate() to check if the record needs to be modified
-        $this->m_node->executeTrigger("preUpdate", $record);
+        $this->m_node->executeTrigger('preUpdate', $record);
 
-        $this->m_node->validate($record, "update");
+        $this->m_node->validate($record, 'update');
 
         $error = $this->hasError($record);
 
-
         if ($error) {
             $this->invoke($errorHandler, $record, null, $extraParams);
+
             return false;
         }
 
@@ -197,6 +201,7 @@ class UpdateHandler extends ActionHandler
      * variable atkerror in the record).
      *
      * @param array $record Record to check for errors
+     *
      * @return bool Error detected?
      */
     public function hasError($record)
@@ -209,18 +214,20 @@ class UpdateHandler extends ActionHandler
                             $record[$key]) && count($record[$key]['atkerror']) > 0);
             }
         }
+
         return $error;
     }
 
     /**
-     * Update a record, determines wether to update it to the session or the database
+     * Update a record, determines wether to update it to the session or the database.
      *
      * @param array $record Record to update
+     *
      * @return mixed Result of the update, true, false or string with error
      */
     private function updateRecord(&$record)
     {
-        $atkstoretype = "";
+        $atkstoretype = '';
         $sessionmanager = SessionManager::getInstance();
         if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
@@ -233,13 +240,15 @@ class UpdateHandler extends ActionHandler
                 $result = $this->updateRecordInDb($record);
                 break;
         }
+
         return $result;
     }
 
     /**
-     * Update a record in the database
+     * Update a record in the database.
      *
      * @param array $record Record to update
+     *
      * @return mixed Result of the update, true, false or string with error
      */
     private function updateRecordInDb(&$record)
@@ -247,31 +256,36 @@ class UpdateHandler extends ActionHandler
         $db = $this->m_node->getDb();
         if ($this->m_node->updateDb($record)) {
             $db->commit();
-            $this->notify("update", $record);
+            $this->notify('update', $record);
 
             $this->clearCache();
+
             return true;
         } else {
             $db->rollback();
-            if ($db->getErrorType() == "user") {
+            if ($db->getErrorType() == 'user') {
                 Tools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
+
                 return false;
             }
+
             return $db->getErrorMsg();
         }
     }
 
     /**
-     * Update a record in the session
+     * Update a record in the session.
      *
      * @param array $record Record to update
+     *
      * @return mixed Result of the update, true or false
      */
     private function updateRecordInSession($record)
     {
         $selector = Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return (SessionStore::getInstance()->updateDataRowForSelector($selector,
-                $record) !== false);
+
+        return SessionStore::getInstance()->updateDataRowForSelector($selector,
+                $record) !== false;
     }
 
     /**
@@ -281,10 +295,9 @@ class UpdateHandler extends ActionHandler
      *
      * This method can be overriden inside your node.
      *
-     * @param array $record the record
-     * @param string $error error string (only on fatal errors)
-     *
-     * @param array $record
+     * @param array  $record the record
+     * @param string $error  error string (only on fatal errors)
+     * @param array  $record
      */
     public function handleUpdateError($record, $error = null)
     {
@@ -292,10 +305,10 @@ class UpdateHandler extends ActionHandler
             $this->setRejectInfo($record);
             $sm = SessionManager::getInstance();
             $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(),
-                $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_BACK);
+                $this->getEditAction(), array('atkselector' => $this->m_node->primaryKey($record))), SessionManager::SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
-            $location = $this->m_node->feedbackUrl("update", self::ACTION_FAILED, $record, $error);
+            $location = $this->m_node->feedbackUrl('update', self::ACTION_FAILED, $record, $error);
             $this->m_node->redirect($location);
         }
     }
@@ -314,15 +327,15 @@ class UpdateHandler extends ActionHandler
         if (isset($this->m_postvars['atknoclose'])) {
             // 'save' was clicked
             $params = array(
-                "atkselector" => $this->m_node->primaryKey($record),
-                "atktab" => $this->m_node->getActiveTab()
+                'atkselector' => $this->m_node->primaryKey($record),
+                'atktab' => $this->m_node->getActiveTab(),
             );
             $sm = SessionManager::getInstance();
             $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(),
                 $this->getEditAction(), $params), SessionManager::SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
-            $location = $this->m_node->feedbackUrl("update", self::ACTION_SUCCESS, $record, "", 2);
+            $location = $this->m_node->feedbackUrl('update', self::ACTION_SUCCESS, $record, '', 2);
         }
 
         $this->m_node->redirect($location, $record);

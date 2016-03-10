@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\RecordList;
+<?php
+
+namespace Sintattica\Atk\RecordList;
 
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -8,34 +10,34 @@ use Sintattica\Atk\Core\Tools;
  * in recordlists.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage recordlist
  */
 class Totalizer
 {
-    var $m_node = null;
-    var $m_columnConfig = null;
+    public $m_node = null;
+    public $m_columnConfig = null;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param Node $node
+     * @param Node         $node
      * @param ColumnConfig $columnConfig
+     *
      * @return Totalizer
      */
-    function __construct(&$node, &$columnConfig)
+    public function __construct(&$node, &$columnConfig)
     {
         $this->m_node = &$node;
         $this->m_columnConfig = &$columnConfig;
     }
 
     /**
-     * Totalize the recordset
+     * Totalize the recordset.
      *
      * @param array $rowset
+     *
      * @return array
      */
-    function totalize($rowset)
+    public function totalize($rowset)
     {
         $result = array();
         $lastvalues = array();
@@ -45,9 +47,9 @@ class Totalizer
 
         $totals = array();
 
-        for ($i = 0, $_i = count($rowset); $i < $_i; $i++) {
-            $record = $rowset[$i]["record"];
-            for ($j = count($subtotalfields) - 1; $j >= 0; $j--) { // reverse loop, to ensure right-to-left subtotalling
+        for ($i = 0, $_i = count($rowset); $i < $_i; ++$i) {
+            $record = $rowset[$i]['record'];
+            for ($j = count($subtotalfields) - 1; $j >= 0; --$j) { // reverse loop, to ensure right-to-left subtotalling
                 $fieldname = $subtotalfields[$j];
                 $value = $record[$fieldname];
                 $p_subtotalling_attrib = $this->m_node->m_attribList[$fieldname];
@@ -67,7 +69,7 @@ class Totalizer
         }
         // leftovers, subtotals of last rows
         if (count($rowset)) {
-            for ($j = count($subtotalfields) - 1; $j >= 0; $j--) { // reverse loop, to ensure right-to-left subtotalling
+            for ($j = count($subtotalfields) - 1; $j >= 0; --$j) { // reverse loop, to ensure right-to-left subtotalling
                 $fieldname = $subtotalfields[$j];
                 $result[] = $this->_subTotalRow($rowset[count($rowset) - 1], $totals, $fieldname, $totalizers);
             }
@@ -78,15 +80,16 @@ class Totalizer
     }
 
     /**
-     * Totalize one row
+     * Totalize one row.
      *
-     * @param array $row
-     * @param array $totals
+     * @param array  $row
+     * @param array  $totals
      * @param string $fieldforsubtotal
-     * @param array $totalizers
+     * @param array  $totalizers
+     *
      * @return array
      */
-    function _subTotalRow($row, &$totals, $fieldforsubtotal, $totalizers)
+    public function _subTotalRow($row, &$totals, $fieldforsubtotal, $totalizers)
     {
         $subtotalcols = array();
         foreach ($totalizers as $totalfield) {
@@ -94,40 +97,39 @@ class Totalizer
             $subtotalcols[$totalfield] = $p_attrib->display($totals[$totalfield][$fieldforsubtotal]);
 
             // reset walking total
-            $totals[$totalfield][$fieldforsubtotal] = "";
+            $totals[$totalfield][$fieldforsubtotal] = '';
         }
-
 
         return $this->_createSubTotalRowFromRow($row, $fieldforsubtotal, $subtotalcols);
     }
 
     /**
-     * Create subtotal row from row
+     * Create subtotal row from row.
      *
-     * @param array $row
+     * @param array  $row
      * @param string $fieldname
-     * @param array $subtotalcolumns
+     * @param array  $subtotalcolumns
+     *
      * @return array
      */
-    function _createSubTotalRowFromRow($row, $fieldname, $subtotalcolumns)
+    public function _createSubTotalRowFromRow($row, $fieldname, $subtotalcolumns)
     {
         // fix type
-        $row["type"] = "subtotal";
+        $row['type'] = 'subtotal';
 
         // replace columns
-        foreach ($row["data"] as $col => $value) {
+        foreach ($row['data'] as $col => $value) {
             if ($col == $fieldname) {
-                $row["data"][$col] = Tools::atktext("subtotal");
+                $row['data'][$col] = Tools::atktext('subtotal');
             } else {
                 if (isset($subtotalcolumns[$col])) {
-                    $row["data"][$col] = $subtotalcolumns[$col];
+                    $row['data'][$col] = $subtotalcolumns[$col];
                 } else {
-                    $row["data"][$col] = "";
+                    $row['data'][$col] = '';
                 }
             }
         }
+
         return $row;
     }
-
 }
-

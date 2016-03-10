@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
@@ -12,20 +14,17 @@ use Sintattica\Atk\Session\SessionStore;
  * information (if any) by calling the attributes' delete() method.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage handlers
- *
  */
 class DeleteHandler extends ActionHandler
 {
-
     /**
      * The action handler.
      */
-    function action_delete()
+    public function action_delete()
     {
         if (!$this->_checkAllowed()) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -33,6 +32,7 @@ class DeleteHandler extends ActionHandler
             !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken'])
         ) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -51,8 +51,8 @@ class DeleteHandler extends ActionHandler
             // If we got here, then the node is not locked and we haven't displayed the
             // confirmation page yet, so we display it
             $page = $this->getPage();
-            $page->addContent($this->m_node->renderActionPage("delete",
-                $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", true, true, $this->getCSRFToken())));
+            $page->addContent($this->m_node->renderActionPage('delete',
+                $this->m_node->confirmAction($this->m_postvars['atkselector'], 'delete', true, true, $this->getCSRFToken())));
         } else {
             $this->_handleCancelAction();
         }
@@ -61,20 +61,20 @@ class DeleteHandler extends ActionHandler
     protected function _handleCancelAction()
     {
         // Confirmation page was displayed and 'no' was clicked
-        $location = $this->m_node->feedbackUrl("delete", self::ACTION_CANCELLED);
+        $location = $this->m_node->feedbackUrl('delete', self::ACTION_CANCELLED);
         $this->m_node->redirect($location);
     }
 
     /**
      * Check if we are allowed to remove the given records.
      *
-     * @return boolean is delete action allowed?
+     * @return bool is delete action allowed?
      */
-    function _checkAllowed()
+    public function _checkAllowed()
     {
         $atkselector = $this->m_postvars['atkselector'];
         if (is_array($atkselector)) {
-            $atkselector_str = '((' . implode($atkselector, ') OR (') . '))';
+            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
         } else {
             $atkselector_str = $atkselector;
         }
@@ -96,7 +96,7 @@ class DeleteHandler extends ActionHandler
      */
     protected function _doDelete()
     {
-        $atkstoretype = "";
+        $atkstoretype = '';
         $sessionmanager = SessionManager::getInstance();
         if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
@@ -111,16 +111,16 @@ class DeleteHandler extends ActionHandler
         }
 
         if ($result === true) {
-            $location = $this->m_node->feedbackUrl("delete", self::ACTION_SUCCESS);
+            $location = $this->m_node->feedbackUrl('delete', self::ACTION_SUCCESS);
         } else {
-            $location = $this->m_node->feedbackUrl("delete", self::ACTION_FAILED, null, $result);
+            $location = $this->m_node->feedbackUrl('delete', self::ACTION_FAILED, null, $result);
         }
 
         $this->m_node->redirect($location);
     }
 
     /**
-     * Delete the record in the database
+     * Delete the record in the database.
      *
      * @return mixed Results, true or string with errormessage
      */
@@ -130,47 +130,49 @@ class DeleteHandler extends ActionHandler
         if ($this->m_node->deleteDb($this->m_postvars['atkselector'])) {
             $db->commit();
             $this->clearCache();
+
             return true;
         } else { // Something is wrong here, the deleteDb failed
             $db->rollback();
+
             return $db->getErrorMsg();
         }
     }
 
     /**
-     * Delete the database in the session
+     * Delete the database in the session.
      *
      * @return bool Results, true or false
      */
     protected function _doDeleteSession()
     {
         $selector = Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
+
         return SessionStore::getInstance()->deleteDataRowForSelector($selector);
     }
 
-
     /**
      * Checks with each of the attributes of the node whose record is about to be deleted
-     * if they allow the deletion
+     * if they allow the deletion.
+     *
      * @return bool wether or not the attributes have allowed deletion
      */
-    function checkAttributes()
+    public function checkAttributes()
     {
         foreach ($this->m_node->getAttributes() as $attrib) {
             // If allowed !=== true, then it returned an error message
             if ($attrib->deleteAllowed() !== true) {
                 $db = $this->m_node->getDb();
                 $db->rollback();
-                $location = $this->m_node->feedbackUrl("delete", self::ACTION_FAILED, null,
-                    sprintf(Tools::atktext("attrib_delete_not_allowed"),
+                $location = $this->m_node->feedbackUrl('delete', self::ACTION_FAILED, null,
+                    sprintf(Tools::atktext('attrib_delete_not_allowed'),
                         Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $attrib->fieldName()));
                 $this->m_node->redirect($location);
+
                 return false;
             }
         }
+
         return true;
     }
-
 }
-
-

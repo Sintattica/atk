@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Db\Statement;
+<?php
+
+namespace Sintattica\Atk\Db\Statement;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Db;
@@ -12,9 +14,6 @@ use Sintattica\Atk\Db\Db;
  * you don't have the performance benefits or real prepared statement.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- *
- * @package atk
- * @subpackage db.statement
  */
 class CompatStatement extends Statement
 {
@@ -31,11 +30,11 @@ class CompatStatement extends Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != Db::DB_SUCCESS) {
-            throw new StatementException("Cannot connect to database.",
+            throw new StatementException('Cannot connect to database.',
                 StatementException::NO_DATABASE_CONNECTION);
         }
 
-        Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
+        Tools::atkdebug('Prepare query: '.$this->_getParsedQuery());
     }
 
     /**
@@ -48,15 +47,15 @@ class CompatStatement extends Statement
     protected function _bindParams($params)
     {
         $query = $this->_getParsedQuery();
-        Tools::atkdebug("Binding parameters for query: " . $this->_getParsedQuery());
+        Tools::atkdebug('Binding parameters for query: '.$this->_getParsedQuery());
 
         foreach (array_values($this->_getBindPositions()) as $i => $param) {
-            Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
         }
 
         foreach (array_reverse($this->_getBindPositions(), true) as $position => $param) {
-            $query = substr($query, 0, $position) .
-                ($params[$param] === null ? 'NULL' : "'" . $this->getDb()->escapeSQL($params[$param]) . "'") .
+            $query = substr($query, 0, $position).
+                ($params[$param] === null ? 'NULL' : "'".$this->getDb()->escapeSQL($params[$param])."'").
                 substr($query, $position + 1);
         }
 
@@ -67,6 +66,7 @@ class CompatStatement extends Statement
      * Executes the statement using the given bind parameters.
      *
      * @param array $params bind parameters
+     *
      * @throws StatementException
      */
     protected function _execute($params)
@@ -93,7 +93,7 @@ class CompatStatement extends Statement
 
         if (!$result) {
             $this->m_resource = null;
-            throw new StatementException("Cannot execute statement: " . $query,
+            throw new StatementException('Cannot execute statement: '.$query,
                 StatementException::STATEMENT_ERROR);
         }
     }
@@ -162,5 +162,4 @@ class CompatStatement extends Statement
 
         return $result;
     }
-
 }

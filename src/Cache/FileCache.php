@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Cache;
+<?php
+
+namespace Sintattica\Atk\Cache;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\FileAttribute;
@@ -6,21 +8,21 @@ use Sintattica\Atk\Attributes\FileAttribute;
 class FileCache extends Cache
 {
     /**
-     * Path where the cache files are saved
+     * Path where the cache files are saved.
      *
      * @var string
      */
     protected $m_path;
 
     /**
-     * Context that is used for fopen
+     * Context that is used for fopen.
      *
      * @var array
      */
     protected $m_context;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -43,12 +45,12 @@ class FileCache extends Cache
     protected function setCachePath()
     {
         $this->m_path = $this->getCacheConfig('path',
-                Config::getGlobal('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
+                Config::getGlobal('atktempdir').'cache/').$this->getFileSafeNamespace().'/';
         FileAttribute::mkdir($this->m_path);
     }
 
     /**
-     * Set the namespace for the current cache
+     * Set the namespace for the current cache.
      *
      * @param string $namespace
      */
@@ -59,7 +61,8 @@ class FileCache extends Cache
     }
 
     /**
-     * Get the namespace and make it 'filesafe', a.k.a. safe for usage as directoryname
+     * Get the namespace and make it 'filesafe', a.k.a. safe for usage as directoryname.
+     *
      * @return string
      */
     public function getFileSafeNamespace()
@@ -70,9 +73,10 @@ class FileCache extends Cache
     /**
      * Inserts cache entry data, but only if the entry does not already exist.
      *
-     * @param string $key The entry ID.
-     * @param mixed $data The data to write into the entry.
+     * @param string   $key      The entry ID.
+     * @param mixed    $data     The data to write into the entry.
      * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     *
      * @return bool True on success, false on failure.
      */
     public function add($key, $data, $lifetime = false)
@@ -105,9 +109,10 @@ class FileCache extends Cache
     /**
      * Sets cache entry data.
      *
-     * @param string $key The entry ID.
-     * @param mixed $data The data to write into the entry.
+     * @param string   $key      The entry ID.
+     * @param mixed    $data     The data to write into the entry.
      * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     *
      * @return bool True on success, false on failure.
      */
     public function set($key, $data, $lifetime = false)
@@ -140,19 +145,20 @@ class FileCache extends Cache
             if ($serial) {
                 // use this instead of touch() because it supports stream
                 // contexts.
-                file_put_contents($file . '.serial', null, LOCK_EX, $this->m_context);
+                file_put_contents($file.'.serial', null, LOCK_EX, $this->m_context);
             } else {
                 // make sure no serial file is there from any previous entries
                 // with the same name
-                @unlink($file . '.serial', $this->m_context);
+                @unlink($file.'.serial', $this->m_context);
             }
 
             // create a .lifetime file to handle the lifetime of the cached item
-            file_put_contents($file . '.lifetime', $lifetime, LOCK_EX, $this->m_context);
+            file_put_contents($file.'.lifetime', $lifetime, LOCK_EX, $this->m_context);
 
             // unlock and close, then done.
             flock($fp, LOCK_UN);
             fclose($fp);
+
             return true;
         }
 
@@ -164,6 +170,7 @@ class FileCache extends Cache
      * Gets cache entry data.
      *
      * @param string $key The entry ID.
+     *
      * @return mixed Boolean false on failure, cache data on success.
      */
     public function get($key)
@@ -179,13 +186,14 @@ class FileCache extends Cache
         // make sure the file exists and is readable,
         if (file_exists($file) && is_readable($file)) {
             // get the lifetime of the entry
-            $lifetime = intval(file_get_contents($file . ".lifetime"));
+            $lifetime = intval(file_get_contents($file.'.lifetime'));
 
             // has the file expired?
             $expire_time = filemtime($file) + $lifetime;
             if (time() > $expire_time) {
                 // expired, remove it
                 $this->delete($key);
+
                 return false;
             }
         } else {
@@ -210,7 +218,7 @@ class FileCache extends Cache
 
             // check for serializing while file is locked
             // to avoid race conditions
-            if (file_exists($file . '.serial')) {
+            if (file_exists($file.'.serial')) {
                 $data = unserialize($data);
             }
 
@@ -227,10 +235,11 @@ class FileCache extends Cache
     }
 
     /**
-     * Deletes all cache entries
+     * Deletes all cache entries.
      *
      * @param string $key Entry ID
-     * @return boolean Succes
+     *
+     * @return bool Succes
      */
     public function delete($key)
     {
@@ -240,15 +249,16 @@ class FileCache extends Cache
         $file = $this->getRealKey($key);
 
         @unlink($file, $this->m_context);
-        @unlink($file . '.serial', $this->m_context);
-        @unlink($file . '.lifetime', $this->m_context);
+        @unlink($file.'.serial', $this->m_context);
+        @unlink($file.'.lifetime', $this->m_context);
+
         return true;
     }
 
     /**
-     * Removes all cache entries for the current namespace
+     * Removes all cache entries for the current namespace.
      *
-     * @return boolean success
+     * @return bool success
      */
     public function deleteAll()
     {
@@ -256,7 +266,7 @@ class FileCache extends Cache
             return false;
         }
 
-        $list = (array)@scandir($this->m_path, null, $this->m_context);
+        $list = (array) @scandir($this->m_path, null, $this->m_context);
 
         // delete each file
         foreach ($list as $file) {
@@ -264,24 +274,26 @@ class FileCache extends Cache
             if ($file[0] == '.') {
                 continue;
             }
-            @unlink($this->m_path . $file, $this->m_context);
+            @unlink($this->m_path.$file, $this->m_context);
         }
+
         return true;
     }
 
     /**
-     * Get realkey for the cache entry
+     * Get realkey for the cache entry.
      *
      * @param string $key Entry ID
+     *
      * @return string The real entry id
      */
     public function getRealKey($key)
     {
-        return $this->m_path . md5($key);
+        return $this->m_path.md5($key);
     }
 
     /**
-     * Get the current cache type
+     * Get the current cache type.
      *
      * @return string atkConfig type
      */
@@ -289,7 +301,4 @@ class FileCache extends Cache
     {
         return 'file';
     }
-
 }
-
-

@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Relations;
+<?php
+
+namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\TreeToolsTree;
@@ -12,22 +14,20 @@ use Sintattica\Atk\Utils\StringParser;
  * column in the destination node in order to make the tree rendering work.
  *
  * @author Sandy Pleyte <sandy@ibuildings.nl>
- * @package atk
- * @subpackage relations
- *
  */
 class ManyToOneTreeRelation extends ManyToOneRelation
 {
-    var $m_current = "";
-    var $m_level = "";
+    public $m_current = '';
+    public $m_level = '';
 
     /**
-     * Constructor
-     * @param string $name Name of the attribute
+     * Constructor.
+     *
+     * @param string $name        Name of the attribute
      * @param string $destination Destination node for this relation
-     * @param int $flags Flags for the relation
+     * @param int    $flags       Flags for the relation
      */
-    function __construct($name, $destination, $flags = 0)
+    public function __construct($name, $destination, $flags = 0)
     {
         parent::__construct($name, $destination, $flags);
     }
@@ -36,44 +36,48 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array $record The record that holds the value for this attribute.
+     * @param array  $record      The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
+     * @param string $mode        The mode we're in ('add' or 'edit')
+     *
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $this->createDestination();
         $tmp1 = Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey);
         $tmp2 = Tools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
-        if ($this->m_destinationFilter != "") {
+        if ($this->m_destinationFilter != '') {
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));
         }
         $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->getAllRows();
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
-        $result = '<select class="form-control" name="' . $fieldprefix . $this->fieldName() . '">';
+        $result = '<select class="form-control" name="'.$fieldprefix.$this->fieldName().'">';
 
         if ($this->hasFlag(self::AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..
-            $result .= '<option value="0">' . Tools::atktext('select_none');
+            $result .= '<option value="0">'.Tools::atktext('select_none');
         }
         $result .= $this->createdd($recordset);
         $result .= '</select>';
+
         return $result;
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to search
+     * Returns a piece of html code that can be used in a form to search.
+     *
      * @param array $record Record
+     *
      * @return string Piece of html code that can  be used in a form to edit this
      */
-    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->createDestination();
-        if ($this->m_destinationFilter != "") {
+        if ($this->m_destinationFilter != '') {
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));
         }
@@ -81,64 +85,66 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
             ->getAllRows();
 
-        $result = '<select class="form-control" name="atksearch[' . $this->fieldName() . ']">';
-        $result .= '<option value="">' . Tools::atktext("search_all", "atk");
+        $result = '<select class="form-control" name="atksearch['.$this->fieldName().']">';
+        $result .= '<option value="">'.Tools::atktext('search_all', 'atk');
         $result .= $this->createdd($recordset);
         $result .= '</select>';
+
         return $result;
     }
 
     /**
-     * Create all the options
+     * Create all the options.
      *
      * @param array $recordset
+     *
      * @return string The HTML code for the options
      */
-    function createdd($recordset)
+    public function createdd($recordset)
     {
         $t = new TreeToolsTree();
-        for ($i = 0; $i < count($recordset); $i++) {
+        for ($i = 0; $i < count($recordset); ++$i) {
             $group = $recordset[$i];
             $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]],
                 $this->m_destInstance->descriptor($group),
                 $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
         }
         $tmp = $this->render($t->m_tree);
+
         return $tmp;
     }
 
     /**
-     * Render the tree
+     * Render the tree.
      *
-     * @param array $tree Array of tree nodes
-     * @param int $level
+     * @param array $tree  Array of tree nodes
+     * @param int   $level
+     *
      * @return string The rendered tree
      */
-    function render($tree = "", $level = 0)
+    public function render($tree = '', $level = 0)
     {
-        $res = "";
+        $res = '';
         $i = 0;
         while (list($id, $objarr) = each($tree)) {
-            $i++;
-            if ($this->m_current != $this->m_destInstance->m_table . "." . $this->m_destInstance->m_primaryKey[0] . "='" . $objarr->m_id . "'") {
+            ++$i;
+            if ($this->m_current != $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") {
                 $this->m_level = $level;
-                $sel = "";
+                $sel = '';
             } else {
                 // if equal, select the option it and do not render childs (parent cannot be moved to a childnode of its own)
-                $sel = "SELECTED";
+                $sel = 'SELECTED';
             }
 
-            $res .= '<option value="' . $this->m_destInstance->m_table . "." . $this->m_destInstance->m_primaryKey[0] . "='" . $objarr->m_id . "'" . '" ' . $sel . '>' . str_repeat("-",
-                    (2 * $level)) . " " . $objarr->m_label;
+            $res .= '<option value="'.$this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$sel.'>'.str_repeat('-',
+                    (2 * $level)).' '.$objarr->m_label;
 
-            if (count($objarr->m_sub) > 0 && $sel == "") {
+            if (count($objarr->m_sub) > 0 && $sel == '') {
                 $res .= $this->render($objarr->m_sub, $level + 1);
             }
         }
         $this->m_level = 0;
+
         return $res;
     }
-
 }
-
-

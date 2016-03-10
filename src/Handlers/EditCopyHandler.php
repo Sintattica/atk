@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
@@ -8,44 +10,41 @@ use Sintattica\Atk\Core\Tools;
  * record, and then redirects to the edit action for the copied record.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
- * @package atk
- * @subpackage handlers
- *
  */
 class EditCopyHandler extends ActionHandler
 {
-
     /**
      * The action method.
      */
-    function action_editcopy()
+    public function action_editcopy()
     {
-        Tools::atkdebug("node::action_editcopy()");
+        Tools::atkdebug('node::action_editcopy()');
 
         $record = $this->getCopyRecord();
         // allowed to editcopy record?
         if (!$this->allowed($record)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
         $db = $this->m_node->getDb();
         if (!$this->m_node->copyDb($record)) {
             $db->rollback();
-            $location = $this->m_node->feedbackUrl("editcopy", self::ACTION_FAILED, $record, $db->getErrorMsg());
+            $location = $this->m_node->feedbackUrl('editcopy', self::ACTION_FAILED, $record, $db->getErrorMsg());
             $this->m_node->redirect($location);
         } else {
             $db->commit();
             $this->clearCache();
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), "edit",
-                array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_REPLACE);
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit',
+                array('atkselector' => $this->m_node->primaryKey($record))), SessionManager::SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
 
     /**
-     * Get the selected record from
+     * Get the selected record from.
      *
      * @return array the record to be copied
      */
@@ -59,8 +58,7 @@ class EditCopyHandler extends ActionHandler
             Tools::atkdebug("Geen records gevonden met selector: $selector");
             $this->m_node->redirect();
         }
-        return null;
+
+        return;
     }
-
 }
-

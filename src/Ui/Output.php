@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Ui;
+<?php
+
+namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -20,35 +22,34 @@ use Sintattica\Atk\Utils\Debugger;
  * retrieved with the getInstance() method.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage ui
- *
  */
 class Output
 {
-    /**
+    /*
      * Store raw output data.
      * @access private
      */
-    var $m_raw = "";
+    public $m_raw = '';
 
-    /**
+    /*
      * Store regular output data.
      * @access private
      */
-    var $m_content = "";
+    public $m_content = '';
 
     /**
      * Retrieve the one-and-only Output instance.
+     *
      * @return Output The instance.
      */
     public static function &getInstance()
     {
         static $s_instance = null;
         if ($s_instance == null) {
-            Tools::atkdebug("Created a new Output instance");
+            Tools::atkdebug('Created a new Output instance');
             $s_instance = new self();
         }
+
         return $s_instance;
     }
 
@@ -67,10 +68,10 @@ class Output
     }
 
     /**
-     * Send the caching headers
+     * Send the caching headers.
      *
      * @param mixed $lastmodificationstamp Timestamp of the last modification
-     * @param bool $nocache Send cache headers?
+     * @param bool  $nocache               Send cache headers?
      */
     public function sendCachingHeaders($lastmodificationstamp = '', $nocache = true)
     {
@@ -82,12 +83,13 @@ class Output
             if ($lastmodificationstamp != 0) {
                 $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0,
                     strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
-                $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp) . ' GMT';
+                $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp).' GMT';
                 if ($_last_modified_date == $_gmt_mtime) {
-                    self::header("HTTP/1.0 304 Not Modified");
+                    self::header('HTTP/1.0 304 Not Modified');
+
                     return;
                 } else {
-                    self::header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+                    self::header('Last-Modified: '.gmdate('D, d M Y H:i:s', $lastmodificationstamp).' GMT');
                 }
             }
         }
@@ -95,31 +97,33 @@ class Output
 
     /**
      * Send no cache headers to the browser.
+     *
      * @static
      */
     public static function sendNoCacheHeaders()
     {
-        Tools::atkdebug("Sending no-cache headers (lmd: " . gmdate("D, d M Y H:i:s") . " GMT)");
-        self::header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-        self::header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-        self::header("Cache-Control: no-store, no-cache, must-revalidate");
-        self::header("Cache-Control: post-check=0, pre-check=0");
-        self::header("Pragma: no-cache");                          // HTTP/1.0
+        Tools::atkdebug('Sending no-cache headers (lmd: '.gmdate('D, d M Y H:i:s').' GMT)');
+        self::header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');    // Date in the past
+        self::header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+        self::header('Cache-Control: no-store, no-cache, must-revalidate');
+        self::header('Cache-Control: post-check=0, pre-check=0');
+        self::header('Pragma: no-cache');                          // HTTP/1.0
     }
 
     /**
      * Send all output to the browser.
-     * @param boolean $nocache If true, sends no-cache headers to the browser,
-     *                         so the browser will not cache the output in its
-     *                         browsercache.
-     * @param mixed $lastmodificationstamp Timestamp of last modification. If
-     *                                   set, a last-modified header
-     *                                   containing this stamp will be sent to
-     *                                   the browser. If $nocache is true,
-     *                                   this parameter is ignored.
-     * @param string $charset The character set
+     *
+     * @param bool   $nocache               If true, sends no-cache headers to the browser,
+     *                                      so the browser will not cache the output in its
+     *                                      browsercache.
+     * @param mixed  $lastmodificationstamp Timestamp of last modification. If
+     *                                      set, a last-modified header
+     *                                      containing this stamp will be sent to
+     *                                      the browser. If $nocache is true,
+     *                                      this parameter is ignored.
+     * @param string $charset               The character set
      */
-    public function outputFlush($nocache = true, $lastmodificationstamp = "", $charset = "")
+    public function outputFlush($nocache = true, $lastmodificationstamp = '', $charset = '')
     {
         global $g_error_msg;
 
@@ -130,7 +134,7 @@ class Output
             $this->sendCachingHeaders($lastmodificationstamp, $nocache);
 
             // Set the content type and the character set (as defined in the language files)
-            self::header("Content-Type: text/html; charset=" . ($charset == ""
+            self::header('Content-Type: text/html; charset='.($charset == ''
                     ? Tools::atkGetCharset() : $charset));
 
             $res = $this->m_content;
@@ -145,9 +149,9 @@ class Output
             $res .= $debugger->renderDebugAndErrorMessages();
         }
 
-        if (Config::getGlobal("output_gzip") &&
+        if (Config::getGlobal('output_gzip') &&
             phpversion() >= '4.0.4pl1' &&
-            (strstr($_SERVER["HTTP_USER_AGENT"], 'compatible') || strstr($_SERVER["HTTP_USER_AGENT"], 'Gecko')) &&
+            (strstr($_SERVER['HTTP_USER_AGENT'], 'compatible') || strstr($_SERVER['HTTP_USER_AGENT'], 'Gecko')) &&
             isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
         ) {
             self::header('Content-Encoding: gzip');
@@ -158,19 +162,21 @@ class Output
     }
 
     /**
-     * Display the debug statements
+     * Display the debug statements.
      *
-     * @return String htmlcode with debugging
+     * @return string htmlcode with debugging
      */
     public function getDebugging()
     {
         global $g_debug_msg;
-        if (Config::getGlobal("debug") > 0) {
-            $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">' . implode("<br>\n ",
-                    $g_debug_msg) . '</div>';
+        if (Config::getGlobal('debug') > 0) {
+            $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">'.implode("<br>\n ",
+                    $g_debug_msg).'</div>';
+
             return $output;
         }
-        return "";
+
+        return '';
     }
 
     /**
@@ -182,16 +188,17 @@ class Output
      */
     public function rawoutput($txt)
     {
-        $this->m_raw .= $txt . "\n";
+        $this->m_raw .= $txt."\n";
     }
 
     /**
      * Output regular text to the browser.
+     *
      * @param string $txt The text to output.
      */
     public function output($txt)
     {
-        $this->m_content .= $txt . "\n";
+        $this->m_content .= $txt."\n";
     }
 
     /**
@@ -199,8 +206,10 @@ class Output
      *
      * Called internally by Output when $config_output_gzip is set to true,
      * but can be used by other scripts too, if they need to gzip some data.
+     *
      * @param string $contents The string to gzip.
-     * @return String The gzipped string.
+     *
+     * @return string The gzipped string.
      */
     public function gzip($contents)
     {
@@ -217,7 +226,4 @@ class Output
 
         return $res;
     }
-
 }
-
-

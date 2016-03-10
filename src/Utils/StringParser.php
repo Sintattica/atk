@@ -1,27 +1,26 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
+
+namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Core\Tools;
-use \ArrayAccess;
+use ArrayAccess;
 
 /**
  * Generic string parser.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage utils
- *
  */
 class StringParser
 {
-    var $m_fields = array();
-    var $m_string = "";
+    public $m_fields = array();
+    public $m_string = '';
 
     /**
-     * Create a new stringparser
+     * Create a new stringparser.
      *
      * @param string $string The string to parse
      */
-    function __construct($string)
+    public function __construct($string)
     {
         $this->m_string = $string;
     }
@@ -29,15 +28,15 @@ class StringParser
     /**
      * Parse data into the string.
      *
-     * @param array $data The data to parse in the string
-     * @param bool $encode Wether or not to do a rawurlencode
-     * @param bool $replaceUnknownFields Replace unknown fields with an empty string,
-     *                                   if set to false unknown fields will be left
-     *                                   untouched.
+     * @param array $data                 The data to parse in the string
+     * @param bool  $encode               Wether or not to do a rawurlencode
+     * @param bool  $replaceUnknownFields Replace unknown fields with an empty string,
+     *                                    if set to false unknown fields will be left
+     *                                    untouched.
      *
-     * @return String The parsed string
+     * @return string The parsed string
      */
-    function parse($data, $encode = false, $replaceUnknownFields = true)
+    public function parse($data, $encode = false, $replaceUnknownFields = true)
     {
         $string = $this->m_string;
 
@@ -45,7 +44,7 @@ class StringParser
         foreach ($fields as $field) {
             $value = $data;
 
-            $elements = explode(".", $field);
+            $elements = explode('.', $field);
             foreach ($elements as $i => $el) {
                 if (is_array($value) || $value instanceof ArrayAccess) {
                     if (isset($value[$el])) {
@@ -74,7 +73,7 @@ class StringParser
                 $value = rawurlencode($value);
             }
 
-            $string = str_replace("[" . $field . "]", $value, $string);
+            $string = str_replace('['.$field.']', $value, $string);
         }
 
         return $string;
@@ -84,15 +83,16 @@ class StringParser
      * Does the data contains everything needed to be parsed into the string?
      *
      * @param array $data
+     *
      * @return bool
      */
-    function isComplete($data)
+    public function isComplete($data)
     {
         $fields = $this->getFields();
-        for ($i = 0; $i < count($fields); $i++) {
-            $elements = explode(".", $fields[$i]);
+        for ($i = 0; $i < count($fields); ++$i) {
+            $elements = explode('.', $fields[$i]);
             $databin = $data;
-            for ($j = 0; $j < count($elements); $j++) {
+            for ($j = 0; $j < count($elements); ++$j) {
                 $value = $databin[$elements[$j]];
                 if (!isset($value)) {
                     return false;
@@ -103,26 +103,27 @@ class StringParser
                 return false;
             } // Missing value.
         }
+
         return true;
     }
 
     /**
-     * Get the [ ] Fields out of a String
+     * Get the [ ] Fields out of a String.
      */
-    function getFields()
+    public function getFields()
     {
         if (!count($this->m_fields)) {
-            $tmp = "";
+            $tmp = '';
             $adding = false;
 
             $strlen = strlen($this->m_string);
-            for ($i = 0; $i < $strlen; $i++) {
-                if ($this->m_string[$i] == "]") {
+            for ($i = 0; $i < $strlen; ++$i) {
+                if ($this->m_string[$i] == ']') {
                     $adding = false;
                     $this->m_fields[] = $tmp;
-                    $tmp = "";
+                    $tmp = '';
                 } else {
-                    if ($this->m_string[$i] == "[") {
+                    if ($this->m_string[$i] == '[') {
                         $adding = true;
                     } else {
                         if ($adding) {
@@ -132,11 +133,12 @@ class StringParser
                 }
             }
         }
+
         return $this->m_fields;
     }
 
     /**
-     * Get all fields from a string
+     * Get all fields from a string.
      *
      * <b>Example:</b>
      *        string: [firstname], [lastname] [city]
@@ -144,32 +146,34 @@ class StringParser
      *
      * @return array
      */
-    function getAllFieldsAsArray()
+    public function getAllFieldsAsArray()
     {
         $matches = array();
         preg_match_all("/\[[^\]]*\]|[^[]+/", $this->m_string, $matches);
+
         return $matches;
     }
 
     /**
-     * Parse data into the string and return all fields as an array
+     * Parse data into the string and return all fields as an array.
      *
      * @param array $data
-     * @param boolean $split_tags_and_fields return fields and separators separated in resultarray (separators are not used in query, so quotes aren't used)
+     * @param bool  $split_tags_and_fields return fields and separators separated in resultarray (separators are not used in query, so quotes aren't used)
+     *
      * @return array
      */
-    function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
+    public function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
     {
         $matches = $this->getAllFieldsAsArray();
-        Tools::atk_var_dump($matches, "MATCHES" . ($split_tags_and_fields ? " (split tags and separators)"
-                : ""));
+        Tools::atk_var_dump($matches, 'MATCHES'.($split_tags_and_fields ? ' (split tags and separators)'
+                : ''));
 
         $fields = array();
         if (is_array($matches)) {
             foreach ($matches[0] as $match) {
                 // Check if need to parse the match
                 if (strpos($match, '[') !== false && strpos($match, ']') !== false) {
-                    $parser = new StringParser($match);
+                    $parser = new self($match);
 
                     if ($split_tags_and_fields) {
                         $fields['tags'][] = $parser->parse($data);
@@ -180,11 +184,12 @@ class StringParser
                     if ($split_tags_and_fields) {
                         $fields['separators'][] = $match;
                     } else {
-                        $fields[] = "'" . $match . "'";
+                        $fields[] = "'".$match."'";
                     }
                 }
             }
         }
+
         return $fields;
     }
 
@@ -194,7 +199,7 @@ class StringParser
      *
      * @return array attributes used in template
      */
-    function getAttributes()
+    public function getAttributes()
     {
         $attrs = array();
 
@@ -206,7 +211,4 @@ class StringParser
 
         return $attrs;
     }
-
 }
-
-

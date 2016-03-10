@@ -1,9 +1,10 @@
-<?php namespace Sintattica\Atk\RecordList;
+<?php
+
+namespace Sintattica\Atk\RecordList;
 
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
-
 
 abstract class RecordList
 {
@@ -16,21 +17,19 @@ abstract class RecordList
     const RL_MRPA = 32; // multi-record-priority-actions enabled
     const RL_EXT_SORT = 128; // extended sort feature
 
-    /** @var Node $m_node */
-    var $m_node;
+    /* @var Node $m_node */
+    public $m_node;
 
-    var $m_flags = 0;
-    var $m_actionloader;
-    var $m_masternode = null;
-    var $m_hasActionColumn = 0;
-    var $m_actionSessionStatus = SessionManager::SESSION_NESTED;
-
+    public $m_flags = 0;
+    public $m_actionloader;
+    public $m_masternode = null;
+    public $m_hasActionColumn = 0;
+    public $m_actionSessionStatus = SessionManager::SESSION_NESTED;
 
     /**
-     * @access private
      * @param Node $node
      */
-    function setNode(&$node)
+    public function setNode(&$node)
     {
         $this->m_node = &$node;
     }
@@ -41,7 +40,7 @@ abstract class RecordList
      *
      * @param int $sessionStatus The session status (one of the SessionManager::SESSION_* constants)
      */
-    function setActionSessionStatus($sessionStatus)
+    public function setActionSessionStatus($sessionStatus)
     {
         $this->m_actionSessionStatus = $sessionStatus;
     }
@@ -51,7 +50,7 @@ abstract class RecordList
      *
      * @param Node $masternode
      */
-    function setMasterNode(&$masternode)
+    public function setMasterNode(&$masternode)
     {
         $this->m_masternode = &$masternode;
     }
@@ -61,9 +60,10 @@ abstract class RecordList
      *
      * @param int $flags
      * @static
+     *
      * @return int
      */
-    function convertFlags($flags)
+    public function convertFlags($flags)
     {
         $result = Tools::hasFlag($flags, Node::NF_MRA) ? self::RL_MRA : 0;
         $result |= Tools::hasFlag($flags, Node::NF_MRPA) ? self::RL_MRPA : 0;
@@ -71,31 +71,33 @@ abstract class RecordList
         $result |= Tools::hasFlag($flags, Node::NF_NO_EXTENDED_SEARCH) ? self::RL_NO_EXTENDED_SEARCH
             : 0;
         $result |= Tools::hasFlag($flags, Node::NF_EXT_SORT) ? self::RL_EXT_SORT : 0;
+
         return $result;
     }
 
-
     /**
-     * Get the masternode
+     * Get the masternode.
      *
      * @return Node The master node
      */
-    function getMasterNode()
+    public function getMasterNode()
     {
         if (is_object($this->m_masternode)) {
             return $this->m_masternode;
         }
+
         return $this->m_node; // treat rendered node as master
     }
 
     /**
-     * Get the nodetype of the master node
+     * Get the nodetype of the master node.
      *
      * @return string Modulename.nodename of the master node
      */
-    function getMasterNodeType()
+    public function getMasterNodeType()
     {
         $node = $this->getMasterNode();
+
         return $node->atkNodeUri();
     }
 }

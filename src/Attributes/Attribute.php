@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
@@ -10,8 +12,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Utils\EditFormModifier;
-use \Exception;
-
+use Exception;
 
 /**
  * The Attribute class represents an attribute of an Node.
@@ -20,103 +21,102 @@ use \Exception;
  * is obligatory, etc.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage attributes
  */
 class Attribute
 {
     /**
-     * Attributeflags. The following flags can be used for attributes
+     * Attributeflags. The following flags can be used for attributes.
+     *
      * @internal WARNING: flags may *not* exceed 2^31 (2147483648), because
      * that's the integer limit beyond which the bitwise operators won't
      * work anymore!
      */
     /**
-     * Value must be entered
+     * Value must be entered.
      *
      * "database-level" processing flag
      */
     const AF_OBLIGATORY = 1;
 
     /**
-     * Value must be unique
+     * Value must be unique.
      *
      * "database-level" processing flag
      */
     const AF_UNIQUE = 2;
 
     /**
-     * Part of the primary-key node, also makes it obligatory
+     * Part of the primary-key node, also makes it obligatory.
      *
      * "database-level" processing flag
      */
     const AF_PRIMARY = 5;
 
     /**
-     * Auto-increment field
+     * Auto-increment field.
      *
      * "database-level" processing flag
      */
     const AF_AUTO_INCREMENT = 8;
 
     /**
-     * Alias for self::AF_AUTO_INCREMENT (auto-increment flag is often mistyped)
+     * Alias for self::AF_AUTO_INCREMENT (auto-increment flag is often mistyped).
      *
      * "database-level" processing flag
      */
     const AF_AUTOINCREMENT = 8;
 
     /**
-     * Don't show in record lists
+     * Don't show in record lists.
      *
      * hide flag
      */
     const AF_HIDE_LIST = 16;
 
     /**
-     * Don't show on add pages
+     * Don't show on add pages.
      *
      * hide flag
      */
     const AF_HIDE_ADD = 32;
 
     /**
-     * Don't show on edit pages
+     * Don't show on edit pages.
      *
      * hide flag
      */
     const AF_HIDE_EDIT = 64;
 
     /**
-     * Don't show on select pages
+     * Don't show on select pages.
      *
      * hide flag
      */
     const AF_HIDE_SELECT = 128;
 
     /**
-     * Don't show on view pages
+     * Don't show on view pages.
      *
      * hide flag
      */
     const AF_HIDE_VIEW = 256;
 
     /**
-     * Not searchable in extended search
+     * Not searchable in extended search.
      *
      * hide flag
      */
     const AF_HIDE_SEARCH = 512; // not searchable in extended search
 
     /**
-     * Load always, even if not displayed anywhere
+     * Load always, even if not displayed anywhere.
      *
      * hide flag
      */
     const AF_FORCE_LOAD = 1024; // load always, even if not displayed anywhere
 
     /**
-     * Attribute is totally hidden
+     * Attribute is totally hidden.
      *
      * hide flag
      * self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_LIST | self::AF_HIDE_SEARCH | self::AF_HIDE_VIEW | self::AF_HIDE_SELECT
@@ -124,21 +124,21 @@ class Attribute
     const AF_HIDE = 1008;
 
     /**
-     * Readonly in add
+     * Readonly in add.
      *
      * readonly flag
      */
     const AF_READONLY_ADD = 2048;
 
     /**
-     * Readonly when edited
+     * Readonly when edited.
      *
      * readonly flag
      */
     const AF_READONLY_EDIT = 4096;
 
     /**
-     * Always readonly
+     * Always readonly.
      *
      * readonly flag
      * self::AF_READONLY_EDIT | self::AF_READONLY_ADD;
@@ -146,77 +146,77 @@ class Attribute
     const AF_READONLY = 6144;
 
     /**
-     * No label in forms
+     * No label in forms.
      *
      * display-related processing flag
      */
     const AF_NO_LABEL = 8192;
 
     /**
-     * Alias for self::AF_NO_LABEL (mistyped)
+     * Alias for self::AF_NO_LABEL (mistyped).
      *
      * display-related processing flag
      */
     const AF_NOLABEL = 8192;
 
     /**
-     * Blank label in forms
+     * Blank label in forms.
      *
      * display-related processing flag
      */
     const AF_BLANK_LABEL = 16384;
 
     /**
-     * Alias for self::AF_BLANK_LABEL (mistyped)
+     * Alias for self::AF_BLANK_LABEL (mistyped).
      *
      * display-related processing flag
      */
     const AF_BLANKLABEL = 16384;
 
     /**
-     * Cannot be sorted in recordlists
+     * Cannot be sorted in recordlists.
      *
      * display-related processing flag
      */
     const AF_NO_SORT = 32768;
 
     /**
-     * Alias for self::AF_NO_SORT (mistyped)
+     * Alias for self::AF_NO_SORT (mistyped).
      *
      * display-related processing flag
      */
     const AF_NOSORT = 32768;
 
     /**
-     * Attribute is searchable in list views
+     * Attribute is searchable in list views.
      *
      * display-related processing flag
      */
     const AF_SEARCHABLE = 65536;
 
     /**
-     * The attribute will have a 'total' column in lists
+     * The attribute will have a 'total' column in lists.
      *
      * display-related processing flag
      */
     const AF_TOTAL = 131072;
 
     /**
-     * If supported, use pop-up window
+     * If supported, use pop-up window.
      *
      * display-related processing flag
      */
     const AF_POPUP = 262144;
 
     /**
-     * Delete function is called when owning node is deleted
+     * Delete function is called when owning node is deleted.
      *
      * miscellaneous processing flag
      */
     const AF_CASCADE_DELETE = 524288;
 
     /**
-     * Will have a large amount of recors (relation)
+     * Will have a large amount of recors (relation).
      *
      * Instead of showing a listbox with all the records it will show an add link to a select page
      *
@@ -225,28 +225,28 @@ class Attribute
     const AF_LARGE = 1048576;
 
     /**
-     * Ignore filters when selecting records (relation)
+     * Ignore filters when selecting records (relation).
      *
      * miscellaneous processing flag
      */
     const AF_NO_FILTER = 2097152;
 
     /**
-     * Parent field for parent child relations (treeview)
+     * Parent field for parent child relations (treeview).
      *
      * miscellaneous processing flag
      */
     const AF_PARENT = 4194304;
 
     /**
-     * No quotes are used when adding to the database
+     * No quotes are used when adding to the database.
      *
      * miscellaneous processing flag
      */
     const AF_NO_QUOTES = 8388608;
 
     /**
-     * Shortcut for hidden auto-incremented primary key
+     * Shortcut for hidden auto-incremented primary key.
      *
      * miscellaneous processing flag
      * self::AF_PRIMARY | self::AF_HIDE | self::AF_AUTOINCREMENT;
@@ -254,192 +254,192 @@ class Attribute
     const AF_AUTOKEY = 1021;
 
     /**
-     * Do not store this attribute
+     * Do not store this attribute.
      *
      * Storage type flag, used by the storageType() and related methods
      */
     const NOSTORE = 0;
 
     /**
-     * Do not load this attribute
+     * Do not load this attribute.
      *
      * Storage type flag, used by the storageType() and related methods
      */
     const NOLOAD = 0;
 
     /**
-     * Store before all other ('normal') attributes (?)
+     * Store before all other ('normal') attributes (?).
      *
      * Storage type flag, used by the storageType() and related methods
      */
     const PRESTORE = 1;
 
     /**
-     * Call load before select()
+     * Call load before select().
      *
      * Storage type flag, used by the storageType() and related methods
      */
     const PRELOAD = 1;
 
     /**
-     * Store after all other ('normal') attributes (?)
+     * Store after all other ('normal') attributes (?).
      *
      * Storage type flag, used by the storageType() and related methods
      */
     const POSTSTORE = 2;
 
     /**
-     * Call load after select()
+     * Call load after select().
      *
      * Storage type flag, used by the storageType() and related methods
      */
     const POSTLOAD = 2;
 
     /**
-     * Do addToQuery() of this attribute
+     * Do addToQuery() of this attribute.
      *
      * Storage type flag, used by the storageType() and related methods
      */
     const ADDTOQUERY = 4;
 
     /**
-     * Attribute is disable in view mode
+     * Attribute is disable in view mode.
      */
     const DISABLED_VIEW = 1;
 
     /**
-     * Attribute is disable in edit mode
+     * Attribute is disable in edit mode.
      */
     const DISABLED_EDIT = 2;
 
     /**
      * Attribute is disabled in view and edit mode
-     * self::DISABLED_VIEW | self::DISABLED_EDIT;
+     * self::DISABLED_VIEW | self::DISABLED_EDIT;.
      */
     const DISABLED_ALL = 3;
 
-    /**
+    /*
      * The name of the attribute
      * @access private
      * @var String
      */
-    var $m_name;
+    public $m_name;
 
-    /**
+    /*
      * The attribute flags (see above)
      * @access private
      * @var int
      */
-    var $m_flags = 0;
+    public $m_flags = 0;
 
-    /**
+    /*
      * The name of the Node that owns this attribute (set by atknode)
      * @access private
      * @var String
      */
-    var $m_owner = "";
+    public $m_owner = '';
 
-    /**
+    /*
      * The module of the attribute (if empty, the module from the owner node
      * should be assumed).
      * @access private
      * @var String
      *
      */
-    var $m_module = "";
+    public $m_module = '';
 
-    /**
+    /*
      * Instance of the Node that owns this attribute
      * @access private
      * @var Node
      */
-    var $m_ownerInstance = "";
+    public $m_ownerInstance = '';
 
-    /**
+    /*
      * The size the attribute's field.
      * @access private
      * @var int
      */
-    var $m_size = 0;
+    public $m_size = 0;
 
-    /**
+    /*
      * The size the attribute's search input field.
      * @access private
      * @var int
      */
-    var $m_searchsize = 0;
+    public $m_searchsize = 0;
 
-    /**
+    /*
      * The maximum size the attribute's value may have in the database.
      * @access private
      * @var int
      */
-    var $m_maxsize = 0;
+    public $m_maxsize = 0;
 
-    /**
+    /*
      * The database fieldtype.
      * @access private
      * @var String
      */
-    var $m_dbfieldtype = "";
+    public $m_dbfieldtype = '';
 
-    /**
+    /*
      * The order of the attribute within its node.
      * @access private
      * @var int
      */
-    var $m_order = 0;
+    public $m_order = 0;
 
-    /**
+    /*
      * Index of the attribute within its node.
      * @access private
      * @var int
      */
-    var $m_index = 0;
+    public $m_index = 0;
 
-    /**
+    /*
      * The tab(s) on which the attribute lives.
      * @access private
      * @var mixed
      */
-    var $m_tabs = "*";
+    public $m_tabs = '*';
 
-    /**
+    /*
      * The section(s) on which the attribute lives.
      * @access private
      * @var mixed
      */
-    var $m_sections = "*";
+    public $m_sections = '*';
 
-    /**
+    /*
      * The id of the attribute in the HTML
      * @access private
      * @var String
      */
-    var $m_htmlid;
+    public $m_htmlid;
 
-    /**
+    /*
      * The css classes of the attribute
      * @access private
      * @var array
      */
-    var $m_cssclasses = array();
+    public $m_cssclasses = array();
 
-    /**
+    /*
      * The label of the attribute.
      * @access private
      * @var String
      */
-    var $m_label = "";
+    public $m_label = '';
 
-    /**
+    /*
      * The postfix label of the attribute.
      * @access private
      * @var String
      */
-    var $m_postfixlabel = "";
+    public $m_postfixlabel = '';
 
-    /**
+    /*
      * The searchmode for this attribute
      *
      * This var exists so that you can assign searchmodes to specific
@@ -449,44 +449,44 @@ class Attribute
      * @access private
      * @var String
      */
-    var $m_searchmode = "";
+    public $m_searchmode = '';
 
-    /**
+    /*
      * Wether to force an insert of the attribute
      * @access private
      * @var bool
      */
-    var $m_forceinsert = false;
+    public $m_forceinsert = false;
 
-    /**
+    /*
      * Wether to force a reload of the attribute ignoring the saved session data
      *
      * @access private
      * @var bool
      */
-    var $m_forcereload = false;
+    public $m_forcereload = false;
 
-    /**
+    /*
      * Wether to force an update of the attribute
      * @access private
      * @var bool
      */
-    var $m_forceupdate = false;
+    public $m_forceupdate = false;
 
-    /**
+    /*
      * Array for containing onchange javascript code
      * @access private
      * @var array
      */
-    var $m_onchangecode = array();
+    public $m_onchangecode = array();
 
-    /**
+    /*
      * Variable to store initialisation javascript code
      * in for the changehandler.
      * @access private
      * @var String
      */
-    var $m_onchangehandler_init = "";
+    public $m_onchangehandler_init = '';
 
     /**
      * Variable to store dependency callbacks.
@@ -495,43 +495,43 @@ class Attribute
      */
     private $m_dependencies = array();
 
-    /**
+    /*
      * Attribute to store disabled modes.
      * @access private
      * @var int
      */
-    var $m_disabledModes = 0;
+    public $m_disabledModes = 0;
 
-    /**
+    /*
      * Whether to hide initially or not
      * @access private
      * @var bool
      */
-    var $m_initial_hidden = false;
+    public $m_initial_hidden = false;
 
-    /**
+    /*
      * Storage type.
      * @access private
      * @var int
      * @see setStorageType
      */
-    var $m_storageType = array();
+    public $m_storageType = array();
 
-    /**
+    /*
      * Load type.
      * @access private
      * @var int
      * @see setLoadType
      */
-    var $m_loadType = array();
+    public $m_loadType = array();
 
-    /**
+    /*
      * Initial value.
      * @access private
      * @var mixed
      * @see setInitialValue
      */
-    var $m_initialValue = null;
+    public $m_initialValue = null;
 
     /**
      * Column.
@@ -563,13 +563,14 @@ class Attribute
     private $m_editCallback = null;
 
     /**
-     * Whether to show a spinner (next to the attribute) during dependencies execution
+     * Whether to show a spinner (next to the attribute) during dependencies execution.
+     *
      * @var bool
      */
     private $m_showSpinner = true;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * <b>Example:</b>
      *        $this->add(new Attribute("name",self::AF_OBLIGATORY, 30));
@@ -580,30 +581,32 @@ class Attribute
      *       field length. (Derived classes might have reasonable default
      *        values, but the standard Attribute doesn't.)
      *
-     * @param string $name Name of the attribute (unique within a node, and
-     *                     for most attributes, corresponds to a field in
-     *                     the database.
-     * @param int $flags Flags for the attribute.
-     * @param mixed $size The size(s) of the attribute. See the $size
-     *                     parameter of the setAttribSize() method for more
-     *                     information on the possible values of this
-     *                     parameter.
-     *
+     * @param string $name  Name of the attribute (unique within a node, and
+     *                      for most attributes, corresponds to a field in
+     *                      the database.
+     * @param int    $flags Flags for the attribute.
+     * @param mixed  $size  The size(s) of the attribute. See the $size
+     *                      parameter of the setAttribSize() method for more
+     *                      information on the possible values of this
+     *                      parameter.
      */
-    function __construct($name, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $size = 0)
     {
         $this->m_name = $name;
-        $this->setFlags((int)$flags);
+        $this->setFlags((int) $flags);
         $this->setAttribSize($size);
 
         // default class
         $this->addCSSClass($this->get_class_name());
     }
 
-    function get_class_name()
+    public function get_class_name()
     {
         $classname = get_class($this);
-        if ($pos = strrpos($classname, '\\')) return substr($classname, $pos + 1);
+        if ($pos = strrpos($classname, '\\')) {
+            return substr($classname, $pos + 1);
+        }
+
         return $pos;
     }
 
@@ -612,7 +615,7 @@ class Attribute
      *
      * @return Node owner instance
      */
-    function &getOwnerInstance()
+    public function &getOwnerInstance()
     {
         return $this->m_ownerInstance;
     }
@@ -622,26 +625,29 @@ class Attribute
      *
      * @param Node $instance
      */
-    function setOwnerInstance(&$instance)
+    public function setOwnerInstance(&$instance)
     {
         $this->m_ownerInstance = &$instance;
     }
 
     /**
      * Check if the attribute has a certain flag.
+     *
      * @param int $flag The flag you want to check
-     * @return boolean
+     *
+     * @return bool
      */
-    function hasFlag($flag)
+    public function hasFlag($flag)
     {
-        return (($this->m_flags & $flag) == $flag);
+        return ($this->m_flags & $flag) == $flag;
     }
 
     /**
      * Returns the full set of flags of the attribute.
+     *
      * @return int $m_flags The full set of flags
      */
-    function getFlags()
+    public function getFlags()
     {
         return $this->m_flags;
     }
@@ -651,10 +657,12 @@ class Attribute
      * Note that adding flags at any time after the constructor might not
      * always work. There are flags that are processed only at
      * constructor time.
+     *
      * @param int $flag The flag to add to the attribute
+     *
      * @return Attribute The instance of this Attribute
      */
-    function addFlag($flag)
+    public function addFlag($flag)
     {
         $this->m_flags |= $flag;
 
@@ -676,15 +684,17 @@ class Attribute
     }
 
     /**
-     * Sets the flags of the attribute
+     * Sets the flags of the attribute.
      *
      * Note that if you assign nothing or 0, this will remove all the flags
      * from the attribute. You can assign multiple flags by using the pipe
      * symbol. Setting the flags will overwrite all previous flag-settings.
+     *
      * @param int $flags The flags to be set to the attribute.
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setFlags($flags = 0)
+    public function setFlags($flags = 0)
     {
         $this->m_flags = 0;
         $this->addFlag($flags); // always call addFlag
@@ -697,10 +707,12 @@ class Attribute
      * Note that removing flags at any time after the constructor might not
      * always work. There are flags that have already been processed at
      * constructor time, so removing them will be futile.
+     *
      * @param int $flag The flag to remove from the attribute
+     *
      * @return Attribute The instance of this Attribute
      */
-    function removeFlag($flag)
+    public function removeFlag($flag)
     {
         if ($this->hasFlag($flag)) {
             $this->m_flags ^= $flag;
@@ -727,37 +739,45 @@ class Attribute
 
     /**
      * Adds a disabled mode flag to the attribute  (use DISABLED_VIEW and DISABLED_EDIT flags).
+     *
      * @param int $flag The flag to add to the attribute
+     *
      * @return Attribute The instance of this Attribute
      */
-    function addDisabledMode($flag)
+    public function addDisabledMode($flag)
     {
         $this->m_disabledModes |= $flag;
+
         return $this;
     }
 
     /**
      * Check if the attribute is disabled in some mode (use DISABLED_VIEW and DISABLED_EDIT flags).
+     *
      * @param int $flag The flag you want to check
-     * @return boolean
+     *
+     * @return bool
      */
-    function hasDisabledMode($flag)
+    public function hasDisabledMode($flag)
     {
-        return (($this->m_disabledModes & $flag) == $flag);
+        return ($this->m_disabledModes & $flag) == $flag;
     }
 
     /**
-     * Sets the disabled mode flag of the attribute
+     * Sets the disabled mode flag of the attribute.
      *
      * Note that if you assign nothing or 0, this will remove all the flags
      * from the attribute. You can assign multiple flags by using the pipe
      * symbol. Setting the flags will overwrite all previous flag-settings.
+     *
      * @param int $flags The flags to be set to the attribute.
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setDisabledModes($flags = 0)
+    public function setDisabledModes($flags = 0)
     {
         $this->m_disabledModes = $flags;
+
         return $this;
     }
 
@@ -765,9 +785,10 @@ class Attribute
      * Removes a disabled mode from the attribute.
      *
      * @param int $flag The flag to remove from the attribute
+     *
      * @return Attribute The instance of this Attribute
      */
-    function removeDisabledMode($flag)
+    public function removeDisabledMode($flag)
     {
         if ($this->hasDisabledMode($flag)) {
             $this->m_disabledModes ^= $flag;
@@ -784,21 +805,23 @@ class Attribute
      * name is a mere identifier within a node. This method always returns
      * the attribute name, despite the 'field' prefix of the method.
      *
-     * @return String fieldname
+     * @return string fieldname
      */
-    function fieldName()
+    public function fieldName()
     {
         return $this->m_name;
     }
 
     /**
      * Check if a record has an empty value for this attribute.
+     *
      * @param array $record The record that holds this attribute's value.
-     * @return boolean
+     *
+     * @return bool
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
-        return (!isset($record[$this->fieldName()]) || $record[$this->fieldName()] === "");
+        return !isset($record[$this->fieldName()]) || $record[$this->fieldName()] === '';
     }
 
     /**
@@ -811,14 +834,16 @@ class Attribute
      * This is the exact opposite of the db2value method.
      *
      * @param array $rec The record that holds this attribute's value.
-     * @return String The database compatible value
+     *
+     * @return string The database compatible value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
             return $this->escapeSQL($rec[$this->fieldName()]);
         }
-        return null;
+
+        return;
     }
 
     /**
@@ -831,23 +856,26 @@ class Attribute
      * This is the exact opposite of the value2db method.
      *
      * @param array $rec The database record that holds this attribute's value
+     *
      * @return mixed The internal value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         if (isset($rec[$this->fieldName()])) {
             return $rec[$this->fieldName()] === null ? null : $rec[$this->fieldName()];
         }
-        return null;
+
+        return;
     }
 
     /**
      * Is there a value posted for this attribute?
      *
      * @param array $postvars
-     * @return boolean posted?
+     *
+     * @return bool posted?
      */
-    function isPosted($postvars)
+    public function isPosted($postvars)
     {
         return is_array($postvars) && isset($postvars[$this->fieldName()]);
     }
@@ -859,11 +887,13 @@ class Attribute
      *       in the node or if the override properly calls parent::initial_values!
      *
      * @param mixed $value initial value
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setInitialValue($value)
+    public function setInitialValue($value)
     {
         $this->m_initialValue = $value;
+
         return $this;
     }
 
@@ -873,7 +903,7 @@ class Attribute
      *
      * @return mixed initial value for this attribute
      */
-    function initialValue()
+    public function initialValue()
     {
         return $this->m_initialValue;
     }
@@ -887,14 +917,16 @@ class Attribute
      *
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
-     * @return String|null The internal value
+     *
+     * @return string|null The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
             return $postvars[$this->fieldName()];
         }
-        return null;
+
+        return;
     }
 
     /**
@@ -906,7 +938,7 @@ class Attribute
     {
         foreach ($this->m_jsObservers as $event => $handlers) {
             foreach ($handlers as $handler) {
-                $code = '$(\'' . $fieldId . '\').observe(\'' . $event . '\', function(event) { var fieldId = \'' . $fieldId . '\'; ' . $handler . ' });';
+                $code = '$(\''.$fieldId.'\').observe(\''.$event.'\', function(event) { var fieldId = \''.$fieldId.'\'; '.$handler.' });';
                 $this->getOwnerInstance()->getPage()->register_loadscript($code);
             }
         }
@@ -916,19 +948,19 @@ class Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array $record The record that holds the value for this attribute.
+     * @param array  $record      The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return String A piece of htmlcode for editing this attribute
+     * @param string $mode        The mode we're in ('add' or 'edit')
+     *
+     * @return string A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
 
-
         if (count($this->m_onchangecode)) {
-            $onchange = 'onChange="' . $id . '_onChange(this);"';
+            $onchange = 'onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {
             $onchange = '';
@@ -942,12 +974,12 @@ class Attribute
         }
 
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()])
-            ? htmlspecialchars($record[$this->fieldName()]) : "");
+            ? htmlspecialchars($record[$this->fieldName()]) : '');
 
-        $result = '<input type="text" id="' . $id . '" name="' . $id . '" ' . $this->getCSSClassAttribute(array('form-control')) .
-            ' value="' . $value . '"' .
-            ($size > 0 ? ' size="' . $size . '"' : '') .
-            ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ' ' . $onchange . ' />';
+        $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).
+            ' value="'.$value.'"'.
+            ($size > 0 ? ' size="'.$size.'"' : '').
+            ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
 
         $result .= $this->getSpinner();
 
@@ -956,25 +988,27 @@ class Attribute
 
     /**
      * Add a javascript onchange event handler.
+     *
      * @param string $jscode A block of valid javascript code.
+     *
      * @return Attribute Returns the instance of this attribute.
      */
-    function addOnChangeHandler($jscode)
+    public function addOnChangeHandler($jscode)
     {
         if (!in_array($jscode, $this->m_onchangecode)) {
             $this->m_onchangecode[] = $jscode;
         }
+
         return $this;
     }
 
     /**
      * Renders the onchange code on the page.
      *
-     * @access private
      * @param string $fieldprefix The prefix to the field
-     * @param string $elementNr The number of the element when attribute contains multiple options
+     * @param string $elementNr   The number of the element when attribute contains multiple options
      */
-    function _renderChangeHandler($fieldprefix, $elementNr = "")
+    public function _renderChangeHandler($fieldprefix, $elementNr = '')
     {
         if (count($this->m_onchangecode)) {
 
@@ -982,7 +1016,7 @@ class Attribute
             if (count($this->getDependencies()) && $this->m_showSpinner) {
                 $id = $this->getHtmlId($fieldprefix);
                 if ($this->m_ownerInstance) {
-                    $id = str_replace('.', '_', $this->m_ownerInstance->atkNodeUri() . '_' . $id);
+                    $id = str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$id);
                 }
                 $spinnerCode = "
       var spinner = $$('#$id .atkbusy');
@@ -995,45 +1029,48 @@ class Attribute
             }
 
             $page = Page::getInstance();
-            $page->register_scriptcode("
-    function " . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
+            $page->register_scriptcode('
+    function '.$this->getHtmlId($fieldprefix).$elementNr."_onChange(el)
     {
       {$this->m_onchangehandler_init}
-      " . implode("\n      ", $this->m_onchangecode) . "
+      ".implode("\n      ", $this->m_onchangecode)."
       $spinnerCode
     }\n");
         }
     }
 
     /**
-     * Returns the html of the spinner to show during dependencies execution (next to the attribute)
+     * Returns the html of the spinner to show during dependencies execution (next to the attribute).
      *
      * @return string
      */
-    function getSpinner()
+    public function getSpinner()
     {
         if (count($this->getDependencies()) && $this->m_showSpinner) {
             return '<div class="atkbusy spinner"><i class="fa fa-cog fa-spin"></i></div>';
         }
+
         return '';
     }
 
     /**
-     * Sets whether to show a spinner (next to the attribute) during dependencies execution
+     * Sets whether to show a spinner (next to the attribute) during dependencies execution.
      *
-     * @param boolean $value
+     * @param bool $value
      */
-    function showSpinner($value)
+    public function showSpinner($value)
     {
         $this->m_showSpinner = $value;
     }
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its value. (<input type="hidden">)
-     * @param array $record
+     * while still posting its value. (<input type="hidden">).
+     *
+     * @param array  $record
      * @param string $fieldprefix
      * @param string $mode
+     *
      * @return string html
      */
     public function hide($record, $fieldprefix, $mode)
@@ -1043,33 +1080,39 @@ class Attribute
         // working hide() functionality but at least it will not give error messages.
         if (!is_array($record[$this->fieldName()])) {
             $id = $id = $this->getHtmlId($fieldprefix);
-            $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->fieldName() . '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
+            $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+
             return $result;
         } else {
-            Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+            Tools::atkdebug('Warning attribute '.$this->m_name.' has no proper hide method!');
         }
+
         return '';
     }
 
     /**
      * Return the html identifier (id="") of the attribute. (unique within a
-     * page)
+     * page).
+     *
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @return String the HTML identifier.
+     *
+     * @return string the HTML identifier.
      */
-    function getHtmlId($fieldprefix)
+    public function getHtmlId($fieldprefix)
     {
-        $this->m_htmlid = $fieldprefix . $this->fieldName();
+        $this->m_htmlid = $fieldprefix.$this->fieldName();
+
         return $this->m_htmlid;
     }
 
     /**
      * Returns the html identifier of the attribute without setting it
      * Created because getHtmlId would always SET the htmlid while getting it.
-     * @return String The HTML id of this attribute
+     *
+     * @return string The HTML id of this attribute
      */
-    function getAttributeHtmlId()
+    public function getAttributeHtmlId()
     {
         if ($this->m_htmlid) {
             return $this->m_htmlid;
@@ -1086,24 +1129,24 @@ class Attribute
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param string $mode the mode ("view")
-     * @param array $arr pointer to the view array
-     * @param array $defaults pointer to the default values array
+     * @param string $mode     the mode ("view")
+     * @param array  $arr      pointer to the view array
+     * @param array  $defaults pointer to the default values array
      */
-    function addToViewArray($mode, &$arr, &$defaults)
+    public function addToViewArray($mode, &$arr, &$defaults)
     {
         if (!$this->hasFlag(self::AF_HIDE_VIEW)) {
-            $entry = array("name" => $this->m_name, "attribute" => &$this);
+            $entry = array('name' => $this->m_name, 'attribute' => &$this);
 
             /* label? */
-            $entry["label"] = $this->getLabel();
+            $entry['label'] = $this->getLabel();
             // on which tab?
-            $entry["tabs"] = $this->getTabs();
+            $entry['tabs'] = $this->getTabs();
             //on which sections?
-            $entry["sections"] = $this->getSections();
+            $entry['sections'] = $this->getSections();
             /* the actual edit contents */
-            $entry["html"] = $this->getView($mode, $defaults);
-            $arr["fields"][] = $entry;
+            $entry['html'] = $this->getView($mode, $defaults);
+            $arr['fields'][] = $entry;
         }
     }
 
@@ -1112,13 +1155,12 @@ class Attribute
      * edit array and allows for last minute manipulations based on the
      * record but also manipulations on the record itself.
      *
-     * @param array $record reference to the record
+     * @param array  $record      reference to the record
      * @param string $fieldPrefix field prefix
-     * @param string $mode edit mode
+     * @param string $mode        edit mode
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
-
     }
 
     /**
@@ -1126,12 +1168,11 @@ class Attribute
      * view array and allows for last minute manipulations based on the
      * record but also manipulations on the record itself.
      *
-     * @param array $record reference to the record
-     * @param string $mode view mode
+     * @param array  $record reference to the record
+     * @param string $mode   view mode
      */
     public function preAddToViewArray(&$record, $mode)
     {
-
     }
 
     /**
@@ -1142,54 +1183,56 @@ class Attribute
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param string $mode the edit mode ("add" or "edit")
-     * @param array $arr pointer to the edit array
-     * @param array $defaults pointer to the default values array
-     * @param array $error pointer to the error array
+     * @param string $mode        the edit mode ("add" or "edit")
+     * @param array  $arr         pointer to the edit array
+     * @param array  $defaults    pointer to the default values array
+     * @param array  $error       pointer to the error array
      * @param string $fieldprefix the fieldprefix
      */
-    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    public function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         /* hide */
-        if (($mode == "edit" && $this->hasFlag(self::AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_HIDE_ADD))) {
+        if (($mode == 'edit' && $this->hasFlag(self::AF_HIDE_EDIT)) || ($mode == 'add' && $this->hasFlag(self::AF_HIDE_ADD))) {
             /* when adding, there's nothing to hide, unless we're dealing with atkHiddenAttribute... */
-            if ($mode == "edit" || ($mode == "add" && (!$this->isEmpty($defaults) || $this instanceof HiddenAttribute))) {
-                $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
+            if ($mode == 'edit' || ($mode == 'add' && (!$this->isEmpty($defaults) || $this instanceof HiddenAttribute))) {
+                $arr['hide'][] = $this->hide($defaults, $fieldprefix, $mode);
             }
         } /* edit */ else {
-            global $ATK_VARS;
+     global $ATK_VARS;
 
-            $entry = array(
-                "name" => $this->m_name,
-                "obligatory" => $this->hasFlag(self::AF_OBLIGATORY),
-                "attribute" => &$this
+     $entry = array(
+                'name' => $this->m_name,
+                'obligatory' => $this->hasFlag(self::AF_OBLIGATORY),
+                'attribute' => &$this,
             );
-            $entry["id"] = $this->getHtmlId($fieldprefix);
+     $entry['id'] = $this->getHtmlId($fieldprefix);
 
             /* label? */
-            $entry["label"] = $this->getLabel();
+            $entry['label'] = $this->getLabel();
             /* error? */
-            $entry["error"] = $this->getError($error) || (isset($ATK_VARS["atkerrorfields"]) && Tools::atk_in_array($entry['id'],
+            $entry['error'] = $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($entry['id'],
                         $ATK_VARS['atkerrorfields']));
             // on which tab?
-            $entry["tabs"] = $this->getTabs();
+            $entry['tabs'] = $this->getTabs();
             //on which sections?
-            $entry["sections"] = $this->getSections();
+            $entry['sections'] = $this->getSections();
             // the actual edit contents
-            $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
+            $entry['html'] = $this->getEdit($mode, $defaults, $fieldprefix);
             // initially hidden
-            $entry["initial_hidden"] = $this->isInitialHidden();
-            $arr["fields"][] = $entry;
-        }
+            $entry['initial_hidden'] = $this->isInitialHidden();
+     $arr['fields'][] = $entry;
+ }
     }
 
     /**
      * Put the attribute on one or more tabs.
+     *
      * @param array $tabs An array of tabs on which the attribute should
      *                    be displayed.
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setTabs($tabs)
+    public function setTabs($tabs)
     {
         if (empty($tabs) && isset($this->m_ownerInstance) && is_object($this->m_ownerInstance)) {
             $tabs = array($this->m_ownerInstance->m_default_tab);
@@ -1200,14 +1243,16 @@ class Attribute
         }
 
         $this->m_tabs = $tabs;
+
         return $this;
     }
 
     /**
      * retrieve the tabs for this attribute.
+     *
      * @return array
      */
-    function getTabs()
+    public function getTabs()
     {
         return $this->m_tabs;
     }
@@ -1219,10 +1264,11 @@ class Attribute
      * <code>$attribute->setSections(array('tab.section','tab.othersection));</code>
      *
      * @param array $sections An array of tabs and/or sections on which the attribute should
-     *                    be displayed.
+     *                        be displayed.
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setSections($sections)
+    public function setSections($sections)
     {
         if ($sections == null) {
             $this->m_sections = array();
@@ -1238,7 +1284,7 @@ class Attribute
      *
      * @return array
      */
-    function getSections()
+    public function getSections()
     {
         return $this->m_sections;
     }
@@ -1257,11 +1303,13 @@ class Attribute
      * Set column.
      *
      * @param string $name column name
+     *
      * @return Attribute The instance of this Attribute
      */
     public function setColumn($name)
     {
         $this->m_column = $name;
+
         return $this;
     }
 
@@ -1297,30 +1345,29 @@ class Attribute
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param string $mode The mode ("view")
-     * @param array $defaults The record holding the values for this attribute
+     * @param string $mode     The mode ("view")
+     * @param array  $defaults The record holding the values for this attribute
      *
-     * @return String the HTML code for this attribute that can be used in a
+     * @return string the HTML code for this attribute that can be used in a
      *                viewpage.
      */
-    function getView($mode, &$defaults)
+    public function getView($mode, &$defaults)
     {
-        $method = $this->m_name . "_display";
+        $method = $this->m_name.'_display';
 
         if ($this->getViewCallback() != null) {
             $ret = call_user_func($this->getViewCallback(), $defaults, $mode, $this);
-        } else if (method_exists($this->m_ownerInstance, $method)) {
+        } elseif (method_exists($this->m_ownerInstance, $method)) {
             $ret = $this->m_ownerInstance->$method($defaults, $mode);
         } else {
             $ret = $this->display($defaults, $mode);
             if ($ret && strlen($this->m_postfixlabel) > 0) {
-                $ret .= "&nbsp;" . $this->m_postfixlabel;
+                $ret .= '&nbsp;'.$this->m_postfixlabel;
             }
         }
 
         return $ret;
     }
-
 
     /**
      * Returns the edit callback (if set).
@@ -1357,40 +1404,41 @@ class Attribute
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param string $mode The edit mode ("add" or "edit")
-     * @param array $defaults The record holding the values for this attribute
+     * @param string $mode        The edit mode ("add" or "edit")
+     * @param array  $defaults    The record holding the values for this attribute
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @return String the HTML code for this attribute that can be used in an
+     *
+     * @return string the HTML code for this attribute that can be used in an
      *                editpage.
      */
-    function getEdit($mode, &$defaults, $fieldprefix)
+    public function getEdit($mode, &$defaults, $fieldprefix)
     {
         // readonly
         if ($this->isReadonlyEdit($mode)) {
             return
-                $this->hide($defaults, $fieldprefix, $mode) .
+                $this->hide($defaults, $fieldprefix, $mode).
                 $this->getView($mode, $defaults);
         }
 
-        $method = $this->m_name . "_edit";
+        $method = $this->m_name.'_edit';
         if ($this->getEditCallback() != null) {
             return call_user_func($this->getEditCallback(), $defaults, $fieldprefix, $mode, $this);
         } else {
-            if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $method)) {
+            if ($this->m_name != 'action' && method_exists($this->m_ownerInstance, $method)) {
                 // we can't support the override for attributes named action, because of a conflict with
                 // a possible edit action override (in both cases the method is called action_edit)
                 return $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode);
             } else {
-                return $this->edit($defaults, $fieldprefix, $mode) . (strlen($this->m_postfixlabel) > 0
-                    ? "&nbsp;" . $this->m_postfixlabel : "");
+                return $this->edit($defaults, $fieldprefix, $mode).(strlen($this->m_postfixlabel) > 0
+                    ? '&nbsp;'.$this->m_postfixlabel : '');
             }
         }
     }
 
-    function isReadonlyEdit($mode)
+    public function isReadonlyEdit($mode)
     {
-        return ($mode == "edit" && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == "add" && $this->hasFlag(self::AF_READONLY_ADD));
+        return ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == 'add' && $this->hasFlag(self::AF_READONLY_ADD));
     }
 
     /**
@@ -1399,17 +1447,19 @@ class Attribute
      * @param array $errors The error list is one that is stored in the
      *                      "atkerror" section of a record, for example
      *                      generated by validate() methods.
-     * @return boolean
+     *
+     * @return bool
      */
-    function getError($errors)
+    public function getError($errors)
     {
-        for ($i = 0; $i < count($errors); $i++) {
+        for ($i = 0; $i < count($errors); ++$i) {
             if ($errors[$i]['attrib_name'] == $this->fieldName() ||
                 Tools::atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])
             ) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -1418,14 +1468,15 @@ class Attribute
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
+     * @param string       $action       the action that is being performed on the node
+     * @param array        $arr          reference to the the recordlist array
+     * @param string       $fieldprefix  the fieldprefix
+     * @param int          $flags        the recordlist flags
+     * @param array        $atksearch    the current ATK search list (if not empty)
      * @param ColumnConfig $columnConfig Column configuration object
-     * @param DataGrid $grid The DataGrid this attribute lives on.
-     * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @param DataGrid     $grid         The DataGrid this attribute lives on.
+     * @param string       $column       child column (null for this attribute, * for this attribute and all childs)
+     *
      * @throws Exception on invalid list column
      */
     public function addToListArrayHeader(
@@ -1439,30 +1490,30 @@ class Attribute
         $column = '*'
     ) {
         if ($column != null && $column != '*') {
-            throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ".get_class($this).' '.$this->getOwnerInstance()->atkNodeUri().'::'.$this->fieldName());
         }
 
-        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
-            $key = $fieldprefix . $this->fieldName();
+        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
+            $key = $fieldprefix.$this->fieldName();
 
-            $arr["heading"][$key]["title"] = $this->label();
+            $arr['heading'][$key]['title'] = $this->label();
 
             if ($grid->hasFlag(DataGrid::SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
-                $arr["heading"][$key]["order"] = $this->listHeaderSortOrder($columnConfig);
+                $arr['heading'][$key]['order'] = $this->listHeaderSortOrder($columnConfig);
             }
 
             if ($grid->hasFlag(DataGrid::EXTENDED_SORT)) {
-                $arr["sort"][$key] = $this->extendedSort($columnConfig, $fieldprefix, $grid);
+                $arr['sort'][$key] = $this->extendedSort($columnConfig, $fieldprefix, $grid);
             }
 
             if ($grid->hasFlag(DataGrid::SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
-                $fn = $this->fieldName() . "_search";
+                $fn = $this->fieldName().'_search';
                 if (method_exists($this->m_ownerInstance, $fn)) {
-                    $arr["search"][$key] = $this->m_ownerInstance->$fn($atksearch, false, $fieldprefix, $grid);
+                    $arr['search'][$key] = $this->m_ownerInstance->$fn($atksearch, false, $fieldprefix, $grid);
                 } else {
-                    $arr["search"][$key] = $this->search($atksearch, false, $fieldprefix, $grid);
+                    $arr['search'][$key] = $this->search($atksearch, false, $fieldprefix, $grid);
                 }
-                $arr["search"][$key] .= $this->searchMode(false, $fieldprefix);
+                $arr['search'][$key] .= $this->searchMode(false, $fieldprefix);
             }
         }
     }
@@ -1472,14 +1523,14 @@ class Attribute
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param int $nr the current row number
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param boolean $edit editing?
-     * @param DataGrid $grid data grid
-     * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @param string   $action      the action that is being performed on the node
+     * @param array    $arr         reference to the the recordlist array
+     * @param int      $nr          the current row number
+     * @param string   $fieldprefix the fieldprefix
+     * @param int      $flags       the recordlist flags
+     * @param bool     $edit        editing?
+     * @param DataGrid $grid        data grid
+     * @param string   $column      child column (null for this attribute, * for this attribute and all childs)
      */
     public function addToListArrayRow(
         $action,
@@ -1492,23 +1543,23 @@ class Attribute
         $column = '*'
     ) {
         if ($column != null && $column != '*') {
-            throw new Exception("Invalid list column {$column} for " . get_class($this) . " " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ".get_class($this).' '.$this->getOwnerInstance()->atkNodeUri().'::'.$this->fieldName());
         }
 
-        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == "select")) {
+        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
             if ($edit) {
-                $arr["rows"][$nr]["data"][$fieldprefix . $this->fieldName()] = $this->getEdit('list',
-                    $arr["rows"][$nr]["record"], 'atkdatagriddata_AE_' . $nr . '_AE_');
+                $arr['rows'][$nr]['data'][$fieldprefix.$this->fieldName()] = $this->getEdit('list',
+                    $arr['rows'][$nr]['record'], 'atkdatagriddata_AE_'.$nr.'_AE_');
             } else {
-                $arr["rows"][$nr]["data"][$fieldprefix . $this->fieldName()] = $this->getView('list',
-                    $arr["rows"][$nr]["record"]);
+                $arr['rows'][$nr]['data'][$fieldprefix.$this->fieldName()] = $this->getView('list',
+                    $arr['rows'][$nr]['record']);
             }
 
             /* totalisable? */
             if ($this->hasFlag(self::AF_TOTAL)) {
-                $sum = $this->sum($arr["totalraw"], $arr["rows"][$nr]["record"]);
-                $arr["totalraw"][$this->fieldName()] = $sum[$this->fieldName()];
-                $arr["total"][$fieldprefix . $this->fieldName()] = $this->getView('list', $sum);
+                $sum = $this->sum($arr['totalraw'], $arr['rows'][$nr]['record']);
+                $arr['totalraw'][$this->fieldName()] = $sum[$this->fieldName()];
+                $arr['total'][$fieldprefix.$this->fieldName()] = $this->getView('list', $sum);
             }
         }
     }
@@ -1522,32 +1573,33 @@ class Attribute
      * search in the 'extended' search screen.
      * The regular Attributes returns a simple text input box for entering
      * a keyword to search for.
+     *
      * @todo  find a better way to search on onetomanys that does not require
      *        something evil in Attribute
-     * @param array $record Array with values
-     * @param bool $extended if set to false, a simple search input is
-     *                          returned for use in the searchbar of the
-     *                          recordlist. If set to true, a more extended
-     *                          search may be returned for the 'extended'
-     *                          search page. The Attribute does not
-     *                          make a difference for $extended is true, but
-     *                          derived attributes may reimplement this.
+     *
+     * @param array  $record      Array with values
+     * @param bool   $extended    if set to false, a simple search input is
+     *                            returned for use in the searchbar of the
+     *                            recordlist. If set to true, a more extended
+     *                            search may be returned for the 'extended'
+     *                            search page. The Attribute does not
+     *                            make a difference for $extended is true, but
+     *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
-     * @return String A piece of html-code
+     * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $id = $this->getSearchFieldName($fieldprefix);
 
-        $value = "";
+        $value = '';
         if (is_array($record) && isset($record[$this->fieldName()])) {
             $value = $record[$this->fieldName()];
         }
 
-
-        $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . htmlentities($value) . '"' .
-            ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>';
+        $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.
+            ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
 
         return $result;
     }
@@ -1559,9 +1611,10 @@ class Attribute
      * It will show a pulldown if using extended search and multiple
      * searchmodes are supported otherwise the default searchmode is selected.
      *
-     * @param  boolean $extended using extended search?
-     * @param  string $fieldprefix optional fieldprefix
-     * @return string  html which is used for selecting searchmode
+     * @param bool   $extended    using extended search?
+     * @param string $fieldprefix optional fieldprefix
+     *
+     * @return string html which is used for selecting searchmode
      */
     public function searchMode($extended = false, $fieldprefix = '')
     {
@@ -1576,35 +1629,37 @@ class Attribute
         }
 
         if ($extended && count($searchModes) > 1) {
-            $field = '<select class="form-control" name="' . $this->getSearchModeFieldname($fieldprefix) . '">';
+            $field = '<select class="form-control" name="'.$this->getSearchModeFieldname($fieldprefix).'">';
 
             foreach ($searchModes as $value) {
                 $selected = $searchMode == $value ? ' selected="selected"' : '';
-                $field .= '<option value="' . $value . '"' . $selected . '>' . htmlentities($this->text("search_" . $value)) . '</option>';
+                $field .= '<option value="'.$value.'"'.$selected.'>'.htmlentities($this->text('search_'.$value)).'</option>';
             }
 
             $field .= '</select>';
         } else {
-            $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldprefix) . '" value="' . $searchMode . '">' .
-                ($extended ? Tools::atktext("search_" . $searchMode) : '');
+            $field = '<input type="hidden" name="'.$this->getSearchModeFieldname($fieldprefix).'" value="'.$searchMode.'">'.
+                ($extended ? Tools::atktext('search_'.$searchMode) : '');
         }
 
         return $field;
     }
 
     /**
-     * Retrieve the current set or default searchmode of this attribute
+     * Retrieve the current set or default searchmode of this attribute.
      *
-     * @param boolean $extended Whether extended search is being used
-     * @return String the default searchmode for this attribute.
+     * @param bool $extended Whether extended search is being used
+     *
+     * @return string the default searchmode for this attribute.
      */
-    function getSearchMode()
+    public function getSearchMode()
     {
         $searchmode = $this->m_ownerInstance->getSearchMode();
 
         if (is_array($searchmode)) {
             return $searchmode[$this->fieldName()];
         }
+
         return $searchmode;
     }
 
@@ -1612,21 +1667,21 @@ class Attribute
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
      *
-     * @param Integer $id The unique smart search criterium identifier.
-     * @param Integer $nr The element number in the path.
-     * @param array $path The remaining attribute path.
-     * @param Query $query The query to which the condition will be added.
+     * @param int    $id         The unique smart search criterium identifier.
+     * @param int    $nr         The element number in the path.
+     * @param array  $path       The remaining attribute path.
+     * @param Query  $query      The query to which the condition will be added.
      * @param string $ownerAlias The owner table alias to use.
-     * @param Mixed $value The value the user has entered in the searchbox.
-     * @param string $mode The searchmode to use.
+     * @param mixed  $value      The value the user has entered in the searchbox.
+     * @param string $mode       The searchmode to use.
      */
-    function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    public function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
     {
         // default implementation doesn't supported nested paths, this method
         // should be overriden by relations etc. if they want to support this
         if (count($path) > 0) {
             Tools::atk_var_dump($path,
-                'Invalid search path for ' . $this->m_ownerInstance->atkNodeUri() . '#' . $this->fieldName() . ', ignoring criterium!');
+                'Invalid search path for '.$this->m_ownerInstance->atkNodeUri().'#'.$this->fieldName().', ignoring criterium!');
         } else {
             $this->searchCondition($query, $ownerAlias, $value, $mode);
         }
@@ -1636,15 +1691,15 @@ class Attribute
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
-     * @param Query $query The query to which the condition will be added.
-     * @param string $table The name of the table in which this attribute
-     *                      is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param Query  $query      The query to which the condition will be added.
+     * @param string $table      The name of the table in which this attribute
+     *                           is stored
+     * @param mixed  $value      The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
      */
-    function searchCondition(&$query, $table, $value, $searchmode)
+    public function searchCondition(&$query, $table, $value, $searchmode)
     {
         $searchCondition = $this->getSearchCondition($query, $table, $value, $searchmode);
         if ($searchCondition) {
@@ -1657,17 +1712,18 @@ class Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                              is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param Query  $query      The query object where the search condition should be placed on
+     * @param string $table      The name of the table in which this attribute
+     *                           is stored
+     * @param mixed  $value      The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
-     *                              of the supported modes, as returned by this
-     *                              attribute's getSearchModes() method.
-     * @param string $fieldname alias?
-     * @return String The searchcondition to use.
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     * @param string $fieldname  alias?
+     *
+     * @return string The searchcondition to use.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // If we are accidentally mistaken for a relation and passed an array
         // we only take our own attribute value from the array
@@ -1680,17 +1736,18 @@ class Attribute
         }
 
         // @todo Is this really needed?
-        if (strpos($value, "*") !== false && Tools::atk_strlen($value) > 1) {
+        if (strpos($value, '*') !== false && Tools::atk_strlen($value) > 1) {
             // auto wildcard detection
-            $searchmode = "wildcard";
+            $searchmode = 'wildcard';
         }
 
-        $func = $searchmode . "Condition";
+        $func = $searchmode.'Condition';
         if (method_exists($query, $func) && ($value || ($value == 0))) {
-            return $query->$func($table . "." . $this->fieldName(), $this->escapeSQL($value), $this->dbFieldType());
+            return $query->$func($table.'.'.$this->fieldName(), $this->escapeSQL($value), $this->dbFieldType());
         } elseif (!method_exists($query, $func)) {
-            Tools::atkdebug("Database doesn't support searchmode '$searchmode' for " . $this->fieldName() . ", ignoring condition.");
+            Tools::atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().', ignoring condition.');
         }
+
         return false;
     }
 
@@ -1699,12 +1756,15 @@ class Attribute
      * This will cause attributes that respect this
      * to use the attributes searchmode for that particulair attribute
      * instead of the general searchmode.
+     *
      * @param string $searchmode The searchmode we want to set on the attribute
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setAttributeSearchmode($searchmode)
+    public function setAttributeSearchmode($searchmode)
     {
         $this->m_searchmode = $searchmode;
+
         return $this;
     }
 
@@ -1714,27 +1774,30 @@ class Attribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists, "edit" for
-     *                     displaying in editscreens, "add" for displaying in
-     *                     add screens. "csv" for csv files. Applications can
-     *                     use additional modes.
-     * @return String HTML String
+     * @param array  $record The record that holds the value for this attribute
+     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     *                       for displaying in recordlists, "edit" for
+     *                       displaying in editscreens, "add" for displaying in
+     *                       add screens. "csv" for csv files. Applications can
+     *                       use additional modes.
+     *
+     * @return string HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the display() method properly. This will not give them a
         // working display() functionality but at least it will not give error messages.
         if (!is_array($record[$this->fieldName()])) {
             // default behaviour is that we display a value 'as is'.
-            if (($mode == "csv") || ($mode == "plain")) {
+            if (($mode == 'csv') || ($mode == 'plain')) {
                 return $record[$this->fieldName()];
             }
+
             return nl2br(htmlspecialchars($record[$this->fieldName()]));
         }
-        return "";
+
+        return '';
     }
 
     /**
@@ -1745,15 +1808,14 @@ class Attribute
      * Note that obligatory and unique fields are checked by the
      * atkNodeValidator, and not by the validate() method itself.
      *
-     * @param array $record The record that holds the value for this
-     *                      attribute. If an error occurs, the error will
-     *                      be stored in the 'atkerror' field of the record.
-     * @param string $mode The mode for which should be validated ("add" or
-     *                     "update")
+     * @param array  $record The record that holds the value for this
+     *                       attribute. If an error occurs, the error will
+     *                       be stored in the 'atkerror' field of the record.
+     * @param string $mode   The mode for which should be validated ("add" or
+     *                       "update")
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
-
     }
 
     /**
@@ -1761,12 +1823,13 @@ class Attribute
      * This method does not look at the self::AF_OBLIGATORY flag, it only
      * checks in the database if the attribute's column is really not null.
      *
-     * @return boolean attribute's database column not null?
+     * @return bool attribute's database column not null?
      */
-    function isNotNullInDb()
+    public function isNotNullInDb()
     {
         $db = $this->getDb();
         $meta = $db->tableMeta($this->m_ownerInstance->m_table);
+
         return Tools::hasFlag($meta[$this->fieldName()]['flags'], Db::MF_NOT_NULL);
     }
 
@@ -1781,27 +1844,28 @@ class Attribute
      * database field (like relations for example), may have to reimplement
      * this method.
      *
-     * @param Query $query The SQL query object
-     * @param string $tablename The name of the table of this attribute
+     * @param Query  $query            The SQL query object
+     * @param string $tablename        The name of the table of this attribute
      * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param array $record The record that contains the value of this attribute.
-     * @param int $level Recursion level if relations point to eachother, an
-     *                   endless loop could occur if they keep loading
-     *                   eachothers data. The $level is used to detect this
-     *                   loop. If overriden in a derived class, any subcall to
-     *                   an addToQuery method should pass the $level+1.
-     * @param string $mode Indicates what kind of query is being processing:
-     *                     This can be any action performed on a node (edit,
-     *                     add, etc) Mind you that "add" and "update" are the
-     *                     actions that store something in the database,
-     *                     whereas the rest are probably select queries.
+     * @param array  $record           The record that contains the value of this attribute.
+     * @param int    $level            Recursion level if relations point to eachother, an
+     *                                 endless loop could occur if they keep loading
+     *                                 eachothers data. The $level is used to detect this
+     *                                 loop. If overriden in a derived class, any subcall to
+     *                                 an addToQuery method should pass the $level+1.
+     * @param string $mode             Indicates what kind of query is being processing:
+     *                                 This can be any action performed on a node (edit,
+     *                                 add, etc) Mind you that "add" and "update" are the
+     *                                 actions that store something in the database,
+     *                                 whereas the rest are probably select queries.
      */
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
             if ($mode == 'add' && $this->hasFlag(self::AF_AUTO_INCREMENT)) {
                 $query->addSequenceField($this->fieldName(), $record[$this->fieldName()], $this->getOwnerInstance()->m_seq);
+
                 return;
             }
 
@@ -1825,9 +1889,9 @@ class Attribute
      * Note, that the framework only calls this method if the attribute has
      * the self::AF_CASCADE_DELETE flag.
      *
-     * @return boolean true if cleanup was successful, false otherwise.
+     * @return bool true if cleanup was successful, false otherwise.
      */
-    function delete($record)
+    public function delete($record)
     {
         // delete is only of interest for special attributes like relations, or file attributes.
         return true;
@@ -1844,12 +1908,14 @@ class Attribute
      *
      * @param array $rec1 The first record
      * @param array $rec2 The second record
+     *
      * @return array A record containing the sum of $rec1 and $rec2
      */
-    function sum($rec1, $rec2)
+    public function sum($rec1, $rec2)
     {
         $value1 = (isset($rec1[$this->fieldName()]) ? $rec1[$this->fieldName()] : 0);
         $value2 = (isset($rec2[$this->fieldName()]) ? $rec2[$this->fieldName()] : 0);
+
         return array($this->fieldName() => ($value1 + $value2));
     }
 
@@ -1863,7 +1929,7 @@ class Attribute
      * @param array $metadata The table metadata from the table for this
      *                        attribute.
      */
-    function fetchMeta($metadata)
+    public function fetchMeta($metadata)
     {
         $attribname = strtolower($this->fieldName());
 
@@ -1900,9 +1966,8 @@ class Attribute
      * derived attributes may override this method to perform custom
      * initialization.
      */
-    function init()
+    public function init()
     {
-
     }
 
     /**
@@ -1912,9 +1977,8 @@ class Attribute
      * derived attributes may override this method to perform custom
      * initialization.
      */
-    function postInit()
+    public function postInit()
     {
-
     }
 
     /**
@@ -1926,62 +1990,74 @@ class Attribute
      *
      * @param array $recA The first record holding a value for this attribute.
      * @param array $recB The second record holding a value for the attribute.
-     * @return boolean True if the attribute considers the records equal,
-     *                 false if not.
+     *
+     * @return bool True if the attribute considers the records equal,
+     *              false if not.
      */
-    function equal($recA, $recB)
+    public function equal($recA, $recB)
     {
-        return ($recA[$this->fieldName()] == $recB[$this->fieldName()]);
+        return $recA[$this->fieldName()] == $recB[$this->fieldName()];
     }
 
     /**
-     * Used to force an attribute to update with every addDb() call
+     * Used to force an attribute to update with every addDb() call.
+     *
      * @param bool $force Wether or not to force the attribute to insert
+     *
      * @return Attribute Returns the instance of this attribute
      */
-    function setForceInsert($force)
+    public function setForceInsert($force)
     {
         $this->m_forceinsert = $force;
+
         return $this;
     }
 
     /**
-     * Getter for wether or not an attribute is forced to insert
+     * Getter for wether or not an attribute is forced to insert.
+     *
      * @return bool Wether or not an attribute is forced to insert
      */
-    function getForceInsert()
+    public function getForceInsert()
     {
         return $this->m_forceinsert;
     }
 
     /**
      * Used to force an attribute to update from the db regardless of the
-     * attribute being present in the postvars/session
+     * attribute being present in the postvars/session.
+     *
      * @param bool $force Wether or not to force the attribute to reload
+     *
      * @return Attribute Returns the instance of this attribute
      */
-    function setForceReload($force)
+    public function setForceReload($force)
     {
         $this->m_forcereload = $force;
+
         return $this;
     }
 
     /**
-     * Used to force an attribute to update with every updateDb() call
+     * Used to force an attribute to update with every updateDb() call.
+     *
      * @param bool $force Wether or not to force the attribute to update
+     *
      * @return Attribute Returns the instance of this attribute
      */
-    function setForceUpdate($force)
+    public function setForceUpdate($force)
     {
         $this->m_forceupdate = $force;
+
         return $this;
     }
 
     /**
-     * Getter for wether or not an attribute is forced to update
+     * Getter for wether or not an attribute is forced to update.
+     *
      * @return bool Wether or not an attribute is forced to update
      */
-    function getForceUpdate()
+    public function getForceUpdate()
     {
         return $this->m_forceupdate;
     }
@@ -1996,15 +2072,16 @@ class Attribute
      * this behavior.
      *
      * @param array $record The record that is going to be saved
-     * @return boolean True if this attribute should participate in the add
-     *                 query; false if not.
+     *
+     * @return bool True if this attribute should participate in the add
+     *              query; false if not.
      */
-    function needsInsert($record)
+    public function needsInsert($record)
     {
-        return (!$this->hasFlag(self::AF_HIDE_ADD) ||
+        return !$this->hasFlag(self::AF_HIDE_ADD) ||
             $this->hasFlag(self::AF_AUTO_INCREMENT) ||
             !$this->isEmpty($record) ||
-            $this->m_forceinsert);
+            $this->m_forceinsert;
 
         // If we are set to hide_add, we will only insert into the
         // db if a value has been set (for example by an initial_values
@@ -2020,22 +2097,22 @@ class Attribute
      * self::AF_HIDE_EDIT are set, but derived attributes may override this
      * behavior.
      *
-     * @return boolean True if this attribute should participate in the update
-     *                 query; false if not.
+     * @return bool True if this attribute should participate in the update
+     *              query; false if not.
      */
-    function needsUpdate()
+    public function needsUpdate()
     {
-        return ((!$this->hasFlag(self::AF_READONLY_EDIT) && !$this->hasFlag(self::AF_HIDE_EDIT)) || $this->m_forceupdate);
+        return (!$this->hasFlag(self::AF_READONLY_EDIT) && !$this->hasFlag(self::AF_HIDE_EDIT)) || $this->m_forceupdate;
     }
 
     /**
      * This function is called by the framework to determine if the attribute
      * needs to be updated from the db regardless of the attribute being present
-     * in the postvars/session
+     * in the postvars/session.
      *
-     * @return boolean True if this attribute should be reloaded; false if not.
+     * @return bool True if this attribute should be reloaded; false if not.
      */
-    function needsReload()
+    public function needsReload()
     {
         return $this->m_forcereload;
     }
@@ -2049,20 +2126,20 @@ class Attribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
         // searches can be implemented using LIKE)
-        return array("substring", "exact", "wildcard", "regexp");
+        return array('substring', 'exact', 'wildcard', 'regexp');
     }
 
     /**
-     * Set the size(s) of the attribute
+     * Set the size(s) of the attribute.
      *
      * @param mixed $size The max. number of characters that can be entered.
-     *        If not specified, or set to 0, the max. size is automatically
-     *        retrieved from the table metadata.
+     *                    If not specified, or set to 0, the max. size is automatically
+     *                    retrieved from the table metadata.
      *
      *        By default, the size of the edit box is the same as the maximum
      *        number of chars that can be entered (as long as it fits on
@@ -2084,7 +2161,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    function setAttribSize($size)
+    public function setAttribSize($size)
     {
         if (is_array($size) && count($size) > 0) {
             if (!empty($size[2])) {
@@ -2120,15 +2197,16 @@ class Attribute
      *       derived attribute is one that can not be stored in the
      *       database, an empty string should be returned.
      *
-     * @return String The 'generic' type of the database field for this
+     * @return string The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
-        if ($this->m_dbfieldtype == "") {
-            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? "number"
-                : "string");
+        if ($this->m_dbfieldtype == '') {
+            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? 'number'
+                : 'string');
         }
+
         return $this->m_dbfieldtype;
     }
 
@@ -2149,15 +2227,15 @@ class Attribute
      *
      * @return int The database field size
      */
-    function dbFieldSize()
+    public function dbFieldSize()
     {
         if ($this->m_maxsize != 0) {
             return $this->m_maxsize;
         } else {
-            if ($this->dbFieldType() == "number") {
-                return "10"; // default for numbers.
+            if ($this->dbFieldType() == 'number') {
+                return '10'; // default for numbers.
             } else {
-                return "100"; // default for strings.
+                return '100'; // default for strings.
             }
         }
     }
@@ -2169,34 +2247,38 @@ class Attribute
      * The label is based on the attribute name, but is automatically
      * translated. Derived attributes may override this behavior.
      *
-     * @return String HTML compatible label for this attribute
+     * @return string HTML compatible label for this attribute
      */
-    function label()
+    public function label()
     {
-        return ($this->m_label != "" ? $this->m_label : $this->text($this->fieldName()));
+        return $this->m_label != '' ? $this->m_label : $this->text($this->fieldName());
     }
 
     /**
-     * Set the label of the attribute
+     * Set the label of the attribute.
      *
      * @param string $label
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setLabel($label)
+    public function setLabel($label)
     {
         $this->m_label = $label;
+
         return $this;
     }
 
     /**
-     * Set the label of the attribute
+     * Set the label of the attribute.
      *
      * @param string $label
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setPostFixLabel($label)
+    public function setPostFixLabel($label)
     {
         $this->m_postfixlabel = $label;
+
         return $this;
     }
 
@@ -2207,15 +2289,16 @@ class Attribute
      * However, if the attribute was added using a modifier from a different
      * module, then the module that added the attribute is returned.
      *
-     * @return String The name of the module of this attribute
+     * @return string The name of the module of this attribute
      */
-    function getModule()
+    public function getModule()
     {
-        if ($this->m_module != "") {
+        if ($this->m_module != '') {
             return $this->m_module;
         } elseif (is_object($this->m_ownerInstance)) {
             return $this->m_ownerInstance->m_module;
         }
+
         return '';
     }
 
@@ -2226,36 +2309,37 @@ class Attribute
      * returns the HTML label, while the getLabel() method is 'smart', by
      * taking the self::AF_NOLABEL and self::AF_BLANKLABEL flags into account.
      *
-     * @return String The HTML compatible label for this attribute, or an
+     * @return string The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    function getLabel()
+    public function getLabel()
     {
         if ($this->hasFlag(self::AF_NOLABEL)) {
             return '';
         } else {
             if ($this->hasFlag(self::AF_BLANKLABEL)) {
-                return null;
+                return;
             } else {
                 return $this->label();
             }
         }
     }
 
-
     /**
      * Sets the storage type.
      *
-     * @param int $type Bitmask containg information about storage requirements.
+     * @param int    $type Bitmask containg information about storage requirements.
      * @param string $mode The storage mode ("add", "update" or null for all)
      *
      * @see storageType
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setStorageType($type, $mode = null)
+    public function setStorageType($type, $mode = null)
     {
         $this->m_storageType[$mode] = $type;
+
         return $this;
     }
 
@@ -2277,16 +2361,16 @@ class Attribute
      *             Note that since it is a bitmask, multiple storage types
      *             could be returned at once.
      *             self::POSTSTORE  - store() method must be called, after the
-     *                          master record is saved.
+     *             master record is saved.
      *             self::PRESTORE   - store() must be called, before the master
-     *                          record is saved.
+     *             record is saved.
      *             self::ADDTOQUERY - addtoquery() must be called, so the attribute
-     *                          can nest itself in the master query.
+     *             can nest itself in the master query.
      *             self::NOSTORE    - nor store(), nor addtoquery() should be
-     *                          called (attribute can not be stored in the
-     *                          database)
+     *             called (attribute can not be stored in the
+     *             database)
      */
-    function storageType($mode = null)
+    public function storageType($mode = null)
     {
         // Mode specific storage type.
         if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null) {
@@ -2297,7 +2381,7 @@ class Attribute
                 return $this->m_storageType[null];
             } // Default backwardscompatible behaviour:
             else {
-                if (method_exists($this, "store")) {
+                if (method_exists($this, 'store')) {
                     return self::POSTSTORE;
                 } else {
                     return self::ADDTOQUERY;
@@ -2309,15 +2393,17 @@ class Attribute
     /**
      * Sets the load type.
      *
-     * @param int $type Bitmask containg information about load requirements.
+     * @param int    $type Bitmask containg information about load requirements.
      * @param string $mode The load mode ("view", "admin" etc. or null for all)
      *
      * @see loadType
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setLoadType($type, $mode = null)
+    public function setLoadType($type, $mode = null)
     {
         $this->m_loadType[$mode] = $type;
+
         return $this;
     }
 
@@ -2339,17 +2425,16 @@ class Attribute
      *             Note that since it is a bitmask, multiple load types
      *             could be returned at once.
      *             self::POSTLOAD   - load() method must be called, after the
-     *                          master record is loaded.
+     *             master record is loaded.
      *             self::PRELOAD    - load() must be called, before the master
-     *                          record is loaded.
+     *             record is loaded.
      *             self::ADDTOQUERY - addtoquery() must be called, so the attribute
-     *                          can nest itself in the master query.
+     *             can nest itself in the master query.
      *             self::NOLOAD     - nor load(), nor addtoquery() should be
-     *                          called (attribute can not be loaded from the
-     *                          database)
-     *
+     *             called (attribute can not be loaded from the
+     *             database)
      */
-    function loadType($mode)
+    public function loadType($mode)
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
             return $this->m_loadType[$mode];
@@ -2358,7 +2443,7 @@ class Attribute
                 return $this->m_loadType[null];
             } // Default backwardscompatible behaviour:
             else {
-                if (method_exists($this, "load")) {
+                if (method_exists($this, 'load')) {
                     return self::POSTLOAD;
                 } else {
                     return self::ADDTOQUERY;
@@ -2369,20 +2454,22 @@ class Attribute
 
     /**
      * Determine the maximum length an input field may be.
+     *
      * @return int
      */
-    function maxInputSize()
+    public function maxInputSize()
     {
-        return Config::getGlobal("max_input_size");
+        return Config::getGlobal('max_input_size');
     }
 
     /**
      * Determine the maximum length an input search field may be.
+     *
      * @return int
      */
-    function maxSearchInputSize()
+    public function maxSearchInputSize()
     {
-        return Config::getGlobal("max_searchinput_size");
+        return Config::getGlobal('max_searchinput_size');
     }
 
     /**
@@ -2394,21 +2481,21 @@ class Attribute
      *
      * @return array The list of tabs to add to the screen.
      */
-    function getAdditionalTabs()
+    public function getAdditionalTabs()
     {
         return array();
     }
-
 
     /**
      * Check if the attribute wants to be shown on a certain tab.
      *
      * @param string $tab The name of the tab to check.
-     * @return boolean
+     *
+     * @return bool
      */
-    function showOnTab($tab)
+    public function showOnTab($tab)
     {
-        return ($this->getTabs() == "*" || Tools::atk_in_array($tab, $this->getTabs()));
+        return $this->getTabs() == '*' || Tools::atk_in_array($tab, $this->getTabs());
     }
 
     /**
@@ -2419,9 +2506,9 @@ class Attribute
      * returns true, but derived attributes may implement their own
      * logic to prevent deletion of the record.
      *
-     * @return boolean True if delete is allowed, false if not.
+     * @return bool True if delete is allowed, false if not.
      */
-    function deleteAllowed()
+    public function deleteAllowed()
     {
         return true;
     }
@@ -2437,9 +2524,10 @@ class Attribute
      * classes may override this method to alter that behaviour.
      *
      * @param string $stringvalue The value to parse.
+     *
      * @return mixed Internal value
      */
-    function parseStringValue($stringvalue)
+    public function parseStringValue($stringvalue)
     {
         return $stringvalue;
     }
@@ -2448,30 +2536,31 @@ class Attribute
      * Adds the needed searchbox(es) for this attribute to the fields array. This
      * method should only be called by the atkSearchHandler.
      *
-     * @param array $fields The array containing fields to use in the
-     *                                   extended search
-     * @param Node $node The node where the field is in
-     * @param array $record A record containing default values to put
-     *                                   into the search fields.
+     * @param array  $fields      The array containing fields to use in the
+     *                            extended search
+     * @param Node   $node        The node where the field is in
+     * @param array  $record      A record containing default values to put
+     *                            into the search fields.
      * @param string $fieldprefix search / mode field prefix
+     *
      * @return Attribute The instance of this Attribute
      */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '')
     {
         $field = array();
         $defaults = $record;
 
         // set "widget" value:
-        $funcname = $this->m_name . "_search";
+        $funcname = $this->m_name.'_search';
 
         if (method_exists($node, $funcname)) {
-            $field["widget"] = $node->$funcname($defaults, true, $fieldprefix);
+            $field['widget'] = $node->$funcname($defaults, true, $fieldprefix);
         } else {
-            $field["widget"] = $this->search($defaults, true, $fieldprefix); // second param indicates extended search.
+            $field['widget'] = $this->search($defaults, true, $fieldprefix); // second param indicates extended search.
         }
 
         // pre-emptive set "full" value:
-        $field["full"] = $field["widget"]; // lateron, we might add more to full
+        $field['full'] = $field['widget']; // lateron, we might add more to full
         // set "searchmode" value:
         $field['searchmode'] = $this->searchmode(true, $fieldprefix);
 
@@ -2488,38 +2577,42 @@ class Attribute
      * Retrieve the fieldname of the attribute in an atksearch form.
      *
      * @param string $prefix The prefix
-     * @return String Name of the attribute in an atksearch
+     *
+     * @return string Name of the attribute in an atksearch
      */
-    function getSearchFieldName($prefix)
+    public function getSearchFieldName($prefix)
     {
-        return 'atksearch_AE_' . $prefix . $this->fieldName();
+        return 'atksearch_AE_'.$prefix.$this->fieldName();
     }
 
     /**
      * Retrieve the searchmode name of the attribute in an atksearch form.
      *
      * @param string $prefix The prefix
-     * @return String Name of the attribute in an atksearch
+     *
+     * @return string Name of the attribute in an atksearch
      */
-    function getSearchModeFieldname($prefix)
+    public function getSearchModeFieldname($prefix)
     {
-        return 'atksearchmode_AE_' . $prefix . $this->fieldName();
+        return 'atksearchmode_AE_'.$prefix.$this->fieldName();
     }
 
     /**
      * Retrieves the sort options and sort order.
      *
      * @param ColumnConfig $columnConfig The config that contains options for
-     *                                      extended sorting and grouping to a
-     *                                      recordlist.
-     * @param string $fieldprefix The prefix of the attribute
-     * @param DataGrid $grid The grid that this attribute lives on.
-     * @return String HTML
+     *                                   extended sorting and grouping to a
+     *                                   recordlist.
+     * @param string       $fieldprefix  The prefix of the attribute
+     * @param DataGrid     $grid         The grid that this attribute lives on.
+     *
+     * @return string HTML
      */
-    function extendedSort(&$columnConfig, $fieldprefix = '', $grid = null)
+    public function extendedSort(&$columnConfig, $fieldprefix = '', $grid = null)
     {
-        $result = $this->sortOptions($columnConfig, $fieldprefix, $grid) . ' ' . $this->sortOrder($columnConfig,
+        $result = $this->sortOptions($columnConfig, $fieldprefix, $grid).' '.$this->sortOrder($columnConfig,
                 $fieldprefix, $grid);
+
         return $result;
     }
 
@@ -2528,27 +2621,30 @@ class Attribute
      * and search actions.
      *
      * @param ColumnConfig $columnConfig The config that contains options for
-     *                                      extended sorting and grouping to a
-     *                                      recordlist.
-     * @param string $fieldprefix The prefix of the attribute
-     * @param DataGrid $grid The grid that this attribute lives on.
-     * @return String HTML
+     *                                   extended sorting and grouping to a
+     *                                   recordlist.
+     * @param string       $fieldprefix  The prefix of the attribute
+     * @param DataGrid     $grid         The grid that this attribute lives on.
+     *
+     * @return string HTML
      */
-    function sortOptions(&$columnConfig, $fieldprefix = '', $grid = null)
+    public function sortOptions(&$columnConfig, $fieldprefix = '', $grid = null)
     {
         if (!$this->hasFlag(self::AF_TOTAL) && $columnConfig->totalizable()) {
             // if we are not the sumcolumn itself, but there are totalcolumns present, we can perform subtotalling
-            $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? "unsubtotal"
-                : "subtotal");
+            $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? 'unsubtotal'
+                : 'subtotal');
             if ($grid == null) {
-                return Tools::href(Config::getGlobal('dispatcher') . '?' . $columnConfig->getUrlCommand($this->fieldName(),
-                        $cmd), Tools::atktext("column_" . $cmd)) . ' ';
+                return Tools::href(Config::getGlobal('dispatcher').'?'.$columnConfig->getUrlCommand($this->fieldName(),
+                        $cmd), Tools::atktext('column_'.$cmd)).' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
-                return '<a href="javascript:void(0)" onclick="' . htmlentities($call) . '">' . $this->text("column_" . $cmd) . '</a>';
+
+                return '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text('column_'.$cmd).'</a>';
             }
         }
-        return "";
+
+        return '';
     }
 
     /**
@@ -2556,35 +2652,36 @@ class Attribute
      * and search actions.
      *
      * @param ColumnConfig $columnConfig The config that contains options for
-     *                                      extended sorting and grouping to a
-     *                                      recordlist.
-     * @param string $fieldprefix The prefix of the attribute on HTML forms
-     * @param DataGrid $grid The grid that this attribute lives on.
-     * @return String HTML
+     *                                   extended sorting and grouping to a
+     *                                   recordlist.
+     * @param string       $fieldprefix  The prefix of the attribute on HTML forms
+     * @param DataGrid     $grid         The grid that this attribute lives on.
+     *
+     * @return string HTML
      */
-    function sortOrder(&$columnConfig, $fieldprefix = '', $grid = null)
+    public function sortOrder(&$columnConfig, $fieldprefix = '', $grid = null)
     {
         $fieldname = $this->fieldName();
         $currentOrder = $columnConfig->getOrder($fieldname);
 
-        $res = "";
+        $res = '';
         if ($currentOrder > 0) {
-            $direction = ($columnConfig->getSortDirection($this->fieldName()) == "desc"
-                ? "asc" : "desc");
+            $direction = ($columnConfig->getSortDirection($this->fieldName()) == 'desc'
+                ? 'asc' : 'desc');
             if ($grid == null) {
-                $res = Tools::href(Config::getGlobal('dispatcher') . '?' . $columnConfig->getUrlCommand($fieldname,
-                            $direction), Tools::atktext("column_" . $direction)) . ' ';
+                $res = Tools::href(Config::getGlobal('dispatcher').'?'.$columnConfig->getUrlCommand($fieldname,
+                            $direction), Tools::atktext('column_'.$direction)).' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));
-                $res = '<a href="javascript:void(0)" onclick="' . htmlentities($call) . '">' . $this->text("column_" . $direction) . '</a>';
+                $res = '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text('column_'.$direction).'</a>';
             }
         }
 
-        $res .= '<select class="form-control" name="atkcolcmd[][setorder][' . $fieldprefix . $fieldname . ']">';
+        $res .= '<select class="form-control" name="atkcolcmd[][setorder]['.$fieldprefix.$fieldname.']">';
         $res .= '<option value="">';
-        for ($i = 1; $i < 6; $i++) {
-            $selected = ($currentOrder == $i ? "selected" : "");
-            $res .= '<option value="' . $i . '" ' . $selected . '>' . $i;
+        for ($i = 1; $i < 6; ++$i) {
+            $selected = ($currentOrder == $i ? 'selected' : '');
+            $res .= '<option value="'.$i.'" '.$selected.'>'.$i;
         }
         $res .= '</select>';
 
@@ -2593,21 +2690,22 @@ class Attribute
 
     /**
      * Retrieve the sortorder for the listheader based on the
-     * ColumnConfig
+     * ColumnConfig.
      *
      * @param ColumnConfig $columnConfig The config that contains options for
-     *                                      extended sorting and grouping to a
-     *                                      recordlist.
-     * @return String Returns sort order ASC or DESC
+     *                                   extended sorting and grouping to a
+     *                                   recordlist.
+     *
+     * @return string Returns sort order ASC or DESC
      */
-    function listHeaderSortOrder(&$columnConfig)
+    public function listHeaderSortOrder(&$columnConfig)
     {
         $order = $this->fieldName();
 
         if (isset($columnConfig->m_colcfg[$order])) {
             $direction = $columnConfig->getDirection($order);
-            if ($direction == "asc") {
-                $order .= " desc";
+            if ($direction == 'asc') {
+                $order .= ' desc';
             }
         }
 
@@ -2619,13 +2717,14 @@ class Attribute
      * Derived attributes may override this functionality to implement other
      * ordering statements using the given parameters.
      *
-     * @param array $extra A list of attribute names to add to the order by
-     *                     statement
-     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param array  $extra     A list of attribute names to add to the order by
+     *                          statement
+     * @param string $table     The table name (if not given uses the owner node's table name)
      * @param string $direction Sorting direction (ASC or DESC)
-     * @return String The ORDER BY statement for this attribute
+     *
+     * @return string The ORDER BY statement for this attribute
      */
-    function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
@@ -2637,14 +2736,14 @@ class Attribute
 
             $tableIdentifier = '';
             foreach ($identifiers as $identifier) {
-                $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
+                $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier).'.';
             }
 
-            return "LOWER(" . $tableIdentifier . $this->getDb()->quoteIdentifier($this->fieldName()) . ")" . ($direction
-                ? " {$direction}" : "");
+            return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction
+                ? " {$direction}" : '');
         } else {
-            return "LOWER(" . $this->getDb()->quoteIdentifier($table) . "." . $this->getDb()->quoteIdentifier($this->fieldName()) . ")" . ($direction
-                ? " {$direction}" : "");
+            return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction
+                ? " {$direction}" : '');
         }
     }
 
@@ -2652,7 +2751,8 @@ class Attribute
      * Translate using the owner instance's module and type.
      *
      * @param string $string The string to be translated
-     * @return String The translated string.
+     *
+     * @return string The translated string.
      */
     public function text($string, $fallback = true)
     {
@@ -2670,24 +2770,27 @@ class Attribute
      *
      * @return Db database instance
      */
-    function getDb()
+    public function getDb()
     {
         if (is_object($this->getOwnerInstance())) {
             return $this->getOwnerInstance()->getDb();
         }
+
         return Db::getInstance();
     }
 
     /**
      * Escape string for use in a query.
      *
-     * @param string $value value to escape
-     * @param boolean $wildcards escape wildcards too?
-     * @return String The escaped value.
+     * @param string $value     value to escape
+     * @param bool   $wildcards escape wildcards too?
+     *
+     * @return string The escaped value.
      */
-    function escapeSQL($value, $wildcards = false)
+    public function escapeSQL($value, $wildcards = false)
     {
         $db = $this->getDb();
+
         return $db->escapeSQL($value, $wildcards);
     }
 
@@ -2696,11 +2799,12 @@ class Attribute
      * support different partials.
      *
      * @param string $partial The name of the partial (i.e. refresh)
-     * @param string $mode The current add/edit mode
-     * @return String HTML Returns the result of the call to the partial
-     *                     handling method
+     * @param string $mode    The current add/edit mode
+     *
+     * @return string HTML Returns the result of the call to the partial
+     *                handling method
      */
-    function partial($partial, $mode)
+    public function partial($partial, $mode)
     {
         $method = "partial_{$partial}";
 
@@ -2715,9 +2819,10 @@ class Attribute
      * Partial method to refresh  the add/edit field for this attribute.
      *
      * @param string $mode add/edit mode
-     * @return String HTML the output needed to refresh the attribute.
+     *
+     * @return string HTML the output needed to refresh the attribute.
      */
-    function partial_refresh($mode)
+    public function partial_refresh($mode)
     {
         $record = $this->m_ownerInstance->updateRecord();
         $fieldprefix = $this->m_ownerInstance->m_postvars['atkfp'];
@@ -2731,12 +2836,12 @@ class Attribute
         $script = '';
         foreach ($arr['fields'] as $field) {
             //JSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
-            $value = Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8", $field['html']);
-            $script .= "\$('" . str_replace('.', '_',
-                    $this->m_ownerInstance->atkNodeUri() . '_' . $field['id']) . "').update(" . JSON::encode($value) . ");\r\n";
+            $value = Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html']);
+            $script .= "\$('".str_replace('.', '_',
+                    $this->m_ownerInstance->atkNodeUri().'_'.$field['id'])."').update(".JSON::encode($value).");\r\n";
         }
 
-        return '<script type="text/javascript">' . $script . '</script>';
+        return '<script type="text/javascript">'.$script.'</script>';
     }
 
     /**
@@ -2751,6 +2856,7 @@ class Attribute
     public function addDependency($callback)
     {
         $this->m_dependencies[] = $callback;
+
         return $this;
     }
 
@@ -2767,10 +2873,10 @@ class Attribute
     /**
      * Initialize and calls the dependencies.
      *
-     * @param array $record record
+     * @param array  $record      record
      * @param string $fieldPrefix the prefix for this attribute in an HTML form
-     * @param string $mode add/edit mode
-     * @param bool $noCall only initialize dependencies, without calling them
+     * @param string $mode        add/edit mode
+     * @param bool   $noCall      only initialize dependencies, without calling them
      */
     public function initDependencies(&$record, $fieldPrefix, $mode, $noCall = false)
     {
@@ -2784,16 +2890,15 @@ class Attribute
 
         $action = $this->getOwnerInstance()->m_action;
         if ($action == null) {
-            $action = $mode == "add" ? "add" : "edit";
+            $action = $mode == 'add' ? 'add' : 'edit';
         }
 
         $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $action,
-            "attribute." . $this->fieldName() . ".dependencies",
-            array("atkdata" => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
+            'attribute.'.$this->fieldName().'.dependencies',
+            array('atkdata' => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
         $url = JSON::encode($url);
 
-
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkattribute.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkattribute.js');
         $code = "ATK.Attribute.callDependencies({$url}, el);";
         $this->addOnChangeHandler($code);
     }
@@ -2801,10 +2906,10 @@ class Attribute
     /**
      * Calls the dependency callbacks for this attribute.
      *
-     * @param array $record record
+     * @param array  $record      record
      * @param string $fieldPrefix the prefix for this attribute in an HTML form
-     * @param string $mode add/edit mode
-     * @param boolean $initial initial call (e.g. non-javascript manipulation)
+     * @param string $mode        add/edit mode
+     * @param bool   $initial     initial call (e.g. non-javascript manipulation)
      */
     protected function _callDependencies(&$record, $fieldPrefix, $mode, $initial)
     {
@@ -2836,11 +2941,11 @@ class Attribute
     }
 
     /**
-     * Retrieve the CSS classes that were registered for this attribute
+     * Retrieve the CSS classes that were registered for this attribute.
      *
      * @return array A list of css classes
      */
-    function getCSSClasses()
+    public function getCSSClasses()
     {
         return $this->m_cssclasses;
     }
@@ -2849,9 +2954,10 @@ class Attribute
      * Add a CSS class for this attribute on an HTML form.
      *
      * @param string $classname The name of a class.
+     *
      * @return Attribute The instance of this Attribute
      */
-    function addCSSClass($classname)
+    public function addCSSClass($classname)
     {
         if (!in_array($classname, $this->m_cssclasses)) {
             $this->m_cssclasses[] = $classname;
@@ -2864,33 +2970,37 @@ class Attribute
      * Retrieve the attribute for the HTML-tag for this Attribute.
      *
      * @param mixed $additionalclasses A string or an array with classnames.
-     * @return String HTML The attributes classname(s)
+     *
+     * @return string HTML The attributes classname(s)
      */
-    function getCSSClassAttribute($additionalclasses = array())
+    public function getCSSClassAttribute($additionalclasses = array())
     {
         $classes = array_merge($this->getCSSClasses(), is_array($additionalclasses)
             ? $additionalclasses : array($additionalclasses));
-        return 'class="' . implode(" ", $classes) . '"';
+
+        return 'class="'.implode(' ', $classes).'"';
     }
 
     /**
      * Set whether initially hidden or not.  A field is "hidden" by adding the class AttrRowHidden.
      *
-     * @param boolean $bool Initially hidden?
+     * @param bool $bool Initially hidden?
+     *
      * @return Attribute The instance of this Attribute
      */
-    function setInitialHidden($bool)
+    public function setInitialHidden($bool)
     {
         $this->m_initial_hidden = $bool;
+
         return $this;
     }
 
     /**
-     * check whether initially hidden or not
+     * check whether initially hidden or not.
      *
      * @return bool initially hidden
      */
-    function isInitialHidden()
+    public function isInitialHidden()
     {
         return $this->m_initial_hidden;
     }
@@ -2905,7 +3015,7 @@ class Attribute
      * mechanism for this.
      *
      * @param string $event JavaScript event name (e.g. 'change', 'click', etc.)
-     * @param string $body JavaScript body
+     * @param string $body  JavaScript body
      */
     public function observeJS($event, $body)
     {
@@ -2917,9 +3027,8 @@ class Attribute
      *
      * @return string attribute name prefixed with node type
      */
-    function __toString()
+    public function __toString()
     {
-        return $this->m_ownerInstance->atkNodeUri() . "::" . $this->fieldName();
+        return $this->m_ownerInstance->atkNodeUri().'::'.$this->fieldName();
     }
-
 }

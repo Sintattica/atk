@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Console;
+<?php
+
+namespace Sintattica\Atk\Console;
 
 use Sintattica\Atk\Utils\TmpFile;
 
@@ -6,9 +8,6 @@ use Sintattica\Atk\Utils\TmpFile;
  * ATK console controller base class. Useful for creating command line
  * scripts. Has out of the box support for key/value parameters and
  * supports multiple actions that can be handled by a single controller.
- *
- * @package atk
- * @subpackage console
  */
 class ConsoleController
 {
@@ -80,8 +79,6 @@ class ConsoleController
      * Parameters will be passed as key value array to the action method.
      *
      * @param string|array $argv either an argument string or array of arguments
-     *
-     * @return void
      */
     public static function run($argv = null)
     {
@@ -92,31 +89,31 @@ class ConsoleController
         }
 
         $class = $argv[1];
-        if ((stripos($argv[2], "=")) || ($argv[2] === null)) {
-            $action = "default";
-            list($key, $value) = explode("=", $argv[2]);
+        if ((stripos($argv[2], '=')) || ($argv[2] === null)) {
+            $action = 'default';
+            list($key, $value) = explode('=', $argv[2]);
             $params[$key] = $value;
         } else {
             $action = $argv[2];
         }
 
-        for ($i = 3; $i < count($argv); $i++) {
-            if (strpos($argv[$i], "=") !== false) {
-                list($key, $value) = explode("=", $argv[$i]);
+        for ($i = 3; $i < count($argv); ++$i) {
+            if (strpos($argv[$i], '=') !== false) {
+                list($key, $value) = explode('=', $argv[$i]);
                 $params[$key] = $value;
             } else {
                 $params[] = $argv[$i];
             }
         }
 
-        if (preg_match("!class.([^.]+).inc$!", $class, $matches)) { // user supplied path relative to script
-            include_once($class);
+        if (preg_match('!class.([^.]+).inc$!', $class, $matches)) { // user supplied path relative to script
+            include_once $class;
             $controller = new $matches[1]();
         } else {
             if (class_exists($class)) {
                 $controller = new $class();
             } else {
-                die('Unknown console controller "' . $class . '".' . "\n");
+                die('Unknown console controller "'.$class.'".'."\n");
             }
         }
 
@@ -127,15 +124,15 @@ class ConsoleController
      * Tries to execute the given action.
      *
      * @param string $action action name
-     * @param array $params action parameters
+     * @param array  $params action parameters
      */
     protected function executeAction($action, $params)
     {
         // translate dashes to underscores so we can support actions like --list
-        $method = str_replace('-', '_', $action) . "Action";
+        $method = str_replace('-', '_', $action).'Action';
 
         if (!method_exists($this, $method)) {
-            echo "Unknown action {$action} for controller " . $this->getName() . ".\n";
+            echo "Unknown action {$action} for controller ".$this->getName().".\n";
             die;
         }
 
@@ -154,7 +151,7 @@ class ConsoleController
      * created automatically.
      *
      * @param string $message info message
-     * @param mixed $data data that should be logged (optional)
+     * @param mixed  $data    data that should be logged (optional)
      */
     public function info($message, $data = null)
     {
@@ -173,7 +170,7 @@ class ConsoleController
      * created automatically.
      *
      * @param string $message error message
-     * @param mixed $data data that should be logged (optional)
+     * @param mixed  $data    data that should be logged (optional)
      */
     public function error($message, $data = null)
     {
@@ -189,21 +186,21 @@ class ConsoleController
      * yyyymmdd part is replaced by the current date and the type is replaced by the value of
      * the $type parameter.
      *
-     * @param string $type type (max 5 chars)
+     * @param string $type    type (max 5 chars)
      * @param string $message message
-     * @param mixed $data optional data
+     * @param mixed  $data    optional data
      */
     protected function log($type, $message, $data)
     {
-        $filename = "console/" . $this->getName() . "_" . date("Ymd") . ".log";
+        $filename = 'console/'.$this->getName().'_'.date('Ymd').'.log';
 
         $type = substr($type, 0, 5);
 
-        $lines = "[" . date("Y-m-d H:i:s") . "] [$type] " . str_repeat(" ", 5 - strlen($type)) . "{$message}\n";
+        $lines = '['.date('Y-m-d H:i:s')."] [$type] ".str_repeat(' ', 5 - strlen($type))."{$message}\n";
         if ($data != null) {
             $dump = print_r($data, true);
             foreach (explode("\n", $dump) as $line) {
-                $lines .= str_repeat(" ", 30) . $line . "\n";
+                $lines .= str_repeat(' ', 30).$line."\n";
             }
         }
 
@@ -222,11 +219,11 @@ class ConsoleController
      */
     public function __listAction()
     {
-        echo "Actions for " . $this->getName() . ":\n\n";
+        echo 'Actions for '.$this->getName().":\n\n";
 
         $ref = new ReflectionObject($this);
         foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if (preg_match("/(.+?)Action/i", $method->getName(), $matches)) {
+            if (preg_match('/(.+?)Action/i', $method->getName(), $matches)) {
                 $action = $matches[1];
                 if (substr($action, 0, 2) == '__') {
                     continue;
@@ -238,7 +235,7 @@ class ConsoleController
                 $lines = '';
                 foreach (explode("\n", $comment) as $line) {
                     if (!preg_match('/@[a-z]+/', $line)) {
-                        $lines .= preg_replace("!^\s*/?\*+/?\s*!", "", $line) . "\n";
+                        $lines .= preg_replace("!^\s*/?\*+/?\s*!", '', $line)."\n";
                     }
                 }
 
@@ -275,5 +272,4 @@ class ConsoleController
 
         $this->executeAction($action, $params);
     }
-
 }

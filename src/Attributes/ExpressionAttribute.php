@@ -1,31 +1,31 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
+
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
-
 
 /**
  * With the atkExpressionAttribute class you can select arbitrary SQL expressions
  * like subqueries etc. It's not possible to save values using this attribute.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
- * @package atk
- * @subpackage attributes
  */
 class ExpressionAttribute extends Attribute
 {
-    var $m_searchType = "string";
-    var $m_expression;
+    public $m_searchType = 'string';
+    public $m_expression;
 
     /**
      * Constructor.
      *
-     * @param string $name The name of the attribute.
-     * @param string $expression The SQL expression.
-     * @param mixed $searchTypeOrFlags The search type (string) or flags (numeric) for this attribute. At the moment
-     *                                   only search types "string", "number" and "date" are supported.
-     * @param int $flags The flags for this attribute.
+     * @param string $name              The name of the attribute.
+     * @param string $expression        The SQL expression.
+     * @param mixed  $searchTypeOrFlags The search type (string) or flags (numeric) for this attribute. At the moment
+     *                                  only search types "string", "number" and "date" are supported.
+     * @param int    $flags             The flags for this attribute.
      */
-    function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
+    public function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
     {
         if (is_numeric($searchTypeOrFlags)) {
             $flags = $searchTypeOrFlags;
@@ -40,34 +40,34 @@ class ExpressionAttribute extends Attribute
         }
     }
 
-    function storageType($mode = '')
+    public function storageType($mode = '')
     {
         return self::NOSTORE;
     }
 
-
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-        $expression = str_replace("[table]", $tablename, $this->m_expression);
+        $expression = str_replace('[table]', $tablename, $this->m_expression);
         $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);
     }
 
     /**
      * Returns the order by statement for this attribute.
      *
-     * @param array $extra A list of attribute names to add to the order by
-     *                     statement
-     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param array  $extra     A list of attribute names to add to the order by
+     *                          statement
+     * @param string $table     The table name (if not given uses the owner node's table name)
      * @param string $direction Sorting direction (ASC or DESC)
+     *
      * @return string order by statement
      */
-    function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
         }
 
-        $expression = str_replace("[table]", $table, $this->m_expression);
+        $expression = str_replace('[table]', $table, $this->m_expression);
 
         $result = "($expression)";
 
@@ -75,7 +75,7 @@ class ExpressionAttribute extends Attribute
             $result = "LOWER({$result})";
         }
 
-        $result .= ($direction ? " {$direction}" : "");
+        $result .= ($direction ? " {$direction}" : '');
 
         return $result;
     }
@@ -85,7 +85,7 @@ class ExpressionAttribute extends Attribute
      *
      * @param array $type the search type (string, number or date)
      */
-    function setSearchType($type)
+    public function setSearchType($type)
     {
         $this->m_searchType = $type;
     }
@@ -95,7 +95,7 @@ class ExpressionAttribute extends Attribute
      *
      * @return string the search type (string, number or date)
      */
-    function getSearchType()
+    public function getSearchType()
     {
         return $this->m_searchType;
     }
@@ -106,9 +106,9 @@ class ExpressionAttribute extends Attribute
      *
      * @return string field type (empty string)
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
-        return "";
+        return '';
     }
 
     /**
@@ -116,12 +116,12 @@ class ExpressionAttribute extends Attribute
      *
      * @return array list of search modes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
-        if ($this->getSearchType() == "number") {
+        if ($this->getSearchType() == 'number') {
             return NumberAttribute::getSearchModes();
         } else {
-            if ($this->getSearchType() == "date") {
+            if ($this->getSearchType() == 'date') {
                 return DateAttribute::getSearchModes();
             } else {
                 return parent::getSearchModes();
@@ -132,26 +132,27 @@ class ExpressionAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used to search for an attribute's value.
      *
-     * @param array $record Array with values
-     * @param boolean $extended if set to false, a simple search input is
-     *                          returned for use in the searchbar of the
-     *                          recordlist. If set to true, a more extended
-     *                          search may be returned for the 'extended'
-     *                          search page. The Attribute does not
-     *                          make a difference for $extended is true, but
-     *                          derived attributes may reimplement this.
+     * @param array  $record      Array with values
+     * @param bool   $extended    if set to false, a simple search input is
+     *                            returned for use in the searchbar of the
+     *                            recordlist. If set to true, a more extended
+     *                            search may be returned for the 'extended'
+     *                            search page. The Attribute does not
+     *                            make a difference for $extended is true, but
+     *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
-     * @return String A piece of html-code
+     * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        if ($this->getSearchType() == "number") {
+        if ($this->getSearchType() == 'number') {
             return NumberAttribute::search($record, $extended, $fieldprefix);
         } else {
-            if ($this->getSearchType() == "date") {
+            if ($this->getSearchType() == 'date') {
                 $attr = new DateAttribute($this->fieldName());
                 $attr->m_searchsize = 10;
+
                 return $attr->search($record, $extended, $fieldprefix);
             } else {
                 return parent::search($record, $extended, $fieldprefix);
@@ -162,16 +163,17 @@ class ExpressionAttribute extends Attribute
     /**
      * Creates a search condition for this attribute.
      *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                              is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param Query  $query      The query object where the search condition should be placed on
+     * @param string $table      The name of the table in which this attribute
+     *                           is stored
+     * @param mixed  $value      The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
-     *                              of the supported modes, as returned by this
-     *                              attribute's getSearchModes() method.
-     * @return String The searchcondition to use.
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     *
+     * @return string The searchcondition to use.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // If we are accidentally mistaken for a relation and passed an array
         // we only take our own attribute value from the array
@@ -179,19 +181,20 @@ class ExpressionAttribute extends Attribute
             $searchmode = $this->m_searchmode;
         }
 
-        $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
+        $expression = '('.str_replace('[table]', $table, $this->m_expression).')';
 
-        if ($this->getSearchType() == "date") {
+        if ($this->getSearchType() == 'date') {
             $attr = new DateAttribute($this->fieldName());
+
             return $attr->getSearchCondition($query, $table, $value, $searchmode, $expression);
         }
 
-        if ($this->getSearchType() == "number") {
+        if ($this->getSearchType() == 'number') {
             $value = NumberAttribute::processSearchValue($value, $searchmode);
         }
 
-        if ($searchmode != "between") {
-            if ($this->getSearchType() == "number") {
+        if ($searchmode != 'between') {
+            if ($this->getSearchType() == 'number') {
                 if ($value['from'] != '') {
                     $value = $value['from'];
                 } else {
@@ -202,8 +205,8 @@ class ExpressionAttribute extends Attribute
                     }
                 }
             }
-            $func = $searchmode . "Condition";
-            if (method_exists($query, $func) && $value !== "" && $value !== null) {
+            $func = $searchmode.'Condition';
+            if (method_exists($query, $func) && $value !== '' && $value !== null) {
                 return $query->$func($expression, $this->escapeSQL($value));
             } else {
                 return false;

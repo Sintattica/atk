@@ -1,9 +1,11 @@
-<?php namespace Sintattica\Atk\Errors;
+<?php
+
+namespace Sintattica\Atk\Errors;
 
 use Sintattica\Atk\Core\Tools;
 
 /**
- * Handles errors by sending them to Zend Platform
+ * Handles errors by sending them to Zend Platform.
  *
  * Params used:
  * - none
@@ -13,9 +15,8 @@ use Sintattica\Atk\Core\Tools;
  */
 class ZendPlatformErrorHandler extends ErrorHandlerBase
 {
-
     /**
-     * Handle the error
+     * Handle the error.
      *
      * @param string $errorMessage
      * @param string $debugMessage
@@ -31,34 +32,36 @@ class ZendPlatformErrorHandler extends ErrorHandlerBase
                 $errMsg = preg_replace('/\[\+.*s\]/', '', $errMsg);
             } // get rid of timestamps because they will prevent ZP from finding duplicate errors
 
-            monitor_custom_event(Tools::atktext("app_title"), $errMsg, true);
+            monitor_custom_event(Tools::atktext('app_title'), $errMsg, true);
         }
     }
 
     /**
-     * Check if Zend Platform is available and good to go
+     * Check if Zend Platform is available and good to go.
      *
-     * @return boolean
+     * @return bool
      */
     protected function zendPlatformAvailable()
     {
         if (!function_exists('accelerator_license_info')) {
             Tools::atkdebug('Zend Platform was not detected');
+
             return false;
         }
 
         if (!function_exists('accelerator_get_configuration')) {
             $licenseInfo = accelerator_license_info();
-            Tools::atkdebug('The Zend Platform extension is not loaded correctly: ' . $licenseInfo['failure_reason']);
+            Tools::atkdebug('The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']);
+
             return false;
         }
 
         if (!function_exists('monitor_custom_event')) {
             Tools::atkdebug('Zend Platform seems to be there, but the function \'monitor_custom_event\' could not be found');
+
             return false;
         }
 
         return true;
     }
-
 }

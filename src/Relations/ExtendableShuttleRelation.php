@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Relations;
+<?php
+
+namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Ui;
@@ -6,21 +8,18 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Utils\StringParser;
 
-
 /**
  * Shuttle relation with widget extensions.
+ *
  * @author Tjeerd Bijlsma <tjeerd@ibuildings.nl>
- * @package atk
- * @subpackage relations
  */
 class ExtendableShuttleRelation extends ManyToManyRelation
 {
-
     /**
      * Do not load the available records
      * Leave it to a partial update.
      * often used with the shuttlecontrols when editing
-     * large tables
+     * large tables.
      */
     const AF_SHUTTLERELATION_NO_AUTOLOAD = 33554432;
 
@@ -32,21 +31,22 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     protected $m_descriptor_tooltip_template = null;
 
     /**
-     * Constructor
-     * @param string $name The name of the relation
-     * @param string $link The full name of the node that is used as
-     *                     intermediairy node. The intermediairy node is
-     *                     assumed to have 2 attributes that are named
-     *                     after the nodes at both ends of the relation.
-     *                     For example, if node 'project' has a M2M relation
-     *                     with 'activity', then the intermediairy node
-     *                     'project_activity' is assumed to have an attribute
-     *                     named 'project' and one that is named 'activity'.
-     *                     You can set your own keys by calling setLocalKey()
-     *                     and setRemoteKey()
+     * Constructor.
+     *
+     * @param string $name        The name of the relation
+     * @param string $link        The full name of the node that is used as
+     *                            intermediairy node. The intermediairy node is
+     *                            assumed to have 2 attributes that are named
+     *                            after the nodes at both ends of the relation.
+     *                            For example, if node 'project' has a M2M relation
+     *                            with 'activity', then the intermediairy node
+     *                            'project_activity' is assumed to have an attribute
+     *                            named 'project' and one that is named 'activity'.
+     *                            You can set your own keys by calling setLocalKey()
+     *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int $flags Flags for the relation.
+     * @param int    $flags       Flags for the relation.
      */
     public function __construct($name, $link, $destination, $flags = 0)
     {
@@ -56,10 +56,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * Add control
+     * Add control.
      *
      * @param ShuttleControl $control
-     * @param string $section
+     * @param string         $section
      */
     public function addControl($control, $section)
     {
@@ -86,11 +86,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $redraw = false;
         $record = $this->getOwnerInstance()->updateRecord();
 
-
-        $mode = $ATK_VARS["atkaction"];
+        $mode = $ATK_VARS['atkaction'];
         $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
 
-        foreach ($this->m_controlsBySection[$record[$this->fieldName()]["section"]] as $control) {
+        foreach ($this->m_controlsBySection[$record[$this->fieldName()]['section']] as $control) {
             if (is_a($control, 'ShuttleFilter')) {
                 $redraw = true;
 
@@ -108,30 +107,31 @@ class ExtendableShuttleRelation extends ManyToManyRelation
             }
         }
 
-        $res = "<script language=\"text/javascript\">";
-        foreach ($this->m_controlsBySection[$record[$this->fieldName()]["section"]] as $control) {
+        $res = '<script language="text/javascript">';
+        foreach ($this->m_controlsBySection[$record[$this->fieldName()]['section']] as $control) {
             if ($control->needsRefresh('filter', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . JSON::encode($control->render($record,
-                        $mode, $prefix)) . ";";
+                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".JSON::encode($control->render($record,
+                        $mode, $prefix)).';';
             }
         }
 
         if ($redraw) {
-            $res .= "$('" . $this->getHtmlId($prefix) . "_" . $record[$this->fieldName()]["section"] . "').innerHTML = " . JSON::encode($this->renderSelectBoxes($record[$this->fieldName()]["section"],
-                    $record, $mode, $prefix)) . ";";
+            $res .= "$('".$this->getHtmlId($prefix).'_'.$record[$this->fieldName()]['section']."').innerHTML = ".JSON::encode($this->renderSelectBoxes($record[$this->fieldName()]['section'],
+                    $record, $mode, $prefix)).';';
         }
-        $res .= "</script>";
+        $res .= '</script>';
 
         return $res;
     }
 
     /**
-     * Render select boxes
+     * Render select boxes.
      *
      * @param string $side
-     * @param array $record
+     * @param array  $record
      * @param string $mode
      * @param string $prefix
+     *
      * @return string piece of html code
      */
     protected function renderSelectBoxes($side, $record, $mode, $prefix)
@@ -152,25 +152,27 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * Get selected name
+     * Get selected name.
      *
      * @param string $prefix
+     *
      * @return string The name
      */
     public function getSelectedSelectName($prefix)
     {
-        return $this->getHtmlId($prefix) . '[cselected][][' . $this->getRemoteKey() . ']';
+        return $this->getHtmlId($prefix).'[cselected][]['.$this->getRemoteKey().']';
     }
 
     /**
-     * Get available name
+     * Get available name.
      *
      * @param string $prefix
+     *
      * @return string The name
      */
     public function getAvailableSelectName($prefix)
     {
-        return $this->getHtmlId($prefix) . "[available]";
+        return $this->getHtmlId($prefix).'[available]';
     }
 
     /**
@@ -190,24 +192,23 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     {
         global $ATK_VARS;
         $record = $this->getOwnerInstance()->updateRecord();
-        $mode = $ATK_VARS["atkaction"];
+        $mode = $ATK_VARS['atkaction'];
         $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
 
-
-        $res = "<script language=\"text/javascript\">";
+        $res = '<script language="text/javascript">';
         foreach ($this->m_controlsBySection[ShuttleControl::AVAILABLE] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . JSON::encode($control->render($record,
-                        $mode, $prefix)) . ";";
+                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".JSON::encode($control->render($record,
+                        $mode, $prefix)).';';
             }
         }
         foreach ($this->m_controlsBySection[ShuttleControl::SELECTED] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('" . $control->getFormName($prefix) . "').innerHTML = " . JSON::encode($control->render($record,
-                        $mode, $prefix)) . ";";
+                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".JSON::encode($control->render($record,
+                        $mode, $prefix)).';';
             }
         }
-        $res .= "</script>";
+        $res .= '</script>';
 
         return $res;
     }
@@ -216,19 +217,20 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array $record The record that holds the value for this attribute.
+     * @param array  $record      The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return String A piece of htmlcode for editing this attribute
+     * @param string $mode        The mode we're in ('add' or 'edit')
+     *
+     * @return string A piece of htmlcode for editing this attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
         // Add onchange handler
-        $mode = ($mode == "add") ?: "edit";
+        $mode = ($mode == 'add') ?: 'edit';
         $url = addslashes(Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode,
-            "attribute." . $this->getHtmlId($fieldprefix) . ".selection", array("atkfieldprefix" => $fieldprefix)));
-        $this->addOnChangeHandler("shuttle_refresh('$url', '" . $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']' . "', '" . $fieldprefix . $this->fieldName() . "[section]', el);");
+            'attribute.'.$this->getHtmlId($fieldprefix).'.selection', array('atkfieldprefix' => $fieldprefix)));
+        $this->addOnChangeHandler("shuttle_refresh('$url', '".$this->getHtmlId($fieldprefix).'[cselected][]['.$this->getRemoteKey().']'."', '".$fieldprefix.$this->fieldName()."[section]', el);");
         $this->_renderChangeHandler($fieldprefix);
 
         $filtersBySection = array();
@@ -250,12 +252,12 @@ class ExtendableShuttleRelation extends ManyToManyRelation
 
         $availableFilter = '';
         if (count($filtersBySection[ShuttleControl::AVAILABLE]) > 0) {
-            $availableFilter = '(' . implode(') AND (', $filtersBySection[ShuttleControl::AVAILABLE]) . ')';
+            $availableFilter = '('.implode(') AND (', $filtersBySection[ShuttleControl::AVAILABLE]).')';
         }
 
         $selectedFilter = '';
         if (count($filtersBySection[ShuttleControl::SELECTED]) > 0) {
-            $selectedFilter = '(' . implode(') AND (', $filtersBySection[ShuttleControl::SELECTED]) . ')';
+            $selectedFilter = '('.implode(') AND (', $filtersBySection[ShuttleControl::SELECTED]).')';
         }
 
         // Get controls for 'available' side
@@ -272,33 +274,33 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $left = ($this->hasFlag(self::AF_SHUTTLERELATION_NO_AUTOLOAD)) ? array() : $this->getAvailableFields($record, $mode,
             $availableFilter);
 
-        for ($i = 0, $_i = count($left); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($left); $i < $_i; ++$i) {
             $available_options[$left[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($left[$i]);
         }
 
         // Get selected records
         $right = $this->getSelectedFields($record, $mode, $selectedFilter, $availableFilter);
-        for ($i = 0, $_i = count($right); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($right); $i < $_i; ++$i) {
             $selected_options[$right[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($right[$i]);
         }
 
-        $leftname = $this->getHtmlId($fieldprefix) . "[available]";
-        $rightname = $this->getHtmlId($fieldprefix) . '[cselected][][' . $this->getRemoteKey() . ']';
-        $name = $this->getHtmlId($fieldprefix) . '[selected][][' . $this->getRemoteKey() . ']';
+        $leftname = $this->getHtmlId($fieldprefix).'[available]';
+        $rightname = $this->getHtmlId($fieldprefix).'[cselected][]['.$this->getRemoteKey().']';
+        $name = $this->getHtmlId($fieldprefix).'[selected][]['.$this->getRemoteKey().']';
 
         // Build jsonned value for selected fields
         foreach ($right as $fld) {
             $vals[] = $fld[$this->m_destInstance->primaryKeyField()];
         }
         $value = JSON::encode($vals);
-        if ($value == "null") {
-            $value = "[]";
+        if ($value == 'null') {
+            $value = '[]';
         }
 
         // on submit, we must select all items in the right selector, as unselected items will not be posted.
         $page = $this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkextendableshuttlerelation.js");
-        $page->register_submitscript("shuttle_selectAll('" . $rightname . "');");
+        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkextendableshuttlerelation.js');
+        $page->register_submitscript("shuttle_selectAll('".$rightname."');");
 
         $ui = Ui::getInstance();
         $result = $ui->render('extendableshuttle.tpl', array(
@@ -318,23 +320,26 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * Load the records for this relation
+     * Load the records for this relation.
      *
-     * @param Db $notused The database object
-     * @param array $record The record
+     * @param Db    $notused The database object
+     * @param array $record  The record
+     *
      * @return array Array with records
      */
     public function load($notused, $record)
     {
         $res = parent::load($notused, $record);
         $ret['selected'] = $res;
+
         return $ret;
     }
 
     /**
-     * Fetch value for this relation based on the postvars
+     * Fetch value for this relation based on the postvars.
      *
      * @param array $postvars
+     *
      * @return mixed The value of this relation
      */
     public function fetchValue($postvars)
@@ -347,15 +352,17 @@ class ExtendableShuttleRelation extends ManyToManyRelation
             }
         }
         $postvars[$this->fieldName()]['selected'] = $ret;
+
         return $postvars[$this->fieldName()];
     }
 
     /**
-     * Store the value of this relation
+     * Store the value of this relation.
      *
-     * @param mixed $notused
-     * @param array $record
+     * @param mixed  $notused
+     * @param array  $record
      * @param string $mode
+     *
      * @return bool Did the store went successfull?
      */
     public function store($notused, &$record, $mode)
@@ -363,45 +370,49 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $rec = $record[$this->fieldName()];
         $record[$this->fieldName()] = $record[$this->fieldName()]['selected'];
         $res = parent::store($notused, $record, $mode);
-        $record[$this->fieldName()]["selected"] = $rec["selected"];
+        $record[$this->fieldName()]['selected'] = $rec['selected'];
+
         return $res;
     }
 
     /**
-     * Display the value of this relation
+     * Display the value of this relation.
      *
-     * @param array $record
+     * @param array  $record
      * @param string $mode
+     *
      * @return string piece of html code
      */
     public function display($record, $mode)
     {
         $record[$this->fieldName()] = $record[$this->fieldName()]['selected'];
+
         return parent::display($record, $mode);
     }
 
     /**
-     * Render the multiselect list control
-     * @access private
-     * @param string $name The name of the list control
-     * @param array $recordset The list of records to render in the control
-     * @param string $opposite The name of the list control connected to this list control for shuttle actions
-     * @param string $prefix The prefix which is needed for determining the correct JS name
-     * @param bool $isSelected Whether or not this is the selectbox with the selectedItems (needed for onchangecode)
-     * @return String piece of html code
+     * Render the multiselect list control.
+     *
+     * @param string $name       The name of the list control
+     * @param array  $recordset  The list of records to render in the control
+     * @param string $opposite   The name of the list control connected to this list control for shuttle actions
+     * @param string $prefix     The prefix which is needed for determining the correct JS name
+     * @param bool   $isSelected Whether or not this is the selectbox with the selectedItems (needed for onchangecode)
+     *
+     * @return string piece of html code
      */
     protected function _renderSelect($name, $recordset, $opposite, $prefix, $isSelected)
     {
         if ($isSelected) {
-            $onchangecode = $this->getHtmlId($prefix) . '_onChange(\'selected\');';
-            $action = "del";
+            $onchangecode = $this->getHtmlId($prefix).'_onChange(\'selected\');';
+            $action = 'del';
         } else {
-            $onchangecode = $this->getHtmlId($prefix) . '_onChange(\'available\');';
-            $action = "add";
+            $onchangecode = $this->getHtmlId($prefix).'_onChange(\'available\');';
+            $action = 'add';
         }
 
-        $valName = $this->getHtmlId($prefix) . '[selected][][' . $this->getRemoteKey() . ']';
-        $result = '<select class="shuttle_select" id="' . $name . '" name="' . $name . '" multiple size="10" onDblClick="shuttle_move(\'' . $name . '\', \'' . $opposite . '\',\'' . $action . '\',\'' . $valName . '\');' . $onchangecode . '">';
+        $valName = $this->getHtmlId($prefix).'[selected][]['.$this->getRemoteKey().']';
+        $result = '<select class="shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\',\''.$action.'\',\''.$valName.'\');'.$onchangecode.'">';
 
         $parser = null;
         // Only import the stringparser once.
@@ -409,21 +420,22 @@ class ExtendableShuttleRelation extends ManyToManyRelation
             $parser = new StringParser($this->m_descriptor_tooltip_template);
         }
 
-        for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
             $title = $this->m_destInstance->descriptor($recordset[$i]);
             $ttip = isset($this->m_descriptor_tooltip_template) ? $parser->parse($recordset[$i])
                 : $title;
 
             $ttip = str_replace('\r\n', ' ', strip_tags($ttip));
 
-            $result .= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '" title="' . $ttip . '">' . htmlentities($title) . '</option>';
+            $result .= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'" title="'.$ttip.'">'.htmlentities($title).'</option>';
         }
         $result .= '</select>';
+
         return $result;
     }
 
     /**
-     * Set the template for the descriptor tooltip
+     * Set the template for the descriptor tooltip.
      *
      * @param string $template
      */
@@ -433,9 +445,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * Get array with all selected fields from record
-     * @access private
+     * Get array with all selected fields from record.
+     *
      * @param array $record The record with the currently selected fields
+     *
      * @return array available records
      */
     public function getSelectedFieldsFromRecord($record)
@@ -444,8 +457,8 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $this->createLink();
         $this->createDestination();
 
-        if (isset($record[$this->m_name]["selected"]) && is_array($record[$this->m_name]["selected"])) {
-            foreach ($record[$this->m_name]["selected"] as $rec) {
+        if (isset($record[$this->m_name]['selected']) && is_array($record[$this->m_name]['selected'])) {
+            foreach ($record[$this->m_name]['selected'] as $rec) {
                 if (is_array($rec[$this->getRemoteKey()])) {
                     $selectedPk[] = $this->m_destInstance->primaryKey($rec[$this->getRemoteKey()]);
                 } else {
@@ -458,10 +471,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * Fetch records that are available for selection in the shuttle relation
+     * Fetch records that are available for selection in the shuttle relation.
      *
      * @param array current record
-     * @param string $mode current mode
+     * @param string $mode            current mode
      * @param string $availableFilter filter sql clause
      */
     protected function populateAvailableRecords($record, $mode, $availableFilter = '')
@@ -477,14 +490,14 @@ class ExtendableShuttleRelation extends ManyToManyRelation
             $recs = $this->_getSelectableRecords($record, $mode, true);
         }
 
-        /**
+        /*
          * keep records in memory. Maybe we can use the list when
          * populating the selected records and save an extra roundtrip
          * to the db
          */
         $this->unfilteredAvailableRecords = $recs;
 
-        /** filter out currently selected records * */
+        /* filter out currently selected records * */
         foreach ($recs as $available) {
             if (!in_array($this->m_destInstance->primaryKey($available), $selectedFields)) {
                 $this->m_availableFields[] = $available;
@@ -500,8 +513,8 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * optimize and not fetch the selected records again
      * but reuse them from the available records array.
      *
-     * @param array $record current record
-     * @param string $mode current mode
+     * @param array  $record         current record
+     * @param string $mode           current mode
      * @param string $selectedFilter
      */
     protected function populateSelectedRecords($record, $mode, $selectedFilter = '', $availableFilter = '')
@@ -510,10 +523,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
 
         $selectables = array();
         if ($availableFilter != $selectedFilter || empty($this->unfilteredAvailableRecords)) {
-            /** fetch it from db * */
+            /* fetch it from db * */
             if (count($selectedFields) > 0) {
                 if (empty($selectedFilter)) {
-                    $selectedFilter = " (" . implode(') OR (', $selectedFields) . ")  ";
+                    $selectedFilter = ' ('.implode(') OR (', $selectedFields).')  ';
                 }
 
                 $this->getDestination()->addFilter($selectedFilter);
@@ -521,14 +534,14 @@ class ExtendableShuttleRelation extends ManyToManyRelation
                 $this->getDestination()->removeFilter($selectedFilter);
             }
         } else {
-            /** simply reuse the availables * */
+            /* simply reuse the availables * */
             $selectables = $this->unfilteredAvailableRecords;
         }
 
-        /** declare the array * */
+        /* declare the array * */
         $this->m_selectedFields = array();
 
-        /** populate the selected records from the db records * */
+        /* populate the selected records from the db records * */
         foreach ($selectables as $rec) {
             if (in_array($this->m_destInstance->primaryKey($rec), $selectedFields)) {
                 $this->m_selectedFields[] = $rec;
@@ -537,9 +550,11 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * Get array with all selected fields
-     * @param array $record The record with the currently selected fields
-     * @param string $mode for which mode we are rendering
+     * Get array with all selected fields.
+     *
+     * @param array  $record The record with the currently selected fields
+     * @param string $mode   for which mode we are rendering
+     *
      * @return array selected records
      */
     public function getSelectedFields($record, $mode = 'add', $selectedFilter = '', $availableFilter = '')
@@ -552,9 +567,11 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * Get array with all available fields (which are not already selected)
-     * @param array $record The record with the currently selected fields
-     * @param string $mode for which mode we are rendering
+     * Get array with all available fields (which are not already selected).
+     *
+     * @param array  $record The record with the currently selected fields
+     * @param string $mode   for which mode we are rendering
+     *
      * @return array available records
      */
     public function getAvailableFields($record, $mode = 'add', $availableFilter = '')
@@ -576,21 +593,22 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     public function getSelectedFieldCount($record)
     {
         $selectedFields = $this->getSelectedFieldsFromRecord($record);
+
         return count($selectedFields);
     }
 
     /**
      * Returns the available field count.
      *
-     * @param array $record record
-     * @param string $mode The mode we're in
+     * @param array  $record record
+     * @param string $mode   The mode we're in
      *
      * @return int available field count
      */
     public function getAvailableFieldCount($record, $mode = 'add')
     {
         $count = $this->_getSelectableRecordCount($record, $mode);
+
         return $count;
     }
-
 }

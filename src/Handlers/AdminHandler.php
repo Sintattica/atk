@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
 
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Atk;
@@ -8,7 +9,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
-use \Exception;
+use Exception;
 
 /**
  * Handler for the 'admin' action of a node. It displays a recordlist with
@@ -17,58 +18,57 @@ use \Exception;
  * on the presence of the Node::NF_ADD_LINK).
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage handlers
- *
  */
 class AdminHandler extends ActionHandler
 {
-    var $m_actionSessionStatus = SessionManager::SESSION_NESTED;
+    public $m_actionSessionStatus = SessionManager::SESSION_NESTED;
 
     /**
-     * The action method
+     * The action method.
      */
-    function action_admin()
+    public function action_admin()
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
         $res = $this->renderAdminPage();
-        $page->addContent($this->m_node->renderActionPage("admin", $res));
+        $page->addContent($this->m_node->renderActionPage('admin', $res));
     }
 
     /**
      * Sets the action session status for actions in the recordlist.
      * (Defaults to SessionManager::SESSION_NESTED).
      *
-     * @param Integer $sessionStatus The sessionstatus (for example SessionManager::SESSION_REPLACE)
+     * @param int $sessionStatus The sessionstatus (for example SessionManager::SESSION_REPLACE)
      */
-    function setActionSessionStatus($sessionStatus)
+    public function setActionSessionStatus($sessionStatus)
     {
         $this->m_actionSessionStatus = $sessionStatus;
     }
 
     /**
-     * Render the adminpage, including addpage if necessary
+     * Render the adminpage, including addpage if necessary.
      *
      * @return array with result of adminPage and addPage
      */
-    function renderAdminPage()
+    public function renderAdminPage()
     {
         $res = array();
-        if ($this->m_node->hasFlag(Node::NF_NO_ADD) == false && $this->m_node->allowed("add")) {
+        if ($this->m_node->hasFlag(Node::NF_NO_ADD) == false && $this->m_node->allowed('add')) {
             if (!$this->m_node->hasFlag(Node::NF_ADD_LINK)) { // otherwise, in adminPage, an add link will be added.
                 // we could get here because of a reject.
                 $record = $this->getRejectInfo();
 
-                $res[] = $this->invoke("addPage", $record);
+                $res[] = $this->invoke('addPage', $record);
             }
         }
-        $res[] = $this->invoke("adminPage");
+        $res[] = $this->invoke('adminPage');
+
         return $res;
     }
 
@@ -78,38 +78,40 @@ class AdminHandler extends ActionHandler
      * The implementation delegates drawing of the form to the atkAddHandler.
      *
      * @param array $record The record
-     * @return String A box containing the add page.
+     *
+     * @return string A box containing the add page.
      */
-    function addPage($record = null)
+    public function addPage($record = null)
     {
         // Reuse the atkAddHandler for the addPage.
         $atk = Atk::getInstance();
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
 
-        $handler = $node->getHandler("add");
+        $handler = $node->getHandler('add');
         $handler->setNode($node);
         $handler->setReturnBehaviour(self::ATK_ACTION_STAY); // have the save action stay on the admin page
-        return $handler->invoke("addPage", $record);
+        return $handler->invoke('addPage', $record);
     }
 
     /**
      * Admin page displays records and the actions that can be performed on
-     * them (edit, delete)
+     * them (edit, delete).
      *
      * @param array $actions The list of actions displayed next to each
      *                       record. Nodes can implement a
      *                       recordActions($record, &$actions, &$mraactions)
      *                       method to add/remove record-specific actions.
-     * @return String A box containing the admin page (without the add form,
+     *
+     * @return string A box containing the admin page (without the add form,
      *                which is added later.
      */
-    function adminPage($actions = array())
+    public function adminPage($actions = array())
     {
         $ui = $this->getUi();
 
         $vars = array(
-            "title" => $this->m_node->actionTitle($this->getNode()->m_action),
-            "content" => $this->renderAdminList()
+            'title' => $this->m_node->actionTitle($this->getNode()->m_action),
+            'content' => $this->renderAdminList(),
         );
 
         $output = $ui->renderBox($vars);
@@ -118,14 +120,14 @@ class AdminHandler extends ActionHandler
     }
 
     /**
-     * Renders the recordlist for the admin mode
+     * Renders the recordlist for the admin mode.
      *
      * @param array $actions An array with the actions for the admin mode
-     * @return String The HTML for the admin recordlist
+     *
+     * @return string The HTML for the admin recordlist
      */
-    function renderAdminList($actions = "")
+    public function renderAdminList($actions = '')
     {
-
         $grid = DataGrid::create($this->getNode(), 'admin');
 
         if (is_array($actions)) {
@@ -139,10 +141,11 @@ class AdminHandler extends ActionHandler
         }
 
         $params = array();
-        $params["header"] = $this->invoke("adminHeader") . $this->getHeaderLinks();
-        $params["list"] = $grid->render();
-        $params["footer"] = $this->invoke("adminFooter");
-        $output = $this->getUi()->renderList("admin", $params);
+        $params['header'] = $this->invoke('adminHeader').$this->getHeaderLinks();
+        $params['list'] = $grid->render();
+        $params['footer'] = $this->invoke('adminFooter');
+        $output = $this->getUi()->renderList('admin', $params);
+
         return $output;
     }
 
@@ -175,7 +178,8 @@ class AdminHandler extends ActionHandler
      * the user will be automatically redirected to the search action.
      *
      * @param DataGrid $grid data grid
-     * @return boolean redirect active?
+     *
+     * @return bool redirect active?
      */
     protected function redirectToSearchAction($grid)
     {
@@ -208,7 +212,7 @@ class AdminHandler extends ActionHandler
                 array('atkselector' => $node->primaryKey($records[0]))), SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
-                $script = 'document.location.href = ' . JSON::encode($url) . ';';
+                $script = 'document.location.href = '.JSON::encode($url).';';
                 $node->getPage()->register_loadscript($script);
             } else {
                 $node->redirect($url);
@@ -227,11 +231,11 @@ class AdminHandler extends ActionHandler
      * override this function in their custom handlers or directly in the
      * node class.
      *
-     * @return String A string that is displayed above the recordlist.
+     * @return string A string that is displayed above the recordlist.
      */
-    function adminHeader()
+    public function adminHeader()
     {
-        return "";
+        return '';
     }
 
     /**
@@ -241,52 +245,53 @@ class AdminHandler extends ActionHandler
      * override this function in their custom handlers or directly in the
      * node class.
      *
-     * @return String A string that is displayed below the recordlist.
+     * @return string A string that is displayed below the recordlist.
      */
-    function adminFooter()
+    public function adminFooter()
     {
-        return "";
+        return '';
     }
 
     /**
-     * Get the importlink to add to the admin header
+     * Get the importlink to add to the admin header.
      *
-     * @return String HTML code with link to the import action of the node (if allowed)
+     * @return string HTML code with link to the import action of the node (if allowed)
      */
-    function getImportLink()
+    public function getImportLink()
     {
-        $link = "";
-        if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "import"),
-                Tools::atktext("import", "atk", $this->m_node->m_type), SessionManager::SESSION_NESTED);
+        $link = '';
+        if ($this->m_node->allowed('add') && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'import'),
+                Tools::atktext('import', 'atk', $this->m_node->m_type), SessionManager::SESSION_NESTED);
         }
+
         return $link;
     }
 
     /**
-     * Get the exportlink to add to the admin header
+     * Get the exportlink to add to the admin header.
      *
-     * @return String HTML code with link to the export action of the node (if allowed)
+     * @return string HTML code with link to the export action of the node (if allowed)
      */
-    function getExportLink()
+    public function getExportLink()
     {
-        $link = "";
-        if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(Node::NF_EXPORT)) {
+        $link = '';
+        if ($this->m_node->allowed('view') && $this->m_node->allowed('export') && $this->m_node->hasFlag(Node::NF_EXPORT)) {
             $filter = '';
             if (count($this->m_node->m_fuzzyFilters) > 0) {
                 $filter = implode(' AND ',
                     str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "export",
-                array('atkfilter' => $filter)), Tools::atktext("export", "atk", $this->m_node->m_type),
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export',
+                array('atkfilter' => $filter)), Tools::atktext('export', 'atk', $this->m_node->m_type),
                 SessionManager::SESSION_NESTED);
         }
+
         return $link;
     }
 
     /**
-     *
      * This function returns the nodetype that should be used for creating
      * the add form or add link above the admin grid. This defaults to the
      * node for this handler. Override this method in your handler or directly
@@ -298,29 +303,30 @@ class AdminHandler extends ActionHandler
     }
 
     /**
-     * Get the add link to add to the admin header
+     * Get the add link to add to the admin header.
      *
-     * @return String HTML code with link to the add action of the node (if allowed)
+     * @return string HTML code with link to the add action of the node (if allowed)
      */
-    function getAddLink()
+    public function getAddLink()
     {
         $atk = Atk::getInstance();
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
 
-        if (!$node->hasFlag(Node::NF_NO_ADD) && $node->allowed("add")) {
-            $label = $node->text("link_" . $node->m_type . "_add", null, "", "", true);
+        if (!$node->hasFlag(Node::NF_NO_ADD) && $node->allowed('add')) {
+            $label = $node->text('link_'.$node->m_type.'_add', null, '', '', true);
             if (empty($label)) {
                 // generic text
-                $label = Tools::atktext("add", "atk");
+                $label = Tools::atktext('add', 'atk');
             }
 
             if ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
+
                 return Tools::href($addurl, $label, SessionManager::SESSION_NESTED);
             }
         }
 
-        return "";
+        return '';
     }
 
     /**
@@ -333,30 +339,31 @@ class AdminHandler extends ActionHandler
     {
         $atk = Atk::getInstance();
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
-        return Config::getGlobal('dispatcher') . '?atknodeuri=' . $node->atkNodeUri() . '&atkaction=add';
+
+        return Config::getGlobal('dispatcher').'?atknodeuri='.$node->atkNodeUri().'&atkaction=add';
     }
 
     /**
-     * Get all links to add to the admin header
+     * Get all links to add to the admin header.
      *
-     * @return String String with the HTML code of the links (each link separated with |)
+     * @return string String with the HTML code of the links (each link separated with |)
      */
-    function getHeaderLinks()
+    public function getHeaderLinks()
     {
         $links = array();
         $addlink = $this->getAddLink();
-        if ($addlink != "") {
+        if ($addlink != '') {
             $links[] = $addlink;
         }
         $importlink = $this->getImportLink();
-        if ($importlink != "") {
+        if ($importlink != '') {
             $links[] = $importlink;
         }
         $exportlink = $this->getExportLink();
-        if ($exportlink != "") {
+        if ($exportlink != '') {
             $links[] = $exportlink;
         }
-        $result = implode(" | ", $links);
+        $result = implode(' | ', $links);
 
         if (strlen(trim($result)) > 0) {
             $result .= '<br/>';
@@ -365,26 +372,24 @@ class AdminHandler extends ActionHandler
         return $result;
     }
 
-
     /**
      * Attribute handler.
      *
      * @param string $partial full partial
+     *
      * @return string
      */
-    function partial_attribute($partial)
+    public function partial_attribute($partial)
     {
         list($type, $attribute, $partial) = explode('.', $partial);
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeUri()."'");
+
             return '';
         }
 
         return $attr->partial($partial, 'admin');
     }
-
 }
-
-

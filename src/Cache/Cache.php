@@ -1,9 +1,11 @@
-<?php namespace Sintattica\Atk\Cache;
+<?php
+
+namespace Sintattica\Atk\Cache;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
-use \ArrayAccess;
-use \Exception;
+use ArrayAccess;
+use Exception;
 
 /**
  * This file is part of the ATK distribution on GitHub.
@@ -13,8 +15,6 @@ use \Exception;
  *
  * Base class for all caching systems that atk supports
  *
- * @package atk
- * @subpackage cache
  *
  * @copyright (c)2008 Sandy Pleyte
  * @author Sandy Pleyte <sandy@achievo.org>
@@ -26,53 +26,57 @@ use \Exception;
 abstract class Cache implements ArrayAccess
 {
     /**
-     * All cache instances
+     * All cache instances.
+     *
      * @var Cache[]
      */
     private static $m_instances = array();
 
     /**
      * Is the cache still active.
+     *
      * @var bool
      */
     protected $m_active = true;
 
     /**
      * Lifetime of each cache entry in seconds.
+     *
      * @var int
      */
     protected $m_lifetime = 3600;
 
     /**
-     * Namespace so atkCache can also be used on shared hosts
+     * Namespace so atkCache can also be used on shared hosts.
+     *
      * @var string
      */
-    protected $m_namespace = "default";
+    protected $m_namespace = 'default';
 
     /**
      * Private Constructor so we can only have
-     * once instance of each cache
+     * once instance of each cache.
      */
     private function __construct()
     {
-
     }
 
     /**
      * Get Cache instance, default when no type
      * is configured it will use var cache.
      *
-     * @param string $types Cache type
-     * @param boolean $fallback fallback to var cache if all types fail?
-     * @param boolean $force force new instance
+     * @param string $types    Cache type
+     * @param bool   $fallback fallback to var cache if all types fail?
+     * @param bool   $force    force new instance
      *
      * @return Cache object of the request type
+     *
      * @throws Exception if $fallback is false and Cache type(s) not found
      */
-    public static function getInstance($types = "", $fallback = true, $force = false)
+    public static function getInstance($types = '', $fallback = true, $force = false)
     {
         if ($types == '') {
-            $types = Config::getGlobal("cache_method", array());
+            $types = Config::getGlobal('cache_method', array());
         }
         if (!is_array($types)) {
             $types = array($types);
@@ -82,6 +86,7 @@ abstract class Cache implements ArrayAccess
             try {
                 if (!$force && array_key_exists($type, self::$m_instances) && is_object(self::$m_instances[$type])) {
                     Tools::atkdebug("cache::getInstance -> Using cached instance of $type");
+
                     return self::$m_instances[$type];
                 } else {
                     self::$m_instances[$type] = new $type();
@@ -93,27 +98,29 @@ abstract class Cache implements ArrayAccess
                     return self::$m_instances[$type];
                 }
             } catch (Exception $e) {
-                Tools::atknotice("Can't instantatie atkCache class $type: " . $e->getMessage());
+                Tools::atknotice("Can't instantatie atkCache class $type: ".$e->getMessage());
             }
         }
 
         if (!$fallback) {
-            throw new Exception("Cannot instantiate Cache class of the following type(s): " . implode(', ', $types));
+            throw new Exception('Cannot instantiate Cache class of the following type(s): '.implode(', ', $types));
         }
 
         // Default return var cache
-        Tools::atkdebug("cache::getInstance() -> Using var cache");
+        Tools::atkdebug('cache::getInstance() -> Using var cache');
+
         return self::getInstance('var', false, $force);
     }
 
     /**
-     * Get config values from the cache config
+     * Get config values from the cache config.
      *
-     * @param string $key Key
-     * @param mixed $default Default value
+     * @param string $key     Key
+     * @param mixed  $default Default value
+     *
      * @return mixed
      */
-    public function getCacheConfig($key, $default = "")
+    public function getCacheConfig($key, $default = '')
     {
         $cacheConfig = Config::getGlobal('cache', array());
         $type = $this->getType();
@@ -128,9 +135,10 @@ abstract class Cache implements ArrayAccess
     }
 
     /**
-     * Get Classname
+     * Get Classname.
      *
      * @param string $type Cache type
+     *
      * @return string Classname of the cache type
      */
     private function getClassname($type)
@@ -143,17 +151,17 @@ abstract class Cache implements ArrayAccess
     }
 
     /**
-     * Turn cache on/off
+     * Turn cache on/off.
      *
-     * @param boolean $flag Set cache active or not active
+     * @param bool $flag Set cache active or not active
      */
     public function setActive($flag)
     {
-        $this->m_active = (bool)$flag;
+        $this->m_active = (bool) $flag;
     }
 
     /**
-     * is cache active
+     * is cache active.
      *
      * @return bool
      */
@@ -163,7 +171,7 @@ abstract class Cache implements ArrayAccess
     }
 
     /**
-     * Set the namespace for the current cache
+     * Set the namespace for the current cache.
      *
      * @param string $namespace
      */
@@ -173,7 +181,7 @@ abstract class Cache implements ArrayAccess
     }
 
     /**
-     * Return current namespace that the cache is using
+     * Return current namespace that the cache is using.
      *
      * @return string
      */
@@ -183,17 +191,17 @@ abstract class Cache implements ArrayAccess
     }
 
     /**
-     * Set the lifetime in seconds for the cache
+     * Set the lifetime in seconds for the cache.
      *
      * @param int $lifetime Set the lifetime in seconds
      */
     public function setLifetime($lifetime)
     {
-        $this->m_lifetime = (int)$lifetime;
+        $this->m_lifetime = (int) $lifetime;
     }
 
     /**
-     * Get lifetime of the ache
+     * Get lifetime of the ache.
      *
      * @return int The cache lifetime
      */
@@ -204,61 +212,63 @@ abstract class Cache implements ArrayAccess
 
     /**
      * Add cache entry if it not exists
-     * allready
+     * allready.
      *
-     * @param string $key Entry Id
-     * @param mixed $data The data we want to add
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
-     * @return boolean True on success, false on failure.
+     * @param string $key      Entry Id
+     * @param mixed  $data     The data we want to add
+     * @param int    $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     *
+     * @return bool True on success, false on failure.
      */
     abstract public function add($key, $data, $lifetime = false);
 
     /**
      * Set cache entry, if it not exists then
-     * add it to the cache
+     * add it to the cache.
      *
-     * @param string $key Entry ID
-     * @param mixed $data The data we want to set
-     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
-     * @return True on success, false on failure.
+     * @param string $key      Entry ID
+     * @param mixed  $data     The data we want to set
+     * @param int    $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     *
+     * @return true on success, false on failure.
      */
     abstract public function set($key, $data, $lifetime = false);
 
     /**
-     * get cache entry by key
+     * get cache entry by key.
      *
      * @param string $key Entry id
+     *
      * @return mixed Boolean false on failure, cache data on success.
      */
     abstract public function get($key);
 
     /**
-     * delete cache entry
+     * delete cache entry.
      *
      * @param string $key Entry ID
-     * @return void
      */
     abstract public function delete($key);
 
     /**
-     * Deletes all cache entries
-     * @return void
+     * Deletes all cache entries.
      */
     abstract public function deleteAll();
 
     /**
-     * Get realkey for the cache entry
+     * Get realkey for the cache entry.
      *
      * @param string $key Entry ID
+     *
      * @return string The real entry id
      */
     public function getRealKey($key)
     {
-        return $this->m_namespace . "::" . $key;
+        return $this->m_namespace.'::'.$key;
     }
 
     /**
-     * Get Current cache type
+     * Get Current cache type.
      *
      * @return string Current cache
      */
@@ -272,49 +282,49 @@ abstract class Cache implements ArrayAccess
     // ************************   
 
     /**
-     * Whether the offset exists
+     * Whether the offset exists.
      *
      * @param string $offset Key to check
-     * @return boolean
+     *
+     * @return bool
      */
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
-        return ($this->get($offset) !== false);
+        return $this->get($offset) !== false;
     }
 
     /**
-     * Value at given offset
+     * Value at given offset.
      *
      * @param string $offset Key to get
+     *
      * @return mixed
      */
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
     /**
-     * Set value for given offset
+     * Set value for given offset.
      *
      * @param string $offset Key to set
-     * @param mixed $value Value for key
-     * @return boolean
+     * @param mixed  $value  Value for key
+     *
+     * @return bool
      */
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
         return $this->set($offset, $value);
     }
 
     /**
-     * Unset value for given offset
+     * Unset value for given offset.
      *
      * @param string $offset Key to unset
-     * @return void
      */
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
         return $this->delete($offset);
     }
-
 }
-

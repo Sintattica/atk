@@ -1,8 +1,8 @@
-<?php namespace Sintattica\Atk\Security\Auth;
+<?php
 
+namespace Sintattica\Atk\Security\Auth;
 
 use Sintattica\Atk\Security\SecurityManager;
-
 
 /**
  * Driver for external authentication, such as Apache .htaccess files.
@@ -15,33 +15,29 @@ use Sintattica\Atk\Security\SecurityManager;
  *
  * @author Ivo Jansch        <ivo@achievo.org>
  * @author Gabriele Gallacci <infouser@gallacci.com>
- * @package atk
- * @subpackage security
- *
  */
 class ServerAuth extends AuthInterface
 {
-
     /**
      * Authenticate a user.
      *
-     * @param string $user The login of the user to authenticate.
+     * @param string $user   The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
      *
      * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
      *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
-     *                             user/password combination
+     *             user/password combination
      *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
-     *                           with current username.
+     *             with current username.
      *             SecurityManager::AUTH_ERROR - Authentication failed due to some
-     *                          error which cannot be solved by
-     *                          just trying again. If you return
-     *                          this value, you *must* also
-     *                          fill the m_fatalError variable.
+     *             error which cannot be solved by
+     *             just trying again. If you return
+     *             this value, you *must* also
+     *             fill the m_fatalError variable.
      */
-    function validateUser($user, $passwd)
+    public function validateUser($user, $passwd)
     {
         if ($_SERVER['PHP_AUTH_USER']) {
             return SecurityManager::AUTH_SUCCESS;
@@ -53,12 +49,10 @@ class ServerAuth extends AuthInterface
     /**
      * Does this authentication method support md5 encoding of passwords?
      *
-     * @return boolean false
+     * @return bool false
      */
-    function canMd5()
+    public function canMd5()
     {
         return false;
     }
-
 }
-
