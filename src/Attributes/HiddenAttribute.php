@@ -39,9 +39,8 @@ class HiddenAttribute extends DummyAttribute
     public function hide($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
-        $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->fieldName() . '" value="' .
-            htmlspecialchars($this->m_text) . '">';
+        $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($this->m_text).'">';
+
         return $result;
     }
-
 }

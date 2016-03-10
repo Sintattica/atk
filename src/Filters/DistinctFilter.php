@@ -19,17 +19,14 @@ class DistinctFilter extends Filter
     /**
      * constructor
      */
-    function __construct()
+    public function __construct()
     {
         parent::__construct("distinctfilter");
     }
 
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         $query->setDistinct(true);
     }
-
 }
-
-

@@ -116,7 +116,7 @@ class ConsoleController
             if (class_exists($class)) {
                 $controller = new $class();
             } else {
-                die('Unknown console controller "' . $class . '".' . "\n");
+                die('Unknown console controller "'.$class.'".'."\n");
             }
         }
 
@@ -132,10 +132,10 @@ class ConsoleController
     protected function executeAction($action, $params)
     {
         // translate dashes to underscores so we can support actions like --list
-        $method = str_replace('-', '_', $action) . "Action";
+        $method = str_replace('-', '_', $action)."Action";
 
         if (!method_exists($this, $method)) {
-            echo "Unknown action {$action} for controller " . $this->getName() . ".\n";
+            echo "Unknown action {$action} for controller ".$this->getName().".\n";
             die;
         }
 
@@ -195,15 +195,15 @@ class ConsoleController
      */
     protected function log($type, $message, $data)
     {
-        $filename = "console/" . $this->getName() . "_" . date("Ymd") . ".log";
+        $filename = "console/".$this->getName()."_".date("Ymd").".log";
 
         $type = substr($type, 0, 5);
 
-        $lines = "[" . date("Y-m-d H:i:s") . "] [$type] " . str_repeat(" ", 5 - strlen($type)) . "{$message}\n";
+        $lines = "[".date("Y-m-d H:i:s")."] [$type] ".str_repeat(" ", 5 - strlen($type))."{$message}\n";
         if ($data != null) {
             $dump = print_r($data, true);
             foreach (explode("\n", $dump) as $line) {
-                $lines .= str_repeat(" ", 30) . $line . "\n";
+                $lines .= str_repeat(" ", 30).$line."\n";
             }
         }
 
@@ -222,7 +222,7 @@ class ConsoleController
      */
     public function __listAction()
     {
-        echo "Actions for " . $this->getName() . ":\n\n";
+        echo "Actions for ".$this->getName().":\n\n";
 
         $ref = new ReflectionObject($this);
         foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
@@ -238,7 +238,7 @@ class ConsoleController
                 $lines = '';
                 foreach (explode("\n", $comment) as $line) {
                     if (!preg_match('/@[a-z]+/', $line)) {
-                        $lines .= preg_replace("!^\s*/?\*+/?\s*!", "", $line) . "\n";
+                        $lines .= preg_replace("!^\s*/?\*+/?\s*!", "", $line)."\n";
                     }
                 }
 
@@ -275,5 +275,4 @@ class ConsoleController
 
         $this->executeAction($action, $params);
     }
-
 }

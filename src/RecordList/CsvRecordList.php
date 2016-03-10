@@ -1,19 +1,20 @@
 <?php namespace Sintattica\Atk\RecordList;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage recordlist
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6323 $
- * $Id$
- */
+
+    /**
+     * This file is part of the ATK distribution on GitHub.
+     * Detailed copyright and licensing information can be found
+     * in the doc/COPYRIGHT and doc/LICENSE files which should be
+     * included in the distribution.
+     *
+     * @package atk
+     * @subpackage recordlist
+     *
+     * @copyright (c)2000-2004 Ibuildings.nl BV
+     * @license http://www.achievo.org/atk/licensing ATK Open Source License
+     *
+     * @version $Revision: 6323 $
+     * $Id$
+     */
 
 /**
  * CVS recordlist renderer.
@@ -23,9 +24,9 @@
  * @subpackage recordlist
  *
  */
-class CSVRecordList extends CustomRecordList
+class CsvRecordList extends CustomRecordList
 {
-    var $m_exportcsv = true;
+    public $m_exportcsv = true;
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
@@ -38,7 +39,7 @@ class CSVRecordList extends CustomRecordList
      * @param Boolean $titlerow Should titlerow be rendered or not
      * @param Boolean $decode Should data be decoded or not (for exports)
      */
-    function render(
+    public function render(
         &$node,
         $recordset,
         $compression = "",
@@ -47,9 +48,6 @@ class CSVRecordList extends CustomRecordList
         $titlerow = true,
         $decode = false
     ) {
-        parent::render($node, $recordset, "", "\"", "\"", "\n", "1", $compression, $suppressList, $outputparams, "csv",
-            $titlerow, $decode, ",", null);
+        parent::render($node, $recordset, "", "\"", "\"", "\n", "1", $compression, $suppressList, $outputparams, "csv", $titlerow, $decode, ",", null);
     }
-
 }
-

@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Cache;
 
-
 class MemcacheCache extends Cache
 {
     public $m_memcache;
@@ -16,10 +15,8 @@ class MemcacheCache extends Cache
             throw new \Exception('The memcache extension is not loaded');
         }
         $this->m_memcache = new \Memcache;
-        $result = @$this->m_memcache->connect(
-            $this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211),
-            $this->getCacheConfig('timeout', 1)
-        );
+        $result = @$this->m_memcache->connect($this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211),
+            $this->getCacheConfig('timeout', 1));
         if (!$result) {
             throw new \Exception('Can\'t connect to the memcache server');
         }
@@ -42,6 +39,7 @@ class MemcacheCache extends Cache
         if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
         }
+
         return $this->m_memcache->add($key, $data, null, $lifetime);
     }
 
@@ -62,6 +60,7 @@ class MemcacheCache extends Cache
         if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
         }
+
         return $this->m_memcache->set($key, $data, null, $lifetime);
     }
 
@@ -76,6 +75,7 @@ class MemcacheCache extends Cache
         if (!$this->m_active) {
             return false;
         }
+
         return $this->m_memcache->get($key);
     }
 
@@ -91,6 +91,7 @@ class MemcacheCache extends Cache
             return false;
         }
         $this->m_memcache->delete($key);
+
         return true;
     }
 
@@ -105,6 +106,7 @@ class MemcacheCache extends Cache
             return false;
         }
         $this->m_memcache->flush();
+
         return true;
     }
 
@@ -117,6 +119,4 @@ class MemcacheCache extends Cache
     {
         return 'memcache';
     }
-
 }
-

@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Utils;
 
-
 use \IteratorIterator;
 use \Iterator;
 
@@ -56,5 +55,4 @@ class SelectorIterator extends IteratorIterator
 
         return $row;
     }
-
 }

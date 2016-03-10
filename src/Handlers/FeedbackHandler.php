@@ -19,11 +19,10 @@ class FeedbackHandler extends ActionHandler
     /**
      * The action handler method.
      */
-    function action_feedback()
+    public function action_feedback()
     {
         $page = $this->getPage();
-        $output = $this->invoke("feedbackPage", $this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"],
-            $this->m_postvars["atkfbmessage"]);
+        $output = $this->invoke("feedbackPage", $this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"], $this->m_postvars["atkfbmessage"]);
         $page->addContent($this->m_node->renderActionPage("feedback", $output));
     }
 
@@ -37,22 +36,21 @@ class FeedbackHandler extends ActionHandler
      *
      * @return String The feedback page as an html String.
      */
-    function feedbackPage($action, $actionstatus, $message = "")
+    public function feedbackPage($action, $actionstatus, $message = "")
     {
         $node = $this->m_node;
         $ui = $this->getUi();
 
-        $params["content"] = '<br>' . Tools::atktext('feedback_' . $action . '_' . Tools::atkActionStatus($actionstatus),
-                $node->m_module, $node->m_type);
+        $params["content"] = '<br>'.Tools::atktext('feedback_'.$action.'_'.Tools::atkActionStatus($actionstatus), $node->m_module, $node->m_type);
         if ($message) {
-            $params["content"] .= ' <br>' . $message;
+            $params["content"] .= ' <br>'.$message;
         }
 
         $sm = SessionManager::getInstance();
 
         if ($sm->atkLevel() > 0) {
-            $params["formstart"] = '<form method="get">' . $sm->formState(SessionManager::SESSION_BACK);
-            $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; ' . Tools::atktext('back') . '">';
+            $params["formstart"] = '<form method="get">'.$sm->formState(SessionManager::SESSION_BACK);
+            $params["buttons"][] = '<input type="submit" class="btn btn-default btn_cancel" value="&lt;&lt; '.Tools::atktext('back').'">';
             $params["formend"] = '</form>';
         }
 
@@ -60,9 +58,7 @@ class FeedbackHandler extends ActionHandler
 
         return $ui->renderBox(array(
             "title" => $node->actionTitle($action),
-            "content" => $output
+            "content" => $output,
         ));
     }
-
 }
-

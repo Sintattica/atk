@@ -27,12 +27,10 @@ class SecurityListener
      * @param string $event event name
      * @param string $username user name
      */
-    function handleEvent($event, $username)
+    public function handleEvent($event, $username)
     {
         if (method_exists($this, $event)) {
             $this->$event($username);
         }
     }
-
 }
-

@@ -142,6 +142,4 @@ class State
     {
         return md5(print_r($key, true));
     }
-
 }
-

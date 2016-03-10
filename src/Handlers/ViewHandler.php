@@ -16,17 +16,18 @@ use Sintattica\Atk\Session\SessionManager;
  */
 class ViewHandler extends ViewEditBase
 {
-    var $m_buttonsource = null;
+    public $m_buttonsource = null;
 
     /**
      * The action handler method.
      *
      * @param Bool $renderbox Render this action in a renderbox or just output the HTML
      */
-    function action_view($renderbox = true)
+    public function action_view($renderbox = true)
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
@@ -35,25 +36,22 @@ class ViewHandler extends ViewEditBase
         // allowed to view record?
         if (!$record || !$this->allowed($record)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/formsubmit.js");
         $this->notify("view", $record);
-        $page->addContent($this->m_node->renderActionPage("admin",
-            $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
+        $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }
 
     /**
      * Returns the view record.
      */
-    function getRecordFromDb()
+    public function getRecordFromDb()
     {
-        return $this->m_node->select($this->m_postvars['atkselector'])
-            ->excludes($this->m_node->m_viewExcludes)
-            ->mode('view')
-            ->getFirstRow();
+        return $this->m_node->select($this->m_postvars['atkselector'])->excludes($this->m_node->m_viewExcludes)->mode('view')->getFirstRow();
     }
 
     /**
@@ -64,12 +62,12 @@ class ViewHandler extends ViewEditBase
     public function getFormStart($record = null)
     {
         $sm = SessionManager::getInstance();
-        $formstart = '<form name="entryform" id="entryform" action="' . Config::getGlobal('dispatcher') . '" method="get" onsubmit="return globalSubmit(this,false)">';
+        $formstart = '<form name="entryform" id="entryform" action="'.Config::getGlobal('dispatcher').'" method="get" onsubmit="return globalSubmit(this,false)">';
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
-        $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
+        $formstart .= '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKey($record).'">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
-        return $formstart;
 
+        return $formstart;
     }
 
     /**
@@ -79,7 +77,7 @@ class ViewHandler extends ViewEditBase
      * @param Bool $renderbox Render this action in a renderbox or just output the HTML
      * @return String The html page with a reaonly view of relevant fields.
      */
-    function viewPage($record, $node, $renderbox = true)
+    public function viewPage($record, $node, $renderbox = true)
     {
         $ui = $this->getUi();
 
@@ -103,8 +101,7 @@ class ViewHandler extends ViewEditBase
                 return $output;
             }
 
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action,
-                    $record));
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle')." - ".$node->actionTitle($this->m_action, $record));
 
             $vars = array("title" => $node->actionTitle($this->m_action, $record), "content" => $output);
 
@@ -136,7 +133,7 @@ class ViewHandler extends ViewEditBase
      * Overrideable function to create a header for view mode.
      * Similar to the admin header functionality.
      */
-    function viewHeader()
+    public function viewHeader()
     {
         return "";
     }
@@ -149,7 +146,7 @@ class ViewHandler extends ViewEditBase
      * @param string $template The template to use for the view form
      * @return String HTML code of the page
      */
-    function viewForm($record, $mode = "view", $template = "")
+    public function viewForm($record, $mode = "view", $template = "")
     {
         $node = $this->m_node;
 
@@ -178,12 +175,12 @@ class ViewHandler extends ViewEditBase
                 if ($field["html"] == "section") {
                     // section should only have the tab section classes
                     foreach ($field["tabs"] as $section) {
-                        $classes[] = "section_" . str_replace('.', '_', $section);
+                        $classes[] = "section_".str_replace('.', '_', $section);
                     }
                 } else {
                     if (is_array($field["sections"])) {
                         foreach ($field["sections"] as $section) {
-                            $classes[] = "section_" . str_replace('.', '_', $section);
+                            $classes[] = "section_".str_replace('.', '_', $section);
                         }
                     }
                 }
@@ -197,8 +194,8 @@ class ViewHandler extends ViewEditBase
 
             // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
             // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-            $tplfield["initial_on_tab"] = ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
-                (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+            $tplfield["initial_on_tab"] = ($field["tabs"] == "*" || in_array($tab,
+                        $field["tabs"])) && (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
             // Give the row an id if it doesn't have one yet
             if (!isset($field["id"]) || empty($field["id"])) {
@@ -206,13 +203,12 @@ class ViewHandler extends ViewEditBase
             }
 
             // ar_ stands voor 'attribrow'.
-            $tplfield["rowid"] = "ar_" . $field['id']; // The id of the containing row
+            $tplfield["rowid"] = "ar_".$field['id']; // The id of the containing row
 
             /* check for separator */
             if ($field["html"] == "-" && $i > 0 && $data["fields"][$i - 1]["html"] != "-") {
                 $tplfield["line"] = "<hr>";
             } /* double separator, ignore */ elseif ($field["html"] == "-") {
-
             } /* sections */ elseif ($field["html"] == "section") {
                 $tplfield["line"] = $this->getSectionControl($field, $mode);
             } /* only full HTML */ elseif (isset($field["line"])) {
@@ -241,7 +237,7 @@ class ViewHandler extends ViewEditBase
                 $tplfield["widget"] = $field["html"];
                 $editsrc = $field["html"];
 
-                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri() . '_' . $field["id"]);
+                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field["id"]);
 
                 $tplfield["full"] = $editsrc;
 
@@ -263,11 +259,10 @@ class ViewHandler extends ViewEditBase
                 $tabForm = $this->_renderTabs($fields, $tabTpl);
                 $innerform = implode(null, $tabForm);
             } else {
-                $innerform = $ui->render($node->getTemplate("view", $record, $tab),
-                    array("fields" => $fields, 'attributes' => $attributes));
+                $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields" => $fields, 'attributes' => $attributes));
             }
         }
+
         return $innerform;
     }
 }
-

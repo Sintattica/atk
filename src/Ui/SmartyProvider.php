@@ -30,10 +30,11 @@ class SmartyProvider
             $s_smarty->autoload_filters = array();    // indicates which filters will be auto-loaded
             $s_smarty->setCompileDir($tplcompiledir); // name of directory for compiled templates
             $s_smarty->setForceCompile(Config::getGlobal("tplforcecompile"));   // force templates to compile every time,
-            $s_smarty->addPluginsDir(__DIR__ . '/plugins');
+            $s_smarty->addPluginsDir(__DIR__.'/plugins');
 
             Tools::atkdebug("Instantiated new Smarty");
         }
+
         return $s_smarty;
     }
 }

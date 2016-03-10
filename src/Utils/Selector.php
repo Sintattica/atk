@@ -146,6 +146,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function ignoreDefaultFilters($ignore = true)
     {
         $this->m_ignoreDefaultFilters = $ignore;
+
         return $this;
     }
 
@@ -158,6 +159,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function ignorePostvars($ignore = true)
     {
         $this->m_ignorePostvars = $ignore;
+
         return $this;
     }
 
@@ -170,6 +172,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function ignoreForceLoad($ignore = true)
     {
         $this->m_ignoreForceLoad = $ignore;
+
         return $this;
     }
 
@@ -183,6 +186,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function ignorePrimaryKey($ignore = true)
     {
         $this->m_ignorePrimaryKey = $ignore;
+
         return $this;
     }
 
@@ -195,6 +199,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function distinct($distinct)
     {
         $this->m_distinct = $distinct;
+
         return $this;
     }
 
@@ -207,6 +212,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function mode($mode)
     {
         $this->m_mode = $mode;
+
         return $this;
     }
 
@@ -219,6 +225,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function orderBy($order)
     {
         $this->m_order = $order;
+
         return $this;
     }
 
@@ -233,6 +240,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $this->m_limit = $limit;
         $this->m_offset = $offset;
+
         return $this;
     }
 
@@ -253,6 +261,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         $this->m_includes = $includes;
+
         return $this;
     }
 
@@ -273,6 +282,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         $this->m_excludes = $excludes;
+
         return $this;
     }
 
@@ -287,13 +297,9 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
         $searchCriteria = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
         $smartSearchCriteria = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
-        $indexValue = $this->_getNode()->m_index != '' ? Tools::atkArrayNvl($this->_getNode()->m_postvars,
-            'atkindex', '')
-            : '';
+        $indexValue = $this->_getNode()->m_index != '' ? Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '') : '';
 
-        return (is_array($searchCriteria) && count($searchCriteria) > 0) ||
-        (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0) ||
-        !empty($indexValue);
+        return (is_array($searchCriteria) && count($searchCriteria) > 0) || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0) || !empty($indexValue);
     }
 
     /**
@@ -367,8 +373,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         foreach ($searchCriteria as $key => $value) {
-            if ($value === null || $value === '' ||
-                ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
+            if ($value === null || $value === '' || ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
                         $attrsByLoadType[Attribute::ADDTOQUERY]))
             ) {
                 continue;
@@ -392,8 +397,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
                 $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
             } else {
                 Tools::atkdebug("Using default search method for $key");
-                $condition = "LOWER(" . $this->_getNode()->getTable() . "." . $key . ") LIKE LOWER('%" . $this->_getDb()->escapeSQL($value,
-                        true) . "%')";
+                $condition = "LOWER(".$this->_getNode()->getTable().".".$key.") LIKE LOWER('%".$this->_getDb()->escapeSQL($value, true)."%')";
                 $query->addSearchCondition($condition);
             }
         }
@@ -420,8 +424,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $attr = $this->_getNode()->getAttribute($attrName);
 
             if (is_object($attr)) {
-                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode,
-                    '');
+                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode, '');
             }
         }
     }
@@ -456,7 +459,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
         // key/value filters
         foreach ($this->_getNode()->m_filters as $key => $value) {
-            $query->addCondition($key . "='" . $this->_getDb()->escapeSQL($value) . "'");
+            $query->addCondition($key."='".$this->_getDb()->escapeSQL($value)."'");
         }
 
         // fuzzy filters
@@ -478,13 +481,10 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $attrName = $attr->fieldName();
 
-        return
-            (!$this->m_ignorePrimaryKey && in_array($attrName, $this->_getNode()->m_primaryKey)) ||
-            (!$this->m_ignoreForceLoad && $attr->hasFlag(Attribute::AF_FORCE_LOAD)) ||
-            (($this->m_includes != null && in_array($attrName,
-                        $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName,
-                        $this->m_excludes))) ||
-            ($this->m_excludes == null && $this->m_includes == null);
+        return (!$this->m_ignorePrimaryKey && in_array($attrName,
+                $this->_getNode()->m_primaryKey)) || (!$this->m_ignoreForceLoad && $attr->hasFlag(Attribute::AF_FORCE_LOAD)) || (($this->m_includes != null && in_array($attrName,
+                    $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName,
+                    $this->m_excludes))) || ($this->m_excludes == null && $this->m_includes == null);
     }
 
     /**
@@ -667,7 +667,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function transformRow($row)
     {
         if ($this->m_iterator == null) {
-            throw new Exception(__METHOD__ . ' should only be called by the current atkSelectorIterator instance!');
+            throw new Exception(__METHOD__.' should only be called by the current atkSelectorIterator instance!');
         }
 
         return $this->_transformRow($row, $this->m_query, $this->m_attrsByLoadType);
@@ -682,6 +682,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $this->limit(1, $this->m_offset);
         $rows = $this->getAllRows();
+
         return count($rows) == 1 ? $rows[0] : null;
     }
 
@@ -750,8 +751,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $query->clearFields();
         $query->clearExpressions();
 
-        $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()) . '.' . $this->_getDb()->quoteIdentifier($index);
-        $expression = "UPPER(" . $this->_getDb()->func_substring($indexColumn, 1, 1) . ")";
+        $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()).'.'.$this->_getDb()->quoteIdentifier($index);
+        $expression = "UPPER(".$this->_getDb()->func_substring($indexColumn, 1, 1).")";
         $query->addExpression('index', $expression);
         $query->addGroupBy($expression);
         $query->addOrderBy($expression);
@@ -773,6 +774,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function offsetExists($key)
     {
         $this->getAllRows();
+
         return isset($this->m_rows[$key]);
     }
 
@@ -785,6 +787,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function offsetGet($key)
     {
         $this->getAllRows();
+
         return $this->m_rows[$key];
     }
 
@@ -798,6 +801,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function offsetSet($key, $value)
     {
         $this->getAllRows();
+
         return $this->m_rows[$key] = $value;
     }
 
@@ -865,7 +869,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function count()
     {
         $this->getAllRows();
+
         return count($this->m_rows);
     }
-
 }

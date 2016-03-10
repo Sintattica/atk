@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Cache;
 
-
 class VarCache extends Cache
 {
     /**
@@ -42,6 +41,7 @@ class VarCache extends Cache
         }
         $this->m_entry[$this->getRealKey($key)] = $data;
         $this->m_expires[$this->getRealKey($key)] = time() + $lifetime;
+
         return true;
     }
 
@@ -85,6 +85,7 @@ class VarCache extends Cache
             // clear the entry
             unset($this->m_entry[$this->getRealKey($key)]);
             unset($this->m_expires[$this->getRealKey($key)]);
+
             return false;
         }
     }
@@ -103,6 +104,7 @@ class VarCache extends Cache
 
         unset($this->m_entry[$this->getRealKey($key)]);
         unset($this->m_expires[$this->getRealKey($key)]);
+
         return true;
     }
 
@@ -118,6 +120,7 @@ class VarCache extends Cache
         }
         $this->m_entry = array();
         $this->m_expires = array();
+
         return true;
     }
 
@@ -130,5 +133,4 @@ class VarCache extends Cache
     {
         return 'var';
     }
-
 }

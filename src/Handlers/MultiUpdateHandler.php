@@ -1,12 +1,11 @@
 <?php namespace Sintattica\Atk\Handlers;
 
-
-class MultiUpdatehandler extends ActionHandler
+class MultiUpdateHandler extends ActionHandler
 {
     /**
      * The action handler method.
      */
-    function action_multiupdate()
+    public function action_multiupdate()
     {
         $data = $this->getNode()->m_postvars['atkdatagriddata'];
         foreach ($data as $entry) {

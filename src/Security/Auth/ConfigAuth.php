@@ -39,7 +39,7 @@ class ConfigAuth extends AuthInterface
      *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
-    function validateUser($user, $passwd)
+    public function validateUser($user, $passwd)
     {
         if ($user == "") {
             return SecurityManager::AUTH_UNVERIFIED;
@@ -64,7 +64,7 @@ class ConfigAuth extends AuthInterface
      *                 can return Config::getGlobal("authentication_md5") to let the
      *                 application decide whether to use md5.
      */
-    function canMd5()
+    public function canMd5()
     {
         return Config::getGlobal("authentication_md5");
     }
@@ -81,10 +81,11 @@ class ConfigAuth extends AuthInterface
      * @param string $user The login of the user to retrieve.
      * @return array Information about a user.
      */
-    function getUser($user)
+    public function getUser($user)
     {
         $configUser = Config::getGlobal('user');
-        return Array("name" => $user, "level" => $configUser[$user]["level"]);
+
+        return array("name" => $user, "level" => $configUser[$user]["level"]);
     }
 
     /**
@@ -96,12 +97,12 @@ class ConfigAuth extends AuthInterface
      * @return mixed One (int) or more (array) entities that are allowed to
      *               perform the action.
      */
-    function getEntity($node, $action)
+    public function getEntity($node, $action)
     {
         $access = Config::getGlobal('access');
         $rights = $access[$node];
 
-        $result = Array();
+        $result = array();
 
         for ($i = 0; $i < count($rights); $i++) {
             if ($rights[$i][$action] != "") {
@@ -124,7 +125,7 @@ class ConfigAuth extends AuthInterface
      * @param string $mode "view" or "edit"
      * @return array
      */
-    function getAttribEntity($node, $attrib, $mode)
+    public function getAttribEntity($node, $attrib, $mode)
     {
         $attribrestrict = Config::getGlobal('attribrestrict');
 
@@ -139,7 +140,7 @@ class ConfigAuth extends AuthInterface
      *
      * @return int const
      */
-    function getPasswordPolicy()
+    public function getPasswordPolicy()
     {
         return self::PASSWORD_RETRIEVABLE;
     }
@@ -151,15 +152,13 @@ class ConfigAuth extends AuthInterface
      *
      * @return mixed string with password or false
      */
-    function getPassword($username)
+    public function getPassword($username)
     {
         $configUser = Config::getGlobal('user');
         if (isset($configUser[$username]["password"])) {
             return $configUser[$username]["password"];
         }
+
         return false;
     }
-
 }
-
-

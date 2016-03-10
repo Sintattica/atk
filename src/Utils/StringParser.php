@@ -13,15 +13,15 @@ use \ArrayAccess;
  */
 class StringParser
 {
-    var $m_fields = array();
-    var $m_string = "";
+    public $m_fields = array();
+    public $m_string = "";
 
     /**
      * Create a new stringparser
      *
      * @param string $string The string to parse
      */
-    function __construct($string)
+    public function __construct($string)
     {
         $this->m_string = $string;
     }
@@ -37,7 +37,7 @@ class StringParser
      *
      * @return String The parsed string
      */
-    function parse($data, $encode = false, $replaceUnknownFields = true)
+    public function parse($data, $encode = false, $replaceUnknownFields = true)
     {
         $string = $this->m_string;
 
@@ -74,7 +74,7 @@ class StringParser
                 $value = rawurlencode($value);
             }
 
-            $string = str_replace("[" . $field . "]", $value, $string);
+            $string = str_replace("[".$field."]", $value, $string);
         }
 
         return $string;
@@ -86,7 +86,7 @@ class StringParser
      * @param array $data
      * @return bool
      */
-    function isComplete($data)
+    public function isComplete($data)
     {
         $fields = $this->getFields();
         for ($i = 0; $i < count($fields); $i++) {
@@ -103,13 +103,14 @@ class StringParser
                 return false;
             } // Missing value.
         }
+
         return true;
     }
 
     /**
      * Get the [ ] Fields out of a String
      */
-    function getFields()
+    public function getFields()
     {
         if (!count($this->m_fields)) {
             $tmp = "";
@@ -132,6 +133,7 @@ class StringParser
                 }
             }
         }
+
         return $this->m_fields;
     }
 
@@ -144,10 +146,11 @@ class StringParser
      *
      * @return array
      */
-    function getAllFieldsAsArray()
+    public function getAllFieldsAsArray()
     {
         $matches = array();
         preg_match_all("/\[[^\]]*\]|[^[]+/", $this->m_string, $matches);
+
         return $matches;
     }
 
@@ -158,11 +161,10 @@ class StringParser
      * @param boolean $split_tags_and_fields return fields and separators separated in resultarray (separators are not used in query, so quotes aren't used)
      * @return array
      */
-    function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
+    public function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
     {
         $matches = $this->getAllFieldsAsArray();
-        Tools::atk_var_dump($matches, "MATCHES" . ($split_tags_and_fields ? " (split tags and separators)"
-                : ""));
+        Tools::atk_var_dump($matches, "MATCHES".($split_tags_and_fields ? " (split tags and separators)" : ""));
 
         $fields = array();
         if (is_array($matches)) {
@@ -180,11 +182,12 @@ class StringParser
                     if ($split_tags_and_fields) {
                         $fields['separators'][] = $match;
                     } else {
-                        $fields[] = "'" . $match . "'";
+                        $fields[] = "'".$match."'";
                     }
                 }
             }
         }
+
         return $fields;
     }
 
@@ -194,7 +197,7 @@ class StringParser
      *
      * @return array attributes used in template
      */
-    function getAttributes()
+    public function getAttributes()
     {
         $attrs = array();
 
@@ -206,7 +209,4 @@ class StringParser
 
         return $attrs;
     }
-
 }
-
-

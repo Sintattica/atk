@@ -90,5 +90,4 @@ class StatementIterator implements Iterator
     {
         return $this->m_row != false;
     }
-
 }

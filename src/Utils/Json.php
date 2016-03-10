@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Utils;
 
-
 use \Exception;
 
 /**
@@ -29,7 +28,7 @@ use \Exception;
  * @subpackage utils
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-class JSON
+class Json
 {
     /**
      * Maximum recursion depth for conversion of data for encoding to UTF-8
@@ -84,6 +83,7 @@ class JSON
                     }
 
                     /* return utf8 encoded array */
+
                     return $newArray;
                 } else {
                     throw new Exception("Unrecognized datatype for UTF-8 conversion in atkJSON");
@@ -103,5 +103,4 @@ class JSON
     {
         return json_decode($string, $assoc);
     }
-
 }

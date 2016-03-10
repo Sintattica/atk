@@ -10,22 +10,22 @@
  */
 class BrowserInfo
 {
-    var $ua = "";
-    var $full_version = "";
-    var $browser = "unknown";
-    var $major = 0;
-    var $minor = 0;
-    var $os = "";
-    var $platform = "";
-    var $short = "";
-    var $brName = "";
-    var $osName = "";
-    var $hasGui = 0;
-    var $spider = 0;
-    var $family = "";
-    var $gecko = 0;
+    public $ua = "";
+    public $full_version = "";
+    public $browser = "unknown";
+    public $major = 0;
+    public $minor = 0;
+    public $os = "";
+    public $platform = "";
+    public $short = "";
+    public $brName = "";
+    public $osName = "";
+    public $hasGui = 0;
+    public $spider = 0;
+    public $family = "";
+    public $gecko = 0;
 
-    function __construct($ua = "")
+    public function __construct($ua = "")
     {
 
         // set ua
@@ -79,26 +79,22 @@ class BrowserInfo
                 }
         }
 
-        $this->short = $this->browser . " " . $this->full_version;
+        $this->short = $this->browser." ".$this->full_version;
     }
 
     // actual detection
-    function detectAgent()
+    public function detectAgent()
     {
         //MSIE
         $info = array();
-        if (eregi('MSIE ([0-9].[0-9a-zA-Z]{1,4})', $this->ua,
-                $info) || eregi('Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)
-        ) {
+        if (eregi('MSIE ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'MSIE';
             $this->brName = "MS Internet Explorer";
             $this->hasGui = 1;
 
             // check for Opera faking MSIE
-            if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})',
-                    $this->ua, $info)
-            ) {
+            if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
                 $this->full_version = $info[1];
                 $this->browser = 'Opera';
                 $this->brName = "Opera";
@@ -117,32 +113,26 @@ class BrowserInfo
             if (eregi('AOL ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
                 $ver = $this->full_version;
                 $this->full_version = $info[1];
-                $this->browser = 'AOL (MSIE ' . $ver . ')';
+                $this->browser = 'AOL (MSIE '.$ver.')';
                 $this->brName = "AOL";
                 $this->hasGui = 1;
             }
         }
 
         // Opera
-        if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})',
-                $this->ua, $info)
-        ) {
+        if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Opera';
             $this->brName = "Opera";
             $this->hasGui = 1;
         } // iCab
-        elseif (eregi('iCab ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('iCab/([0-9].[0-9a-zA-Z]{1,4})',
-                $this->ua, $info)
-        ) {
+        elseif (eregi('iCab ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('iCab/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'iCab';
             $this->brName = "iCAB";
             $this->hasGui = 1;
         } // Lynx
-        elseif (eregi('Lynx ([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info) || eregi('Lynx/([0-9].[0-9a-zA-Z.]{1,9})',
-                $this->ua, $info)
-        ) {
+        elseif (eregi('Lynx ([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info) || eregi('Lynx/([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Lynx';
             $this->platform = 'Unix';
@@ -169,9 +159,7 @@ class BrowserInfo
             $this->brName = "GetRight";
             $this->hasGui = 0;
         } // KDE Konqueror
-        elseif (eregi('Konqueror ([0-9].[0-9a-zA-Z]{1,4})', $this->ua,
-                $info) || eregi('Konqueror/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)
-        ) {
+        elseif (eregi('Konqueror ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Konqueror/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Konqueror';
             $this->platform = 'Unix';
@@ -358,8 +346,9 @@ class BrowserInfo
             $browser == "fetc" || // fetchpage.cgi Perl script from www.wapcab.de
             $browser == "ALAV" || // yet another unknown UP based browser ?
             $browser == "Wapa"
-        ) // another unknown browser ("Wapalyzer"?)
-        {
+        ) {
+            // another unknown browser ("Wapalyzer"?)
+
             return true;
         } else {
             if (strstr($_SERVER["HTTP_USER_AGENT"], "Blazer")) { // Palm's browser
@@ -381,6 +370,7 @@ class BrowserInfo
                             $size["height"] = $explodedinfo[1];
                         }
                     }
+
                     return $size;
                 } else {
                     return false;
@@ -389,12 +379,10 @@ class BrowserInfo
         }
     }
 
-    function detectOS()
+    public function detectOS()
     {
         // Windows 3.x
-        if (eregi('Win16', $this->ua) || eregi('windows 3.1', $this->ua) || eregi('windows 16-bit',
-                $this->ua) || eregi('16bit', $this->ua)
-        ) {
+        if (eregi('Win16', $this->ua) || eregi('windows 3.1', $this->ua) || eregi('windows 16-bit', $this->ua) || eregi('16bit', $this->ua)) {
             $this->platform = "Win16";
             $this->os = "Win31";
             $this->osname = "Windows 3.x";
@@ -544,8 +532,8 @@ class BrowserInfo
         }
 
         // DEC
-        if (eregi('dec', $this->ua) || eregi('osfl', $this->ua) || eregi('alphaserver', $this->ua) || eregi('ultrix',
-                $this->ua) || eregi('alphastation', $this->ua)
+        if (eregi('dec', $this->ua) || eregi('osfl', $this->ua) || eregi('alphaserver', $this->ua) || eregi('ultrix', $this->ua) || eregi('alphastation',
+                $this->ua)
         ) {
             $this->platform = "Unix";
             $this->os = "DEC";

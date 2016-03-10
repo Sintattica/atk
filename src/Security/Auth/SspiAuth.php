@@ -32,7 +32,7 @@ use Sintattica\Atk\Db\Db;
 class SspiAuth extends DbAuth
 {
 
-    function auth_sspi()
+    public function auth_sspi()
     {
         global $ATK_VARS;
 
@@ -46,7 +46,7 @@ class SspiAuth extends DbAuth
         }
     }
 
-    function buildSelectUserQuery(
+    public function buildSelectUserQuery(
         $sspiaccount,
         $usertable,
         $userfield,
@@ -59,23 +59,22 @@ class SspiAuth extends DbAuth
         if ($accountdisablefield) {
             $disableexpr = ", $accountdisablefield";
         }
-        $query = "SELECT $userfield $disableexpr FROM $usertable WHERE $sspiaccountfield ='" . $sspiaccount . "'";
+        $query = "SELECT $userfield $disableexpr FROM $usertable WHERE $sspiaccountfield ='".$sspiaccount."'";
         if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
         }
+
         return $query;
     }
 
-    function validateUser($user = "", $passwd = "")
+    public function validateUser($user = "", $passwd = "")
     {
         global $ATK_VARS;
         $sspipath = $_SERVER ["REMOTE_USER"];
         $position = strpos($sspipath, "\\");
         $domain = substr($sspipath, 0, $position);
         $user = substr($sspipath, $position + 1, strlen($sspipath) - $position);
-        if (!isset($sspipath) || ($sspipath == "") || !in_array($domain,
-                Config::getGlobal("auth_sspi_trusted_domains"))
-        ) {
+        if (!isset($sspipath) || ($sspipath == "") || !in_array($domain, Config::getGlobal("auth_sspi_trusted_domains"))) {
             return SecurityManager::AUTH_UNVERIFIED;
         }
 
@@ -90,9 +89,8 @@ class SspiAuth extends DbAuth
         $_SERVER["PHP_AUTH_USER"] = "";
         $ATK_VARS["auth_user"] = "";
         $db = Db::getInstance(Config::getGlobal("auth_database"));
-        $query = $this->buildSelectUserQuery($user, Config::getGlobal("auth_usertable"),
-            Config::getGlobal("auth_userfield"), Config::getGlobal("auth_sspi_accountfield"),
-            Config::getGlobal("auth_accountdisablefield"), Config::getGlobal("auth_accountenableexpression"));
+        $query = $this->buildSelectUserQuery($user, Config::getGlobal("auth_usertable"), Config::getGlobal("auth_userfield"),
+            Config::getGlobal("auth_sspi_accountfield"), Config::getGlobal("auth_accountdisablefield"), Config::getGlobal("auth_accountenableexpression"));
 
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
@@ -100,8 +98,9 @@ class SspiAuth extends DbAuth
         }
         // Erreur : on affiche le domaine et l'utilisateur dans la fenetre de login
         if (count($recs) == 0) {
-            $_SERVER["PHP_AUTH_USER"] = $domain . "." . $user;
-            $ATK_VARS["auth_user"] = $domain . "." . $user;
+            $_SERVER["PHP_AUTH_USER"] = $domain.".".$user;
+            $ATK_VARS["auth_user"] = $domain.".".$user;
+
             return SecurityManager::AUTH_MISMATCH;
         }
 
@@ -118,7 +117,7 @@ class SspiAuth extends DbAuth
         }
     }
 
-    function selectUser($user)
+    public function selectUser($user)
     {
         $usertable = Config::getGlobal("auth_usertable");
         $sspifield = Config::getGlobal("auth_sspi_accountfield");
@@ -153,10 +152,11 @@ class SspiAuth extends DbAuth
             $query = $qryobj->buildSelect();
         }
         $recs = $db->getrows($query);
+
         return $recs;
     }
 
-    function getUser(&$user)
+    public function getUser(&$user)
     {
         $groupfield = Config::getGlobal("auth_groupfield");
         $groupparentfield = Config::getGlobal("auth_groupparentfield");
@@ -205,6 +205,4 @@ class SspiAuth extends DbAuth
 
         return $userinfo;
     }
-
 }
-

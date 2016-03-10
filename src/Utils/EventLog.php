@@ -1,19 +1,20 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2005 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 2955 $
- * $Id$
- */
+
+    /**
+     * This file is part of the ATK distribution on GitHub.
+     * Detailed copyright and licensing information can be found
+     * in the doc/COPYRIGHT and doc/LICENSE files which should be
+     * included in the distribution.
+     *
+     * @package atk
+     * @subpackage utils
+     *
+     * @copyright (c)2005 Ibuildings.nl BV
+     * @license http://www.achievo.org/atk/licensing ATK Open Source License
+     *
+     * @version $Revision: 2955 $
+     * $Id$
+     */
 
 
 /**
@@ -52,7 +53,7 @@ class EventLog extends ActionListener
      * @param string $action The action being performed
      * @param array $record The record on which the action is performed
      */
-    function actionPerformed($action, $record)
+    public function actionPerformed($action, $record)
     {
         $user = SecurityManager::atkGetUser();
         $userid = $user[Config::getGlobal("auth_userpk")];
@@ -64,9 +65,7 @@ class EventLog extends ActionListener
         $primarykey = $db->escapeSQL($this->m_node->primaryKey($record));
 
         $db->query("INSERT INTO atkeventlog (id, userid, stamp, node, action, primarykey)
-                    VALUES(" . $db->nextid("atkeventlog") . ", $userid, " . $db->func_now() . ", '$node', '$action', '$primarykey')");
+                    VALUES(".$db->nextid("atkeventlog").", $userid, ".$db->func_now().", '$node', '$action', '$primarykey')");
         $db->commit();
     }
-
 }
-

@@ -30,9 +30,10 @@ abstract class ErrorHandlerBase
      * @param array $params
      * @return mixed
      */
-    static public function get($handlerName, $params)
+    public static function get($handlerName, $params)
     {
-        $class = __NAMESPACE__ . "\\" . "$handlerName" . "ErrorHandler";
+        $class = __NAMESPACE__."\\"."$handlerName"."ErrorHandler";
+
         return new $class($params);
     }
 

@@ -71,8 +71,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     {
         parent::__construct($name, $link, $destination, $flags);
 
-        $relation = new ManyToOneRelation($this->fieldName() . '_m2msr_add', $this->m_destination,
-            ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE);
+        $relation = new ManyToOneRelation($this->fieldName().'_m2msr_add', $this->m_destination, ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE);
         $relation->setDisabledModes(self::DISABLED_VIEW | self::DISABLED_EDIT);
         $relation->setLoadType(self::NOLOAD);
         $relation->setStorageType(self::NOSTORE);
@@ -110,6 +109,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     {
         $result = parent::createDestination();
         $this->getManyToOneRelation()->m_destInstance = $this->m_destInstance;
+
         return $result;
     }
 
@@ -156,7 +156,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $this->createLink();
 
 
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
 
         $id = $this->getHtmlId($fieldprefix);
         $selectId = "{$id}_selection";
@@ -165,16 +165,16 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         $selectedRecords = array();
         if (count($selectedKeys) > 0) {
-            $selector = '(' . implode(') OR (', $selectedKeys) . ')';
+            $selector = '('.implode(') OR (', $selectedKeys).')';
             $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields());
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
         }
 
-        $result = '<input type="hidden" name="' . $this->getHtmlId($fieldprefix) . '" value="" />' . // Post an empty value if none selected (instead of not posting anything)
+        $result = '<input type="hidden" name="'.$this->getHtmlId($fieldprefix).'" value="" />'.// Post an empty value if none selected (instead of not posting anything)
             '<div class="atkmanytomanyselectrelation">';
 
         if (($this->hasFlag(self::AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed("add"))) {
-            $addLink = ' ' . $this->getAddActionLink($record, $fieldprefix);
+            $addLink = ' '.$this->getAddActionLink($record, $fieldprefix);
         }
 
         $selField = '';
@@ -184,15 +184,15 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $addField = $this->renderAdditionField($record, $fieldprefix, $mode);
 
         if ($selField || $addField) {
-            $result .= '<ul id="' . $selectId . '" class="atkmanytomanyselectrelation-selection" style="width:100% !important">';
+            $result .= '<ul id="'.$selectId.'" class="atkmanytomanyselectrelation-selection" style="width:100% !important">';
             $result .= $selField;
             if ($addField) {
-                $result .= '<li class="atkmanytomanyselectrelation-addition">' . $addField . '</li>';
+                $result .= '<li class="atkmanytomanyselectrelation-addition">'.$addField.'</li>';
             }
             $result .= '</ul>';
         } else {
             if (!$addLink) {
-                $result .= '<i>' . $this->text('none') . '</i>';
+                $result .= '<i>'.$this->text('none').'</i>';
             }
         }
 
@@ -230,8 +230,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         // Get New Selection records
-        if (isset($this->getOwnerInstance()->m_postvars[$id . '_newsel'])) {
-            $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$id . '_newsel'];
+        if (isset($this->getOwnerInstance()->m_postvars[$id.'_newsel'])) {
+            $selectedKeys[] = $this->getOwnerInstance()->m_postvars[$id.'_newsel'];
         }
 
         // Ensure we're only adding an item once
@@ -258,7 +258,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $this->createLink();
         $where = $this->_getLoadWhereClause($record);
         $link = $this->getLink();
-        return $link->select()->where($where)->orderBy($link->getTable() . '.' . $this->getPositionAttribute())->getAllRows();
+
+        return $link->select()->where($where)->orderBy($link->getTable().'.'.$this->getPositionAttribute())->getAllRows();
     }
 
     /**
@@ -316,22 +317,18 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function renderSelectedRecord($record, $fieldprefix)
     {
-        $name = $this->getHtmlId($fieldprefix) . '[][' . $this->getRemoteKey() . ']';
+        $name = $this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']';
         $key = $record[$this->getDestination()->primaryKeyField()];
 
         // Get the descriptor and ensure it's presentible
-        $descriptor = nl2br(
-            htmlentities(
-                $this->getdestination()->descriptor($record)
-            )
-        );
+        $descriptor = nl2br(htmlentities($this->getdestination()->descriptor($record)));
 
         // Build the record
         $result = '
       <li class="atkmanytomanyselectrelation-selected">
-      <input type="hidden" name="' . $name . '" value="' . htmlentities($key) . '"/>
-      <span>' . $descriptor . '</span>
-      ' . $this->renderSelectedRecordActions($record) . '
+      <input type="hidden" name="'.$name.'" value="'.htmlentities($key).'"/>
+      <span>'.$descriptor.'</span>
+      '.$this->renderSelectedRecordActions($record).'
       </li>
       ';
 
@@ -374,8 +371,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         $htmlActionLinks = '';
         if (count($actionLink)) {
-            $htmlActionLinks = '&nbsp;' . implode(' ', $actionLinks);
+            $htmlActionLinks = '&nbsp;'.implode(' ', $actionLinks);
         }
+
         return $htmlActionLinks;
     }
 
@@ -393,17 +391,17 @@ class ManyToManySelectRelation extends ManyToManyRelation
         if (method_exists($this, $actionMethod)) {
             return $this->$actionMethod($record);
         } else {
-            Tools::atkwarning('Missing ' . $actionMethod . ' method on manytomanyselectrelation. ');
+            Tools::atkwarning('Missing '.$actionMethod.' method on manytomanyselectrelation. ');
         }
     }
 
     protected function getAddActionLink($record, $fieldprefix, $params = array())
     {
         $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
-        $params = array_merge($params,
-            array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix) . "_newsel"));
-        $link = Tools::href(Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(),
-            SessionManager::SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        $params = array_merge($params, array('atkfilter' => $filter, "atkpkret" => $this->getHtmlId($fieldprefix)."_newsel"));
+        $link = Tools::href(Tools::dispatch_url($this->m_destination, "add", $params), $this->getAddLabel(), SessionManager::SESSION_NESTED, true,
+            'class="atkmanytomanyselectrelation-link"');
+
         return $link;
     }
 
@@ -416,8 +414,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getEditActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'edit',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED,
-            true, 'class="atkmanytomanyselectrelation-link"');
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
+            'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -429,8 +427,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getViewActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'view',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED,
-            true, 'class="atkmanytomanyselectrelation-link"');
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
+            'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -441,7 +439,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getDeleteActionLink($record)
     {
-        return '<a href="javascript:void(0)" class="atkmanytomanyselectrelation-link" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">' . $this->text('remove') . '</a>';
+        return '<a href="javascript:void(0)" class="atkmanytomanyselectrelation-link" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">'.$this->text('remove').'</a>';
     }
 
     /**
@@ -453,9 +451,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * @param array &$actions Reference to an array with the already defined
      *                  actions.
      */
-    function recordActions($record, &$actions)
+    public function recordActions($record, &$actions)
     {
-
     }
 
     /**
@@ -470,8 +467,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
             return '';
         }
 
-        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode,
-            'attribute.' . $this->fieldName() . '.selectedrecord', array('fieldprefix' => $fieldprefix));
+        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.selectedrecord',
+            array('fieldprefix' => $fieldprefix));
 
         $relation = $this->getManyToOneRelation();
 
@@ -619,12 +616,12 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    function getLabel($record = array(), $mode = '')
+    public function getLabel($record = array(), $mode = '')
     {
         $additional = '';
         if ($this->hasPositionAttribute()) {
             if (is_null($this->m_positionAttributeHtmlModifier)) {
-                $additional = ' <img src="' . Config::getGlobal('atkroot') . 'atk/images/up-down.gif"
+                $additional = ' <img src="'.Config::getGlobal('atkroot').'atk/images/up-down.gif"
           width="10" height="10" 
           alt="Sortable Ordering" 
           title="Sortable Ordering" />';
@@ -633,7 +630,6 @@ class ManyToManySelectRelation extends ManyToManyRelation
             }
         }
 
-        return parent::getLabel($record, $mode) . $additional;
+        return parent::getLabel($record, $mode).$additional;
     }
-
 }

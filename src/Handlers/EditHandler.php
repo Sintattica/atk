@@ -18,7 +18,7 @@ use Sintattica\Atk\Session\SessionManager;
  */
 class EditHandler extends ViewEditBase
 {
-    var $m_buttonsource = null;
+    public $m_buttonsource = null;
 
     /**
      * Update action.
@@ -31,10 +31,11 @@ class EditHandler extends ViewEditBase
     /**
      * The action handler method.
      */
-    function action_edit()
+    public function action_edit()
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
@@ -50,6 +51,7 @@ class EditHandler extends ViewEditBase
         // allowed to edit record?
         if (!$this->allowed($record)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -92,7 +94,7 @@ class EditHandler extends ViewEditBase
      * @param array $record The record
      * @return array Record The merged record
      */
-    function mergeWithPostvars($record)
+    public function mergeWithPostvars($record)
     {
         $fetchedRecord = $this->m_node->updateRecord('', null, null, true);
 
@@ -119,27 +121,27 @@ class EditHandler extends ViewEditBase
      * Register external files
      *
      */
-    function registerExternalFiles()
+    public function registerExternalFiles()
     {
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/dhtml_formtools.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/dhtml_formtools.js");
     }
 
     /**
      * Render the edit page
      *
      * @param array $record The record to edit
-
      * @return String HTML code for the edit page
      */
-    function editPage($record)
+    public function editPage($record)
     {
         $result = $this->getEditPage($record);
 
         if ($result !== false) {
             return $result;
         }
+
         return '';
     }
 
@@ -149,7 +151,7 @@ class EditHandler extends ViewEditBase
      * @param array $record The record to edit
      * @return array Array with parameters
      */
-    function getEditParams($record)
+    public function getEditParams($record)
     {
         $node = $this->m_node;
 
@@ -160,6 +162,7 @@ class EditHandler extends ViewEditBase
         $params["content"] = $this->getContent($record);
         $params["buttons"] = $this->getFormButtons($record);
         $params["formend"] = $this->getFormEnd();
+
         return $params;
     }
 
@@ -169,7 +172,7 @@ class EditHandler extends ViewEditBase
      * @param array $record The record to edit.
      * @return String The rendered page as a string.
      */
-    function getEditPage($record)
+    public function getEditPage($record)
     {
         $this->registerExternalFiles();
 
@@ -188,7 +191,7 @@ class EditHandler extends ViewEditBase
      * @param array $record
      * @return String The content
      */
-    function getContent($record)
+    public function getContent($record)
     {
         $node = $this->m_node;
 
@@ -214,14 +217,13 @@ class EditHandler extends ViewEditBase
      * @param array $params
      * @return String The rendered edit page
      */
-    function renderEditPage($record, $params)
+    public function renderEditPage($record, $params)
     {
         $node = $this->m_node;
         $ui = &$node->getUi();
 
         if (is_object($ui)) {
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . " - " . $node->actionTitle('edit',
-                    $record));
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle')." - ".$node->actionTitle('edit', $record));
 
             $output = $ui->render("action.tpl", $params, $node->m_module);
             $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
@@ -232,6 +234,7 @@ class EditHandler extends ViewEditBase
 
             return $total;
         }
+
         return '';
     }
 
@@ -263,17 +266,15 @@ class EditHandler extends ViewEditBase
      *
      * @return String HTML The forms' start
      */
-    function getFormStart()
+    public function getFormStart()
     {
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '"' .
-            ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">' .
-            $sm->formState($this->getUpdateSessionStatus());
+        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">'.$sm->formState($this->getUpdateSessionStatus());
 
-        $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getUpdateAction() . '" />';
-        $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
-        $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';
+        $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getUpdateAction().'" />';
+        $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkprevaction" value="'.$this->getNode()->m_action.'" />';
+        $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkcsrftoken" value="'.$this->getCSRFToken().'" />';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
 
         return $formstart;
@@ -284,7 +285,7 @@ class EditHandler extends ViewEditBase
      *
      * @return String HTML The forms' end
      */
-    function getFormEnd()
+    public function getFormEnd()
     {
         return '</form>';
     }
@@ -295,7 +296,7 @@ class EditHandler extends ViewEditBase
      * @param array $record
      * @return array Array with buttons
      */
-    function getFormButtons($record = null)
+    public function getFormButtons($record = null)
     {
         // If no custom button source is given, get the default
         if ($this->m_buttonsource === null) {
@@ -315,7 +316,7 @@ class EditHandler extends ViewEditBase
      *
      * @return array template field
      */
-    function createTplField(&$fields, $index, $mode, $tab)
+    public function createTplField(&$fields, $index, $mode, $tab)
     {
         $field = &$fields[$index];
 
@@ -332,7 +333,7 @@ class EditHandler extends ViewEditBase
             if ($field["html"] == "section") {
                 // section should only have the tab section classes
                 foreach ($field["tabs"] as $section) {
-                    $classes[] = "section_" . str_replace('.', '_', $section);
+                    $classes[] = "section_".str_replace('.', '_', $section);
                 }
                 if ($this->isSectionInitialHidden($field['name'], $fields)) {
                     $classes[] = "atkAttrRowHidden";
@@ -340,7 +341,7 @@ class EditHandler extends ViewEditBase
             } else {
                 if (is_array($field["sections"])) {
                     foreach ($field["sections"] as $section) {
-                        $classes[] = "section_" . str_replace('.', '_', $section);
+                        $classes[] = "section_".str_replace('.', '_', $section);
                     }
                 }
             }
@@ -354,29 +355,25 @@ class EditHandler extends ViewEditBase
         $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
         // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
         // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-        $tplfield["initial_on_tab"] = ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
-            (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+        $tplfield["initial_on_tab"] = ($field["tabs"] == "*" || in_array($tab,
+                    $field["tabs"])) && (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
         // ar_ stands voor 'attribrow'.
-        $tplfield["rowid"] = "ar_" . ($field['id'] != '' ? $field['id'] : Tools::getUniqueID("anonymousattribrows")); // The id of the containing row
+        $tplfield["rowid"] = "ar_".($field['id'] != '' ? $field['id'] : Tools::getUniqueID("anonymousattribrows")); // The id of the containing row
         // check for separator
         if ($field["html"] == "-" && $index > 0 && $fields[$index - 1]["html"] != "-") {
             $tplfield["type"] = "line";
             $tplfield["line"] = "<hr>";
         } /* double separator, ignore */ elseif ($field["html"] == "-") {
-
-        } /* sections */
-        elseif ($field["html"] == "section") {
+        } /* sections */ elseif ($field["html"] == "section") {
             $tplfield["type"] = "section";
             list($tab, $section) = explode('.', $field["name"]);
             $tplfield["section_name"] = "section_{$tab}_{$section}";
             $tplfield["line"] = $this->getSectionControl($field, $mode);
-        } /* only full HTML */
-        elseif (isset($field["line"])) {
+        } /* only full HTML */ elseif (isset($field["line"])) {
             $tplfield["type"] = "custom";
             $tplfield["line"] = $field["line"];
-        } /* edit field */
-        else {
+        } /* edit field */ else {
             $tplfield["type"] = "attribute";
 
             if ($field["attribute"]->m_ownerInstance->getNumbering()) {
@@ -411,7 +408,7 @@ class EditHandler extends ViewEditBase
             $editsrc = $field["html"];
 
 
-            $tplfield['id'] = str_replace('.', '_', $this->m_node->atkNodeUri() . '_' . $field["id"]);
+            $tplfield['id'] = str_replace('.', '_', $this->m_node->atkNodeUri().'_'.$field["id"]);
 
             $tplfield["full"] = $editsrc;
 
@@ -419,7 +416,6 @@ class EditHandler extends ViewEditBase
             $tplfield["column"] = $column;
 
             $tplfield['readonly'] = $field['attribute']->isReadonlyEdit($mode);
-
         }
 
         // allow passing of extra arbitrary data, for example if a user overloads the editArray method
@@ -447,7 +443,7 @@ class EditHandler extends ViewEditBase
      *
      * @return String the edit form as a string
      */
-    function editForm(
+    public function editForm(
         $mode = "add",
         $record = null,
         $forceList = "",
@@ -470,16 +466,15 @@ class EditHandler extends ViewEditBase
         // Handle errors
         $errors = array();
         if (count($data['error']) > 0) {
-            $error_title = '<b>' . Tools::atktext('error_formdataerror') . '</b>';
+            $error_title = '<b>'.Tools::atktext('error_formdataerror').'</b>';
 
             foreach ($data["error"] as $error) {
                 if ($error['err'] == "error_primarykey_exists") {
                     $pk_err_attrib[] = $error['attrib_name'];
                 } else {
-
                     if (count($tabs) > 1 && $error["tab"]) {
                         $tabLink = $this->getTabLink($node, $error);
-                        $error_tab = ' (' . Tools::atktext("error_tab") . ' ' . $tabLink . ' )';
+                        $error_tab = ' ('.Tools::atktext("error_tab").' '.$tabLink.' )';
                     } else {
                         $tabLink = null;
                         $error_tab = "";
@@ -511,7 +506,7 @@ class EditHandler extends ViewEditBase
                      * @deprecated: For backwards compatibility, we still support the msg variable as well.
                      * Although the message, tablink variables should be used instead of msg and tab.
                      */
-                    $err = array_merge($err, array("msg" => $error['msg'] . $error_tab));
+                    $err = array_merge($err, array("msg" => $error['msg'].$error_tab));
 
                     $errors[] = $err;
                 }
@@ -548,24 +543,22 @@ class EditHandler extends ViewEditBase
 
         $ui = $this->getUi();
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/formsubmit.js");
 
         // register fields that contain errornous values
-        $page->register_scriptcode("var atkErrorFields = " . JSON::encode($errorFields) . ";");
+        $page->register_scriptcode("var atkErrorFields = ".JSON::encode($errorFields).";");
 
         if (Config::getGlobal('lose_changes_warning', true)) {
             // If we are in the save or update action the user has added a nested record, has done
             // a selection using the select handler or generated an error, in either way we assume
             // the form has been changed, so we always warn the user when leaving the page.
             $isChanged = 'false';
-            if ((isset($record['atkerror']) && count($record['atkerror']) > 0) ||
-                (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper'])
-            ) {
+            if ((isset($record['atkerror']) && count($record['atkerror']) > 0) || (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper'])) {
                 $isChanged = 'true';
             }
 
             $unloadText = addslashes($this->m_node->text('lose_changes_warning'));
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkunloadhelper.js");
+            $page->register_script(Config::getGlobal("assets_url")."javascript/class.atkunloadhelper.js");
             $page->register_loadscript("new ATK.UnloadHelper('entryform', '{$unloadText}', {$isChanged});");
         }
 
@@ -600,23 +593,21 @@ class EditHandler extends ViewEditBase
      * @param array $error
      * @return String HTML code with link
      */
-    function getTabLink(&$node, $error)
+    public function getTabLink(&$node, $error)
     {
         if (count($node->getTabs($node->m_action)) < 2) {
             return '';
         }
-        return '<a href="javascript:void(0)" onclick="showTab(\'' . $error["tab"] . '\'); return false;">' . $this->getTabLabel($node,
-            $error["tab"]) . '</a>';
+
+        return '<a href="javascript:void(0)" onclick="showTab(\''.$error["tab"].'\'); return false;">'.$this->getTabLabel($node, $error["tab"]).'</a>';
     }
 
     /**
      * Overrideable function to create a header for edit mode.
      * Similar to the admin header functionality.
      */
-    function editHeader()
+    public function editHeader()
     {
         return "";
     }
-
 }
-

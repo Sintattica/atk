@@ -358,6 +358,5 @@ return [
     "wysiwyg_insert_table" => "�������� �������",
     "wysiwyg_merge_cell" => "��'������ ������",
     "wysiwyg_split_cell" => "�������� ������",
-    "yes" => "���"
+    "yes" => "���",
 ];
-

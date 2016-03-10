@@ -37,42 +37,42 @@ class Language
      * @access private
      * @var String
      */
-    var $LANGDIR = "languages/";
+    public $LANGDIR = "languages/";
 
     /**
      * Contains all currently loaded language strings.
      * @access private
      * @var array
      */
-    var $m_cachedlang = array();
+    public $m_cachedlang = array();
 
     /**
      * List of currently loaded language files
      * @access private
      * @var array
      */
-    var $m_cachedlangfiles = array();
+    public $m_cachedlangfiles = array();
 
     /**
      * List of fallback modules
      * @access private
      * @var array
      */
-    var $m_fallbackmodules = array();
+    public $m_fallbackmodules = array();
 
     /**
      * List of override modules
      * @access private
      * @var array
      */
-    var $m_overridemodules = array("langoverrides");
+    public $m_overridemodules = array("langoverrides");
 
     /**
      * List of custum language string overrides
      * @access private
      * @var array
      */
-    var $m_customStrings = array();
+    public $m_customStrings = array();
 
     /**
      * Default Constructor
@@ -134,7 +134,6 @@ class Language
         $key = $modulefallback ? 1 : 0; // we can be called with true or false, cache both results
 
         if (!array_key_exists($key, $s_fallbackmodules)) {
-
             $modules = array();
 
             if ($modulefallback || Config::getGlobal("language_modulefallback", false)) {
@@ -190,21 +189,20 @@ class Language
 
         // If only one string given, process it immediatly
         if (!is_array($string)) {
-            return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback,
-                $modulefallback);
+            return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
         }
 
         // If multiple strings given, iterate through all strings and return the translation if found
         for ($i = 0, $_i = count($string); $i < $_i; $i++) {
             // Try to get the translation
-            $translation = $atklanguage->_getString($string[$i], $module, $lng, $node,
-                $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
+            $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
 
             // Return the translation if found
             if ($translation != "") {
                 return $translation;
             }
         }
+
         return "";
     }
 
@@ -220,7 +218,6 @@ class Language
      */
     public static function getStringsForModule($module, $lng = "")
     {
-
         if ($lng == "") {
             $lng = Language::getLanguage();
         }
@@ -244,8 +241,7 @@ class Language
     {
         global $ATK_VARS;
 
-        if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"],
-                    Language::getSupportedLanguages()) || in_array($ATK_VARS["atklng"],
+        if (isset($ATK_VARS["atklng"]) && (in_array($ATK_VARS["atklng"], Language::getSupportedLanguages()) || in_array($ATK_VARS["atklng"],
                     Config::getGlobal('supported_languages')))
         ) {
             $lng = $ATK_VARS["atklng"];
@@ -253,6 +249,7 @@ class Language
         else {
             $lng = Language::getUserLanguage();
         }
+
         return strtolower($lng);
     }
 
@@ -319,6 +316,7 @@ class Language
                 $autolng = $elems[0];
             }
         }
+
         return $autolng;
     }
 
@@ -381,6 +379,7 @@ class Language
             // the passed module has precedence, then the overrides (finally the fallbacks)
             $modules = array_merge($arr, $this->m_overridemodules, $this->_getFallbackModules($modulefallback));
         }
+
         return $modules;
     }
 
@@ -424,14 +423,14 @@ class Language
 
         if ($node != "") {
             foreach ($modules as $modname) {
-                $text = $this->_getStringFromFile($module . "_" . $node . "_" . $key, $modname, $lng);
+                $text = $this->_getStringFromFile($module."_".$node."_".$key, $modname, $lng);
                 if ($text != "") {
                     return $text;
                 }
             }
 
             foreach ($modules as $modname) {
-                $text = $this->_getStringFromFile($node . "_" . $key, $modname, $lng);
+                $text = $this->_getStringFromFile($node."_".$key, $modname, $lng);
                 if ($text != "") {
                     return $text;
                 }
@@ -454,6 +453,7 @@ class Language
             // Still nothing found. return default string
             return $this->defaultText($key);
         }
+
         return "";
     }
 
@@ -474,24 +474,29 @@ class Language
             $this->m_cachedlangfiles[$module][$lng] = 1;
             $path = $this->getLanguageDirForModule($module);
 
-            $file = $path . $lng . '.php';
+            $file = $path.$lng.'.php';
 
             if (file_exists($file)) {
                 $this->m_cachedlang[$module][$lng] = $this->getLanguageValues($file);
+
                 return true;
             }
+
             return false;
         }
+
         return true;
     }
 
-    protected function getLanguageValues($file) {
-        if(is_file($file)){
+    protected function getLanguageValues($file)
+    {
+        if (is_file($file)) {
             $values = include($file);
-            if(is_array($values)){
+            if (is_array($values)) {
                 return $values;
             }
         }
+
         return [];
     }
 
@@ -511,13 +516,13 @@ class Language
     public function getLanguageDirForModule($moduleName)
     {
         if ($moduleName == "atk") {
-            $path = __DIR__ . '/../Resources/' . $this->LANGDIR;
+            $path = __DIR__.'/../Resources/'.$this->LANGDIR;
         } else {
             if ($moduleName == "langoverrides") {
                 $path = Config::getGlobal("language_basedir", $this->LANGDIR);
             } else {
                 $atk = Atk::getInstance();
-                $path = $atk->moduleDir($moduleName) . $this->LANGDIR;
+                $path = $atk->moduleDir($moduleName).$this->LANGDIR;
             }
         }
 
@@ -552,6 +557,7 @@ class Language
         if (isset($this->m_cachedlang[$module]) && is_array($this->m_cachedlang[$module][$lng]) && isset($this->m_cachedlang[$module][$lng][$key])) {
             return $this->m_cachedlang[$module][$lng][$key];
         }
+
         return "";
     }
 
@@ -569,7 +575,6 @@ class Language
         }
         $this->m_customStrings[$lng][$code] = $text;
     }
-
 }
 
 /**
@@ -579,9 +584,9 @@ class Language
  */
 class GetSupportedLanguagesCollector
 {
-    var $m_languages = array();
+    public $m_languages = array();
 
-    function visitFile($fullpath)
+    public function visitFile($fullpath)
     {
         if (substr($fullpath, strlen($fullpath) - 8) === '.php') {
             $exploded = explode('/', $fullpath);
@@ -594,7 +599,4 @@ class GetSupportedLanguagesCollector
     {
         return $this->m_languages;
     }
-
 }
-
-

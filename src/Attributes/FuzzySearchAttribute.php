@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
@@ -24,40 +23,40 @@ class FuzzySearchAttribute extends Attribute
      * @var String
      * @access private
      */
-    var $m_searchnode = "";
+    public $m_searchnode = "";
 
     /**
      * The function to call back with the record and results
      * @var String
      * @access private
      */
-    var $m_callback = "";
+    public $m_callback = "";
 
     /**
      * The mode of the the fuzzy search
      * @var String
      * @access private
      */
-    var $m_mode = "all";
+    public $m_mode = "all";
 
     /**
      * The matches we got from the search
      * @var array
      * @access private
      */
-    var $m_matches = array();
+    public $m_matches = array();
 
     /**
      * An instance of the node we are searching on
      * @var Node
      * @access private
      */
-    var $m_searchnodeInstance = null;
+    public $m_searchnodeInstance = null;
 
     /**
      * @var String Filter for destination records.
      */
-    var $m_destinationFilter = "";
+    public $m_destinationFilter = "";
 
     /**
      * The fuzzySearchAttribute, with this you can search a node for certain keywords
@@ -79,7 +78,7 @@ class FuzzySearchAttribute extends Attribute
      * @param int $flags The flags of the attribute
      * @param int $size The size of the search field
      */
-    function __construct($name, $searchnode, $callback, $mode = "all", $flags = 0, $size = 0)
+    public function __construct($name, $searchnode, $callback, $mode = "all", $flags = 0, $size = 0)
     {
         /*if ($size == 0) {
             $size = $this->maxInputSize();
@@ -97,13 +96,15 @@ class FuzzySearchAttribute extends Attribute
      *
      * @return boolean
      */
-    function createSearchNodeInstance()
+    public function createSearchNodeInstance()
     {
         if (!is_object($this->m_searchnodeInstance)) {
             $atk = Atk::getInstance();
             $this->m_searchnodeInstance = $atk->atkGetNode($this->m_searchnode);
+
             return is_object($this->m_searchnodeInstance);
         }
+
         return true;
     }
 
@@ -119,7 +120,7 @@ class FuzzySearchAttribute extends Attribute
      * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
-    function validate(&$rec, $mode)
+    public function validate(&$rec, $mode)
     {
         if (is_array($rec[$this->fieldName()])) {
             // Coming from selectscreen, no search necessary anymore.
@@ -153,14 +154,16 @@ class FuzzySearchAttribute extends Attribute
 
             if ($mustselect) {
                 Tools::triggerError($rec, $this->fieldName(), 'fsa_pleasemakeselection');
+
                 return false;
             }
         }
+
         return true;
     }
 
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         // There are 2 possibilities. Either we are going to search,
         // in which case we show a searchbox.
@@ -213,12 +216,12 @@ class FuzzySearchAttribute extends Attribute
             } else {
                 if ($this->m_mode == "select" || ($this->m_mode == "multiselect" && count($this->m_matches) == 1)) {
                     // Select one record from all matches.
-                    $res .= '<SELECT NAME="' . $fieldprefix . $this->fieldName() . '[]" class="form-control">';
-                    $res .= '<OPTION VALUE="">' . Tools::atktext('select_none');
+                    $res .= '<SELECT NAME="'.$fieldprefix.$this->fieldName().'[]" class="form-control">';
+                    $res .= '<OPTION VALUE="">'.Tools::atktext('select_none');
                     $selects = array();
                     foreach ($this->m_matches as $keyword => $matches) {
                         for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
-                            $item = '<OPTION VALUE="' . $this->m_searchnodeInstance->primaryKey($matches[$i]) . '">' . $this->m_searchnodeInstance->descriptor($matches[$i]);
+                            $item = '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
                             if (!in_array($item, $selects)) {
                                 $selects[] = $item;
                             }
@@ -232,10 +235,10 @@ class FuzzySearchAttribute extends Attribute
                         $res = '<table border="0">';
                         foreach ($this->m_matches as $keyword => $matches) {
                             if (count($matches) > 0) {
-                                $res .= '<tr><td>\'' . $keyword . '\': </td><td><SELECT NAME="' . $fieldprefix . $this->fieldName() . '[]" class="form-control">';
-                                $res .= '<OPTION VALUE="">' . Tools::atktext('select_none');
+                                $res .= '<tr><td>\''.$keyword.'\': </td><td><SELECT NAME="'.$fieldprefix.$this->fieldName().'[]" class="form-control">';
+                                $res .= '<OPTION VALUE="">'.Tools::atktext('select_none');
                                 for ($i = 0, $_i = count($matches); $i < $_i; $i++) {
-                                    $res .= '<OPTION VALUE="' . $this->m_searchnodeInstance->primaryKey($matches[$i]) . '">' . $this->m_searchnodeInstance->descriptor($matches[$i]);
+                                    $res .= '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
                                 }
                                 $res .= '</SELECT></td></tr>';
                             }
@@ -244,6 +247,7 @@ class FuzzySearchAttribute extends Attribute
                     }
                 }
             }
+
             return $res;
         } else {
             $record = ""; // clear the record so we always start with an empty
@@ -257,7 +261,7 @@ class FuzzySearchAttribute extends Attribute
      * @param string $searchstring The string to search for
      * @return array The matches
      */
-    function getMatches($searchstring)
+    public function getMatches($searchstring)
     {
         Tools::atkdebug("Performing search");
         $result = array();
@@ -270,6 +274,7 @@ class FuzzySearchAttribute extends Attribute
                 $result[$token] = $this->m_searchnodeInstance->searchDb($token);
             }
         }
+
         return $result;
     }
 
@@ -281,7 +286,7 @@ class FuzzySearchAttribute extends Attribute
      * @param string $mode
      * @return boolean
      */
-    function store($db, $rec, $mode)
+    public function store($db, $rec, $mode)
     {
         $resultset = array();
 
@@ -297,12 +302,9 @@ class FuzzySearchAttribute extends Attribute
                 }
             }
             if (count($wheres) && $this->createSearchNodeInstance()) {
-                $whereclause = "((" . implode(") OR (", $wheres) . "))";
+                $whereclause = "((".implode(") OR (", $wheres)."))";
 
-                $resultset = $this->m_searchnodeInstance->select($whereclause)
-                    ->excludes($this->m_searchnodeInstance->m_listExcludes)
-                    ->mode('admin')
-                    ->getAllRows();
+                $resultset = $this->m_searchnodeInstance->select($whereclause)->excludes($this->m_searchnodeInstance->m_listExcludes)->mode('admin')->getAllRows();
             }
         } else {
             if (count($this->m_matches) > 0) {
@@ -360,6 +362,7 @@ class FuzzySearchAttribute extends Attribute
         if (count($resultset)) {
             if (method_exists($this->m_ownerInstance, $this->m_callback)) {
                 $funcname = $this->m_callback;
+
                 return $this->m_ownerInstance->$funcname($rec, $resultset);
             }
         }
@@ -370,14 +373,12 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function load()
+    public function load()
     {
-
     }
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-
     }
 
     /**
@@ -389,7 +390,6 @@ class FuzzySearchAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-
     }
 
     /**
@@ -397,14 +397,13 @@ class FuzzySearchAttribute extends Attribute
      */
     public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
-
     }
 
     /**
      * Dummy method to prevent loading/storing of data.
      * @return array empty array
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         return array();
     }
@@ -412,41 +411,36 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function searchCondition()
+    public function searchCondition()
     {
-
     }
 
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-
     }
 
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function fetchMeta()
+    public function fetchMeta()
     {
-
     }
 
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function dbFieldSize()
+    public function dbFieldSize()
     {
-
     }
 
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
-
     }
 
     /**
@@ -456,7 +450,7 @@ class FuzzySearchAttribute extends Attribute
      * @param string $value Required value. (Ommit this parameter if you pass
      *                      an SQL expression for $filter.)
      */
-    function addSearchFilter($filter, $value = "")
+    public function addSearchFilter($filter, $value = "")
     {
         if (!$this->m_searchnodeInstance) {
             $this->createSearchNodeInstance();
@@ -468,7 +462,7 @@ class FuzzySearchAttribute extends Attribute
      * Returns the destination filter.
      * @return String The destination filter.
      */
-    function getDestinationFilter()
+    public function getDestinationFilter()
     {
         return $this->m_destinationFilter;
     }
@@ -477,10 +471,8 @@ class FuzzySearchAttribute extends Attribute
      * Sets the destination filter.
      * @param string $filter The destination filter.
      */
-    function setDestinationFilter($filter)
+    public function setDestinationFilter($filter)
     {
         $this->m_destinationFilter = $filter;
     }
-
 }
-

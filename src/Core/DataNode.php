@@ -64,7 +64,7 @@ class DataNode extends Node
      */
     public function select($selector = null, $order = null, $limit = null)
     {
-        Tools::atkdebug(get_class($this) . '::select(' . $selector . ')');
+        Tools::atkdebug(get_class($this).'::select('.$selector.')');
 
         if ($order == null) {
             $order = $this->getOrder();
@@ -75,12 +75,12 @@ class DataNode extends Node
             'order' => $order,
             'offset' => isset($limit['offset']) ? $limit['offset'] : 0,
             'limit' => isset($limit['limit']) ? $limit['limit'] : -1,
-            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                : null
+            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null,
         );
 
         $result = $this->findData($params);
-        Tools::atkdebug('Result ' . get_class($this) . '::select(' . $selector . ') => ' . count($result) . ' row(s)');
+        Tools::atkdebug('Result '.get_class($this).'::select('.$selector.') => '.count($result).' row(s)');
+
         return $result;
     }
 
@@ -95,8 +95,7 @@ class DataNode extends Node
     {
         $params = array(
             'selector' => $selector,
-            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                : null
+            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null,
         );
 
         return $this->countData($params);
@@ -140,6 +139,7 @@ class DataNode extends Node
         $data = $this->filterData($data, $criteria, $search);
         $data = $this->sortData($data, $order);
         $data = $this->limitData($data, $limit, $offset);
+
         return $data;
     }
 
@@ -329,11 +329,10 @@ class DataNode extends Node
             $attr = $this->getAttribute($column);
 
             if ($attr instanceof NumberAttribute) {
-                usort($data, create_function('$a, $b',
-                    'return $a["' . $column . '"] == $b["' . $column . '"] ? 0 : ($a["' . $column . '"] < $b["' . $column . '"] ? -1 : 1);'));
-            } else {
                 usort($data,
-                    create_function('$a, $b', 'return strcasecmp($a["' . $column . '"], $b["' . $column . '"]);'));
+                    create_function('$a, $b', 'return $a["'.$column.'"] == $b["'.$column.'"] ? 0 : ($a["'.$column.'"] < $b["'.$column.'"] ? -1 : 1);'));
+            } else {
+                usort($data, create_function('$a, $b', 'return strcasecmp($a["'.$column.'"], $b["'.$column.'"]);'));
             }
 
             if (!$asc) {
@@ -399,7 +398,5 @@ class DataNode extends Node
      */
     public function setAttribSizes()
     {
-
     }
-
 }

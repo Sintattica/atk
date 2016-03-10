@@ -1,8 +1,6 @@
 <?php namespace Sintattica\Atk\Security\Auth;
 
-
 use Sintattica\Atk\Security\SecurityManager;
-
 
 /**
  * Driver for external authentication, such as Apache .htaccess files.
@@ -41,7 +39,7 @@ class ServerAuth extends AuthInterface
      *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
-    function validateUser($user, $passwd)
+    public function validateUser($user, $passwd)
     {
         if ($_SERVER['PHP_AUTH_USER']) {
             return SecurityManager::AUTH_SUCCESS;
@@ -55,10 +53,8 @@ class ServerAuth extends AuthInterface
      *
      * @return boolean false
      */
-    function canMd5()
+    public function canMd5()
     {
         return false;
     }
-
 }
-

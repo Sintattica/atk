@@ -23,14 +23,14 @@ class Ddl
     const DDL_UNIQUE = 2;
     const DDL_NOTNULL = 4;
 
-    var $m_table = array();
-    var $m_fields = array();
-    var $m_remove_field;
-    var $m_indexes = array(); // not yet implemented
-    var $m_primarykey = array();
+    public $m_table = array();
+    public $m_fields = array();
+    public $m_remove_field;
+    public $m_indexes = array(); // not yet implemented
+    public $m_primarykey = array();
 
     /** @var Db */
-    var $m_db;
+    public $m_db;
 
     /**
      * Postfix for index names
@@ -43,9 +43,8 @@ class Ddl
     /**
      * Default constructor
      */
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
@@ -60,7 +59,8 @@ class Ddl
     {
         $db = Config::getGlobal("db");
         $database = $database === null ? $db["default"]["driver"] : $database;
-        $classname = __NAMESPACE__ . "\\" . $database . "Ddl";
+        $classname = __NAMESPACE__."\\".$database."Ddl";
+
         return new $classname();
     }
 
@@ -70,7 +70,7 @@ class Ddl
      *
      * @param array $tablemeta table meta data array
      */
-    function loadMetaData($tablemeta)
+    public function loadMetaData($tablemeta)
     {
         $this->setTable($tablemeta[0]["table"]);
         $this->addFields($tablemeta);
@@ -87,7 +87,7 @@ class Ddl
      * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
-    function addField($name, $generictype, $size = 0, $flags = 0, $default = null)
+    public function addField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
         if (Tools::hasFlag($flags, self::DDL_PRIMARY)) {
             $this->m_primarykey[] = $name;
@@ -103,7 +103,7 @@ class Ddl
             "type" => $generictype,
             "size" => $size,
             "flags" => $flags,
-            "default" => $default
+            "default" => $default,
         );
     }
 
@@ -115,7 +115,7 @@ class Ddl
      * @param string $size Current size
      * @return string New size
      */
-    function calculateDecimalFieldSize($size)
+    public function calculateDecimalFieldSize($size)
     {
         list($tmp_size, $decimals) = explode(",", $size);
         $tmp_size += intval($decimals); // we should add the decimals to the size, since
@@ -128,7 +128,7 @@ class Ddl
      *
      * @param string $name The name of the field
      */
-    function dropField($name)
+    public function dropField($name)
     {
         $this->m_remove_field = $name;
     }
@@ -140,7 +140,7 @@ class Ddl
      *
      * @param array $meta The fields meta data.
      */
-    function addFields($meta)
+    public function addFields($meta)
     {
         foreach ($meta as $field) {
             $flags = Tools::hasFlag($field["flags"], Db::MF_PRIMARY) ? self::DDL_PRIMARY : 0;
@@ -166,7 +166,7 @@ class Ddl
      * @abstract
      * @return string
      */
-    function getType($generictype)
+    public function getType($generictype)
     {
         return ""; // in case we have an unsupported type.
     }
@@ -180,7 +180,7 @@ class Ddl
      * @param string $type The database specific datatype to convert.
      * @abstract
      */
-    function getGenericType($type)
+    public function getGenericType($type)
     {
         return ""; // in case we have an unsupported type.
     }
@@ -190,7 +190,7 @@ class Ddl
      *
      * @param string $tablename The name of the table
      */
-    function setTable($tablename)
+    public function setTable($tablename)
     {
         $this->m_table = $tablename;
     }
@@ -200,25 +200,27 @@ class Ddl
      *
      * @return string The CREATE TABLE query.
      */
-    function buildCreate()
+    public function buildCreate()
     {
         if ($this->m_table != "") {
             $fields = $this->buildFields();
             if ($fields != "") {
-                $q = "CREATE TABLE " . $this->m_table . "\n(";
+                $q = "CREATE TABLE ".$this->m_table."\n(";
 
                 $q .= $fields;
 
                 $constraints = $this->buildConstraints();
 
                 if ($constraints != "") {
-                    $q .= ",\n" . $constraints;
+                    $q .= ",\n".$constraints;
                 }
 
                 $q .= ")";
             }
+
             return $q;
         }
+
         return "";
     }
 
@@ -234,16 +236,16 @@ class Ddl
      *
      * @return array of ALTER TABLE queries.
      */
-    function buildAlter()
+    public function buildAlter()
     {
         if ($this->m_table != "") {
             $fields = $this->buildFields();
 
             if ($fields != "" || $this->m_remove_field) {
-                $q = "ALTER TABLE " . $this->m_db->quoteIdentifier($this->m_table);
+                $q = "ALTER TABLE ".$this->m_db->quoteIdentifier($this->m_table);
 
                 if ($this->m_remove_field) {
-                    $q .= " DROP\n " . $this->m_db->quoteIdentifier($this->m_remove_field);
+                    $q .= " DROP\n ".$this->m_db->quoteIdentifier($this->m_remove_field);
                 } else {
                     $q .= " ADD\n (";
 
@@ -253,14 +255,16 @@ class Ddl
                     $constraints = $this->buildConstraints();
 
                     if ($constraints != "") {
-                        $q .= ",\n" . $constraints;
+                        $q .= ",\n".$constraints;
                     }
 
                     $q .= ")";
                 }
+
                 return array($q);
             }
         }
+
         return "";
     }
 
@@ -269,13 +273,14 @@ class Ddl
      *
      * @return string The DROP TABLE query.
      */
-    function buildDrop()
+    public function buildDrop()
     {
         if ($this->m_table != "") {
+            $q = "DROP TABLE ".$this->m_db->quoteIdentifier($this->m_table)."";
 
-            $q = "DROP TABLE " . $this->m_db->quoteIdentifier($this->m_table) . "";
             return $q;
         }
+
         return "";
     }
 
@@ -294,17 +299,17 @@ class Ddl
      * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
-    function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
+    public function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
-        $res = $this->m_db->quoteIdentifier($name) . " " . $this->getType($generictype);
+        $res = $this->m_db->quoteIdentifier($name)." ".$this->getType($generictype);
         if ($size > 0 && $this->needsSize($generictype)) {
-            $res .= "(" . $size . ")";
+            $res .= "(".$size.")";
         }
         if ($default !== null) {
             if ($this->needsQuotes($generictype)) {
-                $default = "'" . $default . "'";
+                $default = "'".$default."'";
             }
-            $res .= " DEFAULT " . $default;
+            $res .= " DEFAULT ".$default;
         }
         if (Tools::hasFlag($flags, self::DDL_NOTNULL)) {
             $res .= " NOT NULL";
@@ -322,11 +327,12 @@ class Ddl
      *
      * @param array $fieldlist An array of fields that define the primary key.
      */
-    function buildPrimaryKey($fieldlist = array())
+    public function buildPrimaryKey($fieldlist = array())
     {
         if (count($fieldlist) > 0) {
-            return "PRIMARY KEY (" . implode(", ", $fieldlist) . ")";
+            return "PRIMARY KEY (".implode(", ", $fieldlist).")";
         }
+
         return "";
     }
 
@@ -339,7 +345,7 @@ class Ddl
      *               of field.
      *         false if quotes should not be used.
      */
-    function needsQuotes($generictype)
+    public function needsQuotes($generictype)
     {
         return !($generictype == "number" || $generictype == "decimal");
     }
@@ -352,7 +358,7 @@ class Ddl
      * @return true  if a size should be specified for the given field type.
      *         false if a size does not have to be specified.
      */
-    function needsSize($generictype)
+    public function needsSize($generictype)
     {
         switch ($generictype) {
             case "number":
@@ -368,6 +374,7 @@ class Ddl
                 return false;
                 break;
         }
+
         return false; // in case we have an unsupported type.
     }
 
@@ -377,14 +384,13 @@ class Ddl
      *
      * @access private
      */
-    function _buildFieldsArray()
+    public function _buildFieldsArray()
     {
         $fields = array();
 
         foreach ($this->m_fields as $fieldname => $fieldconfig) {
             if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
-                $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"],
-                    $fieldconfig["flags"], $fieldconfig["default"]);
+                $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"], $fieldconfig["default"]);
             }
         }
 
@@ -397,7 +403,7 @@ class Ddl
      *
      * @return String containing fields to be used in a CREATE or ALTER TABLE statement
      */
-    function buildFields()
+    public function buildFields()
     {
         $fields = $this->_buildFieldsArray();
         if (count($fields) > 0) {
@@ -414,13 +420,14 @@ class Ddl
      * @return array of constraints
      * @access private
      */
-    function _buildConstraintsArray()
+    public function _buildConstraintsArray()
     {
         $constraints = array();
         $pk = $this->buildPrimaryKey($this->m_primarykey);
         if (!empty($pk)) {
             $constraints[] = $pk;
         }
+
         return $constraints;
     }
 
@@ -430,7 +437,7 @@ class Ddl
      *
      * @return String containing constraints to be used in a CREATE or ALTER TABLE statement
      */
-    function buildConstraints()
+    public function buildConstraints()
     {
         $constraints = $this->_buildConstraintsArray();
         if (count($constraints) > 0) {
@@ -446,7 +453,7 @@ class Ddl
      * @return true  if the table was created successfully
      *         false if anything went wrong, or if no table could be created.
      */
-    function executeCreate()
+    public function executeCreate()
     {
         if (!isset($this->m_db)) {
             $this->m_db = Db::getInstance();
@@ -458,6 +465,7 @@ class Ddl
         } else {
             Tools::atkdebug("ddl::executeCreate: nothing to do!");
         }
+
         return false;
     }
 
@@ -472,7 +480,7 @@ class Ddl
      * @return true  if the table was altered successfully
      *         false if anything went wrong, or if no table could be altered.
      */
-    function executeAlter()
+    public function executeAlter()
     {
         if (!isset($this->m_db)) {
             $this->m_db = Db::getInstance();
@@ -487,10 +495,12 @@ class Ddl
                     }
                 }
             }
+
             return true;
         } else {
             Tools::atkdebug("ddl::executeCreate: nothing to do!");
         }
+
         return false;
     }
 
@@ -500,7 +510,7 @@ class Ddl
      * @return true  if the table was dropped successfully
      *         false if anything went wrong, or if no table could be dropped.
      */
-    function executeDrop()
+    public function executeDrop()
     {
         if (!isset($this->m_db)) {
             $this->m_db = Db::getInstance();
@@ -512,6 +522,7 @@ class Ddl
         } else {
             Tools::atkdebug("ddl::executeDrop: nothing to do!");
         }
+
         return false;
     }
 
@@ -524,7 +535,7 @@ class Ddl
      * @return  true  if view create successfully
      *          false if error take place
      */
-    function executeCreateView($name, $select, $with_check_option)
+    public function executeCreateView($name, $select, $with_check_option)
     {
         if (!isset($this->m_db)) {
             $this->m_db = Db::getInstance();
@@ -536,6 +547,7 @@ class Ddl
         } else {
             Tools::atkdebug("ddl::executeCreateView: nothing to do!");
         }
+
         return false;
     }
 
@@ -547,9 +559,10 @@ class Ddl
      * @param string $with_check_option - use SQL WITH CHECK OPTION
      * @return string CREATE VIEW query string
      */
-    function buildView($name, $select, $with_check_option)
+    public function buildView($name, $select, $with_check_option)
     {
         Tools::atkerror("buildView don't support by this db or by this db driver");
+
         return "";
     }
 
@@ -560,7 +573,7 @@ class Ddl
      * @return  true  if view create successfully
      *          false if error take place
      */
-    function executeDropView($name)
+    public function executeDropView($name)
     {
         if (!isset($this->m_db)) {
             $this->m_db = Db::getInstance();
@@ -572,6 +585,7 @@ class Ddl
         } else {
             Tools::atkdebug("ddl::executeDropView: nothing to do!");
         }
+
         return false;
     }
 
@@ -581,9 +595,10 @@ class Ddl
      * @param string $name - name of view
      * @return string CREATE VIEW query string
      */
-    function dropView($name)
+    public function dropView($name)
     {
         Tools::atkerror("dropView don't support by this db or by this db driver");
+
         return "";
     }
 
@@ -602,7 +617,7 @@ class Ddl
      *                               )
      * @return boolean
      */
-    function createIndex($name, $definition)
+    public function createIndex($name, $definition)
     {
         $table = $this->m_db->quoteIdentifier($this->m_table);
         $name = $this->m_db->quoteIdentifier($this->getIndexName($name));
@@ -611,12 +626,13 @@ class Ddl
         $fields = array();
         foreach ($definition['fields'] as $field => $fieldinfo) {
             if (!empty($fieldinfo['length'])) {
-                $fields[] = $this->m_db->quoteIdentifier($field) . "(" . $fieldinfo['length'] . ")";
+                $fields[] = $this->m_db->quoteIdentifier($field)."(".$fieldinfo['length'].")";
             } else {
                 $fields[] = $this->m_db->quoteIdentifier($field);
             }
         }
-        $query .= ' (' . implode(', ', $fields) . ')';
+        $query .= ' ('.implode(', ', $fields).')';
+
         return $this->m_db->query($query);
     }
 
@@ -626,10 +642,11 @@ class Ddl
      * @param string $name Index name
      * @return boolean
      */
-    function dropIndex($name)
+    public function dropIndex($name)
     {
         $table = $this->m_db->quoteIdentifier($this->m_table);
         $name = $this->m_db->quoteIdentifier($this->getIndexName($name));
+
         return $this->m_db->query("DROP INDEX $name ON $table");
     }
 
@@ -639,7 +656,7 @@ class Ddl
      * @param string $name Indexname
      * @return string
      */
-    function getIndexName($name)
+    public function getIndexName($name)
     {
         return sprintf($this->m_idxnameFormat, preg_replace('/[^a-z0-9_\$]/i', '_', $name));
     }
@@ -651,7 +668,7 @@ class Ddl
      * @param string $new_name The new sequence name
      * @return bool
      */
-    function renameSequence($name, $new_name)
+    public function renameSequence($name, $new_name)
     {
         return true;
     }
@@ -662,7 +679,7 @@ class Ddl
      * @param string $name Sequence name
      * @return bool
      */
-    function dropSequence($name)
+    public function dropSequence($name)
     {
         return true;
     }
@@ -674,11 +691,8 @@ class Ddl
      * @param string $new_name New table name
      * @return bool
      */
-    function renameTable($name, $new_name)
+    public function renameTable($name, $new_name)
     {
         return true;
     }
-
 }
-
-

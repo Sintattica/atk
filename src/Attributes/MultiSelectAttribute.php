@@ -5,7 +5,6 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
-
 /**
  * The MultiSelectAttribute class represents an attribute of a node
  * that has a field with checkboxes, and stores the input seperated by a '|'
@@ -42,7 +41,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Size of the attribute.
      */
-    function __construct($name, $optionArray, $valueArray = null, $cols = null, $flags = 0, $size = "")
+    public function __construct($name, $optionArray, $valueArray = null, $cols = null, $flags = 0, $size = "")
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
             $valueArray = $optionArray;
@@ -74,13 +73,14 @@ class MultiSelectAttribute extends ListAttribute
             $values = $this->getValues($record);
             for ($i = 0; $i < count($values); $i++) {
                 if (in_array($values[$i], $record[$this->fieldName()])) {
-                    $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[]"
-                      value="' . $values[$i] . '">';
+                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
+                      value="'.$values[$i].'">';
                 }
             }
         } else {
             parent::hide($record, $fieldprefix, $mode);
         }
+
         return $result;
     }
 
@@ -91,7 +91,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param array $rec The record that holds this attribute's value.
      * @return String The database compatible value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
@@ -106,7 +106,7 @@ class MultiSelectAttribute extends ListAttribute
      * @param array $rec The database record that holds this attribute's value
      * @return mixed The internal value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] !== '') {
             return explode($this->m_fieldSeparator, $rec[$this->fieldName()]);
@@ -140,13 +140,14 @@ class MultiSelectAttribute extends ListAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $values = $record[$this->fieldName()];
         $res = array();
         for ($i = 0; $i < count($values); $i++) {
             $res[] = $this->_translateValue($values[$i], $record);
         }
+
         return implode(', ', $res);
     }
 
@@ -159,16 +160,16 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with radioboxes
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $this->m_record = $record;
         $cols = $this->m_cols;
         $modcols = $cols - 1;
 
-        $id = $fieldprefix . $this->fieldName();
+        $id = $fieldprefix.$this->fieldName();
 
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('assets_url') . "javascript/class.atkprofileattribute.js");
+        $page->register_script(Config::getGlobal('assets_url')."javascript/class.atkprofileattribute.js");
 
         $result = "";
         if (!$this->hasFlag(self::AF_LINKS_BOTTOM)) {
@@ -191,8 +192,8 @@ class MultiSelectAttribute extends ListAttribute
                 $sel = "checked";
             }
 
-            $result .= '<td class="table" valign="top"><input type="checkbox" id="' . $id . '_' . $i . '" ' . $this->getCSSClassAttribute("atkcheckbox") . ' name="' . $fieldprefix . $this->fieldName() . '[]" value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i],
-                    $record) . '</td>';
+            $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" '.$this->getCSSClassAttribute("atkcheckbox").' name="'.$fieldprefix.$this->fieldName().'[]" value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],
+                    $record).'</td>';
 
             if ($i % $cols == $modcols) {
                 $result .= "</tr><tr>\n";
@@ -216,21 +217,20 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $searchmode
      * @return string condition to use in a where clause
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // Multiselect attribute has only 1 searchmode, and that is substring.
         $searchcondition = null;
         if (is_array($value) && $value[0] != "" && count($value) > 0) {
             if (count($value) == 1) {
-                $searchcondition = $query->substringCondition($table . "." . $this->fieldName(),
-                    $this->escapeSQL($value[0]));
+                $searchcondition = $query->substringCondition($table.".".$this->fieldName(), $this->escapeSQL($value[0]));
             } else {
                 foreach ($value as $str) {
-                    $searchcondition = $query->substringCondition($table . "." . $this->fieldName(),
-                        $this->escapeSQL($str));
+                    $searchcondition = $query->substringCondition($table.".".$this->fieldName(), $this->escapeSQL($str));
                 }
             }
         }
+
         return $searchcondition;
     }
 
@@ -240,7 +240,7 @@ class MultiSelectAttribute extends ListAttribute
      * @return String The 'text' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return 'text';
     }
@@ -250,7 +250,7 @@ class MultiSelectAttribute extends ListAttribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -266,17 +266,13 @@ class MultiSelectAttribute extends ListAttribute
      * @param string $fieldprefix The fieldprefix
      * @return string a piece of htmlcode with the links
      */
-    function _addLinks($fieldprefix)
+    public function _addLinks($fieldprefix)
     {
         if (count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
             return '<div align="left"><font size="-2">
-                  [<a href="javascript:void(0)" onclick="profile_checkAll(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-            Tools::atktext("check_all") .
-            '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-            Tools::atktext("check_none") .
-            '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' .
-            Tools::atktext("invert_selection") . '</a>]</font></div>';
+                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext("check_all").'</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext("check_none").'</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext("invert_selection").'</a>]</font></div>';
         }
+
         return '';
     }
 
@@ -285,11 +281,8 @@ class MultiSelectAttribute extends ListAttribute
      * @param array $record The record that holds this attribute's value.
      * @return boolean
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         return (!isset($record[$this->fieldName()]) || (!is_array($record[$this->fieldName()])) || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) === 0));
     }
-
 }
-
-

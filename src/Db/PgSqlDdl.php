@@ -2,8 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 
-
-
 /**
  * PostgreSQL ddl driver.
  *
@@ -18,7 +16,7 @@ class PgSqlDdl extends Ddl
     /**
      * Constructor
      */
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
@@ -28,7 +26,7 @@ class PgSqlDdl extends Ddl
      *
      * @param string $generictype The datatype to convert.
      */
-    function getType($generictype)
+    public function getType($generictype)
     {
         switch ($generictype) {
             case "number":
@@ -48,7 +46,8 @@ class PgSqlDdl extends Ddl
             case "boolean":
                 return "BOOLEAN";
         }
-        return ""; // in case we have an unsupported type.      
+
+        return ""; // in case we have an unsupported type.
     }
 
     /**
@@ -56,7 +55,7 @@ class PgSqlDdl extends Ddl
      *
      * @param string $type The database specific datatype to convert.
      */
-    function getGenericType($type)
+    public function getGenericType($type)
     {
         $type = strtolower($type);
         switch ($type) {
@@ -85,7 +84,8 @@ class PgSqlDdl extends Ddl
             case "boolean":
                 return "boolean";
         }
-        return ""; // in case we have an unsupported type.      
+
+        return ""; // in case we have an unsupported type.
     }
 
     /**
@@ -96,7 +96,7 @@ class PgSqlDdl extends Ddl
      * @return bool true  if a size should be specified for the given field type.
      *         false if a size does not have to be specified.
      */
-    function needsSize($generictype)
+    public function needsSize($generictype)
     {
         switch ($generictype) {
             case "string":
@@ -105,6 +105,7 @@ class PgSqlDdl extends Ddl
             default:
                 return false;
         }
+
         return false; // in case we have an unsupported type.
     }
 
@@ -114,7 +115,7 @@ class PgSqlDdl extends Ddl
      *
      * @return An array of ALTER TABLE queries.
      */
-    function buildAlter()
+    public function buildAlter()
     {
         $result = array();
 
@@ -130,8 +131,8 @@ class PgSqlDdl extends Ddl
             // statement is needed.
             foreach ($this->m_fields as $fieldname => $fieldconfig) {
                 if ($fieldname != "" && $fieldconfig["type"] != "" && $this->getType($fieldconfig["type"]) != "") {
-                    $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"],
-                        $fieldconfig["flags"] & ~self::DDL_NOTNULL, $fieldconfig["default"]);
+                    $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"] & ~self::DDL_NOTNULL,
+                        $fieldconfig["default"]);
                     if (Tools::hasFlag($fieldconfig["flags"], self::DDL_NOTNULL)) {
                         $notNullFields[] = $fieldname;
                     }
@@ -139,22 +140,19 @@ class PgSqlDdl extends Ddl
             }
 
             foreach ($fields as $field) {
-                $result[] = "ALTER TABLE " . $this->m_table . " ADD " . $field;
+                $result[] = "ALTER TABLE ".$this->m_table." ADD ".$field;
             }
 
             foreach ($notNullFields as $field) {
-                $result[] = "ALTER TABLE " . $this->m_table . " ALTER COLUMN " . $field . " SET NOT NULL";
+                $result[] = "ALTER TABLE ".$this->m_table." ALTER COLUMN ".$field." SET NOT NULL";
             }
 
             $constraints = $this->_buildConstraintsArray();
             foreach ($constraints as $constraint) {
-                $result[] = "ALTER TABLE " . $this->m_table . " ADD " . $constraint;
+                $result[] = "ALTER TABLE ".$this->m_table." ADD ".$constraint;
             }
         }
 
         return count($result) > 0 ? $result : "";
     }
-
 }
-
-

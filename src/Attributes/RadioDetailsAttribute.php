@@ -80,9 +80,9 @@ class RadioDetailsAttribute extends Attribute
 
     public function edit($record, $fieldprefix, $mode)
     {
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkradiodetailsattribute.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkradiodetailsattribute.js');
 
-        $name = $fieldprefix . $this->fieldName();
+        $name = $fieldprefix.$this->fieldName();
 
         $result = '<div class="atkradiodetailsattribute-selection">';
 
@@ -92,8 +92,7 @@ class RadioDetailsAttribute extends Attribute
             $attrNames = @$this->m_details[$value];
 
             if ($attrNames != null) {
-                $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode,
-                    'attribute.' . $this->fieldName() . '.details',
+                $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.details',
                     array('value' => $value, 'fieldprefix' => $fieldprefix));
                 $onChange = "ATK.RadioDetailsAttribute.select(this, '{$url}');";
             } else {
@@ -101,12 +100,12 @@ class RadioDetailsAttribute extends Attribute
             }
 
             $result .= '
-        <input type="radio" class="atkradiodetailsattribute-option" name="' . $name . '" id="' . $name . '_' . $value . '" value="' . $value . '" onchange="' . $onChange . '"' . $checked . '/>
-        <label for="' . $name . '_' . $value . '">' . $this->text($label) . '</label><br/>
+        <input type="radio" class="atkradiodetailsattribute-option" name="'.$name.'" id="'.$name.'_'.$value.'" value="'.$value.'" onchange="'.$onChange.'"'.$checked.'/>
+        <label for="'.$name.'_'.$value.'">'.$this->text($label).'</label><br/>
       ';
 
             if ($attrNames != null) {
-                $result .= '<div id="' . $name . '_' . $value . '_details" class="atkradiodetailsattribute-details">';
+                $result .= '<div id="'.$name.'_'.$value.'_details" class="atkradiodetailsattribute-details">';
 
                 if ($isSelected) {
                     foreach ($attrNames as $attrName) {
@@ -115,7 +114,8 @@ class RadioDetailsAttribute extends Attribute
                             continue;
                         }
 
-                        $result .= '<blockquote>' . $attr->edit($record, $fieldprefix, $mode) . '&nbsp;' . htmlentities($attr->getLabel($record, $mode)) . '</blockquote>';
+                        $result .= '<blockquote>'.$attr->edit($record, $fieldprefix, $mode).'&nbsp;'.htmlentities($attr->getLabel($record,
+                                $mode)).'</blockquote>';
                     }
                 }
                 $result .= '</div>';
@@ -127,7 +127,7 @@ class RadioDetailsAttribute extends Attribute
         return $result;
     }
 
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
         $options = array_flip($this->m_options);
@@ -145,8 +145,8 @@ class RadioDetailsAttribute extends Attribute
                     $label = $attr->getLabel($record, $mode);
                     $result .= '
             <blockquote>
-              ' . (!empty($label) ? htmlentities($label) . ':' : '') . '
-              ' . $attr->display($record, $mode) . '
+              '.(!empty($label) ? htmlentities($label).':' : '').'
+              '.$attr->display($record, $mode).'
             </blockquote>';
                 }
             }
@@ -178,11 +178,9 @@ class RadioDetailsAttribute extends Attribute
                 continue;
             }
 
-            $result .= '<blockquote>' . $attr->edit(array(), $fieldprefix, $mode) . '&nbsp;' . $attr->getLabel(array(),
-                    $mode) . '</blockquote>';
+            $result .= '<blockquote>'.$attr->edit(array(), $fieldprefix, $mode).'&nbsp;'.$attr->getLabel(array(), $mode).'</blockquote>';
         }
 
         return $result;
     }
-
 }

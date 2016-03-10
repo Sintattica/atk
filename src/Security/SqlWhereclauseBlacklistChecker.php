@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Security;
 
-
 use Sintattica\Atk\Core\Tools;
 
 /**
@@ -120,17 +119,16 @@ class SqlWhereclauseBlacklistChecker
      * @param string $variable
      * @example filter_request_where_clause('atkselector')
      */
-    static public function filter_request_where_clause($variable)
+    public static function filter_request_where_clause($variable)
     {
         if (isset($_REQUEST[$variable])) {
             $values = (array)$_REQUEST[$variable];
             foreach ($values as $value) {
                 $checker = new self($value);
                 if (!$checker->isSafe()) {
-                    Tools::atkhalt("Unsafe WHERE clause in REQUEST variable: " . $variable, 'critical');
+                    Tools::atkhalt("Unsafe WHERE clause in REQUEST variable: ".$variable, 'critical');
                 }
             }
         }
     }
-
 }

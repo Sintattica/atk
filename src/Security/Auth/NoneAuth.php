@@ -33,7 +33,7 @@ class NoneAuth extends AuthInterface
      *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
-    function validateUser($user, $passwd)
+    public function validateUser($user, $passwd)
     {
         if ($user == "") {
             return SecurityManager::AUTH_SUCCESS;
@@ -48,10 +48,8 @@ class NoneAuth extends AuthInterface
      *
      * @return boolean false
      */
-    function canMd5()
+    public function canMd5()
     {
         return false;
     }
-
 }
-

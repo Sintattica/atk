@@ -12,7 +12,7 @@ use Sintattica\Atk\Core\Tools;
  */
 class CurrencyAttribute extends NumberAttribute
 {
-    var $m_currencysymbol;
+    public $m_currencysymbol;
 
     /**
      * Constructor
@@ -25,7 +25,7 @@ class CurrencyAttribute extends NumberAttribute
      * @param string $thousandsseparator The separator which is printed for the thousands.
      *
      */
-    function __construct(
+    public function __construct(
         $name,
         $flags = 0,
         $size = 10,
@@ -41,10 +41,8 @@ class CurrencyAttribute extends NumberAttribute
         }
 
         $this->m_currencysymbol = $currencysymbol;
-        $this->m_decimalseparator = ($decimalseparator != "" ? $decimalseparator
-            : ".");
-        $this->m_thousandsseparator = ($thousandsseparator != "" ? $thousandsseparator
-            : ",");
+        $this->m_decimalseparator = ($decimalseparator != "" ? $decimalseparator : ".");
+        $this->m_thousandsseparator = ($thousandsseparator != "" ? $thousandsseparator : ",");
 
         $this->setUseThousandsSeparator(true);
     }
@@ -58,9 +56,9 @@ class CurrencyAttribute extends NumberAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
-        return $this->getCurrencySymbolDisplay() . parent::edit($record, $fieldprefix, $mode);
+        return $this->getCurrencySymbolDisplay().parent::edit($record, $fieldprefix, $mode);
     }
 
     /**
@@ -77,10 +75,11 @@ class CurrencyAttribute extends NumberAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $result = empty($this->m_currencysymbol) ? "" : $this->getCurrencySymbolDisplay();
         $result .= parent::display($record, $mode);
+
         return $result;
     }
 
@@ -88,11 +87,8 @@ class CurrencyAttribute extends NumberAttribute
      * Get currency symbol display
      * @return string
      */
-    function getCurrencySymbolDisplay()
+    public function getCurrencySymbolDisplay()
     {
-        return '<span class="currencysymbol">' . $this->m_currencysymbol . '</span> ';
+        return '<span class="currencysymbol">'.$this->m_currencysymbol.'</span> ';
     }
-
 }
-
-

@@ -44,21 +44,23 @@ class ZendPlatformErrorHandler extends ErrorHandlerBase
     {
         if (!function_exists('accelerator_license_info')) {
             Tools::atkdebug('Zend Platform was not detected');
+
             return false;
         }
 
         if (!function_exists('accelerator_get_configuration')) {
             $licenseInfo = accelerator_license_info();
-            Tools::atkdebug('The Zend Platform extension is not loaded correctly: ' . $licenseInfo['failure_reason']);
+            Tools::atkdebug('The Zend Platform extension is not loaded correctly: '.$licenseInfo['failure_reason']);
+
             return false;
         }
 
         if (!function_exists('monitor_custom_event')) {
             Tools::atkdebug('Zend Platform seems to be there, but the function \'monitor_custom_event\' could not be found');
+
             return false;
         }
 
         return true;
     }
-
 }

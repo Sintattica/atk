@@ -1,6 +1,6 @@
 <?php namespace Sintattica\Atk\Utils;
 
-Use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * atkIpUtils class. Contains static methods to allow numeric and string ip validation
@@ -23,14 +23,16 @@ class IpUtils
      * @param mixed $ip String or long numeric.
      * @return boolean True if the ip is valid, False if not.
      */
-    function ipValidate($ip)
+    public function ipValidate($ip)
     {
         if (is_numeric($ip)) {
             return ($ip >= 0 && $ip <= 4294967295 && !is_null($ip));
         } elseif (is_string($ip)) {
             $num = '(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])';
+
             return (preg_match("/^$num\\.$num\\.$num\\.$num$/", $ip, $matches) > 0);
         }
+
         return false;
     }
 
@@ -48,6 +50,7 @@ class IpUtils
     {
         if (!IpUtils::ipValidate($ip)) {
             Tools::atkdebug("IpUtils::ipStringFormat() Invalid ip given");
+
             return null;
         }
         $long = is_numeric($ip) ? $ip : IpUtils::ipLongFormat($ip);
@@ -59,6 +62,7 @@ class IpUtils
                 $string .= ".";
             }
         }
+
         return $string;
     }
 
@@ -76,14 +80,14 @@ class IpUtils
     {
         if (!IpUtils::ipValidate($ip)) {
             Tools::atkdebug("IpUtils::ipLongFormat() Invalid ip given");
+
             return null;
         }
         if (is_numeric($ip)) {
             return $ip;
         }
         $array = explode(".", $ip);
+
         return $array[3] + 256 * $array[2] + 256 * 256 * $array[1] + 256 * 256 * 256 * $array[0];
     }
-
 }
-

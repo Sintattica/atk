@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
-
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
@@ -357,6 +356,7 @@ class DataGrid
         $class = substr($class, strrpos($class, '.') + 1);
         $grid = new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
         self::callModifiers($grid, self::CREATE);
+
         return $grid;
     }
 
@@ -381,7 +381,7 @@ class DataGrid
         $name = $GLOBALS['ATK_VARS']['atkdatagrid'];
 
         if (!isset($GLOBALS['ATK_VARS']['atkdgsession'][$name])) {
-            throw new Exception('No session data for grid: ' . $name);
+            throw new Exception('No session data for grid: '.$name);
         }
         $session = $GLOBALS['ATK_VARS']['atkdgsession'][$name];
 
@@ -390,6 +390,7 @@ class DataGrid
         $class = substr($class, strrpos($class, '.') + 1);
         $grid = new $class($node, $name, self::RESUME);
         self::callModifiers($grid, self::RESUME);
+
         return $grid;
     }
 
@@ -421,8 +422,7 @@ class DataGrid
             $allVars = (array)$node->m_postvars;
         }
 
-        $vars = isset($GLOBALS['ATK_VARS']['atkdg'][$name]) ? $GLOBALS['ATK_VARS']['atkdg'][$name]
-            : null;
+        $vars = isset($GLOBALS['ATK_VARS']['atkdg'][$name]) ? $GLOBALS['ATK_VARS']['atkdg'][$name] : null;
 
         $vars = !is_array($vars) ? array() : $vars;
         $this->setPostvars(array_merge($allVars, $vars));
@@ -442,8 +442,7 @@ class DataGrid
     protected function initOnCreate()
     {
         $this->setFlags($this->convertNodeFlags($this->getNode()->getFlags()));
-        $this->setBaseUrl(Tools::partial_url($this->getNode()->atkNodeUri(), $this->getNode()->m_action,
-            'datagrid'));
+        $this->setBaseUrl(Tools::partial_url($this->getNode()->atkNodeUri(), $this->getNode()->m_action, 'datagrid'));
 
         $this->setDefaultLimit(Config::getGlobal('recordsperpage'));
         $this->setDefaultActions($this->getNode()->defaultActions("admin"));
@@ -455,7 +454,7 @@ class DataGrid
 
         if (!$this->getNode()->hasFlag(Node::NF_NO_FILTER)) {
             foreach ($this->getNode()->m_filters as $key => $value) {
-                $this->addFilter($key . "='" . $value . "'");
+                $this->addFilter($key."='".$value."'");
             }
 
             foreach ($this->getNode()->m_fuzzyFilters as $filter) {
@@ -467,8 +466,7 @@ class DataGrid
 
         $this->addComponent('list', __NAMESPACE__."\\DataGridList");
         $this->addComponent('summary', __NAMESPACE__."\\DataGridSummary");
-        $this->addComponent('limit', __NAMESPACE__."\\DataGridLimit",
-            array('showAll' => Config::getGlobal('enable_showall')));
+        $this->addComponent('limit', __NAMESPACE__."\\DataGridLimit", array('showAll' => Config::getGlobal('enable_showall')));
         $this->addComponent('norecordsfound', __NAMESPACE__."\\DataGridNoRecordsFound");
         $this->addComponent('paginator', __NAMESPACE__."\\DataGridPaginator");
 
@@ -567,7 +565,7 @@ class DataGrid
             'atksearchmode',
             'atkorderby',
             'atkindex',
-            'atkcolcmd'
+            'atkcolcmd',
         );
 
         $sessions = &$GLOBALS['ATK_VARS']['atkdg'];
@@ -608,7 +606,7 @@ class DataGrid
             'atksearchmode',
             'atkorderby',
             'atkindex',
-            'atkcolcmd'
+            'atkcolcmd',
         );
         foreach ($vars as $var) {
             if (isset($this->m_postvars[$var])) {
@@ -656,7 +654,7 @@ class DataGrid
             'mraSelectionMode',
             'countHandler',
             'selectHandler',
-            'masterRecord'
+            'masterRecord',
         );
 
         foreach ($vars as $var) {
@@ -1390,6 +1388,7 @@ class DataGrid
         if (empty($orderBy)) {
             $orderBy = $this->getDefaultOrderBy();
         }
+
         return $orderBy;
     }
 
@@ -1458,7 +1457,7 @@ class DataGrid
      */
     protected function setCount($count)
     {
-        $this->m_count = $count;;
+        $this->m_count = $count;
     }
 
     /**
@@ -1531,13 +1530,8 @@ class DataGrid
             $excludes = array_merge($excludes, $this->getExcludes());
         }
 
-        $selector = $this->getNode()
-            ->select()
-            ->excludes($excludes)
-            ->orderBy($this->getOrderBy())
-            ->limit($this->getLimit(), $this->getOffset())
-            ->mode($this->getMode())
-            ->ignoreDefaultFilters();
+        $selector = $this->getNode()->select()->excludes($excludes)->orderBy($this->getOrderBy())->limit($this->getLimit(),
+                $this->getOffset())->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
             $selector->where($filter['filter'], $filter['params']);
@@ -1558,11 +1552,7 @@ class DataGrid
         $excludes = $this->getMode() == 'copy' ? array() : $this->getNode()->m_listExcludes;
         $excludes = array_merge($excludes, $this->getExcludes());
 
-        $selector = $this->getNode()
-            ->select()
-            ->excludes($excludes)
-            ->mode($this->getMode())
-            ->ignoreDefaultFilters();
+        $selector = $this->getNode()->select()->excludes($excludes)->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
             $selector->where($filter['filter'], $filter['params']);
@@ -1653,10 +1643,10 @@ class DataGrid
         $overridesJsStr = '';
 
         foreach ($overridesJs as $key => $js) {
-            $overridesJsStr .= (!empty($overridesJsStr) ? ', ' : '') . "'$key': $js";
+            $overridesJsStr .= (!empty($overridesJsStr) ? ', ' : '')."'$key': $js";
         }
 
-        return 'ATK.DataGrid.update(' . JSON::encode($this->getName()) . ', ' . JSON::encode($overrides) . ', {' . $overridesJsStr . '}, ' . $overridesJsCallback . ');';
+        return 'ATK.DataGrid.update('.JSON::encode($this->getName()).', '.JSON::encode($overrides).', {'.$overridesJsStr.'}, '.$overridesJsCallback.');';
     }
 
     /**
@@ -1667,9 +1657,9 @@ class DataGrid
     public function getSaveCall()
     {
         $sm = SessionManager::getInstance();
-        $url = $sm->sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeUri(), 'multiupdate',
-            array('output' => 'json')), SessionManager::SESSION_PARTIAL);
-        return 'ATK.DataGrid.save(' . JSON::encode($this->getName()) . ', ' . JSON::encode($url) . ');';
+        $url = $sm->sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeUri(), 'multiupdate', array('output' => 'json')), SessionManager::SESSION_PARTIAL);
+
+        return 'ATK.DataGrid.save('.JSON::encode($this->getName()).', '.JSON::encode($url).');';
     }
 
     /**
@@ -1784,7 +1774,7 @@ class DataGrid
         // if we are not embedded in an edit form we generate
         // the form name based on the grid name
         if (!$this->isEmbedded()) {
-            $this->setFormName($this->getName() . '_form');
+            $this->setFormName($this->getName().'_form');
         }
 
         // temporarily overwrite the node postvars so that select and count
@@ -1836,8 +1826,7 @@ class DataGrid
      */
     public static function unregisterModifier($nodeType, $callback)
     {
-        self::$s_modifiers[$nodeType == null ? '*' : $nodeType] = array_diff(self::$s_modifiers[$nodeType == null
-            ? '*' : $nodeType], array($callback));
+        self::$s_modifiers[$nodeType == null ? '*' : $nodeType] = array_diff(self::$s_modifiers[$nodeType == null ? '*' : $nodeType], array($callback));
     }
 
     /**
@@ -1855,5 +1844,4 @@ class DataGrid
     {
         self::$s_modifiers[$nodeType == null ? '*' : $nodeType][] = $callback;
     }
-
 }

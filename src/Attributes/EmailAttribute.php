@@ -17,7 +17,7 @@ class EmailAttribute extends Attribute
      * @var boolean Bool to set DNS search in validate function
      * @access private
      */
-    var $m_dnsSearch = false;
+    public $m_dnsSearch = false;
 
     /**
      * Constructor
@@ -32,7 +32,7 @@ class EmailAttribute extends Attribute
      * @param int $flags Flags for the attribute
      * @param int $size The size of the field in characters
      */
-    function __construct($name, $search = false, $flags = 0, $size = 0)
+    public function __construct($name, $search = false, $flags = 0, $size = 0)
     {
         $this->m_dnsSearch = $search;
         parent::__construct($name, $flags, $size);
@@ -48,15 +48,16 @@ class EmailAttribute extends Attribute
      *                     use additional modes.
      * @return String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         if ($mode == "csv") {
             return parent::display($record, $mode);
         }
 
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != "") {
-            return '<a href="mailto:' . $record[$this->fieldName()] . '">' . $record[$this->fieldName()] . '</a>';
+            return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';
         }
+
         return '';
     }
 
@@ -67,7 +68,7 @@ class EmailAttribute extends Attribute
      *                      field.
      * @param string $mode Validation mode. Can be either "add" or "update"
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         $email = $record[$this->fieldName()];
         //first check complete string
@@ -78,8 +79,7 @@ class EmailAttribute extends Attribute
                 //now check if domain exists, searches DNS for MX records
                 list($username, $domain) = explode('@', $email, 2);
                 if (!(EmailAttribute::validateAddressDomain($domain, false))) {
-                    Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain',
-                        Tools::atktext('error_unkown_domain') . " " . $domain);
+                    Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain', Tools::atktext('error_unkown_domain')." ".$domain);
                 }
             }
         }
@@ -91,11 +91,10 @@ class EmailAttribute extends Attribute
      * @param  string $email e-mail address.
      * @return boolean e-mailaddress syntactically valid or not.
      */
-    static function validateAddressSyntax($email)
+    public static function validateAddressSyntax($email)
     {
         $email = strtolower($email); // to allow uppercase
-        if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/",
-            $email)) {
+        if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email)) {
             return true;
         } else {
             return false;
@@ -112,7 +111,7 @@ class EmailAttribute extends Attribute
      * @return boolean $result
      * @static
      */
-    function validateAddressDomain($domain, $strict = false)
+    public function validateAddressDomain($domain, $strict = false)
     {
         if ($strict) {
             $rr = 'MX';
@@ -131,11 +130,10 @@ class EmailAttribute extends Attribute
      * Called by the framework to determine the database field datatype.
      * @return String The databasefield datatype.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "string";
     }
-
 }
 
 if (!function_exists("checkdnsrr")) {
@@ -160,11 +158,11 @@ if (!function_exists("checkdnsrr")) {
                     return true;
                 }
             }
+
             // otherwise there was no mail handler for the domain
             return false;
         }
+
         return false;
     }
-
 }
-

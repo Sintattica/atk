@@ -3,7 +3,6 @@
 use Sintattica\Atk\Core\Config;
 use \Exception;
 
-
 class ApcCache extends Cache
 {
 
@@ -36,6 +35,7 @@ class ApcCache extends Cache
         if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
         }
+
         return apc_add($this->getRealKey($key), serialize($data), $lifetime);
     }
 
@@ -56,6 +56,7 @@ class ApcCache extends Cache
         if ($lifetime === false) {
             $lifetime = $this->m_lifetime;
         }
+
         return apc_store($this->getRealKey($key), serialize($data), $lifetime);
     }
 
@@ -75,6 +76,7 @@ class ApcCache extends Cache
 
         $rawCacheValue = apc_fetch($this->getRealKey($key));
         $cacheValue = is_string($rawCacheValue) ? unserialize($rawCacheValue) : $rawCacheValue;
+
         return $cacheValue;
     }
 
@@ -105,6 +107,7 @@ class ApcCache extends Cache
         }
 
         apc_clear_cache('user');
+
         return true;
     }
 
@@ -117,6 +120,4 @@ class ApcCache extends Cache
     {
         return 'apc';
     }
-
 }
-

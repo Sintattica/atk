@@ -15,16 +15,16 @@ class Atk
 
     const VERSION = '9.0.1';
 
-    var $g_nodes = [];
-    var $g_nodesClasses = [];
-    var $g_nodeRepository = [];
-    var $g_modules = [];
-    var $g_moduleRepository = [];
-    var $g_nodeHandlers = [];
-    var $g_nodeListeners = [];
+    public $g_nodes = [];
+    public $g_nodesClasses = [];
+    public $g_nodeRepository = [];
+    public $g_modules = [];
+    public $g_moduleRepository = [];
+    public $g_nodeHandlers = [];
+    public $g_nodeListeners = [];
 
     /** @var $s_instance Atk */
-    static $s_instance = null;
+    public static $s_instance = null;
 
     public function __construct($environment, $basedir)
     {
@@ -68,8 +68,8 @@ class Atk
             setlocale(LC_TIME, $locale);
         }
 
-        $debug = 'Created a new Atk ('.self::VERSION.') instance: Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
-        $debug .= ' Environment: ' . $environment;
+        $debug = 'Created a new Atk ('.self::VERSION.') instance: Server info: '.$_SERVER['SERVER_NAME'].' ('.$_SERVER['SERVER_ADDR'].')';
+        $debug .= ' Environment: '.$environment;
 
         Tools::atkdebug($debug);
 
@@ -92,6 +92,7 @@ class Atk
         if (!is_object(static::$s_instance)) {
             throw new \RuntimeException('Atk instance not available');
         }
+
         return static::$s_instance;
     }
 
@@ -134,7 +135,7 @@ class Atk
         if ($actions) {
             // prefix tabs with tab_
             for ($i = 0, $_i = count($tabs); $i < $_i; $i++) {
-                $tabs[$i] = "tab_" . $tabs[$i];
+                $tabs[$i] = "tab_".$tabs[$i];
             }
 
             if ($module == "") {
@@ -146,7 +147,6 @@ class Atk
 
             $this->g_nodes[$section][$module][$type] = array_merge($actions, $tabs);
         }
-
     }
 
 
@@ -168,6 +168,7 @@ class Atk
             Tools::atkdebug("Constructing a new node $nodeUri ($cache_id)");
             $this->g_nodeRepository[$cache_id][$nodeUri] = $this->newAtkNode($nodeUri, $init);
         }
+
         return $this->g_nodeRepository[$cache_id][$nodeUri];
     }
 
@@ -189,6 +190,7 @@ class Atk
             $this->g_moduleRepository[$moduleName] = $module;
             $module->boot();
         }
+
         return $this->g_moduleRepository[$moduleName];
     }
 
@@ -214,6 +216,7 @@ class Atk
         if ($init && $node != null) {
             $node->init();
         }
+
         return $node;
     }
 
@@ -234,8 +237,10 @@ class Atk
             if (substr($dir, -1) != '/') {
                 $dir .= "/";
             }
+
             return $dir;
         }
+
         return "";
     }
 
@@ -256,6 +261,7 @@ class Atk
         } else {
             $handler = null;
         }
+
         return $handler;
     }
 
@@ -273,6 +279,7 @@ class Atk
         } else {
             $this->g_nodeHandlers[$nodeUri][$action] = $handler;
         }
+
         return true;
     }
 
@@ -281,6 +288,7 @@ class Atk
         $reflection = new \ReflectionClass($moduleClass);
         $name = strtolower($reflection->getStaticPropertyValue('module'));
         $this->g_modules[$name] = $moduleClass;
+
         return $this->atkGetModule($name);
     }
 }

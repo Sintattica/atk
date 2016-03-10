@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
 use Sintattica\Atk\Core\Tools;
 
 /**
@@ -12,8 +11,8 @@ use Sintattica\Atk\Core\Tools;
  */
 class FormatAttribute extends Attribute
 {
-    var $m_format = "";
-    var $m_breakdownCached = array();
+    public $m_format = "";
+    public $m_breakdownCached = array();
 
     /**
      * Constructor
@@ -42,7 +41,7 @@ class FormatAttribute extends Attribute
      * @param int $flags Flags for the attribute.
      *
      */
-    function __construct($name, $format, $flags = 0)
+    public function __construct($name, $format, $flags = 0)
     {
         $this->m_format = $format;
         parent::__construct($name, $flags, strlen($format));
@@ -57,7 +56,7 @@ class FormatAttribute extends Attribute
      * @param array $record The record to validate
      * @param string $mode Insert or update mode (ignored by this attribute)
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         $elems = $this->_breakDown();
         $values = $this->_valueBreakDown($record[$this->fieldName()]);
@@ -82,7 +81,7 @@ class FormatAttribute extends Attribute
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $elems = $this->_breakDown();
         $values = $this->_valueBreakdown($record[$this->fieldName()]);
@@ -98,7 +97,8 @@ class FormatAttribute extends Attribute
             }
             $hints[] = $elems[$i]['mask'];
         }
-        return implode(' ', $inputs) . '  (' . implode(' ', $hints) . ')';
+
+        return implode(' ', $inputs).'  ('.implode(' ', $hints).')';
     }
 
     /**
@@ -109,7 +109,7 @@ class FormatAttribute extends Attribute
      * @param char $specifier The format that the value should've adhered to.
      * @return String A translated error string.
      */
-    function _formatErrorString($pos, $specifier)
+    public function _formatErrorString($pos, $specifier)
     {
         return sprintf(Tools::atktext('error_format_mismatch', 'atk', $this->m_owner), $pos, $specifier);
     }
@@ -124,10 +124,11 @@ class FormatAttribute extends Attribute
      * @param string $value The current value.
      * @return String An html input element string.
      */
-    function _inputField($size, $elemnr, $fieldprefix, $value)
+    public function _inputField($size, $elemnr, $fieldprefix, $value)
     {
-        $id = $this->getHtmlId($fieldprefix) . '[' . $elemnr . ']';
-        return '<input type="text" name="' . $id . '" id="' . $id . '" size="' . $size . '" maxlength="' . $size . '" value="' . $value . '">';
+        $id = $this->getHtmlId($fieldprefix).'['.$elemnr.']';
+
+        return '<input type="text" name="'.$id.'" id="'.$id.'" size="'.$size.'" maxlength="'.$size.'" value="'.$value.'">';
     }
 
     /**
@@ -138,13 +139,14 @@ class FormatAttribute extends Attribute
      * @param string $string The string to check.
      * @return boolean True if string matches the specifier, false if not.
      */
-    function _checkString($specifier, $string)
+    public function _checkString($specifier, $string)
     {
         for ($i = 0, $_i = strlen($string); $i < $_i; $i++) {
             if (!$this->_checkChar($specifier, $string[$i])) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -156,7 +158,7 @@ class FormatAttribute extends Attribute
      * @param char $char The char to check.
      * @return boolean True if char matches the specifier, false if not.
      */
-    function _checkChar($specifier, $char)
+    public function _checkChar($specifier, $char)
     {
         switch ($specifier) {
             case "#":
@@ -166,6 +168,7 @@ class FormatAttribute extends Attribute
             case "9":
                 return (is_numeric($char));
         }
+
         return true;
     }
 
@@ -182,7 +185,7 @@ class FormatAttribute extends Attribute
      *                                  'mask' -> the complete mask, or the
      *                                            literal string if type is /
      */
-    function _breakDown()
+    public function _breakDown()
     {
         if (count($this->m_breakdownCached) == 0) {
             $elems = array();
@@ -200,9 +203,8 @@ class FormatAttribute extends Attribute
                     // create new
                     $elem = array(
                         'size' => 1,
-                        'type' => ($this->_isSpecifier($char)
-                            ? $char : '/'),
-                        'mask' => $char
+                        'type' => ($this->_isSpecifier($char) ? $char : '/'),
+                        'mask' => $char,
                     );
                 } else {
                     // increase elem
@@ -231,7 +233,7 @@ class FormatAttribute extends Attribute
      * @param string $valuestr The value to convert
      * @return array Array containing all values.
      */
-    function _valueBreakDown($valuestr)
+    public function _valueBreakDown($valuestr)
     {
         $elems = $this->_breakDown();
         $values = array();
@@ -256,7 +258,7 @@ class FormatAttribute extends Attribute
      * @return boolean True if the specifiers are considered equal, false if
      *                 not.
      */
-    function _equalSpecifiers($charA, $charB)
+    public function _equalSpecifiers($charA, $charB)
     {
         return ((!$this->_isSpecifier($charA) && !$this->_isSpecifier($charB)) || $charA == $charB);
     }
@@ -268,7 +270,7 @@ class FormatAttribute extends Attribute
      * @return boolean True if $char is a valid formatspecifier, false if it
      *                 is a literal.
      */
-    function _isSpecifier($char)
+    public function _isSpecifier($char)
     {
         return ($char != '' && (strpos("#9A*", $char) !== false));
     }
@@ -281,7 +283,7 @@ class FormatAttribute extends Attribute
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         $masks = $this->_breakDown();
         $elems = $postvars[$this->fieldName()];
@@ -294,6 +296,7 @@ class FormatAttribute extends Attribute
                 $result .= $this->_pad($masks[$i]['type'], $masks[$i]['size'], $elems[$i]);
             }
         }
+
         return $result;
     }
 
@@ -306,7 +309,7 @@ class FormatAttribute extends Attribute
      * @param string $value The value to pad.
      * @return String The padded value.
      */
-    function _pad($type, $size, $value)
+    public function _pad($type, $size, $value)
     {
         return str_pad($value, $size);
     }
@@ -319,7 +322,7 @@ class FormatAttribute extends Attribute
      * @param array $record The record that holds this attribute's value.
      * @return boolean
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         // value is empty if all non-literals have not been filled in.
         $values = $this->_valueBreakDown($record[$this->fieldName()]);
@@ -331,8 +334,7 @@ class FormatAttribute extends Attribute
                 }
             }
         }
+
         return true;
     }
-
 }
-

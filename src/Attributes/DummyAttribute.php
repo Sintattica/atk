@@ -23,7 +23,7 @@ class DummyAttribute extends Attribute
      */
     const AF_DUMMY_SHOW_LABEL = 33554432; // make the dummy label its fields
 
-    var $m_text;
+    public $m_text;
 
     /**
      * Constructor
@@ -31,7 +31,7 @@ class DummyAttribute extends Attribute
      * @param string $text The text to display
      * @param int $flags The flags for this attribute
      */
-    function __construct($name, $text = "", $flags = 0)
+    public function __construct($name, $text = "", $flags = 0)
     {
         // A Dummy attrikbute should not be searchable and sortable
         $flags |= self::AF_HIDE_SEARCH | self::AF_NO_SORT;
@@ -70,9 +70,9 @@ class DummyAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
-        return "<div ID=\"$this->m_name\">" . $this->m_text . "</div>";
+        return "<div ID=\"$this->m_name\">".$this->m_text."</div>";
     }
 
     /**
@@ -103,7 +103,7 @@ class DummyAttribute extends Attribute
      * @param array $record Array with fields
      * @return string Text
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         return $this->m_text;
     }
@@ -113,7 +113,7 @@ class DummyAttribute extends Attribute
      *
      * @param string $text
      */
-    function setText($text)
+    public function setText($text)
     {
         $this->m_text = $text;
     }
@@ -136,7 +136,7 @@ class DummyAttribute extends Attribute
      * @param string $mode The mode
      * @return boolean to indicate if store went succesfully
      */
-    function store($db, $record, $mode)
+    public function store($db, $record, $mode)
     {
         return true;
     }
@@ -148,15 +148,14 @@ class DummyAttribute extends Attribute
      * @param array $record The record
      * @return NULL
      */
-    function db2value($record)
+    public function db2value($record)
     {
         return null;
     }
 
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-
     }
 
     /**
@@ -165,7 +164,7 @@ class DummyAttribute extends Attribute
      *
      * @return empty array
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -181,11 +180,8 @@ class DummyAttribute extends Attribute
      *
      * @return string empty string
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "";
     }
-
 }
-
-

@@ -24,14 +24,14 @@ class ActionListener
      * @access private
      * @var array
      */
-    var $m_actionfilter = array();
+    public $m_actionfilter = array();
 
     /**
      * The owning node of the listener.
      * @access private
      * @var Node
      */
-    var $m_node = null;
+    public $m_node = null;
 
     /**
      * Base constructor
@@ -39,7 +39,7 @@ class ActionListener
      * @param array $actionfilter The list of actions to listen to
      * @return ActionListener
      */
-    function __construct($actionfilter = array())
+    public function __construct($actionfilter = array())
     {
         $this->m_actionfilter = $actionfilter;
     }
@@ -52,7 +52,7 @@ class ActionListener
      *
      * @param Node $node The node to set as owner
      */
-    function setNode(&$node)
+    public function setNode(&$node)
     {
         $this->m_node = &$node;
     }
@@ -67,10 +67,10 @@ class ActionListener
      * @param string $action The action being performed
      * @param array $record The record on which the action is performed
      */
-    function notify($action, $record)
+    public function notify($action, $record)
     {
         if (count($this->m_actionfilter) == 0 || Tools::atk_in_array($action, $this->m_actionfilter)) {
-            Tools::atkdebug("Action $action performed on " . $this->m_node->atkNodeUri() . " (" . $this->m_node->primaryKey($record) . ")");
+            Tools::atkdebug("Action $action performed on ".$this->m_node->atkNodeUri()." (".$this->m_node->primaryKey($record).")");
             $this->actionPerformed($action, $record);
         }
     }
@@ -84,9 +84,8 @@ class ActionListener
      * @param string $action The action being performed
      * @param array $record The record on which the action is performed
      */
-    function actionPerformed($action, $record)
+    public function actionPerformed($action, $record)
     {
-
     }
 
     /**
@@ -99,10 +98,10 @@ class ActionListener
      * @param string $action The action about to be performed
      * @param array $record The record on which the action is about to be performed
      */
-    function preNotify($action, &$record)
+    public function preNotify($action, &$record)
     {
         if (count($this->m_actionfilter) == 0 || Tools::atk_in_array($action, $this->m_actionfilter)) {
-            Tools::atkdebug("Action $action to be performed on " . $this->m_node->atkNodeUri() . " (" . $this->m_node->primaryKey($record) . ")");
+            Tools::atkdebug("Action $action to be performed on ".$this->m_node->atkNodeUri()." (".$this->m_node->primaryKey($record).")");
             $this->preActionPerformed($action, $record);
         }
     }
@@ -116,11 +115,7 @@ class ActionListener
      * @param string $action The action about to be performed
      * @param array $record The record on which the action is about to be performed
      */
-    function preActionPerformed($action, &$record)
+    public function preActionPerformed($action, &$record)
     {
-
     }
-
 }
-
-

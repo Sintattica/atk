@@ -15,23 +15,22 @@ use Sintattica\Atk\Attributes\Attribute;
  */
 class ColumnConfig
 {
-    var $m_colcfg = array();
+    public $m_colcfg = array();
 
     /** @var Node $m_node */
-    var $m_node;
+    public $m_node;
 
-    var $m_orderbyindex = 0;
+    public $m_orderbyindex = 0;
 
-    var $m_custom_atkorderby;
+    public $m_custom_atkorderby;
 
     /**
      * Constructor
      *
      * @return ColumnConfig
      */
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
@@ -39,7 +38,7 @@ class ColumnConfig
      *
      * @param Node $node
      */
-    function setNode(&$node)
+    public function setNode(&$node)
     {
         $this->m_node = &$node;
     }
@@ -49,7 +48,7 @@ class ColumnConfig
      *
      * @return Node The node
      */
-    function &getNode()
+    public function &getNode()
     {
         return $this->m_node;
     }
@@ -65,7 +64,6 @@ class ColumnConfig
      */
     public static function getConfig(&$node, $id = null, $forceNew = false)
     {
-
         static $s_instances = array();
 
         $sm = SessionManager::getInstance();
@@ -79,8 +77,7 @@ class ColumnConfig
             $s_instances[$id] = $cc;
             $cc->setNode($node);
 
-            $colcfg = $sm != null ? $sm->pageVar("atkcolcfg_" . $id)
-                : null;
+            $colcfg = $sm != null ? $sm->pageVar("atkcolcfg_".$id) : null;
 
             if (!is_array($colcfg) || $forceNew) {
                 // create new
@@ -97,7 +94,7 @@ class ColumnConfig
         }
 
         if ($sm != null) {
-            $sm->pageVar("atkcolcfg_" . $id, $s_instances[$id]->m_colcfg);
+            $sm->pageVar("atkcolcfg_".$id, $s_instances[$id]->m_colcfg);
         }
 
         return $s_instances[$id];
@@ -108,7 +105,7 @@ class ColumnConfig
      *
      * @return bool False
      */
-    function isLast()
+    public function isLast()
     {
         return false;
     }
@@ -118,7 +115,7 @@ class ColumnConfig
      *
      * @return bool False
      */
-    function isFirst()
+    public function isFirst()
     {
         return false;
     }
@@ -128,7 +125,7 @@ class ColumnConfig
      *
      * @param string $attribute
      */
-    function moveLeft($attribute)
+    public function moveLeft($attribute)
     {
         // ??
     }
@@ -138,7 +135,7 @@ class ColumnConfig
      *
      * @param string $attribute
      */
-    function moveRight($attribute)
+    public function moveRight($attribute)
     {
         // ??
     }
@@ -147,7 +144,7 @@ class ColumnConfig
      * Initialize
      *
      */
-    function init()
+    public function init()
     {
         foreach (array_keys($this->m_node->m_attribIndexList) as $i) {
             if (isset($this->m_node->m_attribIndexList[$i]["name"]) && ($this->m_node->m_attribIndexList[$i]["name"] != "")) {
@@ -165,7 +162,7 @@ class ColumnConfig
      *
      * @param string $attribute
      */
-    function hideCol($attribute)
+    public function hideCol($attribute)
     {
         $this->m_colcfg[$attribute]["show"] = 0;
     }
@@ -175,7 +172,7 @@ class ColumnConfig
      *
      * @param string $attribute
      */
-    function showCol($attribute)
+    public function showCol($attribute)
     {
         $this->m_colcfg[$attribute]["show"] = 1;
     }
@@ -186,7 +183,7 @@ class ColumnConfig
      * @param string $attribute
      * @param string $direction
      */
-    function setSortDirection($attribute, $direction)
+    public function setSortDirection($attribute, $direction)
     {
         $this->m_colcfg[$attribute]["direction"] = $direction;
     }
@@ -197,7 +194,7 @@ class ColumnConfig
      * @param string $attribute
      * @param string $value
      */
-    function setSortOrder($attribute, $value)
+    public function setSortOrder($attribute, $value)
     {
         if ($value > 0) {
             $this->m_colcfg[$attribute]["sortorder"] = $value;
@@ -214,7 +211,7 @@ class ColumnConfig
      * @param string $extra
      * @param string $sortorder
      */
-    function addOrderByField($field, $direction, $extra = "", $sortorder = null)
+    public function addOrderByField($field, $direction, $extra = "", $sortorder = null)
     {
         if (is_null($sortorder) && $this->getMinSort() <= 1) {
             foreach ($this->m_colcfg as $fld => $config) {
@@ -233,7 +230,7 @@ class ColumnConfig
      * Flatten
      *
      */
-    function flatten()
+    public function flatten()
     {
         uasort($this->m_colcfg, array(__CLASS__, "_compareSortAttrs"));
 
@@ -251,7 +248,7 @@ class ColumnConfig
      *
      * @return int
      */
-    function getMinSort()
+    public function getMinSort()
     {
         $min = 999;
         foreach ($this->m_colcfg as $field => $config) {
@@ -259,6 +256,7 @@ class ColumnConfig
                 $min = min($min, $config["sortorder"]);
             }
         }
+
         return $min;
     }
 
@@ -267,7 +265,7 @@ class ColumnConfig
      *
      * @return string Orderby statement
      */
-    function getOrderByStatement()
+    public function getOrderByStatement()
     {
         $result = array();
 
@@ -280,6 +278,7 @@ class ColumnConfig
                 }
             }
         }
+
         return implode(", ", $result);
     }
 
@@ -288,7 +287,7 @@ class ColumnConfig
      *
      * @return array
      */
-    function getOrderFields()
+    public function getOrderFields()
     {
         $result = array();
         foreach ($this->m_colcfg as $field => $config) {
@@ -296,6 +295,7 @@ class ColumnConfig
                 $result[] = $field;
             }
         }
+
         return $result;
     }
 
@@ -305,7 +305,7 @@ class ColumnConfig
      * @param string $attribute
      * @return string The sort direction
      */
-    function getSortDirection($attribute)
+    public function getSortDirection($attribute)
     {
         return $this->m_colcfg[$attribute]["direction"];
     }
@@ -317,9 +317,9 @@ class ColumnConfig
      * @param string $command
      * @return string
      */
-    function getUrlCommand($attribute, $command)
+    public function getUrlCommand($attribute, $command)
     {
-        return "atkcolcmd[][$command]=" . $attribute;
+        return "atkcolcmd[][$command]=".$attribute;
     }
 
     /**
@@ -329,7 +329,7 @@ class ColumnConfig
      * @param string $command
      * @return string
      */
-    function getUrlCommandParams($attribute, $command)
+    public function getUrlCommandParams($attribute, $command)
     {
         return array("atkcolcmd[][$command]" => $attribute);
     }
@@ -339,7 +339,7 @@ class ColumnConfig
      *
      * @param array $cmd
      */
-    function doUrlCommand($cmd)
+    public function doUrlCommand($cmd)
     {
         if (is_array($cmd)) {
             foreach ($cmd as $command => $param) {
@@ -369,7 +369,7 @@ class ColumnConfig
      * Do url commands
      *
      */
-    function doUrlCommands()
+    public function doUrlCommands()
     {
         if (isset($this->m_node->m_postvars["atkcolcmd"]) && is_array($this->m_node->m_postvars["atkcolcmd"])) {
             foreach ($this->m_node->m_postvars["atkcolcmd"] as $command) {
@@ -396,10 +396,9 @@ class ColumnConfig
      * @param string $attribute
      * @return string
      */
-    function getOrder($attribute)
+    public function getOrder($attribute)
     {
-        return isset($this->m_colcfg[$attribute]["sortorder"]) ? $this->m_colcfg[$attribute]["sortorder"]
-            : 0;
+        return isset($this->m_colcfg[$attribute]["sortorder"]) ? $this->m_colcfg[$attribute]["sortorder"] : 0;
     }
 
     /**
@@ -408,10 +407,9 @@ class ColumnConfig
      * @param string $attribute
      * @return string
      */
-    function getDirection($attribute)
+    public function getDirection($attribute)
     {
-        return (array_key_exists("direction", $this->m_colcfg[$attribute]) ? $this->m_colcfg[$attribute]["direction"]
-            : "desc");
+        return (array_key_exists("direction", $this->m_colcfg[$attribute]) ? $this->m_colcfg[$attribute]["direction"] : "desc");
     }
 
     /**
@@ -420,13 +418,14 @@ class ColumnConfig
      * @param int $order
      * @return Attribute
      */
-    function getAttributeByOrder($order)
+    public function getAttributeByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
             if (Tools::atkArrayNvl($info, "sortorder", 0) == $order) {
                 return $attrib;
             }
         }
+
         return "";
     }
 
@@ -435,7 +434,7 @@ class ColumnConfig
      *
      * @return int
      */
-    function countSortAttribs()
+    public function countSortAttribs()
     {
         $total = 0;
         foreach ($this->m_colcfg as $attrib => $info) {
@@ -443,6 +442,7 @@ class ColumnConfig
                 $total++;
             }
         }
+
         return $total;
     }
 
@@ -452,13 +452,14 @@ class ColumnConfig
      * @param int $order
      * @return string
      */
-    function getDirectionByOrder($order)
+    public function getDirectionByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
             if (Tools::atkArrayNvl($info, "sortorder", 0) == $order) {
                 return $this->getDirection($attrib);
             }
         }
+
         return "asc";
     }
 
@@ -466,7 +467,7 @@ class ColumnConfig
      * Clear order
      *
      */
-    function clearOrder()
+    public function clearOrder()
     {
         $this->m_colcfg = array();
     }
@@ -476,13 +477,14 @@ class ColumnConfig
      *
      * @return bool True or false
      */
-    function hasSubTotals()
+    public function hasSubTotals()
     {
         foreach (array_keys($this->m_colcfg) as $attribute) {
             if ($this->hasSubTotal($attribute)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -492,10 +494,9 @@ class ColumnConfig
      * @param string $attribute
      * @return bool True or false
      */
-    function hasSubTotal($attribute)
+    public function hasSubTotal($attribute)
     {
-        return ((isset($this->m_colcfg[$attribute]["subtotal"]) ? $this->m_colcfg[$attribute]["subtotal"]
-                : 0) == 1);
+        return ((isset($this->m_colcfg[$attribute]["subtotal"]) ? $this->m_colcfg[$attribute]["subtotal"] : 0) == 1);
     }
 
     /**
@@ -504,13 +505,14 @@ class ColumnConfig
      * @param int $order
      * @return bool True or false
      */
-    function hasSubTotalByOrder($order)
+    public function hasSubTotalByOrder($order)
     {
         foreach ($this->m_colcfg as $attrib => $info) {
             if (Tools::atkArrayNvl($info, "sortorder", 0) == $order) {
                 return $this->hasSubTotal($attrib);
             }
         }
+
         return false;
     }
 
@@ -520,7 +522,7 @@ class ColumnConfig
      * @param string $attribute
      * @param bool $active
      */
-    function setSubTotal($attribute, $active)
+    public function setSubTotal($attribute, $active)
     {
         $this->m_colcfg[$attribute]["subtotal"] = ($active ? 1 : 0);
     }
@@ -532,10 +534,9 @@ class ColumnConfig
      * @param array $b
      * @return int
      */
-    function _compareSortAttrs($a, $b)
+    public function _compareSortAttrs($a, $b)
     {
-        return (Tools::atkArrayNvl($a, "sortorder", 0) <= Tools::atkArrayNvl($b, "sortorder", 0)
-            ? -1 : 1);
+        return (Tools::atkArrayNvl($a, "sortorder", 0) <= Tools::atkArrayNvl($b, "sortorder", 0) ? -1 : 1);
     }
 
     /**
@@ -543,7 +544,7 @@ class ColumnConfig
      *
      * @return bool True or false
      */
-    function totalizable()
+    public function totalizable()
     {
         foreach (array_keys($this->m_node->m_attribList) as $attribname) {
             $p_attrib = $this->m_node->m_attribList[$attribname];
@@ -551,6 +552,7 @@ class ColumnConfig
                 return true;
             }
         }
+
         return false;
     }
 
@@ -559,7 +561,7 @@ class ColumnConfig
      *
      * @return array
      */
-    function totalizableColumns()
+    public function totalizableColumns()
     {
         $result = array();
         foreach (array_keys($this->m_node->m_attribList) as $attribname) {
@@ -568,6 +570,7 @@ class ColumnConfig
                 $result[] = $attribname;
             }
         }
+
         return $result;
     }
 
@@ -576,7 +579,7 @@ class ColumnConfig
      *
      * @return array
      */
-    function subtotalColumns()
+    public function subtotalColumns()
     {
         $result = array();
         foreach (array_keys($this->m_colcfg) as $attribute) {
@@ -584,6 +587,7 @@ class ColumnConfig
                 $result[] = $attribute;
             }
         }
+
         return $result;
     }
 
@@ -592,7 +596,7 @@ class ColumnConfig
      *
      * @param string $orderby
      */
-    function _addOrderByStatement($orderby)
+    public function _addOrderByStatement($orderby)
     {
         if (strpos($orderby, '(') !== false) {
             return; // can't do anything with complex order by's
@@ -632,7 +636,4 @@ class ColumnConfig
             }
         }
     }
-
 }
-
-

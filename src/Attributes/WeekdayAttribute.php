@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 
-
 /**
  * Attribute for selection the days of the week.
  *
@@ -30,16 +29,16 @@ class WeekdayAttribute extends NumberAttribute
     const WD_SATURDAY = 32;
     const WD_SUNDAY = 64;
 
-    var $m_mapping = array(
+    public $m_mapping = array(
         1 => 'monday',
         2 => 'tuesday',
         4 => 'wednesday',
         8 => 'thursday',
         16 => 'friday',
         32 => 'saturday',
-        64 => 'sunday'
+        64 => 'sunday',
     );
-    var $m_extra = array();
+    public $m_extra = array();
 
     /**
      * Constructor.
@@ -51,9 +50,8 @@ class WeekdayAttribute extends NumberAttribute
      *                           these options will be numbered from 2^7 (128) to 2^x.
      * @param int $flags Flags for the attribute. Only used if no set in previous param.
      */
-    function __construct($name, $extraOrFlags = 0, $flags = 0)
+    public function __construct($name, $extraOrFlags = 0, $flags = 0)
     {
-
         if (is_numeric($extraOrFlags)) {
             $flags = $extraOrFlags;
         } elseif (is_array($extraOrFlags)) {
@@ -74,7 +72,7 @@ class WeekdayAttribute extends NumberAttribute
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         if (!is_array($postvars) || !is_array($postvars[$this->fieldName()])) {
             return 0;
@@ -83,15 +81,14 @@ class WeekdayAttribute extends NumberAttribute
         }
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $result = '';
 
-        $name = $fieldprefix . $this->fieldName();
+        $name = $fieldprefix.$this->fieldName();
         $value = (int)$record[$this->fieldName()];
 
-        $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;'
-            : '<br>';
+        $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;' : '<br>';
 
         $max = 7 + count($this->m_extra);
         for ($i = 1; $i <= $max; $i++) {
@@ -111,8 +108,7 @@ class WeekdayAttribute extends NumberAttribute
 
             $checked = Tools::hasFlag($value, $day) ? ' checked' : '';
 
-            $result .= '<span title="' . $fullWeekday . '"><input type="checkbox" id="' . $name . '" name="' . $name . '[' . $i . ']" ' . $this->getCSSClassAttribute("atkcheckbox") . ' value="' . $day . '" ' . $checked . '> ' . $weekday . '</span>' . ($i < $max
-                    ? $separator : '');
+            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$name.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute("atkcheckbox").' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max ? $separator : '');
         }
 
         return $result;
@@ -131,7 +127,7 @@ class WeekdayAttribute extends NumberAttribute
      *                     between the two display modes.
      * @return String HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $result = '';
         $value = (int)$record[$this->fieldName()];
@@ -151,7 +147,7 @@ class WeekdayAttribute extends NumberAttribute
                     $weekday = $this->m_extra[$i - 8];
                 }
 
-                $result .= (empty($result) ? '' : ($mode == 'list' ? ', ' : '<br>')) . $weekday;
+                $result .= (empty($result) ? '' : ($mode == 'list' ? ', ' : '<br>')).$weekday;
             }
         }
 
@@ -161,6 +157,4 @@ class WeekdayAttribute extends NumberAttribute
             return $result;
         }
     }
-
 }
-

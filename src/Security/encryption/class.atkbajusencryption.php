@@ -21,7 +21,7 @@ class BajusEncryption extends Encryption
      * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
-    function encrypt($input, $key)
+    public function encrypt($input, $key)
     {
         $key = md5($key);
 
@@ -44,7 +44,7 @@ class BajusEncryption extends Encryption
      * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
-    function decrypt($input, $key)
+    public function decrypt($input, $key)
     {
         $key = md5($key);
 
@@ -67,7 +67,7 @@ class BajusEncryption extends Encryption
      * @param string $pass The password to decrypt de key
      * @return string      The decrypted key
      */
-    function decryptKey($key, $pass)
+    public function decryptKey($key, $pass)
     {
         return $this->decrypt($key, $pass);
     }
@@ -78,11 +78,8 @@ class BajusEncryption extends Encryption
      * @param string $pass The password to encrypt de key
      * @return string      The encrypted key
      */
-    function encryptKey($key, $pass)
+    public function encryptKey($key, $pass)
     {
         return $this->encrypt($key, $pass);
     }
-
 }
-
-

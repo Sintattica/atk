@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
-
 /**
  * The data grid no records found message. Can be used to render a
  * simple message underneath the grid stating there are no records
@@ -35,6 +34,4 @@ class DataGridNoRecordsFound extends DataGridComponent
             }
         }
     }
-
 }
-

@@ -31,7 +31,7 @@ class FileExport
      * @param string $ext Extension of the file
      * @param string $compression Compression method (bzip / gzip)
      */
-    function export($data, $fileName, $type, $ext = "", $compression = "")
+    public function export($data, $fileName, $type, $ext = "", $compression = "")
     {
         ob_end_clean();
         if ($compression == "bzip") {
@@ -53,13 +53,13 @@ class FileExport
             $mime_type = 'application/octet-stream';
         }
 
-        header('Content-Type: ' . $mime_type);
-        header('Content-Disposition:  filename="' . $fileName . '.' . $ext . '"');
+        header('Content-Type: '.$mime_type);
+        header('Content-Disposition:  filename="'.$fileName.'.'.$ext.'"');
 
         // Fix for downloading (Office) documents using an SSL connection in
         // combination with MSIE.
-        if (($_SERVER["SERVER_PORT"] == "443" || Tools::atkArrayNvl($_SERVER,
-                    'HTTP_X_FORWARDED_PROTO') == "https") && eregi("msie", $_SERVER["HTTP_USER_AGENT"])
+        if (($_SERVER["SERVER_PORT"] == "443" || Tools::atkArrayNvl($_SERVER, 'HTTP_X_FORWARDED_PROTO') == "https") && eregi("msie",
+                $_SERVER["HTTP_USER_AGENT"])
         ) {
             header('Pragma: public');
         } else {
@@ -95,7 +95,4 @@ class FileExport
 
         exit;
     }
-
 }
-
-

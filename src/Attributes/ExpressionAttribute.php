@@ -1,7 +1,7 @@
 <?php namespace Sintattica\Atk\Attributes;
+
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
-
 
 /**
  * With the atkExpressionAttribute class you can select arbitrary SQL expressions
@@ -13,8 +13,8 @@ use Sintattica\Atk\Db\Query;
  */
 class ExpressionAttribute extends Attribute
 {
-    var $m_searchType = "string";
-    var $m_expression;
+    public $m_searchType = "string";
+    public $m_expression;
 
     /**
      * Constructor.
@@ -25,7 +25,7 @@ class ExpressionAttribute extends Attribute
      *                                   only search types "string", "number" and "date" are supported.
      * @param int $flags The flags for this attribute.
      */
-    function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
+    public function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
     {
         if (is_numeric($searchTypeOrFlags)) {
             $flags = $searchTypeOrFlags;
@@ -40,13 +40,13 @@ class ExpressionAttribute extends Attribute
         }
     }
 
-    function storageType($mode = '')
+    public function storageType($mode = '')
     {
         return self::NOSTORE;
     }
 
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         $expression = str_replace("[table]", $tablename, $this->m_expression);
         $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);
@@ -61,7 +61,7 @@ class ExpressionAttribute extends Attribute
      * @param string $direction Sorting direction (ASC or DESC)
      * @return string order by statement
      */
-    function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
@@ -85,7 +85,7 @@ class ExpressionAttribute extends Attribute
      *
      * @param array $type the search type (string, number or date)
      */
-    function setSearchType($type)
+    public function setSearchType($type)
     {
         $this->m_searchType = $type;
     }
@@ -95,7 +95,7 @@ class ExpressionAttribute extends Attribute
      *
      * @return string the search type (string, number or date)
      */
-    function getSearchType()
+    public function getSearchType()
     {
         return $this->m_searchType;
     }
@@ -106,7 +106,7 @@ class ExpressionAttribute extends Attribute
      *
      * @return string field type (empty string)
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "";
     }
@@ -116,7 +116,7 @@ class ExpressionAttribute extends Attribute
      *
      * @return array list of search modes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         if ($this->getSearchType() == "number") {
             return NumberAttribute::getSearchModes();
@@ -152,6 +152,7 @@ class ExpressionAttribute extends Attribute
             if ($this->getSearchType() == "date") {
                 $attr = new DateAttribute($this->fieldName());
                 $attr->m_searchsize = 10;
+
                 return $attr->search($record, $extended, $fieldprefix);
             } else {
                 return parent::search($record, $extended, $fieldprefix);
@@ -171,7 +172,7 @@ class ExpressionAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // If we are accidentally mistaken for a relation and passed an array
         // we only take our own attribute value from the array
@@ -179,10 +180,11 @@ class ExpressionAttribute extends Attribute
             $searchmode = $this->m_searchmode;
         }
 
-        $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
+        $expression = "(".str_replace("[table]", $table, $this->m_expression).")";
 
         if ($this->getSearchType() == "date") {
             $attr = new DateAttribute($this->fieldName());
+
             return $attr->getSearchCondition($query, $table, $value, $searchmode, $expression);
         }
 
@@ -202,7 +204,7 @@ class ExpressionAttribute extends Attribute
                     }
                 }
             }
-            $func = $searchmode . "Condition";
+            $func = $searchmode."Condition";
             if (method_exists($query, $func) && $value !== "" && $value !== null) {
                 return $query->$func($expression, $this->escapeSQL($value));
             } else {

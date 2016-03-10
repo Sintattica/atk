@@ -123,5 +123,5 @@ abstract class DataGridComponent
      *
      * @return string component HTML
      */
-    public abstract function render();
+    abstract public function render();
 }

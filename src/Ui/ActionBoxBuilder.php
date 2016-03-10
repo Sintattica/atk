@@ -62,7 +62,7 @@ class ActionBoxBuilder
         $this->m_pageBuilder = $pageBuilder;
         $this->m_params = $pageBuilder->getNode()->getDefaultActionParams(false);
 
-        $this->formStart('<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '" method="post" onsubmit="return globalSubmit(this,true)">');
+        $this->formStart('<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'" method="post" onsubmit="return globalSubmit(this,true)">');
     }
 
     /**
@@ -75,6 +75,7 @@ class ActionBoxBuilder
     public function title($title)
     {
         $this->m_title = $title;
+
         return $this;
     }
 
@@ -88,6 +89,7 @@ class ActionBoxBuilder
     public function formStart($formStart)
     {
         $this->m_params['formstart'] = $formStart;
+
         return $this;
     }
 
@@ -105,6 +107,7 @@ class ActionBoxBuilder
     public function sessionStatus($status)
     {
         $this->m_sessionStatus = $status;
+
         return $this;
     }
 
@@ -118,6 +121,7 @@ class ActionBoxBuilder
     public function formEnd($formEnd)
     {
         $this->m_params['formend'] = $formEnd;
+
         return $this;
     }
 
@@ -131,6 +135,7 @@ class ActionBoxBuilder
     public function template($template)
     {
         $this->m_template = $template;
+
         return $this;
     }
 
@@ -144,6 +149,7 @@ class ActionBoxBuilder
     public function content($content)
     {
         $this->m_params['content'] = $content;
+
         return $this;
     }
 
@@ -157,6 +163,7 @@ class ActionBoxBuilder
     public function buttons($buttons)
     {
         $this->m_params['buttons'] = $buttons;
+
         return $this;
     }
 
@@ -169,13 +176,11 @@ class ActionBoxBuilder
     {
         if ($this->m_sessionStatus !== null) {
             $sm = SessionManager::getInstance();
-            $this->m_params['formend'] = $sm->formState($this->m_sessionStatus) .
-                $this->m_params['formend'];
+            $this->m_params['formend'] = $sm->formState($this->m_sessionStatus).$this->m_params['formend'];
         }
 
         $this->m_pageBuilder->actionBox($this->m_params, $this->m_title, $this->m_template);
 
         return $this->m_pageBuilder;
     }
-
 }

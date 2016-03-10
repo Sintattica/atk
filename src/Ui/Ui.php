@@ -19,13 +19,13 @@ class Ui
      * @access private
      * @var SmartyProvider
      */
-    var $m_smarty = null;
+    public $m_smarty = null;
 
 
     /**
      * Ui constructor, initialises Smarty and Theme instance
      */
-    function __construct()
+    public function __construct()
     {
         $this->m_smarty = SmartyProvider::getInstance();
     }
@@ -35,7 +35,7 @@ class Ui
      *
      * @return Ui
      */
-    static public function &getInstance()
+    public static function &getInstance()
     {
         static $s_instance = null;
 
@@ -55,7 +55,7 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
      */
-    function renderAction($action, $vars, $module = "")
+    public function renderAction($action, $vars, $module = "")
     {
         return $this->render("action_$action.tpl", $vars, $module);
     }
@@ -67,7 +67,7 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      * @return string rendered list
      */
-    function renderList($action = '', $vars, $module = "")
+    public function renderList($action = '', $vars, $module = "")
     {
         return $this->render("list.tpl", $vars, $module);
     }
@@ -86,11 +86,12 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      * @return string rendered box
      */
-    function renderBox($vars, $name = "", $module = "")
+    public function renderBox($vars, $name = "", $module = "")
     {
         if ($name) {
-            return $this->render($name . ".tpl", $vars);
+            return $this->render($name.".tpl", $vars);
         }
+
         return $this->render("box.tpl", $vars, $module);
     }
 
@@ -101,10 +102,11 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      * @return String the rendered template
      */
-    function renderTabs($vars, $module = "")
+    public function renderTabs($vars, $module = "")
     {
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/tools.js");
+
         return $this->render("tabs.tpl", $vars, $module);
     }
 
@@ -123,13 +125,11 @@ class Ui
      */
     public function render($name, $vars = array(), $module = "")
     {
-        $path = Config::getGlobal('template_dir') . $name;
+        $path = Config::getGlobal('template_dir').$name;
         $result = $this->renderSmarty($path, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
-            $result = "\n<!-- START [{$path}] -->\n" .
-                $result .
-                "\n<!-- END [{$path}] -->\n";
+            $result = "\n<!-- START [{$path}] -->\n".$result."\n<!-- END [{$path}] -->\n";
         }
 
         return $result;
@@ -150,6 +150,7 @@ class Ui
 
         $this->m_smarty->assign($vars);
         $res = $this->m_smarty->fetch($path);
+
         return $res;
     }
 
@@ -164,13 +165,14 @@ class Ui
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function title($module, $nodetype, $action = null, $actiononly = false)
+    public function title($module, $nodetype, $action = null, $actiononly = false)
     {
         if ($module == null || $nodetype == null) {
             return "";
         }
         $atk = Atk::getInstance();
-        return $this->nodeTitle($atk->atkGetNode($module . '.' . $nodetype), $action, $actiononly);
+
+        return $this->nodeTitle($atk->atkGetNode($module.'.'.$nodetype), $action, $actiononly);
     }
 
     /**
@@ -183,7 +185,7 @@ class Ui
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function nodeTitle($node, $action = null, $actiononly = false)
+    public function nodeTitle($node, $action = null, $actiononly = false)
     {
         if ($node == null) {
             return "";
@@ -194,9 +196,9 @@ class Ui
 
         if ($action != null) {
             $keys = array(
-                'title_' . $module . '_' . $nodetype . '_' . $action,
-                'title_' . $nodetype . '_' . $action,
-                'title_' . $action
+                'title_'.$module.'_'.$nodetype.'_'.$action,
+                'title_'.$nodetype.'_'.$action,
+                'title_'.$action,
             );
 
             $label = $node->text($keys, null, "", "", true);
@@ -206,24 +208,23 @@ class Ui
 
         if ($label == "") {
             $actionKeys = array(
-                'action_' . $module . '_' . $nodetype . '_' . $action,
-                'action_' . $nodetype . '_' . $action,
-                'action_' . $action,
-                $action
+                'action_'.$module.'_'.$nodetype.'_'.$action,
+                'action_'.$nodetype.'_'.$action,
+                'action_'.$action,
+                $action,
             );
 
             if ($actiononly) {
                 return $node->text($actionKeys);
             } else {
-                $keys = array('title_' . $module . '_' . $nodetype, 'title_' . $nodetype, $nodetype);
+                $keys = array('title_'.$module.'_'.$nodetype, 'title_'.$nodetype, $nodetype);
                 $label = $node->text($keys);
                 if ($action != null) {
-                    $label .= " - " . $node->text($actionKeys);
+                    $label .= " - ".$node->text($actionKeys);
                 }
             }
         }
+
         return $label;
     }
 }
-
-

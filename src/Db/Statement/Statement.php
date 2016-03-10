@@ -166,38 +166,38 @@ abstract class Statement implements IteratorAggregate
     /**
      * Prepares the statement for execution.
      */
-    protected abstract function _prepare();
+    abstract protected function _prepare();
 
     /**
      * Executes the statement using the given bind parameters.
      *
      * @param array $params bind parameters
      */
-    protected abstract function _execute($params);
+    abstract protected function _execute($params);
 
     /**
      * Fetches the next row from the result set.
      *
      * @return array next row from the result set (false if no other rows exist)
      */
-    protected abstract function _fetch();
+    abstract protected function _fetch();
 
     /**
      * Resets the statement so that it can be re-used again.
      */
-    protected abstract function _reset();
+    abstract protected function _reset();
 
     /**
      * Frees up all resources for this statement. The statement cannot be
      * re-used anymore.
      */
-    protected abstract function _close();
+    abstract protected function _close();
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE
      * or DELETE query. Called immediately after Statement::_execute().
      */
-    protected abstract function _getAffectedRowCount();
+    abstract protected function _getAffectedRowCount();
 
     /**
      * Resets this statement so that it can be re-used again.
@@ -233,8 +233,7 @@ abstract class Statement implements IteratorAggregate
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException("Statement has not been executed yet.", StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         if ($this->m_position !== false) {
@@ -253,8 +252,7 @@ abstract class Statement implements IteratorAggregate
     {
         foreach ($this->_getBindPositions() as $position => $param) {
             if (!array_key_exists($param, $params)) {
-                throw new StatementException("Missing bind parameter " . (!is_numeric($param)
-                        ? ':' : '') . $param . ".", StatementException::MISSING_BIND_PARAMETER);
+                throw new StatementException("Missing bind parameter ".(!is_numeric($param) ? ':' : '').$param.".", StatementException::MISSING_BIND_PARAMETER);
             }
         }
     }
@@ -282,15 +280,13 @@ abstract class Statement implements IteratorAggregate
     public function fetch()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException("Statement has not been executed yet.", StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $result = $this->_fetch();
 
         if ($result) {
-            $this->m_position = $this->m_position !== false ? $this->m_position + 1
-                : 0;
+            $this->m_position = $this->m_position !== false ? $this->m_position + 1 : 0;
         }
 
         return $result;
@@ -308,6 +304,7 @@ abstract class Statement implements IteratorAggregate
     public function getIterator()
     {
         $this->rewind();
+
         return new StatementIterator($this);
     }
 
@@ -476,11 +473,9 @@ abstract class Statement implements IteratorAggregate
     public function getAffectedRowCount()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException("Statement has not been executed yet.", StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         return $this->m_affectedRowCount;
     }
-
 }

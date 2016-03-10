@@ -42,8 +42,7 @@ class FileCache extends Cache
      */
     protected function setCachePath()
     {
-        $this->m_path = $this->getCacheConfig('path',
-                Config::getGlobal('atktempdir') . "cache/") . $this->getFileSafeNamespace() . '/';
+        $this->m_path = $this->getCacheConfig('path', Config::getGlobal('atktempdir')."cache/").$this->getFileSafeNamespace().'/';
         FileAttribute::mkdir($this->m_path);
     }
 
@@ -140,19 +139,20 @@ class FileCache extends Cache
             if ($serial) {
                 // use this instead of touch() because it supports stream
                 // contexts.
-                file_put_contents($file . '.serial', null, LOCK_EX, $this->m_context);
+                file_put_contents($file.'.serial', null, LOCK_EX, $this->m_context);
             } else {
                 // make sure no serial file is there from any previous entries
                 // with the same name
-                @unlink($file . '.serial', $this->m_context);
+                @unlink($file.'.serial', $this->m_context);
             }
 
             // create a .lifetime file to handle the lifetime of the cached item
-            file_put_contents($file . '.lifetime', $lifetime, LOCK_EX, $this->m_context);
+            file_put_contents($file.'.lifetime', $lifetime, LOCK_EX, $this->m_context);
 
             // unlock and close, then done.
             flock($fp, LOCK_UN);
             fclose($fp);
+
             return true;
         }
 
@@ -179,13 +179,14 @@ class FileCache extends Cache
         // make sure the file exists and is readable,
         if (file_exists($file) && is_readable($file)) {
             // get the lifetime of the entry
-            $lifetime = intval(file_get_contents($file . ".lifetime"));
+            $lifetime = intval(file_get_contents($file.".lifetime"));
 
             // has the file expired?
             $expire_time = filemtime($file) + $lifetime;
             if (time() > $expire_time) {
                 // expired, remove it
                 $this->delete($key);
+
                 return false;
             }
         } else {
@@ -210,7 +211,7 @@ class FileCache extends Cache
 
             // check for serializing while file is locked
             // to avoid race conditions
-            if (file_exists($file . '.serial')) {
+            if (file_exists($file.'.serial')) {
                 $data = unserialize($data);
             }
 
@@ -240,8 +241,9 @@ class FileCache extends Cache
         $file = $this->getRealKey($key);
 
         @unlink($file, $this->m_context);
-        @unlink($file . '.serial', $this->m_context);
-        @unlink($file . '.lifetime', $this->m_context);
+        @unlink($file.'.serial', $this->m_context);
+        @unlink($file.'.lifetime', $this->m_context);
+
         return true;
     }
 
@@ -264,8 +266,9 @@ class FileCache extends Cache
             if ($file[0] == '.') {
                 continue;
             }
-            @unlink($this->m_path . $file, $this->m_context);
+            @unlink($this->m_path.$file, $this->m_context);
         }
+
         return true;
     }
 
@@ -277,7 +280,7 @@ class FileCache extends Cache
      */
     public function getRealKey($key)
     {
-        return $this->m_path . md5($key);
+        return $this->m_path.md5($key);
     }
 
     /**
@@ -289,7 +292,4 @@ class FileCache extends Cache
     {
         return 'file';
     }
-
 }
-
-

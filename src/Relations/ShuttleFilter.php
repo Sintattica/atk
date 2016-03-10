@@ -20,7 +20,7 @@ abstract class ShuttleFilter extends ShuttleControl
      */
     protected function getChangeHandlerName($prefix)
     {
-        return $prefix . $this->getName() . "_onChange";
+        return $prefix.$this->getName()."_onChange";
     }
 
     /**
@@ -33,12 +33,12 @@ abstract class ShuttleFilter extends ShuttleControl
     {
         $mode = ($mode == "add") ? "add" : "edit";
         $url = addslashes(Tools::partial_url($this->m_shuttle->m_ownerInstance->atkNodeUri(), $mode,
-            "attribute." . $this->m_shuttle->getHtmlId($prefix) . ".filter", array("atkfieldprefix" => $prefix)));
+            "attribute.".$this->m_shuttle->getHtmlId($prefix).".filter", array("atkfieldprefix" => $prefix)));
 
         $page = $this->m_shuttle->m_ownerInstance->getPage();
-        $page->register_scriptcode("function " . $this->getChangeHandlerName($prefix) . "(el)
+        $page->register_scriptcode("function ".$this->getChangeHandlerName($prefix)."(el)
                                   {
-                                    shuttle_refresh('" . $url . "', '" . $this->m_shuttle->getHtmlId($prefix) . '[cselected][][' . $this->m_shuttle->getRemoteKey() . ']' . "', '" . $prefix . $this->m_shuttle->fieldName() . "[section]', '" . $this->m_section . "')
+                                    shuttle_refresh('".$url."', '".$this->m_shuttle->getHtmlId($prefix).'[cselected][]['.$this->m_shuttle->getRemoteKey().']'."', '".$prefix.$this->m_shuttle->fieldName()."[section]', '".$this->m_section."')
                                   }\n");
     }
 
@@ -54,6 +54,7 @@ abstract class ShuttleFilter extends ShuttleControl
     public function render($record, $mode, $prefix)
     {
         $this->registerChangeHandler($mode, $prefix);
+
         return '';
     }
 
@@ -79,7 +80,5 @@ abstract class ShuttleFilter extends ShuttleControl
      */
     public function getFilter(&$record)
     {
-
     }
-
 }

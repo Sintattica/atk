@@ -15,7 +15,7 @@ use Sintattica\Atk\Utils\FileExport;
  */
 class CustomRecordList extends RecordList
 {
-    var $m_exportcsv = true;
+    public $m_exportcsv = true;
     protected $m_mode;
 
     /**
@@ -39,7 +39,7 @@ class CustomRecordList extends RecordList
      * @param string $rfeplace String for replacing line feeds in recordset field values (null = do not replace)
      * @return string|null
      */
-    function render(
+    public function render(
         &$node,
         $recordset,
         $sol,
@@ -84,10 +84,9 @@ class CustomRecordList extends RecordList
             // are totalisable collumns.
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = $this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
-                        $suppressList));
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
-                    $output .= $sof . $this->eolreplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
+                    $output .= $sof.$this->eolreplace($p_attrib->label(), $rfeplace).$eof.$fsep;
 
                     // the totalisable check..
                     if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
@@ -109,13 +108,12 @@ class CustomRecordList extends RecordList
             $output .= $sol;
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = $this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
-                        $suppressList));
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
 
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     // An <attributename>_display function may be provided in a derived
                     // class to display an attribute.
-                    $funcname = $p_attrib->m_name . "_display";
+                    $funcname = $p_attrib->m_name."_display";
 
                     if (method_exists($this->m_node, $funcname)) {
                         $value = $this->eolreplace($this->m_node->$funcname($recordset[$i], $this->m_mode), $rfeplace);
@@ -127,7 +125,7 @@ class CustomRecordList extends RecordList
                     if (Tools::atkGetCharset() != "" && $decode) {
                         $value = Tools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
                     }
-                    $output .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
+                    $output .= $sof.($value == "" ? $empty : $value).$eof.$fsep;
 
                     // Calculate totals..
                     if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
@@ -151,14 +149,13 @@ class CustomRecordList extends RecordList
             // Third loop.. this time for the totals row.
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = $this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
-                        $suppressList));
+                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
                         $value = $this->eolreplace($p_attrib->display($totals[$attribname], $this->m_mode), $rfeplace);
-                        $totalRow .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
+                        $totalRow .= $sof.($value == "" ? $empty : $value).$eof.$fsep;
                     } else {
-                        $totalRow .= $sof . $empty . $eof . $fsep;
+                        $totalRow .= $sof.$empty.$eof.$fsep;
                     }
                 }
             }
@@ -175,7 +172,7 @@ class CustomRecordList extends RecordList
 
         // html requires table tags
         if ($type == "0") {
-            $output = '<table border="1" cellspacing="0" cellpadding="2">' . $output . "</table>";
+            $output = '<table border="1" cellspacing="0" cellpadding="2">'.$output."</table>";
         }
 
         Tools::atkdebug(Tools::atk_html_entity_decode($output));
@@ -213,6 +210,7 @@ class CustomRecordList extends RecordList
         if ($attribute->hasFlag(Attribute::AF_HIDE_LIST) && ($this->m_node->m_action === 'export' || $this->m_mode === 'export')) {
             return true;
         }
+
         return false;
     }
 
@@ -221,7 +219,7 @@ class CustomRecordList extends RecordList
      *
      * @param bool $export
      */
-    function setExportingCSVToFile($export = true)
+    public function setExportingCSVToFile($export = true)
     {
         if (is_bool($export)) {
             $this->m_exportcsv = $export;
@@ -234,7 +232,7 @@ class CustomRecordList extends RecordList
      * @param string $string The string to process
      * @param string $replacement The replacement string for '\r\n', '\n' and/or '\r'
      */
-    function eolreplace($string, $replacement)
+    public function eolreplace($string, $replacement)
     {
         if (!is_null($replacement)) {
             $string = str_replace("\r\n", $replacement, $string); // prevent double replacement in the next lines!
@@ -244,7 +242,4 @@ class CustomRecordList extends RecordList
 
         return $string;
     }
-
 }
-
-

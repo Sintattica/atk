@@ -16,9 +16,9 @@ use Sintattica\Atk\Core\Config;
  */
 class ShuttleRelation extends ManyToManyRelation
 {
-    var $m_maxlistwidth = null;
+    public $m_maxlistwidth = null;
 
-    var $m_filterBox = false;
+    public $m_filterBox = false;
 
     /**
      * Renders the onchange code on the page.
@@ -26,16 +26,16 @@ class ShuttleRelation extends ManyToManyRelation
      * @access private
      * @param string $fieldprefix The prefix to the field
      */
-    function _renderChangeHandler($fieldprefix, $elementNr = "")
+    public function _renderChangeHandler($fieldprefix, $elementNr = "")
     {
         if (count($this->m_onchangecode)) {
             $page = $this->m_ownerInstance->getPage();
             $page->register_scriptcode("
-    function " . $this->getHtmlId($fieldprefix) . "_onChange()
+    function ".$this->getHtmlId($fieldprefix)."_onChange()
     {
-      el = $('" . $this->getHtmlId($fieldprefix) . '[][' . $this->getRemoteKey() . ']' . "');
+      el = $('".$this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']'."');
       {$this->m_onchangehandler_init}
-      " . implode("\n      ", $this->m_onchangecode) . "
+      ".implode("\n      ", $this->m_onchangecode)."
     }\n");
         }
     }
@@ -46,7 +46,7 @@ class ShuttleRelation extends ManyToManyRelation
      *
      * @param mixed $value
      */
-    function setInitialValue($value)
+    public function setInitialValue($value)
     {
         if (!is_array($value)) {
             $this->m_initialValue = array($value);
@@ -61,11 +61,12 @@ class ShuttleRelation extends ManyToManyRelation
      *
      * @return mixed initial value for this attribute
      */
-    function initialValue()
+    public function initialValue()
     {
         if (!is_array($this->m_initialValue)) {
             return array();
         }
+
         return $this->m_initialValue;
     }
 
@@ -73,12 +74,12 @@ class ShuttleRelation extends ManyToManyRelation
     /**
      * Show an input field that can filter the option lists
      */
-    function showFilterBox()
+    public function showFilterBox()
     {
         $this->m_filterBox = true;
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $this->createDestination();
         $this->createLink();
@@ -92,7 +93,7 @@ class ShuttleRelation extends ManyToManyRelation
                 $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->getRemoteKey()]);
             } else {
                 $newselected = $this->m_destInstance->primaryKey(array(
-                    $this->m_destInstance->primaryKeyField() => $record[$this->m_name][$i][$this->getRemoteKey()]
+                    $this->m_destInstance->primaryKeyField() => $record[$this->m_name][$i][$this->getRemoteKey()],
                 ));
             }
             $selectedPk[] = $newselected;
@@ -106,7 +107,9 @@ class ShuttleRelation extends ManyToManyRelation
 
 
         for ($i = 0; $i < count($recordset); $i++) {
-            if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()], $this->initialValue()) && $mode == 'add')) {
+            if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()],
+                        $this->initialValue()) && $mode == 'add')
+            ) {
                 $right[] = $recordset[$i];
             } else {
                 $left[] = $recordset[$i];
@@ -120,11 +123,11 @@ class ShuttleRelation extends ManyToManyRelation
             $width = min($this->m_maxlistwidth, $width);
         }
 
-        $result = '<table border="0" class="'.$this->get_class_name().'"><tr><td>' . Tools::atktext('available', 'atk') . ':<br/>';
+        $result = '<table border="0" class="'.$this->get_class_name().'"><tr><td>'.Tools::atktext('available', 'atk').':<br/>';
 
-        $fieldname = $fieldprefix . $this->fieldName();
-        $leftname = $fieldname . "_sel";
-        $rightname = $fieldname . '[][' . $this->getRemoteKey() . ']';
+        $fieldname = $fieldprefix.$this->fieldName();
+        $leftname = $fieldname."_sel";
+        $rightname = $fieldname.'[]['.$this->getRemoteKey().']';
 
         if ($this->m_filterBox) {
             // fix for selecting with jQuery
@@ -132,8 +135,8 @@ class ShuttleRelation extends ManyToManyRelation
             $rightname_clean = str_replace('[', '\\\\[', $rightname);
             $rightname_clean = str_replace(']', '\\\\]', $rightname_clean);
 
-            $filterbox_left = $fieldname . 'left_filter_box';
-            $filterbox_right = $fieldname . 'right_filter_box';
+            $filterbox_left = $fieldname.'left_filter_box';
+            $filterbox_right = $fieldname.'right_filter_box';
         }
 
         $result .= $this->_renderSelect($leftname, $left, $width, $rightname, $fieldname, $filterbox_left);
@@ -146,23 +149,23 @@ class ShuttleRelation extends ManyToManyRelation
         }
 
         $result .= '<div class="shuttle-controls-single">';
-        $result .= '<button class="btn btn-default" onClick="shuttle_move(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-triangle-right"></i></button>';
-        $result .= '<button class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-triangle-left"></i></button>';
+        $result .= '<button class="btn btn-default" onClick="shuttle_move(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-right"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-left"></i></button>';
         $result .= '</div>';
 
         $result .= '<div class="shuttle-controls-multiple">';
-        $result .= '<button class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\'' . $leftname . '\', \'' . $rightname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-forward"></i></button>';
-        $result .= '<button class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\'' . $rightname . '\', \'' . $leftname . '\', \'' . $fieldname . '\');return false;"><i class="glyphicon glyphicon-backward"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-forward"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-backward"></i></button>';
         $result .= '</div>';
 
-        $result .= '</td><td>' . Tools::atktext('selected', 'atk') . ':<br/>';
+        $result .= '</td><td>'.Tools::atktext('selected', 'atk').':<br/>';
 
         $result .= $this->_renderSelect($rightname, $right, $width, $leftname, $fieldname, $filterbox_right);
 
         // on submit, we must select all items in the right selector, as unselected items
         // will not be posted.
         $page = &$this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkshuttlerelation.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/class.atkshuttlerelation.js");
 
         if ($this->m_filterBox) {
             // do the filtering
@@ -188,7 +191,7 @@ class ShuttleRelation extends ManyToManyRelation
                 });
             ");
         }
-        $page->register_submitscript("shuttle_selectAll('" . $rightname . "');");
+        $page->register_submitscript("shuttle_selectAll('".$rightname."');");
 
         $result .= '</table>';
 
@@ -206,18 +209,19 @@ class ShuttleRelation extends ManyToManyRelation
      * @param String $filterbox Filter box id (if present)
      * @return String piece of html code
      */
-    function _renderSelect($name, $recordset, $width, $opposite, $fieldname, $filterbox = false)
+    public function _renderSelect($name, $recordset, $width, $opposite, $fieldname, $filterbox = false)
     {
         $result = '';
         if ($filterbox) {
-            $result .= '<input id="' . $filterbox . '" class="form-control input-sm" placeholder="'. $this->text('filter') .'..."
-                style="width: ' . ($width-10) . 'px; margin-bottom: 5px; max-width: 400px !important;"><div style="clear:both"></div>';
+            $result .= '<input id="'.$filterbox.'" class="form-control input-sm" placeholder="'.$this->text('filter').'..."
+                style="width: '.($width - 10).'px; margin-bottom: 5px; max-width: 400px !important;"><div style="clear:both"></div>';
         }
-        $result .= '<select class="form-control shuttle_select" id="' . $name . '" name="' . $name . '" multiple size="10" style="width: ' . $width . 'px;" onDblClick="shuttle_move(\'' . $name . '\', \'' . $opposite . '\', \'' . $fieldname . '\')">';
+        $result .= '<select class="form-control shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" style="width: '.$width.'px;" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\', \''.$fieldname.'\')">';
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
-            $result .= '<option value="' . $recordset[$i][$this->m_destInstance->primaryKeyField()] . '">' . $this->m_destInstance->descriptor($recordset[$i]);
+            $result .= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'">'.$this->m_destInstance->descriptor($recordset[$i]);
         }
         $result .= '</select>';
+
         return $result;
     }
 
@@ -226,9 +230,8 @@ class ShuttleRelation extends ManyToManyRelation
      *
      * @param int $width
      */
-    function setMaxListWidth($width)
+    public function setMaxListWidth($width)
     {
         $this->m_maxlistwidth = $width;
     }
-
 }

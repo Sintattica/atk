@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 
-
 /**
  * The atkTimeAttribute class represents an attribute of a node
  * that has a selectbox to select from predefined time values.
@@ -24,10 +23,10 @@ class TimeAttribute extends Attribute
     const AF_TIME_DEFAULT_EMPTY = 2147483648; // Always use the empty value on new record
 
 
-    var $m_beginTime = 0;
-    var $m_endTime = 23;
-    var $m_steps = array("0", "30");
-    var $m_default = "";
+    public $m_beginTime = 0;
+    public $m_endTime = 23;
+    public $m_steps = array("0", "30");
+    public $m_default = "";
 
     /**
      * Constructor
@@ -41,7 +40,7 @@ class TimeAttribute extends Attribute
      * @param string $default Start Time (exp: 20:30)
      * @param int $flags Flags for this attribute
      */
-    function __construct(
+    public function __construct(
         $name,
         $beginTime = 0,
         $endTime = 23,
@@ -66,7 +65,7 @@ class TimeAttribute extends Attribute
      * @param int $interval The interval to convert
      * @return array The array with steps.
      */
-    function intervalToSteps($interval)
+    public function intervalToSteps($interval)
     {
         $steps = array();
         for ($i = 0; $i <= 59; $i++) {
@@ -74,6 +73,7 @@ class TimeAttribute extends Attribute
                 $steps[] = $i;
             }
         }
+
         return $steps;
     }
 
@@ -83,12 +83,12 @@ class TimeAttribute extends Attribute
      * @param string $time the time string
      * @return array with 3 fields (hours, minutes, seconds)
      */
-    static function timeArray($time)
+    public static function timeArray($time)
     {
         return array(
             "hours" => substr($time, 0, 2),
             "minutes" => substr($time, 2, 2),
-            "seconds" => substr($time, 4, 2)
+            "seconds" => substr($time, 4, 2),
         );
     }
 
@@ -98,7 +98,7 @@ class TimeAttribute extends Attribute
      * @param string $mode
      * @return string text string of $record
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value)) {
@@ -111,6 +111,7 @@ class TimeAttribute extends Attribute
         if ($value["seconds"] && $this->hasFlag(self::AF_TIME_SECONDS)) {
             $tmp_time .= sprintf(":%02d", $value["seconds"]);
         }
+
         return $tmp_time;
     }
 
@@ -125,7 +126,7 @@ class TimeAttribute extends Attribute
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         $result = $postvars[$this->fieldName()];
 
@@ -147,7 +148,7 @@ class TimeAttribute extends Attribute
                 $result = array(
                     'hours' => $result['hours'],
                     'minutes' => $result['minutes'],
-                    'seconds' => $result['seconds']
+                    'seconds' => $result['seconds'],
                 );
             }
         }
@@ -165,28 +166,26 @@ class TimeAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
-        if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
-            ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
-        ) {
+        if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") || ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))) {
             $this->m_default = date("H:i:s");
         }
         $default = explode(":", $this->m_default);
 
-        $id = $fieldprefix . $this->fieldName();
+        $id = $fieldprefix.$this->fieldName();
         $field = $record[$this->fieldName()];
 
         $onChangeCode = '';
         if (count($this->m_onchangecode)) {
             $this->_renderChangeHandler($fieldprefix);
-            $onChangeCode = ' onChange="' . $this->getHtmlId($fieldprefix) . '_onChange(this);"';
+            $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
 
         // set vars for hour / minutes dropdowns
-        $m_hourBox = '<select id="' . $id . '[hours]" name="' . $id . "[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
-        $m_minBox = '<select id="' . $id . '[minutes]" name="' . $id . "[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
-        $m_secBox = '<select id="' . $id . '[seconds]" name="' . $id . "[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$id."[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         // set default values for both boxes
         // depends upon atkaction
         // if add/admin, use $default param, else use time in $record
@@ -203,7 +202,7 @@ class TimeAttribute extends Attribute
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
         // generate hour dropdown
         if (!$this->hasflag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
-            $m_hourBox .= '<option value=""' . ($m_defHour === "" ? ' selected' : '') . '></option>';
+            $m_hourBox .= '<option value=""'.($m_defHour === "" ? ' selected' : '').'></option>';
         }
         for ($i = $this->m_beginTime; $i <= $this->m_endTime; $i++) {
             if ($m_defHour !== "" && ($i == $m_defHour)) {
@@ -216,7 +215,7 @@ class TimeAttribute extends Attribute
 
         // generate minute dropdown
         if (!$this->hasflag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
-            $m_minBox .= '<option value=""' . ($m_defMin === "" ? ' selected' : '') . '></option>';
+            $m_minBox .= '<option value=""'.($m_defMin === "" ? ' selected' : '').'></option>';
         }
 
         if ($this->hasFlag(self::AF_TIME_SECONDS)) {
@@ -243,7 +242,7 @@ class TimeAttribute extends Attribute
 
         // generate second dropdown
         if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
-            $m_secBox .= '<option value""' . ($m_defSec === "" ? ' selected' : '') . '></option>';
+            $m_secBox .= '<option value""'.($m_defSec === "" ? ' selected' : '').'></option>';
         }
         for ($i = 0; $i <= count($this->m_steps) - 1; $i++) {
             if ($i != 0) {
@@ -257,8 +256,7 @@ class TimeAttribute extends Attribute
                 $sel = "";
             }
 
-            $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n", $this->m_steps[$i], $sel,
-                $this->m_steps[$i]);
+            $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n", $this->m_steps[$i], $sel, $this->m_steps[$i]);
         }
         $size_secbox = count($this->m_steps);
 
@@ -267,38 +265,38 @@ class TimeAttribute extends Attribute
         $m_minBox .= "</select>";
         if ($this->hasFlag(self::AF_TIME_SECONDS)) {
             $m_secBox .= "</select>";
-            $m_secBox = ":" . $m_secBox;
+            $m_secBox = ":".$m_secBox;
         } else {
-            $m_secBox = "<input type=\"hidden\" id=\"" . $fieldprefix . $this->fieldName() . "[seconds]\" name=\"" . $fieldprefix . $this->fieldName() . "[seconds]\" value=\"00\">\n";
+            $m_secBox = "<input type=\"hidden\" id=\"".$fieldprefix.$this->fieldName()."[seconds]\" name=\"".$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
         }
 
         // assemble display version
         //return $m_hourBox . ":" . $m_minBox . $m_secBox;
-        $timeedit = $m_hourBox . ":" . $m_minBox . $m_secBox;
+        $timeedit = $m_hourBox.":".$m_minBox.$m_secBox;
 
         if ($this->hasFlag(self::AF_CLEAR_TOUCH_BUTTONS)) {
-            $tmp = $timeedit . "&nbsp;&nbsp;" .
-                ' <input type="button" onclick="
-         $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=0;
-         $(\'' . $this->getAttributeHtmlId() . '[minutes]\').selectedIndex=0;';
+            $tmp = $timeedit."&nbsp;&nbsp;".' <input type="button" onclick="
+         $(\''.$this->getAttributeHtmlId().'[hours]\').selectedIndex=0;
+         $(\''.$this->getAttributeHtmlId().'[minutes]\').selectedIndex=0;';
             if ($this->hasFlag(self::AF_TIME_SECONDS)) {
-                $tmp .= '$(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=0;';
+                $tmp .= '$(\''.$this->getAttributeHtmlId().'[seconds]\').selectedIndex=0;';
             }
             $tmp .= '" value="&empty;" class="atkDateAttribute button atkbutton">
       <input type="button" onclick="
          var d = new Date();
-         var mi = Math.round(d.getMinutes()/Math.round(60 / ' . $size_minbox . '));
-         $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=d.getHours()+1;
-         $(\'' . $this->getAttributeHtmlId() . '[minutes]\').selectedIndex=mi+1;';
+         var mi = Math.round(d.getMinutes()/Math.round(60 / '.$size_minbox.'));
+         $(\''.$this->getAttributeHtmlId().'[hours]\').selectedIndex=d.getHours()+1;
+         $(\''.$this->getAttributeHtmlId().'[minutes]\').selectedIndex=mi+1;';
             if ($this->hasFlag(self::AF_TIME_SECONDS)) {
-                $tmp .= 'var mi = Math.round(d.getSeconds()/Math.round(60 / ' . $size_secbox . '));
-            $(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=mi+1;';
+                $tmp .= 'var mi = Math.round(d.getSeconds()/Math.round(60 / '.$size_secbox.'));
+            $(\''.$this->getAttributeHtmlId().'[seconds]\').selectedIndex=mi+1;';
             }
             $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
-            return '<div class="form-inline">' . $tmp . '</div>' . $this->getSpinner();
+
+            return '<div class="form-inline">'.$tmp.'</div>'.$this->getSpinner();
         }
 
-        return '<div class="'.$this->get_class_name().' form-inline">' . $timeedit . '</div>' . $this->getSpinner();
+        return '<div class="'.$this->get_class_name().' form-inline">'.$timeedit.'</div>'.$this->getSpinner();
     }
 
     /**
@@ -308,7 +306,7 @@ class TimeAttribute extends Attribute
      * @param array $rec The record that holds this attribute's value.
      * @return String The database compatible value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         $hours = $rec[$this->fieldName()]["hours"];
         $minutes = $rec[$this->fieldName()]["minutes"];
@@ -318,7 +316,7 @@ class TimeAttribute extends Attribute
             return null;
         }
 
-        $result = sprintf("%02d", $hours) . ":" . sprintf("%02d", $minutes) . ":" . sprintf("%02d", $seconds);
+        $result = sprintf("%02d", $hours).":".sprintf("%02d", $minutes).":".sprintf("%02d", $seconds);
 
         return $result;
     }
@@ -328,7 +326,7 @@ class TimeAttribute extends Attribute
      * @param array $rec database record with date field
      * @return array with 3 fields (hours:minutes:seconds)
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         if (strlen($rec[$this->fieldName()]) == 0) {
             $retval = null;
@@ -336,9 +334,10 @@ class TimeAttribute extends Attribute
             $retval = array(
                 "hours" => substr($rec[$this->fieldName()], 0, 2),
                 "minutes" => substr($rec[$this->fieldName()], 3, 2),
-                "seconds" => substr($rec[$this->fieldName()], 6, 2)
+                "seconds" => substr($rec[$this->fieldName()], 6, 2),
             );
         }
+
         return $retval;
     }
 
@@ -365,7 +364,7 @@ class TimeAttribute extends Attribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -384,7 +383,7 @@ class TimeAttribute extends Attribute
      * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
-    function validate(&$rec, $mode)
+    public function validate(&$rec, $mode)
     {
         $value = $rec[$this->fieldName()];
         if ($this->hasFlag(self::AF_OBLIGATORY) && ($value["hours"] == -1 || $value['minutes'] == -1)) {
@@ -392,7 +391,7 @@ class TimeAttribute extends Attribute
         }
     }
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == "add" || $mode == "update") {
             $value = $this->value2db($record);
@@ -412,7 +411,7 @@ class TimeAttribute extends Attribute
      * @return String The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "time";
     }
@@ -431,10 +430,10 @@ class TimeAttribute extends Attribute
         $result = "";
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[' . $key . ']" ' . 'value="' . $value . '">';
+                $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$key.']" '.'value="'.$value.'">';
             }
         } else {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '" value="' . $field . '">';
+            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.$field.'">';
         }
 
         return $result;
@@ -454,7 +453,7 @@ class TimeAttribute extends Attribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // When we get $value as a substring, we autocomplete the time
         // So 9 becomes 09:00:00 and 11:15 becomes 11:15:00
@@ -462,7 +461,7 @@ class TimeAttribute extends Attribute
             $retval = array(
                 "hours" => substr($value, 0, 2),
                 "minutes" => substr($value, 3, 2),
-                "seconds" => substr($value, 6, 2)
+                "seconds" => substr($value, 6, 2),
             );
 
             if (!$retval["seconds"]) {
@@ -473,17 +472,18 @@ class TimeAttribute extends Attribute
             }
 
             if (strlen($retval["hours"]) == 1) {
-                $retval["hours"] = "0" . $retval["hours"];
+                $retval["hours"] = "0".$retval["hours"];
             }
             if (strlen($retval["minutes"]) == 1) {
-                $retval["minutes"] = "0" . $retval["minutes"];
+                $retval["minutes"] = "0".$retval["minutes"];
             }
             if (strlen($retval["seconds"]) == 1) {
-                $retval["seconds"] = "0" . $retval["seconds"];
+                $retval["seconds"] = "0".$retval["seconds"];
             }
 
             $value = implode(":", $retval);
         }
+
         return parent::getSearchCondition($query, $table, $value, $searchmode);
     }
 
@@ -499,7 +499,7 @@ class TimeAttribute extends Attribute
         $retval = array(
             "hours" => substr($stringvalue, 0, 2),
             "minutes" => substr($stringvalue, 3, 2),
-            "seconds" => substr($stringvalue, 6, 2)
+            "seconds" => substr($stringvalue, 6, 2),
         );
 
         if (!$retval["seconds"]) {
@@ -510,16 +510,15 @@ class TimeAttribute extends Attribute
         }
 
         if (strlen($retval["hours"]) == 1) {
-            $retval["hours"] = "0" . $retval["hours"];
+            $retval["hours"] = "0".$retval["hours"];
         }
         if (strlen($retval["minutes"]) == 1) {
-            $retval["minutes"] = "0" . $retval["minutes"];
+            $retval["minutes"] = "0".$retval["minutes"];
         }
         if (strlen($retval["seconds"]) == 1) {
-            $retval["seconds"] = "0" . $retval["seconds"];
+            $retval["seconds"] = "0".$retval["seconds"];
         }
+
         return $retval;
     }
-
 }
-

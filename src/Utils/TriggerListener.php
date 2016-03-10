@@ -1,19 +1,20 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2005 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 4362 $
- * $Id$
- */
+
+    /**
+     * This file is part of the ATK distribution on GitHub.
+     * Detailed copyright and licensing information can be found
+     * in the doc/COPYRIGHT and doc/LICENSE files which should be
+     * included in the distribution.
+     *
+     * @package atk
+     * @subpackage utils
+     *
+     * @copyright (c)2005 Ibuildings.nl BV
+     * @license http://www.achievo.org/atk/licensing ATK Open Source License
+     *
+     * @version $Revision: 4362 $
+     * $Id$
+     */
 
 /**
  * The atkTriggerListener base class for handling trigger events on records.
@@ -40,16 +41,15 @@ class TriggerListener
      * @access private
      * @var Node
      */
-    var $m_node = null;
+    public $m_node = null;
 
     /**
      * Base constructor.
      *
      * @return TriggerListener
      */
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
@@ -60,7 +60,7 @@ class TriggerListener
      *
      * @param Node $node The node to set as owner
      */
-    function setNode(&$node)
+    public function setNode(&$node)
     {
         $this->m_node = &$node;
     }
@@ -77,15 +77,14 @@ class TriggerListener
      * @param string $mode The mode (add/update)
      * @return boolean Result of operation.
      */
-    function notify($trigger, &$record, $mode = null)
+    public function notify($trigger, &$record, $mode = null)
     {
         if (method_exists($this, $trigger)) {
-            Tools::atkdebug("Call listener " . get_class($this) . " for trigger $trigger on " . $this->m_node->atkNodeUri() . " (" . $this->m_node->primaryKey($record) . ")");
+            Tools::atkdebug("Call listener ".get_class($this)." for trigger $trigger on ".$this->m_node->atkNodeUri()." (".$this->m_node->primaryKey($record).")");
+
             return $this->$trigger($record, $mode);
         } else {
             return true;
         }
     }
-
 }
-

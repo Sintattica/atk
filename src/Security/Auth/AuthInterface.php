@@ -41,7 +41,7 @@ class AuthInterface
      * username/password combination, this variable must be filled
      * with an explanation of the reason for the error.
      */
-    var $m_fatalError;
+    public $m_fatalError;
 
     /**
      * Authenticate a user.
@@ -62,7 +62,7 @@ class AuthInterface
      *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
-    function validateUser($user, $passwd)
+    public function validateUser($user, $passwd)
     {
         return SecurityManager::AUTH_ERROR; // dummy implementation. should not be used.
     }
@@ -72,14 +72,13 @@ class AuthInterface
      * and recreates a new session.
      * @param array $user The user data (as returned by atkGetUser()
      */
-    function logout($user)
+    public function logout($user)
     {
         session_destroy();
 
         $cookie_params = session_get_cookie_params();
         $cookiepath = Config::getGlobal("cookie_path");
-        $cookiedomain = (Config::getGlobal("cookiedomain") != "") ? Config::getGlobal("cookiedomain")
-            : null;
+        $cookiedomain = (Config::getGlobal("cookiedomain") != "") ? Config::getGlobal("cookiedomain") : null;
         session_set_cookie_params($cookie_params["lifetime"], $cookiepath, $cookiedomain);
         @session_start();
     }
@@ -93,7 +92,7 @@ class AuthInterface
      *                 can return Config::getGlobal("authentication_md5") to let the
      *                 application decide whether to use md5.
      */
-    function canMd5()
+    public function canMd5()
     {
         return Config::getGlobal("authentication_md5");
     }
@@ -117,7 +116,7 @@ class AuthInterface
      * @param string $user The login of the user to retrieve.
      * @return array Information about a user.
      */
-    function getUser($user)
+    public function getUser($user)
     {
         return array("name" => $user, "level" => -1); // dummy implementation, should not be used.
     }
@@ -132,7 +131,7 @@ class AuthInterface
      * @param string $privilege The privilege to check (atkaction).
      * @return boolean True if the user has the privilege, false if not.
      */
-    function allowed(&$securityMgr, $node, $privilege)
+    public function allowed(&$securityMgr, $node, $privilege)
     {
         // security disabled or user is superuser? (may do anything)
         if (($securityMgr->m_scheme == "none") || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"]) == "administrator")) {
@@ -185,7 +184,7 @@ class AuthInterface
      *
      * @return boolean true if access is granted, false if not.
      */
-    function attribAllowed(&$securityMgr, &$attr, $mode, $record = null)
+    public function attribAllowed(&$securityMgr, &$attr, $mode, $record = null)
     {
         $node = $attr->m_ownerInstance->atkNodeUri();
         $attribute = $attr->fieldName();
@@ -236,7 +235,7 @@ class AuthInterface
      * @return mixed One (int) or more (array) entities that are allowed to
      *               perform the action.
      */
-    function getEntity($node, $action)
+    public function getEntity($node, $action)
     {
         return array();
     }
@@ -250,7 +249,7 @@ class AuthInterface
      * @param string $mode "view" or "edit"
      * @return array
      */
-    function getAttribEntity($node, $attrib, $mode)
+    public function getAttribEntity($node, $attrib, $mode)
     {
         return array();
     }
@@ -266,7 +265,7 @@ class AuthInterface
      *               format: array of records, each record is an associative
      *               array with a userid and a username field.
      */
-    function getUserList()
+    public function getUserList()
     {
         return array();
     }
@@ -276,7 +275,7 @@ class AuthInterface
      *
      * @return int const
      */
-    function getPasswordPolicy()
+    public function getPasswordPolicy()
     {
         return self::PASSWORD_STATIC;
     }
@@ -288,11 +287,8 @@ class AuthInterface
      *
      * @return mixed string with password or false
      */
-    function getPassword($username)
+    public function getPassword($username)
     {
         return false;
     }
-
 }
-
-

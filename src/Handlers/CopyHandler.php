@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 
-
 /**
  * Handler for the 'tcopy' action of a node. It copies the selected
  * record, and then redirects back to the calling page.
@@ -19,7 +18,7 @@ class CopyHandler extends ActionHandler
      * The action handler.
      *
      */
-    function action_copy()
+    public function action_copy()
     {
         $this->invoke("nodeCopy");
     }
@@ -27,16 +26,16 @@ class CopyHandler extends ActionHandler
     /**
      * Copies a record, based on parameters passed in the url.
      */
-    function nodeCopy()
+    public function nodeCopy()
     {
         Tools::atkdebug("CopyHandler::nodeCopy()");
-        $recordset = $this->m_node->select($this->m_postvars['atkselector'])
-            ->mode('copy')->getAllRows();
+        $recordset = $this->m_node->select($this->m_postvars['atkselector'])->mode('copy')->getAllRows();
         $db = $this->m_node->getDb();
         if (count($recordset) > 0) {
             // allowed to copy record?
             if (!$this->allowed($recordset[0])) {
                 $this->renderAccessDeniedPage();
+
                 return;
             }
 
@@ -54,6 +53,4 @@ class CopyHandler extends ActionHandler
         }
         $this->m_node->redirect();
     }
-
 }
-

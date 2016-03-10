@@ -2,8 +2,8 @@
 
 use Sintattica\Atk\Core\Config;
 
-$_configAppRoot = __DIR__ . '/../../../../../../';
-$_configTempDir = $_configAppRoot . 'var/atktmp/';
+$_configAppRoot = __DIR__.'/../../../../../../';
+$_configTempDir = $_configAppRoot.'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
 
@@ -15,15 +15,15 @@ return [
 
     'application_dir' => $_configAppRoot,
 
-    'application_config_dir' => $_configAppRoot . $_configDirName . '/',
+    'application_config_dir' => $_configAppRoot.$_configDirName.'/',
 
-    'application_config' => $_configAppRoot . $_configDirName . '/atk.php',
+    'application_config' => $_configAppRoot.$_configDirName.'/atk.php',
 
     'atkroot' => "/",
 
     'assets_url' => $_configAssetsUrl,
 
-    'template_dir' => __DIR__ . '/../templates/',
+    'template_dir' => __DIR__.'/../templates/',
 
     /**
      * The location of a directory that is writable to ATK and that ATK can
@@ -73,7 +73,7 @@ return [
             'password' => Config::env('DB_PASSWORD', ''),
             'charset' => Config::env('DB_CHARSET', 'utf8'),
             'driver' => Config::env('DB_DRIVER', 'MySqli'),
-        ]
+        ],
     ],
 
     /**
@@ -189,7 +189,7 @@ return [
      *
      * @var String
      */
-    'logfile' => $_configAppRoot . "atk-security.log",
+    'logfile' => $_configAppRoot."atk-security.log",
 
     /**
      * Password Restrictions if required
@@ -559,7 +559,7 @@ return [
 
     /********************* TEMPLATE ENGINE CONFIGURATION ***********************/
 
-    'tplcompiledir' => $_configTempDir . "tpl/",
+    'tplcompiledir' => $_configTempDir."tpl/",
     'tplcompilecheck' => Config::env('TPL_COMPILE_CHECK', 1),
     'tplforcecompile' => Config::env('TPL_FORCE_COMPILE', 0),
 
@@ -781,7 +781,7 @@ return [
     /**
      * logo
      */
-    'login_logo' => $_configAssetsUrl . 'images/login_logo.jpg',
+    'login_logo' => $_configAssetsUrl.'images/login_logo.jpg',
 
     /**
      * icons

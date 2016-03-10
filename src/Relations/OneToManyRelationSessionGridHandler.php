@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Relations;
 
-
 use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\DataGrid\DataGrid;
 
@@ -43,6 +42,7 @@ class OneToManyRelationSessionGridHandler
             // is very sensitive with regards to it's numerical keys
             // being sequential
             sort($records);
+
             return $records;
         }
 
@@ -52,6 +52,7 @@ class OneToManyRelationSessionGridHandler
         for ($i = $offset, $j = 0; $i < $records_count && $j < $limit; $i++, $j++) {
             $ret[] = $records[$records_keys[$i]];
         }
+
         return $ret;
     }
 
@@ -74,5 +75,4 @@ class OneToManyRelationSessionGridHandler
     {
         return SessionStore::getInstance($this->_key)->getData();
     }
-
 }

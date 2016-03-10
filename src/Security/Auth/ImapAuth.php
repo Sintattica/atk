@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 
-
 /**
  * Driver for authentication using an imap server.
  *
@@ -37,7 +36,7 @@ class ImapAuth extends AuthInterface
      *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
-    function validateUser($user, $passwd)
+    public function validateUser($user, $passwd)
     {
         if ($user == "") {
             return SecurityManager::AUTH_UNVERIFIED;
@@ -46,21 +45,22 @@ class ImapAuth extends AuthInterface
 
 // if it's a virtual mail server add @<domain> to the username
         if (Config::getGlobal("auth_mail_login_type") == "vmailmgr") {
-            $user = $user . "@" . Config::getGlobal("auth_mail_suffix");
+            $user = $user."@".Config::getGlobal("auth_mail_suffix");
         }
 
         if (Config::getGlobal("auth_mail_server") == "") {
             $this->m_fatalError = Tools::atktext("auth_no_server");
+
             return SecurityManager::AUTH_ERROR;
         }
 
-        $mailauth = @imap_open("{" . Config::getGlobal("auth_mail_server")
-            . ":" . Config::getGlobal("auth_mail_port") . "}", $user, $passwd);
+        $mailauth = @imap_open("{".Config::getGlobal("auth_mail_server").":".Config::getGlobal("auth_mail_port")."}", $user, $passwd);
         // TODO/FIXME: return SecurityManager::AUTH_ERROR when connection fails..
         if ($mailauth == 0) {
             return SecurityManager::AUTH_MISMATCH;
         } else {
             imap_close($mailauth);
+
             return SecurityManager::AUTH_SUCCESS;
         }
     }
@@ -71,10 +71,8 @@ class ImapAuth extends AuthInterface
      *
      * @return boolean false
      */
-    function canMd5()
+    public function canMd5()
     {
         return false;
     }
-
 }
-

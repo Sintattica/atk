@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\Debugger;
 
-
 /**
  * Driver for MySQL databases > 4.1.3
  *
@@ -19,21 +18,21 @@ class MySqliDb extends Db
      * @var integer
      * @access protected
      */
-    var $m_insert_id;
+    public $m_insert_id;
 
     /* sequence table */
-    var $m_seq_table = "db_sequence";
+    public $m_seq_table = "db_sequence";
     // the field in the seq_table that contains the counter..
-    var $m_seq_field = "nextid";
+    public $m_seq_field = "nextid";
     // the field in the seq_table that countains the name of the sequence..
-    var $m_seq_namefield = "seq_name";
-    var $m_type = "mysql";
+    public $m_seq_namefield = "seq_name";
+    public $m_type = "mysql";
     protected $m_identifierQuoting = array('start' => '`', 'end' => '`', 'escape' => '`');
 
     /**
      * Base constructor
      */
-    function __construct()
+    public function __construct()
     {
         if (!function_exists('mysqli_connect')) {
             trigger_error('MySQLi not supported by your PHP version', E_USER_ERROR);
@@ -58,7 +57,7 @@ class MySqliDb extends Db
      * @param string $charset The charset to use
      * @return mixed Connection status
      */
-    function doConnect($host, $user, $password, $database, $port, $charset)
+    public function doConnect($host, $user, $password, $database, $port, $charset)
     {
         /* establish connection */
         if (empty($this->m_link_id)) {
@@ -68,6 +67,7 @@ class MySqliDb extends Db
             $this->m_link_id = @mysqli_connect($host, $user, $password, $database, $port);
             if (!$this->m_link_id) {
                 $this->halt($this->getErrorMsg());
+
                 return $this->_translateError();
             }
 
@@ -83,6 +83,7 @@ class MySqliDb extends Db
 
 
         /* return link identifier */
+
         return self::DB_SUCCESS;
     }
 
@@ -91,9 +92,10 @@ class MySqliDb extends Db
      * or a system error.
      * @return String "user" or "system"
      */
-    function getErrorType()
+    public function getErrorType()
     {
         $this->_setErrorVariables();
+
         return parent::getErrorType();
     }
 
@@ -102,7 +104,7 @@ class MySqliDb extends Db
      *
      * @return int Flag of the error
      */
-    function _translateError($errno = null)
+    public function _translateError($errno = null)
     {
         $this->_setErrorVariables();
         switch ($this->m_errno) {
@@ -118,8 +120,8 @@ class MySqliDb extends Db
             case 2005:
                 return self::DB_UNKNOWNHOST;
             default:
-                Tools::atkdebug("mysqldb::translateError -> MySQL Error: " .
-                    $this->m_errno . " -> " . $this->m_error);
+                Tools::atkdebug("mysqldb::translateError -> MySQL Error: ".$this->m_errno." -> ".$this->m_error);
+
                 return self::DB_UNKNOWNERROR;
         }
     }
@@ -128,7 +130,7 @@ class MySqliDb extends Db
      * Store MySQL errors in internal variables
      * @access private
      */
-    function _setErrorVariables()
+    public function _setErrorVariables()
     {
         if (!empty($this->m_link_id)) {
             $this->m_errno = mysqli_errno($this->m_link_id);
@@ -142,7 +144,7 @@ class MySqliDb extends Db
     /**
      * Disconnect from database
      */
-    function disconnect()
+    public function disconnect()
     {
         if ($this->m_link_id) {
             Tools::atkdebug("Disconnecting from database...");
@@ -156,12 +158,13 @@ class MySqliDb extends Db
      * @param string $string
      * @param bool $wildcard
      */
-    function escapeSQL($string, $wildcard = false)
+    public function escapeSQL($string, $wildcard = false)
     {
         if ($this->connect('r') === self::DB_SUCCESS) {
             if ($wildcard == true) {
                 $string = str_replace('%', '\%', $string);
             }
+
             return mysqli_real_escape_string($this->m_link_id, $string);
         }
 
@@ -174,7 +177,7 @@ class MySqliDb extends Db
      * @param int $offset offset in record list
      * @param int $limit maximum number of records
      */
-    function query($query, $offset = -1, $limit = -1)
+    public function query($query, $offset = -1, $limit = -1)
     {
         /* limit? */
         if ($offset >= 0 && $limit > 0) {
@@ -216,6 +219,7 @@ class MySqliDb extends Db
             /* invalid query */
             if (!$this->m_query_id) {
                 $this->halt("Invalid SQL: $query");
+
                 return false;
             }
 
@@ -229,6 +233,7 @@ class MySqliDb extends Db
 
             return true;
         }
+
         return false;
     }
 
@@ -273,7 +278,7 @@ class MySqliDb extends Db
      * @param string $query The original query that failed
      * @param string $querymode Kind of query - 'w' for write or 'r' for read
      */
-    function locktables_fallback_on_error($query, $querymode = 'w')
+    public function locktables_fallback_on_error($query, $querymode = 'w')
     {
         $error = mysqli_error($this->m_link_id);
 
@@ -303,11 +308,10 @@ class MySqliDb extends Db
      * Goto the next record in the result set
      * @return bool of going to the next record
      */
-    function next_record()
+    public function next_record()
     {
         /* goto next record */
-        $this->m_record = @mysqli_fetch_array($this->m_query_id,
-            MYSQLI_ASSOC | Config::getGlobal("mysqlfetchmode"));
+        $this->m_record = @mysqli_fetch_array($this->m_query_id, MYSQLI_ASSOC | Config::getGlobal("mysqlfetchmode"));
         $this->m_row++;
         $this->m_errno = mysqli_errno($this->m_link_id);
         $this->m_error = mysqli_error($this->m_link_id);
@@ -320,6 +324,7 @@ class MySqliDb extends Db
         }
 
         /* return result */
+
         return $result;
     }
 
@@ -329,13 +334,13 @@ class MySqliDb extends Db
      * at the beginning of the result set.
      * @param int $position the position
      */
-    function seek($position = 0)
+    public function seek($position = 0)
     {
         $result = @mysqli_data_seek($this->m_query_id, $position);
         if ($result) {
             $this->m_row = $position;
         } else {
-            $this->halt("seek($position) failed: result has " . $this->num_rows() . " rows");
+            $this->halt("seek($position) failed: result has ".$this->num_rows()." rows");
         }
     }
 
@@ -345,7 +350,7 @@ class MySqliDb extends Db
      * @param string $mode the type of locking
      * @return bool of locking
      */
-    function lock($table, $mode = "write")
+    public function lock($table, $mode = "write")
     {
         /* connect first */
         if ($this->connect('w') == self::DB_SUCCESS) {
@@ -362,8 +367,10 @@ class MySqliDb extends Db
             }
 
             /* return result */
+
             return $result;
         }
+
         return 0;
     }
 
@@ -371,7 +378,7 @@ class MySqliDb extends Db
      * Unlock table(s) in the database
      * @return bool result of unlocking
      */
-    function unlock()
+    public function unlock()
     {
         /* connect first */
         if ($this->connect('w') == self::DB_SUCCESS) {
@@ -383,8 +390,10 @@ class MySqliDb extends Db
             }
 
             /* return result */
+
             return $result;
         }
+
         return 0;
     }
 
@@ -393,7 +402,7 @@ class MySqliDb extends Db
      * affected by the query.
      * @return int affected rows
      */
-    function affected_rows()
+    public function affected_rows()
     {
         return $this->m_affected_rows;
     }
@@ -403,7 +412,7 @@ class MySqliDb extends Db
      * were affected by the query.
      * @return number of affected rows
      */
-    function num_rows()
+    public function num_rows()
     {
         return @mysqli_num_rows($this->m_query_id);
     }
@@ -413,7 +422,7 @@ class MySqliDb extends Db
      * where affected by the query.
      * @return int number of affected fields
      */
-    function num_fields()
+    public function num_fields()
     {
         return @mysqli_num_fields($this->m_query_id);
     }
@@ -424,48 +433,50 @@ class MySqliDb extends Db
      * @param string $sequence the sequence name
      * @return int the next sequence id
      */
-    function nextid($sequence)
+    public function nextid($sequence)
     {
         /* first connect */
         if ($this->connect('w') == self::DB_SUCCESS) {
             /* lock sequence table */
             if ($this->lock($this->m_seq_table)) {
                 /* get sequence number (locked) and increment */
-                $query = "SELECT " . $this->m_seq_field . " FROM " . $this->m_seq_table . " WHERE " . $this->m_seq_namefield . " = '$sequence'";
+                $query = "SELECT ".$this->m_seq_field." FROM ".$this->m_seq_table." WHERE ".$this->m_seq_namefield." = '$sequence'";
 
                 $id = $this->_query($query, true);
                 $result = @mysqli_fetch_array($id);
 
                 /* no current value, make one */
                 if (!is_array($result)) {
-                    $query = "INSERT INTO " . $this->m_seq_table . " VALUES('$sequence', 1)";
+                    $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";
                     $id = $this->_query($query, true);
                     $this->unlock();
+
                     return 1;
                 } /* enter next value */ else {
                     $nextid = $result[$this->m_seq_field] + 1;
-                    $query = "UPDATE " . $this->m_seq_table . " SET " . $this->m_seq_field . " = '$nextid' WHERE " . $this->m_seq_namefield . " = '$sequence'";
+                    $query = "UPDATE ".$this->m_seq_table." SET ".$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
 
                     $id = $this->_query($query, true);
                     $this->unlock();
+
                     return $nextid;
                 }
             }
+
             return 0;
         } /* cannot connect */ else {
-            $this->halt("cannot connect to " . $this->m_host);
+            $this->halt("cannot connect to ".$this->m_host);
         }
     }
 
     /**
      * Drop all database tables.
      */
-    function dropAll()
+    public function dropAll()
     {
         $tables = $this->table_names();
         foreach ($tables as $table) {
-
-            $this->query("DROP TABLE `" . $table['table_name'] . "`");
+            $this->query("DROP TABLE `".$table['table_name']."`");
         }
     }
 
@@ -476,18 +487,19 @@ class MySqliDb extends Db
      * @param string $table the table to find
      * @return boolean true if found, false if not found
      */
-    function tableExists($table)
+    public function tableExists($table)
     {
         $this->connect('r');
         if (strpos($table, '.') !== false) {
             list($dbname, $tablename) = explode(".", $table);
-            $id = $this->_query("SHOW TABLES FROM `" . $dbname . "` LIKE '" . $tablename . "'", true);
+            $id = $this->_query("SHOW TABLES FROM `".$dbname."` LIKE '".$tablename."'", true);
         } else {
-            $id = $this->_query("SHOW TABLES LIKE '" . $table . "'", true);
+            $id = $this->_query("SHOW TABLES LIKE '".$table."'", true);
         }
 
         $result = @mysqli_num_rows($id) > 0;
-        Tools::atkdebug("Table exists? $table => " . ($result ? 'yes' : 'no'));
+        Tools::atkdebug("Table exists? $table => ".($result ? 'yes' : 'no'));
+
         return $result;
     }
 
@@ -495,7 +507,7 @@ class MySqliDb extends Db
      * This function indicates what searchmodes the database supports.
      * @return array with search modes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         return array(
             "exact",
@@ -507,7 +519,7 @@ class MySqliDb extends Db
             "greaterthanequal",
             "lessthan",
             "lessthanequal",
-            "between"
+            "between",
         );
     }
 
@@ -525,12 +537,13 @@ class MySqliDb extends Db
      * @return String Piece of sql query that converts a date field to char
      *                for the current database
      */
-    function func_datetochar($fieldname, $format = "")
+    public function func_datetochar($fieldname, $format = "")
     {
         if ($format == "") {
             $format = Config::getGlobal("date_to_char", "Y-m-d");
         }
-        return "DATE_FORMAT($fieldname, '" . $this->vendorDateFormat($format) . "')";
+
+        return "DATE_FORMAT($fieldname, '".$this->vendorDateFormat($format)."')";
     }
 
     /**
@@ -543,10 +556,11 @@ class MySqliDb extends Db
      *                       php's date() function (http://www.php.net/date)
      * @return String Mysql specific format specifier.
      */
-    function vendorDateFormat($format)
+    public function vendorDateFormat($format)
     {
         $php_fmt = array("Y", "m", "d", "H", "h", "i", "s");
         $db_fmt = array("%Y", "%m", "%d", "%H", "%h", "%i", "%s");
+
         return str_replace($php_fmt, $db_fmt, $format);
     }
 
@@ -557,14 +571,14 @@ class MySqliDb extends Db
      * @param string $table table name
      * @return string table type
      */
-    function _getTableType($table)
+    public function _getTableType($table)
     {
         $this->connect('r');
-        $id = $this->_query("SHOW TABLE STATUS LIKE '" . $table . "'", true);
+        $id = $this->_query("SHOW TABLE STATUS LIKE '".$table."'", true);
         $status = @mysqli_fetch_array($id, MYSQLI_ASSOC);
-        $result = $status != null && isset($status['Engine']) ? $status['Engine']
-            : null;
+        $result = $status != null && isset($status['Engine']) ? $status['Engine'] : null;
         Tools::atkdebug("Table type? $table => $result");
+
         return $result;
     }
 
@@ -574,7 +588,7 @@ class MySqliDb extends Db
      * @param bool $full all meta data or not
      * @return array with meta data
      */
-    function metadata($table, $full = false)
+    public function metadata($table, $full = false)
     {
         /* first connect */
         if ($this->connect('r') == self::DB_SUCCESS) {
@@ -599,6 +613,7 @@ class MySqliDb extends Db
 
             if (!$id) {
                 Tools::atkdebug("Metadata query failed.");
+
                 return array();
             }
             $i = 0;
@@ -623,7 +638,7 @@ class MySqliDb extends Db
                         // for a mysql type DECIMAL, the length is returned as M+2 (signed) or M+1 (unsigned)
                         $offset = ($finfo->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 2;
                         $result[$i]["len"] -= ($offset + $finfo->decimals);
-                        $result[$i]["len"] .= "," . $finfo->decimals;
+                        $result[$i]["len"] .= ",".$finfo->decimals;
                         // TODO we should also save the "unsigned" flag in $result[$i]["flags"]
                     }
                 }
@@ -653,8 +668,10 @@ class MySqliDb extends Db
             mysqli_free_result($id);
 
             Tools::atkdebug("Metadata for $table complete");
+
             return $result;
         }
+
         return array();
     }
 
@@ -664,10 +681,10 @@ class MySqliDb extends Db
      * @param bool $includeViews Include views?
      * @return array with table names etc.
      */
-    function table_names($includeViews = true)
+    public function table_names($includeViews = true)
     {
         // query
-        $this->query("SHOW " . (!$includeViews ? "FULL" : "") . " TABLES");
+        $this->query("SHOW ".(!$includeViews ? "FULL" : "")." TABLES");
 
         // get table names
         $result = array();
@@ -691,12 +708,13 @@ class MySqliDb extends Db
      *
      * @return bool true
      */
-    function commit()
+    public function commit()
     {
         if ($this->m_link_id) {
             Tools::atkdebug("Commit");
             mysqli_commit($this->m_link_id);
         }
+
         return true;
     }
 
@@ -705,10 +723,10 @@ class MySqliDb extends Db
      *
      * @param string $name savepoint name
      */
-    function savepoint($name)
+    public function savepoint($name)
     {
-        Tools::atkdebug(get_class($this) . "::savepoint $name");
-        $this->query('SAVEPOINT ' . $name);
+        Tools::atkdebug(get_class($this)."::savepoint $name");
+        $this->query('SAVEPOINT '.$name);
     }
 
     /**
@@ -716,12 +734,12 @@ class MySqliDb extends Db
      *
      * @param string $savepoint The savepoint to rollback to
      */
-    function rollback($savepoint = "")
+    public function rollback($savepoint = "")
     {
         if ($this->m_link_id) {
             if (!empty($savepoint)) {
-                Tools::atkdebug(get_class($this) . "::rollback (rollback to savepoint $savepoint)");
-                $this->query('ROLLBACK TO SAVEPOINT ' . $savepoint);
+                Tools::atkdebug(get_class($this)."::rollback (rollback to savepoint $savepoint)");
+                $this->query('ROLLBACK TO SAVEPOINT '.$savepoint);
             } else {
                 Tools::atkdebug("Rollback");
                 mysqli_rollback($this->m_link_id);
@@ -736,9 +754,9 @@ class MySqliDb extends Db
      *
      * @param boolean $enable enable/disable foreign keys?
      */
-    function toggleForeignKeys($enable)
+    public function toggleForeignKeys($enable)
     {
-        $this->query("SET FOREIGN_KEY_CHECKS = " . ($enable ? 1 : 0));
+        $this->query("SET FOREIGN_KEY_CHECKS = ".($enable ? 1 : 0));
     }
 
     /**
@@ -750,7 +768,4 @@ class MySqliDb extends Db
     {
         return $this->m_insert_id;
     }
-
 }
-
-

@@ -31,11 +31,10 @@ class CompatStatement extends Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != Db::DB_SUCCESS) {
-            throw new StatementException("Cannot connect to database.",
-                StatementException::NO_DATABASE_CONNECTION);
+            throw new StatementException("Cannot connect to database.", StatementException::NO_DATABASE_CONNECTION);
         }
 
-        Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
+        Tools::atkdebug("Prepare query: ".$this->_getParsedQuery());
     }
 
     /**
@@ -48,16 +47,15 @@ class CompatStatement extends Statement
     protected function _bindParams($params)
     {
         $query = $this->_getParsedQuery();
-        Tools::atkdebug("Binding parameters for query: " . $this->_getParsedQuery());
+        Tools::atkdebug("Binding parameters for query: ".$this->_getParsedQuery());
 
         foreach (array_values($this->_getBindPositions()) as $i => $param) {
-            Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
         }
 
         foreach (array_reverse($this->_getBindPositions(), true) as $position => $param) {
-            $query = substr($query, 0, $position) .
-                ($params[$param] === null ? 'NULL' : "'" . $this->getDb()->escapeSQL($params[$param]) . "'") .
-                substr($query, $position + 1);
+            $query = substr($query, 0, $position).($params[$param] === null ? 'NULL' : "'".$this->getDb()->escapeSQL($params[$param])."'").substr($query,
+                    $position + 1);
         }
 
         return $query;
@@ -93,8 +91,7 @@ class CompatStatement extends Statement
 
         if (!$result) {
             $this->m_resource = null;
-            throw new StatementException("Cannot execute statement: " . $query,
-                StatementException::STATEMENT_ERROR);
+            throw new StatementException("Cannot execute statement: ".$query, StatementException::STATEMENT_ERROR);
         }
     }
 
@@ -162,5 +159,4 @@ class CompatStatement extends Statement
 
         return $result;
     }
-
 }

@@ -22,7 +22,7 @@ class GroupByFilter extends Filter
      * @access private
      * @var string groupbystmt
      */
-    var $m_groupbystmt;
+    public $m_groupbystmt;
 
     /**
      * constructor
@@ -31,17 +31,15 @@ class GroupByFilter extends Filter
      * @param string $groupbystmt
      * @param int $flags
      */
-    function __construct($name, $groupbystmt, $flags = 0)
+    public function __construct($name, $groupbystmt, $flags = 0)
     {
         $this->m_groupbystmt = $groupbystmt;
         parent::__construct($name, $flags);
     }
 
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         $query->addGroupBy($this->m_groupbystmt);
     }
-
 }
-

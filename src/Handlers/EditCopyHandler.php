@@ -18,7 +18,7 @@ class EditCopyHandler extends ActionHandler
     /**
      * The action method.
      */
-    function action_editcopy()
+    public function action_editcopy()
     {
         Tools::atkdebug("node::action_editcopy()");
 
@@ -26,6 +26,7 @@ class EditCopyHandler extends ActionHandler
         // allowed to editcopy record?
         if (!$this->allowed($record)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -38,8 +39,8 @@ class EditCopyHandler extends ActionHandler
             $db->commit();
             $this->clearCache();
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), "edit",
-                array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_REPLACE);
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), "edit", array("atkselector" => $this->m_node->primaryKey($record))),
+                SessionManager::SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }
@@ -59,8 +60,7 @@ class EditCopyHandler extends ActionHandler
             Tools::atkdebug("Geen records gevonden met selector: $selector");
             $this->m_node->redirect();
         }
+
         return null;
     }
-
 }
-

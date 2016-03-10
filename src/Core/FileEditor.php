@@ -6,7 +6,6 @@ use Sintattica\Atk\Attributes\TextAttribute;
 use Sintattica\Atk\Handlers\EditHandler;
 use Sintattica\Atk\Handlers\DeleteHandler;
 
-
 /**
  * File editing node.
  *
@@ -28,10 +27,10 @@ use Sintattica\Atk\Handlers\DeleteHandler;
  */
 class FileEditor extends Node
 {
-    var $m_dir;
-    var $m_basedir;
-    var $m_filefilter;
-    var $m_showdirs;
+    public $m_dir;
+    public $m_basedir;
+    public $m_filefilter;
+    public $m_showdirs;
 
     /**
      * Constructor
@@ -57,7 +56,7 @@ class FileEditor extends Node
      * @param int $flags The node flags. See Node for a list of possible
      *                   flags.
      */
-    function __construct($name, $dir = "", $filter = "", $flags = 0)
+    public function __construct($name, $dir = "", $filter = "", $flags = 0)
     {
         parent::__construct($name, $flags | Node::NF_ADD_LINK);
         $this->m_dir = $dir;
@@ -88,7 +87,7 @@ class FileEditor extends Node
      *
      * @param string $dir The name of the dir to change to
      */
-    function setDir($dir)
+    public function setDir($dir)
     {
         $this->m_dir = $dir;
     }
@@ -100,7 +99,7 @@ class FileEditor extends Node
      * @return array The array containing the directory and file names
      *               from the currently selected directory
      */
-    function count($selector)
+    public function count($selector)
     {
         $d = dir($this->m_dir);
         $arr = array();
@@ -108,6 +107,7 @@ class FileEditor extends Node
             $this->addFileEntry($entry, $arr);
         }
         $d->close();
+
         return count($arr);
     }
 
@@ -118,7 +118,7 @@ class FileEditor extends Node
      * @param array $arr The array containing the result of the
      *                   added item
      */
-    function addFileEntry($entry, &$arr)
+    public function addFileEntry($entry, &$arr)
     {
         // First we check if we are about to search and set a few things
         // if we are
@@ -131,13 +131,13 @@ class FileEditor extends Node
         }
 
         // list only regular files or directories
-        if (is_file($this->m_dir . $entry) && ($this->m_filefilter == "" || ereg($this->m_filefilter, $entry))) {
+        if (is_file($this->m_dir.$entry) && ($this->m_filefilter == "" || ereg($this->m_filefilter, $entry))) {
             if ($searching === true && (ereg($searchArray["filename"], $entry))) {
                 $arr[] = $entry;
             } elseif ($searching == false) {
                 $arr[] = $entry;
             }
-        } elseif (is_dir($this->m_dir . $entry)) {
+        } elseif (is_dir($this->m_dir.$entry)) {
             if (!($entry == '.' || $entry == 'CVS' || $entry == '.svn')) {
                 if (!($this->stripDir($this->m_basedir) == $this->stripDir($this->m_dir) && $entry == '..')) {
                     $arr[] = $entry;
@@ -153,19 +153,19 @@ class FileEditor extends Node
      * @param  array $actions Result array containing the options
      * @param  unknow $mraactions
      */
-    function recordActions($record, &$actions, &$mraactions)
+    public function recordActions($record, &$actions, &$mraactions)
     {
         $this->m_dir = $this->stripDir($this->m_dir);
-        if (is_dir($this->m_dir . "/" . $record["filename"])) {
-            $actions['view'] = Tools::dispatch_url($this->atkNodeUri(), "dirchange",
-                array('atkselector' => $this->m_dir . $record["filename"]));
+        if (is_dir($this->m_dir."/".$record["filename"])) {
+            $actions['view'] = Tools::dispatch_url($this->atkNodeUri(), "dirchange", array('atkselector' => $this->m_dir.$record["filename"]));
             unset($actions["edit"]);
             unset($actions["delete"]);
+
             return;
         }
 
         // Remove edit/delete actions when a file is not writeable.
-        if (!is_writeable($this->m_dir . "/" . $record["filename"])) {
+        if (!is_writeable($this->m_dir."/".$record["filename"])) {
             unset($actions["edit"]);
             unset($actions["delete"]);
         }
@@ -181,7 +181,7 @@ class FileEditor extends Node
      * @param mixed $limit
      * @return array
      */
-    function select($selector = "", $orderby = "", $limit = "")
+    public function select($selector = "", $orderby = "", $limit = "")
     {
         $res = array();
         SessionManager::getInstance()->stackVar('dirname', $this->m_dir);
@@ -199,7 +199,7 @@ class FileEditor extends Node
             if ($d->handle) {
                 $arr = array();
                 while (false !== ($entry = $d->read())) {
-                    if ($this->m_showdirs || !is_dir($d->path . DIRECTORY_SEPARATOR . $entry)) {
+                    if ($this->m_showdirs || !is_dir($d->path.DIRECTORY_SEPARATOR.$entry)) {
                         $this->addFileEntry($entry, $arr);
                     }
                 }
@@ -222,7 +222,7 @@ class FileEditor extends Node
                     }
                 }
             } else {
-                Tools::atkdebug("Dir " . $this->m_dir . " could not be read");
+                Tools::atkdebug("Dir ".$this->m_dir." could not be read");
             }
         } else {
             // file selected, read file.
@@ -235,13 +235,14 @@ class FileEditor extends Node
             // we must store original filename as primaryKey, for
             // atknode uses the value in some places.
             $record['atkprimkey'] = $this->primaryKey($record);
-            if (is_file($this->m_dir . $filename)) {
-                $record['filecontent'] = implode("", file($this->m_dir . $filename));
+            if (is_file($this->m_dir.$filename)) {
+                $record['filecontent'] = implode("", file($this->m_dir.$filename));
             } else {
                 Tools::atkdebug("File $filename not found");
             }
             $res[] = $record;
         }
+
         return $res;
     }
 
@@ -251,12 +252,12 @@ class FileEditor extends Node
      * @param array $rec Array that contains the identifier of the record
      * @param string $mode The mode we're in
      */
-    function validate(&$rec, $mode)
+    public function validate(&$rec, $mode)
     {
         if (!ereg($this->m_filefilter, $rec['filename'])) {
             Tools::triggerError($rec, "filename", "filename_invalid");
         } else {
-            if ($mode == "add" && file_exists($this->m_dir . $rec['filename'])) {
+            if ($mode == "add" && file_exists($this->m_dir.$rec['filename'])) {
                 Tools::triggerError($rec, "filename", "file_exists");
             }
         }
@@ -267,10 +268,9 @@ class FileEditor extends Node
      *
      * @return String The text containing the directory name
      */
-    function adminHeader()
+    public function adminHeader()
     {
-        return "<p><b>" . $this->text('current_dir') . ": " . substr_replace($this->m_dir, '', 0,
-            strlen($this->m_basedir)) . "</b></p>";
+        return "<p><b>".$this->text('current_dir').": ".substr_replace($this->m_dir, '', 0, strlen($this->m_basedir))."</b></p>";
     }
 
     /**
@@ -280,19 +280,21 @@ class FileEditor extends Node
      * @param array $record Array that contains the name of the new file
      * @return Boolean The result of the file addition
      */
-    function addDb($record)
+    public function addDb($record)
     {
         $sessmngr = SessionManager::getInstance();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
-        $fp = @fopen($this->m_dir . $record['filename'], "wb");
+        $fp = @fopen($this->m_dir.$record['filename'], "wb");
         if ($fp == null) {
-            Tools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
+            Tools::atkerror("Unable to open file ".$record['filename']." for writing. (Is directory '".$this->m_dir."' readable by webserver?");
+
             return false;
         } else {
             fwrite($fp, $record['filecontent']);
             fclose($fp);
-            Tools::atkdebug("Wrote " . $record['filename']);
+            Tools::atkdebug("Wrote ".$record['filename']);
         }
+
         return true;
     }
 
@@ -304,7 +306,7 @@ class FileEditor extends Node
      *                      is updated
      * @return Boolean The result of the file update
      */
-    function updateDb(&$record)
+    public function updateDb(&$record)
     {
         // The record that must be updated is indicated by 'atkorgkey'
         // (not by atkselector, since the primary key might have
@@ -316,23 +318,25 @@ class FileEditor extends Node
         if ($record['atkprimkey'] != "") {
             if ($record['atkprimkey'] != $this->primaryKey($record)) {
                 $decodedprimkey = Tools::decodeKeyValuePair($record['atkprimkey']);
-                $filename = $this->m_dir . $decodedprimkey["dummy.filename"];
+                $filename = $this->m_dir.$decodedprimkey["dummy.filename"];
 
                 unlink($filename);
                 Tools::atkdebug("Filename changed. Deleted original '$filename'.");
             }
-            $fp = @fopen($this->m_dir . $record['filename'], "wb");
+            $fp = @fopen($this->m_dir.$record['filename'], "wb");
             if ($fp == null) {
-                Tools::atkerror("Unable to open file " . $record['filename'] . " for writing. (Is directory '" . $this->m_dir . "' readable by webserver?");
+                Tools::atkerror("Unable to open file ".$record['filename']." for writing. (Is directory '".$this->m_dir."' readable by webserver?");
             } else {
                 fwrite($fp, $record['filecontent']);
                 fclose($fp);
-                Tools::atkdebug("Wrote " . $record['filename']);
+                Tools::atkdebug("Wrote ".$record['filename']);
                 $record['atkprimkey'] = $record['filename'];
             }
+
             return true;
         } else {
             Tools::atkdebug("NOT UPDATING! NO SELECTOR SET!");
+
             return false;
         }
     }
@@ -344,7 +348,7 @@ class FileEditor extends Node
      * @param string $selector The identifier of the file that should be deleted
      * @return boolean The result of the file deletion
      */
-    function deleteDb($selector)
+    public function deleteDb($selector)
     {
         $sessmngr = SessionManager::getInstance();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
@@ -355,11 +359,12 @@ class FileEditor extends Node
         Tools::atk_var_dump($filename, 'filename');
 
         if (strpos($filename, "..") === false) {
-            unlink($this->m_dir . $filename);
-            Tools::atkdebug("Deleted " . $this->m_dir . $filename);
+            unlink($this->m_dir.$filename);
+            Tools::atkdebug("Deleted ".$this->m_dir.$filename);
         } else {
             Tools::atkerror("Cannot unlink relative files. Possible hack attempt detected!");
         }
+
         return true;
     }
 
@@ -369,7 +374,7 @@ class FileEditor extends Node
      *
      * @param EditHandler $handler
      */
-    function action_edit(EditHandler $handler)
+    public function action_edit(EditHandler $handler)
     {
         $this->m_dir = SessionManager::getInstance()->stackVar('dirname');
         $handler->action_edit();
@@ -381,7 +386,7 @@ class FileEditor extends Node
      *
      * @param DeleteHandler $handler
      */
-    function action_delete(DeleteHandler $handler)
+    public function action_delete(DeleteHandler $handler)
     {
         $this->m_dir = SessionManager::getInstance()->stackVar('dirname');
         $handler->action_delete();
@@ -392,7 +397,7 @@ class FileEditor extends Node
      * and down directories
      *
      */
-    function action_dirchange()
+    public function action_dirchange()
     {
         $selectedDir = $this->stripDir($this->m_postvars['atkselector']);
         SessionManager::getInstance()->stackVar('dirname', $selectedDir);
@@ -407,18 +412,18 @@ class FileEditor extends Node
      * @param string $dirname Path of the dir to change to
      * @return String Stripped directory path
      */
-    function stripDir($dirname)
+    public function stripDir($dirname)
     {
         // normalizes the given string to a relative dir that should always start with the base directory
         if (strpos(realpath($dirname), realpath($this->m_basedir)) === 0) {
-            $resultdir = rtrim(str_replace(realpath($this->m_basedir), $this->m_basedir, realpath($dirname)),
-                    '/') . '/';
+            $resultdir = rtrim(str_replace(realpath($this->m_basedir), $this->m_basedir, realpath($dirname)), '/').'/';
             if ($resultdir == '' || !is_dir($resultdir)) {
-                $resultdir = rtrim($this->m_basedir, '/') . '/';
+                $resultdir = rtrim($this->m_basedir, '/').'/';
             }
         } else {
-            $resultdir = rtrim($this->m_basedir, '/') . '/';
+            $resultdir = rtrim($this->m_basedir, '/').'/';
         }
+
         return $resultdir;
     }
 
@@ -427,9 +432,8 @@ class FileEditor extends Node
      *
      * @param boolean $bool
      */
-    function showDirs($bool)
+    public function showDirs($bool)
     {
         $this->m_showdirs = (bool)$bool;
     }
-
 }

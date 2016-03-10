@@ -13,7 +13,7 @@ use Sintattica\Atk\Db\Db;
  * @package atk
  * @subpackage db.statement
  */
-class MySQLiStatement extends Statement
+class MySqliStatement extends Statement
 {
     /**
      * MySQLi statement.
@@ -46,11 +46,10 @@ class MySQLiStatement extends Statement
         }
 
         $conn = $this->getDb()->link_id();
-        Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
+        Tools::atkdebug("Prepare query: ".$this->_getParsedQuery());
         $this->m_stmt = $conn->prepare($this->_getParsedQuery());
         if (!$this->m_stmt || $conn->errno) {
-            throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).",
-                StatementException::PREPARE_STATEMENT_ERROR);
+            throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", StatementException::PREPARE_STATEMENT_ERROR);
         }
     }
 
@@ -64,8 +63,7 @@ class MySQLiStatement extends Statement
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException("Statement has not been executed yet.", StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $this->m_stmt->data_seek(0);
@@ -86,7 +84,7 @@ class MySQLiStatement extends Statement
         $args = array();
         $args[] = str_repeat('s', count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
-            Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
             $args[] = &$params[$param];
             $i++;
         }
@@ -106,8 +104,7 @@ class MySQLiStatement extends Statement
 
         $metadata = $this->m_stmt->result_metadata();
         if ($this->m_stmt->errno) {
-            throw new StatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).",
-                StatementException::OTHER_ERROR);
+            throw new StatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).", StatementException::OTHER_ERROR);
         }
 
         if (!$metadata) {
@@ -159,8 +156,7 @@ class MySQLiStatement extends Statement
         $this->_bindParams($params);
 
         if (!$this->m_stmt->execute()) {
-            throw new StatementException("Cannot execute statement: {$this->m_stmt->error}",
-                StatementException::STATEMENT_ERROR);
+            throw new StatementException("Cannot execute statement: {$this->m_stmt->error}", StatementException::STATEMENT_ERROR);
         }
 
         $this->m_insertId = $this->getDb()->link_id()->insert_id;
@@ -189,6 +185,7 @@ class MySQLiStatement extends Statement
         }
 
         $row = array_combine($this->m_columnNames, $values);
+
         return $row;
     }
 
@@ -228,5 +225,4 @@ class MySQLiStatement extends Statement
     {
         return $this->m_insertId;
     }
-
 }

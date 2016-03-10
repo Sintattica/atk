@@ -6,7 +6,7 @@
 class Config
 {
 
-    static $s_globals = [];
+    public static $s_globals = [];
 
     /**
      * Load global configuration variables.
@@ -15,7 +15,7 @@ class Config
     {
 
         // Include the defaults
-        $defaultConfig = self::getConfigValues(__DIR__ . '/../Resources/config/atk.php');
+        $defaultConfig = self::getConfigValues(__DIR__.'/../Resources/config/atk.php');
         foreach ($defaultConfig as $key => $value) {
             self::$s_globals[$key] = $value;
         }
@@ -27,21 +27,25 @@ class Config
         }
     }
 
-    public static function env($key, $default = false) {
+    public static function env($key, $default = false)
+    {
         $value = getenv($key);
-        if($value === false && $default){
+        if ($value === false && $default) {
             return $default;
         }
+
         return $value;
     }
 
-    public static function getConfigValues($file) {
-        if(is_file($file)){
+    public static function getConfigValues($file)
+    {
+        if (is_file($file)) {
             $values = include($file);
-            if(is_array($values)){
+            if (is_array($values)) {
                 return $values;
             }
         }
+
         return [];
     }
 
@@ -97,7 +101,7 @@ class Config
         }
 
         if (!isset($s_configs[$section])) {
-            $config = self::getConfigValues(self::getGlobal('application_config_dir') . $section . '.php');
+            $config = self::getConfigValues(self::getGlobal('application_config_dir').$section.'.php');
             if (!is_array($config)) {
                 $config = array();
             }
@@ -121,16 +125,17 @@ class Config
      */
     public static function getConfigForSection($section)
     {
-        $config = self::getConfigValues(self::getGlobal('application_config_dir') . $section . '.php');
+        $config = self::getConfigValues(self::getGlobal('application_config_dir').$section.'.php');
 
         $app = Atk::getInstance();
         if ($app->isModule($section)) {
-            $dir = $app->moduleDir($section) . self::getGlobal('configdirname') . '/';
+            $dir = $app->moduleDir($section).self::getGlobal('configdirname').'/';
             if (is_dir($dir)) {
-                $module_configs = self::getConfigValues($dir . $section . '.php');
+                $module_configs = self::getConfigValues($dir.$section.'.php');
                 $config = array_merge($module_configs, $config);
             }
         }
+
         return $config;
     }
 
@@ -152,7 +157,7 @@ class Config
      * @param string $mode The action to restrict ("edit" or "view")
      * @param mixed $entity The level/group that has access to the attribute.
      */
-    function attribRestrict($node, $attrib, $mode, $entity)
+    public function attribRestrict($node, $attrib, $mode, $entity)
     {
         self::$s_globals["attribrestrict"][$node][$attrib][$mode] = $entity;
     }
@@ -168,9 +173,9 @@ class Config
      * @param mixed $entity The entity (securitylevel or group) to which the
      *                      privilege is granted.
      */
-    function grant($node, $action, $entity)
+    public function grant($node, $action, $entity)
     {
-        self::$s_globals["access"][$node][] = Array($action => $entity);
+        self::$s_globals["access"][$node][] = array($action => $entity);
     }
 
     /**
@@ -190,6 +195,6 @@ class Config
      */
     public static function addUser($name, $password, $securitylevel = 0)
     {
-        self::$s_globals["user"][$name] = Array("password" => $password, "level" => $securitylevel);
+        self::$s_globals["user"][$name] = array("password" => $password, "level" => $securitylevel);
     }
 }

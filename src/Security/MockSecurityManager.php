@@ -21,7 +21,7 @@ class MockSecurityManager extends SecurityManager
      *
      * @var array
      */
-    var $m_resultallowed = array();
+    public $m_resultallowed = array();
 
     /**
      * Set which privileges are allowed
@@ -29,7 +29,7 @@ class MockSecurityManager extends SecurityManager
      * @param bool $result
      * @param string $nodeprivilege
      */
-    function setAllowed($result, $nodeprivilege = "all")
+    public function setAllowed($result, $nodeprivilege = "all")
     {
         $this->m_resultallowed[$nodeprivilege] = $result;
     }
@@ -42,16 +42,15 @@ class MockSecurityManager extends SecurityManager
      * @param string $privilege The privilege to check (atkaction).
      * @return boolean True if the user has the privilege, false if not.
      */
-    function allowed($node, $privilege)
+    public function allowed($node, $privilege)
     {
         if (isset($this->m_resultallowed["all"])) {
             return $this->m_resultallowed["all"];
         }
-        if (isset($this->m_resultallowed[$node . "." . $privilege])) {
-            return $this->m_resultallowed[$node . "." . $privilege];
+        if (isset($this->m_resultallowed[$node.".".$privilege])) {
+            return $this->m_resultallowed[$node.".".$privilege];
         }
+
         return parent::allowed($node, $privilege);
     }
-
 }
-

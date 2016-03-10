@@ -50,7 +50,7 @@ class CalculatorAttribute extends Attribute
      * @access private
      * @var String
      */
-    var $m_calculation = null;
+    public $m_calculation = null;
 
     /**
      * Constructor
@@ -59,7 +59,7 @@ class CalculatorAttribute extends Attribute
      * @param string $calculation The calculation to perform. Must be a valid php expression.
      * @param int $flags Flags of the attribute.
      */
-    function __construct($name, $calculation, $flags = 0)
+    public function __construct($name, $calculation, $flags = 0)
     {
         parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH | self::AF_READONLY);
 
@@ -71,7 +71,7 @@ class CalculatorAttribute extends Attribute
      * @access private
      * @return int
      */
-    function storageType()
+    public function storageType()
     {
         return self::NOSTORE;
     }
@@ -81,7 +81,7 @@ class CalculatorAttribute extends Attribute
      * @access private
      * @return int
      */
-    function loadType()
+    public function loadType()
     {
         return self::POSTLOAD;
     }
@@ -94,11 +94,11 @@ class CalculatorAttribute extends Attribute
      * @param array $record
      * @return String result of the calculation
      */
-    function load(&$db, $record)
+    public function load(&$db, $record)
     {
-
         $parser = new StringParser($this->m_calculation);
-        eval("\$result = " . $parser->parse($record) . ";");
+        eval("\$result = ".$parser->parse($record).";");
+
         return $result;
     }
 
@@ -110,14 +110,12 @@ class CalculatorAttribute extends Attribute
      * @param string $mode The display mode.
      * @return String HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
-        if ($this->m_ownerInstance->m_partial == "attribute." . $this->fieldName() . ".refresh") {
+        if ($this->m_ownerInstance->m_partial == "attribute.".$this->fieldName().".refresh") {
             $record[$this->fieldName()] = $this->load($db, $record);
         }
+
         return parent::display($record, $mode);
     }
-
 }
-
-

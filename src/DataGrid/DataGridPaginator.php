@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
-
 use Sintattica\Atk\Core\Config;
 
 /**
@@ -145,7 +144,7 @@ class DataGridPaginator extends DataGridComponent
 
         $links = $this->getLinks();
         $result = $this->getUi()->render('dgpaginator.tpl', array('links' => $links));
+
         return $result;
     }
-
 }

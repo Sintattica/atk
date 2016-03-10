@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
-
 use Sintattica\Atk\Utils\JSON;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -28,9 +27,7 @@ class DataGridRenderer extends DataGridComponent
     protected function renderContainer($result)
     {
         if (!$this->getGrid()->isUpdate()) {
-            $result = '<div id="' . $this->getGrid()->getName() . '_container" class="atkdatagrid-container">' .
-                $result .
-                '</div>';
+            $result = '<div id="'.$this->getGrid()->getName().'_container" class="atkdatagrid-container">'.$result.'</div>';
         }
 
         return $result;
@@ -47,10 +44,7 @@ class DataGridRenderer extends DataGridComponent
     {
         if (!$this->getGrid()->isUpdate() && !$this->getGrid()->isEmbedded()) {
             $sm = SessionManager::getInstance();
-            $result = '<form id="' . $this->getGrid()->getFormName() . '" name="' . $this->getGrid()->getFormName() . '" method="post" action="' . Config::getGlobal('dispatcher') . '">' .
-                $sm->formState() .
-                $result .
-                '</form>';
+            $result = '<form id="'.$this->getGrid()->getFormName().'" name="'.$this->getGrid()->getFormName().'" method="post" action="'.Config::getGlobal('dispatcher').'">'.$sm->formState().$result.'</form>';
         }
 
         return $result;
@@ -87,7 +81,7 @@ class DataGridRenderer extends DataGridComponent
         $baseUrl = JSON::encode($this->getGrid()->getBaseUrl());
         $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
 
-        $this->getPage()->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkdatagrid.js');
+        $this->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkdatagrid.js');
         $this->getPage()->register_loadscript("
       ATK.DataGrid.register($name, $baseUrl, $embedded);
     ");
@@ -104,7 +98,7 @@ class DataGridRenderer extends DataGridComponent
         $result = $this->renderGrid();
         $result = $this->renderContainer($result);
         $result = $this->renderForm($result);
+
         return $result;
     }
-
 }

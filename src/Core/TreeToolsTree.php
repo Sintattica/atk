@@ -10,11 +10,11 @@ use Sintattica\Atk\Session\SessionManager;
  */
 class TreeToolsTree
 {
-    var $m_tree = array();
-    var $m_allnodes = array();
-    var $m_parentless = array(); // Array to keep stuff that can not yet be inserted into the array. 
+    public $m_tree = array();
+    public $m_allnodes = array();
+    public $m_parentless = array(); // Array to keep stuff that can not yet be inserted into the array. 
 
-    function addNode($id, $naam, $parent = 0, $img = "")
+    public function addNode($id, $naam, $parent = 0, $img = "")
     {
         $n = new TreeToolsNode($id, $naam, $img);
         $this->m_allnodes[$id] = &$n;
@@ -41,7 +41,7 @@ class TreeToolsTree
     /**
      * Example render function. Implement your own.
      */
-    function render($tree = "", $level = 0)
+    public function render($tree = "", $level = 0)
     {
         // First time: root tree..
         if ($tree == "") {
@@ -49,18 +49,19 @@ class TreeToolsTree
         }
         $res = "";
         while (list($id, $objarr) = each($tree)) {
-            $res .= '<tr><td>' . str_repeat("-", (2 * $level)) . " " . $objarr->m_label . '</td></tr>';
+            $res .= '<tr><td>'.str_repeat("-", (2 * $level))." ".$objarr->m_label.'</td></tr>';
             if (count($objarr->m_sub) > 0) {
                 $res .= $this->render($objarr->m_sub, $level + 1);
             }
         }
+
         return $res;
     }
 
     /**
      * Pops tree's on the session
      */
-    function sessionTree()
+    public function sessionTree()
     {
         global $ATK_VARS;
         $postTree = $ATK_VARS["atktree"];
@@ -74,7 +75,4 @@ class TreeToolsTree
         }
         $ATK_VARS["atktree"] == $realTree; // postvars now should contain the last Knowtree
     }
-
 }
-
-

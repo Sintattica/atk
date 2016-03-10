@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 
-
 /**
  * Dump variable to debug output
  *
@@ -16,5 +15,6 @@ use Sintattica\Atk\Core\Tools;
 function smarty_modifier_atkvardump($data, $name = '')
 {
     Tools::atk_var_dump($data, $name);
+
     return $data;
 }

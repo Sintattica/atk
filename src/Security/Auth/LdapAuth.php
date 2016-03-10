@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 
-
 /**
  * Driver for authentication using an ldap server.
  *
@@ -37,28 +36,26 @@ class LdapAuth extends AuthInterface
      *                          this value, you *must* also
      *                          fill the m_fatalError variable.
      */
-    function validateUser($user, $passwd)
+    public function validateUser($user, $passwd)
     {
         if ($user == "") {
             return SecurityManager::AUTH_UNVERIFIED;
         } // can't verify if we have no userid
 
         if ($ldap = ldap_connect(Config::getGlobal("auth_ldap_host"))) {
-            Tools::atkdebug("successful connection to " . Config::getGlobal("auth_ldap_host"));
+            Tools::atkdebug("successful connection to ".Config::getGlobal("auth_ldap_host"));
             if (Config::getGlobal("auth_ldap_bind_tree")) {
-                if ($bindID = @ldap_bind($ldap, Config::getGlobal("auth_ldap_bind_dn"),
-                    Config::getGlobal("auth_ldap_bind_pw"))
-                ) {
-                    Tools::atkdebug("Succesfully bound to " . Config::getGlobal("auth_ldap_bind_dn") . " with id: " . $bindID . " conn_id " . $ldap);
+                if ($bindID = @ldap_bind($ldap, Config::getGlobal("auth_ldap_bind_dn"), Config::getGlobal("auth_ldap_bind_pw"))) {
+                    Tools::atkdebug("Succesfully bound to ".Config::getGlobal("auth_ldap_bind_dn")." with id: ".$bindID." conn_id ".$ldap);
                 } else {
-                    Tools::atkdebug("<b>Error binding to</b> " . Config::getGlobal("auth_ldap_bind_dn") . " " . Config::getGlobal("auth_ldap_bind_pw"));
+                    Tools::atkdebug("<b>Error binding to</b> ".Config::getGlobal("auth_ldap_bind_dn")." ".Config::getGlobal("auth_ldap_bind_pw"));
+
                     return SecurityManager::AUTH_ERROR;
                 }
             }
 
             // find the dn for this uid, the uid is not always in the dn
-            $filter = (Config::getGlobal("auth_ldap_search_filter") != "" ? Config::getGlobal("auth_ldap_search_filter")
-                : "uid");
+            $filter = (Config::getGlobal("auth_ldap_search_filter") != "" ? Config::getGlobal("auth_ldap_search_filter") : "uid");
             $pattern = Config::getGlobal("auth_ldap_context");
 
             // Add support for searching in multiple DN's
@@ -66,12 +63,12 @@ class LdapAuth extends AuthInterface
                 $pattern = array($pattern);
             }
 
-            foreach ($pattern AS $searchPattern) {
-                $filterCmd = $filter . "=" . $user;
+            foreach ($pattern as $searchPattern) {
+                $filterCmd = $filter."=".$user;
                 $sri = @ldap_search($ldap, $searchPattern, $filterCmd);
 
                 if ($sri === false) {
-                    Tools::atkdebug("Invalid searchpattern: " . $searchPattern);
+                    Tools::atkdebug("Invalid searchpattern: ".$searchPattern);
                 } else {
                     $allValues = ldap_get_entries($ldap, $sri);
 
@@ -106,10 +103,8 @@ class LdapAuth extends AuthInterface
      *
      * @return boolean false
      */
-    function canMd5()
+    public function canMd5()
     {
         return false; // ?? Is this correct? can we store passwords as md5 in ldap?
     }
-
 }
-

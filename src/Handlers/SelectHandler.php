@@ -28,6 +28,7 @@ class SelectHandler extends ActionHandler
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
@@ -70,8 +71,8 @@ class SelectHandler extends ActionHandler
         $params["footer"] = "";
 
         if ($sm->atkLevel() > 0) {
-            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
+            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
+            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\''.$backUrl.'\';" value="'.$this->getNode()->text('cancel').'"></div>';
         }
 
         $output = $this->getUi()->renderList("select", $params);
@@ -98,6 +99,7 @@ class SelectHandler extends ActionHandler
 
             $this->modifyDataGrid($grid, DataGrid::RESUME);
         }
+
         return $grid->render();
     }
 
@@ -124,7 +126,7 @@ class SelectHandler extends ActionHandler
         $sm = SessionManager::getInstance();
 
         if ($sm->atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > $sm->atkLevel()) {
-            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
+            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
             $node->redirect($backUrl);
         } else {
             $records = $grid->getRecords();
@@ -142,5 +144,4 @@ class SelectHandler extends ActionHandler
 
         return true;
     }
-
 }

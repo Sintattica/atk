@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Security\Encryption;
 
-
 use Sintattica\Atk\Core\Config;
 
 /**
@@ -28,12 +27,12 @@ class Encryption
      *                     defaults to $config)_encryption_defaultmethod
      * @return Encryption the node with which to encrypt or decrypt your data
      */
-    function &getEncryption($type = "")
+    public function &getEncryption($type = "")
     {
         if ($type == "") {
             $type = Config::getGlobal("encryption_defaultmethod");
         }
-        $encryptionclass = $type . "Encryption";
+        $encryptionclass = $type."Encryption";
         if (class_exists($encryptionclass)) {
             return new $encryptionclass();
         } else {
@@ -47,7 +46,7 @@ class Encryption
      * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
-    function encrypt($input, $key)
+    public function encrypt($input, $key)
     {
         // dummy implementation
         return $input;
@@ -59,7 +58,7 @@ class Encryption
      * @param mixed $key the key with which to decrypt the data
      * @return mixed        the decrypted data
      */
-    function decrypt($input, $key)
+    public function decrypt($input, $key)
     {
         // dummy implementation
         return $input;
@@ -71,7 +70,7 @@ class Encryption
      * @param string $pass The password to decrypt de key
      * @return string      The decrypted key
      */
-    function decryptKey($key, $pass)
+    public function decryptKey($key, $pass)
     {
         // dummy implementation
         return $key;
@@ -83,7 +82,7 @@ class Encryption
      * @param string $pass The password to encrypt de key
      * @return string      The encrypted key
      */
-    function encryptKey($key, $pass)
+    public function encryptKey($key, $pass)
     {
         //dummy implementation
         return $key;
@@ -95,7 +94,7 @@ class Encryption
      * @param int $length the amount of characters we want, can't be more than 32
      * @return string the random string
      */
-    function getRandomString($length = null)
+    public function getRandomString($length = null)
     {
         $str = md5(rand(1, 100));
 
@@ -104,6 +103,7 @@ class Encryption
         }
 
         $begin = rand(0, 32 - $length);
+
         return substr($str, $begin, $length);
     }
 
@@ -113,7 +113,7 @@ class Encryption
      * @param string $pass This implementation does nothing with this param
      * @return string        A random key
      */
-    function getRandomKey($pass)
+    public function getRandomKey($pass)
     {
         return $this->getRandomString(6);
     }
@@ -125,7 +125,7 @@ class Encryption
      * @param string $value The original string
      * @return string         The original string
      * */
-    function stripbackslashes($value)
+    public function stripbackslashes($value)
     {
         return $value;
     }
@@ -137,11 +137,8 @@ class Encryption
      * @param string $value The original string
      * @return string         The original string
      * */
-    function addbackslashes($value)
+    public function addbackslashes($value)
     {
         return $value;
     }
-
 }
-
-

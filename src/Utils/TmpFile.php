@@ -97,6 +97,7 @@ class TmpFile
         if ($this->exists()) {
             return file($this->getPath());
         }
+
         return false;
     }
 
@@ -115,6 +116,7 @@ class TmpFile
                 return implode(null, $this->read());
             }
         }
+
         return false;
     }
 
@@ -128,8 +130,10 @@ class TmpFile
         if ($this->open("r")) {
             fpassthru($this->m_fp);
             $this->close();
+
             return true;
         }
+
         return false;
     }
 
@@ -144,8 +148,10 @@ class TmpFile
         if ($this->open("w")) {
             $this->write($data);
             $this->close();
+
             return true;
         }
+
         return false;
     }
 
@@ -159,7 +165,7 @@ class TmpFile
     public function writeAsPhp($varname, $data)
     {
         $res = "<?php\n";
-        $res .= "\$" . $varname . " = " . var_export($data, true);
+        $res .= "\$".$varname." = ".var_export($data, true);
         $res .= ";";
 
         return $this->writeFile($res);
@@ -176,8 +182,10 @@ class TmpFile
         if ($this->open('a')) {
             $this->write($data);
             $this->close();
+
             return true;
         }
+
         return false;
     }
 
@@ -189,6 +197,7 @@ class TmpFile
     public function remove()
     {
         $this->close();
+
         return unlink($this->getPath());
     }
 
@@ -215,6 +224,7 @@ class TmpFile
         if ($this->exists()) {
             return filectime($this->getPath());
         }
+
         return false;
     }
 
@@ -229,6 +239,7 @@ class TmpFile
         if ($filectime != false) {
             return (time() - $filectime);
         }
+
         return false;
     }
 
@@ -242,7 +253,7 @@ class TmpFile
      */
     public function getPath()
     {
-        return $this->getBasedir() . $this->m_filename;
+        return $this->getBasedir().$this->m_filename;
     }
 
     /**
@@ -255,13 +266,14 @@ class TmpFile
     public function setBasedir($dir)
     {
         if (!is_dir($dir) || !is_writable($dir)) {
-            $err = 'TmpFile:: Unable to set ' . $dir .
-                'as basedir. Directory does not exists or isnot writable';
+            $err = 'TmpFile:: Unable to set '.$dir.'as basedir. Directory does not exists or isnot writable';
 
             Tools::atkwarning($err);
+
             return false;
         }
         $this->m_basedir = $dir;
+
         return true;
     }
 
@@ -275,6 +287,7 @@ class TmpFile
         if (!$this->m_basedir) {
             $this->m_basedir = Config::getGlobal('atktempdir');
         }
+
         return $this->m_basedir;
     }
 
@@ -302,6 +315,7 @@ class TmpFile
             $this->m_fp = fopen($this->getPath(), $mode);
             $this->m_mode = $mode;
         }
+
         return !is_null($this->m_fp);
     }
 
@@ -327,8 +341,10 @@ class TmpFile
             fclose($this->m_fp);
             $this->m_mode = "";
             $this->m_fp = null;
+
             return true;
         }
+
         return false;
     }
 
@@ -356,7 +372,7 @@ class TmpFile
 
         $path = "";
         foreach ($dirs as $element) {
-            $path .= $element . "/";
+            $path .= $element."/";
             if (!is_dir($path) && !mkdir($path)) {
                 return false;
             }
@@ -364,7 +380,4 @@ class TmpFile
 
         return true;
     }
-
 }
-
-

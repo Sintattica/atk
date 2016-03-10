@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\RecordList;
 
-
 use Sintattica\Atk\Core\Node;
 
 /**
@@ -11,9 +10,9 @@ use Sintattica\Atk\Core\Node;
  * @subpackage recordlist
  *
  */
-class HTMLRecordList extends CustomRecordList
+class HtmlRecordList extends CustomRecordList
 {
-    var $m_exportcsv = true;
+    public $m_exportcsv = true;
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
@@ -27,7 +26,7 @@ class HTMLRecordList extends CustomRecordList
      * @param Boolean $decode Should data be decoded or not (for exports)
      * @return string
      */
-    function render(
+    public function render(
         &$node,
         $recordset,
         $compression = "",
@@ -36,9 +35,7 @@ class HTMLRecordList extends CustomRecordList
         $titlerow = true,
         $decode = false
     ) {
-        return parent::render($node, $recordset, "<tr>", "<td>", "</td>", "<tr>\n", "0", $compression, $suppressList,
-            $outputparams, "list", $titlerow, $decode, "", "<br>");
+        return parent::render($node, $recordset, "<tr>", "<td>", "</td>", "<tr>\n", "0", $compression, $suppressList, $outputparams, "list", $titlerow, $decode,
+            "", "<br>");
     }
-
 }
-

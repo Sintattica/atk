@@ -20,7 +20,7 @@ class HtmlAttribute extends TextAttribute
     /**
      * New line to BR boolean
      */
-    var $nl2br = false;
+    public $nl2br = false;
 
     /**
      * Constructor
@@ -28,7 +28,7 @@ class HtmlAttribute extends TextAttribute
      * @param int $flags Flags of the attribute
      * @param bool $nl2br nl2br boolean
      */
-    function __construct($name, $flags = 0, $nl2br = false)
+    public function __construct($name, $flags = 0, $nl2br = false)
     {
         parent::__construct($name, $flags); // base class constructor
         $this->nl2br = $nl2br;
@@ -39,7 +39,7 @@ class HtmlAttribute extends TextAttribute
      * @param array $record Array wit fields
      * @return string Formatted string
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         if ($this->nl2br) {
             return nl2br($record[$this->fieldName()]);
@@ -47,7 +47,4 @@ class HtmlAttribute extends TextAttribute
             return $record[$this->fieldName()];
         }
     }
-
 }
-
-

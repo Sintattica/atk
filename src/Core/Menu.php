@@ -50,12 +50,13 @@ class Menu
      * @param string $modname Module to which the menuitem belongs
      * @return string Translation of the given menuitem
      */
-    function getMenuTranslation($menuitem, $modname = 'atk')
+    public function getMenuTranslation($menuitem, $modname = 'atk')
     {
         $s = Tools::atktext("menu_$menuitem", $modname, '', '', '', true);
         if (!$s) {
             $s = Tools::atktext($menuitem, $modname);
         }
+
         return $s;
     }
 
@@ -63,11 +64,12 @@ class Menu
      * Render the menu
      * @return String HTML fragment containing the menu.
      */
-    function render()
+    public function render()
     {
         $page = Page::getInstance();
         $menu = $this->load();
         $page->addContent($menu);
+
         return $page->render("Menu", true);
     }
 
@@ -76,7 +78,7 @@ class Menu
      *
      * @return string The menu
      */
-    function getMenu()
+    public function getMenu()
     {
         return $this->load();
     }
@@ -86,10 +88,11 @@ class Menu
      *
      * @return string The menu
      */
-    function load()
+    public function load()
     {
         $html_items = $this->parseItems($this->menuItems['main']);
         $html_menu = $this->processMenu($html_items);
+
         return sprintf($this->format_menu, $html_menu);
     }
 
@@ -114,6 +117,7 @@ class Menu
                 }
             }
         }
+
         return $html;
     }
 
@@ -124,14 +128,12 @@ class Menu
      * @param array $menuitem menuitem array
      * @return bool enabled?
      */
-    function isEnabled($menuitem)
+    public function isEnabled($menuitem)
     {
         $secManager = SecurityManager::getInstance();
 
         $enable = $menuitem['enable'];
-        if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) &&
-            is_callable($enable)
-        ) {
+        if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) && is_callable($enable)) {
             $enable = call_user_func($enable);
         } else {
             if (is_array($enable)) {
@@ -141,9 +143,7 @@ class Menu
                 }
                 $enable = $enabled;
             } else {
-                if (array_key_exists($menuitem['name'],
-                        $this->menuItems) && is_array($this->menuItems[$menuitem['name']])
-                ) {
+                if (array_key_exists($menuitem['name'], $this->menuItems) && is_array($this->menuItems[$menuitem['name']])) {
                     $enabled = false;
                     foreach ($this->menuItems[$menuitem['name']] as $item) {
                         $enabled = $enabled || $this->isEnabled($item);
@@ -200,7 +200,6 @@ class Menu
      */
     public function addMenuItem($name = "", $url = "", $parent = "main", $enable = 1, $order = 0, $module = "")
     {
-
         static $order_value = 100, $s_dupelookup = array();
         if ($order == 0) {
             $order = $order_value;
@@ -212,14 +211,13 @@ class Menu
             "url" => $url,
             "enable" => $enable,
             "order" => $order,
-            "module" => $module
+            "module" => $module,
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != "-")) {
             $this->menuItems[$parent][$s_dupelookup[$parent][$name]] = $item;
         } else {
-            $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? count($this->menuItems[$parent])
-                : 0;
+            $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? count($this->menuItems[$parent]) : 0;
             $this->menuItems[$parent][] = $item;
         }
     }
@@ -229,6 +227,7 @@ class Menu
         foreach ($items as &$item) {
             $this->parseItem($item);
         }
+
         return $items;
     }
 
@@ -236,19 +235,18 @@ class Menu
     {
         if ($item['enable'] && array_key_exists($item['name'], $this->menuItems)) {
             $item['submenu'] = $this->parseItems($this->menuItems[$item['name']]);
+
             return $item;
         }
     }
 
-    function _hasSubmenu($item)
+    public function _hasSubmenu($item)
     {
         return isset($item['submenu']) && count($item['submenu']);
     }
 
-    function _getMenuTitle($item, $append = "")
+    public function _getMenuTitle($item, $append = "")
     {
-        return (string)$this->getMenuTranslation($item['name'], $item['module']) . $append;
+        return (string)$this->getMenuTranslation($item['name'], $item['module']).$append;
     }
 }
-
-

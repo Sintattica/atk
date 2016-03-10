@@ -7,21 +7,21 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      * @access private
      * @var String
      */
-    var $m_typefk = "";
+    public $m_typefk = "";
 
     /**
      * The name of the foreign key field in the master node to the type table.
      * @access private
      * @var String
      */
-    var $m_discriminatorfield = "";
+    public $m_discriminatorfield = "";
 
     /**
      * $modulename The module name
      * @access private
      * @var String
      */
-    var $m_modulename = "";
+    public $m_modulename = "";
 
     /**
      * Default Constructor
@@ -46,7 +46,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-    function __construct($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
+    public function __construct($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
     {
         parent::__construct($name, "", $refKey, $flags | self::AF_HIDE_LIST);
         $this->m_typefk = $typefk;
@@ -55,7 +55,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
         $this->m_modulename = $modulename;
     }
 
-    function loadType()
+    public function loadType()
     {
         return self::POSTLOAD;
     }
@@ -72,12 +72,11 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      * @return array Sets the destination from the record and
      *                       return the atkonetoone load function
      */
-    function load(&$db, $record, $mode)
+    public function load(&$db, $record, $mode)
     {
-        $this->m_destination = $this->m_modulename . "." . $record[$this->m_typefk][$this->m_discriminatorfield];
-        $this->m_destInstance = $this->m_modulename . "." . $record[$this->m_typefk][$this->m_discriminatorfield];
+        $this->m_destination = $this->m_modulename.".".$record[$this->m_typefk][$this->m_discriminatorfield];
+        $this->m_destInstance = $this->m_modulename.".".$record[$this->m_typefk][$this->m_discriminatorfield];
+
         return parent::load($db, $record, $mode);
     }
-
 }
-

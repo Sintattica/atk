@@ -14,4 +14,4 @@
 -------------------------------------------------------------------------------------------
 
 </pre><div style="display:none"></body> */
-include "assets/posteddata.php"; ?>
+include "assets/posteddata.php";

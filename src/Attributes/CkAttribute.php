@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
 use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
@@ -26,7 +25,7 @@ class CkAttribute extends TextAttribute
             ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup']],
             ['name' => 'paragraph', 'groups' => ['list', 'indent', 'align']],
             ['name' => 'styles'],
-            ['name' => 'colors']
+            ['name' => 'colors'],
         ],
         // remove some buttons
         'removeButtons' => 'Save,NewPage,Preview,Anchor,Flash,Smiley,PageBreak,Iframe,Subscript,Superscript,Font,Styles',
@@ -35,7 +34,7 @@ class CkAttribute extends TextAttribute
         // simplify the windows
         'removeDialogTabs' => 'image:advanced;link:advanced',
         // set the size
-        'height' => 250
+        'height' => 250,
     ];
 
     /**
@@ -44,7 +43,7 @@ class CkAttribute extends TextAttribute
      * @param int $flags Flags for the attribute
      * @param array $options CKEditor configuration options (overrides default)
      */
-    function __construct($name, $flags = 0, $options = null)
+    public function __construct($name, $flags = 0, $options = null)
     {
         /** update CKEditor configuration options */
         $this->ckOptions['language'] = Language::getLanguage();
@@ -61,14 +60,14 @@ class CkAttribute extends TextAttribute
         parent::__construct($name, 0, $flags);
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $page = $this->getOwnerInstance()->getPage();
 
         $id = $this->getHtmlId($fieldprefix);
 
         // register CKEditor main script
-        $page->register_script(Config::getGlobal('assets_url') . 'lib/ckeditor/ckeditor.js');
+        $page->register_script(Config::getGlobal('assets_url').'lib/ckeditor/ckeditor.js');
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);
@@ -77,17 +76,19 @@ class CkAttribute extends TextAttribute
         return parent::edit($record, $fieldprefix, $mode);
     }
 
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         return Tools::atkArrayNvl($record, $this->fieldName(), "");
     }
 
-    function value2db($rec)
+    public function value2db($rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
             $dbval = $this->escapeSQL(preg_replace("/\&quot;/Ui", "\"", $rec[$this->fieldName()]));
+
             return $dbval;
         }
+
         return null;
     }
 
@@ -100,9 +101,10 @@ class CkAttribute extends TextAttribute
      * @param array $record The record that holds this attribute's value.
      * @return boolean
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         $record[$this->fieldName()] = trim(strip_tags($record[$this->fieldName()], '<div>'));
+
         return parent::isEmpty($record);
     }
 

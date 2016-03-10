@@ -26,7 +26,9 @@ function smarty_function_stacktrace($params, &$smarty)
     $sessionManager = SessionManager::getInstance();
     if (is_object($sessionManager)) {
         $smarty->assign("stacktrace", $sessionManager->stackTrace());
+
         return "";
     }
+
     return "";
 }

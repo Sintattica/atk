@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
-
 /**
  * The data grid listener can be implemented and registered for a data grid
  * to listen for data grid events.

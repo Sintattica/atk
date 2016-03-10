@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
 /**
  * Attribute for keeping track of record creation times.
  *
@@ -30,7 +29,7 @@ class CreateStampAttribute extends UpdateStampAttribute
      *                     in the database where the stamp is stored.
      * @param int $flags Flags for the attribute.
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags);
     }
@@ -44,12 +43,9 @@ class CreateStampAttribute extends UpdateStampAttribute
      * @return boolean True if this attribute should participate in the update
      *                 query; false if not.
      */
-    function needsUpdate($rec)
+    public function needsUpdate($rec)
     {
         // no matter what, we NEVER save a new value.
         return false;
     }
-
 }
-
-

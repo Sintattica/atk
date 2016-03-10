@@ -19,7 +19,7 @@ class RowCounterAttribute extends DummyAttribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, '', $flags | self::AF_HIDE_VIEW | self::AF_HIDE_EDIT | self::AF_HIDE_ADD);
     }
@@ -30,12 +30,11 @@ class RowCounterAttribute extends DummyAttribute
      * @param string $mode
      * @return int Counter, starting at 1
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         static $s_counter = 0;
         $node = $this->m_ownerInstance;
+
         return $node->m_postvars["atkstartat"] + (++$s_counter);
     }
-
 }
-

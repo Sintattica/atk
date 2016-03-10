@@ -13,9 +13,9 @@ use Sintattica\Atk\Core\Language;
  */
 class StateAttribute extends ListAttribute
 {
-    var $m_state = array();
-    var $m_states = array();
-    var $m_usa_states = array(
+    public $m_state = array();
+    public $m_states = array();
+    public $m_usa_states = array(
         'AL',
         'AK',
         'AS',
@@ -74,9 +74,9 @@ class StateAttribute extends ListAttribute
         'WA',
         'WV',
         'WI',
-        'WY'
+        'WY',
     );
-    var $m_defaulttocurrent = true;
+    public $m_defaulttocurrent = true;
 
 
     /**
@@ -92,13 +92,12 @@ class StateAttribute extends ListAttribute
      * @param bool $defaulttocurrent Set the default selected state to the
      *                               current state based on the atk language
      */
-    function __construct(
+    public function __construct(
         $name,
         $switch = "usa",
         $flags = 0,
         $defaulttocurrent = true
     ) {
-
         if (is_numeric($switch)) {
             $flags = $switch;
             $switch = "usa";
@@ -125,11 +124,12 @@ class StateAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) {
             $record[$this->fieldName()] = strtoupper(Language::getLanguage());
         }
+
         return parent::edit($record, $fieldprefix, $mode);
     }
 
@@ -137,7 +137,7 @@ class StateAttribute extends ListAttribute
      * Fill the state array
      *
      */
-    function fillStateArray()
+    public function fillStateArray()
     {
         $this->m_state['AL']['en'] = "ALABAMA";
         $this->m_state['AK']['en'] = "ALASKA";
@@ -206,7 +206,7 @@ class StateAttribute extends ListAttribute
      * @param string $switch
      * @return array with state values
      */
-    function getStateValueArray($switch)
+    public function getStateValueArray($switch)
     {
         if ($switch == "usa") {
             return $this->m_usa_states;
@@ -215,6 +215,7 @@ class StateAttribute extends ListAttribute
             foreach ($this->m_state as $iso => $value) {
                 $tmp_array[] = $iso;
             }
+
             return $tmp_array;
         }
     }
@@ -225,7 +226,7 @@ class StateAttribute extends ListAttribute
      * @param string $switch
      * @return array with state options
      */
-    function getStateOptionArray($switch)
+    public function getStateOptionArray($switch)
     {
         $tmp_array = array();
         if ($switch == "usa") {
@@ -237,6 +238,7 @@ class StateAttribute extends ListAttribute
                 $tmp_array[] = $value;
             }
         }
+
         return $tmp_array;
     }
 
@@ -246,10 +248,8 @@ class StateAttribute extends ListAttribute
      * @param string $iso_code
      * @return String The state option
      */
-    function getStateOption($iso_code)
+    public function getStateOption($iso_code)
     {
         return $this->m_state[$iso_code]['en'];
     }
-
 }
-

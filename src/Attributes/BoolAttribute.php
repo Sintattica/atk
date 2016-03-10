@@ -1,7 +1,6 @@
 <?php namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
-
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 
@@ -39,7 +38,7 @@ class BoolAttribute extends Attribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         // Call base class constructor. Size of boolean value is always 1.
         parent::__construct($name, $flags, 1);
@@ -54,7 +53,7 @@ class BoolAttribute extends Attribute
      * @param int $flags The flag to add to the attribute
      * @return Attribute The instance of this Attribute
      */
-    function addFlag($flags)
+    public function addFlag($flags)
     {
         // setting self::AF_OBLIGATORY has no use, so prevent setting it.
         if (Tools::hasFlag($flags, self::AF_OBLIGATORY)) {
@@ -75,7 +74,7 @@ class BoolAttribute extends Attribute
      * @param array $record
      * @return boolean empty?
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         $empty = parent::isEmpty($record);
 
@@ -97,12 +96,12 @@ class BoolAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string piece of html code with a checkbox
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
         $onchange = '';
         if (count($this->m_onchangecode)) {
-            $onchange = 'onClick="' . $id . '_onChange(this);" ';
+            $onchange = 'onClick="'.$id.'_onChange(this);" ';
             $this->_renderChangeHandler($fieldprefix);
         }
         $checked = "";
@@ -111,13 +110,13 @@ class BoolAttribute extends Attribute
         }
 
 
-        $result = '<input type="checkbox" id="' . $id . '" name="' . $id . '" value="1" ' . $onchange . $checked . ' ' . $this->getCSSClassAttribute("atkcheckbox") . ' />';
+        $result = '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute("atkcheckbox").' />';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
-            $result .= '&nbsp;<label for="' . $id . '">' . $this->text(array(
-                    $this->fieldName() . '_label',
-                    parent::label($record)
-                )) . '</label>';
+            $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
+                    $this->fieldName().'_label',
+                    parent::label($record),
+                )).'</label>';
         }
 
         $result .= $this->getSpinner();
@@ -130,10 +129,9 @@ class BoolAttribute extends Attribute
      * @param array $rec Array with values
      * @return int
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
-        return (isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()]
-            : 0);
+        return (isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()] : 0);
     }
 
     /**
@@ -152,29 +150,30 @@ class BoolAttribute extends Attribute
      */
     public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
-        $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
-        $result .= '<option value="">' . Tools::atktext("search_all", "atk") . '</option>';
+        $result = '<select name="'.$this->getSearchFieldName($fieldprefix).'" class="form-control">';
+        $result .= '<option value="">'.Tools::atktext("search_all", "atk").'</option>';
         $result .= '<option value="0" ';
         if ($record[$this->fieldName()] === '0' && !empty($record)) {
             $result .= "selected";
         }
-        $result .= '>' . Tools::atktext("no", "atk") . '</option>';
+        $result .= '>'.Tools::atktext("no", "atk").'</option>';
         $result .= '<option value="1" ';
         if ($record[$this->fieldName()] === '1') {
             $result .= "selected";
         }
-        $result .= '>' . Tools::atktext("yes", "atk") . '</option>';
+        $result .= '>'.Tools::atktext("yes", "atk").'</option>';
         $result .= '</select>';
+
         return $result;
     }
 
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if (is_array($value)) {
             $value = $value[$this->fieldName()];
         }
         if (isset($value)) {
-            return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value));
+            return $query->exactCondition($table.".".$this->fieldName(), $this->escapeSQL($value));
         }
     }
 
@@ -183,13 +182,12 @@ class BoolAttribute extends Attribute
      * @param array $record Array with boolean field
      * @return yes or no
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
     		  <div align="center">
-    		    <input type="checkbox" disabled="disabled" ' . ($record[$this->fieldName()]
-                ? 'checked="checked"' : '') . ' />
+    		    <input type="checkbox" disabled="disabled" '.($record[$this->fieldName()] ? 'checked="checked"' : '').' />
     		  </div>
     		';
         } else {
@@ -210,7 +208,7 @@ class BoolAttribute extends Attribute
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    function getLabel($record = array(), $mode = '')
+    public function getLabel($record = array(), $mode = '')
     {
         if ($mode == 'view' && $this->hasFlag(self::AF_BLANK_LABEL | self::AF_BOOL_INLINE_LABEL)) {
             return $this->label($record);
@@ -227,7 +225,7 @@ class BoolAttribute extends Attribute
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         if (is_array($postvars) && isset($postvars[$this->fieldName()])) {
             return $postvars[$this->fieldName()];
@@ -241,7 +239,7 @@ class BoolAttribute extends Attribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -257,7 +255,7 @@ class BoolAttribute extends Attribute
      * @return String The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "number";
     }
@@ -285,11 +283,12 @@ class BoolAttribute extends Attribute
      * @param string $stringvalue The value to parse.
      * @return boolean Internal value
      */
-    function parseStringValue($stringvalue)
+    public function parseStringValue($stringvalue)
     {
         if (in_array(strtolower($stringvalue), array("y", "j", "yes", "on", "true", "1", "*"))) {
             return 1;
         }
+
         return 0;
     }
 
@@ -311,14 +310,11 @@ class BoolAttribute extends Attribute
             $record[$this->fieldName()] = "0";
         }
         if (!is_array($record[$this->fieldName()])) {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() .
-                '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
+            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+
             return $result;
         } else {
-            Tools::atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+            Tools::atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
         }
     }
-
 }
-
-

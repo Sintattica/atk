@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Handlers;
 
-
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\DataGrid\DataGrid;
@@ -23,20 +22,21 @@ use \Exception;
  */
 class AdminHandler extends ActionHandler
 {
-    var $m_actionSessionStatus = SessionManager::SESSION_NESTED;
+    public $m_actionSessionStatus = SessionManager::SESSION_NESTED;
 
     /**
      * The action method
      */
-    function action_admin()
+    public function action_admin()
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/formsubmit.js");
         $res = $this->renderAdminPage();
         $page->addContent($this->m_node->renderActionPage("admin", $res));
     }
@@ -47,7 +47,7 @@ class AdminHandler extends ActionHandler
      *
      * @param Integer $sessionStatus The sessionstatus (for example SessionManager::SESSION_REPLACE)
      */
-    function setActionSessionStatus($sessionStatus)
+    public function setActionSessionStatus($sessionStatus)
     {
         $this->m_actionSessionStatus = $sessionStatus;
     }
@@ -57,7 +57,7 @@ class AdminHandler extends ActionHandler
      *
      * @return array with result of adminPage and addPage
      */
-    function renderAdminPage()
+    public function renderAdminPage()
     {
         $res = array();
         if ($this->m_node->hasFlag(Node::NF_NO_ADD) == false && $this->m_node->allowed("add")) {
@@ -69,6 +69,7 @@ class AdminHandler extends ActionHandler
             }
         }
         $res[] = $this->invoke("adminPage");
+
         return $res;
     }
 
@@ -80,7 +81,7 @@ class AdminHandler extends ActionHandler
      * @param array $record The record
      * @return String A box containing the add page.
      */
-    function addPage($record = null)
+    public function addPage($record = null)
     {
         // Reuse the atkAddHandler for the addPage.
         $atk = Atk::getInstance();
@@ -103,13 +104,13 @@ class AdminHandler extends ActionHandler
      * @return String A box containing the admin page (without the add form,
      *                which is added later.
      */
-    function adminPage($actions = array())
+    public function adminPage($actions = array())
     {
         $ui = $this->getUi();
 
         $vars = array(
             "title" => $this->m_node->actionTitle($this->getNode()->m_action),
-            "content" => $this->renderAdminList()
+            "content" => $this->renderAdminList(),
         );
 
         $output = $ui->renderBox($vars);
@@ -123,9 +124,8 @@ class AdminHandler extends ActionHandler
      * @param array $actions An array with the actions for the admin mode
      * @return String The HTML for the admin recordlist
      */
-    function renderAdminList($actions = "")
+    public function renderAdminList($actions = "")
     {
-
         $grid = DataGrid::create($this->getNode(), 'admin');
 
         if (is_array($actions)) {
@@ -139,10 +139,11 @@ class AdminHandler extends ActionHandler
         }
 
         $params = array();
-        $params["header"] = $this->invoke("adminHeader") . $this->getHeaderLinks();
+        $params["header"] = $this->invoke("adminHeader").$this->getHeaderLinks();
         $params["list"] = $grid->render();
         $params["footer"] = $this->invoke("adminFooter");
         $output = $this->getUi()->renderList("admin", $params);
+
         return $output;
     }
 
@@ -204,11 +205,11 @@ class AdminHandler extends ActionHandler
             $grid->setPostvar('atksearch', array());
             $sm = SessionManager::getInstance();
 
-            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeUri(), $action,
-                array('atkselector' => $node->primaryKey($records[0]))), SessionManager::SESSION_NESTED);
+            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeUri(), $action, array('atkselector' => $node->primaryKey($records[0]))),
+                SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
-                $script = 'document.location.href = ' . JSON::encode($url) . ';';
+                $script = 'document.location.href = '.JSON::encode($url).';';
                 $node->getPage()->register_loadscript($script);
             } else {
                 $node->redirect($url);
@@ -229,7 +230,7 @@ class AdminHandler extends ActionHandler
      *
      * @return String A string that is displayed above the recordlist.
      */
-    function adminHeader()
+    public function adminHeader()
     {
         return "";
     }
@@ -243,7 +244,7 @@ class AdminHandler extends ActionHandler
      *
      * @return String A string that is displayed below the recordlist.
      */
-    function adminFooter()
+    public function adminFooter()
     {
         return "";
     }
@@ -253,13 +254,14 @@ class AdminHandler extends ActionHandler
      *
      * @return String HTML code with link to the import action of the node (if allowed)
      */
-    function getImportLink()
+    public function getImportLink()
     {
         $link = "";
         if ($this->m_node->allowed("add") && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "import"),
-                Tools::atktext("import", "atk", $this->m_node->m_type), SessionManager::SESSION_NESTED);
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "import"), Tools::atktext("import", "atk", $this->m_node->m_type),
+                SessionManager::SESSION_NESTED);
         }
+
         return $link;
     }
 
@@ -268,20 +270,19 @@ class AdminHandler extends ActionHandler
      *
      * @return String HTML code with link to the export action of the node (if allowed)
      */
-    function getExportLink()
+    public function getExportLink()
     {
         $link = "";
         if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(Node::NF_EXPORT)) {
             $filter = '';
             if (count($this->m_node->m_fuzzyFilters) > 0) {
-                $filter = implode(' AND ',
-                    str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
+                $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "export",
-                array('atkfilter' => $filter)), Tools::atktext("export", "atk", $this->m_node->m_type),
-                SessionManager::SESSION_NESTED);
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), "export", array('atkfilter' => $filter)),
+                Tools::atktext("export", "atk", $this->m_node->m_type), SessionManager::SESSION_NESTED);
         }
+
         return $link;
     }
 
@@ -302,13 +303,13 @@ class AdminHandler extends ActionHandler
      *
      * @return String HTML code with link to the add action of the node (if allowed)
      */
-    function getAddLink()
+    public function getAddLink()
     {
         $atk = Atk::getInstance();
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
 
         if (!$node->hasFlag(Node::NF_NO_ADD) && $node->allowed("add")) {
-            $label = $node->text("link_" . $node->m_type . "_add", null, "", "", true);
+            $label = $node->text("link_".$node->m_type."_add", null, "", "", true);
             if (empty($label)) {
                 // generic text
                 $label = Tools::atktext("add", "atk");
@@ -316,6 +317,7 @@ class AdminHandler extends ActionHandler
 
             if ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
+
                 return Tools::href($addurl, $label, SessionManager::SESSION_NESTED);
             }
         }
@@ -333,7 +335,8 @@ class AdminHandler extends ActionHandler
     {
         $atk = Atk::getInstance();
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
-        return Config::getGlobal('dispatcher') . '?atknodeuri=' . $node->atkNodeUri() . '&atkaction=add';
+
+        return Config::getGlobal('dispatcher').'?atknodeuri='.$node->atkNodeUri().'&atkaction=add';
     }
 
     /**
@@ -341,7 +344,7 @@ class AdminHandler extends ActionHandler
      *
      * @return String String with the HTML code of the links (each link separated with |)
      */
-    function getHeaderLinks()
+    public function getHeaderLinks()
     {
         $links = array();
         $addlink = $this->getAddLink();
@@ -372,19 +375,17 @@ class AdminHandler extends ActionHandler
      * @param string $partial full partial
      * @return string
      */
-    function partial_attribute($partial)
+    public function partial_attribute($partial)
     {
         list($type, $attribute, $partial) = explode('.', $partial);
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeUri()."'");
+
             return '';
         }
 
         return $attr->partial($partial, 'admin');
     }
-
 }
-
-

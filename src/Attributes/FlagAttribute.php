@@ -23,7 +23,7 @@ class FlagAttribute extends MultiSelectAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Size of the attribute.
      */
-    function __construct($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
+    public function __construct($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
     {
         parent::__construct($name, $optionArray, $valueArray, $cols, $flags, $size);
         $this->m_dbfieldtype = "number";
@@ -36,13 +36,14 @@ class FlagAttribute extends MultiSelectAttribute
      * @param array $rec The record that holds this attribute's value.
      * @return String The database compatible value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
             $flags = 0;
             foreach ($rec[$this->fieldName()] as $flag) {
                 $flags |= $flag;
             }
+
             return $flags;
         } else {
             return 0;
@@ -55,7 +56,7 @@ class FlagAttribute extends MultiSelectAttribute
      * @param array $rec The database record that holds this attribute's value
      * @return mixed The internal value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         if ($rec[$this->fieldName()] > 0) {
             $newrec = array();
@@ -64,8 +65,10 @@ class FlagAttribute extends MultiSelectAttribute
                     $newrec[] = $value;
                 }
             }
+
             return $newrec;
         }
+
         return array();
     }
 
@@ -75,7 +78,7 @@ class FlagAttribute extends MultiSelectAttribute
      * @return String The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return $this->m_dbfieldtype;
     }
@@ -94,17 +97,18 @@ class FlagAttribute extends MultiSelectAttribute
      *                              attribute's getSearchModes() method.
      * @return String The searchcondition to use.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-            $field = $table . "." . $this->fieldName();
+            $field = $table.".".$this->fieldName();
             if (count($value) == 1) { // exactly one value
-                $query->addSearchCondition($field . " & " . $value[0]);
+                $query->addSearchCondition($field." & ".$value[0]);
             } else {
-                $mask = "(" . implode("|", $value) . ")";
-                $searchcondition = $field . "&" . $mask . "=" . $mask;
+                $mask = "(".implode("|", $value).")";
+                $searchcondition = $field."&".$mask."=".$mask;
             }
         }
+
         return $searchcondition;
     }
 
@@ -119,7 +123,7 @@ class FlagAttribute extends MultiSelectAttribute
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         $vars = Tools::atkArrayNvl($postvars, $this->fieldName());
         if (!is_array($vars)) {
@@ -129,6 +133,7 @@ class FlagAttribute extends MultiSelectAttribute
                     $result[] = $value;
                 }
             }
+
             return $result;
         } else {
             return $vars;
@@ -155,8 +160,9 @@ class FlagAttribute extends MultiSelectAttribute
         } else {
             $values = $record[$name];
         }
-        return '<input type="hidden" name="' . $fieldprefix . $name . '"
-                      value="' . $values . '">';
+
+        return '<input type="hidden" name="'.$fieldprefix.$name.'"
+                      value="'.$values.'">';
     }
 
     /**
@@ -164,7 +170,7 @@ class FlagAttribute extends MultiSelectAttribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -173,6 +179,4 @@ class FlagAttribute extends MultiSelectAttribute
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return array("exact");
     }
-
 }
-

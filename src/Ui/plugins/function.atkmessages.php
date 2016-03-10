@@ -32,7 +32,9 @@ function smarty_function_atkmessages($params, &$smarty)
         if (empty($msgs)) {
             Tools::atkdebug("No messages in MessageQueue");
         }
+
         return "";
     }
+
     return "";
 }

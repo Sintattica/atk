@@ -36,15 +36,15 @@ class MessageQueue
                 $s_instance = new MessageQueue();
             }
         }
+
         return $s_instance;
     }
 
     /**
      * Constructor
      */
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
@@ -55,12 +55,13 @@ class MessageQueue
      * @param int $type
      * @return boolean Success
      */
-    function addMessage($txt, $type = self::AMQ_GENERAL)
+    public function addMessage($txt, $type = self::AMQ_GENERAL)
     {
         $instance = self::getInstance();
         if (is_object($instance)) {
             return $instance->_addMessage($txt, $type);
         }
+
         return false;
     }
 
@@ -70,7 +71,7 @@ class MessageQueue
      * @param int $type The message type
      * @return string The name of the message type
      */
-    function _getTypeName($type)
+    public function _getTypeName($type)
     {
         if ($type == self::AMQ_SUCCESS) {
             return 'success';
@@ -94,10 +95,11 @@ class MessageQueue
      * @param int $type
      * @return boolean Success
      */
-    function _addMessage($txt, $type)
+    public function _addMessage($txt, $type)
     {
         $q = $this->getQueue();
         $q[] = array('message' => $txt, 'type' => $this->_getTypeName($type));
+
         return true;
     }
 
@@ -113,6 +115,7 @@ class MessageQueue
         if (is_object($instance)) {
             return $instance->_getMessage();
         }
+
         return "";
     }
 
@@ -121,9 +124,10 @@ class MessageQueue
      *
      * @return string message
      */
-    function _getMessage()
+    public function _getMessage()
     {
         $q = &$this->getQueue();
+
         return array_shift($q);
     }
 
@@ -138,6 +142,7 @@ class MessageQueue
         if (is_object($instance)) {
             return $instance->_getMessages();
         }
+
         return array();
     }
 
@@ -146,11 +151,12 @@ class MessageQueue
      *
      * @return array messages
      */
-    function _getMessages()
+    public function _getMessages()
     {
         $q = &$this->getQueue();
         $queue_copy = $q;
         $q = array();
+
         return $queue_copy;
     }
 
@@ -159,16 +165,14 @@ class MessageQueue
      *
      * @return array The message queue
      */
-    function &getQueue()
+    public function &getQueue()
     {
         $sessionmgr = SessionManager::getInstance();
         $session = &$sessionmgr->getSession();
         if (!isset($session['atkmessagequeue'])) {
             $session['atkmessagequeue'] = array();
         }
+
         return $session['atkmessagequeue'];
     }
-
 }
-
-

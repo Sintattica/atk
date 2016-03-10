@@ -38,10 +38,10 @@ class UrlAttribute extends Attribute
      */
     const ANCHOR = 4;
 
-    var $m_accepts_url_flag = 0;
-    var $m_newWindow = false;
-    var $m_allowWrap = false;
-    var $m_stripHttp = false;
+    public $m_accepts_url_flag = 0;
+    public $m_newWindow = false;
+    public $m_allowWrap = false;
+    public $m_stripHttp = false;
 
     /**
      * base url. Set it by
@@ -65,7 +65,7 @@ class UrlAttribute extends Attribute
      *                     parameter.
      * @return UrlAttribute
      */
-    function __construct($name, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $size = 0)
     {
         if (self::AF_POPUP === ($flags & self::AF_POPUP)) {
             $this->m_newWindow = true;
@@ -96,7 +96,7 @@ class UrlAttribute extends Attribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $output = '';
 
@@ -115,7 +115,7 @@ class UrlAttribute extends Attribute
              */
             if (($this->getBaseUrl()) && (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE)) {
                 $base = $this->getBaseUrl();
-                $url = $base . $url;
+                $url = $base.$url;
             }
 
             $text = $record[$this->fieldName()];
@@ -127,7 +127,7 @@ class UrlAttribute extends Attribute
                 $text = preg_replace('/([?&].)/', ' \1', $text);
             }
 
-            $output = '<a href="' . $url . '"' . $target . '">' . $text . '</a>';
+            $output = '<a href="'.$url.'"'.$target.'">'.$text.'</a>';
         }
 
         return $output;
@@ -161,7 +161,7 @@ class UrlAttribute extends Attribute
      *
      * @param int $accepts_flag
      */
-    function acceptUrls($accepts_flag)
+    public function acceptUrls($accepts_flag)
     {
         $this->m_accepts_url_flag = $accepts_flag;
     }
@@ -175,7 +175,7 @@ class UrlAttribute extends Attribute
      * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         $this->validateUrl($record, $mode, true);
     }
@@ -189,7 +189,7 @@ class UrlAttribute extends Attribute
      * @param string $mode Validation mode. Can be either "add" or "update"
      * @param boolean $show_error fire a triggerError when validation fails
      */
-    function validateUrl(&$record, $mode, $show_error = false)
+    public function validateUrl(&$record, $mode, $show_error = false)
     {
         $result = false;
 
@@ -210,9 +210,7 @@ class UrlAttribute extends Attribute
          * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
          */
         if (($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) {
-            $absolute_result = preg_match("/^" . $base_url_regex . $relative_url_regex . "*$/Ui",
-                $record[$this->fieldName()])
-                ? true : false;
+            $absolute_result = preg_match("/^".$base_url_regex.$relative_url_regex."*$/Ui", $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $absolute_result;
         }
@@ -223,8 +221,7 @@ class UrlAttribute extends Attribute
          * Example: #internal_bookmark
          */
         if (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR) {
-            $anchor_result = preg_match("/^#" . $relative_url_regex . "*$/Ui", $record[$this->fieldName()])
-                ? true : false;
+            $anchor_result = preg_match("/^#".$relative_url_regex."*$/Ui", $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $anchor_result;
         }
@@ -237,9 +234,7 @@ class UrlAttribute extends Attribute
          * or:      https://www2-dev.test_url.com/index.php?/history.html#bookmark
          */
         if ((($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) && (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR)) {
-            $absolute_anchor_result = preg_match("/^" . $base_url_regex . $relative_url_regex_with_anchor . "*$/Ui",
-                $record[$this->fieldName()])
-                ? true : false;
+            $absolute_anchor_result = preg_match("/^".$base_url_regex.$relative_url_regex_with_anchor."*$/Ui", $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $absolute_anchor_result;
         }
@@ -250,8 +245,7 @@ class UrlAttribute extends Attribute
          * Example: /mysite/guestbook/index.html
          */
         if (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE) {
-            $relative_result = preg_match("/^" . $relative_url_regex_with_anchor . "+$/Ui", $record[$this->fieldName()])
-                ? true : false;
+            $relative_result = preg_match("/^".$relative_url_regex_with_anchor."+$/Ui", $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $relative_result;
         }
@@ -263,25 +257,19 @@ class UrlAttribute extends Attribute
         if (!$result && $show_error) {
             // if result of all validations is false, display error-messages
             if ($absolute_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url',
-                    Tools::atktext('invalid_absolute_no_anchor_url'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url', Tools::atktext('invalid_absolute_no_anchor_url'));
             }
             if ($anchor_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_url_anchor',
-                    Tools::atktext('invalid_url_anchor'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_url_anchor', Tools::atktext('invalid_url_anchor'));
             }
             if ($absolute_anchor_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_url',
-                    Tools::atktext('invalid_absolute_url'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_url', Tools::atktext('invalid_absolute_url'));
             }
             if ($relative_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url',
-                    Tools::atktext('invalid_relative_url'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url', Tools::atktext('invalid_relative_url'));
             }
         }
+
         return ($result || parent::validate($record, $mode));
     }
-
 }
-
-

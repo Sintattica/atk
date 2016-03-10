@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\RecordList;
 
-
 /**
  * CVS for Excel recordlist renderer.
  * Note: End of line characters within values are replaced for excel 2003 compatibility reasons!
@@ -10,9 +9,9 @@
  * @subpackage recordlist
  *
  */
-class ExcelCSVRecordList extends CustomRecordList
+class ExcelCsvRecordList extends CustomRecordList
 {
-    var $lfreplace = null;
+    public $lfreplace = null;
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
@@ -25,7 +24,7 @@ class ExcelCSVRecordList extends CustomRecordList
      * @param Boolean $titlerow Should titlerow be rendered or not
      * @param Boolean $decode Should data be decoded or not (for exports)
      */
-    function render(
+    public function render(
         &$node,
         $recordset,
         $compression = "",
@@ -34,8 +33,8 @@ class ExcelCSVRecordList extends CustomRecordList
         $titlerow = true,
         $decode = false
     ) {
-        parent::render($node, $recordset, "", "\"", "\"", "\n", "1", $compression, $suppressList, $outputparams, "csv",
-            $titlerow, $decode, ";", $this->lfreplace);
+        parent::render($node, $recordset, "", "\"", "\"", "\n", "1", $compression, $suppressList, $outputparams, "csv", $titlerow, $decode, ";",
+            $this->lfreplace);
     }
 
     /**
@@ -44,10 +43,8 @@ class ExcelCSVRecordList extends CustomRecordList
      *
      * @param string $string The line feed replacement string
      */
-    function setLfReplacementString($string)
+    public function setLfReplacementString($string)
     {
         $this->lfreplace = $string;
     }
-
 }
-

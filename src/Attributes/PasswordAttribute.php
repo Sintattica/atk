@@ -3,7 +3,6 @@
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 
-
 /**
  * The PasswordAttribute class represents an attribute of a node
  * that is a password field. It automatically encrypts passwords
@@ -37,14 +36,14 @@ class PasswordAttribute extends Attribute
     const EASYCONSONANTS = "aeuy";
 
     /* generate? */
-    var $m_generate;
+    public $m_generate;
 
     /**
      * Restrictions to apply when changing/setting the password
      *
      * @var array
      */
-    var $m_restrictions;
+    public $m_restrictions;
 
     /**
      * Salt to use when encoding our password
@@ -64,7 +63,7 @@ class PasswordAttribute extends Attribute
      *                     parameter.
      * @param array $restrictions
      */
-    function __construct($name, $generate = false, $flags = 0, $size = 0, $restrictions = [])
+    public function __construct($name, $generate = false, $flags = 0, $size = 0, $restrictions = [])
     {
         parent::__construct($name, $flags | self::AF_HIDE_SEARCH, $size);
         $this->setRestrictions($restrictions);
@@ -77,9 +76,9 @@ class PasswordAttribute extends Attribute
      * @param string $value
      * @return string
      */
-    function encode($value)
+    public function encode($value)
     {
-        return $this->hasFlag(self::AF_PASSWORD_NO_ENCODE) ? $value : md5($this->getSalt() . $value);
+        return $this->hasFlag(self::AF_PASSWORD_NO_ENCODE) ? $value : md5($this->getSalt().$value);
     }
 
     /**
@@ -87,7 +86,7 @@ class PasswordAttribute extends Attribute
      *
      * @param array $restrictions Restrictions that should apply to this attribute
      */
-    function setRestrictions($restrictions)
+    public function setRestrictions($restrictions)
     {
         $this->m_restrictions = array(
             "minsize" => 0,
@@ -95,7 +94,7 @@ class PasswordAttribute extends Attribute
             "minlowerchars" => 0,
             "minalphabeticchars" => 0,
             "minnumbers" => 0,
-            "minspecialchars" => 0
+            "minspecialchars" => 0,
         );
         if (is_array($restrictions)) {
             foreach ($restrictions as $name => $value) {
@@ -105,12 +104,11 @@ class PasswordAttribute extends Attribute
                     "minlowerchars",
                     "minalphabeticchars",
                     "minnumbers",
-                    "minspecialchars"
+                    "minspecialchars",
                 ))) {
                     $this->m_restrictions[strtolower($name)] = $value;
                 } else {
-                    Tools::atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"",
-                        Tools::DEBUG_WARNING);
+                    Tools::atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"", Tools::DEBUG_WARNING);
                 }
             }
         }
@@ -121,7 +119,7 @@ class PasswordAttribute extends Attribute
      *
      * @return array Restrictions that should apply to this attribute
      */
-    function getRestrictions()
+    public function getRestrictions()
     {
         return $this->m_restrictions;
     }
@@ -134,51 +132,30 @@ class PasswordAttribute extends Attribute
      * @param string $mode the mode (add, edit etc.)
      * @return string piece of html code with a textarea
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
-        $id = $fieldprefix . $this->fieldName();
+        $id = $fieldprefix.$this->fieldName();
         /* insert */
         if ($mode != 'edit' && $mode != 'update') {
             if (!$this->m_generate) {
-                $result = Tools::atktext("password_new", "atk") . ':<br>' .
-                    '<input autocomplete="off" type="password" id="' . $id . '[new]" name="' . $id . '[new]"' .
-                    ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                        : '') .
-                    ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . "><br><br>" .
-                    Tools::atktext("password_again", "atk") . ':<br>' .
-                    '<input autocomplete="off" type="password" id="' . $id . '[again]" name="' . $id . '[again]"' .
-                    ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                        : '') .
-                    ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ">";
+                $result = Tools::atktext("password_new",
+                        "atk").':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".Tools::atktext("password_again",
+                        "atk").':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
             } else {
                 $password = $this->generatePassword(8, true);
-                $result = '<input type="hidden" id="' . $id . '[again]" name="' . $id . '[again]"' .
-                    ' value ="' . $password . '">' .
-                    '<input type="text" id="' . $id . '[new]" name="' . $id . '[new]"' .
-                    ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                        : '') .
-                    ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ' value ="' . $password . '" onchange="this.form.elements[\'' . $fieldprefix . $this->fieldName() . '[again]\'].value=this.value">';
+                $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.' value ="'.$password.'">'.'<input type="text" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
             }
         } /* edit */ else {
-            $result = '<input type="hidden" name="' . $id . '[hash]"' .
-                ' value="' . $record[$this->fieldName()]["hash"] . '">';
+            $result = '<input type="hidden" name="'.$id.'[hash]"'.' value="'.$record[$this->fieldName()]["hash"].'">';
 
 
             if (!$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE)) {
-                $result .= Tools::atktext("password_current", "atk") . ':<br>' .
-                    '<input autocomplete="off" type="password" id="' . $id . '[current]" name="' . $id . '[current]"' .
-                    ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"'
-                        : '') .
-                    ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '><br><br>';
+                $result .= Tools::atktext("password_current",
+                        "atk").':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[current]" name="'.$id.'[current]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
             }
-            $result .= Tools::atktext("password_new", "atk") . ':<br>' .
-                '<input autocomplete="off" type="password" id="' . $id . '[new]" name="' . $id . '[new]"' .
-                ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') .
-                ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '><br><br>' .
-                Tools::atktext("password_again", "atk") . ':<br>' .
-                '<input autocomplete="off" type="password" id="' . $id . '[again]" name="' . $id . '[again]"' .
-                ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') .
-                ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '>';
+            $result .= Tools::atktext("password_new",
+                    "atk").':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext("password_again",
+                    "atk").':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
         }
 
         return $result;
@@ -199,7 +176,7 @@ class PasswordAttribute extends Attribute
      * @param array $rec Array with values
      * @return String with slashes
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         return addslashes($rec[$this->fieldName()]["hash"]);
     }
@@ -209,10 +186,10 @@ class PasswordAttribute extends Attribute
      * @param array $rec array with values
      * @return array with hash field without slashes
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
-        $value = isset($rec[$this->fieldName()]) ? stripslashes($rec[$this->fieldName()])
-            : null;
+        $value = isset($rec[$this->fieldName()]) ? stripslashes($rec[$this->fieldName()]) : null;
+
         return array("hash" => $value);
     }
 
@@ -223,7 +200,7 @@ class PasswordAttribute extends Attribute
      * @param string $chars Characters that should be looked for in password
      * @return int Number of characters in password that match
      */
-    function _countCharMatches($password, $chars)
+    public function _countCharMatches($password, $chars)
     {
         $count = 0;
         for ($i = 0, $_i = strlen($password); $i < $_i; $i++) {
@@ -231,6 +208,7 @@ class PasswordAttribute extends Attribute
                 $count++;
             }
         }
+
         return $count;
     }
 
@@ -240,7 +218,7 @@ class PasswordAttribute extends Attribute
      * @param string $password
      * @return boolean True if password succesfully validates to the restrictions
      */
-    function validateRestrictions($password)
+    public function validateRestrictions($password)
     {
         // Mainain the failed status as boolean (false by default)
         $validationfailed = false;
@@ -266,7 +244,7 @@ class PasswordAttribute extends Attribute
                     $actual = $this->_countCharMatches($password, self::NUMBERS);
                     break;
                 case "minspecialchars":
-                    $actual = strlen($password) - $this->_countCharMatches($password, self::ALPHABETICCHARS . self::NUMBERS);
+                    $actual = strlen($password) - $this->_countCharMatches($password, self::ALPHABETICCHARS.self::NUMBERS);
                     break;
             }
 
@@ -284,7 +262,7 @@ class PasswordAttribute extends Attribute
      *
      * @return string Description of restrictions
      */
-    function getRestrictionsText()
+    public function getRestrictionsText()
     {
         // If no restrictions are set, return "No restrictions apply to this password"
         if (count($this->m_restrictions) == 0) {
@@ -299,11 +277,9 @@ class PasswordAttribute extends Attribute
             // Add a human readable form of the current restriction to the text string and append a linebreak
             if ($value > 0) {
                 if ($name == "minsize") {
-                    $text .= sprintf(Tools::atktext("the_password_should_be_at_least_%d_characters_long", "atk"),
-                        $value);
+                    $text .= sprintf(Tools::atktext("the_password_should_be_at_least_%d_characters_long", "atk"), $value);
                 } else {
-                    $text .= sprintf(Tools::atktext("the_password_should_at_least_contain_%d_%s", "atk"), $value,
-                        Tools::atktext(substr($name, 3), "atk"));
+                    $text .= sprintf(Tools::atktext("the_password_should_at_least_contain_%d_%s", "atk"), $value, Tools::atktext(substr($name, 3), "atk"));
                 }
                 $text .= "<br />\n";
             }
@@ -319,7 +295,7 @@ class PasswordAttribute extends Attribute
      *                 Errors are saved in this record
      * @param string $mode can be either "add" or "update"
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         $error = false;
         $value = $record[$this->fieldName()];
@@ -358,7 +334,7 @@ class PasswordAttribute extends Attribute
      * @param array $record The record that holds this attribute's value.
      * @return true if it's empty
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         /* unfortunately we cannot check this here */
         return false;
@@ -374,8 +350,8 @@ class PasswordAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[hash]"' .
-            ' value="' . $record[$this->fieldName()]["hash"] . '">';
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[hash]"'.' value="'.$record[$this->fieldName()]["hash"].'">';
+
         return $result;
     }
 
@@ -385,7 +361,7 @@ class PasswordAttribute extends Attribute
      * @param string $mode
      * @return string with value to display
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         return Tools::atktext("password_hidden", "atk");
     }
@@ -393,7 +369,7 @@ class PasswordAttribute extends Attribute
     /**
      * There can not be searched for passwords!
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         return array();
     }
@@ -405,7 +381,7 @@ class PasswordAttribute extends Attribute
      * @param int $count Length of the resulting string
      * @return string Generated random string
      */
-    function getRandomChars($chars, $count)
+    public function getRandomChars($chars, $count)
     {
         // Always use an array
         $charset = is_array($chars) ? $chars : array($chars);
@@ -436,7 +412,7 @@ class PasswordAttribute extends Attribute
      * @param boolean $easytoremember If true, generated passwords are more easy to remember, but also easier to crack. Defaults to false.
      * @return string Generated password
      */
-    function generatePassword($length = 8, $easytoremember = false)
+    public function generatePassword($length = 8, $easytoremember = false)
     {
         // Use short notation
         $r = $this->m_restrictions;
@@ -444,15 +420,13 @@ class PasswordAttribute extends Attribute
         // Compose a string that meets the character-specific minimum restrictions
         $tmp = $this->getRandomChars(self::LOWERCHARS, $r["minlowerchars"]);
         $tmp .= $this->getRandomChars(self::UPPERCHARS, $r["minupperchars"]);
-        $alphabeticchars = ($r["minalphabeticchars"] > strlen($tmp)) ? ($r["minalphabeticchars"] - strlen($tmp))
-            : 0;
-        $tmp .= $this->getRandomChars(self::LOWERCHARS . self::UPPERCHARS, $alphabeticchars);
+        $alphabeticchars = ($r["minalphabeticchars"] > strlen($tmp)) ? ($r["minalphabeticchars"] - strlen($tmp)) : 0;
+        $tmp .= $this->getRandomChars(self::LOWERCHARS.self::UPPERCHARS, $alphabeticchars);
         $tmp .= $this->getRandomChars(self::NUMBERS, $r["minnumbers"]);
         $tmp .= $this->getRandomChars(self::SPECIALCHARS, $r["minspecialchars"]);
 
         // Determine how many characters we still need to add to meet the overall minimum length
-        $remainingchars = max($r["minsize"], $length) > strlen($tmp) ? (max($r["minsize"], $length) - strlen($tmp))
-            : 0;
+        $remainingchars = max($r["minsize"], $length) > strlen($tmp) ? (max($r["minsize"], $length) - strlen($tmp)) : 0;
 
         // At this point we have gathered the characters we need to meet the
         // charactertype-specific restrictions. From now we can split ways to
@@ -467,7 +441,7 @@ class PasswordAttribute extends Attribute
             $out .= $tmp;
         } else {
             // Add random characters to the string to fill up until the minimum size or passed length
-            $tmp .= $this->getRandomChars(self::LOWERCHARS . self::UPPERCHARS . self::NUMBERS . self::SPECIALCHARS, $remainingchars);
+            $tmp .= $this->getRandomChars(self::LOWERCHARS.self::UPPERCHARS.self::NUMBERS.self::SPECIALCHARS, $remainingchars);
 
             // The output should be a shuffled to make it really random
             $out = str_shuffle($tmp);
@@ -484,7 +458,7 @@ class PasswordAttribute extends Attribute
      *                        example) that holds this attribute's value.
      * @return string
      */
-    function fetchValue($rec)
+    public function fetchValue($rec)
     {
         if (isset($rec[$this->fieldName()]["current"]) && !empty($rec[$this->fieldName()]["current"])) {
             $rec[$this->fieldName()]["current"] = $this->encode($rec[$this->fieldName()]["current"]);
@@ -496,6 +470,7 @@ class PasswordAttribute extends Attribute
         if (isset($rec[$this->fieldName()]["again"]) && !empty($rec[$this->fieldName()]["again"])) {
             $rec[$this->fieldName()]["again"] = $this->encode($rec[$this->fieldName()]["again"]);
         }
+
         return $rec[$this->fieldName()];
     }
 
@@ -508,7 +483,7 @@ class PasswordAttribute extends Attribute
      * @param array $record The record that contains this attribute's value
      * @return bool
      */
-    function needsUpdate($record)
+    public function needsUpdate($record)
     {
         $value = $record[$this->fieldName()];
 
@@ -517,6 +492,7 @@ class PasswordAttribute extends Attribute
         if (Tools::atkArrayNvl($value, "new", "") != "" || Tools::atkArrayNvl($value, "hash", "") != "") {
             return true;
         }
+
         return false;
     }
 
@@ -540,7 +516,4 @@ class PasswordAttribute extends Attribute
     {
         return $this->m_salt;
     }
-
 }
-
-

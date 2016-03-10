@@ -67,7 +67,7 @@ class Tools
         'sjis',
         '932',
         'euc-jp',
-        'eucjp'
+        'eucjp',
     );
     /**
      * Do we have multibyte support
@@ -108,7 +108,7 @@ class Tools
             E_USER_ERROR => "User Error",
             E_USER_WARNING => "User Warning",
             E_USER_NOTICE => "User Notice",
-            E_STRICT => "Strict Notice"
+            E_STRICT => "Strict Notice",
         );
 
         // E_RECOVERABLE_ERROR is available since 5.2.0
@@ -132,16 +132,19 @@ class Tools
             if ($errtype == E_NOTICE) {
                 // Just show notices
                 self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", Tools::DEBUG_NOTICE);
+
                 return;
             } else {
                 if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
                     // Just show deprecation warnings in the debug log, but don't influence the program flow
                     self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", Tools::DEBUG_NOTICE);
+
                     return;
                 } else {
                     if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
                         // This is something we should pay attention to, but we don't need to die.
                         self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
+
                         return;
                     } else {
                         self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
@@ -165,8 +168,8 @@ class Tools
     public static function atkExceptionHandler($exception)
     {
         self::atkdebug($exception->getMessage(), Tools::DEBUG_ERROR);
-        self::atkdebug("Trace:<br/>" . nl2br($exception->getTraceAsString()), Tools::DEBUG_ERROR);
-        self::atkhalt("Uncaught exception: " . $exception->getMessage(), 'critical');
+        self::atkdebug("Trace:<br/>".nl2br($exception->getTraceAsString()), Tools::DEBUG_ERROR);
+        self::atkhalt("Uncaught exception: ".$exception->getMessage(), 'critical');
     }
 
     /**
@@ -188,12 +191,11 @@ class Tools
             }
 
             if (php_sapi_name() == 'cli') {
-                $res = self::atktext($level, "atk") . ': ' . $msg . "\n";
+                $res = self::atktext($level, "atk").': '.$msg."\n";
             } else {
                 $res = "<html>";
                 $res .= '<body style="background-color: #ffffff; color:#000000;">';
-                $res .= "<span style=\"color:$level_color;\"><b>" . self::atktext($level,
-                        "atk") . "</b></span>: $msg.<br />\n";
+                $res .= "<span style=\"color:$level_color;\"><b>".self::atktext($level, "atk")."</b></span>: $msg.<br />\n";
             }
 
             Output::getInstance()->output($res);
@@ -202,6 +204,7 @@ class Tools
         } else {
             self::atkerror("$msg");
         }
+
         return false;
     }
 
@@ -222,14 +225,14 @@ class Tools
                 $txt = htmlentities($txt);
             }
             if (self::hasFlag($flags, Tools::DEBUG_WARNING)) {
-                $txt = "<b>" . $txt . "</b>";
+                $txt = "<b>".$txt."</b>";
             }
 
-            $line = self::atkGetTimingInfo() . $txt;
+            $line = self::atkGetTimingInfo().$txt;
             self::atkWriteLog($line);
 
             if (self::hasFlag($flags, Tools::DEBUG_ERROR)) {
-                $line = '<span class="atkDebugError">' . $line . '</span>';
+                $line = '<span class="atkDebugError">'.$line.'</span>';
             }
 
             if ($level > 2) {
@@ -275,9 +278,8 @@ class Tools
 
     public static function atkGetTimingInfo()
     {
-        return "[" . Debugger::elapsed() . (Config::getGlobal('debug') > 0 && function_exists("memory_get_usage")
-            ? " / " . sprintf("%02.02f", (memory_get_usage() / 1024 / 1024)) . "MB"
-            : "") . "] ";
+        return "[".Debugger::elapsed().(Config::getGlobal('debug') > 0 && function_exists("memory_get_usage") ? " / ".sprintf("%02.02f",
+                (memory_get_usage() / 1024 / 1024))."MB" : "")."] ";
     }
 
     /**
@@ -297,15 +299,15 @@ class Tools
         global $g_error_msg;
 
         if ($error instanceof Exception) {
-            $g_error_msg[] = "[" . Debugger::elapsed() . "] " . $error->getMessage();
-            self::atkdebug(nl2br($error->getMessage() . "\n" . $error->getTraceAsString()), Tools::DEBUG_ERROR);
+            $g_error_msg[] = "[".Debugger::elapsed()."] ".$error->getMessage();
+            self::atkdebug(nl2br($error->getMessage()."\n".$error->getTraceAsString()), Tools::DEBUG_ERROR);
         } else {
-            $g_error_msg[] = "[" . Debugger::elapsed() . "] " . $error;
+            $g_error_msg[] = "[".Debugger::elapsed()."] ".$error;
             self::atkdebug($error, Tools::DEBUG_ERROR);
         }
 
         if (function_exists('debug_backtrace')) {
-            self::atkdebug("Trace:" . self::atkGetTrace(), Tools::DEBUG_ERROR);
+            self::atkdebug("Trace:".self::atkGetTrace(), Tools::DEBUG_ERROR);
         }
 
         if (Config::getGlobal('throw_exception_on_error') && $error instanceof Exception) {
@@ -315,6 +317,7 @@ class Tools
                 throw new Exception($error);
             }
         }
+
         return;
     }
 
@@ -352,9 +355,7 @@ class Tools
 
             // Read the source location
             if (isset($traceArr[$i]["file"])) {
-                $location = $traceArr[$i]["file"] . (isset($traceArr[$i]["line"]) ? sprintf(", line %d",
-                        $traceArr[$i]["line"])
-                        : "[Unknown line]");
+                $location = $traceArr[$i]["file"].(isset($traceArr[$i]["line"]) ? sprintf(", line %d", $traceArr[$i]["line"]) : "[Unknown line]");
             } else {
                 $location = "[PHP KERNEL]";
             }
@@ -385,11 +386,11 @@ class Tools
                                 if (is_object($value)) {
                                     $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
                                 } else {
-                                    $valArr[] = $name . "=" . @json_encode($value);
+                                    $valArr[] = $name."=".@json_encode($value);
                                 }
                             }
                         }
-                        $stringval = "array(" . implode(", ", $valArr) . ")";
+                        $stringval = "array(".implode(", ", $valArr).")";
                     } else {
                         if (is_null($val)) {
                             $stringval = 'null';
@@ -400,24 +401,23 @@ class Tools
                                 if (is_bool($val)) {
                                     $stringval = $val ? 'true' : 'false';
                                 } else {
-                                    if (strlen($val . $theSpacer) > 103) {
-                                        $stringval = '"' . substr($val, 0, 100 - strlen($theSpacer)) . '"...';
+                                    if (strlen($val.$theSpacer) > 103) {
+                                        $stringval = '"'.substr($val, 0, 100 - strlen($theSpacer)).'"...';
                                     } else {
-                                        $stringval = '"' . $val . '"';
+                                        $stringval = '"'.$val.'"';
                                     }
                                 }
                             }
                         }
                     }
-                    $functionParamArr[] = $theSpacer . "  " . $stringval;
+                    $functionParamArr[] = $theSpacer."  ".$stringval;
                 }
             }
             $functionParams = implode(",\n", $functionParamArr);
 
-            $ret .= $theSpacer . "@" . $location . "\n";
-            $ret .= $theSpacer . $statement;
-            $ret .= (strlen($functionParams) ? "\n" . $theSpacer . "(\n" . $functionParams . "\n" . $theSpacer . ")"
-                    : "()") . "\n";
+            $ret .= $theSpacer."@".$location."\n";
+            $ret .= $theSpacer.$statement;
+            $ret .= (strlen($functionParams) ? "\n".$theSpacer."(\n".$functionParams."\n".$theSpacer.")" : "()")."\n";
 
             // Add indentation
             $theSpacer .= "  ";
@@ -425,7 +425,7 @@ class Tools
 
         // If html format should be used, replace the html special chars with html entities and put the backtrace within preformat tags.
         if ($format == "html") {
-            $ret = "<pre>" . htmlspecialchars($ret) . "</pre>";
+            $ret = "<pre>".htmlspecialchars($ret)."</pre>";
         }
 
         // Return the generated trace
@@ -442,7 +442,7 @@ class Tools
     {
         $fp = @fopen($file, "a");
         if ($fp) {
-            fwrite($fp, $text . "\n");
+            fwrite($fp, $text."\n");
             fclose($fp);
         }
     }
@@ -486,8 +486,7 @@ class Tools
         $firstfallback = "",
         $nodefaulttext = false,
         $modulefallback = false
-    )
-    {
+    ) {
         return Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
 
@@ -553,6 +552,7 @@ class Tools
                 $result[$key] = $value;
             }
         }
+
         return $result;
     }
 
@@ -588,6 +588,7 @@ class Tools
                 return true;
             }
         }
+
         return false;
     }
 
@@ -606,6 +607,7 @@ class Tools
         if (substr($temp, 0, 1) == '"' && substr($temp, -1) == '"') {
             return substr($temp, 1, -1);
         }
+
         return $string;
     }
 
@@ -620,7 +622,7 @@ class Tools
 
         static $s_regex = null;
         if ($s_regex === null) {
-            $s_regex = '/' . implode('|', array_map('preg_quote', $operators)) . '/';
+            $s_regex = '/'.implode('|', array_map('preg_quote', $operators)).'/';
         }
 
         list($key, $value) = preg_split($s_regex, $pair);
@@ -651,6 +653,7 @@ class Tools
                 $result[trim($key)] = null;
             }
         }
+
         return $result;
     }
 
@@ -662,10 +665,11 @@ class Tools
     public static function encodeKeyValueSet($set)
     {
         reset($set);
-        $items = Array();
+        $items = array();
         while (list($key, $value) = each($set)) {
-            $items[] = $key . "=" . $value;
+            $items[] = $key."=".$value;
         }
+
         return implode(" AND ", $items);
     }
 
@@ -694,15 +698,12 @@ class Tools
      */
     public static function atkDataDecode(&$vars)
     {
-
         foreach (array_keys($vars) as $varname) {
             $value = &$vars[$varname];
 
             self::AE_decode($vars, $varname);
 
-            if (strpos(strtoupper($varname),
-                    '_AMDAE_') > 0
-            ) { // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
+            if (strpos(strtoupper($varname), '_AMDAE_') > 0) { // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
                 // at the beginning of the string.. but since that's not a valid
                 // encoded var, we do nothing with it.
                 // This string is encoded.
@@ -774,9 +775,10 @@ class Tools
     {
         $string = rawurlencode($string);
         for ($i = 8; $i >= 1; $i--) {
-            $string = str_replace("_" . $i, "_" . ($i + 1), $string);
+            $string = str_replace("_".$i, "_".($i + 1), $string);
         }
-        return ($pref ? "__" : "") . str_replace("%", "_1", $string);
+
+        return ($pref ? "__" : "").str_replace("%", "_1", $string);
     }
 
     public static function atkurldecode($string)
@@ -786,8 +788,9 @@ class Tools
         } else {
             $string = str_replace("_1", "%", substr($string, 2));
             for ($i = 1; $i <= 8; $i++) {
-                $string = str_replace("_" . ($i + 1), "_" . $i, $string);
+                $string = str_replace("_".($i + 1), "_".$i, $string);
             }
+
             return rawurldecode($string);
         }
     }
@@ -812,8 +815,7 @@ class Tools
     public static function handleError()
     {
         global $g_error_msg, $g_debug_msg;
-        $errorHandlers = Config::getGlobal('error_handlers',
-            array('mail' => array('mailto' => Config::getGlobal('mailreport'))));
+        $errorHandlers = Config::getGlobal('error_handlers', array('mail' => array('mailto' => Config::getGlobal('mailreport'))));
         foreach ($errorHandlers as $key => $value) {
             if (is_numeric($key)) {
                 $key = $value;
@@ -833,6 +835,7 @@ class Tools
     public static function escapeSQL($string, $wildcard = false)
     {
         $db = Db::getInstance();
+
         return $db->escapeSQL($string, $wildcard);
     }
 
@@ -850,8 +853,9 @@ class Tools
     public static function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
     {
         $sm = SessionManager::getInstance();
-        $url = $sm->sessionUrl("include.php?file=" . $target . "&" . $params, SessionManager::SESSION_NESTED);
-        $popupurl = "javascript:NewWindow('" . $url . "','" . $winName . "'," . $height . "," . $width . ",'" . $scroll . "','" . $resize . "')";
+        $url = $sm->sessionUrl("include.php?file=".$target."&".$params, SessionManager::SESSION_NESTED);
+        $popupurl = "javascript:NewWindow('".$url."','".$winName."',".$height.",".$width.",'".$scroll."','".$resize."')";
+
         return $popupurl;
     }
 
@@ -873,7 +877,7 @@ class Tools
             "err" => $err,
             "msg" => $msg,
             "tab" => $tab,
-            "label" => $label
+            "label" => $label,
         );
     }
 
@@ -925,7 +929,7 @@ class Tools
         ob_start();
         var_dump($a);
         $data = ob_get_contents();
-        self::atkdebug("vardump: " . ($d != "" ? $d . " = " : "") . "<pre>" . $data . "</pre>");
+        self::atkdebug("vardump: ".($d != "" ? $d." = " : "")."<pre>".$data."</pre>");
         ob_end_clean();
     }
 
@@ -967,8 +971,8 @@ class Tools
             }
         }
 
-        header('Content-Type: ' . $mime);
-        header('Content-Disposition:  ' . $disp . '; filename="' . $filename . '"');
+        header('Content-Type: '.$mime);
+        header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
         if (preg_match("/ie/i", $browser["browser"])) {
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         }
@@ -1033,15 +1037,13 @@ class Tools
 
         $fp = @fopen($file, "rb");
         if ($fp != null) {
-            header('Content-Type: ' . $mime);
-            header("Content-Length: " . filesize($file));
-            header('Content-Disposition:  ' . $disp . '; filename="' . $filename . '"');
+            header('Content-Type: '.$mime);
+            header("Content-Length: ".filesize($file));
+            header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
             if (preg_match("/ie/i", $browser["browser"])) {
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             }
-            if (($_SERVER["SERVER_PORT"] == "443" || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match("/msie/i",
-                    $_SERVER["HTTP_USER_AGENT"])
-            ) {
+            if (($_SERVER["SERVER_PORT"] == "443" || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match("/msie/i", $_SERVER["HTTP_USER_AGENT"])) {
                 header('Pragma: public');
             } else {
                 header('Pragma: no-cache');
@@ -1052,8 +1054,10 @@ class Tools
             header("Content-Transfer-Encoding: binary");
 
             fpassthru($fp);
+
             return true;
         }
+
         return false;
     }
 
@@ -1071,6 +1075,7 @@ class Tools
         // If so, remove it from the hostname
 
         $dummy = explode(":", $atkHost);
+
         return $dummy[0];
     }
 
@@ -1086,6 +1091,7 @@ class Tools
         if (!isset($unique[$sequence])) {
             $unique[$sequence] = 0;
         }
+
         return ++$unique[$sequence];
     }
 
@@ -1110,12 +1116,14 @@ class Tools
         global $ATK_VARS;
 
         if (count($ATK_VARS)) {
-            $url = $target . "?";
+            $url = $target."?";
             foreach ($ATK_VARS as $key => $val) {
-                $url .= $key . "=" . rawurlencode($val) . "&";
+                $url .= $key."=".rawurlencode($val)."&";
             }
+
             return $url;
         }
+
         return "";
     }
 
@@ -1136,8 +1144,10 @@ class Tools
                     $str .= implode('', $inputs);
                 }
             }
+
             return $str;
         }
+
         return "";
     }
 
@@ -1146,7 +1156,7 @@ class Tools
         if ($name == null) {
             $name = htmlentities($key);
         } else {
-            $name .= '[' . htmlentities($key) . ']';
+            $name .= '['.htmlentities($key).']';
         }
 
         if (is_array($val)) {
@@ -1154,7 +1164,7 @@ class Tools
                 self::atkMakeHiddenPostVarsRecursion($rKey, $rVal, $inputs, $name);
             }
         } else {
-            $inputs[] = "<input type='hidden' name=\"" . $name . "\" value=\"" . htmlentities(strval($val)) . "\">\n";
+            $inputs[] = "<input type='hidden' name=\"".$name."\" value=\"".htmlentities(strval($val))."\">\n";
         }
     }
 
@@ -1173,6 +1183,7 @@ class Tools
             case ActionHandler::ACTION_SUCCESS:
                 return "success";
         }
+
         return '';
     }
 
@@ -1197,7 +1208,7 @@ class Tools
             }
 
             if (!is_array($value)) {
-                $query .= "$key=" . rawurlencode($value);
+                $query .= "$key=".rawurlencode($value);
             } else {
                 $query .= self::buildQueryString($value, $key);
             }
@@ -1230,7 +1241,7 @@ class Tools
         $params = array_merge($atkParams, $params);
 
         if ($params != '' && is_array($params) && count($params) > 0) {
-            $phpfile .= '?' . self::buildQueryString($params);
+            $phpfile .= '?'.self::buildQueryString($params);
         }
 
         return $phpfile;
@@ -1252,8 +1263,7 @@ class Tools
         $partial,
         $params = array(),
         $sessionStatus = SessionManager::SESSION_PARTIAL
-    )
-    {
+    ) {
         if (!is_array($params)) {
             $params = array();
         }
@@ -1280,25 +1290,25 @@ class Tools
         $sessionstatus = SessionManager::SESSION_DEFAULT,
         $embedded = true,
         $cssclass = ""
-    )
-    {
+    ) {
         $sm = SessionManager::getInstance();
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/formsubmit.js");
         static $cnt = 0;
 
         if ($cssclass == "") {
             $cssclass = "btn";
         }
 
-        $cssclass = ' class="' . $cssclass . '"';
-        $script = 'atkSubmit("' . self::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '")';
-        $button = '<input type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>';
+        $cssclass = ' class="'.$cssclass.'"';
+        $script = 'atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'")';
+        $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
 
         if (!$embedded) {
             $res = '<form name="entryform">';
             $res .= $sm->formState();
-            $res .= $button . '</form>';
+            $res .= $button.'</form>';
+
             return $res;
         } else {
             return $button;
@@ -1374,6 +1384,7 @@ class Tools
                 }
             }
         }
+
         return false;
     }
 
@@ -1401,6 +1412,7 @@ class Tools
                 }
             }
         }
+
         return false;
     }
 
@@ -1424,6 +1436,7 @@ class Tools
             }
             $escaped .= $curchar;
         }
+
         return $escaped;
     }
 
@@ -1440,6 +1453,7 @@ class Tools
             if (array_key_exists($key, $_REQUEST) && $_REQUEST[$key] != "") {
                 return $_REQUEST[$key];
             }
+
             return "";
         }
     }
@@ -1688,6 +1702,7 @@ class Tools
         $str_date = str_replace("%&%", self::atktext(substr(strtolower($date["weekday"]), 0, 3), "atk"), $str_date);
 
         /* return string */
+
         return $str_date;
     }
 
@@ -1695,8 +1710,8 @@ class Tools
     public static function getBrowserInfo($useragent = "")
     {
         $tmp = new BrowserInfo($useragent);
-        return array
-        (
+
+        return array(
             "ua" => $tmp->ua,
             "version" => $tmp->full_version,
             "browser" => $tmp->browser,
@@ -1710,7 +1725,7 @@ class Tools
             "hasGui" => $tmp->hasGui,
             "spider" => $tmp->spider,
             "family" => $tmp->family,
-            "gecko" => $tmp->gecko
+            "gecko" => $tmp->gecko,
         );
     }
 
@@ -1740,6 +1755,7 @@ class Tools
             if (is_object($handler)) {
                 return call_user_func_array(array($handler, $method), $params);
             }
+
             return false;
         } else {
             return false;
@@ -1762,38 +1778,39 @@ class Tools
      * @static
      * @return string the HTML link for the session aware URI
      */
-    static public function href(
+    public static function href(
         $url,
         $name = "",
         $sessionstatus = SessionManager::SESSION_DEFAULT,
         $saveform = false,
         $extraprops = ""
-    )
-    {
+    ) {
         $sm = SessionManager::getInstance();
         if ($saveform) {
-            $str = 'atkSubmit("' . Tools::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '", true);';
-            return "<a href=\"javascript:void(0)\" onclick=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+            $str = 'atkSubmit("'.Tools::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'", true);';
+
+            return "<a href=\"javascript:void(0)\" onclick=\"".htmlentities($str)."\" ".$extraprops.">".$name."</a>";
         } else {
             $str = $sm->sessionUrl($url, $sessionstatus);
-            return "<a href=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+
+            return "<a href=\"".htmlentities($str)."\" ".$extraprops.">".$name."</a>";
         }
     }
 
-    static public function redirect($location, $exit = true)
+    public static function redirect($location, $exit = true)
     {
         // The actual redirect.
         if (Config::getGlobal("debug") >= 2) {
             $debugger = Debugger::getInstance();
             $debugger->setRedirectUrl($location);
-            Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
+            Tools::atkdebug('Non-debug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
             if ($exit) {
                 $output = Output::getInstance();
                 $output->outputFlush();
                 exit();
             }
         } else {
-            Tools::atkdebug('redirecting to: ' . $location);
+            Tools::atkdebug('redirecting to: '.$location);
 
             if (substr($location, -1) == "&") {
                 $location = substr($location, 0, -1);
@@ -1807,7 +1824,7 @@ class Tools
                 Tools::mailreport();
             }
 
-            header('Location: ' . $location);
+            header('Location: '.$location);
             if ($exit) {
                 exit();
             }
@@ -1858,6 +1875,7 @@ class Tools
                 self::$s_hasMultiByteSupport = false;
             }
         }
+
         return self::$s_hasMultiByteSupport;
     }
 
@@ -1873,6 +1891,7 @@ class Tools
         } elseif (strtolower(Tools::atkGetCharset()) == 'utf-8') {
             preg_match_all("/./su", $str, $matches);
             $chars = $matches[0];
+
             return count($chars);
         } else {
             return strlen($str);
@@ -2018,6 +2037,7 @@ class Tools
         } else {
             Tools::atkwarning(Tools::atktext("error_iconv_not_install"));
         }
+
         return $str;
     }
 
@@ -2036,7 +2056,8 @@ class Tools
             return $string;
         } else {
             $length = $max - self::strlen($replace);
-            return self::substr($string, 0, $length) . $replace;
+
+            return self::substr($string, 0, $length).$replace;
         }
     }
 }

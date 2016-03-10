@@ -27,19 +27,19 @@ class TagAttribute extends FuzzySearchAttribute
     const TA_ERROR = 2; //When a none-existing tag was found, an error is triggered.
     const TA_IGNORE = 3; //When a none-existing tag is found, the tag is ignored.
 
-    var $m_link = "";
+    public $m_link = "";
 
-    /** @var Node null  */
-    var $m_linkInstance = null;
-    var $m_destination = "";
+    /** @var Node null */
+    public $m_linkInstance = null;
+    public $m_destination = "";
 
-    /** @var Node null  */
-    var $m_destInstance = null;
+    /** @var Node null */
+    public $m_destInstance = null;
 
-    var $m_destinationfield = "";
-    var $m_remoteKey = "";
-    var $m_localKey = "";
-    var $m_nonematching = array();
+    public $m_destinationfield = "";
+    public $m_remoteKey = "";
+    public $m_localKey = "";
+    public $m_nonematching = array();
 
     /**
      * Constructor
@@ -53,7 +53,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param int $size
      * @return TagAttribute
      */
-    function __construct($name, $destination, $destinationfield, $link, $mode = self::TA_ADD, $flags = 0, $size = 0)
+    public function __construct($name, $destination, $destinationfield, $link, $mode = self::TA_ADD, $flags = 0, $size = 0)
     {
         /*if ($size == 0) {
             $size = $this->maxInputSize();
@@ -81,6 +81,7 @@ class TagAttribute extends FuzzySearchAttribute
     public function fetchValue($vars)
     {
         $value = parent::fetchValue($vars);
+
         return trim($value, ' ,');
     }
 
@@ -89,13 +90,15 @@ class TagAttribute extends FuzzySearchAttribute
      * in a member variable ($this->m_destInstance)
      * @return bool True if successful, false if not.
      */
-    function createDestinationInstance()
+    public function createDestinationInstance()
     {
         if (!is_object($this->m_destInstance)) {
             $atk = Atk::getInstance();
             $this->m_destInstance = $atk->atkGetNode($this->m_destination);
+
             return is_object($this->m_destInstance);
         }
+
         return true;
     }
 
@@ -106,13 +109,15 @@ class TagAttribute extends FuzzySearchAttribute
      * variable.
      * @return boolean True if successful, false if not.
      */
-    function createLink()
+    public function createLink()
     {
         if (!is_object($this->m_linkInstance)) {
             $atk = Atk::getInstance();
             $this->m_linkInstance = $atk->atkGetNode($this->m_link);
+
             return is_object($this->m_linkInstance);
         }
+
         return true;
     }
 
@@ -123,7 +128,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $mode The mode we're in
      * @return True on validation, False otherwise.
      */
-    function validate(&$rec, $mode)
+    public function validate(&$rec, $mode)
     {
         $valid = true;
 
@@ -137,12 +142,10 @@ class TagAttribute extends FuzzySearchAttribute
 
         foreach ($this->m_nonematching as $keyword) {
             if ($this->m_mode == self::TA_ERROR) {
-                Tools::triggerError($rec, $this, "notallowed_new_defaulttag",
-                    sprintf($this->text("notallowed_new_defaulttag"), $keyword));
+                Tools::triggerError($rec, $this, "notallowed_new_defaulttag", sprintf($this->text("notallowed_new_defaulttag"), $keyword));
                 $valid = false;
             } elseif ($this->m_mode == self::TA_ADD && !$this->isValidKeyWord($keyword)) {
-                Tools::triggerError($rec, $this, 'error_tag_illegalvalue',
-                    sprintf($this->text('error_tag_illegalvalue'), $keyword));
+                Tools::triggerError($rec, $this, 'error_tag_illegalvalue', sprintf($this->text('error_tag_illegalvalue'), $keyword));
                 $valid = false;
             }
         }
@@ -156,19 +159,20 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $keyword
      * @return bool
      */
-    function isValidKeyWord($keyword)
+    public function isValidKeyWord($keyword)
     {
         $replaced = strip_tags(str_replace("\n", '', str_replace("\r\n", '', $keyword)));
+
         return (Tools::atk_strlen($keyword) == Tools::atk_strlen($replaced));
     }
 
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         Tools::atkdebug("edit of attribute '".$this->fieldName()."'");
 
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atktagattribute.js");
+        $page->register_script(Config::getGlobal("assets_url")."javascript/class.atktagattribute.js");
 
         if ($this->createDestinationInstance()) {
             $html = $this->displayDefaultTags($fieldprefix);
@@ -179,9 +183,11 @@ class TagAttribute extends FuzzySearchAttribute
             }
 
             $html .= TextAttribute::edit($record, $fieldprefix, $mode);
+
             return $html;
         } else {
             Tools::atkdebug("could not create destination instance");
+
             return false;
         }
     }
@@ -192,16 +198,16 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $prefix
      * @return string The HTML code to display the default tags
      */
-    function displayDefaultTags($prefix = '')
+    public function displayDefaultTags($prefix = '')
     {
         $id = $this->getHtmlid($prefix);
 
         $defaults = $this->_getDefaultTags();
 
-        $html = '<div id="' . $this->fieldName() . '_tags">';
+        $html = '<div id="'.$this->fieldName().'_tags">';
 
         if (count($defaults)) {
-            $html .= $this->text("available_default_tags") . ": ";
+            $html .= $this->text("available_default_tags").": ";
             for ($i = 0, $_i = count($defaults); $i < $_i; $i++) {
                 $key = $defaults[$i][$this->m_destinationfield];
 
@@ -218,6 +224,7 @@ class TagAttribute extends FuzzySearchAttribute
         }
 
         $html .= "</div>";
+
         return $html;
     }
 
@@ -227,7 +234,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param array $orgrec
      * @return string
      */
-    function refillRecord($orgrec)
+    public function refillRecord($orgrec)
     {
         if (!$this->createLink()) {
             return "";
@@ -236,7 +243,7 @@ class TagAttribute extends FuzzySearchAttribute
         $values = array();
 
         $objectid = $orgrec[$this->m_ownerInstance->primaryKeyField()]; //pageid or topicid
-        $selector = $this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $objectid . "'";
+        $selector = $this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$objectid."'";
         $records = $this->m_linkInstance->select($selector)->getAllRows();
 
         //loop through all the records
@@ -264,7 +271,7 @@ class TagAttribute extends FuzzySearchAttribute
      *                     use additional modes.
      * @return String HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         if (is_array($record[$this->fieldName()])) {
             return $this->arrayToString($record[$this->fieldName()]);
@@ -279,12 +286,13 @@ class TagAttribute extends FuzzySearchAttribute
      * @param array $array The array to convert
      * @return string String representation of the array
      */
-    function arrayToString($array)
+    public function arrayToString($array)
     {
         $values = array();
         foreach ($array as $a) {
             $values[] = nl2br(htmlspecialchars($a[$this->getRemoteKey()][$this->m_destinationfield]));
         }
+
         return implode(", ", $values);
     }
 
@@ -293,7 +301,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $searchstring The string to search for
      * @return array The matches
      */
-    function getMatches($searchstring)
+    public function getMatches($searchstring)
     {
         Tools::atkdebug("Performing search");
         $result = array();
@@ -307,6 +315,7 @@ class TagAttribute extends FuzzySearchAttribute
                 }
             }
         }
+
         return $result;
     }
 
@@ -316,9 +325,10 @@ class TagAttribute extends FuzzySearchAttribute
      * @param mixed $token The value of the destinationfield to select
      * @return array Array with records that match the token
      */
-    function getDestinationRecords($token)
+    public function getDestinationRecords($token)
     {
-        $selector = $this->m_destInstance->m_table . "." . $this->m_destinationfield . "='" . Tools::escapeSQL($token) . "'";
+        $selector = $this->m_destInstance->m_table.".".$this->m_destinationfield."='".Tools::escapeSQL($token)."'";
+
         return $this->m_destInstance->select($selector)->getAllRows();
     }
 
@@ -327,7 +337,7 @@ class TagAttribute extends FuzzySearchAttribute
      *
      * @return array
      */
-    function getNoneMatching()
+    public function getNoneMatching()
     {
         $no_match = array();
 
@@ -339,6 +349,7 @@ class TagAttribute extends FuzzySearchAttribute
                 $no_match[] = $keyword;
             }
         }
+
         return $no_match;
     }
 
@@ -347,11 +358,12 @@ class TagAttribute extends FuzzySearchAttribute
      *
      * @return array Array with default tag records
      */
-    function _getDefaultTags()
+    public function _getDefaultTags()
     {
         if ($this->createDestinationInstance()) {
             return $this->m_destInstance->select()->getAllRows();
         }
+
         return array();
     }
 
@@ -363,26 +375,29 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $mode The mode we're in
      * @return bool True if succesfull, false if not
      */
-    function store($db, $rec, $mode)
+    public function store($db, $rec, $mode)
     {
         $resultset = array();
 
         if (!$this->createLink()) {
             Tools::atkdebug("could not create an instance for the link '$this->m_link'");
+
             return false;
         }
 
         if (!$this->createDestinationInstance()) {
             Tools::atkdebug("could not create an instance for the destination '$this->m_destination'");
+
             return false;
         }
 
         //first delete all old tags for this object.
         $objectid = $rec[$this->m_ownerInstance->primaryKeyField()]; //pageid or topicid
-        $selector = $this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $objectid . "'";
+        $selector = $this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$objectid."'";
 
         if (!$this->m_linkInstance->deleteDb($selector)) {
             Tools::atkdebug("could not delete the linked default tags");
+
             return false;
         }
 
@@ -413,10 +428,9 @@ class TagAttribute extends FuzzySearchAttribute
 
 
                 //if one keyword could not be added, stop adding them.
-                if (!$this->m_destInstance->validate($defaultsRec,
-                        'add') || !$this->m_destInstance->addDb($defaultsRec)
-                ) {
+                if (!$this->m_destInstance->validate($defaultsRec, 'add') || !$this->m_destInstance->addDb($defaultsRec)) {
                     Tools::atkdebug("could not add default keyword");
+
                     return false;
                 } else {
                     $newrecord = Tools::decodeKeyValueSet($defaultsRec["atkprimkey"]);
@@ -442,22 +456,17 @@ class TagAttribute extends FuzzySearchAttribute
             $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey;
 
             // First check if the record does not exist yet.
-            $where = $this->m_linkInstance->m_table . '.' . $this->getLocalKey() . "='" .
-                $rec[$this->m_ownerInstance->primaryKeyField()] . "'" .
-                " AND " . $this->m_linkInstance->m_table . '.' . $this->getRemoteKey() . "='" .
-                $remKey . "'";
+            $where = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$rec[$this->m_ownerInstance->primaryKeyField()]."'"." AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".$remKey."'";
 
 
-            $existing = $this->m_linkInstance
-                ->select($where)
-                ->includes($this->m_linkInstance->m_primaryKey)
-                ->getAllRows();
+            $existing = $this->m_linkInstance->select($where)->includes($this->m_linkInstance->m_primaryKey)->getAllRows();
 
             if (!count($existing)) {
                 Tools::atkdebug("does not exist, adding new record.");
 
                 if (!$this->m_linkInstance->addDb($newrecord, true, $mode)) {
                     Tools::atkdebug("could not add keyword");
+
                     return false;
                 }
             }
@@ -471,21 +480,19 @@ class TagAttribute extends FuzzySearchAttribute
      * @param Db $notused
      * @param array $record
      */
-    function load($notused, $record)
+    public function load($notused, $record)
     {
         Tools::atkdebug("calling load");
         if ($this->createLink()) {
-            return $this->m_linkInstance
-                ->select($this->m_linkInstance->m_table . "." . $this->getLocalKey() . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'")
-                ->getAllRows();
+            return $this->m_linkInstance->select($this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'")->getAllRows();
         }
+
         return array();
     }
 
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-
     }
 
     /**
@@ -497,7 +504,6 @@ class TagAttribute extends FuzzySearchAttribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-
     }
 
     /**
@@ -506,14 +512,13 @@ class TagAttribute extends FuzzySearchAttribute
      */
     public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
-
     }
 
     /**
      * Dummy implementation
      *
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         return array();
     }
@@ -522,45 +527,40 @@ class TagAttribute extends FuzzySearchAttribute
      * Dummy implementation
      *
      */
-    function searchCondition()
+    public function searchCondition()
     {
-
     }
 
     /**
      * Dummy implementation
      *
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-
     }
 
     /**
      * Dummy implementation
      *
      */
-    function fetchMeta()
+    public function fetchMeta()
     {
-
     }
 
     /**
      * Dummy implementation
      *
      */
-    function dbFieldSize()
+    public function dbFieldSize()
     {
-
     }
 
     /**
      * Dummy implementation
      *
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
-
     }
 
     /**
@@ -570,7 +570,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $value Required value. (Ommit this parameter if you pass
      *                      an SQL expression for $filter.)
      */
-    function addSearchFilter($filter, $value = "")
+    public function addSearchFilter($filter, $value = "")
     {
         if (!$this->m_destInstance) {
             $this->createdestinationInstance();
@@ -583,11 +583,12 @@ class TagAttribute extends FuzzySearchAttribute
      * to the master node.
      * @return String The name of the attribute.
      */
-    function getLocalKey()
+    public function getLocalKey()
     {
         if ($this->m_localKey == "") {
             $this->m_localKey = $this->determineKeyName($this->m_owner);
         }
+
         return $this->m_localKey;
     }
 
@@ -596,7 +597,7 @@ class TagAttribute extends FuzzySearchAttribute
      * to the master node.
      * @param string $attributename The name of the attribute.
      */
-    function setLocalKey($attributename)
+    public function setLocalKey($attributename)
     {
         $this->m_localKey = $attributename;
     }
@@ -606,12 +607,13 @@ class TagAttribute extends FuzzySearchAttribute
      * to the node on the other side of the relation.
      * @return String The name of the attribute.
      */
-    function getRemoteKey()
+    public function getRemoteKey()
     {
         if ($this->m_remoteKey == "") {
             list($module, $nodename) = explode(".", $this->m_destination);
             $this->m_remoteKey = $this->determineKeyName($nodename);
         }
+
         return $this->m_remoteKey;
     }
 
@@ -620,7 +622,7 @@ class TagAttribute extends FuzzySearchAttribute
      * to the node on the other side of the relation.
      * @param string $attributename The name of the attribute.
      */
-    function setRemoteKey($attributename)
+    public function setRemoteKey($attributename)
     {
         $this->m_remoteKey = $attributename;
     }
@@ -632,7 +634,7 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $name the name of the relation
      * @return string the probable name of the foreign key
      */
-    function determineKeyName($name)
+    public function determineKeyName($name)
     {
         if ($this->createLink()) {
             if (isset($this->m_linkInstance->m_attribList[$name])) {
@@ -640,11 +642,12 @@ class TagAttribute extends FuzzySearchAttribute
                 return $name;
             } else {
                 // find out if there's a field with the same name with _id appended to it
-                if (isset($this->m_linkInstance->m_attribList[$name . "_id"])) {
-                    return $name . "_id";
+                if (isset($this->m_linkInstance->m_attribList[$name."_id"])) {
+                    return $name."_id";
                 }
             }
         }
+
         return $name;
     }
 
@@ -654,12 +657,12 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $field field to return if an array
      * @return mixed value of $field
      */
-    function checkKeyDimension($key, $field = "id")
+    public function checkKeyDimension($key, $field = "id")
     {
         if (is_array($key)) {
             return $key[$field];
         }
+
         return $key;
     }
-
 }

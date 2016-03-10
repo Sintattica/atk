@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\DataGrid;
 
-
 /**
  * Grid event.
  *
@@ -82,5 +81,4 @@ class DataGridEvent
     {
         return $this->m_event;
     }
-
 }

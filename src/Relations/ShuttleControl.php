@@ -61,7 +61,6 @@ abstract class ShuttleControl
      */
     public function init()
     {
-
     }
 
     /**
@@ -97,7 +96,7 @@ abstract class ShuttleControl
      */
     public function getFormName($prefix)
     {
-        return $prefix . $this->m_shuttle->fieldName() . '[controls][' . $this->getName() . ']';
+        return $prefix.$this->m_shuttle->fieldName().'[controls]['.$this->getName().']';
     }
 
     /**
@@ -127,7 +126,7 @@ abstract class ShuttleControl
      *
      * @return string HTML string
      */
-    public abstract function render($record, $mode, $prefix);
+    abstract public function render($record, $mode, $prefix);
 
     /**
      * Text proxy. Forwards translations to the shuttle attribute.
@@ -139,5 +138,4 @@ abstract class ShuttleControl
     {
         return $this->m_shuttle->text($string);
     }
-
 }

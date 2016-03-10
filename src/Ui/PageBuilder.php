@@ -58,6 +58,7 @@ class PageBuilder
     public function action($action)
     {
         $this->m_action = $action;
+
         return $this;
     }
 
@@ -71,6 +72,7 @@ class PageBuilder
     public function record($record)
     {
         $this->m_record = $record;
+
         return $this;
     }
 
@@ -84,6 +86,7 @@ class PageBuilder
     public function title($title)
     {
         $this->m_title = $title;
+
         return $this;
     }
 
@@ -99,6 +102,7 @@ class PageBuilder
     public function box($content, $title = null, $template = null)
     {
         $this->m_boxes[] = array('type' => 'box', 'title' => $title, 'content' => $content, 'template' => $template);
+
         return $this;
     }
 
@@ -114,6 +118,7 @@ class PageBuilder
     public function actionBox($params, $title = null, $template = null)
     {
         $this->m_boxes[] = array('type' => 'action', 'title' => $title, 'params' => $params, 'template' => $template);
+
         return $this;
     }
 
@@ -145,22 +150,20 @@ class PageBuilder
 
             if ($box['type'] == 'action') {
                 $params = array_merge(array('title' => $title), $box['params']);
-                $content = $this->getNode()->getUi()->renderAction($this->m_action, $params,
-                    $this->getNode()->getModule());
+                $content = $this->getNode()->getUi()->renderAction($this->m_action, $params, $this->getNode()->getModule());
             } else {
                 $content = $box['content'];
             }
 
-            $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content),
-                $box['template']);
+            $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content), $box['template']);
         }
 
-        $this->getNode()->getPage()->setTitle(Tools::atktext('app_shorttitle') . " - " . $this->m_title);
+        $this->getNode()->getPage()->setTitle(Tools::atktext('app_shorttitle')." - ".$this->m_title);
 
         $content = $this->getNode()->renderActionPage($this->m_title, $boxes);
 
         $this->getNode()->getPage()->addContent($content);
+
         return null;
     }
-
 }

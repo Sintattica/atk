@@ -14,7 +14,7 @@ use Sintattica\Atk\Utils\StringParser;
  */
 class ParserAttribute extends Attribute
 {
-    var $m_text;
+    public $m_text;
 
     /**
      * Constructor
@@ -22,7 +22,7 @@ class ParserAttribute extends Attribute
      * @param string $text text field
      * @param int $flags Flags for this attribute
      */
-    function __construct($name, $text, $flags = 0)
+    public function __construct($name, $text, $flags = 0)
     {
         parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_NO_SORT); // base class constructor
         $this->m_text = $text;
@@ -37,7 +37,7 @@ class ParserAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return string Parsed string
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         return $this->display($record, $fieldprefix, $mode);
     }
@@ -57,9 +57,10 @@ class ParserAttribute extends Attribute
      * @param string $mode
      * @return string Parsed string
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $stringparser = new StringParser($this->m_text);
+
         return $stringparser->parse($record);
     }
 
@@ -70,14 +71,13 @@ class ParserAttribute extends Attribute
      * @param array $record The record
      * @param string $mode
      */
-    function store($db, $record, $mode)
+    public function store($db, $record, $mode)
     {
         return true;
     }
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-
     }
 
     /**
@@ -85,11 +85,8 @@ class ParserAttribute extends Attribute
      *
      * @return string Empty string
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "";
     }
-
 }
-
-

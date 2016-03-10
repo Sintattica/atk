@@ -133,7 +133,7 @@ class EditFormModifier
         if ($this->isInitial()) {
             $this->getNode()->getAttribute($name)->setInitialHidden(false);
         } else {
-            $name = 'ar_' . $this->getFieldPrefix() . $name;
+            $name = 'ar_'.$this->getFieldPrefix().$name;
             $this->scriptCode("if (\$('$name')) { \$('$name').removeClassName('atkAttrRowHidden'); }");
         }
     }
@@ -163,7 +163,7 @@ class EditFormModifier
         if ($this->isInitial()) {
             $this->getNode()->getAttribute($name)->setInitialHidden(true);
         } else {
-            $name = 'ar_' . $this->getFieldPrefix() . $name;
+            $name = 'ar_'.$this->getFieldPrefix().$name;
             $this->scriptCode("if (\$('$name')) { \$('$name').addClassName('atkAttrRowHidden'); }");
         }
     }
@@ -199,14 +199,12 @@ class EditFormModifier
 
         $error = array();
         $editArray = array('fields' => array());
-        $this->m_node->getAttribute($name)->addToEditArray($this->getMode(), $editArray, $this->getRecord(), $error,
-            $this->getFieldPrefix());
+        $this->m_node->getAttribute($name)->addToEditArray($this->getMode(), $editArray, $this->getRecord(), $error, $this->getFieldPrefix());
 
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
-            $element = str_replace('.', '_', $this->getNode()->atkNodeUri() . '_' . $field['id']);
-            $value = JSON::encode(Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8",
-                $field['html'])); // JSON::encode excepts string in UTF-8
+            $element = str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
+            $value = JSON::encode(Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8", $field['html'])); // JSON::encode excepts string in UTF-8
             $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";
         }
 

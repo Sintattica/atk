@@ -22,17 +22,17 @@ class DeleteHandler extends ActionHandler
     /**
      * The action handler.
      */
-    function action_delete()
+    public function action_delete()
     {
         if (!$this->_checkAllowed()) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
-        if ((!empty($this->m_postvars['confirm']) || !empty($this->m_postvars['cancel'])) &&
-            !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken'])
-        ) {
+        if ((!empty($this->m_postvars['confirm']) || !empty($this->m_postvars['cancel'])) && !$this->isValidCSRFToken($this->m_postvars['atkcsrftoken'])) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -70,11 +70,11 @@ class DeleteHandler extends ActionHandler
      *
      * @return boolean is delete action allowed?
      */
-    function _checkAllowed()
+    public function _checkAllowed()
     {
         $atkselector = $this->m_postvars['atkselector'];
         if (is_array($atkselector)) {
-            $atkselector_str = '((' . implode($atkselector, ') OR (') . '))';
+            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
         } else {
             $atkselector_str = $atkselector;
         }
@@ -130,9 +130,11 @@ class DeleteHandler extends ActionHandler
         if ($this->m_node->deleteDb($this->m_postvars['atkselector'])) {
             $db->commit();
             $this->clearCache();
+
             return true;
         } else { // Something is wrong here, the deleteDb failed
             $db->rollback();
+
             return $db->getErrorMsg();
         }
     }
@@ -145,6 +147,7 @@ class DeleteHandler extends ActionHandler
     protected function _doDeleteSession()
     {
         $selector = Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
+
         return SessionStore::getInstance()->deleteDataRowForSelector($selector);
     }
 
@@ -154,7 +157,7 @@ class DeleteHandler extends ActionHandler
      * if they allow the deletion
      * @return bool wether or not the attributes have allowed deletion
      */
-    function checkAttributes()
+    public function checkAttributes()
     {
         foreach ($this->m_node->getAttributes() as $attrib) {
             // If allowed !=== true, then it returned an error message
@@ -162,15 +165,14 @@ class DeleteHandler extends ActionHandler
                 $db = $this->m_node->getDb();
                 $db->rollback();
                 $location = $this->m_node->feedbackUrl("delete", self::ACTION_FAILED, null,
-                    sprintf(Tools::atktext("attrib_delete_not_allowed"),
-                        Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type), $attrib->fieldName()));
+                    sprintf(Tools::atktext("attrib_delete_not_allowed"), Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type),
+                        $attrib->fieldName()));
                 $this->m_node->redirect($location);
+
                 return false;
             }
         }
+
         return true;
     }
-
 }
-
-

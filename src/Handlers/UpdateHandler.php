@@ -37,6 +37,7 @@ class UpdateHandler extends ActionHandler
 
         if (isset($this->m_partial) && $this->m_partial != "") {
             $this->partial($this->m_partial);
+
             return;
         } else {
             $this->doUpdate();
@@ -77,6 +78,7 @@ class UpdateHandler extends ActionHandler
         // allowed to update record?
         if (!$this->allowed($record)) {
             $this->handleAccessDenied();
+
             return;
         }
 
@@ -86,18 +88,16 @@ class UpdateHandler extends ActionHandler
             $prefix = $this->m_postvars['atkfieldprefix'];
         }
 
-        $csrfToken = isset($this->m_postvars[$prefix . 'atkcsrftoken']) ? $this->m_postvars[$prefix . 'atkcsrftoken']
-            : null;
+        $csrfToken = isset($this->m_postvars[$prefix.'atkcsrftoken']) ? $this->m_postvars[$prefix.'atkcsrftoken'] : null;
 
         // check for CSRF token
         if (!$this->isValidCSRFToken($csrfToken)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
-        if (isset($this->m_postvars['atknoclose']) ||
-            isset($this->m_postvars['atksaveandclose'])
-        ) {
+        if (isset($this->m_postvars['atknoclose']) || isset($this->m_postvars['atksaveandclose'])) {
             $this->handleProcess($record);
         } else {
             if (isset($this->m_postvars['atkcancel'])) {
@@ -105,11 +105,10 @@ class UpdateHandler extends ActionHandler
             } else {
                 $sm = SessionManager::getInstance();
                 // something other than one of the three buttons was pressed. Let's just refresh.
-                $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(),
-                    $this->getEditAction(), array(
-                        "atkselector" => $this->m_node->primaryKey($record),
-                        "atktab" => $this->m_node->getActiveTab()
-                    )), SessionManager::SESSION_REPLACE);
+                $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), array(
+                    "atkselector" => $this->m_node->primaryKey($record),
+                    "atktab" => $this->m_node->getActiveTab(),
+                )), SessionManager::SESSION_REPLACE);
                 $this->m_node->redirect($location);
             }
         }
@@ -178,6 +177,7 @@ class UpdateHandler extends ActionHandler
 
         if ($error) {
             $this->invoke($errorHandler, $record, null, $extraParams);
+
             return false;
         }
 
@@ -205,10 +205,10 @@ class UpdateHandler extends ActionHandler
         if (isset($record['atkerror'])) {
             $error = count($record['atkerror']) > 0;
             foreach (array_keys($record) as $key) {
-                $error = $error || (is_array($record[$key]) && array_key_exists('atkerror',
-                            $record[$key]) && count($record[$key]['atkerror']) > 0);
+                $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
             }
         }
+
         return $error;
     }
 
@@ -233,6 +233,7 @@ class UpdateHandler extends ActionHandler
                 $result = $this->updateRecordInDb($record);
                 break;
         }
+
         return $result;
     }
 
@@ -250,13 +251,16 @@ class UpdateHandler extends ActionHandler
             $this->notify("update", $record);
 
             $this->clearCache();
+
             return true;
         } else {
             $db->rollback();
             if ($db->getErrorType() == "user") {
                 Tools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
+
                 return false;
             }
+
             return $db->getErrorMsg();
         }
     }
@@ -270,8 +274,8 @@ class UpdateHandler extends ActionHandler
     private function updateRecordInSession($record)
     {
         $selector = Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
-        return (SessionStore::getInstance()->updateDataRowForSelector($selector,
-                $record) !== false);
+
+        return (SessionStore::getInstance()->updateDataRowForSelector($selector, $record) !== false);
     }
 
     /**
@@ -291,8 +295,8 @@ class UpdateHandler extends ActionHandler
         if ($this->hasError($record)) {
             $this->setRejectInfo($record);
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(),
-                $this->getEditAction(), array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_BACK);
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(),
+                array("atkselector" => $this->m_node->primaryKey($record))), SessionManager::SESSION_BACK);
             $this->m_node->redirect($location);
         } else {
             $location = $this->m_node->feedbackUrl("update", self::ACTION_FAILED, $record, $error);
@@ -315,11 +319,10 @@ class UpdateHandler extends ActionHandler
             // 'save' was clicked
             $params = array(
                 "atkselector" => $this->m_node->primaryKey($record),
-                "atktab" => $this->m_node->getActiveTab()
+                "atktab" => $this->m_node->getActiveTab(),
             );
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(),
-                $this->getEditAction(), $params), SessionManager::SESSION_REPLACE, 1);
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), $params), SessionManager::SESSION_REPLACE, 1);
         } else {
             // 'save and close' was clicked
             $location = $this->m_node->feedbackUrl("update", self::ACTION_SUCCESS, $record, "", 2);

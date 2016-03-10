@@ -13,8 +13,8 @@ use Sintattica\Atk\Core\Tools;
  */
 class Totalizer
 {
-    var $m_node = null;
-    var $m_columnConfig = null;
+    public $m_node = null;
+    public $m_columnConfig = null;
 
     /**
      * Constructor
@@ -23,7 +23,7 @@ class Totalizer
      * @param ColumnConfig $columnConfig
      * @return Totalizer
      */
-    function __construct(&$node, &$columnConfig)
+    public function __construct(&$node, &$columnConfig)
     {
         $this->m_node = &$node;
         $this->m_columnConfig = &$columnConfig;
@@ -35,7 +35,7 @@ class Totalizer
      * @param array $rowset
      * @return array
      */
-    function totalize($rowset)
+    public function totalize($rowset)
     {
         $result = array();
         $lastvalues = array();
@@ -72,6 +72,7 @@ class Totalizer
                 $result[] = $this->_subTotalRow($rowset[count($rowset) - 1], $totals, $fieldname, $totalizers);
             }
         }
+
         // end of leftovers
 
         return $result;
@@ -86,7 +87,7 @@ class Totalizer
      * @param array $totalizers
      * @return array
      */
-    function _subTotalRow($row, &$totals, $fieldforsubtotal, $totalizers)
+    public function _subTotalRow($row, &$totals, $fieldforsubtotal, $totalizers)
     {
         $subtotalcols = array();
         foreach ($totalizers as $totalfield) {
@@ -109,7 +110,7 @@ class Totalizer
      * @param array $subtotalcolumns
      * @return array
      */
-    function _createSubTotalRowFromRow($row, $fieldname, $subtotalcolumns)
+    public function _createSubTotalRowFromRow($row, $fieldname, $subtotalcolumns)
     {
         // fix type
         $row["type"] = "subtotal";
@@ -126,8 +127,7 @@ class Totalizer
                 }
             }
         }
+
         return $row;
     }
-
 }
-

@@ -18,7 +18,7 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * private vars
      */
-    var $m_delimiter = ";";
+    public $m_delimiter = ";";
 
     /**
      * Constructor
@@ -27,7 +27,7 @@ class MultipleFileAttribute extends FileAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Filename size
      */
-    function __construct($name, $dir, $flags = 0, $size = 0)
+    public function __construct($name, $dir, $flags = 0, $size = 0)
     {
         parent::__construct($name, array(), $flags | self::AF_CASCADE_DELETE, $size); // base class constructor
         if (is_array($dir)) {
@@ -45,21 +45,22 @@ class MultipleFileAttribute extends FileAttribute
      * @param string $del delimiter
      * @return array of files
      */
-    function getFiles($str, $del = "")
+    public function getFiles($str, $del = "")
     {
         if ($del == "") {
             $del = $this->m_delimiter;
         }
+
         return explode($del, $str);
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $file_arr = array();
         if (is_dir($this->m_dir)) {
             $d = dir($this->m_dir);
             while ($item = $d->read()) {
-                if (is_file($this->m_dir . $item)) {
+                if (is_file($this->m_dir.$item)) {
                     $file_arr[] = $item;
                 }
             }
@@ -69,14 +70,14 @@ class MultipleFileAttribute extends FileAttribute
         }
 
         if (count($file_arr) > 0) {
-            $result = "<select multiple size=\"3\" name=\"select_" . $this->fieldName() . "[]\" class=\"form-control\">";
+            $result = "<select multiple size=\"3\" name=\"select_".$this->fieldName()."[]\" class=\"form-control\">";
             for ($i = 0; $i < count($file_arr); $i++) {
                 $sel = "";
                 if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()]['orgfilename']))) {
                     $sel = "selected";
                 }
-                if (is_file($this->m_dir . $file_arr[$i])) {
-                    $result .= "<option value=\"" . $file_arr[$i] . "\" " . $sel . ">" . $file_arr[$i];
+                if (is_file($this->m_dir.$file_arr[$i])) {
+                    $result .= "<option value=\"".$file_arr[$i]."\" ".$sel.">".$file_arr[$i];
                 }
             }
             if (count($file_arr) > 0) {
@@ -86,8 +87,9 @@ class MultipleFileAttribute extends FileAttribute
             $result = "No files found";
         }
         if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
-            $result .= ' <input type="file" name="' . $this->fieldName() . '">';
+            $result .= ' <input type="file" name="'.$this->fieldName().'">';
         }
+
         return $result;
     }
 
@@ -96,22 +98,22 @@ class MultipleFileAttribute extends FileAttribute
      * @param array $rec Array with Fields
      * @return mixed Nothing or Fieldname or Original filename
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
-        $select = $_REQUEST["select_" . $this->fieldName()];
+        $select = $_REQUEST["select_".$this->fieldName()];
         $r = '';
         if (!$this->isEmpty($_POST)) {
             $file = $this->fetchValue($_POST);
             $file['filename'] = str_replace(' ', '_', $file["filename"]);
             if ($file['filename'] != "") {
-                @copy($file['tmpfile'],
-                    $this->m_dir . $file['filename']) OR die('Save failed!');
-                $r .= $file['filename'] . ";";
+                @copy($file['tmpfile'], $this->m_dir.$file['filename']) or die('Save failed!');
+                $r .= $file['filename'].";";
             }
         }
         if (is_array($$select)) {
             $r .= implode($this->m_delimiter, $$select);
         }
+
         return $r;
     }
 
@@ -120,12 +122,12 @@ class MultipleFileAttribute extends FileAttribute
      * @param array $rec Array with fields
      * @return array with tmpfile, orgfilename,filesize
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
-        return Array(
-            "tmpfile" => $this->m_dir . $rec[$this->fieldName()],
+        return array(
+            "tmpfile" => $this->m_dir.$rec[$this->fieldName()],
             "orgfilename" => $rec[$this->fieldName()],
-            "filesize" => "?"
+            "filesize" => "?",
         );
     }
 
@@ -135,34 +137,35 @@ class MultipleFileAttribute extends FileAttribute
      * @param string $mode
      * @return string html
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $files = explode($this->m_delimiter, $record[$this->fieldName()]['orgfilename']);
-        $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview
-        $imgtype_prev = Array("jpg", "jpeg", "gif", "png");  // types whitch are supported by GetImageSize
+        $prev_type = array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview
+        $imgtype_prev = array("jpg", "jpeg", "gif", "png");  // types whitch are supported by GetImageSize
         $r = '';
         for ($i = 0; $i < count($files); $i++) {
-            if (is_file($this->m_dir . $files[$i])) {
+            if (is_file($this->m_dir.$files[$i])) {
                 $ext = strtolower(substr($files[$i], strrpos($files[$i], '.') + 1, strlen($files[$i])));
                 if (in_array($ext, $prev_type)) {
                     if (in_array($ext, $imgtype_prev)) {
-                        $imagehw = GetImageSize($this->m_dir . $files[$i]);
+                        $imagehw = GetImageSize($this->m_dir.$files[$i]);
                     } else {
-                        $imagehw = Array("0" => "640", "1" => "480");
+                        $imagehw = array("0" => "640", "1" => "480");
                     }
 
                     $page = Page::getInstance();
-                    $page->register_script(Config::getGlobal("assets_url") . "javascript/newwindow.js");
-                    $r .= '<a href="' . $this->m_url . $files[$i] . '" alt="' . $files[$i] . '" onclick="NewWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $files[$i] . '</a><br>';
+                    $page->register_script(Config::getGlobal("assets_url")."javascript/newwindow.js");
+                    $r .= '<a href="'.$this->m_url.$files[$i].'" alt="'.$files[$i].'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0] + 50).'\',\''.($imagehw[1] + 50).'\',\'yes\');return false;">'.$files[$i].'</a><br>';
                 } else {
-                    $r .= "<a href=\"" . $this->m_url . "$files[$i]\" target=\"_new\">$files[$i]</a><br>";
+                    $r .= "<a href=\"".$this->m_url."$files[$i]\" target=\"_new\">$files[$i]</a><br>";
                 }
             } else {
                 if (strlen($files[$i]) > 0) {
-                    $r .= $files[$i] . "(<font color=\"#ff0000\">" . Tools::atktext("file_not_exist") . "</font><br>)";
+                    $r .= $files[$i]."(<font color=\"#ff0000\">".Tools::atktext("file_not_exist")."</font><br>)";
                 }
             }
         }
+
         return $r;
     }
 
@@ -171,7 +174,7 @@ class MultipleFileAttribute extends FileAttribute
      * @return string "string" which is the 'generic' type of the database field for
      *         this attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "string";
     }

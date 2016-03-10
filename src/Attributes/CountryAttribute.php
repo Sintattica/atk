@@ -12,9 +12,9 @@ use Sintattica\Atk\Core\Language;
  */
 class CountryAttribute extends ListAttribute
 {
-    var $m_country = array();
-    var $m_countries = array();
-    var $m_europe_countries = array(
+    public $m_country = array();
+    public $m_countries = array();
+    public $m_europe_countries = array(
         'AL',
         'AT',
         'BE',
@@ -45,10 +45,10 @@ class CountryAttribute extends ListAttribute
         'ES',
         'SE',
         'CH',
-        'TR'
+        'TR',
     );
-    var $m_benelux_countries = array('NL', 'BE', 'LU');
-    var $m_world_countries_shortlist = array(
+    public $m_benelux_countries = array('NL', 'BE', 'LU');
+    public $m_world_countries_shortlist = array(
         'AT',
         'BE',
         'CA',
@@ -65,9 +65,9 @@ class CountryAttribute extends ListAttribute
         'ES',
         'SE',
         'GB',
-        'US'
+        'US',
     );
-    var $m_world_countries = array(
+    public $m_world_countries = array(
         'AF',
         'AL',
         'DZ',
@@ -302,10 +302,10 @@ class CountryAttribute extends ListAttribute
         'YE',
         'ZR',
         'ZM',
-        'ZW'
+        'ZW',
     );
-    var $m_custom_countries = array();
-    var $m_defaulttocurrent = true;
+    public $m_custom_countries = array();
+    public $m_defaulttocurrent = true;
 
     /**
      * Constructor
@@ -322,7 +322,7 @@ class CountryAttribute extends ListAttribute
      * @param bool $defaulttocurrent Set the default selected country to the
      *                               current country based on the atk language
      */
-    function __construct(
+    public function __construct(
         $name,
         $switch = "world",
         $optionArray = "",
@@ -363,7 +363,7 @@ class CountryAttribute extends ListAttribute
      * @param array $countries CountryIso codes, like NL BE LU etc...
      * @return bool             It will return false when the resulting custom list is empty.
      */
-    function setList($countries)
+    public function setList($countries)
     {
         $custom_list = array();
         foreach ($countries as $countryIso) {
@@ -371,16 +371,18 @@ class CountryAttribute extends ListAttribute
             if (in_array($countryIso, $this->m_world_countries)) {
                 array_push($custom_list, $countryIso);
             } else {
-                Tools::atkwarning('atkCountryAttribute: setList: ' . $countryIso . ' is a unknown country and will be ignored');
+                Tools::atkwarning('atkCountryAttribute: setList: '.$countryIso.' is a unknown country and will be ignored');
             }
         }
 
         if (count($custom_list) == 0) {
             Tools::atkerror('atkCountryAttribute: setList: empty custom country list');
+
             return false;
         }
 
         $this->m_custom_countries = $custom_list;
+
         return true;
     }
 
@@ -394,12 +396,13 @@ class CountryAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) {
             $record[$this->fieldName()] = strtoupper(Language::getLanguage());
         }
-        return parent::edit($record, $fieldprefix,$mode);
+
+        return parent::edit($record, $fieldprefix, $mode);
     }
 
     /**
@@ -408,7 +411,7 @@ class CountryAttribute extends ListAttribute
      * @param string $switch
      * @return array with country options
      */
-    function getCountryOptionArray($switch)
+    public function getCountryOptionArray($switch)
     {
         $tmp_array = array();
         if ($switch == "benelux") {
@@ -436,6 +439,7 @@ class CountryAttribute extends ListAttribute
                 $tmp_array[] = $value;
             }
         }
+
         return $tmp_array;
     }
 
@@ -445,7 +449,7 @@ class CountryAttribute extends ListAttribute
      * @param string $switch
      * @return array with country values
      */
-    function getCountryValueArray($switch)
+    public function getCountryValueArray($switch)
     {
         if ($switch == "benelux") {
             return $this->m_benelux_countries;
@@ -462,6 +466,7 @@ class CountryAttribute extends ListAttribute
             foreach ($this->m_country as $iso => $value) {
                 $tmp_array[] = $iso;
             }
+
             return $tmp_array;
         }
     }
@@ -473,11 +478,11 @@ class CountryAttribute extends ListAttribute
      * @param string $iso_code 2 Letter iso code of the country
      * @return string Country name
      */
-    function getCountryOption($iso_code)
+    public function getCountryOption($iso_code)
     {
         $lng = Language::getLanguage();
         if (!array_key_exists($iso_code, $this->m_country)) {
-            Tools::atkdebug('UNKNOWN ISO CODE: ' . $iso_code);
+            Tools::atkdebug('UNKNOWN ISO CODE: '.$iso_code);
         }
         if (array_key_exists($lng, $this->m_country[$iso_code])) {
             return $this->m_country[$iso_code][$lng];
@@ -490,7 +495,7 @@ class CountryAttribute extends ListAttribute
      * Fill the countries array
      *
      */
-    function fillCountriesArray()
+    public function fillCountriesArray()
     {
         $this->m_country["AL"]["nl"] = Tools::atk_html_entity_decode("Albani&euml;");
         $this->m_country["AL"]["de"] = "Albania";
@@ -633,9 +638,8 @@ class CountryAttribute extends ListAttribute
      * Fill the countries array with all the world countries
      *
      */
-    function fillWorldCountriesArray()
+    public function fillWorldCountriesArray()
     {
-
         $this->m_country["AF"]["nl"] = "Afghanistan";
         $this->m_country["AF"]["de"] = "Afghanistan";
         $this->m_country["AF"]["en"] = "Afghanistan";
@@ -1580,6 +1584,4 @@ class CountryAttribute extends ListAttribute
         $this->m_country["ZW"]["de"] = "Zimbabwe";
         $this->m_country["ZW"]["en"] = "Zimbabwe";
     }
-
 }
-

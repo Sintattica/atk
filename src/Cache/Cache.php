@@ -55,7 +55,6 @@ abstract class Cache implements ArrayAccess
      */
     private function __construct()
     {
-
     }
 
     /**
@@ -82,6 +81,7 @@ abstract class Cache implements ArrayAccess
             try {
                 if (!$force && array_key_exists($type, self::$m_instances) && is_object(self::$m_instances[$type])) {
                     Tools::atkdebug("cache::getInstance -> Using cached instance of $type");
+
                     return self::$m_instances[$type];
                 } else {
                     self::$m_instances[$type] = new $type();
@@ -93,16 +93,17 @@ abstract class Cache implements ArrayAccess
                     return self::$m_instances[$type];
                 }
             } catch (Exception $e) {
-                Tools::atknotice("Can't instantatie atkCache class $type: " . $e->getMessage());
+                Tools::atknotice("Can't instantatie atkCache class $type: ".$e->getMessage());
             }
         }
 
         if (!$fallback) {
-            throw new Exception("Cannot instantiate Cache class of the following type(s): " . implode(', ', $types));
+            throw new Exception("Cannot instantiate Cache class of the following type(s): ".implode(', ', $types));
         }
 
         // Default return var cache
         Tools::atkdebug("cache::getInstance() -> Using var cache");
+
         return self::getInstance('var', false, $force);
     }
 
@@ -118,9 +119,7 @@ abstract class Cache implements ArrayAccess
         $cacheConfig = Config::getGlobal('cache', array());
         $type = $this->getType();
 
-        if (array_key_exists($type, $cacheConfig) &&
-            array_key_exists($key, $cacheConfig[$type])
-        ) {
+        if (array_key_exists($type, $cacheConfig) && array_key_exists($key, $cacheConfig[$type])) {
             return $cacheConfig[$type][$key];
         } else {
             return $default;
@@ -254,7 +253,7 @@ abstract class Cache implements ArrayAccess
      */
     public function getRealKey($key)
     {
-        return $this->m_namespace . "::" . $key;
+        return $this->m_namespace."::".$key;
     }
 
     /**
@@ -277,7 +276,7 @@ abstract class Cache implements ArrayAccess
      * @param string $offset Key to check
      * @return boolean
      */
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
         return ($this->get($offset) !== false);
     }
@@ -288,7 +287,7 @@ abstract class Cache implements ArrayAccess
      * @param string $offset Key to get
      * @return mixed
      */
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
@@ -300,7 +299,7 @@ abstract class Cache implements ArrayAccess
      * @param mixed $value Value for key
      * @return boolean
      */
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
         return $this->set($offset, $value);
     }
@@ -311,10 +310,8 @@ abstract class Cache implements ArrayAccess
      * @param string $offset Key to unset
      * @return void
      */
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
         return $this->delete($offset);
     }
-
 }
-

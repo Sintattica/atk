@@ -1,19 +1,20 @@
 <?php namespace Sintattica\Atk\Utils;
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage utils
- *
- * @copyright (c)2005 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
+
+    /**
+     * This file is part of the ATK distribution on GitHub.
+     * Detailed copyright and licensing information can be found
+     * in the doc/COPYRIGHT and doc/LICENSE files which should be
+     * included in the distribution.
+     *
+     * @package atk
+     * @subpackage utils
+     *
+     * @copyright (c)2005 Ivo Jansch
+     * @license http://www.achievo.org/atk/licensing ATK Open Source License
+     *
+     * @version $Revision: 6320 $
+     * $Id$
+     */
 
 /**
  * This class can be used to recursively traverse a directory structure.
@@ -37,9 +38,8 @@ class DirectoryTraverser
     /**
      * Constructor
      */
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
@@ -58,7 +58,7 @@ class DirectoryTraverser
      * @param Object|mixed $callbackObject An object instance to be called back for
      *                               each file/dir.
      */
-    function addCallbackObject(&$callbackObject)
+    public function addCallbackObject(&$callbackObject)
     {
         $this->m_callbackObjects[] = &$callbackObject;
     }
@@ -67,7 +67,7 @@ class DirectoryTraverser
      * Remove all callback objects.
      * @see addCallbackObject()
      */
-    function clearCallbackObjects()
+    public function clearCallbackObjects()
     {
         $this->m_callbackObjects = array();
     }
@@ -82,21 +82,23 @@ class DirectoryTraverser
      * @return boolean true if succesful, false if the path does not exist or is
      *                 not readable.
      */
-    function traverse($path)
+    public function traverse($path)
     {
         if (@is_file($path)) {
             $this->_callback("visitFile", $path);
+
             return true;
         } elseif (@is_dir($path)) {
             $this->_callback("visitDir", $path);
             $filenames = $this->getDirContents($path);
             foreach ($filenames as $file) {
                 if ($file != ".." && $file != ".") {
-                    if (!$this->traverse($path . "/" . $file)) {
+                    if (!$this->traverse($path."/".$file)) {
                         return false;
                     }
                 }
             }
+
             return true;
         } elseif (@is_link($path)) {
             return true;
@@ -110,7 +112,7 @@ class DirectoryTraverser
      * @param string $path The path to read the contents from.
      * @return array Array containing the contents of the directory.
      */
-    function getDirContents($path)
+    public function getDirContents($path)
     {
         if (!is_dir($path)) {
             return array();
@@ -125,6 +127,7 @@ class DirectoryTraverser
         }
         @closedir($dir);
         sort($result);
+
         return $result;
     }
 
@@ -135,7 +138,7 @@ class DirectoryTraverser
      * @param string $filename The filename that will be passed as parameter
      *                         to the callback.
      */
-    function _callback($method, $filename)
+    public function _callback($method, $filename)
     {
         for ($i = 0, $_i = count($this->m_callbackObjects); $i < $_i; $i++) {
             if (method_exists($this->m_callbackObjects[$i], $method)) {
@@ -149,7 +152,7 @@ class DirectoryTraverser
      *
      * @param string $regex
      */
-    function addExclude($regex)
+    public function addExclude($regex)
     {
         $this->m_excludes[] = $regex;
     }
@@ -158,7 +161,7 @@ class DirectoryTraverser
      * Clear the excluding regex expressions
      *
      */
-    function clearExcludes()
+    public function clearExcludes()
     {
         $this->m_excludes = array();
     }
@@ -168,7 +171,7 @@ class DirectoryTraverser
      *
      * @param string $file
      */
-    function isExcluded($file)
+    public function isExcluded($file)
     {
         $excluded = false;
         $i = 0;
@@ -177,7 +180,7 @@ class DirectoryTraverser
             $excluded = (preg_match($this->m_excludes[$i], $file) > 0);
             $i++;
         }
+
         return $excluded;
     }
-
 }

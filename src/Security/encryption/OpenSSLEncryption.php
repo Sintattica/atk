@@ -15,14 +15,14 @@ use Sintattica\Atk\Core\Tools;
  */
 class OpenSSLEncryption extends Encryption
 {
-    var $m_config_default;
-    var $m_config_nokey;
-    var $m_backslashreplacestring = "*bs*";
+    public $m_config_default;
+    public $m_config_nokey;
+    public $m_backslashreplacestring = "*bs*";
 
     /**
      * The constructor of this class makes two configurations which are used by other functions
      */
-    function atkOpenSSLEncryption()
+    public function atkOpenSSLEncryption()
     {
         $this->m_config_default = array();
         $this->m_config_nokey = array_merge($this->m_config_default, array('encrypt_key' => false));
@@ -35,7 +35,7 @@ class OpenSSLEncryption extends Encryption
      * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
-    function encrypt($input, $key)
+    public function encrypt($input, $key)
     {
         $keys = $this->getKeys($key);
         $key = openssl_get_publickey($keys['public']);
@@ -55,7 +55,7 @@ class OpenSSLEncryption extends Encryption
      * @param mixed $key the key we want to encrypt the data with
      * @return mixed        the encrypted data
      */
-    function decrypt($input, $key)
+    public function decrypt($input, $key)
     {
         $input = $this->addbackslashes($input);
         $keys = $this->getKeys($key);
@@ -79,7 +79,7 @@ class OpenSSLEncryption extends Encryption
      * @param string $newprivkeypass The passphrase of the new key
      * @return string                 The new key
      */
-    function copyPrivateKey($key, $privkeypass, $newprivkeypass)
+    public function copyPrivateKey($key, $privkeypass, $newprivkeypass)
     {
         if ($privkeypass != "") {
             $priv = openssl_get_privatekey($key, $privkeypass);
@@ -104,7 +104,7 @@ class OpenSSLEncryption extends Encryption
      * @param string $privkeypass a key on which the information is based
      * @returns array             an array with 'private' and 'public' keys
      */
-    function getNewKeys($privkeypass)
+    public function getNewKeys($privkeypass)
     {
         $dn = array(
             "countryName" => "NL",
@@ -113,7 +113,7 @@ class OpenSSLEncryption extends Encryption
             "organizationName" => "Ibuildings.nl",
             "organizationalUnitName" => "IBS-Vlissingen",
             "commonName" => "Ivo Jansch",
-            "emailAddress" => "ivo@ibuildings.nl"
+            "emailAddress" => "ivo@ibuildings.nl",
         );
 
         //generate a private key
@@ -140,9 +140,10 @@ class OpenSSLEncryption extends Encryption
      * @param string $pass This implementation does nothing with this param
      * @return string        A random key
      */
-    function getRandomKey($pass)
+    public function getRandomKey($pass)
     {
         $keys = $this->getNewKeys($pass);
+
         return $this->putKeys($keys);
     }
 
@@ -153,10 +154,11 @@ class OpenSSLEncryption extends Encryption
      * @param string $pass The password to decrypt de key
      * @return string      The decrypted key
      */
-    function decryptKey($key, $pass)
+    public function decryptKey($key, $pass)
     {
         $keys = $this->getKeys($key);
         $keys['private'] = $this->copyPrivateKey($keys['private'], $pass, "");
+
         return $this->putKeys($keys);
     }
 
@@ -167,10 +169,11 @@ class OpenSSLEncryption extends Encryption
      * @param string $pass The password to encrypt de key
      * @return string      The encrypted key
      */
-    function encryptKey($key, $pass)
+    public function encryptKey($key, $pass)
     {
         $keys = $this->getKeys($key);
         $keys['private'] = $this->copyPrivateKey($keys['private'], "", $pass);
+
         return $this->putKeys($keys);
     }
 
@@ -179,7 +182,7 @@ class OpenSSLEncryption extends Encryption
      * @param string $key The string containing the private, and the public key
      * @return array      The privatekey (private) and the public key (public)
      */
-    function getKeys($key)
+    public function getKeys($key)
     {
         //the string have the following format:
         //-----BEGIN RSA PRIVATE KEY-----...-----END RSA PRIVATE KEY----------BEGIN CERTIFICATE-----...-----END CERTIFICATE-----
@@ -190,6 +193,7 @@ class OpenSSLEncryption extends Encryption
         if (($begin = strpos($key, "-----BEGIN CERTIFICATE-----")) != false) {
             $keys['private'] = substr($key, 0, $begin);
             $keys['public'] = substr($key, $begin, strlen($key) - $begin);
+
             return $keys;
         }
     }
@@ -199,9 +203,9 @@ class OpenSSLEncryption extends Encryption
      * @param array $keys The private and public keys in one array
      * @return string     The private and public keys in one string
      */
-    function putKeys($keys)
+    public function putKeys($keys)
     {
-        return $keys['private'] . $keys['public'];
+        return $keys['private'].$keys['public'];
     }
 
     /**
@@ -210,9 +214,10 @@ class OpenSSLEncryption extends Encryption
      * @param string $value The original string
      * @return string         The original string, with for every backslash the backslashreplacestring
      * */
-    function stripbackslashes($value)
+    public function stripbackslashes($value)
     {
         $value = str_replace("\\", $this->m_backslashreplacestring, $value);
+
         return $value;
     }
 
@@ -222,12 +227,10 @@ class OpenSSLEncryption extends Encryption
      * @param string $value The original string
      * @return string         The original string, with for every backslashreplacestring a backslash
      * */
-    function addbackslashes($value)
+    public function addbackslashes($value)
     {
         $value = str_replace($this->m_backslashreplacestring, "\\", $value);
+
         return $value;
     }
-
 }
-
-

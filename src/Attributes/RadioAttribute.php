@@ -1,7 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
-
 /**
  * The RadioAttribute class represents an attribute of a node
  * that has a field with radio button  to select from predefined values.
@@ -25,18 +23,18 @@ class RadioAttribute extends ListAttribute
     const AF_DISPLAY_VERT = 67108864;
 
     // Default number of cols / rows
-    var $m_amount = 1;
-    var $m_cols = false;
-    var $m_rows = false;
-    var $m_clickableLabel = true;
+    public $m_amount = 1;
+    public $m_cols = false;
+    public $m_rows = false;
+    public $m_clickableLabel = true;
 
     /**
      * Array with comments per option
      *
      * @var array
      */
-    var $m_comments = array();
-    var $m_onchangehandler_init = "var newvalue = el.value;\n";
+    public $m_comments = array();
+    public $m_onchangehandler_init = "var newvalue = el.value;\n";
 
     /**
      * Constructor
@@ -49,7 +47,7 @@ class RadioAttribute extends ListAttribute
      * @param int $size database field size ($size[1] can be used for the amount of cols / rows to display, for example: 3c or 5r or just 4)
      *
      */
-    function __construct($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
+    public function __construct($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
     {
         if (is_array($size) and count($size) > 1) {
             $lastchar = strtolower(substr($size[1], -1, 1));
@@ -78,7 +76,7 @@ class RadioAttribute extends ListAttribute
      * @param string $option The option the comment is for
      * @param string $comment The comment itself
      */
-    function setComment($option, $comment)
+    public function setComment($option, $comment)
     {
         $key = array_search($option, $this->m_options);
         $this->m_comments[$key] = $comment;
@@ -89,7 +87,7 @@ class RadioAttribute extends ListAttribute
      *
      * @param boolean $label
      */
-    function setClickableLabel($label = true)
+    public function setClickableLabel($label = true)
     {
         $this->m_clickableLabel = $label;
     }
@@ -103,7 +101,7 @@ class RadioAttribute extends ListAttribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code with radioboxes
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $values = $this->getValues($record);
 
@@ -133,7 +131,7 @@ class RadioAttribute extends ListAttribute
                 $sel = "";
             }
 
-            $labelID = $fieldprefix . $this->fieldName() . "_" . $values[$i];
+            $labelID = $fieldprefix.$this->fieldName()."_".$values[$i];
             if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                 $result .= '<tr>';
             }
@@ -141,16 +139,15 @@ class RadioAttribute extends ListAttribute
 
             $onchange = '';
             if (count($this->m_onchangecode)) {
-                $onchange = 'onClick="' . $id . '_onChange(this);" ';
+                $onchange = 'onClick="'.$id.'_onChange(this);" ';
                 $this->_renderChangeHandler($fieldprefix);
             }
 
-            $commenthtml = '<br/><div class="atkradio_comment">' . $this->m_comments[$i] . '</div>';
+            $commenthtml = '<br/><div class="atkradio_comment">'.$this->m_comments[$i].'</div>';
 
-            $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->fieldName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$i] . '" ' . $onchange . $sel . '>
-        ' . $this->renderValue($labelID, $this->_translateValue($values[$i],
-                    $record)) . ($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
-                    ? $commenthtml : '') . '</td>';
+            $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->fieldName().'" '.$this->getCSSClassAttribute("atkradio").' value="'.$values[$i].'" '.$onchange.$sel.'>
+        '.$this->renderValue($labelID, $this->_translateValue($values[$i],
+                    $record)).($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
 
             if ($this->hasflag(self::AF_DISPLAY_VERT)) {
                 $tmp_items = $items;
@@ -167,10 +164,8 @@ class RadioAttribute extends ListAttribute
                         $sel = "";
                     }
                     if ($values[$j] != "") {
-                        $result .= '<td><input id="' . $labelID . '" type="radio" name="' . $fieldprefix . $this->fieldName() . '" ' . $this->getCSSClassAttribute("atkradio") . ' value="' . $values[$j] . '" ' . $onchange . $sel . '>
-              ' . $this->renderValue($labelID,
-                                $this->_translateValue($values[$j], $record)) . ($this->m_comments[$i] != ''
-                                ? $commenthtml : '') . '</td>';
+                        $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->fieldName().'" '.$this->getCSSClassAttribute("atkradio").' value="'.$values[$j].'" '.$onchange.$sel.'>
+              '.$this->renderValue($labelID, $this->_translateValue($values[$j], $record)).($this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
                     } else {
                         $result .= '<td>&nbsp;</td>';
                     }
@@ -192,6 +187,7 @@ class RadioAttribute extends ListAttribute
             $result .= '</tr>';
         }
         $result .= '</table>';
+
         return $result;
     }
 
@@ -202,13 +198,12 @@ class RadioAttribute extends ListAttribute
      * @param string $value Label value
      * @return string Label
      */
-    function renderValue($labelID, $value)
+    public function renderValue($labelID, $value)
     {
         if ($this->m_clickableLabel) {
-            return '<label for="' . $labelID . '">' . $value . '</label>';
+            return '<label for="'.$labelID.'">'.$value.'</label>';
         }
+
         return $value;
     }
-
 }
-

@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Filters;
 
-
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Db\Query;
 
@@ -23,16 +22,13 @@ class Filter extends Attribute
      * @param int $flags The flags of the filter
      * @return Filter
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags | Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD);
     }
 
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-
     }
-
 }
-

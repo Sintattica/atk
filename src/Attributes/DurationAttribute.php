@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 
-
 /**
  * The DurationAttribute is an attribute for entering a length of time.
  *
@@ -20,8 +19,8 @@ class DurationAttribute extends Attribute
     const DURATIONFORMAT_DECIMAL = 1;
 
     /** member vars * */
-    var $m_resolution_min;
-    var $m_maxtime_min;
+    public $m_resolution_min;
+    public $m_maxtime_min;
 
     /**
      * Default Constructor, sets up Attribute
@@ -33,7 +32,7 @@ class DurationAttribute extends Attribute
      * @param int $size This attributes size
      * @see Attribute
      */
-    function __construct($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
+    public function __construct($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
     {
         parent::__construct($name, $flags, $size); // base class constructor
         $hms = substr($resolution, -1);
@@ -71,6 +70,7 @@ class DurationAttribute extends Attribute
     {
         // hide as a parseable string
         $record[$this->fieldName()] = $this->_minutes2string($record[$this->fieldName()]);
+
         return parent::hide($record, $fieldprefix, $mode);
     }
 
@@ -83,7 +83,7 @@ class DurationAttribute extends Attribute
      * @param string $mode The mode we're in ('add' or 'edit')
      * @return String Piece a of HTML Code
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
@@ -92,13 +92,13 @@ class DurationAttribute extends Attribute
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
                 $curminutes = $this->_getMinutePart($fieldvalue);
-                $result .= '<select id="' . $id . '_hours" name="' . $fieldprefix . $this->fieldName() . '[hours]" class="form-control">';
+                $result .= '<select id="'.$id.'_hours" name="'.$fieldprefix.$this->fieldName().'[hours]" class="form-control">';
                 for ($h = 0; $h <= $this->m_maxtime_min / 60;) {
-                    $result .= '<option value="' . $h . '" ';
+                    $result .= '<option value="'.$h.'" ';
                     if ($curhours == $h) {
                         $result .= "selected";
                     }
-                    $result .= '>' . $h . ' ' . Tools::atktext('hours', 'atk');
+                    $result .= '>'.$h.' '.Tools::atktext('hours', 'atk');
                     if ($this->m_resolution_min <= 60) {
                         $h++;
                     } else {
@@ -108,13 +108,13 @@ class DurationAttribute extends Attribute
                 $result .= '</select>';
             }
             if ($this->m_maxtime_min >= 1 && $this->m_resolution_min < 60) {
-                $result .= '&nbsp;<select id="' . $id . '_minutes" name="' . $fieldprefix . $this->fieldName() . '[minutes]" class="form-control">';
+                $result .= '&nbsp;<select id="'.$id.'_minutes" name="'.$fieldprefix.$this->fieldName().'[minutes]" class="form-control">';
                 for ($m = 0; $m < 60 || ($this->m_maxtime_min < 60 && $m < $this->m_maxtime_min);) {
-                    $result .= '<option value="' . $m . '" ';
+                    $result .= '<option value="'.$m.'" ';
                     if ($curminutes == $m) {
                         $result .= "selected";
                     }
-                    $result .= '>' . $m . ' ' . Tools::atktext('minutes', 'atk');
+                    $result .= '>'.$m.' '.Tools::atktext('minutes', 'atk');
                     if ($this->m_resolution_min <= 1) {
                         $m++;
                     } else {
@@ -126,10 +126,9 @@ class DurationAttribute extends Attribute
             $result .= '</div>';
         } else {
             $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';
-            $result = '<input type="text" name="' . $fieldprefix . $this->fieldName() .
-                '" value="' . $curval . '"' .
-                ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '>';
+            $result = '<input type="text" name="'.$fieldprefix.$this->fieldName().'" value="'.$curval.'"'.($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
         }
+
         return $result;
     }
 
@@ -157,7 +156,7 @@ class DurationAttribute extends Attribute
      *                     use additional modes.
      * @return String with YYYY-MM-DD
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         return $this->_minutes2string($record[$this->fieldName()]);
     }
@@ -167,7 +166,7 @@ class DurationAttribute extends Attribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         return array("exact");
     }
@@ -178,7 +177,7 @@ class DurationAttribute extends Attribute
      * @return String The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "number";
     }
@@ -189,7 +188,7 @@ class DurationAttribute extends Attribute
      * @param string $value
      * @return integer with number of minutes
      */
-    function _string2minutes($value)
+    public function _string2minutes($value)
     {
         if (strpos($value, ':') === false) {
             // decimal format
@@ -197,10 +196,12 @@ class DurationAttribute extends Attribute
             if (strlen($tmp[1]) == 1) {
                 $tmp[1] = $tmp[1] * 10;
             }
+
             return $tmp[0] * 60 + $tmp[1] * (60 / 100);
         } else {
             // hh:mm format
             $tmp = explode(':', $value);
+
             return $tmp[0] * 60 + $tmp[1];
         }
     }
@@ -211,7 +212,7 @@ class DurationAttribute extends Attribute
      * @param mixed $minutes
      * @return string with minutes
      */
-    function _minutes2string($minutes)
+    public function _minutes2string($minutes)
     {
         $prefix = "";
         if ($minutes < 0) {
@@ -221,9 +222,10 @@ class DurationAttribute extends Attribute
 
         if (Config::getGlobal("durationformat", 0) == self::DURATIONFORMAT_DECIMAL) {
             $decimalvalue = $this->_getHourPart($minutes) + (self::_getMinutePart($minutes) / 60);
-            return $prefix . sprintf("%02.02f", $decimalvalue);
+
+            return $prefix.sprintf("%02.02f", $decimalvalue);
         } elseif (Config::getGlobal("durationformat", 0) == self::DURATIONFORMAT_TIME) {
-            return $prefix . sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
+            return $prefix.sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
         }
     }
 
@@ -233,7 +235,7 @@ class DurationAttribute extends Attribute
      * @param mixed $minutes
      * @return string with hours
      */
-    function _getHourPart($minutes)
+    public function _getHourPart($minutes)
     {
         if (!is_array($minutes)) {
             return floor($minutes / 60);
@@ -248,7 +250,7 @@ class DurationAttribute extends Attribute
      * @param mixed $minutes
      * @return string with minutes
      */
-    function _getMinutePart($minutes)
+    public function _getMinutePart($minutes)
     {
         if (!is_array($minutes)) {
             return ($minutes - (floor($minutes / 60) * 60));
@@ -262,7 +264,7 @@ class DurationAttribute extends Attribute
      * @param array $rec Array with values
      * @return String without slashes
      */
-    function fetchValue($rec)
+    public function fetchValue($rec)
     {
         if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($rec[$this->fieldName()])) {
             return $this->_string2minutes($rec[$this->fieldName()]);
@@ -276,9 +278,8 @@ class DurationAttribute extends Attribute
      * @param array $record The record that holds this attribute's value.
      * @return boolean
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         return parent::isEmpty($record) || $record[$this->fieldName()] == 0;
     }
-
 }

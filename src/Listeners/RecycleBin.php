@@ -78,12 +78,10 @@ class RecycleBin extends TriggerListener
         Tools::atkdebug("delete performed, storing record in recyclebin");
 
         if (isset($this->_options["node"])) {
-
             $atk = Atk::getInstance();
             $node = $atk->atkGetNode($this->_options["node"]);
             $node->addDb($record);
         } else {
-
             $node = clone($this->m_node);
 
 
@@ -98,12 +96,12 @@ class RecycleBin extends TriggerListener
             if (isset($this->_options["table"])) {
                 $node->setTable($this->_options["table"]);
             } else { // default behaviour: assume table with _bin appendix
-                $node->setTable($node->getTable() . "_bin");
+                $node->setTable($node->getTable()."_bin");
             }
             Tools::atkdebug("adding record to recyclebin");
             $node->addDb($record);
         }
+
         return true;
     }
-
 }

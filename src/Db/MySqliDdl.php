@@ -2,8 +2,6 @@
 
 use Sintattica\Atk\Core\Config;
 
-
-
 /**
  * MySQL 4.1+ ddl driver.
  *
@@ -16,7 +14,7 @@ use Sintattica\Atk\Core\Config;
  */
 class MySqliDdl extends Ddl
 {
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
@@ -26,9 +24,9 @@ class MySqliDdl extends Ddl
      *
      * @param string $generictype The datatype to convert.
      */
-    function getType($generictype)
+    public function getType($generictype)
     {
-        $config = Config::getGlobal('db_mysql_default_' . $generictype . '_columntype');
+        $config = Config::getGlobal('db_mysql_default_'.$generictype.'_columntype');
         if ($config) {
             return $config;
         }
@@ -51,6 +49,7 @@ class MySqliDdl extends Ddl
             case "boolean":
                 return "NUMBER(1,0)"; // size is added fixed. (because a boolean has no size of its own)
         }
+
         return ""; // in case we have an unsupported type.
     }
 
@@ -60,7 +59,7 @@ class MySqliDdl extends Ddl
      * @param string $type The database specific datatype to convert.
      * @return string
      */
-    function getGenericType($type)
+    public function getGenericType($type)
     {
         $type = strtolower($type);
         switch ($type) {
@@ -97,7 +96,8 @@ class MySqliDdl extends Ddl
             case MYSQLI_TYPE_GEOMETRY:
                 return ""; // NOT SUPPORTED FIELD TYPES 
         }
-        return ""; // in case we have an unsupported type.      
+
+        return ""; // in case we have an unsupported type.
     }
 
     /**
@@ -108,10 +108,9 @@ class MySqliDdl extends Ddl
      * @param string $with_check_option - use SQL WITH CHECK OPTION
      * @return string CREATE VIEW query string
      */
-    function buildView($name, $select, $with_check_option)
+    public function buildView($name, $select, $with_check_option)
     {
-        return "CREATE VIEW $name AS " . $select . ($with_check_option ? " WITH CHECK OPTION"
-            : "");
+        return "CREATE VIEW $name AS ".$select.($with_check_option ? " WITH CHECK OPTION" : "");
     }
 
     /**
@@ -120,7 +119,7 @@ class MySqliDdl extends Ddl
      * @param string $name - name of view
      * @return string CREATE VIEW query string
      */
-    function dropView($name)
+    public function dropView($name)
     {
         return "DROP VIEW $name";
     }
@@ -140,7 +139,7 @@ class MySqliDdl extends Ddl
      * @param mixed $default The default value to be used when inserting new
      *                         rows.
      */
-    function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
+    public function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
         if ($generictype == "string" && $size > 255) {
             $generictype = "text";
@@ -163,7 +162,7 @@ class MySqliDdl extends Ddl
      *
      * @param array $tablemeta table meta data array
      */
-    function loadMetaData($tablemeta)
+    public function loadMetaData($tablemeta)
     {
         parent::loadMetaData($tablemeta);
         $this->setTableType($tablemeta[0]["table_type"]);
@@ -175,7 +174,7 @@ class MySqliDdl extends Ddl
      *
      * @param string $type
      */
-    function setTableType($type)
+    public function setTableType($type)
     {
         $this->m_table_type = $type;
     }
@@ -185,20 +184,21 @@ class MySqliDdl extends Ddl
      *
      * @return The CREATE TABLE query.
      */
-    function buildCreate()
+    public function buildCreate()
     {
         $query = parent::buildCreate();
 
         if (!empty($this->m_db->m_charset)) {
-            $query .= ' DEFAULT CHARACTER SET ' . $this->m_db->m_charset;
+            $query .= ' DEFAULT CHARACTER SET '.$this->m_db->m_charset;
             if (!empty($this->m_db->m_collate)) {
-                $query .= ' COLLATE ' . $this->m_db->m_collate;
+                $query .= ' COLLATE '.$this->m_db->m_collate;
             }
         }
 
         if (!empty($query) && !empty($this->m_table_type)) {
-            $query .= " TYPE=" . $this->m_table_type;
+            $query .= " TYPE=".$this->m_table_type;
         }
+
         return $query;
     }
 
@@ -208,10 +208,11 @@ class MySqliDdl extends Ddl
      * @param string $name Sequence name
      * @return boolean
      */
-    function dropSequence($name)
+    public function dropSequence($name)
     {
         $table = $this->m_db->quoteIdentifier($this->db->m_seq_table);
-        return $this->m_db->query("DELETE FROM $table WHERE " . $this->m_db->quoteIdentifier($this->m_db->m_seq_namefield) . " = '" . $this->escapeSQL($name) . "'");
+
+        return $this->m_db->query("DELETE FROM $table WHERE ".$this->m_db->quoteIdentifier($this->m_db->m_seq_namefield)." = '".$this->escapeSQL($name)."'");
     }
 
     /**
@@ -221,10 +222,11 @@ class MySqliDdl extends Ddl
      * @param string $new_name New sequence name
      * @return boolean
      */
-    function renameSequence($name, $new_name)
+    public function renameSequence($name, $new_name)
     {
         $name = $this->m_db->escapeSQL($name);
         $new_name = $this->m_db->escapeSQL($new_name);
+
         return $this->m_db->query("UPDATE db_sequence SET seq_name='$new_name'
                 WHERE seq_name='$name'");
     }
@@ -236,13 +238,11 @@ class MySqliDdl extends Ddl
      * @param string $new_name New table name
      * @return boolean
      */
-    function renameTable($name, $new_name)
+    public function renameTable($name, $new_name)
     {
         $name = $this->m_db->quoteIdentifier($name);
         $new_name = $this->m_db->quoteIdentifier($new_name);
+
         return $this->m_db->query("ALTER TABLE $name RENAME $new_name");
     }
-
 }
-
-

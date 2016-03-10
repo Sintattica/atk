@@ -27,7 +27,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      *                     in the database where the stamp is stored.
      * @param int $flags Flags for the attribute.
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, date("Y-m-d"), date("H:i:s"), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
         $this->setForceInsert(true);
@@ -41,11 +41,12 @@ class UpdateStampAttribute extends DateTimeAttribute
      * @param array $record The record
      * @return string The value to store in the database
      */
-    function value2db($record)
+    public function value2db($record)
     {
         // if record not created using a form this situation can occur, so set the value here
         // Every time we must overwrite the value of this attribute, because this is UPDATE stamp
         $record[$this->fieldName()] = $this->initialValue();
+
         return parent::value2db($record);
     }
 
@@ -54,7 +55,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      *
      * @return array
      */
-    function initialValue()
+    public function initialValue()
     {
         return self::datetimeArray();
     }
@@ -74,10 +75,10 @@ class UpdateStampAttribute extends DateTimeAttribute
         $result = "";
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[' . $key . ']" ' . 'value="' . $value . '">';
+                $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$key.']" '.'value="'.$value.'">';
             }
         } else {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '" value="' . $field . '">';
+            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.$field.'">';
         }
 
         return $result;
@@ -87,10 +88,8 @@ class UpdateStampAttribute extends DateTimeAttribute
      * We always have a value, even if we're not even in the record
      * @return boolean false
      * */
-    function isEmpty()
+    public function isEmpty()
     {
         return false;
     }
-
 }
-

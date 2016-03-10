@@ -4,7 +4,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use \ZipArchive;
 
-
 /**
  * This class provide functions to extract from and add to ZIP archives
  *
@@ -19,20 +18,20 @@ class Zip
      * Some constants
      * @access private
      */
-const ATKZIP_ZIP = 0;
-const ATKZIP_UNZIP = 1;
+    const ATKZIP_ZIP = 0;
+    const ATKZIP_UNZIP = 1;
 
-    var $m_zip_bin = "";
-    var $m_unzip_bin = "";
-    var $m_zipmode = "auto"; // can be auto, internal or infozip
-    var $m_testok = false;
+    public $m_zip_bin = "";
+    public $m_unzip_bin = "";
+    public $m_zipmode = "auto"; // can be auto, internal or infozip
+    public $m_testok = false;
 
     /**
      * Constructor
      *
      * @return Zip
      */
-    function __construct()
+    public function __construct()
     {
         $this->m_zipmode = Config::getGlobal("zipmode", "auto");
         $this->m_zip_bin = Config::getGlobal("ziplocation", "zip");
@@ -49,7 +48,7 @@ const ATKZIP_UNZIP = 1;
      * @param string $params The parameters for zippping or unzipping
      * @return string The command to execute
      */
-    function getInfozipCommand($type, $params)
+    public function getInfozipCommand($type, $params)
     {
         $command = "";
         if ($type == self::ATKZIP_ZIP) {
@@ -59,8 +58,9 @@ const ATKZIP_UNZIP = 1;
             $command = $this->m_unzip_bin;
         }
         if ($params !== "") {
-            $command .= " " . $params;
+            $command .= " ".$params;
         }
+
         return $command;
     }
 
@@ -71,15 +71,16 @@ const ATKZIP_UNZIP = 1;
      * @param string $params The parameters for zipping or unzipping
      * @return string The return code
      */
-    function runInfozipCommand($type, $params)
+    public function runInfozipCommand($type, $params)
     {
         $command = $this->getInfozipCommand($type, $params);
         $output = array();
         Tools::atkdebug("atkZip->runInfozipCommand: Executing command: $command");
         $returncode = null; //var for catching returncode fro exec.
         exec($command, $output, $returncode);
-        Tools::atkdebug("atkZip->runInfozipCommand: Return code was: " . $returncode);
+        Tools::atkdebug("atkZip->runInfozipCommand: Return code was: ".$returncode);
         Tools::atk_var_dump($output, "atkZip->runInfozipCommand: Console output");
+
         return $returncode;
     }
 
@@ -90,7 +91,7 @@ const ATKZIP_UNZIP = 1;
      * @param int $errorcode The errorcode
      * @return string The errormessage
      */
-    function getInfozipError($type, $errorcode)
+    public function getInfozipError($type, $errorcode)
     {
         $codes = array();
         if ($type == self::ATKZIP_UNZIP) {
@@ -133,6 +134,7 @@ const ATKZIP_UNZIP = 1;
                 18 => "Zip could not open a specified file for reading; either it doesn't exist or the user running Zip doesn't have permission to read it.",
             );
         }
+
         return Tools::atkArrayNvl($codes, $errorcode, "Unknown error code returned by Infozip");
     }
 
@@ -141,14 +143,14 @@ const ATKZIP_UNZIP = 1;
      *
      * @return bool True if test was successfull or false if not
      */
-    function test()
+    public function test()
     {
         if ($this->m_testok) {
             return true;
         }
 
         Tools::atkdebug("atkZip->test: Testing systems zip abilities");
-        Tools::atkdebug("atkZip->test: Zipmode = " . $this->m_zipmode);
+        Tools::atkdebug("atkZip->test: Zipmode = ".$this->m_zipmode);
 
         // If the php version is 5.2 or newer and the zip extension is loaded, we can use the
         // ziparchive class
@@ -156,15 +158,15 @@ const ATKZIP_UNZIP = 1;
             Tools::atkdebug("atkZip->test: Testing for php 5.2 and zip extension");
             $phpversion = phpversion();
             $zipextensionloaded = @extension_loaded("zip");
-            Tools::atkdebug("atkZip->test: PHP Version = " . $phpversion);
-            Tools::atkdebug("atkZip->test: extension_loaded('zip') = " . ($zipextensionloaded
-                    ? "true" : "false"));
+            Tools::atkdebug("atkZip->test: PHP Version = ".$phpversion);
+            Tools::atkdebug("atkZip->test: extension_loaded('zip') = ".($zipextensionloaded ? "true" : "false"));
             if (version_compare($phpversion, '5.2') > 0 && $zipextensionloaded) {
                 Tools::atkdebug("atkZip->test: PHP 5.2 or newer and the ZIP extension are present, TEST SUCCESFULL!");
                 if ($this->m_zipmode == "auto") {
                     $this->m_zipmode = "internal";
                 }
                 $this->m_testok = true;
+
                 return true;
             }
         }
@@ -181,12 +183,14 @@ const ATKZIP_UNZIP = 1;
                     $this->m_zipmode = "infozip";
                 }
                 $this->m_testok = true;
+
                 return true;
             }
         }
 
         Tools::atkdebug("atkZip->test: This system has no zip abilities, TEST FAILED!");
         Tools::atkdebug("atkZip->test: Try upgrading to PHP 5.2 and installing the php zip extension");
+
         return false;
     }
 
@@ -198,7 +202,7 @@ const ATKZIP_UNZIP = 1;
      * @param array $entries The entries
      * @return bool True if extract went successfull or false if not
      */
-    function extract($archive, $destination, $entries = null)
+    public function extract($archive, $destination, $entries = null)
     {
         if (!$this->test()) {
             Tools::atkerror("atkZip->extract: Could not extract, system is not capable of extracting from a ZIP archive");
@@ -213,9 +217,11 @@ const ATKZIP_UNZIP = 1;
                     $zip->extractTo($destination, $entries);
                 }
                 $zip->close();
+
                 return true;
             } else {
                 Tools::atkerror("atkZip->extract: Error while opening the zip archive ($archive)");
+
                 return false;
             }
         }
@@ -229,6 +235,7 @@ const ATKZIP_UNZIP = 1;
             } else {
                 Tools::atkerror(sprintf("atkZip->extract: Infozip returned an error: %s (return code %d)",
                     $this->getInfozipError(self::ATKZIP_UNZIP, $returncode), $returncode));
+
                 return false;
             }
         }
@@ -244,7 +251,7 @@ const ATKZIP_UNZIP = 1;
      * @param string $filepath path where file will be placed in (optional, and only for zipmode "internal")
      * @return boolean $result
      */
-    function add($archive, $filename, $filepath = "")
+    public function add($archive, $filename, $filepath = "")
     {
         if (!$this->test()) {
             Tools::atkerror("atkZip->add: Could not add, system is not capable of add to a ZIP archive");
@@ -253,12 +260,14 @@ const ATKZIP_UNZIP = 1;
         if ($this->m_zipmode == "internal") {
             $zip = new ZipArchive;
             if ($zip->open($archive) === true) {
-                Tools::atkdebug("AtkZip::add|adding " . $filepath . basename($filename) . " to $archive");
-                $zip->addFile($filename, $filepath . basename($filename));
+                Tools::atkdebug("AtkZip::add|adding ".$filepath.basename($filename)." to $archive");
+                $zip->addFile($filename, $filepath.basename($filename));
                 $zip->close();
+
                 return true;
             } else {
                 Tools::atkerror("atkZip->add: Error while opening the zip archive ($archive)");
+
                 return false;
             }
         }
@@ -269,14 +278,13 @@ const ATKZIP_UNZIP = 1;
             if ($returncode <= 0) {
                 return true;
             } else {
-                Tools::atkerror(sprintf("atkZip->add: Infozip returned an error: %s (return code %d)",
-                    $this->getInfozipError(self::ATKZIP_ZIP, $returncode), $returncode));
+                Tools::atkerror(sprintf("atkZip->add: Infozip returned an error: %s (return code %d)", $this->getInfozipError(self::ATKZIP_ZIP, $returncode),
+                    $returncode));
+
                 return false;
             }
         }
 
         return false;
     }
-
 }
-

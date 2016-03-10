@@ -22,10 +22,11 @@ class MultiSelectHandler extends AdminHandler
     /**
      * The action handler method.
      */
-    function action_multiselect()
+    public function action_multiselect()
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
@@ -45,15 +46,12 @@ class MultiSelectHandler extends AdminHandler
      * Parse atkselectors in postvars into atktarget using atktargetvartpl and atktargetvar
      * Then redirect to atktarget
      */
-    function handleMultiselect()
+    public function handleMultiselect()
     {
         $node = $this->getNode();
         $columnConfig = $node->getColumnConfig();
-        $recordset = $node->select(implode(' OR ', $this->m_postvars['atkselector']))
-            ->orderBy($columnConfig->getOrderByStatement())
-            ->excludes($node->m_listExcludes)
-            ->mode('multiselect')
-            ->getAllRows();
+        $recordset = $node->select(implode(' OR ',
+            $this->m_postvars['atkselector']))->orderBy($columnConfig->getOrderByStatement())->excludes($node->m_listExcludes)->mode('multiselect')->getAllRows();
 
         // loop recordset to parse atktargetvar
         $atktarget = Tools::atkurldecode($node->m_postvars['atktarget']);
@@ -66,7 +64,7 @@ class MultiSelectHandler extends AdminHandler
             } else {
                 $atktarget .= '&';
             }
-            $atktarget .= $atktargetvar . '[]=' . $this->parseString($atktargettpl, $recordset[$i]);
+            $atktarget .= $atktargetvar.'[]='.$this->parseString($atktargettpl, $recordset[$i]);
         }
         $node->redirect($atktarget);
     }
@@ -78,13 +76,14 @@ class MultiSelectHandler extends AdminHandler
      * @param array $recordset The recordset to use for parsing the string
      * @return String The parsed string
      */
-    function parseString($string, $recordset)
+    public function parseString($string, $recordset)
     {
         $parser = new StringParser($string);
 
         // for backwardscompatibility reasons, we also support the '[pk]' var.
         $recordset['pk'] = $this->getNode()->primaryKey($recordset);
         $output = $parser->parse($recordset, true);
+
         return $output;
     }
 
@@ -95,7 +94,7 @@ class MultiSelectHandler extends AdminHandler
      *
      * @return String The html select page.
      */
-    function multiSelectPage()
+    public function multiSelectPage()
     {
         // add the postvars to the form
         global $g_stickyurl;
@@ -108,8 +107,7 @@ class MultiSelectHandler extends AdminHandler
         $GLOBALS['atktargetvartpl'] = $this->getNode()->m_postvars['atktargetvartpl'];
 
 
-        $params["header"] = Tools::atktext("title_multiselect", $this->getNode()->m_module,
-            $this->getNode()->m_type);
+        $params["header"] = Tools::atktext("title_multiselect", $this->getNode()->m_module, $this->getNode()->m_type);
 
         $actions['actions'] = array();
         $actions['mra'][] = 'multiselect';
@@ -131,17 +129,15 @@ class MultiSelectHandler extends AdminHandler
         $params["list"] = $grid->render();
 
         if ($sm->atkLevel() > 0) {
-            $backlinkurl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . Tools::atktext('cancel') . '"></div>';
+            $backlinkurl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
+            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\''.$backlinkurl.'\';" value="'.Tools::atktext('cancel').'"></div>';
         }
 
         $output = $this->getUi()->renderList("multiselect", $params);
 
         return $this->getUi()->renderBox(array(
             "title" => $this->getNode()->actionTitle('multiselect'),
-            "content" => $output
+            "content" => $output,
         ));
     }
-
 }
-

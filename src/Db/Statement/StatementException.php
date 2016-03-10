@@ -25,5 +25,4 @@ class StatementException extends \Exception
     {
         parent::__construct($message, $code);
     }
-
 }

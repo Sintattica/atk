@@ -21,22 +21,22 @@ use Sintattica\Atk\Db\Query;
  */
 class BootstrapDateTimeAttribute extends Attribute
 {
-    var $m_bootstrapdatetime_format_edit;
-    var $m_bootstrapdatetime_format_view;
-    var $m_db_format; //MomentJS Format
-    var $m_type = 'datetime';
-    var $m_pickerparams = array();
-    var $m_disabledDates = array();
-    var $m_minDate;
-    var $m_maxDate;
-    var $m_sideBySide = true;
+    public $m_bootstrapdatetime_format_edit;
+    public $m_bootstrapdatetime_format_view;
+    public $m_db_format; //MomentJS Format
+    public $m_type = 'datetime';
+    public $m_pickerparams = array();
+    public $m_disabledDates = array();
+    public $m_minDate;
+    public $m_maxDate;
+    public $m_sideBySide = true;
 
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags);
     }
 
-    function postInit()
+    public function postInit()
     {
         if ($this->m_type == 'datetime') {
             if (!$this->m_bootstrapdatetime_format_edit) {
@@ -79,20 +79,22 @@ class BootstrapDateTimeAttribute extends Attribute
      * @return String The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return $this->m_type;
     }
 
-    function setType($type)
+    public function setType($type)
     {
         $this->m_type = $type;
+
         return $this;
     }
 
-    function setPickerParams($pickerparams)
+    public function setPickerParams($pickerparams)
     {
         $this->m_pickerparams = $pickerparams;
+
         return $this;
     }
 
@@ -101,9 +103,10 @@ class BootstrapDateTimeAttribute extends Attribute
      *
      * @param string $format_view The format (see format for momentJs function)
      */
-    function setFormatView($format_view)
+    public function setFormatView($format_view)
     {
         $this->m_bootstrapdatetime_format_view = $format_view;
+
         return $this;
     }
 
@@ -112,48 +115,49 @@ class BootstrapDateTimeAttribute extends Attribute
      *
      * @param string $format_view The format (see format for momentJs function)
      */
-    function setFormatEdit($format_edit)
+    public function setFormatEdit($format_edit)
     {
         $this->m_bootstrapdatetime_format_edit = $format_edit;
+
         return $this;
     }
 
 
-    function draw($record = "", $fieldprefix = "", $postfix = "", $mode = "")
+    public function draw($record = "", $fieldprefix = "", $postfix = "", $mode = "")
     {
-        $fieldName = $id = $fieldprefix . $this->fieldName() . $postfix;
-        $pickerId = $id . '_picker';
+        $fieldName = $id = $fieldprefix.$this->fieldName().$postfix;
+        $pickerId = $id.'_picker';
 
         $value = $this->arrayToValue($record[$this->fieldName()]);
         $icon = 'glyphicon-calendar';
 
         if ($this->m_type == 'time') {
             $icon = 'glyphicon-time';
-            $value = '1970-01-01 ' . $value;
+            $value = '1970-01-01 '.$value;
         }
 
         $params = array(
             'language' => Config::getGlobal('language'),
             'pickTime' => ($this->m_type == 'datetime' || $this->m_type == 'time'),
             'pickDate' => ($this->m_type == 'datetime' || $this->m_type == 'date'),
-            'sideBySide' => $this->m_sideBySide
+            'sideBySide' => $this->m_sideBySide,
         );
 
         if (count($this->m_disabledDates)) {
             $dates = array();
             foreach ($this->m_disabledDates as $d) {
-                $dates[] = 'function:moment("' . $d . '")';
+                $dates[] = 'function:moment("'.$d.'")';
             }
 
             $params['disabledDates'] = $dates;
         }
 
         if ($this->m_minDate) {
-            $params['minDate'] = "function:moment('" . $this->m_minDate . "')";
+            $params['minDate'] = "function:moment('".$this->m_minDate."')";
         }
 
         if ($this->m_maxDate) {
-            $params['maxDate'] = "function:moment('" . $this->m_maxDate . "')";
+            $params['maxDate'] = "function:moment('".$this->m_maxDate."')";
         }
 
 
@@ -162,38 +166,39 @@ class BootstrapDateTimeAttribute extends Attribute
 
         $js = "";
         $js .= "jQuery(function ($) {";
-        $js .= "  $('#" . $pickerId . "').datetimepicker(" . $params . ");";
-        $js .= "  $('#" . $pickerId . "').on('dp.change', function(e){";
-        $js .= "     $('#" . $id . "').val($('#" . $pickerId . "').data('DateTimePicker').getDate().format('" . $this->m_db_format . "'));";
+        $js .= "  $('#".$pickerId."').datetimepicker(".$params.");";
+        $js .= "  $('#".$pickerId."').on('dp.change', function(e){";
+        $js .= "     $('#".$id."').val($('#".$pickerId."').data('DateTimePicker').getDate().format('".$this->m_db_format."'));";
         $js .= "  });";
         if ($value) {
-            $js .= "  $('#" . $pickerId . "').data('DateTimePicker').setDate(moment('" . $value . "'));";
+            $js .= "  $('#".$pickerId."').data('DateTimePicker').setDate(moment('".$value."'));";
         }
         $js .= "});";
 
         $page = Page::getInstance();
-        $srcPath = Config::getGlobal('atkroot') . 'atk/themes/bootstrap/lib/bootstrap-datetimepicker/build/';
-        $page->register_script($srcPath . 'js/bootstrap-datetimepicker.min.js');
-        $page->register_style($srcPath . 'css/bootstrap-datetimepicker.min.css');
+        $srcPath = Config::getGlobal('atkroot').'atk/themes/bootstrap/lib/bootstrap-datetimepicker/build/';
+        $page->register_script($srcPath.'js/bootstrap-datetimepicker.min.js');
+        $page->register_style($srcPath.'css/bootstrap-datetimepicker.min.css');
         $page->register_scriptcode($js);
 
         $result = '';
-        $result .= '    <div class="input-group date col-md-4" id="' . $pickerId . '">';
-        $result .= '      <input type="text" class="form-control" data-date-format="' . $this->m_bootstrapdatetime_format_edit . '" />';
-        $result .= '      <input type="hidden" id="' . $id . '" name="' . $fieldName . '" />';
-        $result .= '      <span class="input-group-addon"><span class="glyphicon ' . $icon . '"></span>';
+        $result .= '    <div class="input-group date col-md-4" id="'.$pickerId.'">';
+        $result .= '      <input type="text" class="form-control" data-date-format="'.$this->m_bootstrapdatetime_format_edit.'" />';
+        $result .= '      <input type="hidden" id="'.$id.'" name="'.$fieldName.'" />';
+        $result .= '      <span class="input-group-addon"><span class="glyphicon '.$icon.'"></span>';
         $result .= '    </div>';
 
         return $result;
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         $dateEdit = $this->draw($record, $fieldprefix, '', $mode);
+
         return $dateEdit;
     }
 
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         $value = $this->arrayToValue($record[$this->fieldName()]);
         if (!$value) {
@@ -202,6 +207,7 @@ class BootstrapDateTimeAttribute extends Attribute
 
         $m = new Moment($value);
         $result = $m->format($this->m_bootstrapdatetime_format_view, new MomentJs());
+
         return $result;
     }
 
@@ -220,11 +226,12 @@ class BootstrapDateTimeAttribute extends Attribute
 
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[' . $key . ']" ' . 'value="' . $value . '">';
+                $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$key.']" '.'value="'.$value.'">';
             }
         } else {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '" value="' . $field . '">';
+            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.$field.'">';
         }
+
         return $result;
     }
 
@@ -247,7 +254,7 @@ class BootstrapDateTimeAttribute extends Attribute
     public function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
     {
         if (!$extended) {
-            $res = $this->draw($record, "atksearch_AE_" . $fieldprefix, '', 'search');
+            $res = $this->draw($record, "atksearch_AE_".$fieldprefix, '', 'search');
 
             return $res;
         }
@@ -257,17 +264,15 @@ class BootstrapDateTimeAttribute extends Attribute
             $record[$this->fieldName()] = null;
         }
 
-        $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from'])
-            : $record;
-        $res = $this->draw($rec, 'atksearch_AE_' . $fieldprefix, '_AE_from', 'search');
-        $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to'])
-            : $record;
-        $res .= Tools::atktext("until") . $this->draw($rec, 'atksearch_AE_' . $fieldprefix, "_AE_to", 'search');
+        $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from']) : $record;
+        $res = $this->draw($rec, 'atksearch_AE_'.$fieldprefix, '_AE_from', 'search');
+        $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to']) : $record;
+        $res .= Tools::atktext("until").$this->draw($rec, 'atksearch_AE_'.$fieldprefix, "_AE_to", 'search');
 
         return $res;
     }
 
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $db = $this->getDb();
         $searchcondition = '';
@@ -281,8 +286,8 @@ class BootstrapDateTimeAttribute extends Attribute
                 if (substr_count($value, '/') == 5) {
                     $parts = explode('/', $value);
                     $value = array(
-                        'from' => trim($parts[0] . '/' . $parts[1] . '/' . $parts[2]),
-                        'to' => trim($parts[3] . '/' . $parts[4] . '/' . $parts[5])
+                        'from' => trim($parts[0].'/'.$parts[1].'/'.$parts[2]),
+                        'to' => trim($parts[3].'/'.$parts[4].'/'.$parts[5]),
                     );
                 } else {
                     $value = array('from' => $value, 'to' => $value);
@@ -297,13 +302,13 @@ class BootstrapDateTimeAttribute extends Attribute
         $toval = $this->value2db(array($this->fieldName() => $valueTo));
 
         if ($this->m_type == 'datetime') {
-            $field = $db->func_datetimetochar($table . "." . $this->fieldName());
+            $field = $db->func_datetimetochar($table.".".$this->fieldName());
         } else {
             if ($this->m_type == 'date') {
-                $field = $db->func_datetochar($table . "." . $this->fieldName());
+                $field = $db->func_datetochar($table.".".$this->fieldName());
             } else {
                 if ($this->m_type == 'time') {
-                    $field = $table . "." . $this->fieldName();
+                    $field = $table.".".$this->fieldName();
                 }
             }
         }
@@ -320,16 +325,13 @@ class BootstrapDateTimeAttribute extends Attribute
                     $fromval = $toval;
                     $toval = $tmp;
                 }
-                $searchcondition = $query->betweenCondition(
-                    $field, $fromval, $toval);
+                $searchcondition = $query->betweenCondition($field, $fromval, $toval);
             } else {
                 if ($fromval != null && $toval == null) {
-                    $searchcondition = $query->greaterthanequalCondition(
-                        $field, $fromval);
+                    $searchcondition = $query->greaterthanequalCondition($field, $fromval);
                 } else {
                     if ($fromval == null && $toval != null) {
-                        $searchcondition = $query->lessthanequalCondition(
-                            $field, $toval);
+                        $searchcondition = $query->lessthanequalCondition($field, $toval);
                     } else {
                         if ((is_array($value["from"])) or (is_array($value["to"]))) {
                             $searchcondition = $this->_getDateArraySearchCondition($query, $table, $value);
@@ -355,7 +357,7 @@ class BootstrapDateTimeAttribute extends Attribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         return array("between");
     }
@@ -366,7 +368,7 @@ class BootstrapDateTimeAttribute extends Attribute
      * @param array $rec database record with date field
      * @return array with 6 fields (year, month, day, hours, minutes, seconds)
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) {
             return null;
@@ -391,17 +393,17 @@ class BootstrapDateTimeAttribute extends Attribute
 
             return $result;
         } catch (MomentException $e) {
-
         }
+
         return null;
     }
 
-    function value2db($rec)
+    public function value2db($rec)
     {
         return $rec[$this->fieldName()];
     }
 
-    function arrayToValue($a)
+    public function arrayToValue($a)
     {
         $result = null;
         if ($this->m_type == 'datetime') {
@@ -414,7 +416,7 @@ class BootstrapDateTimeAttribute extends Attribute
 
             $date = sprintf('%04d-%02d-%02d', $a['year'], $a['month'], $a['day']);
             $time = sprintf('%02d:%02d:%02d', $a['hours'], $a['minutes'], $a['seconds']);
-            $result = $date . ' ' . $time;
+            $result = $date.' '.$time;
         } else {
             if ($this->m_type == 'date') {
                 if (empty($a['year']) || empty($a['month']) || empty($a['day'])) {
@@ -437,18 +439,19 @@ class BootstrapDateTimeAttribute extends Attribute
         return $result;
     }
 
-    function addDisabledDates($dates)
+    public function addDisabledDates($dates)
     {
         if (!is_array($dates)) {
             $dates = array($dates);
         }
 
         $this->m_disabledDates = array_merge($this->m_disabledDates, $dates);
+
         return $this;
     }
 
 
-    function json_stringify($input)
+    public function json_stringify($input)
     {
         $outtext = '';
         $opening = '{';
@@ -485,23 +488,24 @@ class BootstrapDateTimeAttribute extends Attribute
                     }
                 }
             }
-            $inner[] = ($numericarray ? '' : "\"$key\":") . $val;
+            $inner[] = ($numericarray ? '' : "\"$key\":").$val;
         }
         $outtext .= implode(',', $inner);
-        return $opening . $outtext . $closing;
+
+        return $opening.$outtext.$closing;
     }
 
-    function setMinDate($date)
+    public function setMinDate($date)
     {
         $this->m_minDate = $date;
     }
 
-    function setMaxDate($date)
+    public function setMaxDate($date)
     {
         $this->m_maxDate = $date;
     }
 
-    function setSideBySide($side)
+    public function setSideBySide($side)
     {
         $this->m_sideBySide = $side;
     }

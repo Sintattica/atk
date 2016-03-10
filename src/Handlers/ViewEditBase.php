@@ -5,6 +5,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\State;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionStore;
+
 /**
  * Handler class for the edit action of a node. The handler draws a
  * generic edit form for the given node.
@@ -72,6 +73,7 @@ class ViewEditBase extends ActionHandler
     {
         $selector = Tools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', "");
         $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
+
         return $record;
     }
 
@@ -83,6 +85,7 @@ class ViewEditBase extends ActionHandler
     protected function getRecordFromSession()
     {
         $selector = Tools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', '');
+
         return SessionStore::getInstance()->getDataRowForSelector($selector);
     }
 
@@ -96,10 +99,11 @@ class ViewEditBase extends ActionHandler
      *
      * @static
      */
-    function getSectionLabel($node, $rawName)
+    public function getSectionLabel($node, $rawName)
     {
         list($tab, $section) = explode('.', $rawName);
         $strings = array("section_{$tab}_{$section}", "{$tab}_{$section}", "section_{$section}", $section);
+
         return $node->text($strings);
     }
 
@@ -113,9 +117,10 @@ class ViewEditBase extends ActionHandler
      *
      * @static
      */
-    function getTabLabel($node, $tab)
+    public function getTabLabel($node, $tab)
     {
         $strings = array("tab_{$tab}", $tab);
+
         return $node->text($strings);
     }
 
@@ -126,7 +131,7 @@ class ViewEditBase extends ActionHandler
      * @param string $mode
      * @return string Html
      */
-    function getSectionControl($field, $mode)
+    public function getSectionControl($field, $mode)
     {
         // label
         $label = ViewEditBase::getSectionLabel($this->m_node, $field['name']);
@@ -135,16 +140,14 @@ class ViewEditBase extends ActionHandler
         list($tab, $section) = explode('.', $field["name"]);
         $name = "section_{$tab}_{$section}";
 
-        $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, "sectionstate",
-            array("atksectionname" => $name));
+        $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, "sectionstate", array("atksectionname" => $name));
 
         // create onclick statement.
         $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
         $initClass = "openedSection";
 
         //if the section is not active, we close it on load.
-        $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode))
-            ? 'opened' : 'closed';
+        $default = in_array($field["name"], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
         $sectionstate = State::get(array("nodetype" => $this->m_node->atkNodeUri(), "section" => $name), $default);
 
         if ($sectionstate == 'closed') {
@@ -154,7 +157,7 @@ class ViewEditBase extends ActionHandler
         }
 
         // create the clickable link
-        return '<span class="atksectionwr"><a href="javascript:void(0)" id="' . $name . '" class="atksection ' . $initClass . '"' . $onClick . '>' . $label . '</a></span>';
+        return '<span class="atksectionwr"><a href="javascript:void(0)" id="'.$name.'" class="atksection '.$initClass.'"'.$onClick.'>'.$label.'</a></span>';
     }
 
     /**
@@ -165,12 +168,10 @@ class ViewEditBase extends ActionHandler
      * @param array $fields edit fields
      * @return boolean
      */
-    function isSectionInitialHidden($section, $fields)
+    public function isSectionInitialHidden($section, $fields)
     {
         foreach ($fields as $field) {
-            if (is_array($field["sections"]) && in_array($section,
-                    $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden'])
-            ) {
+            if (is_array($field["sections"]) && in_array($section, $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden'])) {
                 return false;
             }
         }
@@ -185,7 +186,7 @@ class ViewEditBase extends ActionHandler
      * @param array $tplfield the template data for the current attribute
      * @param int $i the counter being used to loop the node for each attribute
      */
-    static function _addNumbering(&$field, &$tplfield, &$i)
+    public static function _addNumbering(&$field, &$tplfield, &$i)
     {
         static $number, $subnumber;
 
@@ -215,11 +216,11 @@ class ViewEditBase extends ActionHandler
     /**
      * Section state handler.
      */
-    function partial_sectionstate()
+    public function partial_sectionstate()
     {
         State::set(array(
             "nodetype" => $this->m_node->atkNodeUri(),
-            "section" => $this->m_postvars['atksectionname']
+            "section" => $this->m_postvars['atksectionname'],
         ), $this->m_postvars['atksectionstate']);
         die;
     }
@@ -233,12 +234,13 @@ class ViewEditBase extends ActionHandler
      * @param array $record
      * @return array with tab=>template pear
      */
-    function _getTabTpl($node, $tabs, $mode, $record)
+    public function _getTabTpl($node, $tabs, $mode, $record)
     {
         $tabTpl = array();
         foreach ($tabs as $t) {
-            $tabTpl['section_' . $t] = $node->getTemplate($mode, $record, $t);
+            $tabTpl['section_'.$t] = $node->getTemplate($mode, $record, $t);
         }
+
         return $tabTpl;
     }
 
@@ -251,7 +253,7 @@ class ViewEditBase extends ActionHandler
      * @param array $tabTpl
      * @return array with already rendering tabs
      */
-    function _renderTabs($fields, $tabTpl)
+    public function _renderTabs($fields, $tabTpl)
     {
         $ui = $this->getUi();
         $tabs = array();
@@ -303,12 +305,11 @@ class ViewEditBase extends ActionHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeUri()."'");
+
             return '';
         }
 
         return $attr->partial($partial, $this->m_action);
     }
-
 }
-

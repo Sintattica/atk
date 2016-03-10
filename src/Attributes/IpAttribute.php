@@ -27,7 +27,7 @@ class IpAttribute extends Attribute
      * @param string $name attribute name
      * @param int $flags attribute flags.
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags, 15);
     }
@@ -39,7 +39,7 @@ class IpAttribute extends Attribute
      *
      * @return string fetched value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
             return parent::fetchValue($postvars[$this->fieldName()]);
@@ -56,7 +56,7 @@ class IpAttribute extends Attribute
         return implode('.', $parts);
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         if ($this->hasFlag(self::AF_IP_SINGLEFIELD)) {
             return parent::edit($record, $fieldprefix, $mode);
@@ -66,9 +66,9 @@ class IpAttribute extends Attribute
         $values = empty($record[$this->fieldName()]) ? null : explode('.', $record[$this->fieldName()]);
 
         for ($i = 0; $i < 4; $i++) {
-            $name = $fieldprefix . $this->fieldName() . '[' . $i . ']';
+            $name = $fieldprefix.$this->fieldName().'['.$i.']';
             $value = isset($values[$i]) ? $values[$i] : '';
-            $inputs[] = '<input type="text" name="' . $name . '" value="' . $value . '" maxlength="3" size="3" />';
+            $inputs[] = '<input type="text" name="'.$name.'" value="'.$value.'" maxlength="3" size="3" />';
         }
 
         return implode('.', $inputs);
@@ -83,7 +83,7 @@ class IpAttribute extends Attribute
      * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         // Check for valid ip string
         $strvalue = Tools::atkArrayNvl($record, $this->fieldName(), "");
@@ -106,7 +106,7 @@ class IpAttribute extends Attribute
      * @param array $rec The record that holds this attribute's value.
      * @return String The database compatible value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
@@ -123,7 +123,7 @@ class IpAttribute extends Attribute
      * @param array $rec The database record that holds this attribute's value
      * @return mixed The internal value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
@@ -139,7 +139,7 @@ class IpAttribute extends Attribute
      *
      * @return String The 'generic' type of the database field for this attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return $this->hasFlag(self::AF_IP_STORENUMERIC) ? "int" : "string";
     }
@@ -149,11 +149,8 @@ class IpAttribute extends Attribute
      *
      * @return int The database field size
      */
-    function dbFieldSize()
+    public function dbFieldSize()
     {
         return $this->hasFlag(self::AF_IP_STORENUMERIC) ? 32 : 15;
     }
-
 }
-
-

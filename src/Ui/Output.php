@@ -30,13 +30,13 @@ class Output
      * Store raw output data.
      * @access private
      */
-    var $m_raw = "";
+    public $m_raw = "";
 
     /**
      * Store regular output data.
      * @access private
      */
-    var $m_content = "";
+    public $m_content = "";
 
     /**
      * Retrieve the one-and-only Output instance.
@@ -49,6 +49,7 @@ class Output
             Tools::atkdebug("Created a new Output instance");
             $s_instance = new self();
         }
+
         return $s_instance;
     }
 
@@ -80,14 +81,14 @@ class Output
             self::sendNoCacheHeaders();
         } else {
             if ($lastmodificationstamp != 0) {
-                $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0,
-                    strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
-                $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp) . ' GMT';
+                $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
+                $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp).' GMT';
                 if ($_last_modified_date == $_gmt_mtime) {
                     self::header("HTTP/1.0 304 Not Modified");
+
                     return;
                 } else {
-                    self::header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+                    self::header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastmodificationstamp)." GMT");
                 }
             }
         }
@@ -99,9 +100,9 @@ class Output
      */
     public static function sendNoCacheHeaders()
     {
-        Tools::atkdebug("Sending no-cache headers (lmd: " . gmdate("D, d M Y H:i:s") . " GMT)");
+        Tools::atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
         self::header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-        self::header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
+        self::header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT"); // always modified
         self::header("Cache-Control: no-store, no-cache, must-revalidate");
         self::header("Cache-Control: post-check=0, pre-check=0");
         self::header("Pragma: no-cache");                          // HTTP/1.0
@@ -130,8 +131,7 @@ class Output
             $this->sendCachingHeaders($lastmodificationstamp, $nocache);
 
             // Set the content type and the character set (as defined in the language files)
-            self::header("Content-Type: text/html; charset=" . ($charset == ""
-                    ? Tools::atkGetCharset() : $charset));
+            self::header("Content-Type: text/html; charset=".($charset == "" ? Tools::atkGetCharset() : $charset));
 
             $res = $this->m_content;
 
@@ -145,10 +145,9 @@ class Output
             $res .= $debugger->renderDebugAndErrorMessages();
         }
 
-        if (Config::getGlobal("output_gzip") &&
-            phpversion() >= '4.0.4pl1' &&
-            (strstr($_SERVER["HTTP_USER_AGENT"], 'compatible') || strstr($_SERVER["HTTP_USER_AGENT"], 'Gecko')) &&
-            isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
+        if (Config::getGlobal("output_gzip") && phpversion() >= '4.0.4pl1' && (strstr($_SERVER["HTTP_USER_AGENT"],
+                    'compatible') || strstr($_SERVER["HTTP_USER_AGENT"],
+                    'Gecko')) && isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
         ) {
             self::header('Content-Encoding: gzip');
             echo $this->gzip($res);
@@ -166,10 +165,12 @@ class Output
     {
         global $g_debug_msg;
         if (Config::getGlobal("debug") > 0) {
-            $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">' . implode("<br>\n ",
-                    $g_debug_msg) . '</div>';
+            $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left" id="atk_debugging_div">'.implode("<br>\n ",
+                    $g_debug_msg).'</div>';
+
             return $output;
         }
+
         return "";
     }
 
@@ -182,7 +183,7 @@ class Output
      */
     public function rawoutput($txt)
     {
-        $this->m_raw .= $txt . "\n";
+        $this->m_raw .= $txt."\n";
     }
 
     /**
@@ -191,7 +192,7 @@ class Output
      */
     public function output($txt)
     {
-        $this->m_content .= $txt . "\n";
+        $this->m_content .= $txt."\n";
     }
 
     /**
@@ -217,7 +218,4 @@ class Output
 
         return $res;
     }
-
 }
-
-

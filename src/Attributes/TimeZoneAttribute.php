@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
 /**
  * The atkTimeZone class represents an attribute to handle timezones in a listbox.
  *
@@ -10,7 +9,7 @@
  */
 class TimeZoneAttribute extends ListAttribute
 {
-    var $m_defaulttocurrent = true;
+    public $m_defaulttocurrent = true;
 
     /**
      * Constructor
@@ -20,7 +19,7 @@ class TimeZoneAttribute extends ListAttribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for the attribute
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         $optionsArray = array(
             'timezone_utc_-1200',
@@ -92,16 +91,14 @@ class TimeZoneAttribute extends ListAttribute
      *
      * @static
      */
-    function getUTCOffset($value, $timestamp = null)
+    public function getUTCOffset($value, $timestamp = null)
     {
         if ($value === null) {
             return 0;
         } else {
             list($sign, $hours, $minutes) = sscanf($value, '%1s%2d%2d');
+
             return ($sign == '+' ? 1 : -1) * ($hours * 60 * 60) + ($minutes * 60);
         }
     }
-
 }
-
-

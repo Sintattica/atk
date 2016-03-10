@@ -21,29 +21,29 @@ class Relation extends Attribute
     /**
      * @var String Destination node.
      */
-    var $m_destination;
+    public $m_destination;
 
     /**
      * @var Node Destination instance.
      */
-    var $m_destInstance = "";
+    public $m_destInstance = "";
 
     /**
      * @var String Filter for destination records.
      */
-    var $m_destinationFilter = "";
+    public $m_destinationFilter = "";
 
     /**
      * Descriptor template for destination node.
      * @var String
      */
-    var $m_descTemplate = null;
+    public $m_descTemplate = null;
 
     /**
      * Descriptor handler.
      * @var Object
      */
-    var $m_descHandler = null;
+    public $m_descHandler = null;
 
     /**
      * Constructor
@@ -51,7 +51,7 @@ class Relation extends Attribute
      * @param string $destination The destination node (in module.name notation)
      * @param int $flags Flags for the relation
      */
-    function __construct($name, $destination, $flags = 0)
+    public function __construct($name, $destination, $flags = 0)
     {
         parent::__construct($name, $flags);
         $this->m_destination = strtolower($destination);
@@ -61,7 +61,7 @@ class Relation extends Attribute
      * Returns the destination filter.
      * @return String The destination filter.
      */
-    function getDestinationFilter()
+    public function getDestinationFilter()
     {
         return $this->m_destinationFilter;
     }
@@ -70,7 +70,7 @@ class Relation extends Attribute
      * Sets the destination filter.
      * @param string $filter The destination filter.
      */
-    function setDestinationFilter($filter)
+    public function setDestinationFilter($filter)
     {
         $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
     }
@@ -84,7 +84,7 @@ class Relation extends Attribute
      * @param string $filter
      * @return string
      */
-    function _cleanupDestinationFilter($filter)
+    public function _cleanupDestinationFilter($filter)
     {
         $result = '';
         $filter_length = strlen($filter);
@@ -111,6 +111,7 @@ class Relation extends Attribute
             }
             $lastChar = $currentChar;
         }
+
         return $result;
     }
 
@@ -118,7 +119,7 @@ class Relation extends Attribute
      * Adds a filter value to the destination filter.
      * @param string $filter Filter to be added to the destination filter.
      */
-    function addDestinationFilter($filter)
+    public function addDestinationFilter($filter)
     {
         $filter = $this->_cleanupDestinationFilter($filter);
         if ($this->m_destinationFilter != "") {
@@ -126,6 +127,7 @@ class Relation extends Attribute
         } else {
             $this->m_destinationFilter = $filter;
         }
+
         return $this;
     }
 
@@ -133,7 +135,7 @@ class Relation extends Attribute
      * Get descriptor handler.
      * @return Object descriptor handler
      */
-    function &getDescriptorHandler()
+    public function &getDescriptorHandler()
     {
         return $this->m_descHandler;
     }
@@ -142,7 +144,7 @@ class Relation extends Attribute
      * Set descriptor handler.
      * @param Object $handler The descriptor handler.
      */
-    function setDescriptorHandler(&$handler)
+    public function setDescriptorHandler(&$handler)
     {
         $this->m_descHandler = &$handler;
     }
@@ -151,7 +153,7 @@ class Relation extends Attribute
      * Returns the descriptor template for the destination node.
      * @return String The descriptor Template
      */
-    function getDescriptorTemplate()
+    public function getDescriptorTemplate()
     {
         return $this->m_descTemplate;
     }
@@ -160,7 +162,7 @@ class Relation extends Attribute
      * Sets the descriptor template for the destination node.
      * @param string $template The descriptor template.
      */
-    function setDescriptorTemplate($template)
+    public function setDescriptorTemplate($template)
     {
         $this->m_descTemplate = $template;
     }
@@ -173,9 +175,9 @@ class Relation extends Attribute
      * @param Node $node The atknode object
      * @return String with the descriptor
      */
-    function descriptor($record, &$node)
+    public function descriptor($record, &$node)
     {
-        $method = $this->m_name . "_descriptor";
+        $method = $this->m_name."_descriptor";
         if (method_exists($this->m_descHandler, $method)) {
             return $this->m_descHandler->$method($record, $node);
         } else {
@@ -190,17 +192,18 @@ class Relation extends Attribute
      *
      * @return boolean true if succesful, false if something went wrong.
      */
-    function createDestination()
+    public function createDestination()
     {
         if (!is_object($this->m_destInstance)) {
             $atk = Atk::getInstance();
-            $cache_id = $this->m_owner . "." . $this->m_name;
+            $cache_id = $this->m_owner.".".$this->m_name;
             $this->m_destInstance = $atk->atkGetNode($this->m_destination, true, $cache_id);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {
-                Tools::atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
+                Tools::atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
                 $this->m_destInstance = null;
+
                 return false;
             }
 
@@ -230,6 +233,7 @@ class Relation extends Attribute
                 $this->m_destInstance->setDescriptorTemplate($this->m_descTemplate);
             }
         }
+
         return true;
     }
 
@@ -238,7 +242,7 @@ class Relation extends Attribute
      * @param array $record The record that contains the information to display.
      * @return String a displayable string for this value.
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         return $record[$this->fieldName()];
     }
@@ -254,9 +258,8 @@ class Relation extends Attribute
      * @param string $mode The mode for which should be validated ("add" or
      *                     "update")
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
-
     }
 
     /**
@@ -264,7 +267,7 @@ class Relation extends Attribute
      * @param array $record The record to check
      * @return boolean true if a destination record is present. False if not.
      */
-    function isEmpty($record)
+    public function isEmpty($record)
     {
         if ($this->createDestination() && isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()])) {
             return empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
@@ -273,6 +276,7 @@ class Relation extends Attribute
                 return empty($record[$this->fieldName()]);
             }
         }
+
         return true; // always empty if error.
     }
 
@@ -280,7 +284,7 @@ class Relation extends Attribute
      * Retrieve the searchmodes supported by the relation.
      * @return array A list of supported searchmodes.
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -302,6 +306,7 @@ class Relation extends Attribute
         if (is_array($searchmode) && isset($searchmode[$childname])) {
             return $searchmode[$childname];
         }
+
         return $searchmode;
     }
 
@@ -312,7 +317,7 @@ class Relation extends Attribute
      * @abstract
      * @return String
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return "";
     }
@@ -327,7 +332,7 @@ class Relation extends Attribute
      * @return String SQL string for joining the owner with the destination.
      *                Defaults to false.
      */
-    function getJoinCondition(&$query, $tablename = "", $fieldalias = "")
+    public function getJoinCondition(&$query, $tablename = "", $fieldalias = "")
     {
         return false;
     }
@@ -337,11 +342,12 @@ class Relation extends Attribute
      * @return Node The node that this relation points to, or
      *                 NULL if the destination is not valid.
      */
-    function &getDestination()
+    public function &getDestination()
     {
         if ($this->createDestination()) {
             return $this->m_destInstance;
         }
+
         return null;
     }
 
@@ -350,21 +356,21 @@ class Relation extends Attribute
      *
      * @return String Localised "add" label
      */
-    function getAddLabel()
+    public function getAddLabel()
     {
-        $key = "link_" . $this->fieldName() . "_add";
-        $label = Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "",
-            true);
+        $key = "link_".$this->fieldName()."_add";
+        $label = Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
         if ($label == "") {
             $label = Tools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
             if ($label == "") {
-                $key = "link_" . Tools::getNodeType($this->m_destination) . "_add";
+                $key = "link_".Tools::getNodeType($this->m_destination)."_add";
                 $label = Tools::atktext($key, $this->m_destInstance->m_module, "", "", "", true);
                 if ($label == "") {
                     $label = Tools::atktext("link_add", "atk");
                 }
             }
         }
+
         return $label;
     }
 
@@ -375,15 +381,14 @@ class Relation extends Attribute
      * @param array $record the current record
      * @return $filter string filter.
      */
-    function parseFilter($destFilter, $record)
+    public function parseFilter($destFilter, $record)
     {
         if ($destFilter != "") {
             $parser = new StringParser($destFilter);
+
             return $parser->parse($record);
         }
+
         return "";
     }
-
 }
-
-

@@ -1,6 +1,5 @@
 <?php namespace Sintattica\Atk\Attributes;
 
-
 /**
  * This attribute can be used to automatically store the user that inserted
  * a record.
@@ -17,10 +16,8 @@ class CreatedByAttribute extends UpdatedByAttribute
      * needsUpdate always returns false for this attribute.
      * @return false
      */
-    function needsUpdate()
+    public function needsUpdate()
     {
         return false;
     }
-
 }
-

@@ -2,7 +2,6 @@
 
 use Sintattica\Atk\Core\Tools;
 
-
 /**
  * SQL Builder for MySQL 4.1+ databases.
  *
@@ -36,7 +35,7 @@ class MySqliQuery extends Query
      */
     protected $m_returnSeqValue = false;
 
-    var $m_fieldquote = '`';
+    public $m_fieldquote = '`';
 
     /**
      * Overriding the _addFrom function to support a change that was made in
@@ -46,13 +45,13 @@ class MySqliQuery extends Query
      *
      * @param string $query
      */
-    function _addFrom(&$query)
+    public function _addFrom(&$query)
     {
         $query .= " FROM (";
         for ($i = 0; $i < count($this->m_tables); $i++) {
             $query .= $this->quoteField($this->m_tables[$i]);
             if ($this->m_aliases[$i] != "") {
-                $query .= " " . $this->m_aliases[$i];
+                $query .= " ".$this->m_aliases[$i];
             }
             if ($i < count($this->m_tables) - 1) {
                 $query .= ", ";
@@ -65,10 +64,9 @@ class MySqliQuery extends Query
      * Builds the SQL Insert query
      * @return String a SQL Insert Query
      */
-    function buildInsert()
+    public function buildInsert()
     {
-
-        $result = "INSERT INTO " . $this->quoteField($this->m_tables[0]) . " (";
+        $result = "INSERT INTO ".$this->quoteField($this->m_tables[0])." (";
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
             $result .= $this->quoteField($this->m_fields[$i]);
@@ -81,7 +79,7 @@ class MySqliQuery extends Query
 
         for ($i = 0; $i < count($this->m_fields); $i++) {
             if (($this->m_values[$this->m_fields[$i]] === "''") and ($this->m_db->m_tableMeta[$this->m_tables[0]][$this->m_fields[$i]]["type"] == "int")) {
-                Tools::atkdebug("MysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '" . $this->m_fields[$i] . "'");
+                Tools::atkdebug("MysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '".$this->m_fields[$i]."'");
                 $result .= "'0'";
             } else {
                 $result .= $this->m_values[$this->m_fields[$i]];
@@ -148,12 +146,12 @@ class MySqliQuery extends Query
      *                         that searches for values dat do not match.
      * @return String A SQL regexp expression.
      */
-    function regexpCondition($field, $value, $inverse = false)
+    public function regexpCondition($field, $value, $inverse = false)
     {
         if ($value[0] == '!') {
-            return $field . " NOT REGEXP '" . substr($value, 1, Tools::atk_strlen($value)) . "'";
+            return $field." NOT REGEXP '".substr($value, 1, Tools::atk_strlen($value))."'";
         } else {
-            return $field . " REGEXP '$value'";
+            return $field." REGEXP '$value'";
         }
     }
 
@@ -168,11 +166,10 @@ class MySqliQuery extends Query
      *                         that searches for values dat do not match.
      * @return String A SQL soundex expression.
      */
-    function soundexCondition($field, $value, $inverse = false)
+    public function soundexCondition($field, $value, $inverse = false)
     {
         if ($value[0] == '!') {
-            return "soundex($field) NOT like concat('%',substring(soundex('" . substr($value, 1,
-                Tools::atk_strlen($value)) . "') from 2),'%')";
+            return "soundex($field) NOT like concat('%',substring(soundex('".substr($value, 1, Tools::atk_strlen($value))."') from 2),'%')";
         } else {
             return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
         }
@@ -183,10 +180,10 @@ class MySqliQuery extends Query
      * @access private
      * @param string $query The SQL query that is being constructed.
      */
-    function _addLimiter(&$query)
+    public function _addLimiter(&$query)
     {
         if ($this->m_offset >= 0 && $this->m_limit > 0) {
-            $query .= " LIMIT " . $this->m_offset . ", " . $this->m_limit;
+            $query .= " LIMIT ".$this->m_offset.", ".$this->m_limit;
         }
     }
 
@@ -199,7 +196,7 @@ class MySqliQuery extends Query
      *
      * @return String a SQL Select COUNT(*) Query
      */
-    function buildCount($distinct = false)
+    public function buildCount($distinct = false)
     {
         if (($distinct || $this->m_distinct) && count($this->m_fields) > 0) {
             $result = "SELECT COUNT(DISTINCT ";
@@ -216,7 +213,7 @@ class MySqliQuery extends Query
         for ($i = 0; $i < count($this->m_tables); $i++) {
             $result .= $this->quoteField($this->m_tables[$i]);
             if ($this->m_aliases[$i] != "") {
-                $result .= " " . $this->m_aliases[$i];
+                $result .= " ".$this->m_aliases[$i];
             }
             if ($i < count($this->m_tables) - 1) {
                 $result .= ", ";
@@ -228,7 +225,7 @@ class MySqliQuery extends Query
         }
 
         if (count($this->m_conditions) > 0) {
-            $result .= " WHERE (" . implode(") AND (", $this->m_conditions) . ")";
+            $result .= " WHERE (".implode(") AND (", $this->m_conditions).")";
         }
 
         if (count($this->m_searchconditions) > 0) {
@@ -239,18 +236,16 @@ class MySqliQuery extends Query
                 $prefix = " AND ";
             };
             if ($this->m_searchmethod == "" || $this->m_searchmethod == "AND") {
-                $result .= $prefix . "(" . implode(" AND ", $this->m_searchconditions) . ")";
+                $result .= $prefix."(".implode(" AND ", $this->m_searchconditions).")";
             } else {
-                $result .= $prefix . "(" . implode(" OR ", $this->m_searchconditions) . ")";
+                $result .= $prefix."(".implode(" OR ", $this->m_searchconditions).")";
             }
         }
 
         if (count($this->m_groupbys) > 0) {
-            $result .= " GROUP BY " . implode(", ", $this->m_groupbys);
+            $result .= " GROUP BY ".implode(", ", $this->m_groupbys);
         }
+
         return $result;
     }
-
 }
-
-

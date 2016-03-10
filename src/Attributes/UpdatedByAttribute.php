@@ -26,7 +26,7 @@ class UpdatedByAttribute extends ManyToOneRelation
      * @param int $flags Flags for this attribute.
      * @return UpdatedByAttribute
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, Config::getGlobal("auth_usernode"), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
         $this->setForceInsert(true);
@@ -34,7 +34,7 @@ class UpdatedByAttribute extends ManyToOneRelation
     }
 
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
             $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
@@ -50,18 +50,18 @@ class UpdatedByAttribute extends ManyToOneRelation
      *
      * @return array Array with userinfo, or "" if no user is logged in.
      */
-    function initialValue()
+    public function initialValue()
     {
         $fakeRecord = array($this->fieldName() => SecurityManager::atkGetUser());
         $this->populate($fakeRecord);
+
         return $fakeRecord[$this->fieldName()];
     }
 
-    function value2db($record)
+    public function value2db($record)
     {
         $record[$this->fieldName()] = $this->initialValue();
+
         return parent::value2db($record);
     }
-
 }
-
