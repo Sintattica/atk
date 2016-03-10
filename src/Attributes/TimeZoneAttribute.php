@@ -17,8 +17,8 @@ class TimeZoneAttribute extends ListAttribute
      * <b>Example:</b>
      *        $this->add(new atkTimeZoneAttribute("timezone",self::AF_OBLIGATORY));
      *
-     * @param string $name  Name of the attribute
-     * @param int    $flags Flags for the attribute
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for the attribute
      */
     public function __construct($name, $flags = 0)
     {
@@ -86,7 +86,7 @@ class TimeZoneAttribute extends ListAttribute
     /**
      * Returns the UTC offset in seconds for a value of the timezone attribute.
      *
-     * @param string    $value
+     * @param string $value
      * @param timestamp $timestamp
      *
      * @return int UTC offset in seconds

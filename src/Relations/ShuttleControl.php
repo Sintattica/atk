@@ -105,8 +105,8 @@ abstract class ShuttleControl
      * Called if a filter or selection event has occured. And allows the control to
      * state if it needs to be refreshed based on the filter or selection changes.
      *
-     * @param string $type   type of event ('filter' or 'selection'
-     * @param array  $record full record (see partial_filter, partial_selection for more information)
+     * @param string $type type of event ('filter' or 'selection'
+     * @param array $record full record (see partial_filter, partial_selection for more information)
      *
      * @return bool needs refresh?
      */
@@ -122,8 +122,8 @@ abstract class ShuttleControl
      * elements. The getValue method can be used to retrieve this controls value(s)
      * for the given record.
      *
-     * @param array  $record full record
-     * @param string $mode   add/edit mode
+     * @param array $record full record
+     * @param string $mode add/edit mode
      * @param string $prefix field prefix
      *
      * @return string HTML string

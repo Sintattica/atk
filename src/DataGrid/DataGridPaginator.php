@@ -37,8 +37,8 @@ class DataGridPaginator extends DataGridComponent
     /**
      * Constructor.
      *
-     * @param DataGrid $grid    grid
-     * @param array    $options component options
+     * @param DataGrid $grid grid
+     * @param array $options component options
      */
     public function __construct($grid, $options = array())
     {

@@ -2,19 +2,19 @@
 
 namespace Sintattica\Atk\Utils;
 
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- *
- * @copyright (c)2005 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 2955 $
- * $Id$
- */
+    /**
+     * This file is part of the ATK distribution on GitHub.
+     * Detailed copyright and licensing information can be found
+     * in the doc/COPYRIGHT and doc/LICENSE files which should be
+     * included in the distribution.
+     *
+     *
+     * @copyright (c)2005 Ibuildings.nl BV
+     * @license http://www.achievo.org/atk/licensing ATK Open Source License
+     *
+     * @version $Revision: 2955 $
+     * $Id$
+     */
 
 /**
  * The atkEventLog is a ready to use atkActionListener for logging events
@@ -48,7 +48,7 @@ class EventLog extends ActionListener
      * This method handles the storage of the action in the database.
      *
      * @param string $action The action being performed
-     * @param array  $record The record on which the action is performed
+     * @param array $record The record on which the action is performed
      */
     public function actionPerformed($action, $record)
     {

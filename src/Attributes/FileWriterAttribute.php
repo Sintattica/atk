@@ -18,7 +18,7 @@ class FileWriterAttribute extends TextAttribute
     /**
      * Constructor.
      *
-     * @param string $name     Name of the attribute
+     * @param string $name Name of the attribute
      * @param string $filename The name of the file to read/write.
      *                         Advanced use: This may be a template containing
      *                         fields from your class, for example:
@@ -27,8 +27,8 @@ class FileWriterAttribute extends TextAttribute
      *                         somedir/textfile_9.txt. Watch out when using fields
      *                         that can change; the attribute won't remove the old
      *                         files.
-     * @param int    $flags    Flags for this attribute
-     * @param mixed  $size     Size of the attribute
+     * @param int $flags Flags for this attribute
+     * @param mixed $size Size of the attribute
      */
     public function __construct($name, $filename, $flags = 0, $size = 30)
     {

@@ -78,10 +78,10 @@ class DateTimeAttribute extends Attribute
      *       But can we keep this backwards compatible somehow? At least now we
      *       are certain it doesn't work. ;) (PCV)
      *
-     * @param string     $name         Name of the attribute
+     * @param string $name Name of the attribute
      * @param string|int $default_date start date
-     * @param string     $default_time start time
-     * @param int        $flags        Flags for this attribute
+     * @param string $default_time start time
+     * @param int $flags Flags for this attribute
      */
     public function __construct($name, $default_date = '', $default_time = '', $flags = 0)
     {
@@ -134,10 +134,10 @@ class DateTimeAttribute extends Attribute
     /**
      * Validate the value of this attribute.
      *
-     * @param array  $record The record that holds the value for this
+     * @param array $record The record that holds the value for this
      *                       attribute. If an error occurs, the error will
      *                       be stored in the 'atkerror' field of the record.
-     * @param string $mode   The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                       "update")
      */
     public function validate(&$record, $mode)
@@ -171,9 +171,7 @@ class DateTimeAttribute extends Attribute
         $date = substr($datetime, 0, 8);
         $time = substr($datetime, 8, 6);
 
-        return array_merge(
-            DateAttribute::dateArray($date), TimeAttribute::timeArray($time)
-        );
+        return array_merge(DateAttribute::dateArray($date), TimeAttribute::timeArray($time));
     }
 
     /**
@@ -206,8 +204,8 @@ class DateTimeAttribute extends Attribute
     /**
      * Display's html version of Record.
      *
-     * @param array  $record The record
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -280,10 +278,10 @@ class DateTimeAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */
@@ -366,7 +364,7 @@ class DateTimeAttribute extends Attribute
                 $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
             }
 
-            $value = array_merge((array) $result_date, (array) $result_time);
+            $value = array_merge((array)$result_date, (array)$result_time);
             $value = $this->fromUTC($value, $tmp_rec);
 
             return $value;
@@ -386,16 +384,14 @@ class DateTimeAttribute extends Attribute
                     $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
                 } else {
                     $value = $this->value2db($record);
-                    $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES), $mode,
-                        'DATETIME');
+                    $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES), $mode, 'DATETIME');
                 }
             }
         } else {
             if (Config::getGlobal('database') != 'oci9') {
                 $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
             } else {
-                $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES),
-                    $mode, 'DATETIME');
+                $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), $mode, 'DATETIME');
             }
         }
     }
@@ -404,8 +400,8 @@ class DateTimeAttribute extends Attribute
      * Returns a piece of html code that can be used to get search terms input
      * from the user.
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -427,11 +423,11 @@ class DateTimeAttribute extends Attribute
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
-     * @param Query  $query            The query to which the condition will be added.
-     * @param string $table            The name of the table in which this attribute
+     * @param Query $query The query to which the condition will be added.
+     * @param string $table The name of the table in which this attribute
      *                                 is stored
-     * @param mixed  $value            The value the user has entered in the searchbox
-     * @param string $searchmode       The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param string $searchmode The searchmode to use. This can be any one
      *                                 of the supported modes, as returned by this
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
@@ -445,7 +441,7 @@ class DateTimeAttribute extends Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -502,8 +498,7 @@ class DateTimeAttribute extends Attribute
             'yyyy-m-dd',
             'yyyy-m-d',
         );
-        $retval = array_merge(DateAttribute::parseDate($datetime[0], $formatsdate),
-            TimeAttribute::parseTime($datetime[1]));
+        $retval = array_merge(DateAttribute::parseDate($datetime[0], $formatsdate), TimeAttribute::parseTime($datetime[1]));
 
         return $retval;
     }
@@ -565,8 +560,8 @@ class DateTimeAttribute extends Attribute
      * using the given timezone attribute. If no offset and no attribute are set
      * an offset of 0 is returned.
      *
-     * @param array  $record record
-     * @param string $stamp  timestamp
+     * @param array $record record
+     * @param string $stamp timestamp
      *
      * @return int UTC offset in seconds
      */
@@ -597,7 +592,7 @@ class DateTimeAttribute extends Attribute
                             return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
                         } // assume the attribute in question already has the offset saved in seconds
                         else {
-                            return (int) $record[$attr->fieldName()];
+                            return (int)$record[$attr->fieldName()];
                         }
                     }
                 }
@@ -614,7 +609,7 @@ class DateTimeAttribute extends Attribute
     /**
      * Convert the given ATK date/time array to a UTC date/time array.
      *
-     * @param mixed $value  UNIX timestamp or ATK date/time array
+     * @param mixed $value UNIX timestamp or ATK date/time array
      * @param array $record record
      *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)
@@ -632,7 +627,7 @@ class DateTimeAttribute extends Attribute
     /**
      * Convert the given UTC ATK date/time array to a date/time array in a certain timezone.
      *
-     * @param mixed $value  UNIX timestamp or ATK date/time array
+     * @param mixed $value UNIX timestamp or ATK date/time array
      * @param array $record record
      *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)

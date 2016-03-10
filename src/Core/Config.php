@@ -53,8 +53,8 @@ class Config
     /**
      * Returns the value for a global configuration variable.
      *
-     * @param string $name    configuration variable name (without the config_ prefix)
-     * @param mixed  $default default (fallback) value
+     * @param string $name configuration variable name (without the config_ prefix)
+     * @param mixed $default default (fallback) value
      *
      * @return mixed config value
      */
@@ -68,8 +68,8 @@ class Config
      *
      * Only works for configuration variables where no function for exists.
      *
-     * @param string $name  configuration variable name (without the config_ prefix)
-     * @param mixed  $value new value
+     * @param string $name configuration variable name (without the config_ prefix)
+     * @param mixed $value new value
      */
     public static function setGlobal($name, $value)
     {
@@ -86,8 +86,8 @@ class Config
      *        Config::get('color','mymodule','FF0000');
      *
      * @param string $section Section to check (typically a module)
-     * @param string $tag     Name of configuration to get
-     * @param mixed  $default Default to use if configuration value does not exist
+     * @param string $tag Name of configuration to get
+     * @param mixed $default Default to use if configuration value does not exist
      *
      * @return mixed Configuration value
      */
@@ -156,10 +156,10 @@ class Config
      * made for an attribute, the attribute is considered unrestricted and every
      * user has access.
      *
-     * @param string $node   The node on which access is restricted.
+     * @param string $node The node on which access is restricted.
      * @param string $attrib The name of the attribute that is to be restricted.
-     * @param string $mode   The action to restrict ("edit" or "view")
-     * @param mixed  $entity The level/group that has access to the attribute.
+     * @param string $mode The action to restrict ("edit" or "view")
+     * @param mixed $entity The level/group that has access to the attribute.
      */
     public function attribRestrict($node, $attrib, $mode, $entity)
     {
@@ -172,9 +172,9 @@ class Config
      * When $config_authorization is set to "config", this method can be used
      * in the configfile to grant privileges.
      *
-     * @param string $node   The node on which to grant a privilege.
+     * @param string $node The node on which to grant a privilege.
      * @param string $action The action (privilege) that is granted.
-     * @param mixed  $entity The entity (securitylevel or group) to which the
+     * @param mixed $entity The entity (securitylevel or group) to which the
      *                       privilege is granted.
      */
     public function grant($node, $action, $entity)
@@ -190,9 +190,9 @@ class Config
      * access on the config file, can read the passwords. It is advisable to
      * use a more secure authentication method like "db" or "pop3".
      *
-     * @param string $name          The login name.
-     * @param string $password      The password of the user.
-     * @param mixed  $securitylevel The securitylevel or group of the user.
+     * @param string $name The login name.
+     * @param string $password The password of the user.
+     * @param mixed $securitylevel The securitylevel or group of the user.
      *                              Permissions are granted on level/group basis,
      *                              depending on the setting of
      *                              $config_security_scheme

@@ -51,7 +51,7 @@ class MessageQueue
      * @static
      *
      * @param string $txt
-     * @param int    $type
+     * @param int $type
      *
      * @return bool Success
      */
@@ -93,7 +93,7 @@ class MessageQueue
      * Add message to queue (private).
      *
      * @param string $txt
-     * @param int    $type
+     * @param int $type
      *
      * @return bool Success
      */

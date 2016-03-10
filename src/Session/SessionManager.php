@@ -46,7 +46,7 @@ class SessionManager
      *                          installed on thesame url, they can each use
      *                          a different namespace to make sure they
      *                          don't share session data.
-     * @param bool   $usestack  Tell the sessionmanager to use the session
+     * @param bool $usestack Tell the sessionmanager to use the session
      *                          stack manager (back/forth navigation in
      *                          screens, remembering vars over multiple
      *                          pages etc). This comes with a slight
@@ -88,8 +88,7 @@ class SessionManager
         //session init
         $cookie_params = session_get_cookie_params();
         $cookiepath = Config::getGlobal('cookie_path');
-        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain')
-            : null;
+        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : null;
         session_set_cookie_params($cookie_params['lifetime'], $cookiepath, $cookiedomain);
 
         // set cache expire (if function exists, or show upgrade hint if not)
@@ -198,10 +197,10 @@ class SessionManager
      *
      * Saves a value in the current namespace.
      *
-     * @param string $var          The name of the variable to save.
-     * @param mixed  $value        The value of the variable to save. If omitted,
+     * @param string $var The name of the variable to save.
+     * @param mixed $value The value of the variable to save. If omitted,
      *                             the value is retrieved from the http request.
-     * @param bool   $no_namespace If set to false, the variable is saved
+     * @param bool $no_namespace If set to false, the variable is saved
      *                             in the current namespace. If set to true,
      *                             the variable is available in all
      *                             namespaces.
@@ -228,7 +227,7 @@ class SessionManager
     /**
      * Retrieve the value of a session variable.
      *
-     * @param string $var       The name of the variable to retrieve.
+     * @param string $var The name of the variable to retrieve.
      * @param string $namespace The namespace from which to retrieve the
      *                          variable, or "globals" if the global value
      *                          needs to be retrieved.
@@ -240,15 +239,12 @@ class SessionManager
         $sessionData = &self::getSession();
 
         if ($namespace == 'globals') {
-            return isset($sessionData['globals'][$var]) ? $sessionData['globals'][$var]
-                : null;
+            return isset($sessionData['globals'][$var]) ? $sessionData['globals'][$var] : null;
         } else {
             if ($namespace != '') {
-                return isset($sessionData[$namespace]['globals'][$var]) ? $sessionData[$namespace]['globals'][$var]
-                    : null;
+                return isset($sessionData[$namespace]['globals'][$var]) ? $sessionData[$namespace]['globals'][$var] : null;
             } else {
-                return isset($sessionData[$this->m_namespace]['globals'][$var]) ? $sessionData[$this->m_namespace]['globals'][$var]
-                    : null;
+                return isset($sessionData[$this->m_namespace]['globals'][$var]) ? $sessionData[$this->m_namespace]['globals'][$var] : null;
             }
         }
     }
@@ -273,10 +269,10 @@ class SessionManager
      * reset it to B, when you return to level 0, the stackvar will still be A.
      * However for level 1 and deeper it will be B.
      *
-     * @param string $var   The name of the variable to store.
-     * @param mixed  $value The value to store. If omitted, the session manager
+     * @param string $var The name of the variable to store.
+     * @param mixed $value The value to store. If omitted, the session manager
      *                      tries to read the value from the http request.
-     * @param int    $level Get/Set var on this level, will be current level by
+     * @param int $level Get/Set var on this level, will be current level by
      *                      default.
      *
      * @return mixed The current value in the session stack.
@@ -314,11 +310,10 @@ class SessionManager
             $currentitem[$var] = $value;
         }
 
-        if (!is_array(Tools::atkArrayNvl($currentitem, 'defined_stackvars')) || !in_array($var,
-                $currentitem['defined_stackvars'])
-        ) {
+        if (!is_array(Tools::atkArrayNvl($currentitem, 'defined_stackvars')) || !in_array($var, $currentitem['defined_stackvars'])) {
             $currentitem['defined_stackvars'][] = $var;
         }
+
         // We always return the current value..
         return Tools::atkArrayNvl($currentitem, $var);
     }
@@ -331,8 +326,8 @@ class SessionManager
      * then in level 1 you modify that variable, the variable in level 0
      * will not be modified. With a globalStackVar it will.
      *
-     * @param string $var   Variable name
-     * @param mixed  $value Variable value
+     * @param string $var Variable name
+     * @param mixed $value Variable value
      *
      * @return mixed Value of the global stackvar
      */
@@ -379,8 +374,8 @@ class SessionManager
      * in the url, it is stored as the new default stack value. If it's not
      * passed in the url, the last known value is retrieved from the session.
      *
-     * @param string $var   The name of the variable to store.
-     * @param mixed  $value The value to store. If omitted, the session manager
+     * @param string $var The name of the variable to store.
+     * @param mixed $value The value to store. If omitted, the session manager
      *                      tries to read the value from the http request.
      *
      * @return mixed The current value in the session stack.
@@ -400,9 +395,7 @@ class SessionManager
             } else {
                 $currentitem[$var] = $value;
             }
-            if (!isset($currentitem['defined_pagevars']) || !is_array($currentitem['defined_pagevars']) || !in_array($var,
-                    $currentitem['defined_pagevars'])
-            ) {
+            if (!isset($currentitem['defined_pagevars']) || !is_array($currentitem['defined_pagevars']) || !in_array($var, $currentitem['defined_pagevars'])) {
                 $currentitem['defined_pagevars'][] = $var;
             }
             // We always return the current value..
@@ -649,10 +642,9 @@ class SessionManager
 
                 if (isset($copieditem) && is_array($copieditem)) {
                     foreach ($copieditem as $key => $value) {
-                        if (in_array($key, $sessionVars) ||
-                            (isset($copieditem['defined_stackvars']) &&
-                                is_array($copieditem['defined_stackvars']) &&
-                                in_array($key, $copieditem['defined_stackvars']))
+                        if (in_array($key,
+                                $sessionVars) || (isset($copieditem['defined_stackvars']) && is_array($copieditem['defined_stackvars']) && in_array($key,
+                                    $copieditem['defined_stackvars']))
                         ) {
                             $currentitem[$key] = $value;
                         }
@@ -665,8 +657,7 @@ class SessionManager
 
                 // Posted vars always overwrite anything in the current session..
                 foreach (array_merge($pageVars, $sessionVars) as $var) {
-                    $recursive = $var{strlen($var) - 1}
-                    == '*';
+                    $recursive = $var{strlen($var) - 1} == '*';
                     $var = $recursive ? substr($var, 0, -1) : $var;
 
                     if (isset($postvars[$var]) && $postvars[$var] != '') {
@@ -692,13 +683,10 @@ class SessionManager
                 }
 
                 foreach ($pageVars as $var) {
-                    $recursive = $var{strlen($var) - 1}
-                    == '*';
+                    $recursive = $var{strlen($var) - 1} == '*';
                     $var = $recursive ? substr($var, 0, -1) : $var;
 
-                    if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var,
-                                $lockedVars))
-                    ) {
+                    if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
                         if ($recursive && is_array($currentitem[$var]) && is_array($postvars[$var])) {
                             $currentitem[$var] = Tools::atk_array_merge_recursive($currentitem[$var], $postvars[$var]);
                         } else {
@@ -712,9 +700,7 @@ class SessionManager
 
                 // session vars need not be remembered..
                 foreach ($sessionVars as $var) {
-                    if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var,
-                                $lockedVars))
-                    ) {
+                    if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
                         $currentitem[$var] = $postvars[$var];
                     }
                 }
@@ -839,8 +825,7 @@ class SessionManager
                     $txt = Tools::atktext($nodename, $module);
                 }
 
-                $res[] = $txt.(isset($stack[$i]['descriptor']) ? " [ {$stack[$i]['descriptor']} ] "
-                        : '');
+                $res[] = $txt.(isset($stack[$i]['descriptor']) ? " [ {$stack[$i]['descriptor']} ] " : '');
             }
         }
 
@@ -913,7 +898,7 @@ class SessionManager
      * @param int $sessionstatus the session flags
      *                           (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                           SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param int $levelskip     how many levels to skip when we use SessionManager::SESSION_BACK,
+     * @param int $levelskip how many levels to skip when we use SessionManager::SESSION_BACK,
      *                           default 1
      * @static
      *
@@ -963,7 +948,7 @@ class SessionManager
      * @param int $sessionstatus the session flags
      *                           (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                           SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param int $levelskip     how many levels to skip when we use SessionManager::SESSION_REPLACE,
+     * @param int $levelskip how many levels to skip when we use SessionManager::SESSION_REPLACE,
      * @static
      *
      * @return int the new session level
@@ -981,10 +966,10 @@ class SessionManager
     /**
      * Adds session information to a form.
      *
-     * @param int    $sessionstatus   the session flags
+     * @param int $sessionstatus the session flags
      *                                (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                                SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param int    $returnbehaviour When SessionManager::SESSION_NESTED is used, this is used to
+     * @param int $returnbehaviour When SessionManager::SESSION_NESTED is used, this is used to
      *                                indicate where to return to.
      * @param string $fieldprefix
      *
@@ -1030,11 +1015,11 @@ class SessionManager
     /**
      * Gets the session vars.
      *
-     * @param int    $sessionstatus the session flags
+     * @param int $sessionstatus the session flags
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param int    $levelskip     the amount of levels to skip if we go back
-     * @param string $url           the URL
+     * @param int $levelskip the amount of levels to skip if we go back
+     * @param string $url the URL
      *
      * @return array the vars of the session
      */
@@ -1071,11 +1056,11 @@ class SessionManager
     /**
      * Makes a session-aware URL.
      *
-     * @param string $url           the url to make session-aware
-     * @param int    $sessionstatus the session flags
+     * @param string $url the url to make session-aware
+     * @param int $sessionstatus the session flags
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param int    $levelskip     the amount of levels to skip if we go back
+     * @param int $levelskip the amount of levels to skip if we go back
      * @static
      *
      * @return string the session aware URL

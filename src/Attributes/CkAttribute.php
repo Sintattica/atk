@@ -41,9 +41,9 @@ class CkAttribute extends TextAttribute
     /**
      * Constructor.
      *
-     * @param string $name    Name of the attribute
-     * @param int    $flags   Flags for the attribute
-     * @param array  $options CKEditor configuration options (overrides default)
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for the attribute
+     * @param array $options CKEditor configuration options (overrides default)
      */
     public function __construct($name, $flags = 0, $options = null)
     {

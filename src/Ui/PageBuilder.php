@@ -109,7 +109,7 @@ class PageBuilder
     /**
      * Add action box.
      *
-     * @param array  $params
+     * @param array $params
      * @param string $title
      * @param string $template
      *
@@ -150,14 +150,12 @@ class PageBuilder
 
             if ($box['type'] == 'action') {
                 $params = array_merge(array('title' => $title), $box['params']);
-                $content = $this->getNode()->getUi()->renderAction($this->m_action, $params,
-                    $this->getNode()->getModule());
+                $content = $this->getNode()->getUi()->renderAction($this->m_action, $params, $this->getNode()->getModule());
             } else {
                 $content = $box['content'];
             }
 
-            $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content),
-                $box['template']);
+            $boxes[] = $this->getNode()->getUi()->renderBox(array('title' => $title, 'content' => $content), $box['template']);
         }
 
         $this->getNode()->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$this->m_title);

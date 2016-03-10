@@ -87,18 +87,14 @@ class BrowserInfo
     {
         //MSIE
         $info = array();
-        if (eregi('MSIE ([0-9].[0-9a-zA-Z]{1,4})', $this->ua,
-                $info) || eregi('Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)
-        ) {
+        if (eregi('MSIE ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'MSIE';
             $this->brName = 'MS Internet Explorer';
             $this->hasGui = 1;
 
             // check for Opera faking MSIE
-            if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})',
-                    $this->ua, $info)
-            ) {
+            if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
                 $this->full_version = $info[1];
                 $this->browser = 'Opera';
                 $this->brName = 'Opera';
@@ -124,25 +120,19 @@ class BrowserInfo
         }
 
         // Opera
-        if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})',
-                $this->ua, $info)
-        ) {
+        if (eregi('Opera ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Opera/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Opera';
             $this->brName = 'Opera';
             $this->hasGui = 1;
         } // iCab
-        elseif (eregi('iCab ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('iCab/([0-9].[0-9a-zA-Z]{1,4})',
-                $this->ua, $info)
-        ) {
+        elseif (eregi('iCab ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('iCab/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'iCab';
             $this->brName = 'iCAB';
             $this->hasGui = 1;
         } // Lynx
-        elseif (eregi('Lynx ([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info) || eregi('Lynx/([0-9].[0-9a-zA-Z.]{1,9})',
-                $this->ua, $info)
-        ) {
+        elseif (eregi('Lynx ([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info) || eregi('Lynx/([0-9].[0-9a-zA-Z.]{1,9})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Lynx';
             $this->platform = 'Unix';
@@ -169,9 +159,7 @@ class BrowserInfo
             $this->brName = 'GetRight';
             $this->hasGui = 0;
         } // KDE Konqueror
-        elseif (eregi('Konqueror ([0-9].[0-9a-zA-Z]{1,4})', $this->ua,
-                $info) || eregi('Konqueror/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)
-        ) {
+        elseif (eregi('Konqueror ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Konqueror/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'Konqueror';
             $this->platform = 'Unix';
@@ -395,9 +383,7 @@ class BrowserInfo
     public function detectOS()
     {
         // Windows 3.x
-        if (eregi('Win16', $this->ua) || eregi('windows 3.1', $this->ua) || eregi('windows 16-bit',
-                $this->ua) || eregi('16bit', $this->ua)
-        ) {
+        if (eregi('Win16', $this->ua) || eregi('windows 3.1', $this->ua) || eregi('windows 16-bit', $this->ua) || eregi('16bit', $this->ua)) {
             $this->platform = 'Win16';
             $this->os = 'Win31';
             $this->osname = 'Windows 3.x';
@@ -547,8 +533,8 @@ class BrowserInfo
         }
 
         // DEC
-        if (eregi('dec', $this->ua) || eregi('osfl', $this->ua) || eregi('alphaserver', $this->ua) || eregi('ultrix',
-                $this->ua) || eregi('alphastation', $this->ua)
+        if (eregi('dec', $this->ua) || eregi('osfl', $this->ua) || eregi('alphaserver', $this->ua) || eregi('ultrix', $this->ua) || eregi('alphastation',
+                $this->ua)
         ) {
             $this->platform = 'Unix';
             $this->os = 'DEC';

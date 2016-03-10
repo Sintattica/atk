@@ -196,8 +196,7 @@ class AddHandler extends ActionHandler
         $sm = SessionManager::getInstance();
         $node = $this->m_node;
 
-        $formstart = '<form id="entryform" " name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.
-            ' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off">';
+        $formstart = '<form id="entryform" " name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off">';
 
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
         $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getSaveAction().'" />';
@@ -243,8 +242,7 @@ class AddHandler extends ActionHandler
     {
         $node = $this->m_node;
         $forceList = array();
-        $filterList = (isset($node->m_postvars['atkfilter'])) ? Tools::decodeKeyValueSet($node->m_postvars['atkfilter'])
-            : array();
+        $filterList = (isset($node->m_postvars['atkfilter'])) ? Tools::decodeKeyValueSet($node->m_postvars['atkfilter']) : array();
         foreach ($filterList as $field => $value) {
             list($table, $column) = explode('.', $field);
             if ($column == null) {

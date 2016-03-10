@@ -53,8 +53,8 @@ class DataGridEvent
     /**
      * Constructs a new event.
      *
-     * @param DataGrid $grid  grid
-     * @param string   $event event identifier
+     * @param DataGrid $grid grid
+     * @param string $event event identifier
      */
     public function __construct(DataGrid $grid, $event)
     {

@@ -189,10 +189,8 @@ class SearchHandler extends AbstractSearchHandler
 
             $params = array();
             $params['searchmode_title'] = Tools::atktext('search_mode', 'atk');
-            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>'.Tools::atktext('search_and',
-                    'atk');
-            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">'.Tools::atktext('search_or',
-                    'atk');
+            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>'.Tools::atktext('search_and', 'atk');
+            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">'.Tools::atktext('search_or', 'atk');
             $params['saved_criteria'] = $this->getSavedCriteria($name);
 
             $params['fields'] = array();
@@ -201,8 +199,7 @@ class SearchHandler extends AbstractSearchHandler
                 $p_attrib = &$node->m_attribList[$attribname];
 
                 if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH)) {
-                    $p_attrib->addToSearchformFields($params['fields'], $node, $record, '',
-                        $this->m_postvars['atksearchmode']);
+                    $p_attrib->addToSearchformFields($params['fields'], $node, $record, '', $this->m_postvars['atksearchmode']);
                 }
             }
 
@@ -220,12 +217,9 @@ class SearchHandler extends AbstractSearchHandler
     public function fetchCriteria()
     {
         return array(
-            'atksearchmethod' => array_key_exists('atksearchmethod', $this->m_postvars)
-                ? $this->m_postvars['atksearchmethod'] : '',
-            'atksearch' => array_key_exists('atksearch', $this->m_postvars) ? $this->m_postvars['atksearch']
-                : '',
-            'atksearchmode' => array_key_exists('atksearchmode', $this->m_postvars)
-                ? $this->m_postvars['atksearchmode'] : '',
+            'atksearchmethod' => array_key_exists('atksearchmethod', $this->m_postvars) ? $this->m_postvars['atksearchmethod'] : '',
+            'atksearch' => array_key_exists('atksearch', $this->m_postvars) ? $this->m_postvars['atksearch'] : '',
+            'atksearchmode' => array_key_exists('atksearchmode', $this->m_postvars) ? $this->m_postvars['atksearchmode'] : '',
         );
     }
 }

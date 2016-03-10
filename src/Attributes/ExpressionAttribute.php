@@ -19,11 +19,11 @@ class ExpressionAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name              The name of the attribute.
-     * @param string $expression        The SQL expression.
-     * @param mixed  $searchTypeOrFlags The search type (string) or flags (numeric) for this attribute. At the moment
+     * @param string $name The name of the attribute.
+     * @param string $expression The SQL expression.
+     * @param mixed $searchTypeOrFlags The search type (string) or flags (numeric) for this attribute. At the moment
      *                                  only search types "string", "number" and "date" are supported.
-     * @param int    $flags             The flags for this attribute.
+     * @param int $flags The flags for this attribute.
      */
     public function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
     {
@@ -54,9 +54,9 @@ class ExpressionAttribute extends Attribute
     /**
      * Returns the order by statement for this attribute.
      *
-     * @param array  $extra     A list of attribute names to add to the order by
+     * @param array $extra A list of attribute names to add to the order by
      *                          statement
-     * @param string $table     The table name (if not given uses the owner node's table name)
+     * @param string $table The table name (if not given uses the owner node's table name)
      * @param string $direction Sorting direction (ASC or DESC)
      *
      * @return string order by statement
@@ -132,8 +132,8 @@ class ExpressionAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used to search for an attribute's value.
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -163,10 +163,10 @@ class ExpressionAttribute extends Attribute
     /**
      * Creates a search condition for this attribute.
      *
-     * @param Query  $query      The query object where the search condition should be placed on
-     * @param string $table      The name of the table in which this attribute
+     * @param Query $query The query object where the search condition should be placed on
+     * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed  $value      The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.

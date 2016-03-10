@@ -85,10 +85,10 @@ class StateAttribute extends ListAttribute
      * state_abbrev is the database attribute that holds state abbrevation data as AK,CA,NY
      * It will display the full state name.
      *
-     * @param string $name             Name of the attribute
-     * @param string $switch           Choose usa for USA states
-     * @param int    $flags            Flags for the attribute
-     * @param bool   $defaulttocurrent Set the default selected state to the
+     * @param string $name Name of the attribute
+     * @param string $switch Choose usa for USA states
+     * @param int $flags Flags for the attribute
+     * @param bool $defaulttocurrent Set the default selected state to the
      *                                 current state based on the atk language
      */
     public function __construct(
@@ -117,10 +117,10 @@ class StateAttribute extends ListAttribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */

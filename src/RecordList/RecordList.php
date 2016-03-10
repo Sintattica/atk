@@ -68,8 +68,7 @@ abstract class RecordList
         $result = Tools::hasFlag($flags, Node::NF_MRA) ? self::RL_MRA : 0;
         $result |= Tools::hasFlag($flags, Node::NF_MRPA) ? self::RL_MRPA : 0;
         $result |= Tools::hasFlag($flags, Node::NF_NO_SEARCH) ? self::RL_NO_SEARCH : 0;
-        $result |= Tools::hasFlag($flags, Node::NF_NO_EXTENDED_SEARCH) ? self::RL_NO_EXTENDED_SEARCH
-            : 0;
+        $result |= Tools::hasFlag($flags, Node::NF_NO_EXTENDED_SEARCH) ? self::RL_NO_EXTENDED_SEARCH : 0;
         $result |= Tools::hasFlag($flags, Node::NF_EXT_SORT) ? self::RL_EXT_SORT : 0;
 
         return $result;

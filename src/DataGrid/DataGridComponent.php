@@ -31,8 +31,8 @@ abstract class DataGridComponent
     /**
      * Constructor.
      *
-     * @param DataGrid $grid    grid
-     * @param array    $options component options
+     * @param DataGrid $grid grid
+     * @param array $options component options
      */
     public function __construct($grid, $options = array())
     {
@@ -51,7 +51,7 @@ abstract class DataGridComponent
     /**
      * Returns the value for the component option with the given name.
      *
-     * @param string $name     option name
+     * @param string $name option name
      * @param string $fallback
      *
      * @return mixed option value
@@ -108,9 +108,9 @@ abstract class DataGridComponent
      * If you want NULL to be returned when no translation can be found then
      * leave the fallback empty and set $useDefault to false.
      *
-     * @param string $string     string to translate
-     * @param string $fallback   fallback in-case no translation can be found
-     * @param bool   $useDefault use default ATK translation if no translation can be found?
+     * @param string $string string to translate
+     * @param string $fallback fallback in-case no translation can be found
+     * @param bool $useDefault use default ATK translation if no translation can be found?
      *
      * @return string translation
      */

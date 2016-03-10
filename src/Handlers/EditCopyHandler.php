@@ -37,8 +37,8 @@ class EditCopyHandler extends ActionHandler
             $db->commit();
             $this->clearCache();
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit',
-                array('atkselector' => $this->m_node->primaryKey($record))), SessionManager::SESSION_REPLACE);
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit', array('atkselector' => $this->m_node->primaryKey($record))),
+                SessionManager::SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
     }

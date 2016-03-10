@@ -47,8 +47,8 @@ class TreeNode extends Node
     /**
      * Constructor.
      *
-     * @param string $name  Node name
-     * @param int    $flags Node flags
+     * @param string $name Node name
+     * @param int $flags Node flags
      */
     public function __construct($name, $flags = 0)
     {
@@ -61,7 +61,7 @@ class TreeNode extends Node
      * used to add root elements.
      *
      * @param ActionHandler $handler
-     * @param array         $record
+     * @param array $record
      */
     public function action_admin(&$handler, $record = '')
     {
@@ -80,15 +80,11 @@ class TreeNode extends Node
     public function buildTree()
     {
         Tools::atkdebug('treenode::buildtree() '.$this->m_parent);
-        $recordset = $this->select(Tools::atkArrayNvl($this->m_postvars, 'atkfilter', ''))
-            ->excludes($this->m_listExcludes)
-            ->mode('admin')
-            ->getAllRows();
+        $recordset = $this->select(Tools::atkArrayNvl($this->m_postvars, 'atkfilter', ''))->excludes($this->m_listExcludes)->mode('admin')->getAllRows();
 
         $treeobject = new TreeToolsTree();
         for ($i = 0; $i < count($recordset); ++$i) {
-            $treeobject->addNode($recordset[$i][$this->m_primaryKey[0]], $recordset[$i],
-                $recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
+            $treeobject->addNode($recordset[$i][$this->m_primaryKey[0]], $recordset[$i], $recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
         }
 
         return $treeobject;
@@ -133,15 +129,12 @@ class TreeNode extends Node
 
         if (!$this->hasFlag(self::NF_NO_ADD) && $this->hasFlag(self::NF_ADD_LINK) && $this->allowed('add')) {
             $addurl = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=add&atkfilter='.rawurlencode($this->m_parent.'.'.$this->m_primaryKey[0]."='0'");
-            if (Tools::atktext('txt_link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module, '',
-                    '', '', true) != ''
-            ) {
+            if (Tools::atktext('txt_link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module, '', '', '', true) != '') {
                 // specific text
                 $label = Tools::atktext('link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module);
             } else {
                 // generic text
-                $label = Tools::atktext(Tools::getNodeType($this->m_type),
-                        $this->m_module).' '.Tools::atktext('add', 'atk');
+                $label = Tools::atktext(Tools::getNodeType($this->m_type), $this->m_module).' '.Tools::atktext('add', 'atk');
             }
             $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED).'<br><br>';
         }
@@ -166,8 +159,8 @@ class TreeNode extends Node
      * Recursive funtion whitch fills an array with all the items of the tree.
      * DEPRECATED, use treeToArray instead.
      *
-     * @param tree $tree  Tree
-     * @param int  $level Level
+     * @param tree $tree Tree
+     * @param int $level Level
      */
     public function Fill_tree($tree = '', $level = 0)
     {
@@ -179,8 +172,8 @@ class TreeNode extends Node
     /**
      * Recursive funtion whitch fills an array with all the items of the tree.
      *
-     * @param tree $tree  Tree
-     * @param int  $level Level
+     * @param tree $tree Tree
+     * @param int $level Level
      */
     public function treeToArray($tree = '', $level = 0)
     {
@@ -227,8 +220,8 @@ class TreeNode extends Node
      * Recursive funtion which fills an array with all the items of the tree.
      *
      * @param bool $showactions Show actions?
-     * @param bool $expandAll   Expand all leafs?
-     * @param bool $foldable    Is this tree foldable?
+     * @param bool $expandAll Expand all leafs?
+     * @param bool $foldable Is this tree foldable?
      *
      * @return string
      */
@@ -367,10 +360,8 @@ class TreeNode extends Node
         $cnt = 0;
         while ($cnt < count($this->m_tree)) {
             if ($visible[$cnt]) {
-                $currentlevel = (isset($this->m_tree[$cnt]['level']) ? $this->m_tree[$cnt]['level']
-                    : 0);
-                $nextlevel = (isset($this->m_tree[$cnt + 1]['level']) ? $this->m_tree[$cnt + 1]['level']
-                    : 0);
+                $currentlevel = (isset($this->m_tree[$cnt]['level']) ? $this->m_tree[$cnt]['level'] : 0);
+                $nextlevel = (isset($this->m_tree[$cnt + 1]['level']) ? $this->m_tree[$cnt + 1]['level'] : 0);
 
                 /*                 * ************************************* */
                 /* start new row                        */
@@ -499,11 +490,9 @@ class TreeNode extends Node
                             $params = $params.$this->extraparams;
                         }
                         if ($expand[$cnt] == 0) {
-                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params,
-                                    '<img src="'.$img_expand.'" border=0>')."</td>\n";
+                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<img src="'.$img_expand.'" border=0>')."</td>\n";
                         } else {
-                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params,
-                                    '<img src="'.$img_collapse.'" border=0>')."</td>\n";
+                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<img src="'.$img_collapse.'" border=0>')."</td>\n";
                         }
                     } else {
                         $res .= '<td><img src="'.$img_collapse."\" border=0></td>\n";
@@ -572,12 +561,9 @@ class TreeNode extends Node
                             $url = str_replace('_1'.'5D', ']', $url);
 
                             if ($atkencoded) {
-                                $url = str_replace('[pk]',
-                                    Tools::atkurlencode(rawurlencode($this->primaryKey($this->m_tree[$cnt]['label'])),
-                                        false), $url);
+                                $url = str_replace('[pk]', Tools::atkurlencode(rawurlencode($this->primaryKey($this->m_tree[$cnt]['label'])), false), $url);
                             } else {
-                                $url = str_replace('[pk]',
-                                    rawurlencode($this->primaryKey($this->m_tree[$cnt]['label'])), $url);
+                                $url = str_replace('[pk]', rawurlencode($this->primaryKey($this->m_tree[$cnt]['label'])), $url);
                             }
 
                             $stringparser = new StringParser($url);
@@ -600,8 +586,8 @@ class TreeNode extends Node
     /**
      * Copies a record and the Childs if there are any.
      *
-     * @param array  $record The record to copy
-     * @param string $mode   The mode we're in (usually "copy")
+     * @param array $record The record to copy
+     * @param string $mode The mode we're in (usually "copy")
      */
     public function copyDb($record, $mode = 'copy')
     {
@@ -625,8 +611,8 @@ class TreeNode extends Node
      * @todo shouldn't we recursively call copyDb here? instead of ourselves
      *
      * @param string $selector Selector
-     * @param int    $parent   Parent ID
-     * @param string $mode     The mode we're in
+     * @param int $parent Parent ID
+     * @param string $mode The mode we're in
      */
     public function copyChildren($selector, $parent = '', $mode = 'copy')
     {
@@ -641,8 +627,7 @@ class TreeNode extends Node
                 Tools::atkdebug('Child Record added');
                 $newparent = $recordset[$i][$this->m_primaryKey[0]];
                 Tools::atkdebug('CopyChildren('.$this->m_parent.'='.$oldrec[$this->m_primaryKey[0]].','.$newparent.')');
-                $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldrec[$this->m_primaryKey[0]],
-                    $newparent);
+                $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldrec[$this->m_primaryKey[0]], $newparent);
             }
         } else {
             Tools::atkdebug("No records found with Selector: $selector - $parent");
@@ -672,9 +657,7 @@ class TreeNode extends Node
         $parent = $recordset[0][$this->m_primaryKey[0]];
         if ($this->m_parent != '') {
             Tools::atkdebug('Check for child records');
-            $children = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)
-                ->mode('delete')
-                ->getAllRows();
+            $children = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
 
             if (count($children) > 0) {
                 Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
@@ -699,14 +682,12 @@ class TreeNode extends Node
      * Recursive function whitch deletes all the child records of a parent.
      *
      * @param string $selector Selector
-     * @param int    $parent   Id of the parent
+     * @param int $parent Id of the parent
      */
     public function deleteChildren($selector, $parent)
     {
         Tools::atkdebug('Check for child records of the Child');
-        $recordset = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)
-            ->mode('delete')
-            ->getAllRows();
+        $recordset = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
         for ($i = 0; $i < count($recordset); ++$i) {
             foreach (array_keys($this->m_attribList) as $attribname) {
                 $p_attrib = $this->m_attribList[$attribname];
@@ -720,8 +701,7 @@ class TreeNode extends Node
             for ($i = 0; $i < count($recordset); ++$i) {
                 $parent = $recordset[$i][$this->m_primaryKey[0]];
                 Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]].','.$parent.')');
-                $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]],
-                    $parent);
+                $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]], $parent);
             }
         }
 

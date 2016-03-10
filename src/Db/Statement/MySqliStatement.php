@@ -48,8 +48,7 @@ class MySqliStatement extends Statement
         Tools::atkdebug('Prepare query: '.$this->_getParsedQuery());
         $this->m_stmt = $conn->prepare($this->_getParsedQuery());
         if (!$this->m_stmt || $conn->errno) {
-            throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).",
-                StatementException::PREPARE_STATEMENT_ERROR);
+            throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", StatementException::PREPARE_STATEMENT_ERROR);
         }
     }
 
@@ -63,8 +62,7 @@ class MySqliStatement extends Statement
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException('Statement has not been executed yet.',
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException('Statement has not been executed yet.', StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $this->m_stmt->data_seek(0);
@@ -105,8 +103,7 @@ class MySqliStatement extends Statement
 
         $metadata = $this->m_stmt->result_metadata();
         if ($this->m_stmt->errno) {
-            throw new StatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).",
-                StatementException::OTHER_ERROR);
+            throw new StatementException("Cannot retrieve metadata (ERROR: {$this->m_stmt->errno} - {$this->m_stmt->error}).", StatementException::OTHER_ERROR);
         }
 
         if (!$metadata) {
@@ -158,8 +155,7 @@ class MySqliStatement extends Statement
         $this->_bindParams($params);
 
         if (!$this->m_stmt->execute()) {
-            throw new StatementException("Cannot execute statement: {$this->m_stmt->error}",
-                StatementException::STATEMENT_ERROR);
+            throw new StatementException("Cannot execute statement: {$this->m_stmt->error}", StatementException::STATEMENT_ERROR);
         }
 
         $this->m_insertId = $this->getDb()->link_id()->insert_id;

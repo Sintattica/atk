@@ -91,10 +91,10 @@ class FileAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name  Name of the attribute
-     * @param array  $dir   Can be a string with the Directory with images/files or an array with a Directory and a Display Url
-     * @param int    $flags Flags for this attribute
-     * @param int    $size  Filename size
+     * @param string $name Name of the attribute
+     * @param array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
+     * @param int $flags Flags for this attribute
+     * @param int $size Filename size
      */
     public function __construct($name, $dir, $flags = 0, $size = 0)
     {
@@ -200,9 +200,9 @@ class FileAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      Record
+     * @param array $record Record
      * @param string $fieldprefix Field prefix
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code with a browsebox
      */
@@ -252,8 +252,7 @@ class FileAttribute extends Attribute
                 // Add default option with value NULL
                 $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
                 while (list($key, $val) = each($file_arr)) {
-                    (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val)
-                        ? $selected = 'selected' : $selected = '';
+                    (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val) ? $selected = 'selected' : $selected = '';
                     if (is_file($this->m_dir.$val)) {
                         $result .= '<option value="'.$val."\" $selected>".$val;
                     }
@@ -283,8 +282,7 @@ class FileAttribute extends Attribute
      */
     public function value2db($rec)
     {
-        $del = (isset($rec[$this->fieldName()]['postdel'])) ? $rec[$this->fieldName()]['postdel']
-            : null;
+        $del = (isset($rec[$this->fieldName()]['postdel'])) ? $rec[$this->fieldName()]['postdel'] : null;
 
         if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && (!isset($del) || $del != $rec[$this->fieldName()]['filename'])) {
             return $this->escapeSQL($rec[$this->fieldName()]['filename']);
@@ -312,6 +310,7 @@ class FileAttribute extends Attribute
                     Tools::atkdebug("File doesn't exist anymore.");
                 }
             }
+
 //        echo ':::::return leeg::::';
             return '';
         } else {
@@ -461,9 +460,7 @@ class FileAttribute extends Attribute
         }
 
         // detect whether the file is uploaded or is an existing file.
-        $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ?
-            $rec[$this->fieldName()]['tmpfile'] :
-            $this->m_dir.$rec[$this->fieldName()]['filename'];
+        $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ? $rec[$this->fieldName()]['tmpfile'] : $this->m_dir.$rec[$this->fieldName()]['filename'];
 
         if (@empty($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir) {
             $valid = false;
@@ -527,10 +524,10 @@ class FileAttribute extends Attribute
      * Note that obligatory and unique fields are checked by the
      * atkNodeValidator, and not by the validate() method itself.
      *
-     * @param array  $record The record that holds the value for this
+     * @param array $record The record that holds the value for this
      *                       attribute. If an error occurs, the error will
      *                       be stored in the 'atkerror' field of the record.
-     * @param string $mode   The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                       "update")
      */
     public function validate(&$record, $mode)
@@ -581,8 +578,7 @@ class FileAttribute extends Attribute
      */
     public function fetchValue($rec)
     {
-        $del = (isset($rec[$this->fieldName()]['del'])) ? $rec[$this->fieldName()]['del']
-            : null;
+        $del = (isset($rec[$this->fieldName()]['del'])) ? $rec[$this->fieldName()]['del'] : null;
 
         $postfiles_basename = $rec[$this->fieldName().'_postfileskey'];
 
@@ -621,8 +617,7 @@ class FileAttribute extends Attribute
                 elseif (isset($rec[$this->fieldName()]['filename']) && $rec[$this->fieldName()]['filename'] != '') {
                     $result = $rec[$this->fieldName()];
                 } else {
-                    $filename = (isset($rec[$basename.'_orgfilename'])) ? $rec[$basename.'_orgfilename']
-                        : '';
+                    $filename = (isset($rec[$basename.'_orgfilename'])) ? $rec[$basename.'_orgfilename'] : '';
 
                     if (isset($del) && $del == 'on') {
                         $filename = '';
@@ -632,8 +627,7 @@ class FileAttribute extends Attribute
                     $result = array(
                         'tmpfile' => $filename == '' ? '' : $this->m_dir.$filename,
                         'filename' => $filename,
-                        'filesize' => (is_file($this->m_dir.$filename) ? filesize($this->m_dir.$filename)
-                            : 0),
+                        'filesize' => (is_file($this->m_dir.$filename) ? filesize($this->m_dir.$filename) : 0),
                         'orgfilename' => $filename,
                     );
                 }
@@ -689,7 +683,7 @@ class FileAttribute extends Attribute
     /**
      * Display values.
      *
-     * @param array  $record Array with fields
+     * @param array $record Array with fields
      * @param string $mode
      *
      * @return string Filename or Nothing
@@ -700,8 +694,7 @@ class FileAttribute extends Attribute
         // while updating images was not allways visible due to caching
         $randval = mt_rand();
 
-        $filename = isset($record[$this->fieldName()]['filename']) ? $record[$this->fieldName()]['filename']
-            : null;
+        $filename = isset($record[$this->fieldName()]['filename']) ? $record[$this->fieldName()]['filename'] : null;
         Tools::atkdebug($this->fieldname()." - File: $filename");
         $prev_type = array(
             'jpg',
@@ -718,9 +711,7 @@ class FileAttribute extends Attribute
         if ($filename != '') {
             if (is_file($this->m_dir.$filename)) {
                 $ext = $this->getFileExtension($filename);
-                if ((in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext,
-                        $prev_type))
-                ) {
+                if ((in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext, $prev_type))) {
                     return '<a href="'.$this->m_url."$filename\" target=\"_blank\">$filename</a>";
                 } elseif (in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_POPUP)) {
                     if (in_array($ext, $imgtype_prev)) {
@@ -736,8 +727,7 @@ class FileAttribute extends Attribute
 
                 return '<img src="'.$this->m_url.$filename.'?b='.$randval.'" alt="'.$filename.'">';
             } else {
-                return $filename.'(<font color="#ff0000">'.Tools::atktext('file_not_exist',
-                    'atk').'</font>)';
+                return $filename.'(<font color="#ff0000">'.Tools::atktext('file_not_exist', 'atk').'</font>)';
             }
         }
     }
@@ -791,7 +781,7 @@ class FileAttribute extends Attribute
      * if a file template is set this is used instead and otherwise the default
      * filename is returned.
      *
-     * @param array  $rec     The record
+     * @param array $rec The record
      * @param string $default The default filename
      *
      * @return The real filename
@@ -809,7 +799,7 @@ class FileAttribute extends Attribute
     /**
      * Determine the real filename of a file (based on m_filenameTpl).
      *
-     * @param array  $rec     The record
+     * @param array $rec The record
      * @param string $default The default filename
      *
      * @return The real filename based on the filename template
@@ -833,7 +823,7 @@ class FileAttribute extends Attribute
     /**
      * Give the file a uniquely numbered filename.
      *
-     * @param array  $rec      The record for which the file was uploaded
+     * @param array $rec The record for which the file was uploaded
      * @param string $filename The name of the uploaded file
      *
      * @return string The name of the uploaded file, renumbered if necessary
@@ -888,7 +878,7 @@ class FileAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *

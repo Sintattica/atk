@@ -24,7 +24,7 @@ class State
      * in the state cookie if the key exists, if not it looks in the session and
      * if it exists returns it's value. If not a value of NULL is returned.
      *
-     * @param mixed $key     The key
+     * @param mixed $key The key
      * @param mixed $default default value fallback is the retrieved value === null
      *
      * @return mixed The retrieved value.
@@ -90,9 +90,9 @@ class State
      * be even more safe to md5 this string so that they key doesn't say anything to
      * the user and doesn't get too big.
      *
-     * @param mixed  $key   The key name
+     * @param mixed $key The key name
      * @param string $value The value of key
-     * @param string $type  The namespace from which to retrieve the value
+     * @param string $type The namespace from which to retrieve the value
      *
      * @return mixed The storage method type.
      */
@@ -115,7 +115,7 @@ class State
     /**
      * Set value in cookie.
      *
-     * @param mixed  $key
+     * @param mixed $key
      * @param string $value
      */
     protected static function _set_using_cookie($key, $value)
@@ -126,7 +126,7 @@ class State
     /**
      * Set value in session.
      *
-     * @param mixed  $key
+     * @param mixed $key
      * @param string $value
      */
     protected static function _set_using_session($key, $value)

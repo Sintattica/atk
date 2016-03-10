@@ -16,12 +16,12 @@ class CurrencyAttribute extends NumberAttribute
     /**
      * Constructor.
      *
-     * @param string $name               Name of the attribute
-     * @param int    $flags              Flags for this attribute
-     * @param int    $size               The size(s) for this attribute (default 10)
-     * @param string $currencysymbol     The symbol which is printed in front of the value.
-     * @param int    $decimals           The number of decimals (default 2)
-     * @param string $decimalseparator   The separator which is printed for the decimals.
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
+     * @param int $size The size(s) for this attribute (default 10)
+     * @param string $currencysymbol The symbol which is printed in front of the value.
+     * @param int $decimals The number of decimals (default 2)
+     * @param string $decimalseparator The separator which is printed for the decimals.
      * @param string $thousandsseparator The separator which is printed for the thousands.
      */
     public function __construct(
@@ -40,10 +40,8 @@ class CurrencyAttribute extends NumberAttribute
         }
 
         $this->m_currencysymbol = $currencysymbol;
-        $this->m_decimalseparator = ($decimalseparator != '' ? $decimalseparator
-            : '.');
-        $this->m_thousandsseparator = ($thousandsseparator != '' ? $thousandsseparator
-            : ',');
+        $this->m_decimalseparator = ($decimalseparator != '' ? $decimalseparator : '.');
+        $this->m_thousandsseparator = ($thousandsseparator != '' ? $thousandsseparator : ',');
 
         $this->setUseThousandsSeparator(true);
     }
@@ -51,10 +49,10 @@ class CurrencyAttribute extends NumberAttribute
     /**
      * overrides the edit function to put the currencysymbol in front of the input field.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */
@@ -69,8 +67,8 @@ class CurrencyAttribute extends NumberAttribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can

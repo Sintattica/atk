@@ -20,10 +20,10 @@ class UpdateStampAttribute extends DateTimeAttribute
     /**
      * Constructor.
      *
-     * @param string $name  Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                      corresponds to the name of the datetime field
      *                      in the database where the stamp is stored.
-     * @param int    $flags Flags for the attribute.
+     * @param int $flags Flags for the attribute.
      */
     public function __construct($name, $flags = 0)
     {
@@ -63,7 +63,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *

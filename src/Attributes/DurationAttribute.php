@@ -25,11 +25,11 @@ class DurationAttribute extends Attribute
     /**
      * Default Constructor, sets up Attribute.
      *
-     * @param string $name       The name of this attribute
+     * @param string $name The name of this attribute
      * @param string $resolution
      * @param string $maxtime
-     * @param int    $flags      The falgs of this attribute
-     * @param int    $size       This attributes size
+     * @param int $flags The falgs of this attribute
+     * @param int $size This attributes size
      *
      * @see Attribute
      */
@@ -62,7 +62,7 @@ class DurationAttribute extends Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -80,10 +80,10 @@ class DurationAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (hours, minutes and seconds will be a dropdownbox).
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string Piece a of HTML Code
      */
@@ -130,9 +130,7 @@ class DurationAttribute extends Attribute
             $result .= '</div>';
         } else {
             $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';
-            $result = '<input type="text" name="'.$fieldprefix.$this->fieldName().
-                '" value="'.$curval.'"'.
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
+            $result = '<input type="text" name="'.$fieldprefix.$this->fieldName().'" value="'.$curval.'"'.($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
         }
 
         return $result;
@@ -156,8 +154,8 @@ class DurationAttribute extends Attribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can

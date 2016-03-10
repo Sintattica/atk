@@ -581,11 +581,11 @@ class Attribute
      *       field length. (Derived classes might have reasonable default
      *        values, but the standard Attribute doesn't.)
      *
-     * @param string $name  Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                      for most attributes, corresponds to a field in
      *                      the database.
-     * @param int    $flags Flags for the attribute.
-     * @param mixed  $size  The size(s) of the attribute. See the $size
+     * @param int $flags Flags for the attribute.
+     * @param mixed $size The size(s) of the attribute. See the $size
      *                      parameter of the setAttribSize() method for more
      *                      information on the possible values of this
      *                      parameter.
@@ -593,7 +593,7 @@ class Attribute
     public function __construct($name, $flags = 0, $size = 0)
     {
         $this->m_name = $name;
-        $this->setFlags((int) $flags);
+        $this->setFlags((int)$flags);
         $this->setAttribSize($size);
 
         // default class
@@ -667,15 +667,11 @@ class Attribute
         $this->m_flags |= $flag;
 
         if (!$this->hasFlag(self::AF_PRIMARY) && is_object($this->m_ownerInstance)) {
-            if (Tools::hasFlag($flag, self::AF_HIDE_LIST) && !in_array($this->fieldName(),
-                    $this->m_ownerInstance->m_listExcludes)
-            ) {
+            if (Tools::hasFlag($flag, self::AF_HIDE_LIST) && !in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes)) {
                 $this->m_ownerInstance->m_listExcludes[] = $this->fieldName();
             }
 
-            if (Tools::hasFlag($flag, self::AF_HIDE_VIEW) && !in_array($this->fieldName(),
-                    $this->m_ownerInstance->m_viewExcludes)
-            ) {
+            if (Tools::hasFlag($flag, self::AF_HIDE_VIEW) && !in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)) {
                 $this->m_ownerInstance->m_viewExcludes[] = $this->fieldName();
             }
         }
@@ -719,16 +715,12 @@ class Attribute
         }
 
         if (!$this->hasFlag(self::AF_PRIMARY) && is_object($this->m_ownerInstance)) {
-            if (Tools::hasFlag($flag, self::AF_HIDE_LIST) && in_array($this->fieldName(),
-                    $this->m_ownerInstance->m_listExcludes)
-            ) {
+            if (Tools::hasFlag($flag, self::AF_HIDE_LIST) && in_array($this->fieldName(), $this->m_ownerInstance->m_listExcludes)) {
                 $key = array_search($this->fieldName(), $this->m_ownerInstance->m_listExcludes);
                 unset($this->m_ownerInstance->m_listExcludes[$key]);
             }
 
-            if (Tools::hasFlag($flag, self::AF_HIDE_VIEW) && in_array($this->fieldName(),
-                    $this->m_ownerInstance->m_viewExcludes)
-            ) {
+            if (Tools::hasFlag($flag, self::AF_HIDE_VIEW) && in_array($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)) {
                 $key = array_search($this->fieldName(), $this->m_ownerInstance->m_viewExcludes);
                 unset($this->m_ownerInstance->m_viewExcludes[$key]);
             }
@@ -948,10 +940,10 @@ class Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */
@@ -973,13 +965,9 @@ class Attribute
             $size = 20;
         }
 
-        $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()])
-            ? htmlspecialchars($record[$this->fieldName()]) : '');
+        $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
-        $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).
-            ' value="'.$value.'"'.
-            ($size > 0 ? ' size="'.$size.'"' : '').
-            ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
+        $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
 
         $result .= $this->getSpinner();
 
@@ -1006,7 +994,7 @@ class Attribute
      * Renders the onchange code on the page.
      *
      * @param string $fieldprefix The prefix to the field
-     * @param string $elementNr   The number of the element when attribute contains multiple options
+     * @param string $elementNr The number of the element when attribute contains multiple options
      */
     public function _renderChangeHandler($fieldprefix, $elementNr = '')
     {
@@ -1067,7 +1055,7 @@ class Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -1129,9 +1117,9 @@ class Attribute
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param string $mode     the mode ("view")
-     * @param array  $arr      pointer to the view array
-     * @param array  $defaults pointer to the default values array
+     * @param string $mode the mode ("view")
+     * @param array $arr pointer to the view array
+     * @param array $defaults pointer to the default values array
      */
     public function addToViewArray($mode, &$arr, &$defaults)
     {
@@ -1155,9 +1143,9 @@ class Attribute
      * edit array and allows for last minute manipulations based on the
      * record but also manipulations on the record itself.
      *
-     * @param array  $record      reference to the record
+     * @param array $record reference to the record
      * @param string $fieldPrefix field prefix
-     * @param string $mode        edit mode
+     * @param string $mode edit mode
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
@@ -1168,8 +1156,8 @@ class Attribute
      * view array and allows for last minute manipulations based on the
      * record but also manipulations on the record itself.
      *
-     * @param array  $record reference to the record
-     * @param string $mode   view mode
+     * @param array $record reference to the record
+     * @param string $mode view mode
      */
     public function preAddToViewArray(&$record, $mode)
     {
@@ -1183,10 +1171,10 @@ class Attribute
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param string $mode        the edit mode ("add" or "edit")
-     * @param array  $arr         pointer to the edit array
-     * @param array  $defaults    pointer to the default values array
-     * @param array  $error       pointer to the error array
+     * @param string $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
      * @param string $fieldprefix the fieldprefix
      */
     public function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
@@ -1198,20 +1186,19 @@ class Attribute
                 $arr['hide'][] = $this->hide($defaults, $fieldprefix, $mode);
             }
         } /* edit */ else {
-     global $ATK_VARS;
+            global $ATK_VARS;
 
-     $entry = array(
+            $entry = array(
                 'name' => $this->m_name,
                 'obligatory' => $this->hasFlag(self::AF_OBLIGATORY),
                 'attribute' => &$this,
             );
-     $entry['id'] = $this->getHtmlId($fieldprefix);
+            $entry['id'] = $this->getHtmlId($fieldprefix);
 
             /* label? */
             $entry['label'] = $this->getLabel();
             /* error? */
-            $entry['error'] = $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($entry['id'],
-                        $ATK_VARS['atkerrorfields']));
+            $entry['error'] = $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
             // on which tab?
             $entry['tabs'] = $this->getTabs();
             //on which sections?
@@ -1220,8 +1207,8 @@ class Attribute
             $entry['html'] = $this->getEdit($mode, $defaults, $fieldprefix);
             // initially hidden
             $entry['initial_hidden'] = $this->isInitialHidden();
-     $arr['fields'][] = $entry;
- }
+            $arr['fields'][] = $entry;
+        }
     }
 
     /**
@@ -1345,8 +1332,8 @@ class Attribute
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param string $mode     The mode ("view")
-     * @param array  $defaults The record holding the values for this attribute
+     * @param string $mode The mode ("view")
+     * @param array $defaults The record holding the values for this attribute
      *
      * @return string the HTML code for this attribute that can be used in a
      *                viewpage.
@@ -1404,8 +1391,8 @@ class Attribute
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param string $mode        The edit mode ("add" or "edit")
-     * @param array  $defaults    The record holding the values for this attribute
+     * @param string $mode The edit mode ("add" or "edit")
+     * @param array $defaults The record holding the values for this attribute
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      *
@@ -1416,9 +1403,7 @@ class Attribute
     {
         // readonly
         if ($this->isReadonlyEdit($mode)) {
-            return
-                $this->hide($defaults, $fieldprefix, $mode).
-                $this->getView($mode, $defaults);
+            return $this->hide($defaults, $fieldprefix, $mode).$this->getView($mode, $defaults);
         }
 
         $method = $this->m_name.'_edit';
@@ -1430,8 +1415,7 @@ class Attribute
                 // a possible edit action override (in both cases the method is called action_edit)
                 return $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode);
             } else {
-                return $this->edit($defaults, $fieldprefix, $mode).(strlen($this->m_postfixlabel) > 0
-                    ? '&nbsp;'.$this->m_postfixlabel : '');
+                return $this->edit($defaults, $fieldprefix, $mode).(strlen($this->m_postfixlabel) > 0 ? '&nbsp;'.$this->m_postfixlabel : '');
             }
         }
     }
@@ -1453,9 +1437,7 @@ class Attribute
     public function getError($errors)
     {
         for ($i = 0; $i < count($errors); ++$i) {
-            if ($errors[$i]['attrib_name'] == $this->fieldName() ||
-                Tools::atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])
-            ) {
+            if ($errors[$i]['attrib_name'] == $this->fieldName() || Tools::atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])) {
                 return true;
             }
         }
@@ -1468,14 +1450,14 @@ class Attribute
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string       $action       the action that is being performed on the node
-     * @param array        $arr          reference to the the recordlist array
-     * @param string       $fieldprefix  the fieldprefix
-     * @param int          $flags        the recordlist flags
-     * @param array        $atksearch    the current ATK search list (if not empty)
+     * @param string $action the action that is being performed on the node
+     * @param array $arr reference to the the recordlist array
+     * @param string $fieldprefix the fieldprefix
+     * @param int $flags the recordlist flags
+     * @param array $atksearch the current ATK search list (if not empty)
      * @param ColumnConfig $columnConfig Column configuration object
-     * @param DataGrid     $grid         The DataGrid this attribute lives on.
-     * @param string       $column       child column (null for this attribute, * for this attribute and all childs)
+     * @param DataGrid $grid The DataGrid this attribute lives on.
+     * @param string $column child column (null for this attribute, * for this attribute and all childs)
      *
      * @throws Exception on invalid list column
      */
@@ -1523,14 +1505,14 @@ class Attribute
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string   $action      the action that is being performed on the node
-     * @param array    $arr         reference to the the recordlist array
-     * @param int      $nr          the current row number
-     * @param string   $fieldprefix the fieldprefix
-     * @param int      $flags       the recordlist flags
-     * @param bool     $edit        editing?
-     * @param DataGrid $grid        data grid
-     * @param string   $column      child column (null for this attribute, * for this attribute and all childs)
+     * @param string $action the action that is being performed on the node
+     * @param array $arr reference to the the recordlist array
+     * @param int $nr the current row number
+     * @param string $fieldprefix the fieldprefix
+     * @param int $flags the recordlist flags
+     * @param bool $edit editing?
+     * @param DataGrid $grid data grid
+     * @param string $column child column (null for this attribute, * for this attribute and all childs)
      */
     public function addToListArrayRow(
         $action,
@@ -1548,11 +1530,10 @@ class Attribute
 
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
             if ($edit) {
-                $arr['rows'][$nr]['data'][$fieldprefix.$this->fieldName()] = $this->getEdit('list',
-                    $arr['rows'][$nr]['record'], 'atkdatagriddata_AE_'.$nr.'_AE_');
+                $arr['rows'][$nr]['data'][$fieldprefix.$this->fieldName()] = $this->getEdit('list', $arr['rows'][$nr]['record'],
+                    'atkdatagriddata_AE_'.$nr.'_AE_');
             } else {
-                $arr['rows'][$nr]['data'][$fieldprefix.$this->fieldName()] = $this->getView('list',
-                    $arr['rows'][$nr]['record']);
+                $arr['rows'][$nr]['data'][$fieldprefix.$this->fieldName()] = $this->getView('list', $arr['rows'][$nr]['record']);
             }
 
             /* totalisable? */
@@ -1577,8 +1558,8 @@ class Attribute
      * @todo  find a better way to search on onetomanys that does not require
      *        something evil in Attribute
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -1598,8 +1579,7 @@ class Attribute
             $value = $record[$this->fieldName()];
         }
 
-        $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.
-            ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
+        $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
 
         return $result;
     }
@@ -1611,7 +1591,7 @@ class Attribute
      * It will show a pulldown if using extended search and multiple
      * searchmodes are supported otherwise the default searchmode is selected.
      *
-     * @param bool   $extended    using extended search?
+     * @param bool $extended using extended search?
      * @param string $fieldprefix optional fieldprefix
      *
      * @return string html which is used for selecting searchmode
@@ -1638,8 +1618,7 @@ class Attribute
 
             $field .= '</select>';
         } else {
-            $field = '<input type="hidden" name="'.$this->getSearchModeFieldname($fieldprefix).'" value="'.$searchMode.'">'.
-                ($extended ? Tools::atktext('search_'.$searchMode) : '');
+            $field = '<input type="hidden" name="'.$this->getSearchModeFieldname($fieldprefix).'" value="'.$searchMode.'">'.($extended ? Tools::atktext('search_'.$searchMode) : '');
         }
 
         return $field;
@@ -1667,21 +1646,20 @@ class Attribute
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
      *
-     * @param int    $id         The unique smart search criterium identifier.
-     * @param int    $nr         The element number in the path.
-     * @param array  $path       The remaining attribute path.
-     * @param Query  $query      The query to which the condition will be added.
+     * @param int $id The unique smart search criterium identifier.
+     * @param int $nr The element number in the path.
+     * @param array $path The remaining attribute path.
+     * @param Query $query The query to which the condition will be added.
      * @param string $ownerAlias The owner table alias to use.
-     * @param mixed  $value      The value the user has entered in the searchbox.
-     * @param string $mode       The searchmode to use.
+     * @param mixed $value The value the user has entered in the searchbox.
+     * @param string $mode The searchmode to use.
      */
     public function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
     {
         // default implementation doesn't supported nested paths, this method
         // should be overriden by relations etc. if they want to support this
         if (count($path) > 0) {
-            Tools::atk_var_dump($path,
-                'Invalid search path for '.$this->m_ownerInstance->atkNodeUri().'#'.$this->fieldName().', ignoring criterium!');
+            Tools::atk_var_dump($path, 'Invalid search path for '.$this->m_ownerInstance->atkNodeUri().'#'.$this->fieldName().', ignoring criterium!');
         } else {
             $this->searchCondition($query, $ownerAlias, $value, $mode);
         }
@@ -1691,10 +1669,10 @@ class Attribute
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
-     * @param Query  $query      The query to which the condition will be added.
-     * @param string $table      The name of the table in which this attribute
+     * @param Query $query The query to which the condition will be added.
+     * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed  $value      The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
@@ -1712,14 +1690,14 @@ class Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query  $query      The query object where the search condition should be placed on
-     * @param string $table      The name of the table in which this attribute
+     * @param Query $query The query object where the search condition should be placed on
+     * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed  $value      The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
-     * @param string $fieldname  alias?
+     * @param string $fieldname alias?
      *
      * @return string The searchcondition to use.
      */
@@ -1774,8 +1752,8 @@ class Attribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -1808,10 +1786,10 @@ class Attribute
      * Note that obligatory and unique fields are checked by the
      * atkNodeValidator, and not by the validate() method itself.
      *
-     * @param array  $record The record that holds the value for this
+     * @param array $record The record that holds the value for this
      *                       attribute. If an error occurs, the error will
      *                       be stored in the 'atkerror' field of the record.
-     * @param string $mode   The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                       "update")
      */
     public function validate(&$record, $mode)
@@ -1844,17 +1822,17 @@ class Attribute
      * database field (like relations for example), may have to reimplement
      * this method.
      *
-     * @param Query  $query            The SQL query object
-     * @param string $tablename        The name of the table of this attribute
+     * @param Query $query The SQL query object
+     * @param string $tablename The name of the table of this attribute
      * @param string $fieldaliasprefix Prefix to use in front of the alias
      *                                 in the query.
-     * @param array  $record           The record that contains the value of this attribute.
-     * @param int    $level            Recursion level if relations point to eachother, an
+     * @param array $record The record that contains the value of this attribute.
+     * @param int $level Recursion level if relations point to eachother, an
      *                                 endless loop could occur if they keep loading
      *                                 eachothers data. The $level is used to detect this
      *                                 loop. If overriden in a derived class, any subcall to
      *                                 an addToQuery method should pass the $level+1.
-     * @param string $mode             Indicates what kind of query is being processing:
+     * @param string $mode Indicates what kind of query is being processing:
      *                                 This can be any action performed on a node (edit,
      *                                 add, etc) Mind you that "add" and "update" are the
      *                                 actions that store something in the database,
@@ -2078,10 +2056,7 @@ class Attribute
      */
     public function needsInsert($record)
     {
-        return !$this->hasFlag(self::AF_HIDE_ADD) ||
-            $this->hasFlag(self::AF_AUTO_INCREMENT) ||
-            !$this->isEmpty($record) ||
-            $this->m_forceinsert;
+        return !$this->hasFlag(self::AF_HIDE_ADD) || $this->hasFlag(self::AF_AUTO_INCREMENT) || !$this->isEmpty($record) || $this->m_forceinsert;
 
         // If we are set to hide_add, we will only insert into the
         // db if a value has been set (for example by an initial_values
@@ -2203,8 +2178,7 @@ class Attribute
     public function dbFieldType()
     {
         if ($this->m_dbfieldtype == '') {
-            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? 'number'
-                : 'string');
+            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? 'number' : 'string');
         }
 
         return $this->m_dbfieldtype;
@@ -2329,7 +2303,7 @@ class Attribute
     /**
      * Sets the storage type.
      *
-     * @param int    $type Bitmask containg information about storage requirements.
+     * @param int $type Bitmask containg information about storage requirements.
      * @param string $mode The storage mode ("add", "update" or null for all)
      *
      * @see storageType
@@ -2393,7 +2367,7 @@ class Attribute
     /**
      * Sets the load type.
      *
-     * @param int    $type Bitmask containg information about load requirements.
+     * @param int $type Bitmask containg information about load requirements.
      * @param string $mode The load mode ("view", "admin" etc. or null for all)
      *
      * @see loadType
@@ -2536,10 +2510,10 @@ class Attribute
      * Adds the needed searchbox(es) for this attribute to the fields array. This
      * method should only be called by the atkSearchHandler.
      *
-     * @param array  $fields      The array containing fields to use in the
+     * @param array $fields The array containing fields to use in the
      *                            extended search
-     * @param Node   $node        The node where the field is in
-     * @param array  $record      A record containing default values to put
+     * @param Node $node The node where the field is in
+     * @param array $record A record containing default values to put
      *                            into the search fields.
      * @param string $fieldprefix search / mode field prefix
      *
@@ -2603,15 +2577,14 @@ class Attribute
      * @param ColumnConfig $columnConfig The config that contains options for
      *                                   extended sorting and grouping to a
      *                                   recordlist.
-     * @param string       $fieldprefix  The prefix of the attribute
-     * @param DataGrid     $grid         The grid that this attribute lives on.
+     * @param string $fieldprefix The prefix of the attribute
+     * @param DataGrid $grid The grid that this attribute lives on.
      *
      * @return string HTML
      */
     public function extendedSort(&$columnConfig, $fieldprefix = '', $grid = null)
     {
-        $result = $this->sortOptions($columnConfig, $fieldprefix, $grid).' '.$this->sortOrder($columnConfig,
-                $fieldprefix, $grid);
+        $result = $this->sortOptions($columnConfig, $fieldprefix, $grid).' '.$this->sortOrder($columnConfig, $fieldprefix, $grid);
 
         return $result;
     }
@@ -2623,8 +2596,8 @@ class Attribute
      * @param ColumnConfig $columnConfig The config that contains options for
      *                                   extended sorting and grouping to a
      *                                   recordlist.
-     * @param string       $fieldprefix  The prefix of the attribute
-     * @param DataGrid     $grid         The grid that this attribute lives on.
+     * @param string $fieldprefix The prefix of the attribute
+     * @param DataGrid $grid The grid that this attribute lives on.
      *
      * @return string HTML
      */
@@ -2632,11 +2605,10 @@ class Attribute
     {
         if (!$this->hasFlag(self::AF_TOTAL) && $columnConfig->totalizable()) {
             // if we are not the sumcolumn itself, but there are totalcolumns present, we can perform subtotalling
-            $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? 'unsubtotal'
-                : 'subtotal');
+            $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? 'unsubtotal' : 'subtotal');
             if ($grid == null) {
-                return Tools::href(Config::getGlobal('dispatcher').'?'.$columnConfig->getUrlCommand($this->fieldName(),
-                        $cmd), Tools::atktext('column_'.$cmd)).' ';
+                return Tools::href(Config::getGlobal('dispatcher').'?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd),
+                    Tools::atktext('column_'.$cmd)).' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
 
@@ -2654,8 +2626,8 @@ class Attribute
      * @param ColumnConfig $columnConfig The config that contains options for
      *                                   extended sorting and grouping to a
      *                                   recordlist.
-     * @param string       $fieldprefix  The prefix of the attribute on HTML forms
-     * @param DataGrid     $grid         The grid that this attribute lives on.
+     * @param string $fieldprefix The prefix of the attribute on HTML forms
+     * @param DataGrid $grid The grid that this attribute lives on.
      *
      * @return string HTML
      */
@@ -2666,11 +2638,10 @@ class Attribute
 
         $res = '';
         if ($currentOrder > 0) {
-            $direction = ($columnConfig->getSortDirection($this->fieldName()) == 'desc'
-                ? 'asc' : 'desc');
+            $direction = ($columnConfig->getSortDirection($this->fieldName()) == 'desc' ? 'asc' : 'desc');
             if ($grid == null) {
-                $res = Tools::href(Config::getGlobal('dispatcher').'?'.$columnConfig->getUrlCommand($fieldname,
-                            $direction), Tools::atktext('column_'.$direction)).' ';
+                $res = Tools::href(Config::getGlobal('dispatcher').'?'.$columnConfig->getUrlCommand($fieldname, $direction),
+                        Tools::atktext('column_'.$direction)).' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));
                 $res = '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text('column_'.$direction).'</a>';
@@ -2717,9 +2688,9 @@ class Attribute
      * Derived attributes may override this functionality to implement other
      * ordering statements using the given parameters.
      *
-     * @param array  $extra     A list of attribute names to add to the order by
+     * @param array $extra A list of attribute names to add to the order by
      *                          statement
-     * @param string $table     The table name (if not given uses the owner node's table name)
+     * @param string $table The table name (if not given uses the owner node's table name)
      * @param string $direction Sorting direction (ASC or DESC)
      *
      * @return string The ORDER BY statement for this attribute
@@ -2739,11 +2710,9 @@ class Attribute
                 $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier).'.';
             }
 
-            return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction
-                ? " {$direction}" : '');
+            return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
         } else {
-            return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction
-                ? " {$direction}" : '');
+            return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
         }
     }
 
@@ -2782,8 +2751,8 @@ class Attribute
     /**
      * Escape string for use in a query.
      *
-     * @param string $value     value to escape
-     * @param bool   $wildcards escape wildcards too?
+     * @param string $value value to escape
+     * @param bool $wildcards escape wildcards too?
      *
      * @return string The escaped value.
      */
@@ -2799,7 +2768,7 @@ class Attribute
      * support different partials.
      *
      * @param string $partial The name of the partial (i.e. refresh)
-     * @param string $mode    The current add/edit mode
+     * @param string $mode The current add/edit mode
      *
      * @return string HTML Returns the result of the call to the partial
      *                handling method
@@ -2837,8 +2806,7 @@ class Attribute
         foreach ($arr['fields'] as $field) {
             //JSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
             $value = Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html']);
-            $script .= "\$('".str_replace('.', '_',
-                    $this->m_ownerInstance->atkNodeUri().'_'.$field['id'])."').update(".JSON::encode($value).");\r\n";
+            $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$field['id'])."').update(".JSON::encode($value).");\r\n";
         }
 
         return '<script type="text/javascript">'.$script.'</script>';
@@ -2873,10 +2841,10 @@ class Attribute
     /**
      * Initialize and calls the dependencies.
      *
-     * @param array  $record      record
+     * @param array $record record
      * @param string $fieldPrefix the prefix for this attribute in an HTML form
-     * @param string $mode        add/edit mode
-     * @param bool   $noCall      only initialize dependencies, without calling them
+     * @param string $mode add/edit mode
+     * @param bool $noCall only initialize dependencies, without calling them
      */
     public function initDependencies(&$record, $fieldPrefix, $mode, $noCall = false)
     {
@@ -2893,8 +2861,7 @@ class Attribute
             $action = $mode == 'add' ? 'add' : 'edit';
         }
 
-        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $action,
-            'attribute.'.$this->fieldName().'.dependencies',
+        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $action, 'attribute.'.$this->fieldName().'.dependencies',
             array('atkdata' => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
         $url = JSON::encode($url);
 
@@ -2906,10 +2873,10 @@ class Attribute
     /**
      * Calls the dependency callbacks for this attribute.
      *
-     * @param array  $record      record
+     * @param array $record record
      * @param string $fieldPrefix the prefix for this attribute in an HTML form
-     * @param string $mode        add/edit mode
-     * @param bool   $initial     initial call (e.g. non-javascript manipulation)
+     * @param string $mode add/edit mode
+     * @param bool $initial initial call (e.g. non-javascript manipulation)
      */
     protected function _callDependencies(&$record, $fieldPrefix, $mode, $initial)
     {
@@ -2975,8 +2942,7 @@ class Attribute
      */
     public function getCSSClassAttribute($additionalclasses = array())
     {
-        $classes = array_merge($this->getCSSClasses(), is_array($additionalclasses)
-            ? $additionalclasses : array($additionalclasses));
+        $classes = array_merge($this->getCSSClasses(), is_array($additionalclasses) ? $additionalclasses : array($additionalclasses));
 
         return 'class="'.implode(' ', $classes).'"';
     }
@@ -3015,7 +2981,7 @@ class Attribute
      * mechanism for this.
      *
      * @param string $event JavaScript event name (e.g. 'change', 'click', etc.)
-     * @param string $body  JavaScript body
+     * @param string $body JavaScript body
      */
     public function observeJS($event, $body)
     {

@@ -67,7 +67,7 @@ class SecurityManager
     /**
      * Notify listeners of a certain event.
      *
-     * @param string $event    name
+     * @param string $event name
      * @param string $username (might be null)
      */
     public function notifyListeners($event, $username)
@@ -125,8 +125,8 @@ class SecurityManager
      * Constructor.
      *
      * @param string $authentication_type The type of authentication (user/password verification) to use
-     * @param string $authorization_type  The type of authorization (mostly the same as the authentication_type)
-     * @param string $securityscheme      The security scheme that will be used to determine who is allowed to do what
+     * @param string $authorization_type The type of authorization (mostly the same as the authentication_type)
+     * @param string $securityscheme The security scheme that will be used to determine who is allowed to do what
      */
     public function __construct($authentication_type = 'none', $authorization_type = 'none', $securityscheme = 'none')
     {
@@ -156,8 +156,7 @@ class SecurityManager
          */
         if (Config::getGlobal('auth_enablepasswordmailer', false)) {
             foreach ($this->m_authentication as $auth) {
-                if (in_array($auth->getPasswordPolicy(),
-                    array(AuthInterface::PASSWORD_RETRIEVABLE, AuthInterface::PASSWORD_RECREATE))) {
+                if (in_array($auth->getPasswordPolicy(), array(AuthInterface::PASSWORD_RETRIEVABLE, AuthInterface::PASSWORD_RECREATE))) {
                     $this->m_enablepasswordmailer = true;
                 }
             }
@@ -176,17 +175,13 @@ class SecurityManager
         $atk = Atk::getInstance();
         // Query the database for user records having the given username and return if not found
         $userNode = $atk->atkGetNode(Config::getGlobal('auth_usernode'));
-        $selector = sprintf("%s.%s = '%s'", Config::getGlobal('auth_usertable'),
-            Config::getGlobal('auth_userfield'), $username);
+        $selector = sprintf("%s.%s = '%s'", Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'), $username);
 
-        $userrecords = $userNode->select($selector)
-            ->includes(array(
+        $userrecords = $userNode->select($selector)->includes(array(
                 Config::getGlobal('auth_userpk'),
                 Config::getGlobal('auth_emailfield'),
                 Config::getGlobal('auth_passwordfield'),
-            ))
-            ->mode('edit')
-            ->getAllRows();
+            ))->mode('edit')->getAllRows();
 
         if (count($userrecords) != 1) {
             Tools::atkdebug("User '$username' not found.");
@@ -241,8 +236,7 @@ class SecurityManager
             $auth_user = isset($ATK_VARS['auth_user']) ? $ATK_VARS['auth_user'] : null;
             $auth_pw = isset($ATK_VARS['auth_pw']) ? $ATK_VARS['auth_pw'] : null;
         } else { // HTTP login
-            $auth_user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER']
-                : null;
+            $auth_user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
             $auth_pw = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
         }
 
@@ -282,8 +276,8 @@ class SecurityManager
 
                 // sometimes we manually have to set the PHP_AUTH vars
                 // old style http_authorization
-                if (empty($auth_user) && empty($auth_pw) && array_key_exists('HTTP_AUTHORIZATION',
-                        $_SERVER) && ereg('^Basic ', $_SERVER['HTTP_AUTHORIZATION'])
+                if (empty($auth_user) && empty($auth_pw) && array_key_exists('HTTP_AUTHORIZATION', $_SERVER) && ereg('^Basic ',
+                        $_SERVER['HTTP_AUTHORIZATION'])
                 ) {
                     list($auth_user, $auth_pw) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
                 } // external authentication
@@ -297,8 +291,7 @@ class SecurityManager
                     // Cookiename is based on the app_title, for there may be more than 1 atk app running,
                     // each with their own cookie..
                     $cookiename = $this->_getAuthCookieName();
-                    list($enc, $user, $passwd) = explode('.',
-                        base64_decode(Tools::atkArrayNvl($_COOKIE, $cookiename, 'Li4=')));
+                    list($enc, $user, $passwd) = explode('.', base64_decode(Tools::atkArrayNvl($_COOKIE, $cookiename, 'Li4=')));
 
                     // for security reasons administrator will never be cookied..
                     if ($auth_user == '' && $user != '' && $user != 'administrator') {
@@ -373,8 +366,7 @@ class SecurityManager
                                     } // used by aktsecurerelation to decrypt an linkpass
 
 // for convenience, we also store the user as a global variable.
-                                    (is_array($this->m_user['level'])) ? $dbg = implode(',', $this->m_user['level'])
-                                        : $dbg = $this->m_user['level'];
+                                    (is_array($this->m_user['level'])) ? $dbg = implode(',', $this->m_user['level']) : $dbg = $this->m_user['level'];
                                     Tools::atkdebug('Logged in user: '.$this->m_user['name'].' (level: '.$dbg.')');
                                     $authenticated = true;
 
@@ -427,11 +419,7 @@ class SecurityManager
                 // if the login is really valid.
                 $session_auth = $sessionManager->getValue('authentication', 'globals');
 
-                if (Config::getGlobal('authentication_session') &&
-                    $session['login'] == 1 &&
-                    $session_auth['authenticated'] == 1 &&
-                    !empty($session_auth['user'])
-                ) {
+                if (Config::getGlobal('authentication_session') && $session['login'] == 1 && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])) {
                     $this->m_user = $session_auth['user'];
                     Tools::atkdebug('Using session for authentication / user = '.$this->m_user['name']);
                 }
@@ -466,9 +454,8 @@ class SecurityManager
                 $output->outputFlush();
                 exit();
             } else {
-                header('WWW-Authenticate: Basic realm="'.Tools::atktext('app_title').(Config::getGlobal('auth_changerealm',
-                        true)
-                        ? ' - '.strftime('%c', time()) : '').'"');
+                header('WWW-Authenticate: Basic realm="'.Tools::atktext('app_title').(Config::getGlobal('auth_changerealm', true) ? ' - '.strftime('%c',
+                            time()) : '').'"');
                 if (ereg('Microsoft', $_SERVER['SERVER_SOFTWARE'])) {
                     header('Status: 401 Unauthorized');
                 } else {
@@ -526,8 +513,8 @@ class SecurityManager
     /**
      * Display a login form.
      *
-     * @param string $defaultname  The username that might already be known
-     * @param int    $lastresponse The lastresponse when trying to login
+     * @param string $defaultname The username that might already be known
+     * @param int $lastresponse The lastresponse when trying to login
      *                             possible values:
      *                             SecurityManager::AUTH_MISMATCH,
      *                             SecurityManager::AUTH_LOCKED,
@@ -599,7 +586,7 @@ class SecurityManager
      * Check if the currently logged-in user has a certain privilege on a
      * node.
      *
-     * @param string $node      The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                          access privileges. (modulename.nodename notation).
      * @param string $privilege The privilege to check (atkaction).
      *
@@ -622,9 +609,9 @@ class SecurityManager
      * Check if the currently logged-in user has the right to view, edit etc.
      * an attribute of a node.
      *
-     * @param Attribute $attr   attribute reference
-     * @param string    $mode   mode (add, edit, view etc.)
-     * @param array     $record record data
+     * @param Attribute $attr attribute reference
+     * @param string $mode mode (add, edit, view etc.)
+     * @param array $record record data
      *
      * @return bool true if access is granted, false if not.
      */
@@ -660,7 +647,7 @@ class SecurityManager
     /**
      * Write an access entry in the logfile.
      *
-     * @param string $node   The full name of the node that is being accessed.
+     * @param string $node The full name of the node that is being accessed.
      * @param string $action The action that has been performed.
      */
     public function logAction($node, $action)
@@ -675,7 +662,7 @@ class SecurityManager
      *
      * @todo Logging should be moved to a separate atkLogger class.
      *
-     * @param int    $level   The loglevel.
+     * @param int $level The loglevel.
      * @param string $message The message to log.
      */
     public function log($level, $message)
@@ -726,10 +713,8 @@ class SecurityManager
         $session = SessionManager::getSession();
         $user = '';
         $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : array();
-        if (Config::getGlobal('authentication_session') &&
-            Tools::atkArrayNvl($session, 'login', 0) == 1 &&
-            $session_auth['authenticated'] == 1 &&
-            !empty($session_auth['user'])
+        if (Config::getGlobal('authentication_session') && Tools::atkArrayNvl($session, 'login',
+                0) == 1 && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])
         ) {
             $user = $session_auth['user'];
             if (!isset($user['access_level']) || empty($user['access_level'])) {
@@ -755,9 +740,7 @@ class SecurityManager
         $userpk = Config::getGlobal('auth_userpk');
 
         // check if logged in || logged in as administrator
-        if ($user == '' || $userpk == '' ||
-            (is_array($user) && !isset($user[$userpk]))
-        ) {
+        if ($user == '' || $userpk == '' || (is_array($user) && !isset($user[$userpk]))) {
             return 0;
         }
 

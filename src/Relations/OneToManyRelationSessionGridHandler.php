@@ -40,7 +40,7 @@ class OneToManyRelationSessionGridHandler
         $records_count = count($records);
 
         // If we don't need to limit the result, then we don't
-        if ((int) $offset === 0 && $limit >= $records_count) {
+        if ((int)$offset === 0 && $limit >= $records_count) {
             // We have to sort the data first, because the datagrid
             // is very sensitive with regards to it's numerical keys
             // being sequential

@@ -18,7 +18,7 @@ class ImapAuth extends AuthInterface
     /**
      * Authenticate a user.
      *
-     * @param string $user   The login of the user to authenticate.
+     * @param string $user The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
@@ -51,8 +51,7 @@ class ImapAuth extends AuthInterface
             return SecurityManager::AUTH_ERROR;
         }
 
-        $mailauth = @imap_open('{'.Config::getGlobal('auth_mail_server')
-            .':'.Config::getGlobal('auth_mail_port').'}', $user, $passwd);
+        $mailauth = @imap_open('{'.Config::getGlobal('auth_mail_server').':'.Config::getGlobal('auth_mail_port').'}', $user, $passwd);
         // TODO/FIXME: return SecurityManager::AUTH_ERROR when connection fails..
         if ($mailauth == 0) {
             return SecurityManager::AUTH_MISMATCH;

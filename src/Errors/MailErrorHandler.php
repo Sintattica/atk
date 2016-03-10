@@ -41,13 +41,11 @@ class MailErrorHandler extends ErrorHandlerBase
 
             $subject = '['.$_SERVER['SERVER_NAME']."] $txt_app_title error";
 
-            $defaultfrom = sprintf('%s <%s@%s>', $txt_app_title, Config::getGlobal('identifier', 'atk'),
-                $_SERVER['SERVER_NAME']);
+            $defaultfrom = sprintf('%s <%s@%s>', $txt_app_title, Config::getGlobal('identifier', 'atk'), $_SERVER['SERVER_NAME']);
             $from = Config::getGlobal('mail_sender', $defaultfrom);
 
             $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
-            $body .= "\nThe errormessage was:\n\n".implode("\n", is_array($errorMessage)
-                    ? $errorMessage : array())."\n";
+            $body .= "\nThe errormessage was:\n\n".implode("\n", is_array($errorMessage) ? $errorMessage : array())."\n";
             $body .= "\nA detailed report follows:\n";
             $body .= "\nPHP Version: ".phpversion()."\n\n";
 
@@ -55,16 +53,14 @@ class MailErrorHandler extends ErrorHandlerBase
 
             $lines = array();
             for ($i = 0, $_ = count($debugMessage); $i < $_; ++$i) {
-                $lines[] = $this->_wordwrap(Tools::atk_html_entity_decode(preg_replace('(\[<a.*</a>\])', '',
-                    $debugMessage[$i])));
+                $lines[] = $this->_wordwrap(Tools::atk_html_entity_decode(preg_replace('(\[<a.*</a>\])', '', $debugMessage[$i])));
             }
             $body .= implode("\n", $lines);
 
             if (is_array($_GET)) {
                 $body .= "\n\n_GET\n".str_repeat('-', 70)."\n";
                 foreach ($_GET as $key => $value) {
-                    $body .= $this->_wordwrap($key.str_repeat(' ',
-                                max(1, 20 - strlen($key))).' = '.var_export($value, 1))."\n";
+                    $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 20 - strlen($key))).' = '.var_export($value, 1))."\n";
                 }
             }
 
@@ -73,8 +69,7 @@ class MailErrorHandler extends ErrorHandlerBase
                 if (count($request) > 0) {
                     $body .= "\n\nREQUEST INFORMATION\n".str_repeat('-', 70)."\n";
                     foreach ($request as $key => $value) {
-                        $body .= $this->_wordwrap($key.str_repeat(' ',
-                                    max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
+                        $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                     }
                 }
             }
@@ -82,40 +77,35 @@ class MailErrorHandler extends ErrorHandlerBase
             if (is_array($_POST)) {
                 $body .= "\n\n_POST\n".str_repeat('-', 70)."\n";
                 foreach ($_POST as $key => $value) {
-                    $body .= $this->_wordwrap($key.str_repeat(' ',
-                                max(1, 20 - strlen($key))).' = '.var_export($value, 1))."\n";
+                    $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 20 - strlen($key))).' = '.var_export($value, 1))."\n";
                 }
             }
 
             if (is_array($_COOKIE)) {
                 $body .= "\n\n_COOKIE\n".str_repeat('-', 70)."\n";
                 foreach ($_COOKIE as $key => $value) {
-                    $body .= $this->_wordwrap($key.str_repeat(' ',
-                                max(1, 20 - strlen($key))).' = '.var_export($value, 1))."\n";
+                    $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 20 - strlen($key))).' = '.var_export($value, 1))."\n";
                 }
             }
 
             $body .= "\n\nATK CONFIGURATION\n".str_repeat('-', 70)."\n";
             foreach ($GLOBALS as $key => $value) {
                 if (substr($key, 0, 7) == 'config_') {
-                    $body .= $this->_wordwrap($key.str_repeat(' ',
-                                max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
+                    $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                 }
             }
 
             $body .= "\n\nMODULE CONFIGURATION\n".str_repeat('-', 70)."\n";
             foreach ($atk->g_modules as $modname => $modpath) {
                 $modexists = file_exists($modpath) ? ' (path exists)' : ' (PATH DOES NOT EXIST!)';
-                $body .= $this->_wordwrap($modname.':'.str_repeat(' ',
-                            max(1, 20 - strlen($modname))).var_export($modpath, 1).$modexists)."\n";
+                $body .= $this->_wordwrap($modname.':'.str_repeat(' ', max(1, 20 - strlen($modname))).var_export($modpath, 1).$modexists)."\n";
             }
 
             $body .= "\n\nCurrent User:\n".str_repeat('-', 70)."\n";
             $user = SecurityManager::atkGetUser();
             if (is_array($user) && count($user)) {
                 foreach ($user as $key => $value) {
-                    $body .= $this->_wordwrap($key.str_repeat(' ',
-                                max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
+                    $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                 }
             } else {
                 $body .= "Not known\n";
@@ -131,8 +121,7 @@ class MailErrorHandler extends ErrorHandlerBase
                         $item = isset($stack[$i]) ? $stack[$i] : null;
                         if (is_array($item)) {
                             foreach ($item as $key => $value) {
-                                $body .= $this->_wordwrap($key.str_repeat(' ',
-                                            max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
+                                $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                             }
                         }
                     }
@@ -142,8 +131,7 @@ class MailErrorHandler extends ErrorHandlerBase
                     if (count($ns_globals) > 0) {
                         $body .= "\nNamespace globals:\n";
                         foreach ($ns_globals as $key => $value) {
-                            $body .= $this->_wordwrap($key.str_repeat(' ',
-                                        max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
+                            $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                         }
                     }
                 }
@@ -152,8 +140,7 @@ class MailErrorHandler extends ErrorHandlerBase
                     if (count($globals) > 0) {
                         $body .= "\nGlobals:\n";
                         foreach ($globals as $key => $value) {
-                            $body .= $this->_wordwrap($key.str_repeat(' ',
-                                        max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
+                            $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                         }
                     }
                 }
@@ -162,8 +149,7 @@ class MailErrorHandler extends ErrorHandlerBase
             $body .= "\n\nSERVER INFORMATION\n".str_repeat('-', 70)."\n";
 
             foreach ($_SERVER as $key => $value) {
-                $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 20 - strlen($key))).' = '.var_export($value,
-                            1))."\n";
+                $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 20 - strlen($key))).' = '.var_export($value, 1))."\n";
             }
 
             //TODO: replace with some mailer object

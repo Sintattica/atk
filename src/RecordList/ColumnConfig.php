@@ -56,9 +56,9 @@ class ColumnConfig
     /**
      * Get an instance of the columnconfig class.
      *
-     * @param Node   $node
+     * @param Node $node
      * @param string $id
-     * @param bool   $forceNew force new instance?
+     * @param bool $forceNew force new instance?
      *
      * @return ColumnConfig An instance of the columnconfig class
      */
@@ -77,8 +77,7 @@ class ColumnConfig
             $s_instances[$id] = $cc;
             $cc->setNode($node);
 
-            $colcfg = $sm != null ? $sm->pageVar('atkcolcfg_'.$id)
-                : null;
+            $colcfg = $sm != null ? $sm->pageVar('atkcolcfg_'.$id) : null;
 
             if (!is_array($colcfg) || $forceNew) {
                 // create new
@@ -216,7 +215,7 @@ class ColumnConfig
         if (is_null($sortorder) && $this->getMinSort() <= 1) {
             foreach ($this->m_colcfg as $fld => $config) {
                 if (Tools::atkArrayNvl($config, 'sortorder') > 0) {
-                    $this->m_colcfg[$fld]['sortorder'] = (int) ($this->m_colcfg[$fld]['sortorder']) + 1;
+                    $this->m_colcfg[$fld]['sortorder'] = (int)($this->m_colcfg[$fld]['sortorder']) + 1;
                 }
             }
         }
@@ -400,8 +399,7 @@ class ColumnConfig
      */
     public function getOrder($attribute)
     {
-        return isset($this->m_colcfg[$attribute]['sortorder']) ? $this->m_colcfg[$attribute]['sortorder']
-            : 0;
+        return isset($this->m_colcfg[$attribute]['sortorder']) ? $this->m_colcfg[$attribute]['sortorder'] : 0;
     }
 
     /**
@@ -413,8 +411,7 @@ class ColumnConfig
      */
     public function getDirection($attribute)
     {
-        return array_key_exists('direction', $this->m_colcfg[$attribute]) ? $this->m_colcfg[$attribute]['direction']
-            : 'desc';
+        return array_key_exists('direction', $this->m_colcfg[$attribute]) ? $this->m_colcfg[$attribute]['direction'] : 'desc';
     }
 
     /**
@@ -503,8 +500,7 @@ class ColumnConfig
      */
     public function hasSubTotal($attribute)
     {
-        return (isset($this->m_colcfg[$attribute]['subtotal']) ? $this->m_colcfg[$attribute]['subtotal']
-                : 0) == 1;
+        return (isset($this->m_colcfg[$attribute]['subtotal']) ? $this->m_colcfg[$attribute]['subtotal'] : 0) == 1;
     }
 
     /**
@@ -529,7 +525,7 @@ class ColumnConfig
      * Set subtotal.
      *
      * @param string $attribute
-     * @param bool   $active
+     * @param bool $active
      */
     public function setSubTotal($attribute, $active)
     {
@@ -546,8 +542,7 @@ class ColumnConfig
      */
     public function _compareSortAttrs($a, $b)
     {
-        return Tools::atkArrayNvl($a, 'sortorder', 0) <= Tools::atkArrayNvl($b, 'sortorder', 0)
-            ? -1 : 1;
+        return Tools::atkArrayNvl($a, 'sortorder', 0) <= Tools::atkArrayNvl($b, 'sortorder', 0) ? -1 : 1;
     }
 
     /**

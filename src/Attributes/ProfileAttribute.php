@@ -24,9 +24,9 @@ class ProfileAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name           The name of the attribute
+     * @param string $name The name of the attribute
      * @param string $parentAttrName
-     * @param int    $flags          The flags of this attribute
+     * @param int $flags The flags of this attribute
      *
      * @return ProfileAttribute
      */
@@ -49,7 +49,7 @@ class ProfileAttribute extends Attribute
     /**
      * Load this record.
      *
-     * @param Db    $db     The database object
+     * @param Db $db The database object
      * @param array $record The record
      *
      * @return array Array with loaded values
@@ -72,7 +72,7 @@ class ProfileAttribute extends Attribute
     /**
      * Get child groups.
      *
-     * @param Db  $db The database object
+     * @param Db $db The database object
      * @param int $id The id to search for
      *
      * @return array
@@ -84,9 +84,7 @@ class ProfileAttribute extends Attribute
             return $result;
         }
 
-        $query = 'SELECT '.$this->m_ownerInstance->primaryKeyField().' '.
-            'FROM '.$this->m_ownerInstance->m_table.' '.
-            'WHERE '.$this->m_parentAttrName." = $id";
+        $query = 'SELECT '.$this->m_ownerInstance->primaryKeyField().' '.'FROM '.$this->m_ownerInstance->m_table.' '.'WHERE '.$this->m_parentAttrName." = $id";
 
         $rows = $db->getRows($query);
         foreach ($rows as $row) {
@@ -100,9 +98,9 @@ class ProfileAttribute extends Attribute
     /**
      * Store the value of this attribute in the database.
      *
-     * @param Db     $db     The database object
-     * @param array  $record The record which holds the values to store
-     * @param string $mode   The mode we're in
+     * @param Db $db The database object
+     * @param array $record The record which holds the values to store
+     * @param string $mode The mode we're in
      *
      * @return bool True if succesfull, false if not
      */
@@ -140,9 +138,8 @@ class ProfileAttribute extends Attribute
 
                 // If you're not an admin, leave out all actions which are not editable (none if no editable actions available)
                 if (!$isAdmin) {
-                    $validActions = isset($editableActions[$nodeModule][$nodeType])
-                        ? array_intersect($validActions, $editableActions[$nodeModule][$nodeType])
-                        : array();
+                    $validActions = isset($editableActions[$nodeModule][$nodeType]) ? array_intersect($validActions,
+                        $editableActions[$nodeModule][$nodeType]) : array();
                 }
 
                 foreach ($validActions as $action) {
@@ -156,10 +153,8 @@ class ProfileAttribute extends Attribute
                 }
 
                 if (count($children) > 0 && count($validActions) > 0) {
-                    $query = 'DELETE FROM '.Config::getGlobal('auth_accesstable').' '.
-                        'WHERE '.$this->m_accessField.' IN ('.implode(',', $children).') '.
-                        "AND node = '".$db->escapeSQL($node)."' ".
-                        "AND action NOT IN ('".implode("','", $validActions)."')";
+                    $query = 'DELETE FROM '.Config::getGlobal('auth_accesstable').' '.'WHERE '.$this->m_accessField.' IN ('.implode(',',
+                            $children).') '."AND node = '".$db->escapeSQL($node)."' "."AND action NOT IN ('".implode("','", $validActions)."')";
 
                     if (!$db->query($query)) {
                         // error.
@@ -176,7 +171,7 @@ class ProfileAttribute extends Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -217,8 +212,7 @@ class ProfileAttribute extends Attribute
         $parentAttr = $this->m_parentAttrName;
         if (!empty($parentAttr) && is_numeric($record[$parentAttr])) {
             $db = $this->getDb();
-            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' '.
-                'WHERE '.$this->m_accessField.' = '.$record[$parentAttr];
+            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' '.'WHERE '.$this->m_accessField.' = '.$record[$parentAttr];
             $rows = $db->getRows($query);
 
             foreach ($rows as $row) {
@@ -326,7 +320,7 @@ class ProfileAttribute extends Attribute
      * Display rights.
      * It will only display the rights & nodes that are selected for the user.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
      *
      * @return string Displayable string
@@ -353,8 +347,8 @@ class ProfileAttribute extends Attribute
             $module_result = '';
 
             foreach ($nodes as $node => $actions) {
-                $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])
-                        ? $editableActions[$module][$node] : array()))) > 0;
+                $showBox = $isAdmin || count(array_intersect($actions,
+                        (is_array($editableActions[$module][$node]) ? $editableActions[$module][$node] : array()))) > 0;
                 $display_node_str = false;
                 $display_tabs_str = false;
                 $node_result = '';
@@ -362,8 +356,7 @@ class ProfileAttribute extends Attribute
                 $tab_permissions_string = '';
 
                 foreach ($actions as $action) {
-                    $isSelected = isset($selectedActions[$module][$node]) && in_array($action,
-                            $selectedActions[$module][$node]);
+                    $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
                     // If the action of a node is selected for this user we will show the node,
                     // otherwise we won't
@@ -371,11 +364,9 @@ class ProfileAttribute extends Attribute
                         $display_node_str = true;
                         if (substr($action, 0, 4) == 'tab_') {
                             $display_tabs_str = true;
-                            $tab_permissions_string .= $this->permissionName($action, $node,
-                                    $module).'&nbsp;&nbsp;&nbsp;';
+                            $tab_permissions_string .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
                         } else {
-                            $permissions_string .= $this->permissionName($action, $node,
-                                    $module).'&nbsp;&nbsp;&nbsp;';
+                            $permissions_string .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
                         }
                     }
                 }
@@ -409,10 +400,8 @@ class ProfileAttribute extends Attribute
                     }
 
                     $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><i class=\"%s\" id=\"img_div_$module\"></i></a></b>%s<br>",
-                        "profile_swapProfileDiv('div_$module', '".Config::getGlobal('atkroot')."'); return false;",
-                        Config::getGlobal('icon_plussquare'),
-                        Tools::atktext(array("title_$module", $module), $module)
-                    );
+                        "profile_swapProfileDiv('div_$module', '".Config::getGlobal('atkroot')."'); return false;", Config::getGlobal('icon_plussquare'),
+                        Tools::atktext(array("title_$module", $module), $module));
                     $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
                     $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
                     $result .= '<br>';
@@ -428,10 +417,10 @@ class ProfileAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */
@@ -448,12 +437,7 @@ class ProfileAttribute extends Attribute
         $this->_restoreDivStates($page);
 
         $result = '<div align="right">
-                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->fieldName().'\'); return false;">'.
-            Tools::atktext('check_all').
-            '</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.
-            Tools::atktext('check_none').
-            '</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.
-            Tools::atktext('invert_selection').'</a>]</div>';
+                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
 
         $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
@@ -464,7 +448,8 @@ class ProfileAttribute extends Attribute
             $result .= '<div class="profileSection">';
 
             $result .= "<span onclick=\"profile_swapProfileDiv('div_$section');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\">";
-            $result .= '  <i class="'.Config::getGlobal('icon_plussquare')."\" id=\"img_div_$section\"></i> ".Tools::atktext(array("title_$section", $section), $section);
+            $result .= '  <i class="'.Config::getGlobal('icon_plussquare')."\" id=\"img_div_$section\"></i> ".Tools::atktext(array("title_$section", $section),
+                    $section);
             $result .= '</span><br/>';
 
             $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px' class='checkbox'>";
@@ -472,19 +457,17 @@ class ProfileAttribute extends Attribute
             $result .= "  <input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
 
             $result .= '  <div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
-                  [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.
-                Tools::atktext('check_all', 'atk').
-                '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.
-                Tools::atktext('check_none', 'atk').
-                '</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.
-                Tools::atktext('invert_selection', 'atk').'</a>]';
+                  [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_all',
+                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_none',
+                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('invert_selection',
+                    'atk').'</a>]';
             $result .= '  </div>';
             $result .= '  <br>';
 
             foreach ($modules as $module => $nodes) {
                 foreach ($nodes as $node => $actions) {
-                    $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])
-                            ? $editableActions[$module][$node] : array()))) > 0;
+                    $showBox = $isAdmin || count(array_intersect($actions,
+                            (is_array($editableActions[$module][$node]) ? $editableActions[$module][$node] : array()))) > 0;
 
                     if ($showBox) {
                         $result .= '<b>'.Tools::atktext($node, $module).'</b><br>';
@@ -498,8 +481,7 @@ class ProfileAttribute extends Attribute
                         $temp_str = '';
 
                         $isEditable = $isAdmin || Tools::atk_in_array($action, $editableActions[$module][$node]);
-                        $isSelected = isset($selectedActions[$module][$node]) && in_array($action,
-                                $selectedActions[$module][$node]);
+                        $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
                         if ($isEditable) {
                             if (substr($action, 0, 4) == 'tab_') {
@@ -541,8 +523,8 @@ class ProfileAttribute extends Attribute
     /**
      * Return the translated name of a permission.
      *
-     * @param string $action     The name of the action
-     * @param string $nodename   The name of the node
+     * @param string $action The name of the action
+     * @param string $nodename The name of the node
      * @param string $modulename The name of the module
      *
      * @return string The translated permission name

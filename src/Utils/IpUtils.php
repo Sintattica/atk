@@ -59,8 +59,8 @@ class IpUtils
         $long = is_numeric($ip) ? $ip : self::ipLongFormat($ip);
         $string = '';
         for ($i = 3; $i >= 0; --$i) {
-            $string .= (int) ($long / pow(256, $i));
-            $long -= (int) ($long / pow(256, $i)) * pow(256, $i);
+            $string .= (int)($long / pow(256, $i));
+            $long -= (int)($long / pow(256, $i)) * pow(256, $i);
             if ($i > 0) {
                 $string .= '.';
             }

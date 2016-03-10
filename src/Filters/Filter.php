@@ -16,8 +16,8 @@ class Filter extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name  The name of the filter
-     * @param int    $flags The flags of the filter
+     * @param string $name The name of the filter
+     * @param int $flags The flags of the filter
      *
      * @return Filter
      */

@@ -54,11 +54,11 @@ class UrlAttribute extends Attribute
     /**
      * The atk url attribute.
      *
-     * @param string $name  Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                      for most attributes, corresponds to a field in
      *                      the database.
-     * @param int    $flags Flags for the attribute.
-     * @param mixed  $size  The size(s) of the attribute. See the $size
+     * @param int $flags Flags for the attribute.
+     * @param mixed $size The size(s) of the attribute. See the $size
      *                      parameter of the setAttribSize() method for more
      *                      information on the possible values of this
      *                      parameter.
@@ -88,8 +88,8 @@ class UrlAttribute extends Attribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -170,10 +170,10 @@ class UrlAttribute extends Attribute
     /**
      * Checks if a value is valid.
      *
-     * @param array  $record The record that holds the value for this
+     * @param array $record The record that holds the value for this
      *                       attribute. If an error occurs, the error will
      *                       be stored in the 'atkerror' field of the record.
-     * @param string $mode   The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                       "update")
      */
     public function validate(&$record, $mode)
@@ -184,11 +184,11 @@ class UrlAttribute extends Attribute
     /**
      * Validates absolute, relative and anchor URL through regular expression.
      *
-     * @param array  $record     Record that contains value to be validated.
+     * @param array $record Record that contains value to be validated.
      *                           Errors are saved in this record, in the 'atkerror'
      *                           field.
-     * @param string $mode       Validation mode. Can be either "add" or "update"
-     * @param bool   $show_error fire a triggerError when validation fails
+     * @param string $mode Validation mode. Can be either "add" or "update"
+     * @param bool $show_error fire a triggerError when validation fails
      */
     public function validateUrl(&$record, $mode, $show_error = false)
     {
@@ -210,9 +210,7 @@ class UrlAttribute extends Attribute
          * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
          */
         if (($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) {
-            $absolute_result = preg_match('/^'.$base_url_regex.$relative_url_regex.'*$/Ui',
-                $record[$this->fieldName()])
-                ? true : false;
+            $absolute_result = preg_match('/^'.$base_url_regex.$relative_url_regex.'*$/Ui', $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $absolute_result;
         }
@@ -223,8 +221,7 @@ class UrlAttribute extends Attribute
          * Example: #internal_bookmark
          */
         if (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR) {
-            $anchor_result = preg_match('/^#'.$relative_url_regex.'*$/Ui', $record[$this->fieldName()])
-                ? true : false;
+            $anchor_result = preg_match('/^#'.$relative_url_regex.'*$/Ui', $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $anchor_result;
         }
@@ -237,9 +234,7 @@ class UrlAttribute extends Attribute
          * or:      https://www2-dev.test_url.com/index.php?/history.html#bookmark
          */
         if ((($this->m_accepts_url_flag & self::ABSOLUTE) == self::ABSOLUTE) && (($this->m_accepts_url_flag & self::ANCHOR) == self::ANCHOR)) {
-            $absolute_anchor_result = preg_match('/^'.$base_url_regex.$relative_url_regex_with_anchor.'*$/Ui',
-                $record[$this->fieldName()])
-                ? true : false;
+            $absolute_anchor_result = preg_match('/^'.$base_url_regex.$relative_url_regex_with_anchor.'*$/Ui', $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $absolute_anchor_result;
         }
@@ -250,8 +245,7 @@ class UrlAttribute extends Attribute
          * Example: /mysite/guestbook/index.html
          */
         if (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE) {
-            $relative_result = preg_match('/^'.$relative_url_regex_with_anchor.'+$/Ui', $record[$this->fieldName()])
-                ? true : false;
+            $relative_result = preg_match('/^'.$relative_url_regex_with_anchor.'+$/Ui', $record[$this->fieldName()]) ? true : false;
 
             $result = $result || $relative_result;
         }
@@ -262,20 +256,16 @@ class UrlAttribute extends Attribute
         if (!$result && $show_error) {
             // if result of all validations is false, display error-messages
             if ($absolute_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url',
-                    Tools::atktext('invalid_absolute_no_anchor_url'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url', Tools::atktext('invalid_absolute_no_anchor_url'));
             }
             if ($anchor_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_url_anchor',
-                    Tools::atktext('invalid_url_anchor'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_url_anchor', Tools::atktext('invalid_url_anchor'));
             }
             if ($absolute_anchor_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_url',
-                    Tools::atktext('invalid_absolute_url'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_absolute_url', Tools::atktext('invalid_absolute_url'));
             }
             if ($relative_result === false) {
-                Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url',
-                    Tools::atktext('invalid_relative_url'));
+                Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url', Tools::atktext('invalid_relative_url'));
             }
         }
 

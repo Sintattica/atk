@@ -48,11 +48,8 @@ class MultiSelectHandler extends AdminHandler
     {
         $node = $this->getNode();
         $columnConfig = $node->getColumnConfig();
-        $recordset = $node->select(implode(' OR ', $this->m_postvars['atkselector']))
-            ->orderBy($columnConfig->getOrderByStatement())
-            ->excludes($node->m_listExcludes)
-            ->mode('multiselect')
-            ->getAllRows();
+        $recordset = $node->select(implode(' OR ',
+            $this->m_postvars['atkselector']))->orderBy($columnConfig->getOrderByStatement())->excludes($node->m_listExcludes)->mode('multiselect')->getAllRows();
 
         // loop recordset to parse atktargetvar
         $atktarget = Tools::atkurldecode($node->m_postvars['atktarget']);
@@ -73,8 +70,8 @@ class MultiSelectHandler extends AdminHandler
     /**
      * Parse the target string.
      *
-     * @param string $string    The string to parse
-     * @param array  $recordset The recordset to use for parsing the string
+     * @param string $string The string to parse
+     * @param array $recordset The recordset to use for parsing the string
      *
      * @return string The parsed string
      */
@@ -108,8 +105,7 @@ class MultiSelectHandler extends AdminHandler
         $GLOBALS['atktargetvar'] = $this->getNode()->m_postvars['atktargetvar'];
         $GLOBALS['atktargetvartpl'] = $this->getNode()->m_postvars['atktargetvartpl'];
 
-        $params['header'] = Tools::atktext('title_multiselect', $this->getNode()->m_module,
-            $this->getNode()->m_type);
+        $params['header'] = Tools::atktext('title_multiselect', $this->getNode()->m_module, $this->getNode()->m_type);
 
         $actions['actions'] = array();
         $actions['mra'][] = 'multiselect';

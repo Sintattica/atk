@@ -25,9 +25,7 @@ class DataGridRenderer extends DataGridComponent
     protected function renderContainer($result)
     {
         if (!$this->getGrid()->isUpdate()) {
-            $result = '<div id="'.$this->getGrid()->getName().'_container" class="atkdatagrid-container">'.
-                $result.
-                '</div>';
+            $result = '<div id="'.$this->getGrid()->getName().'_container" class="atkdatagrid-container">'.$result.'</div>';
         }
 
         return $result;
@@ -44,10 +42,7 @@ class DataGridRenderer extends DataGridComponent
     {
         if (!$this->getGrid()->isUpdate() && !$this->getGrid()->isEmbedded()) {
             $sm = SessionManager::getInstance();
-            $result = '<form id="'.$this->getGrid()->getFormName().'" name="'.$this->getGrid()->getFormName().'" method="post" action="'.Config::getGlobal('dispatcher').'">'.
-                $sm->formState().
-                $result.
-                '</form>';
+            $result = '<form id="'.$this->getGrid()->getFormName().'" name="'.$this->getGrid()->getFormName().'" method="post" action="'.Config::getGlobal('dispatcher').'">'.$sm->formState().$result.'</form>';
         }
 
         return $result;

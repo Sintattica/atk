@@ -142,7 +142,7 @@ class Page
      *
      * If called twice for the same filename, the file is loaded only once.
      *
-     * @param string $file   The (relative path and) filename of the javascript
+     * @param string $file The (relative path and) filename of the javascript
      *                       file.
      * @param string $before The (partial) name of a script that this script
      *                       should be loaded in front of. This can be used
@@ -221,8 +221,8 @@ class Page
      * twice, will result in the statement only being rendered and executed
      * once.
      *
-     * @param string $code   The javascript code to place in the header.
-     * @param bool   $before Include the script before the javascript files
+     * @param string $code The javascript code to place in the header.
+     * @param bool $before Include the script before the javascript files
      */
     public function register_scriptcode($code, $before = false)
     {
@@ -259,8 +259,8 @@ class Page
     /**
      * Register a javascript code statement that is executed on pageload.
      *
-     * @param string $code   The javascript code fragment to execute on load.
-     * @param int    $offset
+     * @param string $code The javascript code fragment to execute on load.
+     * @param int $offset
      */
     public function register_loadscript($code, $offset = null)
     {
@@ -294,7 +294,7 @@ class Page
      * more than once, will still result in only one single include of the
      * stylesheet.
      *
-     * @param string $file  The (relative path and) filename of the stylesheet.
+     * @param string $file The (relative path and) filename of the stylesheet.
      * @param string $media The stylesheet media (defaults to 'all').
      */
     public function register_style($file, $media = 'all')
@@ -393,8 +393,8 @@ class Page
     /**
      * Adds javascripts from the member variables to HTML output.
      *
-     * @param string $res     Reference to the HTML output
-     * @param bool   $partial Is this a partial request or a complete request
+     * @param string $res Reference to the HTML output
+     * @param bool $partial Is this a partial request or a complete request
      */
     public function addScripts(&$res, $partial = false)
     {
@@ -523,8 +523,8 @@ class Page
     /**
      * Add stylesheets and stylecodes to the HMTL output.
      *
-     * @param string $res     Reference to the HTML output
-     * @param bool   $partial Is this a partial request or a complete request
+     * @param string $res Reference to the HTML output
+     * @param bool $partial Is this a partial request or a complete request
      */
     public function addStyles(&$res, $partial = false)
     {
@@ -592,15 +592,15 @@ class Page
     /**
      * Render the complete page, including head and body.
      *
-     * @param string   $title          Title of the HTML page.
-     * @param bool|int $flags          (bool) Set to true to generate <body> tags. It is useful
+     * @param string $title Title of the HTML page.
+     * @param bool|int $flags (bool) Set to true to generate <body> tags. It is useful
      *                                 to set this to false only when rendering content
      *                                 that either already had its own <body></body>
      *                                 statement, or content that needs no body
      *                                 statements, like a frameset. (DEPRICATED !!)
      *                                 (int) Flags for the render function
-     * @param string   $extrabodyprops Extra attributes to add to the <body> tag.
-     * @param string   $extra_header   HTML code of extra headers to add to the head section
+     * @param string $extrabodyprops Extra attributes to add to the <body> tag.
+     * @param string $extra_header HTML code of extra headers to add to the head section
      *
      * @return string The HTML page, including <html> and </html> tags.
      */
@@ -693,8 +693,8 @@ class Page
     /**
      * Adds meta lines from the member variables to HTML output.
      *
-     * @param string $res     Reference to the HTML output
-     * @param bool   $partial Is this a partial request or a complete request
+     * @param string $res Reference to the HTML output
+     * @param bool $partial Is this a partial request or a complete request
      */
     public function addMeta(&$res, $partial = false)
     {

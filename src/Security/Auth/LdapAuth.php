@@ -18,7 +18,7 @@ class LdapAuth extends AuthInterface
     /**
      * Authenticate a user.
      *
-     * @param string $user   The login of the user to authenticate.
+     * @param string $user The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
@@ -43,9 +43,7 @@ class LdapAuth extends AuthInterface
         if ($ldap = ldap_connect(Config::getGlobal('auth_ldap_host'))) {
             Tools::atkdebug('successful connection to '.Config::getGlobal('auth_ldap_host'));
             if (Config::getGlobal('auth_ldap_bind_tree')) {
-                if ($bindID = @ldap_bind($ldap, Config::getGlobal('auth_ldap_bind_dn'),
-                    Config::getGlobal('auth_ldap_bind_pw'))
-                ) {
+                if ($bindID = @ldap_bind($ldap, Config::getGlobal('auth_ldap_bind_dn'), Config::getGlobal('auth_ldap_bind_pw'))) {
                     Tools::atkdebug('Succesfully bound to '.Config::getGlobal('auth_ldap_bind_dn').' with id: '.$bindID.' conn_id '.$ldap);
                 } else {
                     Tools::atkdebug('<b>Error binding to</b> '.Config::getGlobal('auth_ldap_bind_dn').' '.Config::getGlobal('auth_ldap_bind_pw'));
@@ -55,8 +53,7 @@ class LdapAuth extends AuthInterface
             }
 
             // find the dn for this uid, the uid is not always in the dn
-            $filter = (Config::getGlobal('auth_ldap_search_filter') != '' ? Config::getGlobal('auth_ldap_search_filter')
-                : 'uid');
+            $filter = (Config::getGlobal('auth_ldap_search_filter') != '' ? Config::getGlobal('auth_ldap_search_filter') : 'uid');
             $pattern = Config::getGlobal('auth_ldap_context');
 
             // Add support for searching in multiple DN's

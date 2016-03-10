@@ -69,15 +69,15 @@ class FuzzySearchAttribute extends Attribute
      * - selectperkeyword make the user select for every keyword
      * - multiselect      ?
      *
-     * @param string $name       The name of the attribute
+     * @param string $name The name of the attribute
      * @param string $searchnode The node to search on
-     * @param string $callback   The function of the owner node to call
+     * @param string $callback The function of the owner node to call
      *                           with the record to store and the results of the search
      *                           Has to return a status (true or false)
-     * @param string $mode       The mode of the search (all(default)|first|firstperkeyword|
+     * @param string $mode The mode of the search (all(default)|first|firstperkeyword|
      *                           select|selectperkeyword|multiselect)
-     * @param int    $flags      The flags of the attribute
-     * @param int    $size       The size of the search field
+     * @param int $flags The flags of the attribute
+     * @param int $size The size of the search field
      */
     public function __construct($name, $searchnode, $callback, $mode = 'all', $flags = 0, $size = 0)
     {
@@ -115,7 +115,7 @@ class FuzzySearchAttribute extends Attribute
      * Note that obligatory and unique fields are checked by the
      * atkNodeValidator, and not by the validate() method itself.
      *
-     * @param array  $rec  The record that holds the value for this
+     * @param array $rec The record that holds the value for this
      *                     attribute. If an error occurs, the error will
      *                     be stored in the 'atkerror' field of the record.
      * @param string $mode The mode for which should be validated ("add" or
@@ -283,8 +283,8 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Override the store method of this attribute to search.
      *
-     * @param Db     $db
-     * @param array  $rec  The record
+     * @param Db $db
+     * @param array $rec The record
      * @param string $mode
      *
      * @return bool
@@ -307,10 +307,7 @@ class FuzzySearchAttribute extends Attribute
             if (count($wheres) && $this->createSearchNodeInstance()) {
                 $whereclause = '(('.implode(') OR (', $wheres).'))';
 
-                $resultset = $this->m_searchnodeInstance->select($whereclause)
-                    ->excludes($this->m_searchnodeInstance->m_listExcludes)
-                    ->mode('admin')
-                    ->getAllRows();
+                $resultset = $this->m_searchnodeInstance->select($whereclause)->excludes($this->m_searchnodeInstance->m_listExcludes)->mode('admin')->getAllRows();
             }
         } else {
             if (count($this->m_matches) > 0) {
@@ -390,7 +387,7 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -457,7 +454,7 @@ class FuzzySearchAttribute extends Attribute
      *
      * @param string $filter The fieldname you want to filter OR a SQL where
      *                       clause expression.
-     * @param string $value  Required value. (Ommit this parameter if you pass
+     * @param string $value Required value. (Ommit this parameter if you pass
      *                       an SQL expression for $filter.)
      */
     public function addSearchFilter($filter, $value = '')

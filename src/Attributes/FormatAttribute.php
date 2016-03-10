@@ -27,7 +27,7 @@ class FormatAttribute extends Attribute
      *       Finally, there should be an option if 'AA' accepts 'z' or only
      *       'zz'
      *
-     * @param string $name   Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                       corresponds to a field in the database.
      * @param string $format The format specifier. Each character defines
      *                       what type of input is expected.
@@ -38,7 +38,7 @@ class FormatAttribute extends Attribute
      *                       9 - Accept a digit
      *                       Any other char is seen as a literal and displayed
      *                       literally as non-editable chars in the editor.
-     * @param int    $flags  Flags for the attribute.
+     * @param int $flags Flags for the attribute.
      */
     public function __construct($name, $format, $flags = 0)
     {
@@ -52,8 +52,8 @@ class FormatAttribute extends Attribute
      * Called by the framework for validation of a record. Raised an error
      * with triggerError if a value is not valid.
      *
-     * @param array  $record The record to validate
-     * @param string $mode   Insert or update mode (ignored by this attribute)
+     * @param array $record The record to validate
+     * @param string $mode Insert or update mode (ignored by this attribute)
      */
     public function validate(&$record, $mode)
     {
@@ -75,7 +75,7 @@ class FormatAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      *
@@ -104,7 +104,7 @@ class FormatAttribute extends Attribute
     /**
      * Determine error message.
      *
-     * @param int  $pos       The position of the element that is not properly
+     * @param int $pos The position of the element that is not properly
      *                        formatted.
      * @param char $specifier The format that the value should've adhered to.
      *
@@ -118,11 +118,11 @@ class FormatAttribute extends Attribute
     /**
      * Generate an input box for one of the elements.
      *
-     * @param int    $size        The maximum size of the input box.
-     * @param int    $elemnr      The position of the element within the format.
+     * @param int $size The maximum size of the input box.
+     * @param int $elemnr The position of the element within the format.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of the html element.
-     * @param string $value       The current value.
+     * @param string $value The current value.
      *
      * @return string An html input element string.
      */
@@ -136,9 +136,9 @@ class FormatAttribute extends Attribute
     /**
      * Check if a string matches the format specifier.
      *
-     * @param char   $specifier Char indicating the format that the String must
+     * @param char $specifier Char indicating the format that the String must
      *                          adhere to. Can be any of #9A*
-     * @param string $string    The string to check.
+     * @param string $string The string to check.
      *
      * @return bool True if string matches the specifier, false if not.
      */
@@ -158,7 +158,7 @@ class FormatAttribute extends Attribute
      *
      * @param char $specifier Char indicating the format that the String must
      *                        adhere to. Can be any of #9A*
-     * @param char $char      The char to check.
+     * @param char $char The char to check.
      *
      * @return bool True if char matches the specifier, false if not.
      */
@@ -207,8 +207,7 @@ class FormatAttribute extends Attribute
                     // create new
                     $elem = array(
                         'size' => 1,
-                        'type' => ($this->_isSpecifier($char)
-                            ? $char : '/'),
+                        'type' => ($this->_isSpecifier($char) ? $char : '/'),
                         'mask' => $char,
                     );
                 } else {
@@ -313,8 +312,8 @@ class FormatAttribute extends Attribute
      *
      * @todo specifier type is not yet used.
      *
-     * @param char   $type  The specifier (9#A*)
-     * @param int    $size  The desired size of the value.
+     * @param char $type The specifier (9#A*)
+     * @param int $size The desired size of the value.
      * @param string $value The value to pad.
      *
      * @return string The padded value.

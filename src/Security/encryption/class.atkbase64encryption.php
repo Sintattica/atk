@@ -15,7 +15,7 @@ class Base64Encryption extends Encryption
      * The encryption method for encrypting data with the base64 algorithm.
      *
      * @param mixed $input the data we want to encrypt
-     * @param mixed $key   the key we want to encrypt the data with
+     * @param mixed $key the key we want to encrypt the data with
      *
      * @return mixed the encrypted data
      */
@@ -37,7 +37,7 @@ class Base64Encryption extends Encryption
      * The decryption method for decrypting data with the base64 algorithm.
      *
      * @param mixed $input the data we want to encrypt
-     * @param mixed $key   the key we want to encrypt the data with
+     * @param mixed $key the key we want to encrypt the data with
      *
      * @return mixed the encrypted data
      */
@@ -58,7 +58,7 @@ class Base64Encryption extends Encryption
     /**
      * Decryptionmethod for a key. This implementation decrypt the key with de base64 algoritm.
      *
-     * @param string $key  The encrypted key
+     * @param string $key The encrypted key
      * @param string $pass The password to decrypt de key
      *
      * @return string The decrypted key
@@ -71,7 +71,7 @@ class Base64Encryption extends Encryption
     /**
      * Encryptionmethod for a key. This implementation encrypt the key with de base64 algoritm.
      *
-     * @param string $key  The decrypted key
+     * @param string $key The decrypted key
      * @param string $pass The password to encrypt de key
      *
      * @return string The encrypted key

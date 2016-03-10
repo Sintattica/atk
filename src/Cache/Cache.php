@@ -65,9 +65,9 @@ abstract class Cache implements ArrayAccess
      * Get Cache instance, default when no type
      * is configured it will use var cache.
      *
-     * @param string $types    Cache type
-     * @param bool   $fallback fallback to var cache if all types fail?
-     * @param bool   $force    force new instance
+     * @param string $types Cache type
+     * @param bool $fallback fallback to var cache if all types fail?
+     * @param bool $force force new instance
      *
      * @return Cache object of the request type
      *
@@ -115,8 +115,8 @@ abstract class Cache implements ArrayAccess
     /**
      * Get config values from the cache config.
      *
-     * @param string $key     Key
-     * @param mixed  $default Default value
+     * @param string $key Key
+     * @param mixed $default Default value
      *
      * @return mixed
      */
@@ -125,9 +125,7 @@ abstract class Cache implements ArrayAccess
         $cacheConfig = Config::getGlobal('cache', array());
         $type = $this->getType();
 
-        if (array_key_exists($type, $cacheConfig) &&
-            array_key_exists($key, $cacheConfig[$type])
-        ) {
+        if (array_key_exists($type, $cacheConfig) && array_key_exists($key, $cacheConfig[$type])) {
             return $cacheConfig[$type][$key];
         } else {
             return $default;
@@ -157,7 +155,7 @@ abstract class Cache implements ArrayAccess
      */
     public function setActive($flag)
     {
-        $this->m_active = (bool) $flag;
+        $this->m_active = (bool)$flag;
     }
 
     /**
@@ -197,7 +195,7 @@ abstract class Cache implements ArrayAccess
      */
     public function setLifetime($lifetime)
     {
-        $this->m_lifetime = (int) $lifetime;
+        $this->m_lifetime = (int)$lifetime;
     }
 
     /**
@@ -214,9 +212,9 @@ abstract class Cache implements ArrayAccess
      * Add cache entry if it not exists
      * allready.
      *
-     * @param string $key      Entry Id
-     * @param mixed  $data     The data we want to add
-     * @param int    $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param string $key Entry Id
+     * @param mixed $data The data we want to add
+     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      *
      * @return bool True on success, false on failure.
      */
@@ -226,9 +224,9 @@ abstract class Cache implements ArrayAccess
      * Set cache entry, if it not exists then
      * add it to the cache.
      *
-     * @param string $key      Entry ID
-     * @param mixed  $data     The data we want to set
-     * @param int    $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
+     * @param string $key Entry ID
+     * @param mixed $data The data we want to set
+     * @param int $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      *
      * @return true on success, false on failure.
      */
@@ -309,7 +307,7 @@ abstract class Cache implements ArrayAccess
      * Set value for given offset.
      *
      * @param string $offset Key to set
-     * @param mixed  $value  Value for key
+     * @param mixed $value Value for key
      *
      * @return bool
      */

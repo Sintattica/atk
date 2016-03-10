@@ -113,7 +113,7 @@ class Atk
      * of actions that can potentially be performed on the node.
      *
      * @param string $nodeUri uri of the node
-     * @param string $class   class of the node
+     * @param string $class class of the node
      * @param $actions array with actions that can be performed on the node
      * @param $tabs array of tabnames for which security should be handled.
      *              Note that tabs that every user may see need not be
@@ -152,10 +152,10 @@ class Atk
      * are cached (unless $reset is true); multiple requests for the same node will return exactly
      * the same node object.
      *
-     * @param string $nodeUri  The node uri
-     * @param bool   $init     Initialize the node?
+     * @param string $nodeUri The node uri
+     * @param bool $init Initialize the node?
      * @param string $cache_id The cache id in the node repository
-     * @param bool   $reset    Whether or not to reset the particular node in the repository
+     * @param bool $reset Whether or not to reset the particular node in the repository
      *
      * @return Node the node
      */
@@ -202,7 +202,7 @@ class Atk
      * Construct a new node.
      *
      * @param string $nodeUri the node uri
-     * @param bool   $init    initialize the node?
+     * @param bool $init initialize the node?
      *
      * @return Node new node object
      */
@@ -250,7 +250,7 @@ class Atk
      * Returns a registered node action handler.
      *
      * @param string $nodeUri the uri of the node
-     * @param string $action  the node action
+     * @param string $action the node action
      *
      * @return ActionHandler functionname or object (is_subclass_of ActionHandler) or
      *                       NULL if no handler exists for the specified action
@@ -271,8 +271,8 @@ class Atk
     /**
      * Registers a new node action handler.
      *
-     * @param string                   $nodeUri the uri of the node (* matches all)
-     * @param string                   $action  the node action
+     * @param string $nodeUri the uri of the node (* matches all)
+     * @param string $action the node action
      * @param string /atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
      *
      * @return bool true if there is no known handler

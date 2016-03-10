@@ -44,10 +44,10 @@ class AggregatedColumn extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name         Name of the attribute
-     * @param string $template     Display/sort template.
-     * @param int    $flags        Flags for this attribute
-     * @param array  $searchfields Array with fields, in which search will be perform
+     * @param string $name Name of the attribute
+     * @param string $template Display/sort template.
+     * @param int $flags Flags for this attribute
+     * @param array $searchfields Array with fields, in which search will be perform
      *                             If ommited, fields from $template will be used
      */
     public function __construct($name, $template, $flags = 0, $searchfields = array())
@@ -68,8 +68,8 @@ class AggregatedColumn extends Attribute
     /**
      * The display function for this attribute.
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -93,12 +93,12 @@ class AggregatedColumn extends Attribute
     /**
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
-     * @param string $action      the action that is being performed on the node
-     * @param array  $arr         reference to the the recordlist array
+     * @param string $action the action that is being performed on the node
+     * @param array $arr reference to the the recordlist array
      * @param string $fieldprefix the fieldprefix
-     * @param int    $flags       the recordlist flags
-     * @param array  $atksearch   the current ATK search list (if not empty)
-     * @param string $atkorderby  Order by string
+     * @param int $flags the recordlist flags
+     * @param array $atksearch the current ATK search list (if not empty)
+     * @param string $atkorderby Order by string
      *
      * @see Node::listArray
      */
@@ -155,11 +155,11 @@ class AggregatedColumn extends Attribute
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
-     * @param Query  $query            The query to which the condition will be added.
-     * @param string $table            The name of the table in which this attribute
+     * @param Query $query The query to which the condition will be added.
+     * @param string $table The name of the table in which this attribute
      *                                 is stored
-     * @param mixed  $value            The value the user has entered in the searchbox
-     * @param string $searchmode       The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param string $searchmode The searchmode to use. This can be any one
      *                                 of the supported modes, as returned by this
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fiedalias in the table

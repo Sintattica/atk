@@ -12,10 +12,10 @@ class PgSqlQuery extends Query
     /**
      * Makes a join SQL query for PostgreSQL.
      *
-     * @param string $table     the table name
-     * @param string $alias     alias for the table
+     * @param string $table the table name
+     * @param string $alias alias for the table
      * @param string $condition join condition
-     * @param bool   $outer     Wether to use an outer (left) join or an inner join
+     * @param bool $outer Wether to use an outer (left) join or an inner join
      *
      * @return Query The query object (for fluent usage)
      */

@@ -87,8 +87,7 @@ class SaveHandler extends ActionHandler
             $prefix = $this->m_postvars['atkfieldprefix'];
         }
 
-        $csrfToken = isset($this->m_postvars[$prefix.'atkcsrftoken']) ? $this->m_postvars[$prefix.'atkcsrftoken']
-            : null;
+        $csrfToken = isset($this->m_postvars[$prefix.'atkcsrftoken']) ? $this->m_postvars[$prefix.'atkcsrftoken'] : null;
 
         // check for CSRF token
         if (!$this->isValidCSRFToken($csrfToken)) {
@@ -97,10 +96,7 @@ class SaveHandler extends ActionHandler
             return;
         }
 
-        if (isset($this->m_postvars['atksaveandclose']) ||
-            isset($this->m_postvars['atksaveandnext']) ||
-            isset($this->m_postvars['atksaveandcontinue'])
-        ) {
+        if (isset($this->m_postvars['atksaveandclose']) || isset($this->m_postvars['atksaveandnext']) || isset($this->m_postvars['atksaveandcontinue'])) {
             $this->handleProcess($record);
         } else {
             if (isset($this->m_postvars['atkcancel'])) {
@@ -152,10 +148,10 @@ class SaveHandler extends ActionHandler
     /**
      * Redirect after save.
      *
-     * @param string     $location
+     * @param string $location
      * @param array|bool $recordOrExit
-     * @param bool       $exit
-     * @param int        $levelskip
+     * @param bool $exit
+     * @param int $levelskip
      */
     protected function _handleRedirect($location = '', $recordOrExit = array(), $exit = false, $levelskip = 1)
     {
@@ -232,8 +228,7 @@ class SaveHandler extends ActionHandler
     protected function storeRecordInSession(&$record)
     {
         Tools::atkdebug('STORING RECORD IN SESSION');
-        $result = SessionStore::getInstance()->addDataRow($record,
-            $this->m_node->primaryKeyField());
+        $result = SessionStore::getInstance()->addDataRow($record, $this->m_node->primaryKeyField());
 
         return $result !== false;
     }
@@ -287,9 +282,7 @@ class SaveHandler extends ActionHandler
      */
     public function _getSkip()
     {
-        if (isset($this->m_postvars['atkreturnbehaviour']) &&
-            $this->m_postvars['atkreturnbehaviour'] == self::ATK_ACTION_BACK
-        ) {
+        if (isset($this->m_postvars['atkreturnbehaviour']) && $this->m_postvars['atkreturnbehaviour'] == self::ATK_ACTION_BACK) {
             return 2;
         }
 
@@ -325,8 +318,7 @@ class SaveHandler extends ActionHandler
         $error = $error || count($record['atkerror']) > 0;
 
         foreach (array_keys($record) as $key) {
-            $error = $error || (is_array($record[$key]) && array_key_exists('atkerror',
-                        $record[$key]) && count($record[$key]['atkerror']) > 0);
+            $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
         }
 
         return !$error;

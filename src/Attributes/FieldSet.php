@@ -18,9 +18,9 @@ class FieldSet extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name     fieldset name
+     * @param string $name fieldset name
      * @param string $template template string
-     * @param int    $flags    flags
+     * @param int $flags flags
      */
     public function __construct($name, $template, $flags = 0)
     {
@@ -120,9 +120,9 @@ class FieldSet extends Attribute
     /**
      * Renders the fieldset.
      *
-     * @param string $type        edit or display
-     * @param array  $record      record
-     * @param string $mode        mode
+     * @param string $type edit or display
+     * @param array $record record
+     * @param string $mode mode
      * @param string $fieldprefix fieldprefix
      *
      * @return string rendered HTML
@@ -177,7 +177,7 @@ class FieldSet extends Attribute
     /**
      * Edit fieldset.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *

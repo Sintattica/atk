@@ -24,10 +24,10 @@ class FileExport
      *
      * @todo Currently supports only csv/excel mimetypes.
      *
-     * @param string $data        The content
-     * @param string $fileName    Filename for the download
-     * @param string $type        The type (csv / excel / xml)
-     * @param string $ext         Extension of the file
+     * @param string $data The content
+     * @param string $fileName Filename for the download
+     * @param string $type The type (csv / excel / xml)
+     * @param string $ext Extension of the file
      * @param string $compression Compression method (bzip / gzip)
      */
     public function export($data, $fileName, $type, $ext = '', $compression = '')
@@ -57,8 +57,8 @@ class FileExport
 
         // Fix for downloading (Office) documents using an SSL connection in
         // combination with MSIE.
-        if (($_SERVER['SERVER_PORT'] == '443' || Tools::atkArrayNvl($_SERVER,
-                    'HTTP_X_FORWARDED_PROTO') == 'https') && eregi('msie', $_SERVER['HTTP_USER_AGENT'])
+        if (($_SERVER['SERVER_PORT'] == '443' || Tools::atkArrayNvl($_SERVER, 'HTTP_X_FORWARDED_PROTO') == 'https') && eregi('msie',
+                $_SERVER['HTTP_USER_AGENT'])
         ) {
             header('Pragma: public');
         } else {

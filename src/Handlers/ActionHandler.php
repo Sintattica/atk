@@ -87,7 +87,7 @@ class ActionHandler
 
     public $m_postvars;
 
-    
+
     protected $m_boxTemplate = 'box';
 
     /*
@@ -111,9 +111,9 @@ class ActionHandler
      * for the action we don't invoke the action_$action override but
      * instead let the partial method handle the action.
      *
-     * @param Node   $node     The node on which the action should be performed.
-     * @param string $action   The action that is being performed.
-     * @param array  $postvars Any variables from the request
+     * @param Node $node The node on which the action should be performed.
+     * @param string $action The action that is being performed.
+     * @param array $postvars Any variables from the request
      */
     public function handle(&$node, $action, &$postvars)
     {
@@ -321,7 +321,7 @@ class ActionHandler
      * Modify grid.
      *
      * @param DataGrid $grid grid
-     * @param int      $mode CREATE or RESUME
+     * @param int $mode CREATE or RESUME
      */
     protected function modifyDataGrid(DataGrid $grid, $mode)
     {
@@ -365,7 +365,7 @@ class ActionHandler
      * Notify the node that an action has occured.
      *
      * @param string $action The action that occurred
-     * @param array  $record The record on which the action was performed
+     * @param array $record The record on which the action was performed
      */
     public function notify($action, $record)
     {

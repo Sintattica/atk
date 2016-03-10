@@ -32,9 +32,9 @@ class TabbedPane extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name  The name of the attribute
-     * @param array  $tabs  The arrays looks like array("tabname1"=>("attribname1,"attribname2),"tabname1"=>(..),..)
-     * @param int    $flags The flags for this attribute
+     * @param string $name The name of the attribute
+     * @param array $tabs The arrays looks like array("tabname1"=>("attribname1,"attribname2),"tabname1"=>(..),..)
+     * @param int $flags The flags for this attribute
      */
     public function __construct($name, $tabs = array(), $flags = 0)
     {
@@ -44,15 +44,14 @@ class TabbedPane extends Attribute
             }
         }
         // A atkTabbedPane attribute should be display only in edit/view mode
-        parent::__construct($name,
-            $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST | self::AF_HIDE_SELECT); // base class constructor
+        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST | self::AF_HIDE_SELECT); // base class constructor
     }
 
     /**
      * Add attribute to tabbedpane.
      *
      * @param string $attrib The name of the attribute
-     * @param string $tab    The name of tab. If empty, attribute name used
+     * @param string $tab The name of tab. If empty, attribute name used
      */
     public function add($attrib, $tab = '')
     {
@@ -135,10 +134,10 @@ class TabbedPane extends Attribute
     /**
      * Adds the attribute's edit / hide HTML code to the edit array.
      *
-     * @param string $mode        the edit mode ("add" or "edit")
-     * @param array  $arr         pointer to the edit array
-     * @param array  $defaults    pointer to the default values array
-     * @param array  $error       pointer to the error array
+     * @param string $mode the edit mode ("add" or "edit")
+     * @param array $arr pointer to the edit array
+     * @param array $defaults pointer to the default values array
+     * @param array $error pointer to the error array
      * @param string $fieldprefix the fieldprefix
      */
     public function _addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
@@ -156,8 +155,7 @@ class TabbedPane extends Attribute
                     if ($mode == 'edit' || ($mode == 'add' && !$p_attrib->isEmpty($defaults))) {
                         $arr['hide'][] = $p_attrib->hide($defaults, $fieldprefix, $mode);
                     }
-                } /* edit */
-                else {
+                } /* edit */ else {
                     $entry = array(
                         'name' => $p_attrib->m_name,
                         'obligatory' => $p_attrib->hasFlag(self::AF_OBLIGATORY),
@@ -215,19 +213,18 @@ class TabbedPane extends Attribute
                 $tplfield['class'] .= ' atkAttrRowHidden';
             }
 
-            $tplfield['rowid'] = 'tabbedPaneAttr_'.($field['id'] != '' ? $field['id']
-                    : Tools::getUniqueID('anonymousattribrows')); // The id of the containing row
+            $tplfield['rowid'] = 'tabbedPaneAttr_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueID('anonymousattribrows')); // The id of the containing row
 
             /* check for separator */
             if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
                 $tplfield['line'] = '<hr>';
             } /* double separator, ignore */ elseif ($field['html'] == '-') {
- } /* only full HTML */ elseif (isset($field['line'])) {
-     $tplfield['line'] = $field['line'];
- } /* edit field */ else {
-     if ($field['attribute']->m_ownerInstance->getNumbering()) {
-         ViewEditBase::_addNumbering($field, $tplfield, $i);
-     }
+            } /* only full HTML */ elseif (isset($field['line'])) {
+                $tplfield['line'] = $field['line'];
+            } /* edit field */ else {
+                if ($field['attribute']->m_ownerInstance->getNumbering()) {
+                    ViewEditBase::_addNumbering($field, $tplfield, $i);
+                }
 
                 /* does the field have a label? */
                 if ((isset($field['label']) && $field['label'] !== '') && !$this->isAttributeSingleOnTab($field['name']) || !isset($field['label'])) {
@@ -251,19 +248,19 @@ class TabbedPane extends Attribute
 
                 /* html source */
                 $tplfield['widget'] = $field['html'];
-     $editsrc = $field['html'];
+                $editsrc = $field['html'];
 
-     if (is_object($node->m_attribList[$field['name']])) {
-         $module = $node->m_attribList[$field['name']]->getModule();
-     }
-     if (!$module) {
-         $module = 'atk';
-     }
+                if (is_object($node->m_attribList[$field['name']])) {
+                    $module = $node->m_attribList[$field['name']]->getModule();
+                }
+                if (!$module) {
+                    $module = 'atk';
+                }
 
-     $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
+                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
 
-     $tplfield['full'] = $editsrc;
- }
+                $tplfield['full'] = $editsrc;
+            }
             $fields[] = $tplfield; // make field available in numeric array
             $params[$field['name']] = $tplfield; // make field available in associative array
         }
@@ -290,8 +287,8 @@ class TabbedPane extends Attribute
     /**
      * Display a tabbed pane with attributes.
      *
-     * @param array  $record Array with fields
-     * @param string $mode   The mode
+     * @param array $record Array with fields
+     * @param string $mode The mode
      *
      * @return string html code
      */
@@ -402,7 +399,7 @@ class TabbedPane extends Attribute
      * the tabs (title, selected, urls that should be loaded upon click of the
      * tab etc).
      *
-     * @param string $action      The action for which the tabs should be generated.
+     * @param string $action The action for which the tabs should be generated.
      * @param string $fieldprefix The fieldprefix
      *
      * @return array List of tabs
@@ -441,7 +438,7 @@ class TabbedPane extends Attribute
     /**
      * No function, but is necessary.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -465,8 +462,8 @@ class TabbedPane extends Attribute
     /**
      * Determine the load type of this attribute.
      *
-     * @param string $mode      The type of load (view,admin,edit etc)
-     * @param bool   $searching
+     * @param string $mode The type of load (view,admin,edit etc)
+     * @param bool $searching
      *
      * @return int NOLOAD     - nor load(), nor addtoquery() should be
      *             called (attribute can not be loaded from the

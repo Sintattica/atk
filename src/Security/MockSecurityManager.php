@@ -26,7 +26,7 @@ class MockSecurityManager extends SecurityManager
     /**
      * Set which privileges are allowed.
      *
-     * @param bool   $result
+     * @param bool $result
      * @param string $nodeprivilege
      */
     public function setAllowed($result, $nodeprivilege = 'all')
@@ -38,7 +38,7 @@ class MockSecurityManager extends SecurityManager
      * Check if the currently logged-in user has a certain privilege on a
      * node.
      *
-     * @param string $node      The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                          access privileges. (modulename.nodename notation).
      * @param string $privilege The privilege to check (atkaction).
      *

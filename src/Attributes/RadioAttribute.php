@@ -38,12 +38,12 @@ class RadioAttribute extends ListAttribute
     /**
      * Constructor.
      *
-     * @param string $name        Name of the attribute
-     * @param array  $optionArray Array with options
-     * @param array  $valueArray  Array with values. If you don't use this parameter,
+     * @param string $name Name of the attribute
+     * @param array $optionArray Array with options
+     * @param array $valueArray Array with values. If you don't use this parameter,
      *                            values are assumed to be the same as the options.
-     * @param int    $flags       Flags for this attribute
-     * @param int    $size        database field size ($size[1] can be used for the amount of cols / rows to display, for example: 3c or 5r or just 4)
+     * @param int $flags Flags for this attribute
+     * @param int $size database field size ($size[1] can be used for the amount of cols / rows to display, for example: 3c or 5r or just 4)
      */
     public function __construct($name, $optionArray, $valueArray = '', $flags = 0, $size = 0)
     {
@@ -71,7 +71,7 @@ class RadioAttribute extends ListAttribute
     /**
      * Set comment for a specific option.
      *
-     * @param string $option  The option the comment is for
+     * @param string $option The option the comment is for
      * @param string $comment The comment itself
      */
     public function setComment($option, $comment)
@@ -94,10 +94,10 @@ class RadioAttribute extends ListAttribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      Array with fields
+     * @param array $record Array with fields
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code with radioboxes
      */
@@ -147,8 +147,7 @@ class RadioAttribute extends ListAttribute
 
             $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->fieldName().'" '.$this->getCSSClassAttribute('atkradio').' value="'.$values[$i].'" '.$onchange.$sel.'>
         '.$this->renderValue($labelID, $this->_translateValue($values[$i],
-                    $record)).($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_comments[$i] != ''
-                    ? $commenthtml : '').'</td>';
+                    $record)).($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
 
             if ($this->hasflag(self::AF_DISPLAY_VERT)) {
                 $tmp_items = $items;
@@ -166,9 +165,7 @@ class RadioAttribute extends ListAttribute
                     }
                     if ($values[$j] != '') {
                         $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->fieldName().'" '.$this->getCSSClassAttribute('atkradio').' value="'.$values[$j].'" '.$onchange.$sel.'>
-              '.$this->renderValue($labelID,
-                                $this->_translateValue($values[$j], $record)).($this->m_comments[$i] != ''
-                                ? $commenthtml : '').'</td>';
+              '.$this->renderValue($labelID, $this->_translateValue($values[$j], $record)).($this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
                     } else {
                         $result .= '<td>&nbsp;</td>';
                     }
@@ -198,7 +195,7 @@ class RadioAttribute extends ListAttribute
      * Render value with or without a clickable label.
      *
      * @param string $labelID Label ID
-     * @param string $value   Label value
+     * @param string $value Label value
      *
      * @return string Label
      */

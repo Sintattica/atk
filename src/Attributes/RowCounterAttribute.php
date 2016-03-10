@@ -14,8 +14,8 @@ class RowCounterAttribute extends DummyAttribute
     /**
      * Constructor.
      *
-     * @param string $name  Name of the attribute
-     * @param int    $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      */
     public function __construct($name, $flags = 0)
     {
@@ -25,7 +25,7 @@ class RowCounterAttribute extends DummyAttribute
     /**
      * Returns a number corresponding to the row count per record.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
      *
      * @return int Counter, starting at 1

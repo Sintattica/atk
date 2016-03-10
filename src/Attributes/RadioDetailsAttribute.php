@@ -39,16 +39,16 @@ class RadioDetailsAttribute extends Attribute
      * value of another attribute which renders the detail selection for the
      * given option.
      *
-     * @param string $name    attribute name
+     * @param string $name attribute name
      * @param string $options can either be an array of values or a key/value
      *                        array in which case the key is used for the
      *                        translation and value is the value which is saved
      *                        in the database
-     * @param array  $details allows you to specify attributes that should be
+     * @param array $details allows you to specify attributes that should be
      *                        used for the detail selection for certain options
      *                        the key should be the option value and the value
      *                        should be the attribute name
-     * @param int    $flags
+     * @param int $flags
      */
     public function __construct($name, $options, $details, $flags = 0)
     {
@@ -58,7 +58,7 @@ class RadioDetailsAttribute extends Attribute
 
         // Cast single detail attributes to arrays
         foreach ($details as $value => $detail) {
-            $this->m_details[$value] = (array) $detail;
+            $this->m_details[$value] = (array)$detail;
         }
     }
 
@@ -92,8 +92,7 @@ class RadioDetailsAttribute extends Attribute
             $attrNames = @$this->m_details[$value];
 
             if ($attrNames != null) {
-                $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode,
-                    'attribute.'.$this->fieldName().'.details',
+                $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.details',
                     array('value' => $value, 'fieldprefix' => $fieldprefix));
                 $onChange = "ATK.RadioDetailsAttribute.select(this, '{$url}');";
             } else {
@@ -115,7 +114,8 @@ class RadioDetailsAttribute extends Attribute
                             continue;
                         }
 
-                        $result .= '<blockquote>'.$attr->edit($record, $fieldprefix, $mode).'&nbsp;'.htmlentities($attr->getLabel($record, $mode)).'</blockquote>';
+                        $result .= '<blockquote>'.$attr->edit($record, $fieldprefix, $mode).'&nbsp;'.htmlentities($attr->getLabel($record,
+                                $mode)).'</blockquote>';
                     }
                 }
                 $result .= '</div>';
@@ -179,8 +179,7 @@ class RadioDetailsAttribute extends Attribute
                 continue;
             }
 
-            $result .= '<blockquote>'.$attr->edit(array(), $fieldprefix, $mode).'&nbsp;'.$attr->getLabel(array(),
-                    $mode).'</blockquote>';
+            $result .= '<blockquote>'.$attr->edit(array(), $fieldprefix, $mode).'&nbsp;'.$attr->getLabel(array(), $mode).'</blockquote>';
         }
 
         return $result;

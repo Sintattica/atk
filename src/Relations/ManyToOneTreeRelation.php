@@ -23,9 +23,9 @@ class ManyToOneTreeRelation extends ManyToOneRelation
     /**
      * Constructor.
      *
-     * @param string $name        Name of the attribute
+     * @param string $name Name of the attribute
      * @param string $destination Destination node for this relation
-     * @param int    $flags       Flags for the relation
+     * @param int $flags Flags for the relation
      */
     public function __construct($name, $destination, $flags = 0)
     {
@@ -36,18 +36,17 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return Piece of html code that can  be used in a form to edit this
      */
     public function edit($record, $fieldprefix, $mode)
     {
         $this->createDestination();
-        $tmp1 = Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-            $this->m_destInstance->m_primaryKey);
+        $tmp1 = Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
         $tmp2 = Tools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
         if ($this->m_destinationFilter != '') {
             $sp = new StringParser($this->m_destinationFilter);
@@ -81,9 +80,8 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));
         }
-        $recordset = $this->m_destInstance->select()
-            ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
-            ->getAllRows();
+        $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+                $this->m_destInstance->m_primaryKey))->getAllRows();
 
         $result = '<select class="form-control" name="atksearch['.$this->fieldName().']">';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk');
@@ -105,8 +103,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         $t = new TreeToolsTree();
         for ($i = 0; $i < count($recordset); ++$i) {
             $group = $recordset[$i];
-            $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]],
-                $this->m_destInstance->descriptor($group),
+            $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group),
                 $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
         }
         $tmp = $this->render($t->m_tree);
@@ -117,8 +114,8 @@ class ManyToOneTreeRelation extends ManyToOneRelation
     /**
      * Render the tree.
      *
-     * @param array $tree  Array of tree nodes
-     * @param int   $level
+     * @param array $tree Array of tree nodes
+     * @param int $level
      *
      * @return string The rendered tree
      */

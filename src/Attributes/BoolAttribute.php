@@ -35,8 +35,8 @@ class BoolAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name  Name of the attribute
-     * @param int    $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      */
     public function __construct($name, $flags = 0)
     {
@@ -92,10 +92,10 @@ class BoolAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code with a checkbox
      */
@@ -135,15 +135,14 @@ class BoolAttribute extends Attribute
      */
     public function value2db($rec)
     {
-        return isset($rec[$this->fieldName()]) ? (int) $rec[$this->fieldName()]
-            : 0;
+        return isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()] : 0;
     }
 
     /**
      * Returns a piece of html code that can be used in a form to search for values.
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -195,8 +194,7 @@ class BoolAttribute extends Attribute
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
     		  <div align="center">
-    		    <input type="checkbox" disabled="disabled" '.($record[$this->fieldName()]
-                ? 'checked="checked"' : '').' />
+    		    <input type="checkbox" disabled="disabled" '.($record[$this->fieldName()] ? 'checked="checked"' : '').' />
     		  </div>
     		';
         } else {
@@ -211,8 +209,8 @@ class BoolAttribute extends Attribute
      * returns the HTML label, while the getLabel() method is 'smart', by
      * taking the self::AF_NOLABEL and self::AF_BLANKLABEL flags into account.
      *
-     * @param array  $record The record holding the value for this attribute.
-     * @param string $mode   The mode ("add", "edit" or "view")
+     * @param array $record The record holding the value for this attribute.
+     * @param string $mode The mode ("add", "edit" or "view")
      *
      * @return string The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
@@ -309,7 +307,7 @@ class BoolAttribute extends Attribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -324,8 +322,7 @@ class BoolAttribute extends Attribute
             $record[$this->fieldName()] = '0';
         }
         if (!is_array($record[$this->fieldName()])) {
-            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().
-                '" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
 
             return $result;
         } else {

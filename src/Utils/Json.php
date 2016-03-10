@@ -57,8 +57,8 @@ class Json
     /**
      * Convert a mixed type variable to UTF-8.
      *
-     * @param mixed $data  PHP variable
-     * @param int   $depth
+     * @param mixed $data PHP variable
+     * @param int $depth
      *
      * @return mixed
      *
@@ -86,6 +86,7 @@ class Json
                     }
 
                     /* return utf8 encoded array */
+
                     return $newArray;
                 } else {
                     throw new Exception('Unrecognized datatype for UTF-8 conversion in atkJSON');
@@ -98,7 +99,7 @@ class Json
      * Decode JSON string.
      *
      * @param string $string JSON string
-     * @param bool   $assoc  return as associative array (instead of objects)
+     * @param bool $assoc return as associative array (instead of objects)
      *
      * @return mixed PHP value
      */

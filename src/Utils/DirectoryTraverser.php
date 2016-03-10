@@ -2,19 +2,19 @@
 
 namespace Sintattica\Atk\Utils;
 
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- *
- * @copyright (c)2005 Ivo Jansch
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
+    /**
+     * This file is part of the ATK distribution on GitHub.
+     * Detailed copyright and licensing information can be found
+     * in the doc/COPYRIGHT and doc/LICENSE files which should be
+     * included in the distribution.
+     *
+     *
+     * @copyright (c)2005 Ivo Jansch
+     * @license http://www.achievo.org/atk/licensing ATK Open Source License
+     *
+     * @version $Revision: 6320 $
+     * $Id$
+     */
 
 /**
  * This class can be used to recursively traverse a directory structure.
@@ -135,7 +135,7 @@ class DirectoryTraverser
     /**
      * Perform a callback on all callbackobjects.
      *
-     * @param string $method   The name of the method to call.
+     * @param string $method The name of the method to call.
      * @param string $filename The filename that will be passed as parameter
      *                         to the callback.
      */

@@ -79,8 +79,7 @@ class SwitchAttribute extends BoolAttribute
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
     		  <div align="left">
-    		    <input type="checkbox" id="'.$id.'" disabled="disabled" '.($record[$this->fieldName()]
-                ? 'checked="checked"' : '').' />
+    		    <input type="checkbox" id="'.$id.'" disabled="disabled" '.($record[$this->fieldName()] ? 'checked="checked"' : '').' />
     		  </div>
     		';
         } else {

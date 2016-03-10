@@ -124,7 +124,7 @@ class SqlWhereclauseBlacklistChecker
     public static function filter_request_where_clause($variable)
     {
         if (isset($_REQUEST[$variable])) {
-            $values = (array) $_REQUEST[$variable];
+            $values = (array)$_REQUEST[$variable];
             foreach ($values as $value) {
                 $checker = new self($value);
                 if (!$checker->isSafe()) {

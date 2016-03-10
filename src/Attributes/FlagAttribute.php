@@ -15,13 +15,13 @@ class FlagAttribute extends MultiSelectAttribute
     /**
      * Constructor.
      *
-     * @param string $name        Name of the attribute
-     * @param array  $optionArray Array with options
-     * @param array  $valueArray  Array with values. If you don't use this parameter,
+     * @param string $name Name of the attribute
+     * @param array $optionArray Array with options
+     * @param array $valueArray Array with values. If you don't use this parameter,
      *                            values are assumed to be the same as the options.
-     * @param int    $cols        Number of columns
-     * @param int    $flags       Flags for this attribute
-     * @param int    $size        Size of the attribute.
+     * @param int $cols Number of columns
+     * @param int $flags Flags for this attribute
+     * @param int $size Size of the attribute.
      */
     public function __construct($name, $optionArray, $valueArray = '', $cols = '', $flags = 0, $size = '')
     {
@@ -90,10 +90,10 @@ class FlagAttribute extends MultiSelectAttribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query  $query      The query object where the search condition should be placed on
-     * @param string $table      The name of the table in which this attribute
+     * @param Query $query The query object where the search condition should be placed on
+     * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed  $value      The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
@@ -148,7 +148,7 @@ class FlagAttribute extends MultiSelectAttribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *

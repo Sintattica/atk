@@ -28,9 +28,9 @@ class StringParser
     /**
      * Parse data into the string.
      *
-     * @param array $data                 The data to parse in the string
-     * @param bool  $encode               Wether or not to do a rawurlencode
-     * @param bool  $replaceUnknownFields Replace unknown fields with an empty string,
+     * @param array $data The data to parse in the string
+     * @param bool $encode Wether or not to do a rawurlencode
+     * @param bool $replaceUnknownFields Replace unknown fields with an empty string,
      *                                    if set to false unknown fields will be left
      *                                    untouched.
      *
@@ -158,15 +158,14 @@ class StringParser
      * Parse data into the string and return all fields as an array.
      *
      * @param array $data
-     * @param bool  $split_tags_and_fields return fields and separators separated in resultarray (separators are not used in query, so quotes aren't used)
+     * @param bool $split_tags_and_fields return fields and separators separated in resultarray (separators are not used in query, so quotes aren't used)
      *
      * @return array
      */
     public function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
     {
         $matches = $this->getAllFieldsAsArray();
-        Tools::atk_var_dump($matches, 'MATCHES'.($split_tags_and_fields ? ' (split tags and separators)'
-                : ''));
+        Tools::atk_var_dump($matches, 'MATCHES'.($split_tags_and_fields ? ' (split tags and separators)' : ''));
 
         $fields = array();
         if (is_array($matches)) {

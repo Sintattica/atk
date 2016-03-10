@@ -233,7 +233,7 @@ class Db
      * Set database sequence value.
      *
      * @param string $seqname sequence name
-     * @param int    $value   sequence value
+     * @param int $value sequence value
      *
      * @abstract
      */
@@ -457,8 +457,7 @@ class Db
             if ($errstr == '') {
                 $this->m_error = Tools::atktext('unknown_error').': '.$this->getDbErrno().' ('.$this->getDbError().')';
             } else {
-                $this->m_error = $errstr.($this->getErrorType() == 'system' ? ' ('.$this->getDbError().')'
-                        : '');
+                $this->m_error = $errstr.($this->getErrorType() == 'system' ? ' ('.$this->getDbError().')' : '');
             }
 
             return $this->m_error;
@@ -466,12 +465,10 @@ class Db
             $tmp_error = '';
             switch ($errno) {
                 case self::DB_ACCESSDENIED_DB:
-                    $tmp_error = sprintf(Tools::atktext('db_access_denied_database', 'atk'), $this->m_user,
-                        $this->m_database);
+                    $tmp_error = sprintf(Tools::atktext('db_access_denied_database', 'atk'), $this->m_user, $this->m_database);
                     break;
                 case self::DB_ACCESSDENIED_USER:
-                    $tmp_error = sprintf(Tools::atktext('db_access_denied_user', 'atk'), $this->m_user,
-                        $this->m_database);
+                    $tmp_error = sprintf(Tools::atktext('db_access_denied_user', 'atk'), $this->m_user, $this->m_database);
                     break;
                 case self::DB_UNKNOWNDATABASE:
                     $tmp_error = sprintf(Tools::atktext('db_unknown_database', 'atk'), $this->m_database);
@@ -561,8 +558,7 @@ class Db
         if ($this->m_link_id == null) {
             Tools::atkdebug("db::connect -> Don't switch use current db");
 
-            return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port,
-                $this->m_charset);
+            return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port, $this->m_charset);
         }
 
         return self::DB_SUCCESS;
@@ -571,12 +567,12 @@ class Db
     /**
      * Connect to the database.
      *
-     * @param string $host     The host to connect to
-     * @param string $user     The user to connect with
+     * @param string $host The host to connect to
+     * @param string $user The user to connect with
      * @param string $password The password to connect with
      * @param string $database The database to connect to
-     * @param int    $port     The portnumber to use for connecting
-     * @param string $charset  The charset to use
+     * @param int $port The portnumber to use for connecting
+     * @param string $charset The charset to use
      * @abstract
      */
     public function doConnect($host, $user, $password, $database, $port, $charset)
@@ -666,11 +662,11 @@ class Db
      * If the query is a select query, the rows can be retrieved using the
      * next_record() method.
      *
-     * @param string $query  The SQL query to execute
-     * @param int    $offset Retrieve the results starting at the specified
+     * @param string $query The SQL query to execute
+     * @param int $offset Retrieve the results starting at the specified
      *                       record number. Pass -1 or 0 to start at the first
      *                       record.
-     * @param int    $limit  Indicates how many rows to retrieve. Pass -1 to
+     * @param int $limit Indicates how many rows to retrieve. Pass -1 to
      *                       retrieve all rows.
      * @abstract
      *
@@ -697,7 +693,7 @@ class Db
      * Lock a table in the database.
      *
      * @param string $table The name of the table to lock.
-     * @param string $mode  The lock type.
+     * @param string $mode The lock type.
      *
      * @return bool True if succesful, false if not.
      * @abstract
@@ -770,7 +766,7 @@ class Db
      *     The last one is used, if you have a field name, but no index.
      *
      * @param string $table the table name
-     * @param bool   $full  all meta data or not
+     * @param bool $full all meta data or not
      *
      * @return array with meta data
      */
@@ -809,8 +805,8 @@ class Db
      *
      * Please note: this method does *not* add a limit to the query
      *
-     * @param string $query    query
-     * @param bool   $useLimit add limit to the query (if you have your own limit specify false!)
+     * @param string $query query
+     * @param bool $useLimit add limit to the query (if you have your own limit specify false!)
      *
      * @return array row
      */
@@ -830,9 +826,9 @@ class Db
      * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string $query  query
-     * @param int    $offset offset
-     * @param int    $limit  limit
+     * @param string $query query
+     * @param int $offset offset
+     * @param int $limit limit
      *
      * @return array rows
      */
@@ -850,10 +846,10 @@ class Db
      * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string     $query     query
+     * @param string $query query
      * @param int|string $keyColumn column index / name (default first column) to be used as key
-     * @param int        $offset    offset
-     * @param int        $limit     limit
+     * @param int $offset offset
+     * @param int $limit limit
      *
      * @return array rows
      */
@@ -882,10 +878,10 @@ class Db
     /**
      * Get a single value from a certain specified query.
      *
-     * @param string     $query       query
-     * @param mixed      $default     fallback value if the query doesn't return a result
+     * @param string $query query
+     * @param mixed $default fallback value if the query doesn't return a result
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param bool       $useLimit    add limit to the query (if you have your own limit specify false!)
+     * @param bool $useLimit add limit to the query (if you have your own limit specify false!)
      *
      * @return mixed first value or default fallback value
      */
@@ -913,10 +909,10 @@ class Db
      * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string     $query       query
+     * @param string $query query
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param int        $offset      offset
-     * @param int        $limit       limit
+     * @param int $offset offset
+     * @param int $limit limit
      *
      * @return array with values
      */
@@ -935,11 +931,11 @@ class Db
      * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string     $query       query
-     * @param int|string $keyColumn   column index / name (default first column) to be used as key
+     * @param string $query query
+     * @param int|string $keyColumn column index / name (default first column) to be used as key
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param int        $offset      offset
-     * @param int        $limit       limit
+     * @param int $offset offset
+     * @param int $limit limit
      *
      * @return array rows
      */
@@ -1057,8 +1053,8 @@ class Db
      * get SUBSTRING() equivalent for the current database.
      *
      * @param string $fieldname The database fieldname
-     * @param int    $startat   The position to start from
-     * @param int    $length    The number of characters
+     * @param int $startat The position to start from
+     * @param int $length The number of characters
      */
     public function func_substring($fieldname, $startat = 0, $length = 0)
     {
@@ -1071,7 +1067,7 @@ class Db
      * specific conversion.
      *
      * @param string $fieldname The field to generate the to_char for.
-     * @param string $format    Format specifier. The format is compatible with
+     * @param string $format Format specifier. The format is compatible with
      *                          php's date() function (http://www.php.net/date)
      *                          The default is what's specified by
      *                          $config_date_to_char, or "Y-m-d" if not
@@ -1110,9 +1106,9 @@ class Db
     /**
      * Get CONCAT_WS() equivalent for the current database.
      *
-     * @param array  $fields
+     * @param array $fields
      * @param string $separator
-     * @param bool   $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
+     * @param bool $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
      *
      * @return string $query_part
      */
@@ -1182,8 +1178,8 @@ class Db
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%).
      *
-     * @param string $string   The string to escape
-     * @param bool   $wildcard Use wildcards?
+     * @param string $string The string to escape
+     * @param bool $wildcard Use wildcards?
      *
      * @return string The escaped SQL string
      */
@@ -1300,10 +1296,10 @@ class Db
      *
      * @static
      *
-     * @param string $conn  The name of the connection as defined in the
+     * @param string $conn The name of the connection as defined in the
      *                      config.inc.php file (defaults to 'default')
-     * @param bool   $reset Reset the instance to force the creation of a new instance
-     * @param string $mode  The mode to connect with the database
+     * @param bool $reset Reset the instance to force the creation of a new instance
+     * @param string $mode The mode to connect with the database
      *
      * @return Db Instance of the database class.
      */
@@ -1342,7 +1338,7 @@ class Db
      * (Re)Initialise a database driver with a connection.
      *
      * @param string $connectionName The connectionName
-     * @param string $mode           The mode to connect with
+     * @param string $mode The mode to connect with
      *
      * @return Db
      */
@@ -1352,8 +1348,7 @@ class Db
 
         $config = Config::getGlobal('db');
         $this->m_connection = $connectionName;
-        $this->m_mode = (isset($config[$connectionName]['mode']) ? $config[$connectionName]['mode']
-            : 'rw');
+        $this->m_mode = (isset($config[$connectionName]['mode']) ? $config[$connectionName]['mode'] : 'rw');
         if (isset($config[$connectionName]['db'])) {
             $this->m_database = $config[$connectionName]['db'];
             $this->m_user = $config[$connectionName]['user'];
@@ -1445,8 +1440,7 @@ class Db
      */
     public function quoteIdentifier($str)
     {
-        $str = str_replace($this->m_identifierQuoting['end'],
-            $this->m_identifierQuoting['escape'].$this->m_identifierQuoting['end'], $str);
+        $str = str_replace($this->m_identifierQuoting['end'], $this->m_identifierQuoting['escape'].$this->m_identifierQuoting['end'], $str);
 
         return $this->m_identifierQuoting['start'].$str.$this->m_identifierQuoting['end'];
     }

@@ -76,7 +76,7 @@ abstract class Statement implements IteratorAggregate
     /**
      * Constructs a new statement for the given query.
      *
-     * @param Db     $db    database instance
+     * @param Db $db database instance
      * @param string $query SQL query
      */
     public function __construct($db, $query)
@@ -231,8 +231,7 @@ abstract class Statement implements IteratorAggregate
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException('Statement has not been executed yet.',
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException('Statement has not been executed yet.', StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         if ($this->m_position !== false) {
@@ -252,8 +251,7 @@ abstract class Statement implements IteratorAggregate
     {
         foreach ($this->_getBindPositions() as $position => $param) {
             if (!array_key_exists($param, $params)) {
-                throw new StatementException('Missing bind parameter '.(!is_numeric($param)
-                        ? ':' : '').$param.'.', StatementException::MISSING_BIND_PARAMETER);
+                throw new StatementException('Missing bind parameter '.(!is_numeric($param) ? ':' : '').$param.'.', StatementException::MISSING_BIND_PARAMETER);
             }
         }
     }
@@ -282,15 +280,13 @@ abstract class Statement implements IteratorAggregate
     public function fetch()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException('Statement has not been executed yet.',
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException('Statement has not been executed yet.', StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         $result = $this->_fetch();
 
         if ($result) {
-            $this->m_position = $this->m_position !== false ? $this->m_position + 1
-                : 0;
+            $this->m_position = $this->m_position !== false ? $this->m_position + 1 : 0;
         }
 
         return $result;
@@ -398,7 +394,7 @@ abstract class Statement implements IteratorAggregate
      * result in the query to be executed multiple times.
      *
      * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param mixed      $fallback    fallback value if no result
+     * @param mixed $fallback fallback value if no result
      *
      * @return mixed first value
      */
@@ -451,7 +447,7 @@ abstract class Statement implements IteratorAggregate
      * Depending on the database driver, using this method multiple times might
      * result in the query to be executed multiple times.
      *
-     * @param int|string $keyColumn   column index / name (default first column) to be used as key
+     * @param int|string $keyColumn column index / name (default first column) to be used as key
      * @param int|string $valueColumn column index / name (default first column) to be used as value
      *
      * @return array rows
@@ -477,8 +473,7 @@ abstract class Statement implements IteratorAggregate
     public function getAffectedRowCount()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException('Statement has not been executed yet.',
-                StatementException::STATEMENT_NOT_EXECUTED);
+            throw new StatementException('Statement has not been executed yet.', StatementException::STATEMENT_NOT_EXECUTED);
         }
 
         return $this->m_affectedRowCount;

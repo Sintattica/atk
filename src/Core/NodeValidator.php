@@ -90,8 +90,8 @@ class NodeValidator
     /**
      * Validate a record.
      *
-     * @param string $mode       Override the mode
-     * @param array  $ignoreList Override the ignoreList
+     * @param string $mode Override the mode
+     * @param array $ignoreList Override the ignoreList
      */
     public function validate($mode = '', $ignoreList = array())
     {
@@ -121,10 +121,7 @@ class NodeValidator
                 if ($p_attrib->hasFlag(Attribute::AF_PRIMARY) && !$p_attrib->hasFlag(Attribute::AF_AUTO_INCREMENT)) {
                     $atkorgkey = $record['atkprimkey'];
                     if ($atkorgkey == '' || $atkorgkey != $this->m_nodeObj->primaryKey($record)) {
-                        $cnt = $this->m_nodeObj->select($this->m_nodeObj->primaryKey($record))
-                            ->ignoreDefaultFilters(true)
-                            ->ignorePostvars(true)
-                            ->getRowCount();
+                        $cnt = $this->m_nodeObj->select($this->m_nodeObj->primaryKey($record))->ignoreDefaultFilters(true)->ignorePostvars(true)->getRowCount();
                         if ($cnt > 0) {
                             Tools::triggerError($record, $p_attrib, 'error_primarykey_exists');
                         }
@@ -146,10 +143,7 @@ class NodeValidator
                         if ($this->m_mode != 'add') {
                             $condition .= ' AND NOT ('.$this->m_nodeObj->primaryKey($record).')';
                         }
-                        $cnt = $this->m_nodeObj->select($condition)
-                            ->ignoreDefaultFilters(true)
-                            ->ignorePostvars(true)
-                            ->getRowCount();
+                        $cnt = $this->m_nodeObj->select($condition)->ignoreDefaultFilters(true)->ignorePostvars(true)->getRowCount();
                         if ($cnt > 0) {
                             Tools::atkTriggerError($record, $p_attrib, 'error_uniquefield');
                         }
@@ -181,7 +175,7 @@ class NodeValidator
      * Validate attribute value.
      *
      * @param Attribute $p_attrib pointer to the attribute
-     * @param array     $record   record
+     * @param array $record record
      */
     public function validateAttributeValue(&$p_attrib, &$record)
     {

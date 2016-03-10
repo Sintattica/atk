@@ -103,16 +103,15 @@ class MySqliDdl extends Ddl
     /**
      * Build CREATE VIEW query.
      *
-     * @param string $name              - name of view
-     * @param string $select            - SQL SELECT statement
+     * @param string $name - name of view
+     * @param string $select - SQL SELECT statement
      * @param string $with_check_option - use SQL WITH CHECK OPTION
      *
      * @return string CREATE VIEW query string
      */
     public function buildView($name, $select, $with_check_option)
     {
-        return "CREATE VIEW $name AS ".$select.($with_check_option ? ' WITH CHECK OPTION'
-            : '');
+        return "CREATE VIEW $name AS ".$select.($with_check_option ? ' WITH CHECK OPTION' : '');
     }
 
     /**
@@ -134,12 +133,12 @@ class MySqliDdl extends Ddl
      * number of databases. Databases that won't work with this syntax,
      * should override this method in the database specific ddl class.
      *
-     * @param string $name        The name of the field
+     * @param string $name The name of the field
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
-     * @param int    $size        The size of the field (if appropriate)
-     * @param int    $flags       The self::DDL_ flags for this field.
-     * @param mixed  $default     The default value to be used when inserting new
+     * @param int $size The size of the field (if appropriate)
+     * @param int $flags The self::DDL_ flags for this field.
+     * @param mixed $default The default value to be used when inserting new
      *                            rows.
      */
     public function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
@@ -222,7 +221,7 @@ class MySqliDdl extends Ddl
     /**
      * Rename sequence.
      *
-     * @param string $name     Sequence name
+     * @param string $name Sequence name
      * @param string $new_name New sequence name
      *
      * @return bool
@@ -239,7 +238,7 @@ class MySqliDdl extends Ddl
     /**
      * Rename table name.
      *
-     * @param string $name     Table name
+     * @param string $name Table name
      * @param string $new_name New table name
      *
      * @return bool

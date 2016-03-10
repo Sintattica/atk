@@ -98,10 +98,10 @@ class MySqliQuery extends Query
      * Add's a sequence field to the query.
      *
      * @param string $fieldName field name
-     * @param int    $value     field to store the new sequence value in, note certain drivers
+     * @param int $value field to store the new sequence value in, note certain drivers
      *                          might populate this field only after the insert query has been
      *                          executed
-     * @param string $seqName   sequence name (optional for certain drivers)
+     * @param string $seqName sequence name (optional for certain drivers)
      *
      * @return Query
      */
@@ -138,10 +138,10 @@ class MySqliQuery extends Query
     /**
      * Generate an SQL searchcondition for a regular expression match.
      *
-     * @param string $field   The fieldname on which the regular expression
+     * @param string $field The fieldname on which the regular expression
      *                        match will be performed.
-     * @param string $value   The regular expression to search for.
-     * @param bool   $inverse Set to false (default) to perform a normal
+     * @param string $value The regular expression to search for.
+     * @param bool $inverse Set to false (default) to perform a normal
      *                        match. Set to true to generate a SQL string
      *                        that searches for values dat do not match.
      *
@@ -159,10 +159,10 @@ class MySqliQuery extends Query
     /**
      * Generate an SQL searchcondition for a soundex match.
      *
-     * @param string $field   The fieldname on which the soundex match will
+     * @param string $field The fieldname on which the soundex match will
      *                        be performed.
-     * @param string $value   The value to search for.
-     * @param bool   $inverse Set to false (default) to perform a normal
+     * @param string $value The value to search for.
+     * @param bool $inverse Set to false (default) to perform a normal
      *                        match. Set to true to generate a SQL string
      *                        that searches for values dat do not match.
      *
@@ -171,8 +171,7 @@ class MySqliQuery extends Query
     public function soundexCondition($field, $value, $inverse = false)
     {
         if ($value[0] == '!') {
-            return "soundex($field) NOT like concat('%',substring(soundex('".substr($value, 1,
-                Tools::atk_strlen($value))."') from 2),'%')";
+            return "soundex($field) NOT like concat('%',substring(soundex('".substr($value, 1, Tools::atk_strlen($value))."') from 2),'%')";
         } else {
             return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
         }

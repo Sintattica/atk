@@ -27,9 +27,9 @@ class DummyAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name  The name of the attribute
-     * @param string $text  The text to display
-     * @param int    $flags The flags for this attribute
+     * @param string $name The name of the attribute
+     * @param string $text The text to display
+     * @param int $flags The flags for this attribute
      */
     public function __construct($name, $text = '', $flags = 0)
     {
@@ -64,10 +64,10 @@ class DummyAttribute extends Attribute
      * attribute's value.
      * Here it will only return the text, no edit box.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */
@@ -81,8 +81,8 @@ class DummyAttribute extends Attribute
      * from the user.
      * VOID implementation, dummy attributes cannot be searched.
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -134,9 +134,9 @@ class DummyAttribute extends Attribute
     /**
      * No function, but is neccesary.
      *
-     * @param Db     $db     Database object
-     * @param array  $record The record
-     * @param string $mode   The mode
+     * @param Db $db Database object
+     * @param array $record The record
+     * @param string $mode The mode
      *
      * @return bool to indicate if store went succesfully
      */

@@ -30,7 +30,7 @@ class OpenSSLEncryption extends Encryption
      * The encryption method for encrypting data with the openssl algorithm.
      *
      * @param mixed $input the data we want to encrypt
-     * @param mixed $key   the key we want to encrypt the data with
+     * @param mixed $key the key we want to encrypt the data with
      *
      * @return mixed the encrypted data
      */
@@ -52,7 +52,7 @@ class OpenSSLEncryption extends Encryption
      * The decryption method for decrypting data with the bajus algorithm.
      *
      * @param mixed $input the data we want to encrypt
-     * @param mixed $key   the key we want to encrypt the data with
+     * @param mixed $key the key we want to encrypt the data with
      *
      * @return mixed the encrypted data
      */
@@ -75,8 +75,8 @@ class OpenSSLEncryption extends Encryption
     /**
      * This function copies a private key with a new password.
      *
-     * @param string $key            The private key which must be copied
-     * @param string $privkeypass    The passphrase of the key
+     * @param string $key The private key which must be copied
+     * @param string $privkeypass The passphrase of the key
      * @param string $newprivkeypass The passphrase of the new key
      *
      * @return string The new key
@@ -155,7 +155,7 @@ class OpenSSLEncryption extends Encryption
      * Decryptionmethod for a key.
      * This implementation get the private key with a password and export it without password.
      *
-     * @param string $key  The encrypted key
+     * @param string $key The encrypted key
      * @param string $pass The password to decrypt de key
      *
      * @return string The decrypted key
@@ -172,7 +172,7 @@ class OpenSSLEncryption extends Encryption
      * Encryptionmethod for a key.
      * This implementation get the private key without a password and export is with a password.
      *
-     * @param string $key  The decrypted key
+     * @param string $key The decrypted key
      * @param string $pass The password to encrypt de key
      *
      * @return string The encrypted key

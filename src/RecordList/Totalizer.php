@@ -19,7 +19,7 @@ class Totalizer
     /**
      * Constructor.
      *
-     * @param Node         $node
+     * @param Node $node
      * @param ColumnConfig $columnConfig
      *
      * @return Totalizer
@@ -83,10 +83,10 @@ class Totalizer
     /**
      * Totalize one row.
      *
-     * @param array  $row
-     * @param array  $totals
+     * @param array $row
+     * @param array $totals
      * @param string $fieldforsubtotal
-     * @param array  $totalizers
+     * @param array $totalizers
      *
      * @return array
      */
@@ -107,9 +107,9 @@ class Totalizer
     /**
      * Create subtotal row from row.
      *
-     * @param array  $row
+     * @param array $row
      * @param string $fieldname
-     * @param array  $subtotalcolumns
+     * @param array $subtotalcolumns
      *
      * @return array
      */

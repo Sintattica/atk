@@ -23,7 +23,7 @@ class SecurityListener
      * Handle event. In the default implementation, if a method exists with the same
      * name as the event this method will be called.
      *
-     * @param string $event    event name
+     * @param string $event event name
      * @param string $username user name
      */
     public function handleEvent($event, $username)

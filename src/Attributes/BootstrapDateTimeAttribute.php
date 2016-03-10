@@ -215,7 +215,7 @@ class BootstrapDateTimeAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -241,8 +241,8 @@ class BootstrapDateTimeAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to search values.
      * Searching is disabled for the date attribute, we only return a space.
      *
-     * @param array  $record
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -266,11 +266,9 @@ class BootstrapDateTimeAttribute extends Attribute
             $record[$this->fieldName()] = null;
         }
 
-        $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from'])
-            : $record;
+        $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from']) : $record;
         $res = $this->draw($rec, 'atksearch_AE_'.$fieldprefix, '_AE_from', 'search');
-        $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to'])
-            : $record;
+        $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to']) : $record;
         $res .= Tools::atktext('until').$this->draw($rec, 'atksearch_AE_'.$fieldprefix, '_AE_to', 'search');
 
         return $res;
@@ -328,16 +326,13 @@ class BootstrapDateTimeAttribute extends Attribute
                     $fromval = $toval;
                     $toval = $tmp;
                 }
-                $searchcondition = $query->betweenCondition(
-                    $field, $fromval, $toval);
+                $searchcondition = $query->betweenCondition($field, $fromval, $toval);
             } else {
                 if ($fromval != null && $toval == null) {
-                    $searchcondition = $query->greaterthanequalCondition(
-                        $field, $fromval);
+                    $searchcondition = $query->greaterthanequalCondition($field, $fromval);
                 } else {
                     if ($fromval == null && $toval != null) {
-                        $searchcondition = $query->lessthanequalCondition(
-                            $field, $toval);
+                        $searchcondition = $query->lessthanequalCondition($field, $toval);
                     } else {
                         if ((is_array($value['from'])) or (is_array($value['to']))) {
                             $searchcondition = $this->_getDateArraySearchCondition($query, $table, $value);
@@ -475,11 +470,11 @@ class BootstrapDateTimeAttribute extends Attribute
             } else {
                 if (is_int($val)) {
                     // The value is an integer
-                    $val = (int) $val;
+                    $val = (int)$val;
                 } else {
                     if (is_float($val)) {
                         // The value is a float
-                        $val = (float) $val;
+                        $val = (float)$val;
                     } else {
                         if (is_bool($val)) {
                             if ($val) {

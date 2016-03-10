@@ -80,10 +80,10 @@ class ManyToManyListRelation extends ManyToManyRelation
     /**
      * Return a piece of html code to edit the attribute.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code
      */
@@ -102,8 +102,7 @@ class ManyToManyListRelation extends ManyToManyRelation
         $id = $this->getHtmlId($fieldprefix);
         $name = $fieldprefix.$this->fieldName();
 
-        $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows())
-            : $this->getRows();
+        $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows()) : $this->getRows();
         $result = '<select class="form-control" id="'.$id.'" name="'.$name.'[]['.$this->getRemoteKey().']" multiple="multiple" size="'.$size.'" style="width: '.$this->getWidth().'px">';
 
         foreach ($selectable as $row) {
