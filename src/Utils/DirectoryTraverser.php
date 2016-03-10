@@ -1,12 +1,13 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
+
+namespace Sintattica\Atk\Utils;
+
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
- * @package atk
- * @subpackage utils
  *
  * @copyright (c)2005 Ivo Jansch
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
@@ -25,9 +26,6 @@
  * method.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage utils
- *
  */
 class DirectoryTraverser
 {
@@ -35,11 +33,10 @@ class DirectoryTraverser
     public $m_excludes = array();
 
     /**
-     * Constructor
+     * Constructor.
      */
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
@@ -55,19 +52,20 @@ class DirectoryTraverser
      * Both methods are optional. If an object does not implement either of
      * these methods, it will simply be ignored.
      *
-     * @param Object|mixed $callbackObject An object instance to be called back for
-     *                               each file/dir.
+     * @param object|mixed $callbackObject An object instance to be called back for
+     *                                     each file/dir.
      */
-    function addCallbackObject(&$callbackObject)
+    public function addCallbackObject(&$callbackObject)
     {
         $this->m_callbackObjects[] = &$callbackObject;
     }
 
     /**
      * Remove all callback objects.
+     *
      * @see addCallbackObject()
      */
-    function clearCallbackObjects()
+    public function clearCallbackObjects()
     {
         $this->m_callbackObjects = array();
     }
@@ -79,24 +77,27 @@ class DirectoryTraverser
      * pass the path without trailing '/'.
      *
      * @param string $path The path to traverse
-     * @return boolean true if succesful, false if the path does not exist or is
-     *                 not readable.
+     *
+     * @return bool true if succesful, false if the path does not exist or is
+     *              not readable.
      */
-    function traverse($path)
+    public function traverse($path)
     {
         if (@is_file($path)) {
-            $this->_callback("visitFile", $path);
+            $this->_callback('visitFile', $path);
+
             return true;
         } elseif (@is_dir($path)) {
-            $this->_callback("visitDir", $path);
+            $this->_callback('visitDir', $path);
             $filenames = $this->getDirContents($path);
             foreach ($filenames as $file) {
-                if ($file != ".." && $file != ".") {
-                    if (!$this->traverse($path . "/" . $file)) {
+                if ($file != '..' && $file != '.') {
+                    if (!$this->traverse($path.'/'.$file)) {
                         return false;
                     }
                 }
             }
+
             return true;
         } elseif (@is_link($path)) {
             return true;
@@ -107,10 +108,12 @@ class DirectoryTraverser
 
     /**
      * Read all the entries of a directory.
+     *
      * @param string $path The path to read the contents from.
+     *
      * @return array Array containing the contents of the directory.
      */
-    function getDirContents($path)
+    public function getDirContents($path)
     {
         if (!is_dir($path)) {
             return array();
@@ -125,19 +128,20 @@ class DirectoryTraverser
         }
         @closedir($dir);
         sort($result);
+
         return $result;
     }
 
     /**
      * Perform a callback on all callbackobjects.
-     * @access private
-     * @param string $method The name of the method to call.
+     *
+     * @param string $method   The name of the method to call.
      * @param string $filename The filename that will be passed as parameter
      *                         to the callback.
      */
-    function _callback($method, $filename)
+    public function _callback($method, $filename)
     {
-        for ($i = 0, $_i = count($this->m_callbackObjects); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($this->m_callbackObjects); $i < $_i; ++$i) {
             if (method_exists($this->m_callbackObjects[$i], $method)) {
                 $this->m_callbackObjects[$i]->$method($filename);
             }
@@ -145,39 +149,38 @@ class DirectoryTraverser
     }
 
     /**
-     * Add a regex expression to prevent detection of certain files/directories
+     * Add a regex expression to prevent detection of certain files/directories.
      *
      * @param string $regex
      */
-    function addExclude($regex)
+    public function addExclude($regex)
     {
         $this->m_excludes[] = $regex;
     }
 
     /**
-     * Clear the excluding regex expressions
-     *
+     * Clear the excluding regex expressions.
      */
-    function clearExcludes()
+    public function clearExcludes()
     {
         $this->m_excludes = array();
     }
 
     /**
-     * Check whether a file is excluded or not
+     * Check whether a file is excluded or not.
      *
      * @param string $file
      */
-    function isExcluded($file)
+    public function isExcluded($file)
     {
         $excluded = false;
         $i = 0;
         $count = count($this->m_excludes);
         while (!$excluded && $i < $count) {
             $excluded = (preg_match($this->m_excludes[$i], $file) > 0);
-            $i++;
+            ++$i;
         }
+
         return $excluded;
     }
-
 }

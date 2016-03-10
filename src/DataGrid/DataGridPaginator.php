@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\DataGrid;
+<?php
 
+namespace Sintattica\Atk\DataGrid;
 
 use Sintattica\Atk\Core\Config;
 
@@ -8,8 +9,6 @@ use Sintattica\Atk\Core\Config;
  * links for an ATK data grid.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage datagrid
  */
 class DataGridPaginator extends DataGridComponent
 {
@@ -22,13 +21,15 @@ class DataGridPaginator extends DataGridComponent
     protected $m_maxLinks = 10;
 
     /**
-     * Show go to previous and next page links
+     * Show go to previous and next page links.
+     *
      * @var bool
      */
     protected $m_goToPreviousNext = true;
 
     /**
-     * Show go to first and last page links
+     * Show go to first and last page links.
+     *
      * @var bool
      */
     protected $m_goToFirstLast = false;
@@ -36,8 +37,8 @@ class DataGridPaginator extends DataGridComponent
     /**
      * Constructor.
      *
-     * @param DataGrid $grid grid
-     * @param array $options component options
+     * @param DataGrid $grid    grid
+     * @param array    $options component options
      */
     public function __construct($grid, $options = array())
     {
@@ -101,7 +102,7 @@ class DataGridPaginator extends DataGridComponent
         }
 
         // normal pagination links
-        for ($i = $first; $i <= $last; $i++) {
+        for ($i = $first; $i <= $last; ++$i) {
             if ($i == $current) {
                 $links[] = array('type' => 'page', 'title' => $i, 'current' => true);
             } else {
@@ -145,7 +146,7 @@ class DataGridPaginator extends DataGridComponent
 
         $links = $this->getLinks();
         $result = $this->getUi()->render('dgpaginator.tpl', array('links' => $links));
+
         return $result;
     }
-
 }

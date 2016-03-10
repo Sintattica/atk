@@ -16,719 +16,719 @@
 // Translation Tool.
 //
 return [
-    "above_maximum_value" => "Above the maximum allowed value",
+    'above_maximum_value' => 'Above the maximum allowed value',
     // Missing string!!!
-    "access_denied" => "Access denied",
+    'access_denied' => 'Access denied',
     // Missing string!!!
-    "add" => "Add",
+    'add' => 'Add',
     // Missing string!!!
-    "addorcopy" => "Add or copy",
+    'addorcopy' => 'Add or copy',
     // Missing string!!!
-    "add_criterium" => "Add",
+    'add_criterium' => 'Add',
     // Missing string!!!
-    "admin" => "Administration",
+    'admin' => 'Administration',
     // Missing string!!!
-    "administration_application" => "Administration application",
+    'administration_application' => 'Administration application',
     // Missing string!!!
-    "all" => "All",
+    'all' => 'All',
     // Missing string!!!
-    "alphabeticchars" => "alphabetic characters",
+    'alphabeticchars' => 'alphabetic characters',
     // Missing string!!!
-    "apply" => "Apply",
+    'apply' => 'Apply',
     // Missing string!!!
-    "app_close" => "Close",
+    'app_close' => 'Close',
     // Missing string!!!
-    "app_description" => "Welcome to this ATK application.",
+    'app_description' => 'Welcome to this ATK application.',
     // Missing string!!!
-    "app_launcher" => "ATK Application Launcher",
+    'app_launcher' => 'ATK Application Launcher',
     // Missing string!!!
-    "app_reopen" => "Restart",
+    'app_reopen' => 'Restart',
     // Missing string!!!
-    "app_shorttitle" => "ATKApp",
+    'app_shorttitle' => 'ATKApp',
     // Missing string!!!
-    "app_title" => "ATK Application",
+    'app_title' => 'ATK Application',
     // Missing string!!!
-    "apr" => "Apr",
+    'apr' => 'Apr',
     // Missing string!!!
-    "april" => "April",
+    'april' => 'April',
     // Missing string!!!
-    "attributeedit" => "Update value",
+    'attributeedit' => 'Update value',
     // Missing string!!!
-    "attrib_delete_not_allowed" => "Field '%s' does not allow the record to be deleted. (%s)'",
+    'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted. (%s)'",
     // Missing string!!!
-    "aug" => "Aug",
+    'aug' => 'Aug',
     // Missing string!!!
-    "august" => "August",
+    'august' => 'August',
     // Missing string!!!
-    "auth_account_locked" => "This account has been locked. Try a different account if possible, or contact your system administrator.",
+    'auth_account_locked' => 'This account has been locked. Try a different account if possible, or contact your system administrator.',
     // Missing string!!!
-    "auth_max_loginattempts_exceeded" => "Too many retries. Login has been disabled. Please contact your system administrator.",
+    'auth_max_loginattempts_exceeded' => 'Too many retries. Login has been disabled. Please contact your system administrator.',
     // Missing string!!!
-    "auth_mismatch" => "Username and/or password are incorrect. Please try again.",
+    'auth_mismatch' => 'Username and/or password are incorrect. Please try again.',
     // Missing string!!!
-    "auth_missingusername" => "Please enter a username first.",
+    'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
-    "auth_no_server" => "No server specified. No authentication possible (please consult your system administrator).",
+    'auth_no_server' => 'No server specified. No authentication possible (please consult your system administrator).',
     // Missing string!!!
-    "auth_passwordmail_explanation" => "You receive this e-mail because you used the password forgotten function. Below are your new login data:",
+    'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
-    "auth_passwordmail_sent" => "If the given username exists, a new password is sent to the corresponding e-mail address.",
+    'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
-    "auth_passwordmail_subjectnew_password" => "New password",
+    'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
-    "auth_unable_to_connect" => "Unable to connect to server for authentication (please consult your system administrator).",
+    'auth_unable_to_connect' => 'Unable to connect to server for authentication (please consult your system administrator).',
     // Missing string!!!
-    "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
+    'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
-    "autocomplete_no_results" => "No results found for the given search value.",
+    'autocomplete_no_results' => 'No results found for the given search value.',
     // Missing string!!!
-    "autocomplete_no_results_contains" => "No results found that contain the given search value.",
+    'autocomplete_no_results_contains' => 'No results found that contain the given search value.',
     // Missing string!!!
-    "autocomplete_no_results_exact" => "No results found that exactly match the given search value.",
+    'autocomplete_no_results_exact' => 'No results found that exactly match the given search value.',
     // Missing string!!!
-    "autocomplete_no_results_startswith" => "No results found that start with the given search value.",
+    'autocomplete_no_results_startswith' => 'No results found that start with the given search value.',
     // Missing string!!!
-    "available" => "Available",
+    'available' => 'Available',
     // Missing string!!!
-    "back" => "Back",
+    'back' => 'Back',
     // Missing string!!!
-    "back_to" => "Back to",
+    'back_to' => 'Back to',
     // Missing string!!!
-    "below_minimum_value" => "Below the minimum allowed value",
+    'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
-    "cancel" => "Cancel",
+    'cancel' => 'Cancel',
     // Missing string!!!
-    "cancel_edit" => "Cancel edit",
+    'cancel_edit' => 'Cancel edit',
     // Missing string!!!
-    "cannot create directory" => "Cannot create directory: ",
+    'cannot create directory' => 'Cannot create directory: ',
     // Missing string!!!
-    "cannot make file" => "Cannot create file: ",
+    'cannot make file' => 'Cannot create file: ',
     // Missing string!!!
-    "cannot_remove_file" => "Can't remove file!",
+    'cannot_remove_file' => "Can't remove file!",
     // Missing string!!!
-    "captcha_explain" => "Please fill in the displayed code",
+    'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    "charset" => "UTF-8",
+    'charset' => 'UTF-8',
     // Missing string!!!
-    "check rights to" => "Please check that you have the appropriate rights to ",
+    'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
-    "check_all" => "Select all",
+    'check_all' => 'Select all',
     // Missing string!!!
-    "check_none" => "Select none",
+    'check_none' => 'Select none',
     // Missing string!!!
-    "clickheretoadd_postfix" => ".",
+    'clickheretoadd_postfix' => '.',
     // Missing string!!!
-    "clickheretoadd_prefix" => "Click here to add a new ",
+    'clickheretoadd_prefix' => 'Click here to add a new ',
     // Missing string!!!
-    "close" => "Close",
+    'close' => 'Close',
     // Missing string!!!
-    "color" => "Color",
+    'color' => 'Color',
     // Missing string!!!
-    "colorcode" => "Color code",
+    'colorcode' => 'Color code',
     // Missing string!!!
-    "colorpicker_selectcolor" => "Select a color",
+    'colorpicker_selectcolor' => 'Select a color',
     // Missing string!!!
-    "column" => "column",
+    'column' => 'column',
     // Missing string!!!
-    "column_asc" => "Up",
+    'column_asc' => 'Up',
     // Missing string!!!
-    "column_desc" => "Down",
+    'column_desc' => 'Down',
     // Missing string!!!
-    "column_subtotal" => "Subtotal",
+    'column_subtotal' => 'Subtotal',
     // Missing string!!!
-    "column_unsubtotal" => "No Subt.",
+    'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
-    "confirm_delete" => "Are you sure you want to delete this item?",
+    'confirm_delete' => 'Are you sure you want to delete this item?',
     // Missing string!!!
-    "confirm_delete_multi" => "Are you sure you want to delete these items?",
+    'confirm_delete_multi' => 'Are you sure you want to delete these items?',
     // Missing string!!!
-    "content_wizard_finished" => "Wizard was finished successfully!",
+    'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
-    "copy" => "Copy",
+    'copy' => 'Copy',
     // Missing string!!!
-    "criterium_field" => "Field",
+    'criterium_field' => 'Field',
     // Missing string!!!
-    "criterium_mode" => "Mode",
+    'criterium_mode' => 'Mode',
     // Missing string!!!
-    "criterium_value" => "Value",
+    'criterium_value' => 'Value',
     // Missing string!!!
-    "critical" => "Critical",
+    'critical' => 'Critical',
     // Missing string!!!
-    "datagrid_norecordsfound_general" => "No records found.",
+    'datagrid_norecordsfound_general' => 'No records found.',
     // Missing string!!!
-    "datagrid_norecordsfound_search" => "No results found for the current search query.",
+    'datagrid_norecordsfound_search' => 'No results found for the current search query.',
     // Missing string!!!
-    "datagrid_summary" => "(Records [start] - [end] of [count])",
+    'datagrid_summary' => '(Records [start] - [end] of [count])',
     // Missing string!!!
-    "date_format_edit" => "j F Y",
+    'date_format_edit' => 'j F Y',
     // Missing string!!!
-    "date_format_view" => "j F Y",
+    'date_format_view' => 'j F Y',
     // Missing string!!!
-    "db_access_denied_database" => "User '%s' has no rights for database '%s'",
+    'db_access_denied_database' => "User '%s' has no rights for database '%s'",
     // Missing string!!!
-    "db_access_denied_user" => "User'%s' can't connect with database '%s'",
+    'db_access_denied_user' => "User'%s' can't connect with database '%s'",
     // Missing string!!!
-    "db_unknown_database" => "Can't connect to database '%s'",
+    'db_unknown_database' => "Can't connect to database '%s'",
     // Missing string!!!
-    "db_unknown_host" => "Can't find host '%s'",
+    'db_unknown_host' => "Can't find host '%s'",
     // Missing string!!!
-    "dec" => "Dec",
+    'dec' => 'Dec',
     // Missing string!!!
-    "december" => "December",
+    'december' => 'December',
     // Missing string!!!
-    "decimal_separator" => ".",
+    'decimal_separator' => '.',
     // Missing string!!!
-    "delete" => "Delete",
+    'delete' => 'Delete',
     // Missing string!!!
-    "delimiter" => "Delimiter",
+    'delimiter' => 'Delimiter',
     // Missing string!!!
-    "deselect_all" => "Deselect all",
+    'deselect_all' => 'Deselect all',
     // Missing string!!!
-    "document" => "Open document",
+    'document' => 'Open document',
     // Missing string!!!
-    "edit" => "Edit",
+    'edit' => 'Edit',
     // Missing string!!!
-    "editcopy" => "Edit copy",
+    'editcopy' => 'Edit copy',
     // Missing string!!!
-    "email" => "E-mail",
+    'email' => 'E-mail',
     // Missing string!!!
-    "enclosure" => "Enclosure",
+    'enclosure' => 'Enclosure',
     // Missing string!!!
-    "error" => "Error",
+    'error' => 'Error',
     // Missing string!!!
-    "error_attributeedit_default" => "An unknown error has occurred.",
+    'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
-    "error_attributeedit_noselectorset" => "Please select the records you wish to edit.",
+    'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     // Missing string!!!
-    "error_attributeedit_update" => "An error occured when updating the selected records.",
+    'error_attributeedit_update' => 'An error occured when updating the selected records.',
     // Missing string!!!
-    "error_attributeedit_validationfailed" => "This value is not allowed.",
+    'error_attributeedit_validationfailed' => 'This value is not allowed.',
     // Missing string!!!
-    "error_captchafield" => "The given code is invalid, please try again",
+    'error_captchafield' => 'The given code is invalid, please try again',
     // Missing string!!!
-    "error_copy_record" => "Unknown error copying record",
+    'error_copy_record' => 'Unknown error copying record',
     // Missing string!!!
-    "error_date_invalid" => "Invalid date",
+    'error_date_invalid' => 'Invalid date',
     // Missing string!!!
-    "error_fileexists" => "File already exists on server. Please rename the file.",
+    'error_fileexists' => 'File already exists on server. Please rename the file.',
     // Missing string!!!
-    "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension",
+    'error_file_mime_type' => 'Unsupported file uploaded please check your filetype or extension',
     // Missing string!!!
-    "error_file_size" => "File is too big",
+    'error_file_size' => 'File is too big',
     // Missing string!!!
-    "error_file_unknown" => "Unknown error during upload of file",
+    'error_file_unknown' => 'Unknown error during upload of file',
     // Missing string!!!
-    "error_format_mismatch" => "The element at position %d does not match the desired format (%s)",
+    'error_format_mismatch' => 'The element at position %d does not match the desired format (%s)',
     // Missing string!!!
-    "error_formdataerror" => "Save failed due to the following reason: ",
+    'error_formdataerror' => 'Save failed due to the following reason: ',
     // Missing string!!!
-    "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+    'error_iconv_not_install' => "iconv module don't install in your system, but it needs for right functionality",
     // Missing string!!!
-    "error_invalid_email" => "Invalid e-mail address",
+    'error_invalid_email' => 'Invalid e-mail address',
     // Missing string!!!
-    "error_node_action_access_denied" => "Sorry, you do not have permission to perform this action.",
+    'error_node_action_access_denied' => 'Sorry, you do not have permission to perform this action.',
     // Missing string!!!
-    "error_notnumeric" => "Value should be numeric",
+    'error_notnumeric' => 'Value should be numeric',
     // Missing string!!!
-    "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.",
+    'error_not_a_valid_ip' => 'This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.',
     // Missing string!!!
-    "error_obligatoryfield" => "This field is required",
+    'error_obligatoryfield' => 'This field is required',
     // Missing string!!!
-    "error_password_incorrect" => "The password you entered is incorrect!",
+    'error_password_incorrect' => 'The password you entered is incorrect!',
     // Missing string!!!
-    "error_password_invalid" => "The password you entered is not a valid password!",
+    'error_password_invalid' => 'The password you entered is not a valid password!',
     // Missing string!!!
-    "error_password_nomatch" => "The supplied passwords do not match.",
+    'error_password_nomatch' => 'The supplied passwords do not match.',
     // Missing string!!!
-    "error_primarykey_exists" => "A record with this key already exists",
+    'error_primarykey_exists' => 'A record with this key already exists',
     // Missing string!!!
-    "error_tab" => "see",
+    'error_tab' => 'see',
     // Missing string!!!
-    "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.",
+    'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
-    "error_uniquefield" => "The value for this field must be unique",
+    'error_uniquefield' => 'The value for this field must be unique',
     // Missing string!!!
-    "error_uniquefieldset" => "The values for the combination of these fields must be unique",
+    'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
     // Missing string!!!
-    "error_unkown_domain" => "Unkown domain",
+    'error_unkown_domain' => 'Unkown domain',
     // Missing string!!!
-    "explain_session_expired" => "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+    'explain_session_expired' => 'Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.',
     // Missing string!!!
-    "export" => "Export",
+    'export' => 'Export',
     // Missing string!!!
-    "export_config_explanation" => "Please select the options for the CSV export.",
+    'export_config_explanation' => 'Please select the options for the CSV export.',
     // Missing string!!!
-    "export_generatetitlerow" => "Include a title row",
+    'export_generatetitlerow' => 'Include a title row',
     // Missing string!!!
-    "export_selectcolumns" => "Select which columns to export",
+    'export_selectcolumns' => 'Select which columns to export',
     // Missing string!!!
-    "export_selections" => "Standard selections",
+    'export_selections' => 'Standard selections',
     // Missing string!!!
-    "export_selections_name" => "Standard selections name",
+    'export_selections_name' => 'Standard selections name',
     // Missing string!!!
-    "feb" => "Feb",
+    'feb' => 'Feb',
     // Missing string!!!
-    "february" => "February",
+    'february' => 'February',
     // Missing string!!!
-    "feedback" => "Feedback",
+    'feedback' => 'Feedback',
     // Missing string!!!
-    "feedback_delete_cancelled" => "The item has not been deleted.",
+    'feedback_delete_cancelled' => 'The item has not been deleted.',
     // Missing string!!!
-    "feedback_delete_failed" => "The item could not be deleted.",
+    'feedback_delete_failed' => 'The item could not be deleted.',
     // Missing string!!!
-    "feedback_delete_success" => "The item has been deleted.",
+    'feedback_delete_success' => 'The item has been deleted.',
     // Missing string!!!
-    "feedback_edit_failed" => "Editing is not possible. Item doesn\'t exist (anymore).",
+    'feedback_edit_failed' => "Editing is not possible. Item doesn\'t exist (anymore).",
     // Missing string!!!
-    "feedback_import_failed" => "File can not be imported",
+    'feedback_import_failed' => 'File can not be imported',
     // Missing string!!!
-    "feedback_save_cancelled" => "The item has not been added.",
+    'feedback_save_cancelled' => 'The item has not been added.',
     // Missing string!!!
-    "feedback_save_failed" => "The item could not be added.",
+    'feedback_save_failed' => 'The item could not be added.',
     // Missing string!!!
-    "feedback_save_success" => "The item has been added.",
+    'feedback_save_success' => 'The item has been added.',
     // Missing string!!!
-    "feedback_update_cancelled" => "Changes have not been saved.",
+    'feedback_update_cancelled' => 'Changes have not been saved.',
     // Missing string!!!
-    "feedback_update_failed" => "The changes could not be saved.",
+    'feedback_update_failed' => 'The changes could not be saved.',
     // Missing string!!!
-    "feedback_update_success" => "The changes have been saved.",
+    'feedback_update_success' => 'The changes have been saved.',
     // Missing string!!!
-    "field_obligatory" => "This field is a required field",
+    'field_obligatory' => 'This field is a required field',
     // Missing string!!!
-    "filecontent" => "Content",
+    'filecontent' => 'Content',
     // Missing string!!!
-    "filename" => "Filename",
+    'filename' => 'Filename',
     // Missing string!!!
-    "filename_invalid" => "This filename is invalid",
+    'filename_invalid' => 'This filename is invalid',
     // Missing string!!!
-    "file_exists" => "A file with this name already exists",
+    'file_exists' => 'A file with this name already exists',
     // Missing string!!!
-    "file_not_exist" => "File doesn't exist",
+    'file_not_exist' => "File doesn't exist",
     // Missing string!!!
-    "finish" => "Finish",
+    'finish' => 'Finish',
     // Missing string!!!
-    "forget_criteria" => "Remove selected search",
+    'forget_criteria' => 'Remove selected search',
     // Missing string!!!
-    "fri" => "Fri",
+    'fri' => 'Fri',
     // Missing string!!!
-    "friday" => "Friday",
+    'friday' => 'Friday',
     // Missing string!!!
-    "fsa_pleasemakeselection" => "Mais de uma ocorr�ncia foi encontrada. Por favor fa�a sua sele��o.",
-    "help" => "Help",
+    'fsa_pleasemakeselection' => 'Mais de uma ocorr�ncia foi encontrada. Por favor fa�a sua sele��o.',
+    'help' => 'Help',
     // Missing string!!!
-    "import" => "Import data",
+    'import' => 'Import data',
     // Missing string!!!
-    "import_allfield" => "Use default value for one of the attributes (e.g. if the column is absent in the CSV file)",
+    'import_allfield' => 'Use default value for one of the attributes (e.g. if the column is absent in the CSV file)',
     // Missing string!!!
-    "import_analyse" => "Analyse again",
+    'import_analyse' => 'Analyse again',
     // Missing string!!!
-    "import_detectedcolumns" => "Detected number of columns",
+    'import_detectedcolumns' => 'Detected number of columns',
     // Missing string!!!
-    "import_detectedrows" => "Detected number of rows",
+    'import_detectedrows' => 'Detected number of rows',
     // Missing string!!!
-    "import_doupdate" => "Try to update existing records",
+    'import_doupdate' => 'Try to update existing records',
     // Missing string!!!
-    "import_error_allfieldnocorrectdata" => "The field for use in every record ('%s') does not contain valid data (%s)",
+    'import_error_allfieldnocorrectdata' => "The field for use in every record ('%s') does not contain valid data (%s)",
     // Missing string!!!
-    "import_error_fieldisobligatory" => "The following field should be mapped to a column",
+    'import_error_fieldisobligatory' => 'The following field should be mapped to a column',
     // Missing string!!!
-    "import_error_fieldsareobligatory" => "The following fields should be mapped to a column",
+    'import_error_fieldsareobligatory' => 'The following fields should be mapped to a column',
     // Missing string!!!
-    "import_error_fieldsusedtwice" => "The following fields are used more than once",
+    'import_error_fieldsusedtwice' => 'The following fields are used more than once',
     // Missing string!!!
-    "import_error_fieldusedtwice" => "The following field is used more than once",
+    'import_error_fieldusedtwice' => 'The following field is used more than once',
     // Missing string!!!
-    "import_field" => "Field",
+    'import_field' => 'Field',
     // Missing string!!!
-    "import_ignorecolumn" => "Ignore this column",
+    'import_ignorecolumn' => 'Ignore this column',
     // Missing string!!!
-    "import_import" => "Import",
+    'import_import' => 'Import',
     // Missing string!!!
-    "import_importedreminder" => "The file has already been imported, however there were errors detected in the following rows, these were not added/updated",
+    'import_importedreminder' => 'The file has already been imported, however there were errors detected in the following rows, these were not added/updated',
     // Missing string!!!
-    "import_nonunique_identifier" => "Non-unique identifier found in record where identier is %s",
+    'import_nonunique_identifier' => 'Non-unique identifier found in record where identier is %s',
     // Missing string!!!
-    "import_onfalseidentifier" => "Insert and continue in case of false identifier (2 records for the same key)",
+    'import_onfalseidentifier' => 'Insert and continue in case of false identifier (2 records for the same key)',
     // Missing string!!!
-    "import_relation_value_failed" => "Of the field '%s' has been found, on line %s, the value '%s', however this is not a unique value for this relation",
+    'import_relation_value_failed' => "Of the field '%s' has been found, on line %s, the value '%s', however this is not a unique value for this relation",
     // Missing string!!!
-    "import_sample" => "Sample from csv-file",
+    'import_sample' => 'Sample from csv-file',
     // Missing string!!!
-    "import_skipfirstrow" => "Skip first line? (header row)",
+    'import_skipfirstrow' => 'Skip first line? (header row)',
     // Missing string!!!
-    "import_update_key" => "When updating, use this field to identify which record to update",
+    'import_update_key' => 'When updating, use this field to identify which record to update',
     // Missing string!!!
-    "import_upload" => "Upload",
+    'import_upload' => 'Upload',
     // Missing string!!!
-    "import_upload_explanation" => "Upload a textfile with data to import into the database.",
+    'import_upload_explanation' => 'Upload a textfile with data to import into the database.',
     // Missing string!!!
-    "import_validatefirst" => "Do not validate before importing",
+    'import_validatefirst' => 'Do not validate before importing',
     // Missing string!!!
-    "intro_addorcopy" => "Do you want to create a new record or copy an existing record?",
+    'intro_addorcopy' => 'Do you want to create a new record or copy an existing record?',
     // Missing string!!!
-    "invalid_relative_url" => "Invalid relative URL, please use this format: '/mysite/guestbook'",
+    'invalid_relative_url' => "Invalid relative URL, please use this format: '/mysite/guestbook'",
     // Missing string!!!
-    "invalid_url_anchor" => "Invalid URL anchor, please use this format: '#internal_bookmark'",
+    'invalid_url_anchor' => "Invalid URL anchor, please use this format: '#internal_bookmark'",
     // Missing string!!!
-    "invert_selection" => "Invert selection",
+    'invert_selection' => 'Invert selection',
     // Missing string!!!
-    "in_use_by" => "In use by",
+    'in_use_by' => 'In use by',
     // Missing string!!!
-    "jan" => "Jan",
+    'jan' => 'Jan',
     // Missing string!!!
-    "january" => "January",
+    'january' => 'January',
     // Missing string!!!
-    "jul" => "Jul",
+    'jul' => 'Jul',
     // Missing string!!!
-    "july" => "July",
+    'july' => 'July',
     // Missing string!!!
-    "jun" => "Jun",
+    'jun' => 'Jun',
     // Missing string!!!
-    "june" => "June",
+    'june' => 'June',
     // Missing string!!!
-    "language_de" => "German",
+    'language_de' => 'German',
     // Missing string!!!
-    "language_en" => "English",
+    'language_en' => 'English',
     // Missing string!!!
-    "language_fr" => "French",
+    'language_fr' => 'French',
     // Missing string!!!
-    "language_nl" => "Dutch",
+    'language_nl' => 'Dutch',
     // Missing string!!!
-    "language_pl" => "Polish",
+    'language_pl' => 'Polish',
     // Missing string!!!
-    "language_sp" => "Spanish",
+    'language_sp' => 'Spanish',
     // Missing string!!!
-    "list_null_value" => "No value",
+    'list_null_value' => 'No value',
     // Missing string!!!
-    "list_null_value_obligatory" => "(Select a value...)",
+    'list_null_value_obligatory' => '(Select a value...)',
     // Missing string!!!
-    "load_criteria" => "Load saved search",
+    'load_criteria' => 'Load saved search',
     // Missing string!!!
-    "lock_expired" => "The items you have opened are no longer exclusively accessible by you. This can have various causes, the most common is that you have not saved for a too long period of time. You can try to save your work, but it is possible that the items are currently locked by another user.",
+    'lock_expired' => 'The items you have opened are no longer exclusively accessible by you. This can have various causes, the most common is that you have not saved for a too long period of time. You can try to save your work, but it is possible that the items are currently locked by another user.',
     // Missing string!!!
-    "lock_info_line" => "[user_id] (ip: [user_ip]) since [lock_date]",
+    'lock_info_line' => '[user_id] (ip: [user_ip]) since [lock_date]',
     // Missing string!!!
-    "lock_locked" => "The selected items are not accessible because another user has locked them.",
+    'lock_locked' => 'The selected items are not accessible because another user has locked them.',
     // Missing string!!!
-    "logged_in_as" => "Logged in as",
+    'logged_in_as' => 'Logged in as',
     // Missing string!!!
-    "login" => "Login",
+    'login' => 'Login',
     // Missing string!!!
-    "login_failed" => "Login failed",
+    'login_failed' => 'Login failed',
     // Missing string!!!
-    "login_form" => "Login",
+    'login_form' => 'Login',
     // Missing string!!!
-    "logout" => "Log out",
+    'logout' => 'Log out',
     // Missing string!!!
-    "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.",
+    'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
     // Missing string!!!
-    "lowerchars" => "lowercase characters",
+    'lowerchars' => 'lowercase characters',
     // Missing string!!!
-    "mar" => "Mar",
+    'mar' => 'Mar',
     // Missing string!!!
-    "march" => "March",
+    'march' => 'March',
     // Missing string!!!
-    "may" => "May",
+    'may' => 'May',
     // Missing string!!!
-    "menu" => "Menu",
+    'menu' => 'Menu',
     // Missing string!!!
-    "menu_main" => "Main",
+    'menu_main' => 'Main',
     // Missing string!!!
-    "mon" => "Mon",
+    'mon' => 'Mon',
     // Missing string!!!
-    "monday" => "Monday",
+    'monday' => 'Monday',
     // Missing string!!!
-    "multiselect" => "Multiselect",
+    'multiselect' => 'Multiselect',
     // Missing string!!!
-    "new" => "New",
+    'new' => 'New',
     // Missing string!!!
-    "next" => "Next",
+    'next' => 'Next',
     // Missing string!!!
-    "no" => "No",
+    'no' => 'No',
     // Missing string!!!
-    "none" => "None",
+    'none' => 'None',
     // Missing string!!!
-    "nov" => "Nov",
+    'nov' => 'Nov',
     // Missing string!!!
-    "november" => "November",
+    'november' => 'November',
     // Missing string!!!
-    "no_color_selected" => "No color selected",
+    'no_color_selected' => 'No color selected',
     // Missing string!!!
-    "no_copyable_records" => "no copyable records",
+    'no_copyable_records' => 'no copyable records',
     // Missing string!!!
-    "no_records_to_import" => "No records found that needed to be imported.",
+    'no_records_to_import' => 'No records found that needed to be imported.',
     // Missing string!!!
-    "no_results_found" => "No results found",
+    'no_results_found' => 'No results found',
     // Missing string!!!
-    "no_valid_directory" => "There is no valid directory",
+    'no_valid_directory' => 'There is no valid directory',
     // Missing string!!!
-    "numbers" => "numbers",
+    'numbers' => 'numbers',
     // Missing string!!!
-    "oct" => "Oct",
+    'oct' => 'Oct',
     // Missing string!!!
-    "october" => "October",
+    'october' => 'October',
     // Missing string!!!
-    "open" => "Open",
+    'open' => 'Open',
     // Missing string!!!
-    "or" => "Or",
+    'or' => 'Or',
     // Missing string!!!
-    "password" => "Password",
+    'password' => 'Password',
     // Missing string!!!
-    "password_again" => "Again",
+    'password_again' => 'Again',
     // Missing string!!!
-    "password_current" => "Current",
+    'password_current' => 'Current',
     // Missing string!!!
-    "password_forgotten" => "Password forgotten",
+    'password_forgotten' => 'Password forgotten',
     // Missing string!!!
-    "password_hidden" => "*****",
+    'password_hidden' => '*****',
     // Missing string!!!
-    "password_incorrect" => "The password you entered was not correct!",
+    'password_incorrect' => 'The password you entered was not correct!',
     // Missing string!!!
-    "password_invalid" => "The supplied password is not a valid password.",
+    'password_invalid' => 'The supplied password is not a valid password.',
     // Missing string!!!
-    "password_new" => "New",
+    'password_new' => 'New',
     // Missing string!!!
-    "permission_denied" => "Sorry, you don't have permission to perform this action",
+    'permission_denied' => "Sorry, you don't have permission to perform this action",
     // Missing string!!!
-    "previous" => "Previous",
+    'previous' => 'Previous',
     // Missing string!!!
-    "recordlistsummary" => "Record [start]-[end] out of [count]",
+    'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
-    "relogin" => "Log in again",
+    'relogin' => 'Log in again',
     // Missing string!!!
-    "remove_criterium" => "Remove",
+    'remove_criterium' => 'Remove',
     // Missing string!!!
-    "remove_current_file" => "Remove current file",
+    'remove_current_file' => 'Remove current file',
     // Missing string!!!
-    "replace_by" => "Replace by",
+    'replace_by' => 'Replace by',
     // Missing string!!!
-    "reset_criteria" => "New search",
+    'reset_criteria' => 'New search',
     // Missing string!!!
-    "restricted_delete_error" => "There is detail information below this record that needs to be deleted first.",
+    'restricted_delete_error' => 'There is detail information below this record that needs to be deleted first.',
     // Missing string!!!
-    "sat" => "Sat",
+    'sat' => 'Sat',
     // Missing string!!!
-    "saturday" => "Saturday",
+    'saturday' => 'Saturday',
     // Missing string!!!
-    "save" => "Save",
+    'save' => 'Save',
     // Missing string!!!
-    "saveandaddnew" => "Save and add new",
+    'saveandaddnew' => 'Save and add new',
     // Missing string!!!
-    "saveandclose" => "Save and close",
+    'saveandclose' => 'Save and close',
     // Missing string!!!
-    "saveandedit" => "Save and edit",
+    'saveandedit' => 'Save and edit',
     // Missing string!!!
-    "saveandnext" => "Save and next",
+    'saveandnext' => 'Save and next',
     // Missing string!!!
-    "save_criteria" => "Save search as",
+    'save_criteria' => 'Save search as',
     // Missing string!!!
-    "save_export_selection" => "Save selection",
+    'save_export_selection' => 'Save selection',
     // Missing string!!!
-    "search" => "Search",
+    'search' => 'Search',
     // Missing string!!!
-    "search_all" => "Search all",
+    'search_all' => 'Search all',
     // Missing string!!!
-    "search_and" => "Match all criteria",
+    'search_and' => 'Match all criteria',
     // Missing string!!!
-    "search_between" => "Search between two values",
+    'search_between' => 'Search between two values',
     // Missing string!!!
-    "search_exact" => "Search for an exact match",
+    'search_exact' => 'Search for an exact match',
     // Missing string!!!
-    "search_extended" => "Extended",
+    'search_extended' => 'Extended',
     // Missing string!!!
-    "search_greaterthan" => "Search for value bigger than",
+    'search_greaterthan' => 'Search for value bigger than',
     // Missing string!!!
-    "search_greaterthanequal" => "Search for value bigger than or equal to",
+    'search_greaterthanequal' => 'Search for value bigger than or equal to',
     // Missing string!!!
-    "search_lessthan" => "Search for value smaller than",
+    'search_lessthan' => 'Search for value smaller than',
     // Missing string!!!
-    "search_lessthanequal" => "Search for value smaller than or equal to",
+    'search_lessthanequal' => 'Search for value smaller than or equal to',
     // Missing string!!!
-    "search_mode" => "Searchmode",
+    'search_mode' => 'Searchmode',
     // Missing string!!!
-    "search_none" => "Nothing selected",
+    'search_none' => 'Nothing selected',
     // Missing string!!!
-    "search_or" => "Match any criteria",
+    'search_or' => 'Match any criteria',
     // Missing string!!!
-    "search_regexp" => "Search with a regular expression (advanced)",
+    'search_regexp' => 'Search with a regular expression (advanced)',
     // Missing string!!!
-    "search_soundex" => "Search for a string that sounds similar",
+    'search_soundex' => 'Search for a string that sounds similar',
     // Missing string!!!
-    "search_substring" => "Search for a substring",
+    'search_substring' => 'Search for a substring',
     // Missing string!!!
-    "search_wildcard" => "Search with wildcards (*)",
+    'search_wildcard' => 'Search with wildcards (*)',
     // Missing string!!!
-    "select" => "Select",
+    'select' => 'Select',
     // Missing string!!!
-    "selected" => "Selected",
+    'selected' => 'Selected',
     // Missing string!!!
-    "selection" => "Selection",
+    'selection' => 'Selection',
     // Missing string!!!
-    "select_a" => "Select",
+    'select_a' => 'Select',
     // Missing string!!!
-    "select_all" => "Select all",
+    'select_all' => 'Select all',
     // Missing string!!!
-    "select_invert" => "Invert selection",
+    'select_invert' => 'Invert selection',
     // Missing string!!!
-    "select_none" => "None",
+    'select_none' => 'None',
     // Missing string!!!
-    "self" => "Self",
+    'self' => 'Self',
     // Missing string!!!
-    "sep" => "Sep",
+    'sep' => 'Sep',
     // Missing string!!!
-    "september" => "September",
+    'september' => 'September',
     // Missing string!!!
-    "settings" => "Settings",
+    'settings' => 'Settings',
     // Missing string!!!
-    "show" => "Show",
+    'show' => 'Show',
     // Missing string!!!
-    "smartsearch" => "Smart search",
+    'smartsearch' => 'Smart search',
     // Missing string!!!
-    "sort" => "Sort",
+    'sort' => 'Sort',
     // Missing string!!!
-    "specialchars" => "special characters",
+    'specialchars' => 'special characters',
     // Missing string!!!
-    "steelblue" => "SteelBlue",
+    'steelblue' => 'SteelBlue',
     // Missing string!!!
-    "submit" => "Go",
+    'submit' => 'Go',
     // Missing string!!!
-    "successfully_imported_one_record" => "Successfully imported 1 record.",
+    'successfully_imported_one_record' => 'Successfully imported 1 record.',
     // Missing string!!!
-    "successfully_imported_x_records" => "Successfully imported %d records.",
+    'successfully_imported_x_records' => 'Successfully imported %d records.',
     // Missing string!!!
-    "sun" => "Sun",
+    'sun' => 'Sun',
     // Missing string!!!
-    "sunday" => "Sunday",
+    'sunday' => 'Sunday',
     // Missing string!!!
-    "tab_default" => "General",
+    'tab_default' => 'General',
     // Missing string!!!
-    "the_password_should_at_least_contain_%d_%s" => "The password should at least contain %d %s.",
+    'the_password_should_at_least_contain_%d_%s' => 'The password should at least contain %d %s.',
     // Missing string!!!
-    "the_password_should_be_at_least_%d_characters_long" => "The password should be at least %d characters long.",
+    'the_password_should_be_at_least_%d_characters_long' => 'The password should be at least %d characters long.',
     // Missing string!!!
-    "thousands_separator" => ",",
+    'thousands_separator' => ',',
     // Missing string!!!
-    "thu" => "Thu",
+    'thu' => 'Thu',
     // Missing string!!!
-    "thursday" => "Thursday",
+    'thursday' => 'Thursday',
     // Missing string!!!
-    "timezone_utc_+0000" => "(UTC) Casablanca, Greenwich Mean Time, London",
+    'timezone_utc_+0000' => '(UTC) Casablanca, Greenwich Mean Time, London',
     // Missing string!!!
-    "timezone_utc_+0100" => "(UTC+01:00) Amsterdam, Berlin, Rome, Paris",
+    'timezone_utc_+0100' => '(UTC+01:00) Amsterdam, Berlin, Rome, Paris',
     // Missing string!!!
-    "timezone_utc_+0200" => "(UTC+02:00) Athens, Beirut, Istanbul, Minsk",
+    'timezone_utc_+0200' => '(UTC+02:00) Athens, Beirut, Istanbul, Minsk',
     // Missing string!!!
-    "timezone_utc_+0300" => "(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow",
+    'timezone_utc_+0300' => '(UTC+03:00) Baghdad, Kuwait, Riyadh, Moscow',
     // Missing string!!!
-    "timezone_utc_+0400" => "(UTC+04:00) Abu Dhabi, Kabul",
+    'timezone_utc_+0400' => '(UTC+04:00) Abu Dhabi, Kabul',
     // Missing string!!!
-    "timezone_utc_+0500" => "(UTC+05:00) New Delhi, Mumbai, Kathmandu",
+    'timezone_utc_+0500' => '(UTC+05:00) New Delhi, Mumbai, Kathmandu',
     // Missing string!!!
-    "timezone_utc_+0600" => "(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura",
+    'timezone_utc_+0600' => '(UTC+06:00) Novosibirsk, Dhaka, Sri Jayawardenepura',
     // Missing string!!!
-    "timezone_utc_+0700" => "(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk",
+    'timezone_utc_+0700' => '(UTC+07:00) Bangkok, Hanoi, Jakarta, Krasnoyarsk',
     // Missing string!!!
-    "timezone_utc_+0800" => "(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar",
+    'timezone_utc_+0800' => '(UTC+08:00) Beijing, Hong Kong, Ulaan Bataar',
     // Missing string!!!
-    "timezone_utc_+0900" => "(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul",
+    'timezone_utc_+0900' => '(UTC+09:00) Osaka, Sapporo, Tokyo, Seoul',
     // Missing string!!!
-    "timezone_utc_+1000" => "(UTC+10:00) Brisbane, Melbourne, Sydney",
+    'timezone_utc_+1000' => '(UTC+10:00) Brisbane, Melbourne, Sydney',
     // Missing string!!!
-    "timezone_utc_+1100" => "(UTC+11:00) Solomon Is., Magadan",
+    'timezone_utc_+1100' => '(UTC+11:00) Solomon Is., Magadan',
     // Missing string!!!
-    "timezone_utc_+1200" => "(UTC+12:00) Auckland, Wellington, Fiji",
+    'timezone_utc_+1200' => '(UTC+12:00) Auckland, Wellington, Fiji',
     // Missing string!!!
-    "timezone_utc_+1300" => "(UTC+13:00) Nuku'alofa",
+    'timezone_utc_+1300' => "(UTC+13:00) Nuku'alofa",
     // Missing string!!!
-    "timezone_utc_-0100" => "(UTC-01:00) Azores, Cape Verde Is.",
+    'timezone_utc_-0100' => '(UTC-01:00) Azores, Cape Verde Is.',
     // Missing string!!!
-    "timezone_utc_-0200" => "(UTC-02:00) Mid-Atlantic",
+    'timezone_utc_-0200' => '(UTC-02:00) Mid-Atlantic',
     // Missing string!!!
-    "timezone_utc_-0300" => "(UTC-03:00) Brasilia, Buenos Aires, Greenland",
+    'timezone_utc_-0300' => '(UTC-03:00) Brasilia, Buenos Aires, Greenland',
     // Missing string!!!
-    "timezone_utc_-0400" => "(UTC-04:00) Atlantic Time (Canada), Santiago",
+    'timezone_utc_-0400' => '(UTC-04:00) Atlantic Time (Canada), Santiago',
     // Missing string!!!
-    "timezone_utc_-0500" => "(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)",
+    'timezone_utc_-0500' => '(UTC-05:00) Bogota, Lima, Quito, Eastern Time (US & Canada)',
     // Missing string!!!
-    "timezone_utc_-0600" => "(UTC-06:00) Central America, Central Time (US & Canada)",
+    'timezone_utc_-0600' => '(UTC-06:00) Central America, Central Time (US & Canada)',
     // Missing string!!!
-    "timezone_utc_-0700" => "(UTC-07:00) Arizona, Mountain Time (US & Canada)",
+    'timezone_utc_-0700' => '(UTC-07:00) Arizona, Mountain Time (US & Canada)',
     // Missing string!!!
-    "timezone_utc_-0800" => "(UTC-08:00) Pacific Time (US & Canada); Tijuna",
+    'timezone_utc_-0800' => '(UTC-08:00) Pacific Time (US & Canada); Tijuna',
     // Missing string!!!
-    "timezone_utc_-0900" => "(UTC-09:00) Alaska",
+    'timezone_utc_-0900' => '(UTC-09:00) Alaska',
     // Missing string!!!
-    "timezone_utc_-1000" => "(UTC-10:00) Hawaii",
+    'timezone_utc_-1000' => '(UTC-10:00) Hawaii',
     // Missing string!!!
-    "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa",
+    'timezone_utc_-1100' => '(UTC-11:00) Midway Island, Samoa',
     // Missing string!!!
-    "timezone_utc_-1200" => "(UTC-12:00) International Date Line West",
+    'timezone_utc_-1200' => '(UTC-12:00) International Date Line West',
     // Missing string!!!
-    "title_delete" => "Confirm delete",
+    'title_delete' => 'Confirm delete',
     // Missing string!!!
-    "title_multiselect" => "Multiselect",
+    'title_multiselect' => 'Multiselect',
     // Missing string!!!
-    "title_select" => "Select",
+    'title_select' => 'Select',
     // Missing string!!!
-    "title_session_expired" => "Session expired",
+    'title_session_expired' => 'Session expired',
     // Missing string!!!
-    "title_wizard_finished" => "Wizard finished",
+    'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
-    "today" => "Today",
+    'today' => 'Today',
     // Missing string!!!
-    "tue" => "Tue",
+    'tue' => 'Tue',
     // Missing string!!!
-    "tuesday" => "Tuesday",
+    'tuesday' => 'Tuesday',
     // Missing string!!!
-    "unknown_error" => "Unknown error",
+    'unknown_error' => 'Unknown error',
     // Missing string!!!
-    "unselect" => "Deselect",
+    'unselect' => 'Deselect',
     // Missing string!!!
-    "until" => "until",
+    'until' => 'until',
     // Missing string!!!
-    "update" => "Update",
+    'update' => 'Update',
     // Missing string!!!
-    "upperchars" => "uppercase characters",
+    'upperchars' => 'uppercase characters',
     // Missing string!!!
-    "username" => "Username",
+    'username' => 'Username',
     // Missing string!!!
-    "view" => "View",
+    'view' => 'View',
     // Missing string!!!
-    "view_all" => "View all",
+    'view_all' => 'View all',
     // Missing string!!!
-    "wed" => "Wed",
+    'wed' => 'Wed',
     // Missing string!!!
-    "wednesday" => "Wednesday",
+    'wednesday' => 'Wednesday',
     // Missing string!!!
-    "with_selected" => "With selected",
+    'with_selected' => 'With selected',
     // Missing string!!!
-    "ww_sourcemode" => "Source mode",
+    'ww_sourcemode' => 'Source mode',
     // Missing string!!!
-    "ww_visualmode" => "Visual mode",
+    'ww_visualmode' => 'Visual mode',
     // Missing string!!!
-    "wysiwyg_delete_cell" => "Delete cell",
+    'wysiwyg_delete_cell' => 'Delete cell',
     // Missing string!!!
-    "wysiwyg_delete_col" => "Delete column",
+    'wysiwyg_delete_col' => 'Delete column',
     // Missing string!!!
-    "wysiwyg_delete_row" => "Delete row",
+    'wysiwyg_delete_row' => 'Delete row',
     // Missing string!!!
-    "wysiwyg_fontface" => "Font",
+    'wysiwyg_fontface' => 'Font',
     // Missing string!!!
-    "wysiwyg_fontsize" => "Pt",
+    'wysiwyg_fontsize' => 'Pt',
     // Missing string!!!
-    "wysiwyg_insert_cell" => "Insert cell",
+    'wysiwyg_insert_cell' => 'Insert cell',
     // Missing string!!!
-    "wysiwyg_insert_col" => "Insert column",
+    'wysiwyg_insert_col' => 'Insert column',
     // Missing string!!!
-    "wysiwyg_insert_row" => "Insert row",
+    'wysiwyg_insert_row' => 'Insert row',
     // Missing string!!!
-    "wysiwyg_insert_table" => "Insert table",
+    'wysiwyg_insert_table' => 'Insert table',
     // Missing string!!!
-    "wysiwyg_merge_cell" => "Merge cells",
+    'wysiwyg_merge_cell' => 'Merge cells',
     // Missing string!!!
-    "wysiwyg_split_cell" => "Split cells",
+    'wysiwyg_split_cell' => 'Split cells',
     // Missing string!!!
-    "yes" => "Yes",
+    'yes' => 'Yes',
     // Missing string!!!
 ];

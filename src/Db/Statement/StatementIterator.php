@@ -1,6 +1,8 @@
-<?php namespace Sintattica\Atk\Db\Statement;
+<?php
 
-use \Iterator;
+namespace Sintattica\Atk\Db\Statement;
+
+use Iterator;
 
 /**
  * External iterator for a statement.
@@ -79,7 +81,7 @@ class StatementIterator implements Iterator
      */
     public function next()
     {
-        $this->m_position++;
+        ++$this->m_position;
         $this->m_row = $this->getStatement()->fetch();
     }
 
@@ -90,5 +92,4 @@ class StatementIterator implements Iterator
     {
         return $this->m_row != false;
     }
-
 }

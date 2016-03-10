@@ -1,4 +1,5 @@
-<?php /* <body><pre>
+<?php
+/* <body><pre>
 
 -------------------------------------------------------------------------------------------
   CKEditor - Posted Data
@@ -14,4 +15,4 @@
 -------------------------------------------------------------------------------------------
 
 </pre><div style="display:none"></body> */
-include "assets/posteddata.php"; ?>
+include 'assets/posteddata.php';

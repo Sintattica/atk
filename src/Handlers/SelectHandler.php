@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\DataGrid\DataGrid;
@@ -6,7 +8,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Core\Node;
-use \Exception;
+use Exception;
 
 /**
  * Handler class for the select action of a node. The handler draws a
@@ -15,12 +17,9 @@ use \Exception;
  *
  * @author Ivo Jansch <ivo@achievo.org>
  * @author Peter C. Verhage <peter@ibuildings.nl>
- * @package atk
- * @subpackage handlers
  */
 class SelectHandler extends ActionHandler
 {
-
     /**
      * The action handler method.
      */
@@ -28,13 +27,14 @@ class SelectHandler extends ActionHandler
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
-        $output = $this->invoke("selectPage");
+        $output = $this->invoke('selectPage');
 
-        if ($output != "") {
-            $this->getPage()->addContent($this->getNode()->renderActionPage("select", $output));
+        if ($output != '') {
+            $this->getPage()->addContent($this->getNode()->renderActionPage('select', $output));
         }
     }
 
@@ -43,12 +43,11 @@ class SelectHandler extends ActionHandler
      * records from. The recordlist can be searched, sorted etc. like an
      * admin screen.
      *
-     * @return String The html select page.
+     * @return string The html select page.
      */
     public function selectPage()
     {
         $node = $this->getNode();
-
 
         $grid = DataGrid::create($node, 'select');
         $actions = array('select' => Tools::atkurldecode($grid->getPostvar('atktarget')));
@@ -65,18 +64,18 @@ class SelectHandler extends ActionHandler
         $sm = SessionManager::getInstance();
 
         $params = array();
-        $params["header"] = $node->text("title_select");
-        $params["list"] = $grid->render();
-        $params["footer"] = "";
+        $params['header'] = $node->text('title_select');
+        $params['list'] = $grid->render();
+        $params['footer'] = '';
 
         if ($sm->atkLevel() > 0) {
-            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backUrl . '\';" value="' . $this->getNode()->text('cancel') . '"></div>';
+            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
+            $params['footer'] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\''.$backUrl.'\';" value="'.$this->getNode()->text('cancel').'"></div>';
         }
 
-        $output = $this->getUi()->renderList("select", $params);
+        $output = $this->getUi()->renderList('select', $params);
 
-        $vars = array("title" => $this->m_node->actionTitle('select'), "content" => $output);
+        $vars = array('title' => $this->m_node->actionTitle('select'), 'content' => $output);
         $output = $this->getUi()->renderBox($vars);
 
         return $output;
@@ -98,6 +97,7 @@ class SelectHandler extends ActionHandler
 
             $this->modifyDataGrid($grid, DataGrid::RESUME);
         }
+
         return $grid->render();
     }
 
@@ -107,7 +107,7 @@ class SelectHandler extends ActionHandler
      *
      * @param DataGrid $grid data grid
      *
-     * @return boolean auto-select active?
+     * @return bool auto-select active?
      */
     protected function autoSelectRecord($grid)
     {
@@ -124,7 +124,7 @@ class SelectHandler extends ActionHandler
         $sm = SessionManager::getInstance();
 
         if ($sm->atkLevel() > 0 && $grid->getPostvar('atkprevlevel', 0) > $sm->atkLevel()) {
-            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
+            $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
             $node->redirect($backUrl);
         } else {
             $records = $grid->getRecords();
@@ -142,5 +142,4 @@ class SelectHandler extends ActionHandler
 
         return true;
     }
-
 }

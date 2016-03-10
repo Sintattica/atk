@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Security;
+<?php
+
+namespace Sintattica\Atk\Security;
 
 /**
  * ATK security listener.
@@ -14,25 +16,20 @@
  * postLogout: This event is thrown just after the user is logged out the system.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
- * @package atk
- * @subpackage security
  */
 class SecurityListener
 {
-
     /**
      * Handle event. In the default implementation, if a method exists with the same
      * name as the event this method will be called.
      *
-     * @param string $event event name
+     * @param string $event    event name
      * @param string $username user name
      */
-    function handleEvent($event, $username)
+    public function handleEvent($event, $username)
     {
         if (method_exists($this, $event)) {
             $this->$event($username);
         }
     }
-
 }
-

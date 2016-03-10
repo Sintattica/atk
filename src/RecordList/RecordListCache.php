@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\RecordList;
+<?php
+
+namespace Sintattica\Atk\RecordList;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -6,7 +8,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\DirectoryTraverser;
 use Sintattica\Atk\Core\Node;
-
 
 /**
  * RecordlistCaching class
@@ -23,83 +24,84 @@ use Sintattica\Atk\Core\Node;
  * Example: $this->m_cacheidentifiers=array(array('key'=>'answer','value'=>$answer));
  *
  * @author Boy Baukema <boy@ibuildings.nl>
- * @package atk
- * @subpackage recordlist
  */
 class RecordListCache
 {
-    /**
+    /*
      * The directory where we store the cache
      * @var String
      * @access private
      */
-    var $m_cachedir;
+    public $m_cachedir;
 
-    /**
+    /*
      * The full path of the cachefile
      * @var String
      * @access private
      */
-    var $m_cacheid;
+    public $m_cacheid;
 
-    /**
+    /*
      * The postvars for the recordlist
      * @var array
      * @access private
      */
-    var $m_postvars;
+    public $m_postvars;
 
-    /**
+    /*
      * The node of the recordlist
      * @var Object
      * @access private
      */
-    var $m_node;
+    public $m_node;
 
-    /**
+    /*
      * The cache identifiers
      * These are the variables that make a cacheid unique
      * @var array
      * @access private
      */
-    var $m_cacheidentifiers;
+    public $m_cacheidentifiers;
 
     /**
      * The constructor
-     * This is a singleton, so please use the getInstance method
-     * @param Object $node The node of the recordlist
+     * This is a singleton, so please use the getInstance method.
+     *
+     * @param object $node     The node of the recordlist
      * @param string $postvars The postvars of the recordlist
-     * @access private
      */
-    function atkRecordlistCache($node = "", $postvars = "")
+    public function atkRecordlistCache($node = '', $postvars = '')
     {
         $this->m_node = $node;
         $this->m_postvars = $postvars;
     }
 
     /**
-     * Setter for the node of the recordlistcache
+     * Setter for the node of the recordlistcache.
+     *
      * @param Node $node The node of the recordlist
      */
-    function setNode($node)
+    public function setNode($node)
     {
         $this->m_node = $node;
     }
 
     /**
-     * Setter for the postvars of the recordlistcache
+     * Setter for the postvars of the recordlistcache.
+     *
      * @param string $postvars The postvars of the recordlist
      */
-    function setPostvars($postvars)
+    public function setPostvars($postvars)
     {
         $this->m_postvars = $postvars;
     }
 
     /**
-     * Gets the cache of the recordlist and registers the appropriate javascript
+     * Gets the cache of the recordlist and registers the appropriate javascript.
+     *
      * @return string The cached recordlist
      */
-    function getCache()
+    public function getCache()
     {
         $output = false;
         $this->_setCacheId();
@@ -107,33 +109,34 @@ class RecordListCache
         if (file_exists($this->m_cacheid) && filesize($this->m_cacheid) && !$this->noCaching()) {
             $page = Page::getInstance();
 
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/formselect.js");
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/recordlist.js");
+            $page->register_script(Config::getGlobal('assets_url').'javascript/formselect.js');
+            $page->register_script(Config::getGlobal('assets_url').'javascript/recordlist.js');
 
-            /**
+            /*
              * RecordlistCache must call Tools::getUniqueId() too, or the counter will be off.
              */
-            Tools::getUniqueId("normalRecordList");
+            Tools::getUniqueId('normalRecordList');
 
             $sm = SessionManager::getInstance();
 
             $stackID = $sm->atkStackID();
-            $page->register_loadscript(str_replace("*|REPLACESTACKID|*", $stackID,
-                file_get_contents($this->m_cacheid . "_actionloader")));
-            $output = str_replace("*|REPLACESTACKID|*", $stackID,
-                file_get_contents(Config::getGlobal("atkroot") . $this->m_cacheid));
+            $page->register_loadscript(str_replace('*|REPLACESTACKID|*', $stackID,
+                file_get_contents($this->m_cacheid.'_actionloader')));
+            $output = str_replace('*|REPLACESTACKID|*', $stackID,
+                file_get_contents(Config::getGlobal('atkroot').$this->m_cacheid));
         }
+
         return $output;
     }
 
     /**
-     * Makes sure the m_cachedir and the m_cacheid are properly set
+     * Makes sure the m_cachedir and the m_cacheid are properly set.
      */
-    function _setCacheId()
+    public function _setCacheId()
     {
-        $this->m_cachedir = Config::getGlobal("atktempdir") . "rlcache/";
+        $this->m_cachedir = Config::getGlobal('atktempdir').'rlcache/';
         $identifiers = $this->getIdentifiers();
-        $this->m_cacheid = $this->m_cachedir . implode("_", $identifiers) . "_" . $this->m_postvars['atkstartat'];
+        $this->m_cacheid = $this->m_cachedir.implode('_', $identifiers).'_'.$this->m_postvars['atkstartat'];
 
         if (!file_exists($this->m_cachedir) || !is_dir($this->m_cachedir)) {
             mkdir($this->m_cachedir, 0700);
@@ -141,32 +144,34 @@ class RecordListCache
     }
 
     /**
-     * Writes a cached recordlist to the rlcache directory
-     * @param string $output The HTML output of the recordlist
+     * Writes a cached recordlist to the rlcache directory.
+     *
+     * @param string $output       The HTML output of the recordlist
      * @param string $actionloader The actionloader js part of the recordlist
      */
-    function writeCache($output, $actionloader)
+    public function writeCache($output, $actionloader)
     {
         if (!$this->noCaching()) {
             $sm = SessionManager::getInstance();
             $stackID = $sm->atkStackID();
-            $output = str_replace($stackID, "*|REPLACESTACKID|*", $output);
-            $actionloader = str_replace($stackID, "*|REPLACESTACKID|*", $actionloader);
+            $output = str_replace($stackID, '*|REPLACESTACKID|*', $output);
+            $actionloader = str_replace($stackID, '*|REPLACESTACKID|*', $actionloader);
 
             if (file_exists($this->m_cacheid)) {
                 unlink($this->m_cacheid);
             }
-            $fp = &fopen($this->m_cacheid, "a+");
+            $fp = &fopen($this->m_cacheid, 'a+');
 
             if ($fp) {
                 fwrite($fp, $output);
                 fclose($fp);
             } else {
                 Tools::atkerror("Couldn't open {$this->m_cacheid} for writing!");
+
                 return;
             }
 
-            $fp = &fopen($this->m_cacheid . "_actionloader", "a+");
+            $fp = &fopen($this->m_cacheid.'_actionloader', 'a+');
             if ($fp) {
                 fwrite($fp, $actionloader);
                 fclose($fp);
@@ -179,10 +184,11 @@ class RecordListCache
 
     /**
      * Wether or not to use caching
-     * We don't cache when we are ordering or searching on a recordlist
+     * We don't cache when we are ordering or searching on a recordlist.
+     *
      * @return bool Wether or not to use caching
      */
-    function noCaching()
+    public function noCaching()
     {
         return
             $this->m_postvars['atkorderby'] ||
@@ -191,11 +197,11 @@ class RecordListCache
     }
 
     /**
-     * Clears the current recordlist cache
+     * Clears the current recordlist cache.
      */
-    function clearCache()
+    public function clearCache()
     {
-        $cachedir = Config::getGlobal("atktempdir") . "rlcache/";
+        $cachedir = Config::getGlobal('atktempdir').'rlcache/';
         $atkdirtrav = new DirectoryTraverser();
 
         $identifiers = $this->getIdentifiers();
@@ -209,53 +215,56 @@ class RecordListCache
                     }
                 }
             }
-            if (!in_array($cachefile, array(".", "..")) && !$unsignificant) {
-                unlink($cachedir . $cachefile);
+            if (!in_array($cachefile, array('.', '..')) && !$unsignificant) {
+                unlink($cachedir.$cachefile);
             }
         }
         Tools::atkdebug("Cache for {$this->m_node->m_module}.{$this->m_node->m_type} cleared");
     }
 
     /**
-     * Gets all the current identifiers and returns them in an array
+     * Gets all the current identifiers and returns them in an array.
+     *
      * @return array The identifiers
      */
-    function getIdentifiers()
+    public function getIdentifiers()
     {
         $identifiers = array();
-        $identifiers[] = $this->m_node->atkNodeUri() . "cache";
+        $identifiers[] = $this->m_node->atkNodeUri().'cache';
         if ($this->m_node->m_cacheidentifiers) {
             $this->_formatIdentifiers($this->m_node->m_cacheidentifiers, $identifiers);
         }
         $this->_formatIdentifiers($this->m_cacheidentifiers, $identifiers);
+
         return $identifiers;
     }
 
     /**
-     * Formats the identifiers in a '_keyvalue' way
+     * Formats the identifiers in a '_keyvalue' way.
+     *
      * @param array $identifiers The identifiers to format
-     * @param array $output The formatted identifiers so far
+     * @param array $output      The formatted identifiers so far
+     *
      * @return array The formatted identifiers
      */
-    function _formatIdentifiers($identifiers, &$output)
+    public function _formatIdentifiers($identifiers, &$output)
     {
         if (count($identifiers) > 0) {
             foreach ($identifiers as $identifier) {
-                $output[] = "_" . $identifier['key'] . $identifier['value'];
+                $output[] = '_'.$identifier['key'].$identifier['value'];
             }
+
             return $output;
         }
     }
 
     /**
-     * Adds a cache identifier
+     * Adds a cache identifier.
+     *
      * @param array $identifier The extra cache identifier
      */
-    function addCacheIdentifier($identifier)
+    public function addCacheIdentifier($identifier)
     {
         $this->m_cacheidentifiers[] = $identifier;
     }
-
 }
-
-

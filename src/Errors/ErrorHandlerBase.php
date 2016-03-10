@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Errors;
+<?php
+
+namespace Sintattica\Atk\Errors;
 
 /**
  * The atkErrorHandlerObject handles the creation of the error handlers and
@@ -27,17 +29,19 @@ abstract class ErrorHandlerBase
      * Returns an error handler by name, params are passed to the handler.
      *
      * @param string $handlerName
-     * @param array $params
+     * @param array  $params
+     *
      * @return mixed
      */
-    static public function get($handlerName, $params)
+    public static function get($handlerName, $params)
     {
-        $class = __NAMESPACE__ . "\\" . "$handlerName" . "ErrorHandler";
+        $class = __NAMESPACE__.'\\'."$handlerName".'ErrorHandler';
+
         return new $class($params);
     }
 
     /**
-     * Implement the handle() function in a derived class to add customized error handling
+     * Implement the handle() function in a derived class to add customized error handling.
      *
      * @param string $errorMessage
      * @param string $debugMessage

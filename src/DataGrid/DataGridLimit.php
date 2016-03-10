@@ -1,19 +1,17 @@
-<?php namespace Sintattica\Atk\DataGrid;
+<?php
+
+namespace Sintattica\Atk\DataGrid;
 
 use Sintattica\Atk\Core\Config;
-
 
 /**
  * The data grid limit box. Can be used to render a
  * limit box for an ATK data grid.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage datagrid
  */
 class DataGridLimit extends DataGridComponent
 {
-
     /**
      * Returns a list of possible limit values.
      *
@@ -24,11 +22,12 @@ class DataGridLimit extends DataGridComponent
         $defaultLimit = $this->getGrid()->getDefaultLimit();
         $limit = $this->getGrid()->getLimit();
         //$values = array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit);
-        $values = Config::getGlobal("recordsperpage_options",
+        $values = Config::getGlobal('recordsperpage_options',
             array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit));
         $values = array_diff($values, array(-1));
         $values = array_unique($values);
         sort($values);
+
         return $values;
     }
 
@@ -52,11 +51,11 @@ class DataGridLimit extends DataGridComponent
 
         //Add 'show all' option.
         //if ($this -> getOption('showAll', false))
-        if (Config::getGlobal("enable_showall", false)) {
+        if (Config::getGlobal('enable_showall', false)) {
             $options[] = array(
                 'title' => $this->text('all'),
                 'value' => -1,
-                'current' => $limit == -1
+                'current' => $limit == -1,
             );
         }
 
@@ -79,9 +78,7 @@ class DataGridLimit extends DataGridComponent
         $options = $this->getOptions($values);
         $call = $this->getGrid()->getUpdateCall(array('atkstartat' => 0), array('atklimit' => '$F(this)'));
         $result = $this->getUi()->render('dglimit.tpl', array('options' => $options, 'call' => $call));
+
         return $result;
     }
-
 }
-
-

@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Utils\StringParser;
 
@@ -39,27 +41,24 @@ use Sintattica\Atk\Utils\StringParser;
  * You can use self::AF_TOTAL to totalize the values in recordlists.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage attributes
- *
  */
 class CalculatorAttribute extends Attribute
 {
-    /**
+    /*
      * The calculation to perform.
      * @access private
      * @var String
      */
-    var $m_calculation = null;
+    public $m_calculation = null;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param string $name Unique name of this attribute within the node.
+     * @param string $name        Unique name of this attribute within the node.
      * @param string $calculation The calculation to perform. Must be a valid php expression.
-     * @param int $flags Flags of the attribute.
+     * @param int    $flags       Flags of the attribute.
      */
-    function __construct($name, $calculation, $flags = 0)
+    public function __construct($name, $calculation, $flags = 0)
     {
         parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH | self::AF_READONLY);
 
@@ -67,21 +66,21 @@ class CalculatorAttribute extends Attribute
     }
 
     /**
-     * Make sure the value is not stored. (always calculated on the fly)
-     * @access private
+     * Make sure the value is not stored. (always calculated on the fly).
+     *
      * @return int
      */
-    function storageType()
+    public function storageType()
     {
         return self::NOSTORE;
     }
 
     /**
      * Make sure the value is loaded *after* the main record is loaded.
-     * @access private
+     *
      * @return int
      */
-    function loadType()
+    public function loadType()
     {
         return self::POSTLOAD;
     }
@@ -89,35 +88,33 @@ class CalculatorAttribute extends Attribute
     /**
      * The load method performs the calculation.
      *
-     * @access private
-     * @param Db $db
+     * @param Db    $db
      * @param array $record
-     * @return String result of the calculation
+     *
+     * @return string result of the calculation
      */
-    function load(&$db, $record)
+    public function load(&$db, $record)
     {
-
         $parser = new StringParser($this->m_calculation);
-        eval("\$result = " . $parser->parse($record) . ";");
+        eval('$result = '.$parser->parse($record).';');
+
         return $result;
     }
 
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @access public
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode.
-     * @return String HTML String
+     * @param array  $record The record that holds the value for this attribute
+     * @param string $mode   The display mode.
+     *
+     * @return string HTML String
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
-        if ($this->m_ownerInstance->m_partial == "attribute." . $this->fieldName() . ".refresh") {
+        if ($this->m_ownerInstance->m_partial == 'attribute.'.$this->fieldName().'.refresh') {
             $record[$this->fieldName()] = $this->load($db, $record);
         }
+
         return parent::display($record, $mode);
     }
-
 }
-
-

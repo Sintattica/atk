@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 /**
  * Attribute for keeping track of last-modification times.
@@ -12,24 +14,20 @@
  * (because we only have the first timestamp AFTER a record is added).
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage attributes
- *
  */
 class UpdateStampAttribute extends DateTimeAttribute
 {
-
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param string $name Name of the attribute (unique within a node, and
-     *                     corresponds to the name of the datetime field
-     *                     in the database where the stamp is stored.
-     * @param int $flags Flags for the attribute.
+     * @param string $name  Name of the attribute (unique within a node, and
+     *                      corresponds to the name of the datetime field
+     *                      in the database where the stamp is stored.
+     * @param int    $flags Flags for the attribute.
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
-        parent::__construct($name, date("Y-m-d"), date("H:i:s"), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
+        parent::__construct($name, date('Y-m-d'), date('H:i:s'), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
         $this->setInitialValue(self::datetimeArray());
@@ -39,58 +37,60 @@ class UpdateStampAttribute extends DateTimeAttribute
      * Value to DB.
      *
      * @param array $record The record
+     *
      * @return string The value to store in the database
      */
-    function value2db($record)
+    public function value2db($record)
     {
         // if record not created using a form this situation can occur, so set the value here
         // Every time we must overwrite the value of this attribute, because this is UPDATE stamp
         $record[$this->fieldName()] = $this->initialValue();
+
         return parent::value2db($record);
     }
 
     /**
-     * Override the initial value
+     * Override the initial value.
      *
      * @return array
      */
-    function initialValue()
+    public function initialValue()
     {
         return self::datetimeArray();
     }
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its value. (<input type="hidden">)
+     * while still posting its value. (<input type="hidden">).
      *
-     * @param array $record
+     * @param array  $record
      * @param string $fieldprefix
      * @param string $mode
+     *
      * @return string html
      */
     public function hide($record, $fieldprefix, $mode)
     {
         $field = $record[$this->fieldName()];
-        $result = "";
+        $result = '';
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '[' . $key . ']" ' . 'value="' . $value . '">';
+                $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$key.']" '.'value="'.$value.'">';
             }
         } else {
-            $result = '<input type="hidden" name="' . $fieldprefix . $this->fieldName() . '" value="' . $field . '">';
+            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.$field.'">';
         }
 
         return $result;
     }
 
     /**
-     * We always have a value, even if we're not even in the record
-     * @return boolean false
+     * We always have a value, even if we're not even in the record.
+     *
+     * @return bool false
      * */
-    function isEmpty()
+    public function isEmpty()
     {
         return false;
     }
-
 }
-

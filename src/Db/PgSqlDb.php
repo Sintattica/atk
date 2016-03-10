@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Db;
+<?php
+
+namespace Sintattica\Atk\Db;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -7,52 +9,50 @@ use Sintattica\Atk\Core\Config;
  * Database driver for PostgreSQL.
  *
  * @author Peter Verhage <peter@ibuildings.nl>
- * @package atk
- * @subpackage db
- *
  */
 class PgSqlDb extends Db
 {
     /* identification */
-    var $m_type = "PgSql";
-    var $m_vendor = "postgresql";
+    public $m_type = 'PgSql';
+    public $m_vendor = 'postgresql';
 
     /**
-     * Base constructor
+     * Base constructor.
      */
-    function __construct()
+    public function __construct()
     {
         /* do nothing */
     }
 
     /**
-     * Connect to the database
+     * Connect to the database.
+     *
      * @return int connection identifier
      */
-    function connect()
+    public function connect()
     {
         if (empty($this->m_link_id)) {
             /* connection string */
-            $connection_str = "dbname=" . $this->m_database;
+            $connection_str = 'dbname='.$this->m_database;
             if (!empty($this->m_host)) {
-                $connection_str .= " host=" . $this->m_host;
+                $connection_str .= ' host='.$this->m_host;
             }
             if (!empty($this->m_user)) {
-                $connection_str .= " user=" . $this->m_user;
+                $connection_str .= ' user='.$this->m_user;
             }
             if (!empty($this->m_password)) {
-                $connection_str .= " password=" . $this->m_password;
+                $connection_str .= ' password='.$this->m_password;
             }
 
             /* establish connection */
             $this->m_link_id = pg_connect($connection_str);
             if ($this->m_link_id === false) {
-                $this->halt("connect using " . $this->m_database . ", " . $this->m_host . ", " . $this->m_user . ", ***** failed.");
+                $this->halt('connect using '.$this->m_database.', '.$this->m_host.', '.$this->m_user.', ***** failed.');
 
                 // We can't use pg_result_error, since we need a resource
                 // for that function, and if pg_connect fails, we don't even have
                 // a resource yet.
-                if (function_exists("pg_last_error")) { // only available since PHP 4.2.0.
+                if (function_exists('pg_last_error')) { // only available since PHP 4.2.0.
                     return $this->_translateError(@pg_last_error());
                 } else {
                     return self::DB_UNKNOWNERROR;
@@ -68,9 +68,10 @@ class PgSqlDb extends Db
      * so this function only returns self::DB_UNKNOWNERROR for now.
      *
      * @param mixed $error
+     *
      * @return int The ATK error code
      */
-    function _translateError($error = "")
+    public function _translateError($error = '')
     {
         return self::DB_UNKNOWNERROR;
     }
@@ -79,24 +80,24 @@ class PgSqlDb extends Db
      * Disconnect from database, we use a persistent
      * link, so this won't be necessary!
      */
-    function disconnect()
+    public function disconnect()
     {
-
     }
 
     /**
-     * Performs a query
-     * @param string $query the query
-     * @param int $offset offset in record list
-     * @param int $limit maximum number of records
+     * Performs a query.
+     *
+     * @param string $query  the query
+     * @param int    $offset offset in record list
+     * @param int    $limit  maximum number of records
      */
-    function query($query, $offset = -1, $limit = -1)
+    public function query($query, $offset = -1, $limit = -1)
     {
         /* limit? */
         if ($offset >= 0 && $limit >= 0) {
             $query .= " LIMIT $limit OFFSET $offset";
         }
-        Tools::atkdebug("atkpgsqldb.query(): " . $query);
+        Tools::atkdebug('atkpgsqldb.query(): '.$query);
 
         /* connect to database */
         if ($this->connect() == self::DB_SUCCESS) {
@@ -122,18 +123,20 @@ class PgSqlDb extends Db
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * Goto the next record in the result set
+     * Goto the next record in the result set.
+     *
      * @return result of going to the next record
      */
-    function next_record()
+    public function next_record()
     {
         /* goto next record */
         $this->m_record = @pg_fetch_array($this->m_query_id, $this->m_row, PGSQL_ASSOC);
-        $this->m_row++;
+        ++$this->m_row;
 
         /* are we there? */
         $result = is_array($this->m_record);
@@ -150,25 +153,28 @@ class PgSqlDb extends Db
      * Goto a certain position in result set.
      * Not specifying a position will set the pointer
      * at the beginning of the result set.
+     *
      * @param int $position the position
      */
-    function seek($position = 0)
+    public function seek($position = 0)
     {
         $this->m_row = $position;
     }
 
     /**
-     * Lock a certain table in the database
+     * Lock a certain table in the database.
+     *
      * @param string $table the table name
-     * @param string $mode the type of locking
+     * @param string $mode  the type of locking
+     *
      * @return result of locking
      */
-    function lock($table, $mode = "write")
+    public function lock($table, $mode = 'write')
     {
         /* connect first */
         if ($this->connect() == self::DB_SUCCESS) {
             /* lock */
-            if ($mode == "write") {
+            if ($mode == 'write') {
                 $result = @pg_query($this->m_link_id, "lock table $table") or $this->halt("cannot lock table $table");
             } else {
                 $result = 1;
@@ -177,32 +183,36 @@ class PgSqlDb extends Db
             /* return result */
             return $result;
         }
+
         return 0;
     }
 
     /**
-     * Unlock table(s) in the database
+     * Unlock table(s) in the database.
+     *
      * @return result of unlocking
      */
-    function unlock()
+    public function unlock()
     {
         /* connect first */
         if ($this->connect() == self::DB_SUCCESS) {
             /* unlock */
-            $result = @pg_query($this->m_link_id, "commit") or $this->halt("cannot unlock tables");
+            $result = @pg_query($this->m_link_id, 'commit') or $this->halt('cannot unlock tables');
 
             /* return result */
             return $result;
         }
+
         return 0;
     }
 
     /**
      * Evaluate the result; which rows were
      * affected by the query.
+     *
      * @return affected rows
      */
-    function affected_rows()
+    public function affected_rows()
     {
         return @pg_affected_rows($this->m_link_id);
     }
@@ -210,9 +220,10 @@ class PgSqlDb extends Db
     /**
      * Evaluate the result; how many rows
      * were affected by the query.
+     *
      * @return number of affected rows
      */
-    function num_rows()
+    public function num_rows()
     {
         return @pg_num_fields($this->m_query_id);
     }
@@ -220,9 +231,10 @@ class PgSqlDb extends Db
     /**
      * Evaluatie the result; how many fields
      * where affected by the query.
+     *
      * @return number of affected fields
      */
-    function num_fields()
+    public function num_fields()
     {
         return @pg_numfields($this->m_query_id);
     }
@@ -230,14 +242,16 @@ class PgSqlDb extends Db
     /**
      * Get the next sequence number
      * of a certain sequence.
+     *
      * @param string $sequence the sequence name
+     *
      * @return the next sequence id
      */
-    function nextid($sequence)
+    public function nextid($sequence)
     {
         /* connect first */
         if ($this->connect() == self::DB_SUCCESS) {
-            $sequencename = Config::getGlobal("database_sequenceprefix") . $sequence;
+            $sequencename = Config::getGlobal('database_sequenceprefix').$sequence;
             /* get sequence number and increment */
             $query = "SELECT nextval('$sequencename') AS nextid";
 
@@ -249,7 +263,7 @@ class PgSqlDb extends Db
             // should be used to specify the sequence prefix.
             if (empty($id)) {
                 /* get sequence number and increment */
-                $query = "SELECT nextval('" . $sequence . "') AS nextid";
+                $query = "SELECT nextval('".$sequence."') AS nextid";
 
                 /* execute query */
                 $id = @pg_query($this->m_link_id, $query);
@@ -258,11 +272,11 @@ class PgSqlDb extends Db
             /* error? */
             if (empty($id)) {
                 /* create sequence */
-                $query = "CREATE SEQUENCE " . $sequencename;
+                $query = 'CREATE SEQUENCE '.$sequencename;
                 $id = @pg_query($this->m_link_id, $query);
 
                 /* try again */
-                $query = "SELECT nextval('" . $sequencename . "') AS nextid";
+                $query = "SELECT nextval('".$sequencename."') AS nextid";
 
                 $id = @pg_query($this->m_link_id,
                     $query) or $this->halt("cannot get nextval() of sequence '$sequencename'");
@@ -274,30 +288,33 @@ class PgSqlDb extends Db
             }
 
             /* get nextid */
-            $result = @pg_fetch_result($id, 0, "nextid");
+            $result = @pg_fetch_result($id, 0, 'nextid');
 
             /* return id */
             return $result;
         }
+
         return 0;
     }
 
     /**
-     * Return the meta data of a certain table
+     * Return the meta data of a certain table.
+     *
      * @param string $table the table name
-     * @param bool $full all meta data or not
+     * @param bool   $full  all meta data or not
+     *
      * @return array with meta data
      */
-    function metadata($table, $full = false)
+    public function metadata($table, $full = false)
     {
-        $ddl = Ddl::create("pgsql");
+        $ddl = Ddl::create('pgsql');
 
-        if (strpos($table, ".") <> false) {
+        if (strpos($table, '.') != false) {
             // there is a period in the table, so we split out the schema name.
-            $schema = substr($table, 0, strpos($table, "."));
-            $table = substr($table, strpos($table, ".") + 1);
+            $schema = substr($table, 0, strpos($table, '.'));
+            $table = substr($table, strpos($table, '.') + 1);
             $schema_condition = "AND n.nspname = '$schema' ";
-            $schema_join = " LEFT JOIN pg_namespace n ON (n.oid = c.relnamespace)";
+            $schema_join = ' LEFT JOIN pg_namespace n ON (n.oid = c.relnamespace)';
         } else {
             //no period in the name, so there is no schema
             $schema_condition = '';
@@ -365,22 +382,22 @@ class PgSqlDb extends Db
             } else {
                 if (Tools::atk_strlen($row['default']) > 0) {
                     // date/time/datetime
-                    if (strtolower($row['default']) == "now" && in_array($meta[$i]['gentype'],
-                            array("date", "time", "datetime"))
+                    if (strtolower($row['default']) == 'now' && in_array($meta[$i]['gentype'],
+                            array('date', 'time', 'datetime'))
                     ) {
-                        $meta[$i]['default'] = "NOW";
+                        $meta[$i]['default'] = 'NOW';
                     } // numbers
                     else {
-                        if (in_array($meta[$i]['gentype'], array("number", "decimal"))) {
+                        if (in_array($meta[$i]['gentype'], array('number', 'decimal'))) {
                             $meta[$i]['default'] = $row['default'];
                         } // strings
                         else {
-                            if (in_array($meta[$i]['gentype'], array("string", "text"))) {
+                            if (in_array($meta[$i]['gentype'], array('string', 'text'))) {
                                 $meta[$i]['default'] = $row['default'];
                             } // boolean
                             else {
-                                if ($meta[$i]['gentype'] == "boolean") {
-                                    $meta[$i]['default'] = strtolower($row['default']) == "t" ? 1
+                                if ($meta[$i]['gentype'] == 'boolean') {
+                                    $meta[$i]['default'] = strtolower($row['default']) == 't' ? 1
                                         : 0;
                                 }
                             }
@@ -390,7 +407,7 @@ class PgSqlDb extends Db
             }
 
             if ($full) {
-                $meta["meta"][$row['name']] = &$meta[$i];
+                $meta['meta'][$row['name']] = &$meta[$i];
             }
         }
 
@@ -402,20 +419,20 @@ class PgSqlDb extends Db
     }
 
     /**
-     * Return the available table names
+     * Return the available table names.
+     *
      * @return array with table names etc.
      */
-    function table_names()
+    public function table_names()
     {
         /* query */
         $this->query("SELECT relname FROM pg_class WHERE relkind = 'r' AND NOT relname LIKE 'pg_%' AND NOT relname LIKE 'sql_%'");
 
-
         $result = array();
-        for ($i = 0; $info = @pg_fetch_row($this->m_query_id, $i); $i++) {
-            $result[$i]["table_name"] = $info[0];
-            $result[$i]["tablespace_name"] = $this->m_database;
-            $result[$i]["database"] = $this->m_database;
+        for ($i = 0; $info = @pg_fetch_row($this->m_query_id, $i); ++$i) {
+            $result[$i]['table_name'] = $info[0];
+            $result[$i]['tablespace_name'] = $this->m_database;
+            $result[$i]['database'] = $this->m_database;
         }
 
         /* return result */
@@ -426,33 +443,33 @@ class PgSqlDb extends Db
      * Check if table exists.
      *
      * @param string $table the table to find
+     *
      * @return bool true if found, false if not found
      */
-    function tableExists($table)
+    public function tableExists($table)
     {
-        $res = $this->getrows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('" . $table . "')");
-        return (count($res) == 0 ? false : true);
+        $res = $this->getrows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('".$table."')");
+
+        return count($res) == 0 ? false : true;
     }
 
     /**
      * This function indicates what searchmodes the database supports.
+     *
      * @return array with search modes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         return array(
-            "exact",
-            "substring",
-            "wildcard",
-            "regexp",
-            "greaterthan",
-            "greaterthanequal",
-            "lessthan",
-            "lessthanequal",
-            "between"
+            'exact',
+            'substring',
+            'wildcard',
+            'regexp',
+            'greaterthan',
+            'greaterthanequal',
+            'lessthan',
+            'lessthanequal',
+            'between',
         );
     }
-
 }
-
-

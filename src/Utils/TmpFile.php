@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
+
+namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -14,9 +16,6 @@ use Sintattica\Atk\Core\Config;
  * Note: superseded for caching by atkCache.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage utils
- *
  */
 class TmpFile
 {
@@ -48,7 +47,7 @@ class TmpFile
      * base directory. This allows
      * you to set a different directory
      * then the default atktmp dir for
-     * writing tmp files
+     * writing tmp files.
      *
      * @var string
      */
@@ -71,11 +70,12 @@ class TmpFile
      *
      * @param string $filename
      * @param string $baseDirectory directory for writing (default atktempdir)
+     *
      * @return TmpFile
      */
     public function create($filename, $baseDirectory = null)
     {
-        $obj = new TmpFile($filename);
+        $obj = new self($filename);
 
         if (null !== $baseDirectory) {
             $obj->setBasedir($baseDirectory);
@@ -97,6 +97,7 @@ class TmpFile
         if ($this->exists()) {
             return file($this->getPath());
         }
+
         return false;
     }
 
@@ -109,12 +110,13 @@ class TmpFile
     public function readFile()
     {
         if ($this->exists()) {
-            if (function_exists("file_get_contents")) {
+            if (function_exists('file_get_contents')) {
                 return file_get_contents($this->getPath());
             } else {
                 return implode(null, $this->read());
             }
         }
+
         return false;
     }
 
@@ -125,11 +127,13 @@ class TmpFile
      */
     public function fpassthru()
     {
-        if ($this->open("r")) {
+        if ($this->open('r')) {
             fpassthru($this->m_fp);
             $this->close();
+
             return true;
         }
+
         return false;
     }
 
@@ -137,15 +141,18 @@ class TmpFile
      * Write data to the file (creates the file if it does not exist and override any existing content).
      *
      * @param string $data Data to write to the file
+     *
      * @return bool Wether writing succeeded
      */
     public function writeFile($data)
     {
-        if ($this->open("w")) {
+        if ($this->open('w')) {
             $this->write($data);
             $this->close();
+
             return true;
         }
+
         return false;
     }
 
@@ -153,14 +160,15 @@ class TmpFile
      * Exports a PHP variable to a file, makes the file a PHP file.
      *
      * @param string $varname Name of the variable
-     * @param string $data Variable data
+     * @param string $data    Variable data
+     *
      * @return bool Wether the action succeeded
      */
     public function writeAsPhp($varname, $data)
     {
         $res = "<?php\n";
-        $res .= "\$" . $varname . " = " . var_export($data, true);
-        $res .= ";";
+        $res .= '$'.$varname.' = '.var_export($data, true);
+        $res .= ';';
 
         return $this->writeFile($res);
     }
@@ -169,6 +177,7 @@ class TmpFile
      * Append data to a file.
      *
      * @param string $data Data to append
+     *
      * @return bool Wether appending succeeded
      */
     public function appendToFile($data)
@@ -176,8 +185,10 @@ class TmpFile
         if ($this->open('a')) {
             $this->write($data);
             $this->close();
+
             return true;
         }
+
         return false;
     }
 
@@ -189,6 +200,7 @@ class TmpFile
     public function remove()
     {
         $this->close();
+
         return unlink($this->getPath());
     }
 
@@ -215,11 +227,12 @@ class TmpFile
         if ($this->exists()) {
             return filectime($this->getPath());
         }
+
         return false;
     }
 
     /**
-     * Returns the file age in seconds
+     * Returns the file age in seconds.
      *
      * @return int Seconds of file age.
      */
@@ -227,13 +240,14 @@ class TmpFile
     {
         $filectime = $this->filectime();
         if ($filectime != false) {
-            return (time() - $filectime);
+            return time() - $filectime;
         }
+
         return false;
     }
 
     /**
-     * Get the complete path of the file
+     * Get the complete path of the file.
      *
      * Example:
      * <code>$file->getPath(); => ./atktmp/tempdir/tempfile.inc</code>
@@ -242,39 +256,42 @@ class TmpFile
      */
     public function getPath()
     {
-        return $this->getBasedir() . $this->m_filename;
+        return $this->getBasedir().$this->m_filename;
     }
 
     /**
      * Set the base directory for writing
-     * instead of the default atktmp dir
+     * instead of the default atktmp dir.
      *
      * @param string $dir base directory
+     *
      * @return bool
      */
     public function setBasedir($dir)
     {
         if (!is_dir($dir) || !is_writable($dir)) {
-            $err = 'TmpFile:: Unable to set ' . $dir .
+            $err = 'TmpFile:: Unable to set '.$dir.
                 'as basedir. Directory does not exists or isnot writable';
 
             Tools::atkwarning($err);
+
             return false;
         }
         $this->m_basedir = $dir;
+
         return true;
     }
 
     /**
      * Get the base directory for writing
-     * Will default to the atktmp dir
-     *
+     * Will default to the atktmp dir.
      */
     public function getBasedir()
     {
         if (!$this->m_basedir) {
             $this->m_basedir = Config::getGlobal('atktempdir');
         }
+
         return $this->m_basedir;
     }
 
@@ -286,11 +303,12 @@ class TmpFile
      * And create the directory structure if we are writing to the file.
      *
      * @param string $mode Mode to open the file with
+     *
      * @return bool Wether opening succeeded
      */
     public function open($mode)
     {
-        if ($this->m_mode != "" && $this->m_mode != $mode) {
+        if ($this->m_mode != '' && $this->m_mode != $mode) {
             // file is already open in different mode, close first
             $this->close();
         }
@@ -302,6 +320,7 @@ class TmpFile
             $this->m_fp = fopen($this->getPath(), $mode);
             $this->m_mode = $mode;
         }
+
         return !is_null($this->m_fp);
     }
 
@@ -309,6 +328,7 @@ class TmpFile
      * Write data to the current (open) file.
      *
      * @param string $data Data to write to the file
+     *
      * @return mixed Number of bytes written or false for error
      */
     public function write($data)
@@ -317,7 +337,7 @@ class TmpFile
     }
 
     /**
-     * Close the current (open) file
+     * Close the current (open) file.
      *
      * @return bool Wether we could close the file
      */
@@ -325,10 +345,12 @@ class TmpFile
     {
         if (!is_null($this->m_fp)) {
             fclose($this->m_fp);
-            $this->m_mode = "";
+            $this->m_mode = '';
             $this->m_fp = null;
+
             return true;
         }
+
         return false;
     }
 
@@ -344,19 +366,19 @@ class TmpFile
         return self::mkdir(dirname($this->getPath()));
     }
 
-
     /**
      * @param $path string path to create
+     *
      * @return bool true if success
      */
     public static function mkdir($path)
     {
         $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
-        $dirs = explode("/", $path);
+        $dirs = explode('/', $path);
 
-        $path = "";
+        $path = '';
         foreach ($dirs as $element) {
-            $path .= $element . "/";
+            $path .= $element.'/';
             if (!is_dir($path) && !mkdir($path)) {
                 return false;
             }
@@ -364,7 +386,4 @@ class TmpFile
 
         return true;
     }
-
 }
-
-

@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Language;
@@ -8,14 +10,12 @@ use Sintattica\Atk\Core\Language;
  * It extends ListAttribute.
  *
  * @author Kevin Lwinmoe <kevin.lwinmoe@gmail.com>
- * @package atk
- * @subpackage attributes
  */
 class StateAttribute extends ListAttribute
 {
-    var $m_state = array();
-    var $m_states = array();
-    var $m_usa_states = array(
+    public $m_state = array();
+    public $m_states = array();
+    public $m_usa_states = array(
         'AL',
         'AK',
         'AS',
@@ -74,10 +74,9 @@ class StateAttribute extends ListAttribute
         'WA',
         'WV',
         'WI',
-        'WY'
+        'WY',
     );
-    var $m_defaulttocurrent = true;
-
+    public $m_defaulttocurrent = true;
 
     /**
      * Constructor
@@ -86,22 +85,21 @@ class StateAttribute extends ListAttribute
      * state_abbrev is the database attribute that holds state abbrevation data as AK,CA,NY
      * It will display the full state name.
      *
-     * @param string $name Name of the attribute
-     * @param string $switch Choose usa for USA states
-     * @param int $flags Flags for the attribute
-     * @param bool $defaulttocurrent Set the default selected state to the
-     *                               current state based on the atk language
+     * @param string $name             Name of the attribute
+     * @param string $switch           Choose usa for USA states
+     * @param int    $flags            Flags for the attribute
+     * @param bool   $defaulttocurrent Set the default selected state to the
+     *                                 current state based on the atk language
      */
-    function __construct(
+    public function __construct(
         $name,
-        $switch = "usa",
+        $switch = 'usa',
         $flags = 0,
         $defaulttocurrent = true
     ) {
-
         if (is_numeric($switch)) {
             $flags = $switch;
-            $switch = "usa";
+            $switch = 'usa';
         }
 
         // When switch is not user get country options
@@ -119,116 +117,120 @@ class StateAttribute extends ListAttribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array $record The record that holds the value for this attribute.
+     * @param array  $record      The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     * @return String A piece of htmlcode for editing this attribute
+     * @param string $mode        The mode we're in ('add' or 'edit')
+     *
+     * @return string A piece of htmlcode for editing this attribute
      */
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) {
             $record[$this->fieldName()] = strtoupper(Language::getLanguage());
         }
+
         return parent::edit($record, $fieldprefix, $mode);
     }
 
     /**
-     * Fill the state array
-     *
+     * Fill the state array.
      */
-    function fillStateArray()
+    public function fillStateArray()
     {
-        $this->m_state['AL']['en'] = "ALABAMA";
-        $this->m_state['AK']['en'] = "ALASKA";
-        $this->m_state['AS']['en'] = "AMERICAN SAMOA";
-        $this->m_state['AZ']['en'] = "ARIZONA";
-        $this->m_state['AR']['en'] = "ARKANSAS";
-        $this->m_state['CA']['en'] = "CALIFORNIA";
-        $this->m_state['CO']['en'] = "COLORADO";
-        $this->m_state['CT']['en'] = "CONNECTICUT";
-        $this->m_state['DE']['en'] = "DELAWARE";
-        $this->m_state['DC']['en'] = "DISTRICT OF COLUMBIA";
-        $this->m_state['FM']['en'] = "FEDERATED STATES OF MICRONESIA";
-        $this->m_state['FL']['en'] = "FLORIDA";
-        $this->m_state['GA']['en'] = "GEORGIA";
-        $this->m_state['GU']['en'] = "GUAM";
-        $this->m_state['HI']['en'] = "HAWAII";
-        $this->m_state['ID']['en'] = "IDAHO";
-        $this->m_state['IL']['en'] = "ILLINOIS";
-        $this->m_state['IN']['en'] = "INDIANA";
-        $this->m_state['IA']['en'] = "IOWA";
-        $this->m_state['KS']['en'] = "KANSAS";
-        $this->m_state['KY']['en'] = "KENTUCKY";
-        $this->m_state['LA']['en'] = "LOUISIANA";
-        $this->m_state['ME']['en'] = "MAINE";
-        $this->m_state['MH']['en'] = "MARSHALL ISLANDS";
-        $this->m_state['MD']['en'] = "MARYLAND";
-        $this->m_state['MA']['en'] = "MASSACHUSETTS";
-        $this->m_state['MI']['en'] = "MICHIGAN";
-        $this->m_state['MN']['en'] = "MINNESOTA";
-        $this->m_state['MS']['en'] = "MISSISSIPPI";
-        $this->m_state['MO']['en'] = "MISSOURI";
-        $this->m_state['MT']['en'] = "MONTANA";
-        $this->m_state['NE']['en'] = "NEBRASKA";
-        $this->m_state['NV']['en'] = "NEVADA";
-        $this->m_state['NH']['en'] = "NEW HAMPSHIRE";
-        $this->m_state['NJ']['en'] = "NEW JERSEY";
-        $this->m_state['NM']['en'] = "NEW MEXICO";
-        $this->m_state['NY']['en'] = "NEW YORK";
-        $this->m_state['NC']['en'] = "NORTH CAROLINA";
-        $this->m_state['ND']['en'] = "NORTH DAKOTA";
-        $this->m_state['MP']['en'] = "NORTHERN MARIANA ISLANDS";
-        $this->m_state['OH']['en'] = "OHIO";
-        $this->m_state['OK']['en'] = "OKLAHOMA";
-        $this->m_state['OR']['en'] = "OREGON";
-        $this->m_state['PW']['en'] = "PALAU";
-        $this->m_state['PA']['en'] = "PENNSYLVANIA";
-        $this->m_state['PR']['en'] = "PUERTO RICO";
-        $this->m_state['RI']['en'] = "RHODE ISLAND";
-        $this->m_state['SC']['en'] = "SOUTH CAROLINA";
-        $this->m_state['SD']['en'] = "SOUTH DAKOTA";
-        $this->m_state['TN']['en'] = "TENNESSEE";
-        $this->m_state['TX']['en'] = "TEXAS";
-        $this->m_state['UT']['en'] = "UTAH";
-        $this->m_state['VT']['en'] = "VERMONT";
-        $this->m_state['VI']['en'] = "VIRGIN ISLANDS";
-        $this->m_state['VA']['en'] = "VIRGINIA";
-        $this->m_state['WA']['en'] = "WASHINGTON";
-        $this->m_state['WV']['en'] = "WEST VIRGINIA";
-        $this->m_state['WI']['en'] = "WISCONSIN";
-        $this->m_state['WY']['en'] = "WYOMING";
+        $this->m_state['AL']['en'] = 'ALABAMA';
+        $this->m_state['AK']['en'] = 'ALASKA';
+        $this->m_state['AS']['en'] = 'AMERICAN SAMOA';
+        $this->m_state['AZ']['en'] = 'ARIZONA';
+        $this->m_state['AR']['en'] = 'ARKANSAS';
+        $this->m_state['CA']['en'] = 'CALIFORNIA';
+        $this->m_state['CO']['en'] = 'COLORADO';
+        $this->m_state['CT']['en'] = 'CONNECTICUT';
+        $this->m_state['DE']['en'] = 'DELAWARE';
+        $this->m_state['DC']['en'] = 'DISTRICT OF COLUMBIA';
+        $this->m_state['FM']['en'] = 'FEDERATED STATES OF MICRONESIA';
+        $this->m_state['FL']['en'] = 'FLORIDA';
+        $this->m_state['GA']['en'] = 'GEORGIA';
+        $this->m_state['GU']['en'] = 'GUAM';
+        $this->m_state['HI']['en'] = 'HAWAII';
+        $this->m_state['ID']['en'] = 'IDAHO';
+        $this->m_state['IL']['en'] = 'ILLINOIS';
+        $this->m_state['IN']['en'] = 'INDIANA';
+        $this->m_state['IA']['en'] = 'IOWA';
+        $this->m_state['KS']['en'] = 'KANSAS';
+        $this->m_state['KY']['en'] = 'KENTUCKY';
+        $this->m_state['LA']['en'] = 'LOUISIANA';
+        $this->m_state['ME']['en'] = 'MAINE';
+        $this->m_state['MH']['en'] = 'MARSHALL ISLANDS';
+        $this->m_state['MD']['en'] = 'MARYLAND';
+        $this->m_state['MA']['en'] = 'MASSACHUSETTS';
+        $this->m_state['MI']['en'] = 'MICHIGAN';
+        $this->m_state['MN']['en'] = 'MINNESOTA';
+        $this->m_state['MS']['en'] = 'MISSISSIPPI';
+        $this->m_state['MO']['en'] = 'MISSOURI';
+        $this->m_state['MT']['en'] = 'MONTANA';
+        $this->m_state['NE']['en'] = 'NEBRASKA';
+        $this->m_state['NV']['en'] = 'NEVADA';
+        $this->m_state['NH']['en'] = 'NEW HAMPSHIRE';
+        $this->m_state['NJ']['en'] = 'NEW JERSEY';
+        $this->m_state['NM']['en'] = 'NEW MEXICO';
+        $this->m_state['NY']['en'] = 'NEW YORK';
+        $this->m_state['NC']['en'] = 'NORTH CAROLINA';
+        $this->m_state['ND']['en'] = 'NORTH DAKOTA';
+        $this->m_state['MP']['en'] = 'NORTHERN MARIANA ISLANDS';
+        $this->m_state['OH']['en'] = 'OHIO';
+        $this->m_state['OK']['en'] = 'OKLAHOMA';
+        $this->m_state['OR']['en'] = 'OREGON';
+        $this->m_state['PW']['en'] = 'PALAU';
+        $this->m_state['PA']['en'] = 'PENNSYLVANIA';
+        $this->m_state['PR']['en'] = 'PUERTO RICO';
+        $this->m_state['RI']['en'] = 'RHODE ISLAND';
+        $this->m_state['SC']['en'] = 'SOUTH CAROLINA';
+        $this->m_state['SD']['en'] = 'SOUTH DAKOTA';
+        $this->m_state['TN']['en'] = 'TENNESSEE';
+        $this->m_state['TX']['en'] = 'TEXAS';
+        $this->m_state['UT']['en'] = 'UTAH';
+        $this->m_state['VT']['en'] = 'VERMONT';
+        $this->m_state['VI']['en'] = 'VIRGIN ISLANDS';
+        $this->m_state['VA']['en'] = 'VIRGINIA';
+        $this->m_state['WA']['en'] = 'WASHINGTON';
+        $this->m_state['WV']['en'] = 'WEST VIRGINIA';
+        $this->m_state['WI']['en'] = 'WISCONSIN';
+        $this->m_state['WY']['en'] = 'WYOMING';
     }
 
     /**
-     * Get the state value array
+     * Get the state value array.
      *
      * @param string $switch
+     *
      * @return array with state values
      */
-    function getStateValueArray($switch)
+    public function getStateValueArray($switch)
     {
-        if ($switch == "usa") {
+        if ($switch == 'usa') {
             return $this->m_usa_states;
         } else {
             $tmp_array = array();
             foreach ($this->m_state as $iso => $value) {
                 $tmp_array[] = $iso;
             }
+
             return $tmp_array;
         }
     }
 
     /**
-     * Get the state option array
+     * Get the state option array.
      *
      * @param string $switch
+     *
      * @return array with state options
      */
-    function getStateOptionArray($switch)
+    public function getStateOptionArray($switch)
     {
         $tmp_array = array();
-        if ($switch == "usa") {
+        if ($switch == 'usa') {
             foreach ($this->m_usa_states as $iso) {
                 $tmp_array[] = $this->getStateOption($iso);
             }
@@ -237,19 +239,19 @@ class StateAttribute extends ListAttribute
                 $tmp_array[] = $value;
             }
         }
+
         return $tmp_array;
     }
 
     /**
-     * Get the state option
+     * Get the state option.
      *
      * @param string $iso_code
-     * @return String The state option
+     *
+     * @return string The state option
      */
-    function getStateOption($iso_code)
+    public function getStateOption($iso_code)
     {
         return $this->m_state[$iso_code]['en'];
     }
-
 }
-

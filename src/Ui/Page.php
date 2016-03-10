@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Ui;
+<?php
+
+namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -15,9 +17,6 @@ use Sintattica\Atk\Core\Config;
  *       scripts may need an instance per page generated.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage ui
- *
  */
 class Page
 {
@@ -31,70 +30,70 @@ class Page
     const HTML_STRICT = 7;  // Shortcut
     const HTML_PARTIAL = 8;                    // Partial (only content, this flag can't be ANDed!)
 
-    /**
+    /*
      * The list of javascript files to load.
      * @access private
      * @var array
      */
-    var $m_metacode = array();
+    public $m_metacode = array();
 
-    /**
+    /*
      * The list of javascript files to load.
      * @access private
      * @var array
      */
-    var $m_scriptfiles = array();
+    public $m_scriptfiles = array();
 
-    /**
+    /*
      * List of javascript code statements to include in the header.
      * @access private
      * @var array
      */
-    var $m_scriptcode = array("before" => array(), "after" => array());
+    public $m_scriptcode = array('before' => array(), 'after' => array());
 
-    /**
+    /*
      * List of javascript code statements to execute when a form on
      * the page is submitted.
      * @access private
      * @var array
      */
-    var $m_submitscripts = array();
+    public $m_submitscripts = array();
 
-    /**
+    /*
      * List of javascript code statements to execute when the page
      * is loaded.
      * @access private
      * @var array
      */
-    var $m_loadscripts = array();
+    public $m_loadscripts = array();
 
-    /**
+    /*
      * List of stylesheet files to load.
      * @access private
      * @var array
      */
-    var $m_stylesheets = array();
+    public $m_stylesheets = array();
 
-    /**
+    /*
      * List of style statements to include in the header.
      * @access private
      * @var array
      */
-    var $m_stylecode = array();
+    public $m_stylecode = array();
 
-    /**
+    /*
      * The content to put on the page.
      * @access private
      * @var String
      */
-    var $m_content = "";
+    public $m_content = '';
 
-    /**
+    /*
      * The hidden variables for the page
      * @access private
      * @var array
      */
-    var $m_hiddenvars = array();
+    public $m_hiddenvars = array();
 
     /**
      * Page title.
@@ -105,15 +104,17 @@ class Page
 
     /**
      * Retrieve the one-and-only Page instance.
+     *
      * @return Page
      */
-    static public function &getInstance()
+    public static function &getInstance()
     {
         static $s_page = null;
         if ($s_page == null) {
-            $s_page = new Page();
-            Tools::atkdebug("Created a new Page instance");
+            $s_page = new self();
+            Tools::atkdebug('Created a new Page instance');
         }
+
         return $s_page;
     }
 
@@ -123,41 +124,42 @@ class Page
     public function __construct()
     {
         // register default scripts
-        $assetsUrl = Config::getGlobal("assets_url");
+        $assetsUrl = Config::getGlobal('assets_url');
 
-        $this->register_script($assetsUrl . "javascript/prototype/prototype.js");
-        $this->register_script($assetsUrl . "javascript/prototype-ext.js");
-        $this->register_script($assetsUrl . "javascript/scriptaculous/scriptaculous.js");
-        $this->register_script($assetsUrl . "javascript/scriptaculous-ext.js");
-        $this->register_script($assetsUrl . "javascript/class.atktools.js");
-        $this->register_script($assetsUrl . "javascript/atkbusy.js");
-        $this->register_script($assetsUrl . "javascript/atk.min.js");
+        $this->register_script($assetsUrl.'javascript/prototype/prototype.js');
+        $this->register_script($assetsUrl.'javascript/prototype-ext.js');
+        $this->register_script($assetsUrl.'javascript/scriptaculous/scriptaculous.js');
+        $this->register_script($assetsUrl.'javascript/scriptaculous-ext.js');
+        $this->register_script($assetsUrl.'javascript/class.atktools.js');
+        $this->register_script($assetsUrl.'javascript/atkbusy.js');
+        $this->register_script($assetsUrl.'javascript/atk.min.js');
 
-        $this->register_style($assetsUrl . "styles/style.css");
+        $this->register_style($assetsUrl.'styles/style.css');
     }
 
     /**
      * Register a javascript file to be included.
      *
      * If called twice for the same filename, the file is loaded only once.
-     * @param string $file The (relative path and) filename of the javascript
-     *                     file.
+     *
+     * @param string $file   The (relative path and) filename of the javascript
+     *                       file.
      * @param string $before The (partial) name of a script that this script
      *                       should be loaded in front of. This can be used
      *                       to inject a script before another script, or to
      *                       avoid conflicts. Usually, this parameter is not
      *                       needed.
      */
-    function register_script($file, $before = "")
+    public function register_script($file, $before = '')
     {
         if (!in_array($file, $this->m_scriptfiles)) {
-            if ($before == "") {
+            if ($before == '') {
                 $this->m_scriptfiles[] = $file;
             } else {
                 // lookup the dependency and inject script right before it.
                 $result = array();
                 $injected = false;
-                for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; $i++) {
+                for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; ++$i) {
                     if (stristr($this->m_scriptfiles[$i], $before) !== false) {
                         // inject the new one here.
                         $result[] = $file;
@@ -175,23 +177,22 @@ class Page
     }
 
     /**
-     * Unregister all registered javascripts
-     *
+     * Unregister all registered javascripts.
      */
-    function unregister_all_scripts()
+    public function unregister_all_scripts()
     {
         $this->m_scriptfiles = array();
     }
 
     /**
-     * Unregister a javascript file
+     * Unregister a javascript file.
      *
      * @param string $name The (partial) name of the script to remove
      */
-    function unregister_script($name)
+    public function unregister_script($name)
     {
         $removed = false;
-        for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; ++$i) {
             if (stristr($this->m_scriptfiles[$i], $name) !== false) {
                 unset($this->m_scriptfiles[$i]);
                 $removed = true;
@@ -203,11 +204,11 @@ class Page
     }
 
     /**
-     * Return all javascript files
+     * Return all javascript files.
      *
      * @return array contain file paths
      */
-    function getScripts()
+    public function getScripts()
     {
         return $this->m_scriptfiles;
     }
@@ -219,10 +220,11 @@ class Page
      * The method has a duplicate check. Registering the exact same statement
      * twice, will result in the statement only being rendered and executed
      * once.
-     * @param string $code The javascript code to place in the header.
-     * @param Boolean $before Include the script before the javascript files
+     *
+     * @param string $code   The javascript code to place in the header.
+     * @param bool   $before Include the script before the javascript files
      */
-    function register_scriptcode($code, $before = false)
+    public function register_scriptcode($code, $before = false)
     {
         $element = ($before ? 'before' : 'after');
         if (!in_array($code, $this->m_scriptcode[$element])) {
@@ -233,11 +235,13 @@ class Page
     /**
      * Register a javascript code statement that is executed when a form on
      * the page is submitted.
+     *
      * @todo This is inconsequent, if multiple forms are present, each should
      *       have its own submitscripts. Should be moved to an atkForm class.
+     *
      * @param string $code The javascript code fragment to execute on submit.
      */
-    function register_submitscript($code)
+    public function register_submitscript($code)
     {
         if (!in_array($code, $this->m_submitscripts)) {
             $this->m_submitscripts[] = $code;
@@ -254,10 +258,11 @@ class Page
 
     /**
      * Register a javascript code statement that is executed on pageload.
-     * @param string $code The javascript code fragment to execute on load.
-     * @param int $offset
+     *
+     * @param string $code   The javascript code fragment to execute on load.
+     * @param int    $offset
      */
-    function register_loadscript($code, $offset = null)
+    public function register_loadscript($code, $offset = null)
     {
         if (!in_array($code, $this->m_loadscripts) && $offset === null) {
             $this->m_loadscripts[] = $code;
@@ -269,11 +274,11 @@ class Page
     }
 
     /**
-     * Return all javascript codes in an array
+     * Return all javascript codes in an array.
      *
      * @return array
      */
-    function getScriptCodes()
+    public function getScriptCodes()
     {
         $scriptCodes = array_merge($this->m_scriptcode['before'], $this->m_scriptcode['after']);
         $scriptCodes[] = $this->_getGlobalSubmitScriptCode();
@@ -288,10 +293,11 @@ class Page
      * This method has a duplicate check. Calling it with the same stylesheet
      * more than once, will still result in only one single include of the
      * stylesheet.
-     * @param string $file The (relative path and) filename of the stylesheet.
+     *
+     * @param string $file  The (relative path and) filename of the stylesheet.
      * @param string $media The stylesheet media (defaults to 'all').
      */
-    function register_style($file, $media = 'all')
+    public function register_style($file, $media = 'all')
     {
         if (empty($media)) {
             $media = 'all';
@@ -307,7 +313,7 @@ class Page
      *
      * @param string $file The (relative path and) filename of the stylesheet.
      */
-    function unregister_style($file)
+    public function unregister_style($file)
     {
         if (array_key_exists($file, $this->m_stylesheets)) {
             unset($this->m_stylesheets[$file]);
@@ -315,11 +321,11 @@ class Page
     }
 
     /**
-     * Return all stylesheet files
+     * Return all stylesheet files.
      *
      * @return array contain file paths
      */
-    function getStyles()
+    public function getStyles()
     {
         return $this->m_stylesheets;
     }
@@ -327,10 +333,11 @@ class Page
     /**
      * Register Cascading Style Sheet fragment that will be included in the
      * page header.
+     *
      * @param string $code The Cascading Style Sheet code fragment to place in
      *                     the header.
      */
-    function register_stylecode($code)
+    public function register_stylecode($code)
     {
         if (!in_array($code, $this->m_stylecode)) {
             $this->m_stylecode[] = $code;
@@ -338,11 +345,11 @@ class Page
     }
 
     /**
-     * Return all style codes
+     * Return all style codes.
      *
      * @return array
      */
-    function getStyleCodes()
+    public function getStyleCodes()
     {
         return $this->m_stylecode;
     }
@@ -350,10 +357,11 @@ class Page
     /**
      * Register hidden variables. These will be accessible to javascript and DHTML functions/scripts
      * but will not be shown to the user unless he/she has a very, very old browser
-     * that is not capable of rendering CSS
+     * that is not capable of rendering CSS.
+     *
      * @param array $hiddenvars the hiddenvariables we want to register
      */
-    function register_hiddenvars($hiddenvars)
+    public function register_hiddenvars($hiddenvars)
     {
         foreach ($hiddenvars as $hiddenvarname => $hiddenvarvalue) {
             $this->m_hiddenvars[$hiddenvarname] = $hiddenvarvalue;
@@ -363,61 +371,63 @@ class Page
     /**
      * Generate the HTML header (<head></head>) statement for the page,
      * including all scripts and styles.
+     *
      * @return string The HTML pageheader, including <head> and </head> tags.
      */
-    function head()
+    public function head()
     {
-        $res = "";
+        $res = '';
         $this->addMeta($res);
         $this->addScripts($res);
         $this->addStyles($res);
 
-        $favico = Config::getGlobal("defaultfavico");
-        if ($favico != "") {
-            $res .= '  <link rel="icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
-            $res .= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
+        $favico = Config::getGlobal('defaultfavico');
+        if ($favico != '') {
+            $res .= '  <link rel="icon" href="'.$favico.'" type="image/x-icon" />'."\n";
+            $res .= '  <link rel="shortcut icon" href="'.$favico.'" type="image/x-icon" />'."\n";
         }
 
         return $res;
     }
 
     /**
-     * Adds javascripts from the member variables to HTML output
-     * @param string $res Reference to the HTML output
-     * @param Bool $partial Is this a partial request or a complete request
+     * Adds javascripts from the member variables to HTML output.
+     *
+     * @param string $res     Reference to the HTML output
+     * @param bool   $partial Is this a partial request or a complete request
      */
-    function addScripts(&$res, $partial = false)
+    public function addScripts(&$res, $partial = false)
     {
         $count_scriptcode = count($this->m_scriptcode['before']);
         if ($count_scriptcode > 0) {
-            $res .= '  <script type="text/javascript">' . "\n";
+            $res .= '  <script type="text/javascript">'."\n";
         }
-        $res .= $this->renderScriptCode("before");
+        $res .= $this->renderScriptCode('before');
 
         if ($count_scriptcode > 0) {
             $res .= "  </script>\n";
         }
 
         if (!$partial) {
-            for ($i = 0; $i < count($this->m_scriptfiles); $i++) {
-                $res .= '  <script type="text/javascript" src="' . $this->m_scriptfiles[$i] . '"></script>' . "\n";
+            for ($i = 0; $i < count($this->m_scriptfiles); ++$i) {
+                $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
             }
         } else {
             $files = '';
-            for ($i = 0; $i < count($this->m_scriptfiles); $i++) {
-                $files .= "ATK.Tools.loadScript('" . $this->m_scriptfiles[$i] . "');\n";
+            for ($i = 0; $i < count($this->m_scriptfiles); ++$i) {
+                $files .= "ATK.Tools.loadScript('".$this->m_scriptfiles[$i]."');\n";
             }
 
             if (!empty($files)) {
                 // prepend script files
-                $res = '<script type="text/javascript">' . $files . '</script>' . $res;
+                $res = '<script type="text/javascript">'.$files.'</script>'.$res;
             }
         }
 
         $res .= '  <script type="text/javascript">';
 
         // javascript code.
-        $res .= $this->renderScriptCode("after");
+        $res .= $this->renderScriptCode('after');
 
         $res .= $this->_getGlobalSubmitScriptCode($partial);
         $res .= $this->_getGlobalLoadScriptCode($partial);
@@ -431,28 +441,31 @@ class Page
      * at the end.
      *
      * @param string $position ("before" or "after")
+     *
      * @return string
      */
-    function renderScriptCode($position)
+    public function renderScriptCode($position)
     {
-        $res = "";
-        for ($i = 0, $_i = count($this->m_scriptcode[$position]); $i < $_i; $i++) {
-            $res .= $this->m_scriptcode[$position][$i] . "\n";
+        $res = '';
+        for ($i = 0, $_i = count($this->m_scriptcode[$position]); $i < $_i; ++$i) {
+            $res .= $this->m_scriptcode[$position][$i]."\n";
         }
+
         return $res;
     }
 
     /**
-     * Get the globalSubmit javascript code
+     * Get the globalSubmit javascript code.
      *
      * @param bool $partial Is this a partial request or a complete request
-     * @return String with javascript code
+     *
+     * @return string with javascript code
      */
-    function _getGlobalSubmitScriptCode($partial = false)
+    public function _getGlobalSubmitScriptCode($partial = false)
     {
         // global submit script can only be registered in the original request
         if ($partial) {
-            return "";
+            return '';
         }
 
         $res = "\n    function globalSubmit(form, standardSubmit)\n";
@@ -460,8 +473,8 @@ class Page
         $res .= "      var retval = true; var bag = {};\n";
         $res .= "      if (typeof(preGlobalSubmit) == 'function') { preGlobalSubmit(form, bag, standardSubmit);}\n";
 
-        for ($i = 0, $_i = count($this->m_submitscripts); $i < $_i; $i++) {
-            $res .= "      retval = " . $this->m_submitscripts[$i] . "\n";
+        for ($i = 0, $_i = count($this->m_submitscripts); $i < $_i; ++$i) {
+            $res .= '      retval = '.$this->m_submitscripts[$i]."\n";
             $res .= "      if (retval != true) {\n";
             $res .= "        if (typeof(postGlobalSubmit) == 'function') {\n";
             $res .= "           return postGlobalSubmit(form, bag, retval, standardSubmit);\n";
@@ -473,26 +486,28 @@ class Page
         $res .= "      if (typeof(postGlobalSubmit) == 'function') { return postGlobalSubmit(form, bag, retval, standardSubmit);}\n";
         $res .= "      return retval;\n";
         $res .= "    }\n";
+
         return $res;
     }
 
     /**
-     * Get the globalLoad javascript code
+     * Get the globalLoad javascript code.
      *
      * @param bool $partial Is this a partial request or a complete request
-     * @return String with javascript code
+     *
+     * @return string with javascript code
      */
-    function _getGlobalLoadScriptCode($partial = false)
+    public function _getGlobalLoadScriptCode($partial = false)
     {
         $res = '';
         if (count($this->m_loadscripts)) {
-            $res = "";
+            $res = '';
             if (!$partial) {
                 $res .= "function globalLoad()\n";
                 $res .= "{\n";
             }
 
-            for ($i = 0, $_i = count($this->m_loadscripts); $i < $_i; $i++) {
+            for ($i = 0, $_i = count($this->m_loadscripts); $i < $_i; ++$i) {
                 $res .= "{$this->m_loadscripts[$i]}\n";
             }
 
@@ -501,24 +516,25 @@ class Page
                 $res .= "document.observe('dom:loaded', globalLoad);\n";
             }
         }
+
         return $res;
     }
 
     /**
-     * Add stylesheets and stylecodes to the HMTL output
+     * Add stylesheets and stylecodes to the HMTL output.
      *
-     * @param string $res Reference to the HTML output
-     * @param Bool $partial Is this a partial request or a complete request
+     * @param string $res     Reference to the HTML output
+     * @param bool   $partial Is this a partial request or a complete request
      */
-    function addStyles(&$res, $partial = false)
+    public function addStyles(&$res, $partial = false)
     {
         if (!$partial) {
             foreach ($this->m_stylesheets as $file => $media) {
-                $res .= '  <link href="' . $file . '" rel="stylesheet" type="text/css" media="' . $media . '" />' . "\n";
+                $res .= '  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
             }
 
-            for ($i = 0; $i < count($this->m_stylecode); $i++) {
-                $res .= '<style type="text/css"> ' . $this->m_stylecode[$i] . ' </style>' . "\n";
+            for ($i = 0; $i < count($this->m_stylecode); ++$i) {
+                $res .= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
             }
         } else {
             $files = '';
@@ -528,16 +544,17 @@ class Page
 
             if (!empty($files)) {
                 // prepend stylesheets
-                $res = '<script type="text/javascript">' . $files . '</script>' . $res;
+                $res = '<script type="text/javascript">'.$files.'</script>'.$res;
             }
         }
     }
 
     /**
      * Add content to the page.
+     *
      * @param string $content The content to add to the page.
      */
-    function addContent($content)
+    public function addContent($content)
     {
         $this->m_content .= $content;
     }
@@ -547,7 +564,7 @@ class Page
      *
      * @return string current page content
      */
-    function getContent()
+    public function getContent()
     {
         return $this->m_content;
     }
@@ -557,7 +574,7 @@ class Page
      *
      * @param string $content new page content
      */
-    function setContent($content)
+    public function setContent($content)
     {
         $this->m_content = $content;
     }
@@ -574,18 +591,20 @@ class Page
 
     /**
      * Render the complete page, including head and body.
-     * @param string $title Title of the HTML page.
-     * @param bool|int $flags (bool) Set to true to generate <body> tags. It is useful
-     *                        to set this to false only when rendering content
-     *                        that either already had its own <body></body>
-     *                        statement, or content that needs no body
-     *                        statements, like a frameset. (DEPRICATED !!)
-     *                                              (int) Flags for the render function
-     * @param string $extrabodyprops Extra attributes to add to the <body> tag.
-     * @param string $extra_header HTML code of extra headers to add to the head section
-     * @return String The HTML page, including <html> and </html> tags.
+     *
+     * @param string   $title          Title of the HTML page.
+     * @param bool|int $flags          (bool) Set to true to generate <body> tags. It is useful
+     *                                 to set this to false only when rendering content
+     *                                 that either already had its own <body></body>
+     *                                 statement, or content that needs no body
+     *                                 statements, like a frameset. (DEPRICATED !!)
+     *                                 (int) Flags for the render function
+     * @param string   $extrabodyprops Extra attributes to add to the <body> tag.
+     * @param string   $extra_header   HTML code of extra headers to add to the head section
+     *
+     * @return string The HTML page, including <html> and </html> tags.
      */
-    function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = "", $extra_header = "")
+    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '')
     {
         if ($title == null) {
             $title = $this->m_title != '' ? $this->m_title : Tools::atkText('app_title');
@@ -601,18 +620,16 @@ class Page
             return $this->renderPartial();
         }
 
-
         $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
-
 
         $layout = array();
         $layout['title'] = $title;
         if (Tools::hasFlag($flags, self::HTML_HEADER)) {
-            $layout['head'] = $this->head() . $extra_header;
+            $layout['head'] = $this->head().$extra_header;
         }
         if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $layout['extrabodyprops'] = $extrabodyprops;
-            $layout['body'] = $this->m_content . "\n";
+            $layout['body'] = $this->m_content."\n";
         }
 
         $layout['hiddenvars'] = $this->hiddenVars();
@@ -623,21 +640,23 @@ class Page
     /**
      * Render partial.
      */
-    function renderPartial()
+    public function renderPartial()
     {
         $result = $this->m_content;
         $this->addMeta($result, true);
         $this->addScripts($result, true);
         $this->addStyles($result, true);
+
         return $result;
     }
 
     /**
      * Here we render a hidden div in the page with hidden variables
-     * that we want to make accessible to client side scripts
+     * that we want to make accessible to client side scripts.
+     *
      * @return string a hidden div with the selected ATK variabels
      */
-    function hiddenVars()
+    public function hiddenVars()
     {
         $res = '';
         if ($this->m_hiddenvars) {
@@ -645,6 +664,7 @@ class Page
                 $res .= "\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
             }
         }
+
         return $res;
     }
 
@@ -653,37 +673,35 @@ class Page
      *
      * This is useful to check at the rendering stage of scripts whether there is something to render.
      *
-     * @return boolean true if there is no content in the page, false if there is
+     * @return bool true if there is no content in the page, false if there is
      */
-    function isEmpty()
+    public function isEmpty()
     {
-        return ($this->m_content == "");
+        return $this->m_content == '';
     }
 
     /**
-     * Add a meta tag to the page: <meta ... />
+     * Add a meta tag to the page: <meta ... />.
      *
      * @param string $code
      */
-    function register_metacode($code)
+    public function register_metacode($code)
     {
         $this->m_metacode[] = $code;
     }
 
     /**
-     * Adds meta lines from the member variables to HTML output
-     * @param string $res Reference to the HTML output
-     * @param Bool $partial Is this a partial request or a complete request
+     * Adds meta lines from the member variables to HTML output.
+     *
+     * @param string $res     Reference to the HTML output
+     * @param bool   $partial Is this a partial request or a complete request
      */
-    function addMeta(&$res, $partial = false)
+    public function addMeta(&$res, $partial = false)
     {
         if (!$partial) {
             foreach ($this->m_metacode as $line) {
-                $res .= "  " . $line . "\n";
+                $res .= '  '.$line."\n";
             }
         }
     }
-
 }
-
-

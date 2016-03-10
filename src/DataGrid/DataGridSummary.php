@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\DataGrid;
+<?php
+
+namespace Sintattica\Atk\DataGrid;
 
 use Sintattica\Atk\Utils\StringParser;
 
@@ -7,12 +9,9 @@ use Sintattica\Atk\Utils\StringParser;
  * summary for an ATK data grid.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage datagrid
  */
 class DataGridSummary extends DataGridComponent
 {
-
     /**
      * Renders the summary for the given data grid.
      *
@@ -26,7 +25,7 @@ class DataGridSummary extends DataGridComponent
         $count = $grid->getCount();
 
         if ($count == 0) {
-            return null;
+            return;
         }
 
         if ($limit == -1) {
@@ -46,14 +45,12 @@ class DataGridSummary extends DataGridComponent
             'count' => $count,
             'limit' => $limit,
             'page' => $page,
-            'pages' => $pages
+            'pages' => $pages,
         );
 
         $parser = new StringParser($string);
         $result = $parser->parse($params);
 
-        return '<span class="dgridsummary">' . $result . '</span>';
+        return '<span class="dgridsummary">'.$result.'</span>';
     }
-
 }
-

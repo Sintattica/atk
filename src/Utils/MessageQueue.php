@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
+
+namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Session\SessionManager;
 
@@ -7,13 +9,9 @@ use Sintattica\Atk\Session\SessionManager;
  * at the top of a page.
  *
  * @author Patrick van der Velden <patrick@ibuildings.nl>
- * @package atk
- * @subpackage utils
- *
  */
 class MessageQueue
 {
-
     /**
      * Message queue flags.
      */
@@ -23,7 +21,7 @@ class MessageQueue
     const AMQ_FAILURE = 3;
 
     /**
-     * Retrieve the atkMessageQueue instance
+     * Retrieve the atkMessageQueue instance.
      *
      * @return MessageQueue The instance.
      */
@@ -33,44 +31,48 @@ class MessageQueue
         if ($s_instance == null) {
             $sessionManager = SessionManager::getInstance();
             if (is_object($sessionManager)) { // don't bother to create if session has not yet been initialised
-                $s_instance = new MessageQueue();
+                $s_instance = new self();
             }
         }
+
         return $s_instance;
     }
 
     /**
-     * Constructor
+     * Constructor.
      */
-    function __construct()
+    public function __construct()
     {
-
     }
 
     /**
-     * Add message to queue
+     * Add message to queue.
      *
      * @static
+     *
      * @param string $txt
-     * @param int $type
-     * @return boolean Success
+     * @param int    $type
+     *
+     * @return bool Success
      */
-    function addMessage($txt, $type = self::AMQ_GENERAL)
+    public function addMessage($txt, $type = self::AMQ_GENERAL)
     {
         $instance = self::getInstance();
         if (is_object($instance)) {
             return $instance->_addMessage($txt, $type);
         }
+
         return false;
     }
 
     /**
-     * Get the name of the message type
+     * Get the name of the message type.
      *
      * @param int $type The message type
+     *
      * @return string The name of the message type
      */
-    function _getTypeName($type)
+    public function _getTypeName($type)
     {
         if ($type == self::AMQ_SUCCESS) {
             return 'success';
@@ -88,23 +90,26 @@ class MessageQueue
     }
 
     /**
-     * Add message to queue (private)
+     * Add message to queue (private).
      *
      * @param string $txt
-     * @param int $type
-     * @return boolean Success
+     * @param int    $type
+     *
+     * @return bool Success
      */
-    function _addMessage($txt, $type)
+    public function _addMessage($txt, $type)
     {
         $q = $this->getQueue();
         $q[] = array('message' => $txt, 'type' => $this->_getTypeName($type));
+
         return true;
     }
 
     /**
-     * Get first message from queue and remove it
+     * Get first message from queue and remove it.
      *
      * @static
+     *
      * @return string message
      */
     public static function getMessage()
@@ -113,22 +118,24 @@ class MessageQueue
         if (is_object($instance)) {
             return $instance->_getMessage();
         }
-        return "";
+
+        return '';
     }
 
     /**
-     * Get first message from queue and remove it (private)
+     * Get first message from queue and remove it (private).
      *
      * @return string message
      */
-    function _getMessage()
+    public function _getMessage()
     {
         $q = &$this->getQueue();
+
         return array_shift($q);
     }
 
     /**
-     * Get all messages from queue and empty the queue
+     * Get all messages from queue and empty the queue.
      *
      * @return array messages
      */
@@ -138,37 +145,37 @@ class MessageQueue
         if (is_object($instance)) {
             return $instance->_getMessages();
         }
+
         return array();
     }
 
     /**
-     * Get all messages from queue and empty the queue (private)
+     * Get all messages from queue and empty the queue (private).
      *
      * @return array messages
      */
-    function _getMessages()
+    public function _getMessages()
     {
         $q = &$this->getQueue();
         $queue_copy = $q;
         $q = array();
+
         return $queue_copy;
     }
 
     /**
-     * Get the queue
+     * Get the queue.
      *
      * @return array The message queue
      */
-    function &getQueue()
+    public function &getQueue()
     {
         $sessionmgr = SessionManager::getInstance();
         $session = &$sessionmgr->getSession();
         if (!isset($session['atkmessagequeue'])) {
             $session['atkmessagequeue'] = array();
         }
+
         return $session['atkmessagequeue'];
     }
-
 }
-
-

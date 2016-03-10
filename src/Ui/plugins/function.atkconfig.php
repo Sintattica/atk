@@ -5,8 +5,6 @@
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
- * @package atk
- * @subpackage ui
  *
  * @copyright (c)2004 Ivo Jansch
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
@@ -14,7 +12,6 @@
  * @version $Revision: 4599 $
  * $Id$
  */
-
 use Sintattica\Atk\Core\Config;
 
 /**
@@ -24,5 +21,5 @@ use Sintattica\Atk\Core\Config;
  */
 function smarty_function_atkconfig($params, &$smarty)
 {
-    $smarty->assign($params["smartyvar"], Config::getGlobal($params["var"]));
+    $smarty->assign($params['smartyvar'], Config::getGlobal($params['var']));
 }

@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Core;
+<?php
+
+namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Session\SessionManager;
 
@@ -6,15 +8,14 @@ use Sintattica\Atk\Session\SessionManager;
  * Tree class, used to build trees of nodes.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
  */
 class TreeToolsTree
 {
-    var $m_tree = array();
-    var $m_allnodes = array();
-    var $m_parentless = array(); // Array to keep stuff that can not yet be inserted into the array. 
+    public $m_tree = array();
+    public $m_allnodes = array();
+    public $m_parentless = array(); // Array to keep stuff that can not yet be inserted into the array. 
 
-    function addNode($id, $naam, $parent = 0, $img = "")
+    public function addNode($id, $naam, $parent = 0, $img = '')
     {
         $n = new TreeToolsNode($id, $naam, $img);
         $this->m_allnodes[$id] = &$n;
@@ -41,40 +42,38 @@ class TreeToolsTree
     /**
      * Example render function. Implement your own.
      */
-    function render($tree = "", $level = 0)
+    public function render($tree = '', $level = 0)
     {
         // First time: root tree..
-        if ($tree == "") {
+        if ($tree == '') {
             $tree = $this->m_tree;
         }
-        $res = "";
+        $res = '';
         while (list($id, $objarr) = each($tree)) {
-            $res .= '<tr><td>' . str_repeat("-", (2 * $level)) . " " . $objarr->m_label . '</td></tr>';
+            $res .= '<tr><td>'.str_repeat('-', (2 * $level)).' '.$objarr->m_label.'</td></tr>';
             if (count($objarr->m_sub) > 0) {
                 $res .= $this->render($objarr->m_sub, $level + 1);
             }
         }
+
         return $res;
     }
 
     /**
-     * Pops tree's on the session
+     * Pops tree's on the session.
      */
-    function sessionTree()
+    public function sessionTree()
     {
         global $ATK_VARS;
-        $postTree = $ATK_VARS["atktree"];
+        $postTree = $ATK_VARS['atktree'];
         $sm = SessionManager::getInstance();
-        $sessionTree = $sm->getValue("atktree");
-        if ($postTree != "" && $sessionTree != $postTree) {
-            $sm->globalVar("atktree", $postTree);
+        $sessionTree = $sm->getValue('atktree');
+        if ($postTree != '' && $sessionTree != $postTree) {
+            $sm->globalVar('atktree', $postTree);
             $realTree = $postTree;
         } else {
             $realTree = $sessionTree; // use the last known tree
         }
-        $ATK_VARS["atktree"] == $realTree; // postvars now should contain the last Knowtree
+        $ATK_VARS['atktree'] == $realTree; // postvars now should contain the last Knowtree
     }
-
 }
-
-

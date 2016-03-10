@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\RecordList;
+<?php
+
+namespace Sintattica\Atk\RecordList;
 
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -9,37 +11,36 @@ use Sintattica\Atk\Utils\FileExport;
  * Custom recordlist renderer.
  *
  * @author Paul Verhoef <paul@ibuildings.nl>
- * @package atk
- * @subpackage recordlist
- *
  */
 class CustomRecordList extends RecordList
 {
-    var $m_exportcsv = true;
+    public $m_exportcsv = true;
     protected $m_mode;
 
     /**
-     * Creates a special Recordlist that can be used for exporting to files or to make it printable
-     * @param Node $node The node to use as definition for the columns.
-     * @param array $recordset The records to render
-     * @param string $sol String to use at start of each row
-     * @param string $sof String to use at start of each field
-     * @param string $eof String to use at end of each field
-     * @param string $eol String to use at end of each row
-     * @param int $type 0=Render rows in simple html tabl; 1= raw export
-     * @param string $compression Compression technique (bzip / gzip)
-     * @param array $suppressList List of attributes from $node that should be ignored
-     * @param array $outputparams Key-Value parameters for output. Currently existing:
-     *                               filename - the name of the file (without extension .csv)
-     * @param string $mode The mode that is passed to attributes' display() method
-     *                            (for overrides). Defaults to 'list'.
-     * @param Boolean $titlerow Should titlerow be rendered or not
-     * @param Boolean $decode Should data be decoded or not (for exports)
-     * @param string $fsep String to use between fields
-     * @param string $rfeplace String for replacing line feeds in recordset field values (null = do not replace)
+     * Creates a special Recordlist that can be used for exporting to files or to make it printable.
+     *
+     * @param Node   $node         The node to use as definition for the columns.
+     * @param array  $recordset    The records to render
+     * @param string $sol          String to use at start of each row
+     * @param string $sof          String to use at start of each field
+     * @param string $eof          String to use at end of each field
+     * @param string $eol          String to use at end of each row
+     * @param int    $type         0=Render rows in simple html tabl; 1= raw export
+     * @param string $compression  Compression technique (bzip / gzip)
+     * @param array  $suppressList List of attributes from $node that should be ignored
+     * @param array  $outputparams Key-Value parameters for output. Currently existing:
+     *                             filename - the name of the file (without extension .csv)
+     * @param string $mode         The mode that is passed to attributes' display() method
+     *                             (for overrides). Defaults to 'list'.
+     * @param bool   $titlerow     Should titlerow be rendered or not
+     * @param bool   $decode       Should data be decoded or not (for exports)
+     * @param string $fsep         String to use between fields
+     * @param string $rfeplace     String for replacing line feeds in recordset field values (null = do not replace)
+     *
      * @return string|null
      */
-    function render(
+    public function render(
         &$node,
         $recordset,
         $sol,
@@ -47,13 +48,13 @@ class CustomRecordList extends RecordList
         $eof,
         $eol,
         $type = 0,
-        $compression = "",
-        $suppressList = "",
+        $compression = '',
+        $suppressList = '',
         $outputparams = array(),
-        $mode = "list",
+        $mode = 'list',
         $titlerow = true,
         $decode = false,
-        $fsep = "",
+        $fsep = '',
         $rfeplace = null
     ) {
         $this->setNode($node);
@@ -68,12 +69,12 @@ class CustomRecordList extends RecordList
         // stuff for the totals row..
         $totalisable = false;
         $totals = array();
-        $output = "";
-        if ($type == "0") {
-            $empty = "&nbsp;";
+        $output = '';
+        if ($type == '0') {
+            $empty = '&nbsp;';
         }
-        if ($type == "1") {
-            $empty = "";
+        if ($type == '1') {
+            $empty = '';
         }
 
         if ($titlerow) {
@@ -87,7 +88,7 @@ class CustomRecordList extends RecordList
                 $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,
                         $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
-                    $output .= $sof . $this->eolreplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
+                    $output .= $sof.$this->eolreplace($p_attrib->label(), $rfeplace).$eof.$fsep;
 
                     // the totalisable check..
                     if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
@@ -105,7 +106,7 @@ class CustomRecordList extends RecordList
         }
 
         // Display the values
-        for ($i = 0, $_i = count($recordset); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
             $output .= $sol;
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = $this->m_node->m_attribList[$attribname];
@@ -115,7 +116,7 @@ class CustomRecordList extends RecordList
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     // An <attributename>_display function may be provided in a derived
                     // class to display an attribute.
-                    $funcname = $p_attrib->m_name . "_display";
+                    $funcname = $p_attrib->m_name.'_display';
 
                     if (method_exists($this->m_node, $funcname)) {
                         $value = $this->eolreplace($this->m_node->$funcname($recordset[$i], $this->m_mode), $rfeplace);
@@ -124,10 +125,10 @@ class CustomRecordList extends RecordList
                         // is called.
                         $value = $this->eolreplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
                     }
-                    if (Tools::atkGetCharset() != "" && $decode) {
+                    if (Tools::atkGetCharset() != '' && $decode) {
                         $value = Tools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
                     }
-                    $output .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
+                    $output .= $sof.($value == '' ? $empty : $value).$eof.$fsep;
 
                     // Calculate totals..
                     if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
@@ -156,9 +157,9 @@ class CustomRecordList extends RecordList
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
                         $value = $this->eolreplace($p_attrib->display($totals[$attribname], $this->m_mode), $rfeplace);
-                        $totalRow .= $sof . ($value == "" ? $empty : $value) . $eof . $fsep;
+                        $totalRow .= $sof.($value == '' ? $empty : $value).$eof.$fsep;
                     } else {
-                        $totalRow .= $sof . $empty . $eof . $fsep;
+                        $totalRow .= $sof.$empty.$eof.$fsep;
                     }
                 }
             }
@@ -174,32 +175,33 @@ class CustomRecordList extends RecordList
         }
 
         // html requires table tags
-        if ($type == "0") {
-            $output = '<table border="1" cellspacing="0" cellpadding="2">' . $output . "</table>";
+        if ($type == '0') {
+            $output = '<table border="1" cellspacing="0" cellpadding="2">'.$output.'</table>';
         }
 
         Tools::atkdebug(Tools::atk_html_entity_decode($output));
 
         // To a File
-        if (!array_key_exists("filename", $outputparams)) {
-            $outputparams["filename"] = "achievo";
+        if (!array_key_exists('filename', $outputparams)) {
+            $outputparams['filename'] = 'achievo';
         }
 
         if ($this->m_exportcsv) {
-            $ext = ($type == "0" ? "html" : "csv");
+            $ext = ($type == '0' ? 'html' : 'csv');
             $exporter = new FileExport();
-            $exporter->export($output, $outputparams["filename"], $ext, $ext, $compression);
+            $exporter->export($output, $outputparams['filename'], $ext, $ext, $compression);
         } else {
             return $output;
         }
 
-        return null;
+        return;
     }
 
     /**
      * Is this attribute hidden?
      *
      * @param Attribute $attribute
+     *
      * @return bool Boolean to indicate if attribute is hidden or not
      */
     protected function isHidden(Attribute $attribute)
@@ -213,15 +215,16 @@ class CustomRecordList extends RecordList
         if ($attribute->hasFlag(Attribute::AF_HIDE_LIST) && ($this->m_node->m_action === 'export' || $this->m_mode === 'export')) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Set exporting csv to file
+     * Set exporting csv to file.
      *
      * @param bool $export
      */
-    function setExportingCSVToFile($export = true)
+    public function setExportingCSVToFile($export = true)
     {
         if (is_bool($export)) {
             $this->m_exportcsv = $export;
@@ -229,12 +232,12 @@ class CustomRecordList extends RecordList
     }
 
     /**
-     * Replace any eol character(s) by something else
+     * Replace any eol character(s) by something else.
      *
-     * @param string $string The string to process
+     * @param string $string      The string to process
      * @param string $replacement The replacement string for '\r\n', '\n' and/or '\r'
      */
-    function eolreplace($string, $replacement)
+    public function eolreplace($string, $replacement)
     {
         if (!is_null($replacement)) {
             $string = str_replace("\r\n", $replacement, $string); // prevent double replacement in the next lines!
@@ -244,7 +247,4 @@ class CustomRecordList extends RecordList
 
         return $string;
     }
-
 }
-
-

@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Ui;
+<?php
+
+namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
@@ -16,8 +18,6 @@ use Sintattica\Atk\Core\Node;
  *      ->render();
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage ui
  */
 class PageBuilder
 {
@@ -58,6 +58,7 @@ class PageBuilder
     public function action($action)
     {
         $this->m_action = $action;
+
         return $this;
     }
 
@@ -71,6 +72,7 @@ class PageBuilder
     public function record($record)
     {
         $this->m_record = $record;
+
         return $this;
     }
 
@@ -84,6 +86,7 @@ class PageBuilder
     public function title($title)
     {
         $this->m_title = $title;
+
         return $this;
     }
 
@@ -99,13 +102,14 @@ class PageBuilder
     public function box($content, $title = null, $template = null)
     {
         $this->m_boxes[] = array('type' => 'box', 'title' => $title, 'content' => $content, 'template' => $template);
+
         return $this;
     }
 
     /**
      * Add action box.
      *
-     * @param array $params
+     * @param array  $params
      * @param string $title
      * @param string $template
      *
@@ -114,6 +118,7 @@ class PageBuilder
     public function actionBox($params, $title = null, $template = null)
     {
         $this->m_boxes[] = array('type' => 'action', 'title' => $title, 'params' => $params, 'template' => $template);
+
         return $this;
     }
 
@@ -155,12 +160,12 @@ class PageBuilder
                 $box['template']);
         }
 
-        $this->getNode()->getPage()->setTitle(Tools::atktext('app_shorttitle') . " - " . $this->m_title);
+        $this->getNode()->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$this->m_title);
 
         $content = $this->getNode()->renderActionPage($this->m_title, $boxes);
 
         $this->getNode()->getPage()->addContent($content);
-        return null;
-    }
 
+        return;
+    }
 }

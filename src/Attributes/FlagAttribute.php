@@ -1,32 +1,32 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
 /**
  * The atkFlagAttribute class offers an way to edit bitmask flags.
- * @author  M. Roest <martin@ibuildings.nl>
- * @package atk
- * @subpackage attributes
  *
+ * @author  M. Roest <martin@ibuildings.nl>
  */
 class FlagAttribute extends MultiSelectAttribute
 {
-
     /**
-     * Constructor
-     * @param string $name Name of the attribute
-     * @param array $optionArray Array with options
-     * @param array $valueArray Array with values. If you don't use this parameter,
-     *                    values are assumed to be the same as the options.
-     * @param int $cols Number of columns
-     * @param int $flags Flags for this attribute
-     * @param int $size Size of the attribute.
+     * Constructor.
+     *
+     * @param string $name        Name of the attribute
+     * @param array  $optionArray Array with options
+     * @param array  $valueArray  Array with values. If you don't use this parameter,
+     *                            values are assumed to be the same as the options.
+     * @param int    $cols        Number of columns
+     * @param int    $flags       Flags for this attribute
+     * @param int    $size        Size of the attribute.
      */
-    function __construct($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
+    public function __construct($name, $optionArray, $valueArray = '', $cols = '', $flags = 0, $size = '')
     {
         parent::__construct($name, $optionArray, $valueArray, $cols, $flags, $size);
-        $this->m_dbfieldtype = "number";
+        $this->m_dbfieldtype = 'number';
     }
 
     /**
@@ -34,15 +34,17 @@ class FlagAttribute extends MultiSelectAttribute
      * database.
      *
      * @param array $rec The record that holds this attribute's value.
-     * @return String The database compatible value
+     *
+     * @return string The database compatible value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
             $flags = 0;
             foreach ($rec[$this->fieldName()] as $flag) {
                 $flags |= $flag;
             }
+
             return $flags;
         } else {
             return 0;
@@ -53,9 +55,10 @@ class FlagAttribute extends MultiSelectAttribute
      * Converts a database value to an internal value.
      *
      * @param array $rec The database record that holds this attribute's value
+     *
      * @return mixed The internal value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         if ($rec[$this->fieldName()] > 0) {
             $newrec = array();
@@ -64,18 +67,20 @@ class FlagAttribute extends MultiSelectAttribute
                     $newrec[] = $value;
                 }
             }
+
             return $newrec;
         }
+
         return array();
     }
 
     /**
      * Return the database field type of the attribute.
      *
-     * @return String The 'generic' type of the database field for this
+     * @return string The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         return $this->m_dbfieldtype;
     }
@@ -85,26 +90,28 @@ class FlagAttribute extends MultiSelectAttribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                              is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param Query  $query      The query object where the search condition should be placed on
+     * @param string $table      The name of the table in which this attribute
+     *                           is stored
+     * @param mixed  $value      The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
-     *                              of the supported modes, as returned by this
-     *                              attribute's getSearchModes() method.
-     * @return String The searchcondition to use.
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
+     *
+     * @return string The searchcondition to use.
      */
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-            $field = $table . "." . $this->fieldName();
+        if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            $field = $table.'.'.$this->fieldName();
             if (count($value) == 1) { // exactly one value
-                $query->addSearchCondition($field . " & " . $value[0]);
+                $query->addSearchCondition($field.' & '.$value[0]);
             } else {
-                $mask = "(" . implode("|", $value) . ")";
-                $searchcondition = $field . "&" . $mask . "=" . $mask;
+                $mask = '('.implode('|', $value).')';
+                $searchcondition = $field.'&'.$mask.'='.$mask;
             }
         }
+
         return $searchcondition;
     }
 
@@ -117,9 +124,10 @@ class FlagAttribute extends MultiSelectAttribute
      *
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
-     * @return String The internal value
+     *
+     * @return string The internal value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         $vars = Tools::atkArrayNvl($postvars, $this->fieldName());
         if (!is_array($vars)) {
@@ -129,6 +137,7 @@ class FlagAttribute extends MultiSelectAttribute
                     $result[] = $value;
                 }
             }
+
             return $result;
         } else {
             return $vars;
@@ -137,11 +146,12 @@ class FlagAttribute extends MultiSelectAttribute
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its value. (<input type="hidden">)
+     * while still posting its value. (<input type="hidden">).
      *
-     * @param array $record
+     * @param array  $record
      * @param string $fieldprefix
      * @param string $mode
+     *
      * @return string html
      */
     public function hide($record, $fieldprefix, $mode)
@@ -155,8 +165,9 @@ class FlagAttribute extends MultiSelectAttribute
         } else {
             $values = $record[$name];
         }
-        return '<input type="hidden" name="' . $fieldprefix . $name . '"
-                      value="' . $values . '">';
+
+        return '<input type="hidden" name="'.$fieldprefix.$name.'"
+                      value="'.$values.'">';
     }
 
     /**
@@ -164,15 +175,13 @@ class FlagAttribute extends MultiSelectAttribute
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array("exact");
+        return array('exact');
     }
-
 }
-

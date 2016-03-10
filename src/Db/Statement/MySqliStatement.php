@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Db\Statement;
+<?php
+
+namespace Sintattica\Atk\Db\Statement;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\Debugger;
@@ -9,11 +11,8 @@ use Sintattica\Atk\Db\Db;
  * MySQLi statement implementation.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- *
- * @package atk
- * @subpackage db.statement
  */
-class MySQLiStatement extends Statement
+class MySqliStatement extends Statement
 {
     /**
      * MySQLi statement.
@@ -42,11 +41,11 @@ class MySQLiStatement extends Statement
     protected function _prepare()
     {
         if ($this->getDb()->connect() != Db::DB_SUCCESS) {
-            throw new StatementException("Cannot connect to database.", StatementException::NO_DATABASE_CONNECTION);
+            throw new StatementException('Cannot connect to database.', StatementException::NO_DATABASE_CONNECTION);
         }
 
         $conn = $this->getDb()->link_id();
-        Tools::atkdebug("Prepare query: " . $this->_getParsedQuery());
+        Tools::atkdebug('Prepare query: '.$this->_getParsedQuery());
         $this->m_stmt = $conn->prepare($this->_getParsedQuery());
         if (!$this->m_stmt || $conn->errno) {
             throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).",
@@ -64,7 +63,7 @@ class MySQLiStatement extends Statement
     public function rewind()
     {
         if ($this->_getLatestParams() === null) {
-            throw new StatementException("Statement has not been executed yet.",
+            throw new StatementException('Statement has not been executed yet.',
                 StatementException::STATEMENT_NOT_EXECUTED);
         }
 
@@ -86,9 +85,9 @@ class MySQLiStatement extends Statement
         $args = array();
         $args[] = str_repeat('s', count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
-            Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
             $args[] = &$params[$param];
-            $i++;
+            ++$i;
         }
 
         call_user_func_array(array($this->m_stmt, 'bind_param'), $args);
@@ -136,7 +135,7 @@ class MySQLiStatement extends Statement
         $this->m_values = array();
         $refs = array();
 
-        for ($i = 0; $i < count($this->m_columnNames); $i++) {
+        for ($i = 0; $i < count($this->m_columnNames); ++$i) {
             $this->m_values[$i] = null;
             $refs[$i] = &$this->m_values[$i];
         }
@@ -152,7 +151,7 @@ class MySQLiStatement extends Statement
      */
     protected function _execute($params)
     {
-        if (Config::getGlobal("debug") >= 0) {
+        if (Config::getGlobal('debug') >= 0) {
             Debugger::addQuery($this->_getParsedQuery(), false);
         }
 
@@ -189,6 +188,7 @@ class MySQLiStatement extends Statement
         }
 
         $row = array_combine($this->m_columnNames, $values);
+
         return $row;
     }
 
@@ -228,5 +228,4 @@ class MySQLiStatement extends Statement
     {
         return $this->m_insertId;
     }
-
 }

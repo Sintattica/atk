@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Filters;
+<?php
+
+namespace Sintattica\Atk\Filters;
 
 use Sintattica\Atk\Db\Query;
 
@@ -9,27 +11,19 @@ use Sintattica\Atk\Db\Query;
  * $this->add(new atkDistinctFilter());
  *
  * @author Ivo Jansch <ivo@ibuildings.nl>
- * @package atk
- * @subpackage filters
- *
  */
 class DistinctFilter extends Filter
 {
-
     /**
-     * constructor
+     * constructor.
      */
-    function __construct()
+    public function __construct()
     {
-        parent::__construct("distinctfilter");
+        parent::__construct('distinctfilter');
     }
 
-
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         $query->setDistinct(true);
     }
-
 }
-
-

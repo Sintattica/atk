@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\DataGrid;
+<?php
 
+namespace Sintattica\Atk\DataGrid;
 
 /**
  * The data grid no records found message. Can be used to render a
@@ -7,12 +8,9 @@
  * found in the database.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage datagrid
  */
 class DataGridNoRecordsFound extends DataGridComponent
 {
-
     /**
      * Renders the no records found message for the given data grid.
      *
@@ -31,10 +29,8 @@ class DataGridNoRecordsFound extends DataGridComponent
             if ($grid->getCount() == 0) {
                 return $grid->text('datagrid_norecordsfound_general');
             } else {
-                return null;
+                return;
             }
         }
     }
-
 }
-

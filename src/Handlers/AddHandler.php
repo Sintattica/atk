@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -10,13 +12,10 @@ use Sintattica\Atk\Session\SessionManager;
  * can enter a new record.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage handlers
- *
  */
 class AddHandler extends ActionHandler
 {
-    var $m_buttonsource = null;
+    public $m_buttonsource = null;
 
     /**
      * Save action.
@@ -26,11 +25,11 @@ class AddHandler extends ActionHandler
     private $m_saveAction = 'save';
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @return AddHandler
      */
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         $this->setReturnBehaviour(self::ATK_ACTION_BACK);
@@ -39,10 +38,11 @@ class AddHandler extends ActionHandler
     /**
      * The action handler.
      */
-    function action_add()
+    public function action_add()
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
@@ -50,7 +50,7 @@ class AddHandler extends ActionHandler
         $record = $this->getRejectInfo();
 
         $page = $this->getPage();
-        $page->addContent($this->m_node->renderActionPage("add", $this->invoke("addPage", $record)));
+        $page->addContent($this->m_node->renderActionPage('add', $this->invoke('addPage', $record)));
     }
 
     /**
@@ -80,15 +80,17 @@ class AddHandler extends ActionHandler
      *
      * @param array $record The record which contains default values for the
      *                      add-form.
-     * @return String HTML A String containing a box with an add form.
+     *
+     * @return string HTML A String containing a box with an add form.
      */
-    function addPage($record = null)
+    public function addPage($record = null)
     {
         $result = $this->getAddPage($record);
         if ($result !== false) {
             return $result;
         }
-        return null;
+
+        return;
     }
 
     /**
@@ -96,9 +98,10 @@ class AddHandler extends ActionHandler
      *
      * @param array $record The record which contains default values for the
      *                      add-form.
-     * @return String HTML A String containing a box with an add form.
+     *
+     * @return string HTML A String containing a box with an add form.
      */
-    function getAddPage($record = null)
+    public function getAddPage($record = null)
     {
         // check if there are postvars set for filling the record, this
         // can happen when a new selection is made using the select handler etc.
@@ -122,20 +125,20 @@ class AddHandler extends ActionHandler
      * retrieve the formbuttons from. Default this is the owner
      * node.
      *
-     * @param Object $object An object that implements the getFormButtons() method
+     * @param object $object An object that implements the getFormButtons() method
      */
-    function setButtonSource(&$object)
+    public function setButtonSource(&$object)
     {
         $this->m_buttonsource = &$object;
     }
 
     /**
-     * Register external javascript and css files for the handler
+     * Register external javascript and css files for the handler.
      */
-    function registerExternalFiles()
+    public function registerExternalFiles()
     {
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/tools.js");
+        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
     }
 
     /**
@@ -144,26 +147,29 @@ class AddHandler extends ActionHandler
      *
      * @param array $record The record which contains default values for the
      *                      add-form.
+     *
      * @return array An array containing the elements used in a template for
      *               add pages.
      */
-    function getAddParams($record = null)
+    public function getAddParams($record = null)
     {
         $node = $this->m_node;
         $ui = &$node->getUi();
 
         if (!is_object($ui)) {
-            Tools::atkerror("ui object failure");
+            Tools::atkerror('ui object failure');
+
             return false;
         }
 
         $params = $node->getDefaultActionParams();
-        $params["title"] = $node->actionTitle('add');
-        $params["header"] = $this->invoke("addHeader", $record);
-        $params["formstart"] = $this->getFormStart();
-        $params["content"] = $this->getContent($record);
-        $params["buttons"] = $this->getFormButtons($record);
-        $params["formend"] = $this->getFormEnd();
+        $params['title'] = $node->actionTitle('add');
+        $params['header'] = $this->invoke('addHeader', $record);
+        $params['formstart'] = $this->getFormStart();
+        $params['content'] = $this->getContent($record);
+        $params['buttons'] = $this->getFormButtons($record);
+        $params['formend'] = $this->getFormEnd();
+
         return $params;
     }
 
@@ -183,25 +189,24 @@ class AddHandler extends ActionHandler
      * Retrieve the HTML code for the start of an HTML form and some
      * hidden variables needed by an add page.
      *
-     * @return String HTML Form open tag and hidden variables.
+     * @return string HTML Form open tag and hidden variables.
      */
-    function getFormStart()
+    public function getFormStart()
     {
         $sm = SessionManager::getInstance();
         $node = $this->m_node;
 
-        $formstart = '<form id="entryform" " name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '"' .
+        $formstart = '<form id="entryform" " name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.
             ' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off">';
 
-
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
-        $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkaction" value="' . $this->getSaveAction() . '" />';
-        $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkprevaction" value="' . $this->getNode()->m_action . '" />';
-        $formstart .= '<input type="hidden" name="' . $this->getNode()->getEditFieldPrefix() . 'atkcsrftoken" value="' . $this->getCSRFToken() . '" />';
+        $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getSaveAction().'" />';
+        $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkprevaction" value="'.$this->getNode()->m_action.'" />';
+        $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkcsrftoken" value="'.$this->getCSRFToken().'" />';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
 
         if (isset($node->m_postvars['atkfilter'])) {
-            $formstart .= '<input type="hidden" name="atkfilter" value="' . $node->m_postvars['atkfilter'] . '">';
+            $formstart .= '<input type="hidden" name="atkfilter" value="'.$node->m_postvars['atkfilter'].'">';
         }
 
         return $formstart;
@@ -212,19 +217,20 @@ class AddHandler extends ActionHandler
      *
      * @param array $record The record which contains default values for the
      *                      add-form.
-     * @return String HTML Content of the addpage.
+     *
+     * @return string HTML Content of the addpage.
      */
-    function getContent($record)
+    public function getContent($record)
     {
         $node = $this->m_node;
 
         /** @var EditHandler $edithandler */
-        $edithandler = $node->getHandler("edit");
+        $edithandler = $node->getHandler('edit');
 
-        $forceList = $this->invoke("createForceList");
-        $form = $edithandler->editForm("add", $record, $forceList, '', $node->getEditFieldPrefix());
+        $forceList = $this->invoke('createForceList');
+        $form = $edithandler->editForm('add', $record, $forceList, '', $node->getEditFieldPrefix());
 
-        return $node->tabulate("add", $form);
+        return $node->tabulate('add', $form);
     }
 
     /**
@@ -233,7 +239,7 @@ class AddHandler extends ActionHandler
      *
      * @return array Values of the newly created record.
      */
-    function createForceList()
+    public function createForceList()
     {
         $node = $this->m_node;
         $forceList = array();
@@ -251,15 +257,16 @@ class AddHandler extends ActionHandler
                 }
             }
         }
+
         return $forceList;
     }
 
     /**
      * Get the end of the form.
      *
-     * @return String HTML The forms' end
+     * @return string HTML The forms' end
      */
-    function getFormEnd()
+    public function getFormEnd()
     {
         return '</form>';
     }
@@ -269,52 +276,58 @@ class AddHandler extends ActionHandler
      *
      * @param array $record The record which contains default values for the
      *                      add-form.
+     *
      * @return array a list of HTML buttons.
      */
-    function getFormButtons($record = null)
+    public function getFormButtons($record = null)
     {
         // If no custom button source is given, get the default
         if ($this->m_buttonsource === null) {
             $this->m_buttonsource = $this->m_node;
         }
 
-        return $this->m_buttonsource->getFormButtons("add", $record);
+        return $this->m_buttonsource->getFormButtons('add', $record);
     }
 
     /**
-     * Renders a complete add page including title and content
+     * Renders a complete add page including title and content.
      *
      * @param array $params Parameters needed in templates for the add page
-     * @return String HTML the add page.
+     *
+     * @return string HTML the add page.
      */
-    function renderAddPage($params)
+    public function renderAddPage($params)
     {
         $node = $this->m_node;
         $ui = &$node->getUi();
 
         if (is_object($ui)) {
-            $output = $ui->renderAction("add", $params);
-            $this->addRenderBoxVar("title", $node->actionTitle('add'));
-            $this->addRenderBoxVar("content", $output);
+            $output = $ui->renderAction('add', $params);
+            $this->addRenderBoxVar('title', $node->actionTitle('add'));
+            $this->addRenderBoxVar('content', $output);
             $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
+
             return $total;
         }
-        return null;
+
+        return;
     }
 
     /**
-     * Handler for partial actions on an add page
+     * Handler for partial actions on an add page.
      *
      * @param string $partial full partial name
+     *
      * @return string
      */
-    function partial_attribute($partial)
+    public function partial_attribute($partial)
     {
         list($type, $attribute, $partial) = explode('.', $partial);
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeUri()."'");
+
             return '';
         }
 
@@ -324,12 +337,11 @@ class AddHandler extends ActionHandler
     /**
      * Partial handler for section state changes.
      */
-    function partial_sectionstate()
+    public function partial_sectionstate()
     {
         State::set(array(
-            "nodetype" => $this->m_node->atkNodeUri(),
-            "section" => $this->m_postvars['atksectionname']
+            'nodetype' => $this->m_node->atkNodeUri(),
+            'section' => $this->m_postvars['atksectionname'],
         ), $this->m_postvars['atksectionstate']);
     }
 }
-

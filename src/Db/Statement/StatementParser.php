@@ -1,14 +1,12 @@
-<?php namespace Sintattica\Atk\Db\Statement;
+<?php
 
+namespace Sintattica\Atk\Db\Statement;
 
 /**
  * Statement parser, used for supporting named bind parameters and supporting
  * bind parameters for database drivers with no native support.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- *
- * @package atk
- * @subpackage db.statement
  */
 class StatementParser
 {
@@ -64,7 +62,7 @@ class StatementParser
         $quoteChars = array_flip(str_split(self::QUOTE_CHARS));
         $quoteChar = null;
 
-        for ($i = 0, $length = strlen($query); $i < $length; $i++) {
+        for ($i = 0, $length = strlen($query); $i < $length; ++$i) {
             $char = $query{$i};
 
             if (isset($quoteChars[$char])) {
@@ -83,7 +81,7 @@ class StatementParser
                         if (preg_match('/^:(\w+)/', substr($query, $i), $matches)) {
                             $name = $matches[1];
                             $bindPositions[$i] = $name;
-                            $query = substr($query, 0, $i) . '?' . substr($query, $i + strlen($name) + 1);
+                            $query = substr($query, 0, $i).'?'.substr($query, $i + strlen($name) + 1);
                             $length = strlen($query);
                         }
                     }
@@ -128,5 +126,4 @@ class StatementParser
     {
         return $this->m_bindPositions;
     }
-
 }

@@ -1,7 +1,7 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
 
+namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Core\Tools;
 
@@ -10,17 +10,16 @@ use Sintattica\Atk\Core\Tools;
  * that is a big text field.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage attributes
+ *
  * @todo autadjust needs to be modified as not every character == 1 column,
  *       perhaps forcing every textattribute to use a non-proportional font?
  */
 class TextAttribute extends Attribute
 {
     // number of rows of the edit box
-    var $m_rows = 10;
-    var $m_cols;
-    var $m_autoadjust;
+    public $m_rows = 10;
+    public $m_cols;
+    public $m_autoadjust;
     private $m_wrapMode = 'soft';
 
     /**
@@ -29,13 +28,13 @@ class TextAttribute extends Attribute
      * parameters and the second one is not an array, the attribute assumes
      * the second parameters is the $flags param, not the $size param.
      *
-     * @param string $name Name of the attribute
-     * @param int|array $size Can be an array with cols and rows key for size and
-     *               an autoadjust value or just the rows size (in which case
-     *               $flags is mandatory).
-     * @param int $flags Flags for this attribute
+     * @param string    $name  Name of the attribute
+     * @param int|array $size  Can be an array with cols and rows key for size and
+     *                         an autoadjust value or just the rows size (in which case
+     *                         $flags is mandatory).
+     * @param int       $flags Flags for this attribute
      */
-    function __construct($name, $size = 0, $flags = 0)
+    public function __construct($name, $size = 0, $flags = 0)
     {
         // compatiblity with old versions (old apps expect a 2 param call to be $name, $flags)
         if (func_num_args() == 3 || is_array($size)) {
@@ -79,12 +78,12 @@ class TextAttribute extends Attribute
         $this->m_wrapMode = $mode;
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         // list mode, show a small textarea, until it get's focus
         // and is inflated to a big textarea
         if ($mode == 'list') {
-            $id = $fieldprefix . $this->fieldName();
+            $id = $fieldprefix.$this->fieldName();
 
             $page = $this->m_ownerInstance->getPage();
 
@@ -109,14 +108,13 @@ class TextAttribute extends Attribute
           };
         ");
 
-            $html = '<textarea id="' . $id . '" name="' . $id . '" wrap="soft" rows="1" cols="20" style="overflow: hidden">' . "\n" . htmlspecialchars($record[$this->fieldName()]) . '</textarea>' .
-                '<textarea id="' . $id . '_textarea" wrap="' . $this->getWrapMode() . '" rows="5" cols="40" style="display: none"></textarea>';
+            $html = '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
+                '<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
 
             return $html;
         }
 
-
-        $text = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : "";
+        $text = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : '';
 
         if ($this->m_cols != 0) {
             $cols = $this->m_cols;
@@ -124,8 +122,8 @@ class TextAttribute extends Attribute
             $cols = $this->maxInputSize();
         }
         $rows = $this->m_rows;
-        $id = $fieldprefix . $this->fieldName();
-        if ($rows == "" || $rows == 0) {
+        $id = $fieldprefix.$this->fieldName();
+        if ($rows == '' || $rows == 0) {
             $rows = 10;
         }
 
@@ -137,38 +135,40 @@ class TextAttribute extends Attribute
 
         $result = sprintf('<textarea id="%s" name="%s" wrap="%s" ', $id, $id, $this->getWrapMode());
         if ($rows) {
-            $result .= 'rows="' . $rows . '" ';
+            $result .= 'rows="'.$rows.'" ';
         }
         if ($cols) {
-            $result .= 'cols="' . $cols . '" ';
+            $result .= 'cols="'.$cols.'" ';
         }
         if ($this->m_maxsize > 0) {
-            $result .= 'maxlength="' . $this->m_maxsize . '" '; // now supported in HTML5
+            $result .= 'maxlength="'.$this->m_maxsize.'" '; // now supported in HTML5
         }
         $result .= $this->getCSSClassAttribute(array('form-control'));
-        $result .= ">\n" . htmlspecialchars($text) . "</textarea>";
+        $result .= ">\n".htmlspecialchars($text).'</textarea>';
 
         return $result;
     }
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-        if ($mode == "add" || $mode == "update") {
-            $query->addField($this->fieldName(), $this->value2db($record), "", "", !$this->hasFlag(self::AF_NO_QUOTES), $mode, $this->dbFieldType());
+        if ($mode == 'add' || $mode == 'update') {
+            $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), $mode, $this->dbFieldType());
         } else {
-            $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), $mode, $this->dbFieldType());
+            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), $mode, $this->dbFieldType());
         }
     }
 
     /**
-     * Add's slashes to the string for the database
+     * Add's slashes to the string for the database.
+     *
      * @param array $rec Array with values
-     * @return String with slashes
+     *
+     * @return string with slashes
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         $db = $this->getDb();
-        if ($db->getType() != "oci9" || $this->dbFieldType() != 'text') {
+        if ($db->getType() != 'oci9' || $this->dbFieldType() != 'text') {
             return $db->escapeSQL($rec[$this->fieldName()]);
         } else {
             return $rec[$this->fieldName()];
@@ -176,34 +176,38 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * Removes slashes from the string
+     * Removes slashes from the string.
+     *
      * @param array $rec Array with values
-     * @return String without slashes
+     *
+     * @return string without slashes
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         if (isset($rec[$this->fieldName()])) {
             return $rec[$this->fieldName()];
         }
-        return null;
+
+        return;
     }
 
     /**
      * Return the database field type of the attribute.
      *
-     * @return String The 'generic' type of the database field for this
+     * @return string The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         // make sure our metadata is set
         if (is_object($this->m_ownerInstance)) {
             $this->m_ownerInstance->setAttribSizes();
         }
 
-        if ($this->m_dbfieldtype == "") {
-            return "text";
+        if ($this->m_dbfieldtype == '') {
+            return 'text';
         }
+
         return $this->m_dbfieldtype;
     }
 
@@ -214,9 +218,9 @@ class TextAttribute extends Attribute
      * @param array $metadata The table metadata from the table for this
      *                        attribute.
      */
-    function fetchMeta($metadata)
+    public function fetchMeta($metadata)
     {
-        $this->m_dbfieldtype = $metadata[$this->fieldName()]["gentype"];
+        $this->m_dbfieldtype = $metadata[$this->fieldName()]['gentype'];
         if ($this->m_dbfieldtype == 'string') {
             parent::fetchMeta($metadata);
         }
@@ -224,12 +228,13 @@ class TextAttribute extends Attribute
 
     /**
      * Parses the data that we are going to display in the textfield
-     * and adjust rows to ensure that all the data is actually displayed
+     * and adjust rows to ensure that all the data is actually displayed.
+     *
      * @param string $data Data we want to display
-     * @param int $rows Rows of the textarea
-     * @param int $cols Columns of the textarea
+     * @param int    $rows Rows of the textarea
+     * @param int    $cols Columns of the textarea
      */
-    function doAutoAdjust($data, &$rows, &$cols)
+    public function doAutoAdjust($data, &$rows, &$cols)
     {
         $browser = new BrowserInfo();
         $maxlinechars = 0;
@@ -239,14 +244,14 @@ class TextAttribute extends Attribute
 
             // If we encounter a newline character or the number of characters
             // equals the number of columns we have (with IE)...
-            if ($character == chr(13) || ($linecharacters == $cols && $browser->browser == "MSIE")) {
+            if ($character == chr(13) || ($linecharacters == $cols && $browser->browser == 'MSIE')) {
                 if ($linecharacters > $maxlinechars) {
                     $maxlinechars = $linecharacters;
                 }
                 // We start another line
                 $linecharacters = 0;
                 // But need another row
-                $rowsrequired++;
+                ++$rowsrequired;
             }
         }
         // If we need more rows, we set them
@@ -255,10 +260,8 @@ class TextAttribute extends Attribute
         }
         // IE wraps characters, other don't, so if we're not dealing with IE
         // we need more columns
-        if ($maxlinechars > $cols && $browser->browser !== "MSIE") {
+        if ($maxlinechars > $cols && $browser->browser !== 'MSIE') {
             $cols = $maxlinechars;
         }
     }
 }
-
-

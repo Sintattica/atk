@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
 
+namespace Sintattica\Atk\Attributes;
 
 /**
  * Attribute for keeping track of record creation times.
@@ -15,22 +16,18 @@
  * (the attribute was posted at www.achievo.org/forum/viewtopic.php?p=8608)
  *
  * @author Rich Kucera <kucerar@hhmi.org>
- * @package atk
- * @subpackage attributes
- *
  */
 class CreateStampAttribute extends UpdateStampAttribute
 {
-
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param string $name Name of the attribute (unique within a node, and
-     *                     corresponds to the name of the datetime field
-     *                     in the database where the stamp is stored.
-     * @param int $flags Flags for the attribute.
+     * @param string $name  Name of the attribute (unique within a node, and
+     *                      corresponds to the name of the datetime field
+     *                      in the database where the stamp is stored.
+     * @param int    $flags Flags for the attribute.
      */
-    function __construct($name, $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags);
     }
@@ -38,18 +35,16 @@ class CreateStampAttribute extends UpdateStampAttribute
     /**
      * This function is called by the framework to determine if the attribute
      * needs to be saved to the database in an updateDb call.
-     * This attribute should never be updated
+     * This attribute should never be updated.
      *
      * @param array $rec The record that is going to be saved.
-     * @return boolean True if this attribute should participate in the update
-     *                 query; false if not.
+     *
+     * @return bool True if this attribute should participate in the update
+     *              query; false if not.
      */
-    function needsUpdate($rec)
+    public function needsUpdate($rec)
     {
         // no matter what, we NEVER save a new value.
         return false;
     }
-
 }
-
-

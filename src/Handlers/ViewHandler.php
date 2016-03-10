@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
@@ -10,23 +12,21 @@ use Sintattica\Atk\Session\SessionManager;
  * but all fields are displayed readonly.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage handlers
- *
  */
 class ViewHandler extends ViewEditBase
 {
-    var $m_buttonsource = null;
+    public $m_buttonsource = null;
 
     /**
      * The action handler method.
      *
-     * @param Bool $renderbox Render this action in a renderbox or just output the HTML
+     * @param bool $renderbox Render this action in a renderbox or just output the HTML
      */
-    function action_view($renderbox = true)
+    public function action_view($renderbox = true)
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
@@ -35,20 +35,21 @@ class ViewHandler extends ViewEditBase
         // allowed to view record?
         if (!$record || !$this->allowed($record)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
-        $this->notify("view", $record);
-        $page->addContent($this->m_node->renderActionPage("admin",
-            $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
+        $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
+        $this->notify('view', $record);
+        $page->addContent($this->m_node->renderActionPage('admin',
+            $this->invoke('viewPage', $record, $this->m_node, $renderbox)));
     }
 
     /**
      * Returns the view record.
      */
-    function getRecordFromDb()
+    public function getRecordFromDb()
     {
         return $this->m_node->select($this->m_postvars['atkselector'])
             ->excludes($this->m_node->m_viewExcludes)
@@ -59,60 +60,62 @@ class ViewHandler extends ViewEditBase
     /**
      * Get the start of the form.
      *
-     * @return String HTML The forms' start
+     * @return string HTML The forms' start
      */
     public function getFormStart($record = null)
     {
         $sm = SessionManager::getInstance();
-        $formstart = '<form name="entryform" id="entryform" action="' . Config::getGlobal('dispatcher') . '" method="get" onsubmit="return globalSubmit(this,false)">';
+        $formstart = '<form name="entryform" id="entryform" action="'.Config::getGlobal('dispatcher').'" method="get" onsubmit="return globalSubmit(this,false)">';
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
-        $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
+        $formstart .= '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKey($record).'">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
-        return $formstart;
 
+        return $formstart;
     }
 
     /**
      * Returns an htmlpage displaying all displayable attributes.
-     * @param array $record The record to display.
-     * @param Node $node The node for which a viewPage is displayed.
-     * @param Bool $renderbox Render this action in a renderbox or just output the HTML
-     * @return String The html page with a reaonly view of relevant fields.
+     *
+     * @param array $record    The record to display.
+     * @param Node  $node      The node for which a viewPage is displayed.
+     * @param bool  $renderbox Render this action in a renderbox or just output the HTML
+     *
+     * @return string The html page with a reaonly view of relevant fields.
      */
-    function viewPage($record, $node, $renderbox = true)
+    public function viewPage($record, $node, $renderbox = true)
     {
         $ui = $this->getUi();
 
         if (is_object($ui)) {
             $params = $node->getDefaultActionParams();
             $tab = $node->getActiveTab();
-            $innerform = $this->viewForm($record, "view");
+            $innerform = $this->viewForm($record, 'view');
 
-            $params["activeTab"] = $tab;
-            $params["header"] = $this->invoke("viewHeader", $record);
+            $params['activeTab'] = $tab;
+            $params['header'] = $this->invoke('viewHeader', $record);
             $params['title'] = $node->actionTitle($this->m_action, $record);
-            $params["content"] = $node->tabulate("view", $innerform);
+            $params['content'] = $node->tabulate('view', $innerform);
 
-            $params["formstart"] = $this->getFormStart($record);
-            $params["buttons"] = $this->getFormButtons($record);
-            $params["formend"] = '</form>';
+            $params['formstart'] = $this->getFormStart($record);
+            $params['buttons'] = $this->getFormButtons($record);
+            $params['formend'] = '</form>';
 
-            $output = $ui->renderAction("view", $params);
+            $output = $ui->renderAction('view', $params);
 
             if (!$renderbox) {
                 return $output;
             }
 
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . " - " . $node->actionTitle($this->m_action,
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle($this->m_action,
                     $record));
 
-            $vars = array("title" => $node->actionTitle($this->m_action, $record), "content" => $output);
+            $vars = array('title' => $node->actionTitle($this->m_action, $record), 'content' => $output);
 
             $total = $ui->renderBox($vars, $this->m_boxTemplate);
 
             return $total;
         } else {
-            Tools::atkerror("ui object error");
+            Tools::atkerror('ui object error');
         }
     }
 
@@ -120,6 +123,7 @@ class ViewHandler extends ViewEditBase
      * Get the buttons for the current action form.
      *
      * @param array $record
+     *
      * @return array Array with buttons
      */
     public function getFormButtons($record = null)
@@ -129,27 +133,28 @@ class ViewHandler extends ViewEditBase
             $this->m_buttonsource = $this->m_node;
         }
 
-        return $this->m_buttonsource->getFormButtons("view", $record);
+        return $this->m_buttonsource->getFormButtons('view', $record);
     }
 
     /**
      * Overrideable function to create a header for view mode.
      * Similar to the admin header functionality.
      */
-    function viewHeader()
+    public function viewHeader()
     {
-        return "";
+        return '';
     }
 
     /**
-     * Get the view page
+     * Get the view page.
      *
-     * @param array $record The record
-     * @param string $mode The mode we're in (defaults to "view")
+     * @param array  $record   The record
+     * @param string $mode     The mode we're in (defaults to "view")
      * @param string $template The template to use for the view form
-     * @return String HTML code of the page
+     *
+     * @return string HTML code of the page
      */
-    function viewForm($record, $mode = "view", $template = "")
+    public function viewForm($record, $mode = 'view', $template = '')
     {
         $node = $this->m_node;
 
@@ -167,107 +172,106 @@ class ViewHandler extends ViewEditBase
         // For all attributes we use the display() function to display the
         // attributes current value. This may be overridden by supplying
         // an <attributename>_display function in the derived classes.
-        for ($i = 0, $_i = count($data["fields"]); $i < $_i; $i++) {
-            $field = &$data["fields"][$i];
+        for ($i = 0, $_i = count($data['fields']); $i < $_i; ++$i) {
+            $field = &$data['fields'][$i];
             $tplfield = array();
 
             $classes = array();
-            if ($field["sections"] == "*") {
-                $classes[] = "alltabs";
+            if ($field['sections'] == '*') {
+                $classes[] = 'alltabs';
             } else {
-                if ($field["html"] == "section") {
+                if ($field['html'] == 'section') {
                     // section should only have the tab section classes
-                    foreach ($field["tabs"] as $section) {
-                        $classes[] = "section_" . str_replace('.', '_', $section);
+                    foreach ($field['tabs'] as $section) {
+                        $classes[] = 'section_'.str_replace('.', '_', $section);
                     }
                 } else {
-                    if (is_array($field["sections"])) {
-                        foreach ($field["sections"] as $section) {
-                            $classes[] = "section_" . str_replace('.', '_', $section);
+                    if (is_array($field['sections'])) {
+                        foreach ($field['sections'] as $section) {
+                            $classes[] = 'section_'.str_replace('.', '_', $section);
                         }
                     }
                 }
             }
 
-            $tplfield["class"] = implode(" ", $classes);
-            $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
+            $tplfield['class'] = implode(' ', $classes);
+            $tplfield['tab'] = $tplfield['class']; // for backwards compatibility
             // visible sections, both the active sections and the tab names (attribute that are
             // part of the anonymous section of the tab)
             $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $tabs);
 
             // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
             // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-            $tplfield["initial_on_tab"] = ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
-                (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+            $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab, $field['tabs'])) &&
+                (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
             // Give the row an id if it doesn't have one yet
-            if (!isset($field["id"]) || empty($field["id"])) {
-                $field['id'] = Tools::getUniqueID("anonymousattribrows");
+            if (!isset($field['id']) || empty($field['id'])) {
+                $field['id'] = Tools::getUniqueID('anonymousattribrows');
             }
 
             // ar_ stands voor 'attribrow'.
-            $tplfield["rowid"] = "ar_" . $field['id']; // The id of the containing row
+            $tplfield['rowid'] = 'ar_'.$field['id']; // The id of the containing row
 
             /* check for separator */
-            if ($field["html"] == "-" && $i > 0 && $data["fields"][$i - 1]["html"] != "-") {
-                $tplfield["line"] = "<hr>";
-            } /* double separator, ignore */ elseif ($field["html"] == "-") {
-
-            } /* sections */ elseif ($field["html"] == "section") {
-                $tplfield["line"] = $this->getSectionControl($field, $mode);
-            } /* only full HTML */ elseif (isset($field["line"])) {
-                $tplfield["line"] = $field["line"];
-            } /* edit field */ else {
-                if ($field["attribute"]->m_ownerInstance->getNumbering()) {
-                    $this->_addNumbering($field, $tplfield, $i);
-                }
+            if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
+                $tplfield['line'] = '<hr>';
+            } /* double separator, ignore */ elseif ($field['html'] == '-') {
+ } /* sections */ elseif ($field['html'] == 'section') {
+     $tplfield['line'] = $this->getSectionControl($field, $mode);
+ } /* only full HTML */ elseif (isset($field['line'])) {
+     $tplfield['line'] = $field['line'];
+ } /* edit field */ else {
+     if ($field['attribute']->m_ownerInstance->getNumbering()) {
+         $this->_addNumbering($field, $tplfield, $i);
+     }
 
                 /* does the field have a label? */
-                if ((isset($field["label"]) && $field["label"] !== "Attribute::AF_NO_LABEL") || !isset($field["label"])) {
-                    if ($field["label"] == "") {
-                        $tplfield["label"] = "";
+                if ((isset($field['label']) && $field['label'] !== 'Attribute::AF_NO_LABEL') || !isset($field['label'])) {
+                    if ($field['label'] == '') {
+                        $tplfield['label'] = '';
                     } else {
-                        $tplfield["label"] = $field["label"];
+                        $tplfield['label'] = $field['label'];
                     }
                 } else {
-                    $tplfield["label"] = "Attribute::AF_NO_LABEL";
+                    $tplfield['label'] = 'Attribute::AF_NO_LABEL';
                 }
 
                 // Make the attribute and node names available in the template.
-                $tplfield['attribute'] = $field["attribute"]->fieldName();
-                $tplfield['node'] = $field["attribute"]->m_ownerInstance->atkNodeUri();
+                $tplfield['attribute'] = $field['attribute']->fieldName();
+     $tplfield['node'] = $field['attribute']->m_ownerInstance->atkNodeUri();
 
                 /* html source */
-                $tplfield["widget"] = $field["html"];
-                $editsrc = $field["html"];
+                $tplfield['widget'] = $field['html'];
+     $editsrc = $field['html'];
 
-                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri() . '_' . $field["id"]);
+     $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
 
-                $tplfield["full"] = $editsrc;
+     $tplfield['full'] = $editsrc;
 
-                $column = $field['attribute']->getColumn();
-                $tplfield["column"] = $column;
-            }
+     $column = $field['attribute']->getColumn();
+     $tplfield['column'] = $column;
+ }
             $fields[] = $tplfield; // make field available in numeric array
-            $params[$field["name"]] = $tplfield; // make field available in associative array
-            $attributes[$field["name"]] = $tplfield; // make field available in associative array
+            $params[$field['name']] = $tplfield; // make field available in associative array
+            $attributes[$field['name']] = $tplfield; // make field available in associative array
         }
         $ui = $this->getUi();
 
         $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
 
         if ($template) {
-            $innerform = $ui->render($template, array("fields" => $fields, 'attributes' => $attributes));
+            $innerform = $ui->render($template, array('fields' => $fields, 'attributes' => $attributes));
         } else {
             if (count(array_unique($tabTpl)) > 1) {
                 $tabForm = $this->_renderTabs($fields, $tabTpl);
                 $innerform = implode(null, $tabForm);
             } else {
-                $innerform = $ui->render($node->getTemplate("view", $record, $tab),
-                    array("fields" => $fields, 'attributes' => $attributes));
+                $innerform = $ui->render($node->getTemplate('view', $record, $tab),
+                    array('fields' => $fields, 'attributes' => $attributes));
             }
         }
+
         return $innerform;
     }
 }
-

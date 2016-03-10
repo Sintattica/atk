@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Session;
+<?php
+
+namespace Sintattica\Atk\Session;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -12,13 +14,9 @@ use Sintattica\Atk\Core\Config;
  * global! session.
  *
  * @author Yury Golovnya <ygolovnya@gmain.com>
- * @package atk
- * @subpackage session
- *
  */
 class State
 {
-
     /**
      * This method retrieves a state value. This value can either be retrieved
      * from a cookie which is saved across sessions or from the current session,
@@ -26,8 +24,8 @@ class State
      * in the state cookie if the key exists, if not it looks in the session and
      * if it exists returns it's value. If not a value of NULL is returned.
      *
-     * @param Mixed $key The key
-     * @param Mixed $default default value fallback is the retrieved value === null
+     * @param mixed $key     The key
+     * @param mixed $default default value fallback is the retrieved value === null
      *
      * @return mixed The retrieved value.
      */
@@ -48,9 +46,10 @@ class State
     }
 
     /**
-     * Get value from cookie
+     * Get value from cookie.
      *
      * @param mixed $key The keyname
+     *
      * @return string The value
      */
     protected static function _getFromCookie($key)
@@ -58,14 +57,15 @@ class State
         if (isset($_COOKIE[$key])) {
             return $_COOKIE[$key];
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * Get value from session
+     * Get value from session.
      *
      * @param mixed $key The keyname
+     *
      * @return string The value
      */
     protected static function _getFromSession($key)
@@ -73,7 +73,7 @@ class State
         if (isset($_SESSION[$key])) {
             return $_SESSION[$key];
         } else {
-            return null;
+            return;
         }
     }
 
@@ -89,14 +89,16 @@ class State
      * print_r($key, true) to get a nice string representation. For cookies it might
      * be even more safe to md5 this string so that they key doesn't say anything to
      * the user and doesn't get too big.
-     * @param mixed $key The key name
+     *
+     * @param mixed  $key   The key name
      * @param string $value The value of key
-     * @param string $type The namespace from which to retrieve the value
+     * @param string $type  The namespace from which to retrieve the value
+     *
      * @return mixed The storage method type.
      */
     public static function set($key, $value, $type = 'cookie')
     {
-        $key = State::getKey($key);
+        $key = self::getKey($key);
 
         switch ($type) {
             case 'cookie':
@@ -111,20 +113,20 @@ class State
     }
 
     /**
-     * Set value in cookie
+     * Set value in cookie.
      *
-     * @param mixed $key
+     * @param mixed  $key
      * @param string $value
      */
     protected static function _set_using_cookie($key, $value)
     {
-        setcookie($key, $value, time() + 60 * (Config::getGlobal("state_cookie_expire")));
+        setcookie($key, $value, time() + 60 * (Config::getGlobal('state_cookie_expire')));
     }
 
     /**
-     * Set value in session
+     * Set value in session.
      *
-     * @param mixed $key
+     * @param mixed  $key
      * @param string $value
      */
     protected static function _set_using_session($key, $value)
@@ -133,15 +135,14 @@ class State
     }
 
     /**
-     * Get the key
+     * Get the key.
      *
      * @param string $key
+     *
      * @return string An md5 hash of the key
      */
     protected static function getKey($key)
     {
         return md5(print_r($key, true));
     }
-
 }
-

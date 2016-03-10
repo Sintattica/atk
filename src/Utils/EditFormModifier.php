@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
+
+namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -12,8 +14,6 @@ use Sintattica\Atk\Core\Tools;
  * used stand-alone.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- *
- * @package atk.utils
  */
 class EditFormModifier
 {
@@ -49,18 +49,18 @@ class EditFormModifier
      * Initial setup/modification of the edit form, e.g. when the form is
      * rendered for the first time.
      *
-     * @var boolean
+     * @var bool
      */
     private $m_initial;
 
     /**
      * Constructor.
      *
-     * @param Node $node node instance
-     * @param array $record record
+     * @param Node   $node        node instance
+     * @param array  $record      record
      * @param string $fieldPrefix field prefix
-     * @param string $mode add/edit mode
-     * @param string $initial initial form setup?
+     * @param string $mode        add/edit mode
+     * @param string $initial     initial form setup?
      */
     public function __construct(Node $node, &$record, $fieldPrefix, $mode, $initial)
     {
@@ -116,7 +116,7 @@ class EditFormModifier
      * Is this the initial setup of the form (or are we updating the form from
      * an Ajax request)?
      *
-     * @return boolean initial form setup?
+     * @return bool initial form setup?
      */
     public function isInitial()
     {
@@ -133,7 +133,7 @@ class EditFormModifier
         if ($this->isInitial()) {
             $this->getNode()->getAttribute($name)->setInitialHidden(false);
         } else {
-            $name = 'ar_' . $this->getFieldPrefix() . $name;
+            $name = 'ar_'.$this->getFieldPrefix().$name;
             $this->scriptCode("if (\$('$name')) { \$('$name').removeClassName('atkAttrRowHidden'); }");
         }
     }
@@ -142,7 +142,7 @@ class EditFormModifier
      * Show the attributes rows for the attributes with the given names.
      *
      * @param array $names attributes names
-     * @param bool $check Check the presence of the attributes
+     * @param bool  $check Check the presence of the attributes
      */
     public function showAttributes($names, $check = false)
     {
@@ -163,7 +163,7 @@ class EditFormModifier
         if ($this->isInitial()) {
             $this->getNode()->getAttribute($name)->setInitialHidden(true);
         } else {
-            $name = 'ar_' . $this->getFieldPrefix() . $name;
+            $name = 'ar_'.$this->getFieldPrefix().$name;
             $this->scriptCode("if (\$('$name')) { \$('$name').addClassName('atkAttrRowHidden'); }");
         }
     }
@@ -172,7 +172,7 @@ class EditFormModifier
      * Hide the attributes rows for the attributes with the given names.
      *
      * @param array $names attributes names
-     * @param bool $check Check the presence of the attributes
+     * @param bool  $check Check the presence of the attributes
      */
     public function hideAttributes($names, $check = false)
     {
@@ -194,7 +194,6 @@ class EditFormModifier
             return;
         }
 
-
         $offset = count($this->getNode()->getPage()->getLoadScripts());
 
         $error = array();
@@ -204,8 +203,8 @@ class EditFormModifier
 
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
-            $element = str_replace('.', '_', $this->getNode()->atkNodeUri() . '_' . $field['id']);
-            $value = JSON::encode(Tools::atk_iconv(Tools::atkGetCharset(), "UTF-8",
+            $element = str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
+            $value = JSON::encode(Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8',
                 $field['html'])); // JSON::encode excepts string in UTF-8
             $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";
         }
@@ -217,7 +216,7 @@ class EditFormModifier
      * Re-render / refresh the attributes with the given names.
      *
      * @param array $names attributes names
-     * @param bool $check Check the presence of the attributes
+     * @param bool  $check Check the presence of the attributes
      */
     public function refreshAttributes($names, $check = false)
     {

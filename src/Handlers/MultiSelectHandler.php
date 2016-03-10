@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
@@ -12,40 +14,37 @@ use Sintattica\Atk\Core\Config;
  * multiple records.
  *
  * @author Lineke Kerckhoffs-Willems <lineke@ibuildings.nl>
- * @package atk
- * @subpackage handlers
- *
  */
 class MultiSelectHandler extends AdminHandler
 {
-
     /**
      * The action handler method.
      */
-    function action_multiselect()
+    public function action_multiselect()
     {
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         }
 
         if (isset($this->m_postvars['atkselector'])) {
-            $output = $this->invoke("handleMultiselect");
+            $output = $this->invoke('handleMultiselect');
         } else {
-            $output = $this->invoke("multiSelectPage");
+            $output = $this->invoke('multiSelectPage');
         }
 
-        if ($output != "") {
+        if ($output != '') {
             $page = $this->getPage();
-            $page->addContent($this->m_node->renderActionPage("multiselect", $output));
+            $page->addContent($this->m_node->renderActionPage('multiselect', $output));
         }
     }
 
     /**
      * Parse atkselectors in postvars into atktarget using atktargetvartpl and atktargetvar
-     * Then redirect to atktarget
+     * Then redirect to atktarget.
      */
-    function handleMultiselect()
+    public function handleMultiselect()
     {
         $node = $this->getNode();
         $columnConfig = $node->getColumnConfig();
@@ -60,31 +59,33 @@ class MultiSelectHandler extends AdminHandler
         $atktargetvar = $node->m_postvars['atktargetvar'];
         $atktargettpl = $node->m_postvars['atktargetvartpl'];
 
-        for ($i = 0; $i < count($recordset); $i++) {
+        for ($i = 0; $i < count($recordset); ++$i) {
             if ($i == 0 && strpos($atktarget, '&') === false) {
                 $atktarget .= '?';
             } else {
                 $atktarget .= '&';
             }
-            $atktarget .= $atktargetvar . '[]=' . $this->parseString($atktargettpl, $recordset[$i]);
+            $atktarget .= $atktargetvar.'[]='.$this->parseString($atktargettpl, $recordset[$i]);
         }
         $node->redirect($atktarget);
     }
 
     /**
-     * Parse the target string
+     * Parse the target string.
      *
-     * @param string $string The string to parse
-     * @param array $recordset The recordset to use for parsing the string
-     * @return String The parsed string
+     * @param string $string    The string to parse
+     * @param array  $recordset The recordset to use for parsing the string
+     *
+     * @return string The parsed string
      */
-    function parseString($string, $recordset)
+    public function parseString($string, $recordset)
     {
         $parser = new StringParser($string);
 
         // for backwardscompatibility reasons, we also support the '[pk]' var.
         $recordset['pk'] = $this->getNode()->primaryKey($recordset);
         $output = $parser->parse($recordset, true);
+
         return $output;
     }
 
@@ -93,9 +94,9 @@ class MultiSelectHandler extends AdminHandler
      * records from. The recordlist can be searched, sorted etc. like an
      * admin screen.
      *
-     * @return String The html select page.
+     * @return string The html select page.
      */
-    function multiSelectPage()
+    public function multiSelectPage()
     {
         // add the postvars to the form
         global $g_stickyurl;
@@ -107,15 +108,14 @@ class MultiSelectHandler extends AdminHandler
         $GLOBALS['atktargetvar'] = $this->getNode()->m_postvars['atktargetvar'];
         $GLOBALS['atktargetvartpl'] = $this->getNode()->m_postvars['atktargetvartpl'];
 
-
-        $params["header"] = Tools::atktext("title_multiselect", $this->getNode()->m_module,
+        $params['header'] = Tools::atktext('title_multiselect', $this->getNode()->m_module,
             $this->getNode()->m_type);
 
         $actions['actions'] = array();
         $actions['mra'][] = 'multiselect';
 
         $grid = DataGrid::create($this->getNode(), 'multiselect');
-        /**
+        /*
          * At first the changes below looked like the solution for the error
          * on the contact multiselect page. Except this is not the case, because
          * the MRA actions will not be shown, which is a must.
@@ -128,20 +128,18 @@ class MultiSelectHandler extends AdminHandler
 
         $grid->removeFlag(DataGrid::EXTENDED_SEARCH);
         $grid->addFlag(DataGrid::MULTI_RECORD_ACTIONS);
-        $params["list"] = $grid->render();
+        $params['list'] = $grid->render();
 
         if ($sm->atkLevel() > 0) {
-            $backlinkurl = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atklevel=' . $sm->newLevel(SessionManager::SESSION_BACK));
-            $params["footer"] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\'' . $backlinkurl . '\';" value="' . Tools::atktext('cancel') . '"></div>';
+            $backlinkurl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
+            $params['footer'] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\''.$backlinkurl.'\';" value="'.Tools::atktext('cancel').'"></div>';
         }
 
-        $output = $this->getUi()->renderList("multiselect", $params);
+        $output = $this->getUi()->renderList('multiselect', $params);
 
         return $this->getUi()->renderBox(array(
-            "title" => $this->getNode()->actionTitle('multiselect'),
-            "content" => $output
+            'title' => $this->getNode()->actionTitle('multiselect'),
+            'content' => $output,
         ));
     }
-
 }
-

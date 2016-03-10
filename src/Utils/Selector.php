@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
+
+namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Config;
@@ -7,14 +9,12 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Statement\Statement;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
-use \Exception;
+use Exception;
 
 /**
  * Fluent interface helper class for retrieving records from a node.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage utils
  */
 class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -124,7 +124,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Adds a condition..
      *
      * @param string $condition where clause
-     * @param array $params bind parameters
+     * @param array  $params    bind parameters
      *
      * @return Selector
      */
@@ -140,36 +140,42 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Ignore default node filters.
      *
-     * @param boolean $ignore ignore default node filters?
+     * @param bool $ignore ignore default node filters?
+     *
      * @return Selector
      */
     public function ignoreDefaultFilters($ignore = true)
     {
         $this->m_ignoreDefaultFilters = $ignore;
+
         return $this;
     }
 
     /**
      * Ignore criteria set in the postvars, like search criteria etc.
      *
-     * @param boolean $ignore ignore postvars?
+     * @param bool $ignore ignore postvars?
+     *
      * @return Selector
      */
     public function ignorePostvars($ignore = true)
     {
         $this->m_ignorePostvars = $ignore;
+
         return $this;
     }
 
     /**
      * Ignore force load flags.
      *
-     * @param boolean $ignore ignore force load flags
+     * @param bool $ignore ignore force load flags
+     *
      * @return Selector
      */
     public function ignoreForceLoad($ignore = true)
     {
         $this->m_ignoreForceLoad = $ignore;
+
         return $this;
     }
 
@@ -177,24 +183,28 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Don't forcefully load the primary key. The result records also won't
      * contain the special "atkprimkey" entry.
      *
-     * @param boolean $ignore ignore primary key
+     * @param bool $ignore ignore primary key
+     *
      * @return Selector
      */
     public function ignorePrimaryKey($ignore = true)
     {
         $this->m_ignorePrimaryKey = $ignore;
+
         return $this;
     }
 
     /**
      * Distinct selection?
      *
-     * @param boolean $distinct distinct selection?
+     * @param bool $distinct distinct selection?
+     *
      * @return Selector
      */
     public function distinct($distinct)
     {
         $this->m_distinct = $distinct;
+
         return $this;
     }
 
@@ -202,11 +212,13 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Set the select mode.
      *
      * @param string $mode select mode
+     *
      * @return Selector
      */
     public function mode($mode)
     {
         $this->m_mode = $mode;
+
         return $this;
     }
 
@@ -214,25 +226,29 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Order by the given order by string.
      *
      * @param string $order order by string
+     *
      * @return Selector
      */
     public function orderBy($order)
     {
         $this->m_order = $order;
+
         return $this;
     }
 
     /**
      * Limit the results bij the given limit (and from the optional offset).
      *
-     * @param int $limit limit
+     * @param int $limit  limit
      * @param int $offset offset
+     *
      * @return Selector
      */
     public function limit($limit, $offset = 0)
     {
         $this->m_limit = $limit;
         $this->m_offset = $offset;
+
         return $this;
     }
 
@@ -240,6 +256,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Include only the following list of attributes.
      *
      * @param array $includes list of includes
+     *
      * @return Selector
      */
     public function includes($includes)
@@ -253,6 +270,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         $this->m_includes = $includes;
+
         return $this;
     }
 
@@ -260,6 +278,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Exclude the following list of attributes.
      *
      * @param array $excludes list of excludes
+     *
      * @return Selector
      */
     public function excludes($excludes)
@@ -273,6 +292,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         $this->m_excludes = $excludes;
+
         return $this;
     }
 
@@ -354,9 +374,9 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Apply posted (normal) search criteria to query
+     * Apply posted (normal) search criteria to query.
      *
-     * @param Query $query query object
+     * @param Query $query           query object
      * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyPostedSearchCriteriaToQuery(Query $query, array $attrsByLoadType)
@@ -392,8 +412,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
                 $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
             } else {
                 Tools::atkdebug("Using default search method for $key");
-                $condition = "LOWER(" . $this->_getNode()->getTable() . "." . $key . ") LIKE LOWER('%" . $this->_getDb()->escapeSQL($value,
-                        true) . "%')";
+                $condition = 'LOWER('.$this->_getNode()->getTable().'.'.$key.") LIKE LOWER('%".$this->_getDb()->escapeSQL($value,
+                        true)."%')";
                 $query->addSearchCondition($condition);
             }
         }
@@ -427,9 +447,9 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Apply criteria that are part of the postvars (e.g. filter, index, search criteria)
+     * Apply criteria that are part of the postvars (e.g. filter, index, search criteria).
      *
-     * @param Query $query query
+     * @param Query $query           query
      * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyPostvarsToQuery(Query $query, array $attrsByLoadType)
@@ -456,7 +476,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
         // key/value filters
         foreach ($this->_getNode()->m_filters as $key => $value) {
-            $query->addCondition($key . "='" . $this->_getDb()->escapeSQL($value) . "'");
+            $query->addCondition($key."='".$this->_getDb()->escapeSQL($value)."'");
         }
 
         // fuzzy filters
@@ -472,7 +492,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @param Attribute $attr attribute
      *
-     * @return boolean load required?
+     * @return bool load required?
      */
     protected function _isAttributeLoadRequired($attr)
     {
@@ -488,7 +508,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns the attributes for each load type (Attribute::PRELOAD, Attribute::ADDTOQUERY, Attribute::POSTLOAD)
+     * Returns the attributes for each load type (Attribute::PRELOAD, Attribute::ADDTOQUERY, Attribute::POSTLOAD).
      *
      * @return array attributes by load type
      */
@@ -523,7 +543,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Apply attributes to query, e.g. add columns etc.
      *
-     * @param Query $query query object
+     * @param Query $query           query object
      * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyAttributesToQuery(Query $query, array $attrsByLoadType)
@@ -612,8 +632,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Transform raw database row to node compatible row.
      *
-     * @param array $row raw database row
-     * @param Query $query query object
+     * @param array $row             raw database row
+     * @param Query $query           query object
      * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible row
@@ -642,8 +662,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Transform raw database rows to node compatible rows.
      *
-     * @param array $rows raw database rows
-     * @param Query $query query object
+     * @param array $rows            raw database rows
+     * @param Query $query           query object
      * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible rows
@@ -667,7 +687,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function transformRow($row)
     {
         if ($this->m_iterator == null) {
-            throw new Exception(__METHOD__ . ' should only be called by the current atkSelectorIterator instance!');
+            throw new Exception(__METHOD__.' should only be called by the current atkSelectorIterator instance!');
         }
 
         return $this->_transformRow($row, $this->m_query, $this->m_attrsByLoadType);
@@ -682,6 +702,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $this->limit(1, $this->m_offset);
         $rows = $this->getAllRows();
+
         return count($rows) == 1 ? $rows[0] : null;
     }
 
@@ -750,8 +771,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $query->clearFields();
         $query->clearExpressions();
 
-        $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()) . '.' . $this->_getDb()->quoteIdentifier($index);
-        $expression = "UPPER(" . $this->_getDb()->func_substring($indexColumn, 1, 1) . ")";
+        $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()).'.'.$this->_getDb()->quoteIdentifier($index);
+        $expression = 'UPPER('.$this->_getDb()->func_substring($indexColumn, 1, 1).')';
         $query->addExpression('index', $expression);
         $query->addGroupBy($expression);
         $query->addOrderBy($expression);
@@ -768,11 +789,13 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Does the given offset exist?
      *
      * @param string|int $key key
-     * @return boolean offset exists?
+     *
+     * @return bool offset exists?
      */
     public function offsetExists($key)
     {
         $this->getAllRows();
+
         return isset($this->m_rows[$key]);
     }
 
@@ -780,11 +803,13 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Returns the given offset.
      *
      * @param string|int $key key
+     *
      * @return mixed
      */
     public function offsetGet($key)
     {
         $this->getAllRows();
+
         return $this->m_rows[$key];
     }
 
@@ -792,12 +817,14 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Sets the value for the given offset.
      *
      * @param string|int $key
-     * @param mixed $value
+     * @param mixed      $value
+     *
      * @return mixed
      */
     public function offsetSet($key, $value)
     {
         $this->getAllRows();
+
         return $this->m_rows[$key] = $value;
     }
 
@@ -865,7 +892,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function count()
     {
         $this->getAllRows();
+
         return count($this->m_rows);
     }
-
 }

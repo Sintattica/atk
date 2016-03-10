@@ -1,10 +1,13 @@
-<?php namespace Sintattica\Atk\Handlers;
+<?php
+
+namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\Core\Config;
+
 /**
  * Handler class for the save action of a node. The action saves a
  * new record to the database. The data is retrieved from the postvars.
@@ -14,9 +17,6 @@ use Sintattica\Atk\Core\Config;
  * fails, the add handler is invoked again.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage handlers
- *
  */
 class SaveHandler extends ActionHandler
 {
@@ -28,15 +28,16 @@ class SaveHandler extends ActionHandler
     private $m_addAction = 'add';
 
     /**
-     * The action handler method
+     * The action handler method.
      */
-    function action_save()
+    public function action_save()
     {
         // clear old reject info
         $this->setRejectInfo(null);
 
         if (isset($this->m_partial) && !empty($this->m_partial)) {
             $this->partial($this->m_partial);
+
             return;
         } else {
             $this->doSave();
@@ -70,13 +71,14 @@ class SaveHandler extends ActionHandler
     /**
      * Save record.
      */
-    function doSave()
+    public function doSave()
     {
         $record = $this->m_node->updateRecord();
 
         // allowed to save record?
         if (!$this->allowed($record)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -85,12 +87,13 @@ class SaveHandler extends ActionHandler
             $prefix = $this->m_postvars['atkfieldprefix'];
         }
 
-        $csrfToken = isset($this->m_postvars[$prefix . 'atkcsrftoken']) ? $this->m_postvars[$prefix . 'atkcsrftoken']
+        $csrfToken = isset($this->m_postvars[$prefix.'atkcsrftoken']) ? $this->m_postvars[$prefix.'atkcsrftoken']
             : null;
 
         // check for CSRF token
         if (!$this->isValidCSRFToken($csrfToken)) {
             $this->renderAccessDeniedPage();
+
             return;
         }
 
@@ -102,12 +105,11 @@ class SaveHandler extends ActionHandler
         } else {
             if (isset($this->m_postvars['atkcancel'])) {
                 // Cancel was pressed
-                $location = $this->m_node->feedbackUrl("save", self::ACTION_CANCELLED, $record, "", $this->_getSkip());
+                $location = $this->m_node->feedbackUrl('save', self::ACTION_CANCELLED, $record, '', $this->_getSkip());
                 $this->_handleRedirect($location);
             }
         }
     }
-
 
     /**
      * @param array $record Record to store
@@ -115,9 +117,10 @@ class SaveHandler extends ActionHandler
     public function handleProcess($record)
     {
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
-        if (!$this->m_node->executeTrigger("preAdd", $record, "add")) {
+        if (!$this->m_node->executeTrigger('preAdd', $record, 'add')) {
             $this->handleAddError($record);
-            return null;
+
+            return;
         }
 
         $this->validate($record);
@@ -132,11 +135,13 @@ class SaveHandler extends ActionHandler
         if ($error) {
             // something went wrong, back to where we came from
             $db->rollback();
+
             return $this->goBack($record);
         } else {
             if (!$this->storeRecord($record)) {
                 $this->handleAddError($record);
-                return null;
+
+                return;
             } else {
                 $location = $this->invoke('getSuccessReturnURL', $record);
                 $this->_handleRedirect($location, $record);
@@ -145,14 +150,14 @@ class SaveHandler extends ActionHandler
     }
 
     /**
-     * Redirect after save
+     * Redirect after save.
      *
-     * @param string $location
+     * @param string     $location
      * @param array|bool $recordOrExit
-     * @param bool $exit
-     * @param int $levelskip
+     * @param bool       $exit
+     * @param int        $levelskip
      */
-    protected function _handleRedirect($location = "", $recordOrExit = array(), $exit = false, $levelskip = 1)
+    protected function _handleRedirect($location = '', $recordOrExit = array(), $exit = false, $levelskip = 1)
     {
         $this->m_node->redirect($location, $recordOrExit, $exit, $levelskip);
     }
@@ -161,6 +166,7 @@ class SaveHandler extends ActionHandler
      * Get the URL to redirect to after successfully saving a record.
      *
      * @param array $record Saved record
+     *
      * @return string Location to redirect to
      */
     protected function getSuccessReturnURL($record)
@@ -168,41 +174,42 @@ class SaveHandler extends ActionHandler
         $sm = SessionManager::getInstance();
         if ($this->m_node->hasFlag(Node::NF_EDITAFTERADD) && $this->m_node->allowed('edit')) {
             // forward atkpkret for newly added records
-            $extra = "";
-            if (isset($this->m_postvars["atkpkret"])) {
-                $extra = "&atkpkret=" . rawurlencode($this->m_postvars["atkpkret"]);
+            $extra = '';
+            if (isset($this->m_postvars['atkpkret'])) {
+                $extra = '&atkpkret='.rawurlencode($this->m_postvars['atkpkret']);
             }
 
-
-            $url = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->m_node->atkNodeUri();
+            $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri();
             $url .= '&atkaction=edit';
-            $url .= '&atkselector=' . rawurlencode($this->m_node->primaryKey($record));
-            $location = $sm->sessionUrl($url . $extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
+            $url .= '&atkselector='.rawurlencode($this->m_node->primaryKey($record));
+            $location = $sm->sessionUrl($url.$extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
             if ($this->m_node->hasFlag(Node::NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
-                $filter = "";
+                $filter = '';
                 if (isset($this->m_node->m_postvars['atkfilter'])) {
-                    $filter = "&atkfilter=" . rawurlencode($this->m_node->m_postvars['atkfilter']);
+                    $filter = '&atkfilter='.rawurlencode($this->m_node->m_postvars['atkfilter']);
                 }
-                $url = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->m_node->atkNodeUri() . '&atkaction=' . $this->getAddAction();
-                $location = $sm->sessionUrl($url . $filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
+                $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri().'&atkaction='.$this->getAddAction();
+                $location = $sm->sessionUrl($url.$filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
             } else {
                 // normal succesful save
-                $location = $this->m_node->feedbackUrl("save", self::ACTION_SUCCESS, $record, "", $this->_getSkip());
+                $location = $this->m_node->feedbackUrl('save', self::ACTION_SUCCESS, $record, '', $this->_getSkip());
             }
         }
+
         return $location;
     }
 
     /**
-     * Store a record, either in the database or in the session
+     * Store a record, either in the database or in the session.
      *
      * @param array $record Record to store
+     *
      * @return bool Successfull save?
      */
     public function storeRecord(&$record)
     {
-        $atkstoretype = "";
+        $atkstoretype = '';
         $sessionmanager = SessionManager::getInstance();
         if ($sessionmanager) {
             $atkstoretype = $sessionmanager->stackVar('atkstore');
@@ -216,33 +223,36 @@ class SaveHandler extends ActionHandler
     }
 
     /**
-     * Store a record in the session
+     * Store a record in the session.
      *
      * @param array $record Record to store in the session
+     *
      * @return bool Successfull save?
      */
     protected function storeRecordInSession(&$record)
     {
-        Tools::atkdebug("STORING RECORD IN SESSION");
+        Tools::atkdebug('STORING RECORD IN SESSION');
         $result = SessionStore::getInstance()->addDataRow($record,
             $this->m_node->primaryKeyField());
-        return ($result !== false);
+
+        return $result !== false;
     }
 
     /**
-     * Store a record in the database
+     * Store a record in the database.
      *
      * @param array $record Record to store in the database
+     *
      * @return bool Successfull save?
      */
     protected function storeRecordInDb(&$record)
     {
-        if (!$this->m_node->addDb($record, true, "add")) {
+        if (!$this->m_node->addDb($record, true, 'add')) {
             return false;
         }
 
         $this->m_node->getDb()->commit();
-        $this->notify("save", $record);
+        $this->notify('save', $record);
         $this->clearCache();
 
         return true;
@@ -253,44 +263,45 @@ class SaveHandler extends ActionHandler
      *
      * @param array $record
      */
-    function handleAddError($record)
+    public function handleAddError($record)
     {
         // Do a rollback on an error
         $db = $this->m_node->getDb();
         $db->rollback();
 
-        if ($db->getErrorType() == "user") {
+        if ($db->getErrorType() == 'user') {
             Tools::triggerError($record, 'Error', $db->getErrorMsg(), '', '');
 
             // still an error, back to where we came from
             $this->goBack($record);
         } else {
-            $location = $this->m_node->feedbackUrl("save", self::ACTION_FAILED, $record, $db->getErrorMsg());
+            $location = $this->m_node->feedbackUrl('save', self::ACTION_FAILED, $record, $db->getErrorMsg());
             $this->_handleRedirect($location);
         }
     }
 
     /**
-     * Get the number of levels to skip
+     * Get the number of levels to skip.
      *
-     * @return Integer The number of levels to skip
+     * @return int The number of levels to skip
      */
-    function _getSkip()
+    public function _getSkip()
     {
-        if (isset($this->m_postvars["atkreturnbehaviour"]) &&
-            $this->m_postvars["atkreturnbehaviour"] == self::ATK_ACTION_BACK
+        if (isset($this->m_postvars['atkreturnbehaviour']) &&
+            $this->m_postvars['atkreturnbehaviour'] == self::ATK_ACTION_BACK
         ) {
             return 2;
         }
+
         return 1;
     }
 
     /**
-     * Go back to the add page
+     * Go back to the add page.
      *
      * @param array $record The record with reject info
      */
-    function goBack($record)
+    public function goBack($record)
     {
         $this->setRejectInfo($record);
         $this->_handleRedirect();
@@ -300,11 +311,12 @@ class SaveHandler extends ActionHandler
      * Validate record.
      *
      * @param array $record The record to validate
+     *
      * @return bool
      */
-    function validate(&$record)
+    public function validate(&$record)
     {
-        $error = (!$this->m_node->validate($record, "add"));
+        $error = (!$this->m_node->validate($record, 'add'));
 
         if (!isset($record['atkerror'])) {
             $record['atkerror'] = array();
@@ -319,5 +331,4 @@ class SaveHandler extends ActionHandler
 
         return !$error;
     }
-
 }

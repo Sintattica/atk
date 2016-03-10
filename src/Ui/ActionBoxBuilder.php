@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Ui;
+<?php
+
+namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
@@ -10,8 +12,6 @@ use Sintattica\Atk\Session\SessionManager;
  * This class is used/exposed by the PageBuilder class.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage ui
  *
  * @see PageBuilder
  */
@@ -62,11 +62,11 @@ class ActionBoxBuilder
         $this->m_pageBuilder = $pageBuilder;
         $this->m_params = $pageBuilder->getNode()->getDefaultActionParams(false);
 
-        $this->formStart('<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . Config::getGlobal('dispatcher') . '" method="post" onsubmit="return globalSubmit(this,true)">');
+        $this->formStart('<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'" method="post" onsubmit="return globalSubmit(this,true)">');
     }
 
     /**
-     * Sets the box title
+     * Sets the box title.
      *
      * @param string $title title
      *
@@ -75,6 +75,7 @@ class ActionBoxBuilder
     public function title($title)
     {
         $this->m_title = $title;
+
         return $this;
     }
 
@@ -88,6 +89,7 @@ class ActionBoxBuilder
     public function formStart($formStart)
     {
         $this->m_params['formstart'] = $formStart;
+
         return $this;
     }
 
@@ -105,6 +107,7 @@ class ActionBoxBuilder
     public function sessionStatus($status)
     {
         $this->m_sessionStatus = $status;
+
         return $this;
     }
 
@@ -118,6 +121,7 @@ class ActionBoxBuilder
     public function formEnd($formEnd)
     {
         $this->m_params['formend'] = $formEnd;
+
         return $this;
     }
 
@@ -131,6 +135,7 @@ class ActionBoxBuilder
     public function template($template)
     {
         $this->m_template = $template;
+
         return $this;
     }
 
@@ -144,6 +149,7 @@ class ActionBoxBuilder
     public function content($content)
     {
         $this->m_params['content'] = $content;
+
         return $this;
     }
 
@@ -157,6 +163,7 @@ class ActionBoxBuilder
     public function buttons($buttons)
     {
         $this->m_params['buttons'] = $buttons;
+
         return $this;
     }
 
@@ -169,7 +176,7 @@ class ActionBoxBuilder
     {
         if ($this->m_sessionStatus !== null) {
             $sm = SessionManager::getInstance();
-            $this->m_params['formend'] = $sm->formState($this->m_sessionStatus) .
+            $this->m_params['formend'] = $sm->formState($this->m_sessionStatus).
                 $this->m_params['formend'];
         }
 
@@ -177,5 +184,4 @@ class ActionBoxBuilder
 
         return $this->m_pageBuilder;
     }
-
 }

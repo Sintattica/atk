@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Attributes;
+<?php
+
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
@@ -8,17 +10,15 @@ use Sintattica\Atk\Utils\StringParser;
  * data to a file, instead of the database.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage attributes
- *
  */
 class FileWriterAttribute extends TextAttribute
 {
-    var $m_filename;
+    public $m_filename;
 
     /**
-     * Constructor
-     * @param string $name Name of the attribute
+     * Constructor.
+     *
+     * @param string $name     Name of the attribute
      * @param string $filename The name of the file to read/write.
      *                         Advanced use: This may be a template containing
      *                         fields from your class, for example:
@@ -27,10 +27,10 @@ class FileWriterAttribute extends TextAttribute
      *                         somedir/textfile_9.txt. Watch out when using fields
      *                         that can change; the attribute won't remove the old
      *                         files.
-     * @param int $flags Flags for this attribute
-     * @param mixed $size Size of the attribute
+     * @param int    $flags    Flags for this attribute
+     * @param mixed  $size     Size of the attribute
      */
-    function __construct($name, $filename, $flags = 0, $size = 30)
+    public function __construct($name, $filename, $flags = 0, $size = 30)
     {
         $this->m_filename = $filename;
 
@@ -44,9 +44,10 @@ class FileWriterAttribute extends TextAttribute
      * For this attribute the data is not written to a database but to a file
      *
      * @param array $record The record that holds this attribute's value.
-     * @return String The database compatible value
+     *
+     * @return string The database compatible value
      */
-    function value2db($record)
+    public function value2db($record)
     {
         // Note1 : regardless of mode (update or add), we always overwrite the 
         // file with the current contents.
@@ -59,20 +60,20 @@ class FileWriterAttribute extends TextAttribute
 
         if (!$parser->isComplete($record)) {
             // record does not contain all data. Let's lazy load.
-            Tools::atkdebug("[atkfilewriter] Lazy loading rest of record to complete filename.");
-            $record = $this->m_ownerInstance->select($record["atkprimkey"])->getFirstRow();
+            Tools::atkdebug('[atkfilewriter] Lazy loading rest of record to complete filename.');
+            $record = $this->m_ownerInstance->select($record['atkprimkey'])->getFirstRow();
         }
 
         $filename = $parser->parse($record);
 
-        $fp = @fopen($filename, "w");
+        $fp = @fopen($filename, 'w');
 
         if ($fp == false) {
-            Tools::atkerror("[" . $this->fieldName() . "] couldn't open $filename for writing!");
+            Tools::atkerror('['.$this->fieldName()."] couldn't open $filename for writing!");
         } else {
             fwrite($fp, $contents);
             fclose($fp);
-            Tools::atkdebug("[" . $this->fieldName() . "] succesfully wrote $filename..");
+            Tools::atkdebug('['.$this->fieldName()."] succesfully wrote $filename..");
         }
 
         return $this->escapeSQL($contents);
@@ -84,22 +85,25 @@ class FileWriterAttribute extends TextAttribute
      * For this attribute the value will be read from a file (if possible)
      *
      * @param array $record The database record that holds this attribute's value
+     *
      * @return mixed The internal value
      */
-    function db2value($record)
+    public function db2value($record)
     {
         // determine filename.
         $parser = new StringParser($this->m_filename);
         $filename = $parser->parse($record);
 
         if (!file_exists($filename)) {
-            Tools::atkdebug("[" . $this->fieldName() . "] warning: $filename doesn't exist");
+            Tools::atkdebug('['.$this->fieldName()."] warning: $filename doesn't exist");
+
             return $record[$this->fieldName()];
         } else {
-            if ($record[$this->fieldName()] == "") {
+            if ($record[$this->fieldName()] == '') {
                 // db is empty. if file contains stuff, use that.          
-                $contents = implode("", file($filename));
-                Tools::atkdebug("[" . $this->fieldName() . "] succesfully read $filename");
+                $contents = implode('', file($filename));
+                Tools::atkdebug('['.$this->fieldName()."] succesfully read $filename");
+
                 return $contents;
             } else {
                 return $record[$this->fieldName()];
@@ -108,11 +112,11 @@ class FileWriterAttribute extends TextAttribute
     }
 
     /**
-     * This attribute does not support any search modes
+     * This attribute does not support any search modes.
      *
      * @return array empty array
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -121,7 +125,4 @@ class FileWriterAttribute extends TextAttribute
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return array();
     }
-
 }
-
-

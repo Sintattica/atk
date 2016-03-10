@@ -21,18 +21,19 @@ use Sintattica\Atk\Session\SessionManager;
  * </code>
  *
  * @author Patrick van der Velden <patrick@ibuildings.nl>
- *
  */
 function smarty_function_atkmessages($params, &$smarty)
 {
     $sessionManager = SessionManager::getInstance();
     if (is_object($sessionManager)) {
         $msgs = MessageQueue::getMessages();
-        $smarty->assign("atkmessages", $msgs);
+        $smarty->assign('atkmessages', $msgs);
         if (empty($msgs)) {
-            Tools::atkdebug("No messages in MessageQueue");
+            Tools::atkdebug('No messages in MessageQueue');
         }
-        return "";
+
+        return '';
     }
-    return "";
+
+    return '';
 }

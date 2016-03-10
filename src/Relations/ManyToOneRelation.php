@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Relations;
+<?php
+
+namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -9,8 +11,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
-use \Exception;
-
+use Exception;
 
 /**
  * A N:1 relation between two classes.
@@ -23,13 +24,9 @@ use \Exception;
  * you can select from a set of records.
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @package atk
- * @subpackage relations
- *
  */
 class ManyToOneRelation extends Relation
 {
-
     /**
      * Create edit/view links for the items in a manytoonerelation dropdown.
      */
@@ -41,178 +38,176 @@ class ManyToOneRelation extends Relation
     const AF_MANYTOONE_AUTOLINK = 33554432;
 
     /**
-     * Do not add null option under any circumstance
+     * Do not add null option under any circumstance.
      */
     const AF_RELATION_NO_NULL_ITEM = 67108864;
 
     /**
-     * Do not add null option ever
+     * Do not add null option ever.
      */
     const AF_MANYTOONE_NO_NULL_ITEM = 67108864;
 
     /**
-     * Use auto-completition instead of drop-down / selection page
+     * Use auto-completition instead of drop-down / selection page.
      */
     const AF_RELATION_AUTOCOMPLETE = 134217728;
 
     /**
-     * Use auto-completition instead of drop-down / selection page
+     * Use auto-completition instead of drop-down / selection page.
      */
     const AF_MANYTOONE_AUTOCOMPLETE = 134217728;
 
     /**
-     * Lazy load
+     * Lazy load.
      */
     const AF_MANYTOONE_LAZY = 268435456;
 
     /**
-     * Add a default null option to obligatory relations
+     * Add a default null option to obligatory relations.
      */
     const AF_MANYTOONE_OBLIGATORY_NULL_ITEM = 536870912;
 
+    const SEARCH_MODE_EXACT = 'exact';
+    const SEARCH_MODE_STARTSWITH = 'startswith';
+    const SEARCH_MODE_CONTAINS = 'contains';
 
-    const SEARCH_MODE_EXACT = "exact";
-    const SEARCH_MODE_STARTSWITH = "startswith";
-    const SEARCH_MODE_CONTAINS = "contains";
-
-    /**
+    /*
      * By default, we do a left join. this means that records that don't have
      * a record in this relation, will be displayed anyway. NOTE: set  this to
      * false only if you know what you're doing. When in doubt, 'true' is
      * usually the best option.
      * @var boolean
      */
-    var $m_leftjoin = true;
+    public $m_leftjoin = true;
 
-    /**
+    /*
      * The array of referential key fields.
      * @access private
      * @var array
      */
-    var $m_refKey = array();
+    public $m_refKey = array();
 
-    /**
+    /*
      * SQL statement with extra filter for the join that retrieves the
      * selected record.
      * @var String
      */
-    var $m_joinFilter = "";
+    public $m_joinFilter = '';
 
-    /**
+    /*
      * Hide the relation when there are no records to select.
      * @access private
      * @var boolean
      */
-    var $m_hidewhenempty = false;
+    public $m_hidewhenempty = false;
 
-    /**
+    /*
      * List columns.
      * @access private
      * @var array
      */
-    var $m_listColumns = array();
+    public $m_listColumns = array();
 
-    /**
+    /*
      * Always show list columns?
      * @access private
      * @var boolean
      */
-    var $m_alwaysShowListColumns = false;
+    public $m_alwaysShowListColumns = false;
 
-    /**
+    /*
      * Label to use for the 'none' option.
      *
      * @access private
      * @var String
      */
-    var $m_noneLabel = null;
+    public $m_noneLabel = null;
 
-    /**
+    /*
      * Minimum number of character a user needs to enter before auto-completion kicks in.
      *
      * @access private
      * @var int
      */
-    var $m_autocomplete_minchars = 2;
+    public $m_autocomplete_minchars = 2;
 
-    /**
+    /*
      * An array with the fieldnames of the destination node in which the autocompletion must search
      * for results.
      *
      * @access private
      * @var array
      */
-    var $m_autocomplete_searchfields = "";
+    public $m_autocomplete_searchfields = '';
 
-    /**
+    /*
      * The search mode of the autocomplete fields. Can be 'startswith', 'exact' or 'contains'.
      *
      * @access private
      * @var String
      */
-    var $m_autocomplete_searchmode = "contains";
+    public $m_autocomplete_searchmode = 'contains';
 
-    /**
+    /*
      * Value determines wether the search of the autocompletion is case-sensitive.
      *
      * @var boolean
      */
-    var $m_autocomplete_search_case_sensitive = false;
+    public $m_autocomplete_search_case_sensitive = false;
 
-    /**
+    /*
      * Value determines if select link for autocomplete should use atkSubmit or not (for use in admin screen for example)
      *
      * @var boolean
      */
-    var $m_autocomplete_saveform = true;
+    public $m_autocomplete_saveform = true;
 
-    /**
+    /*
      * Set the minimal number of records for showing the automcomplete. If there are less records
      * the normal dropdown is shown
      *
      * @access private
      * @var integer
      */
-    var $m_autocomplete_minrecords = -1;
+    public $m_autocomplete_minrecords = -1;
 
     /**
-     * Set the size attribute of the autocompletion input element
+     * Set the size attribute of the autocompletion input element.
      *
-     * @access protected
-     * @var integer
+     * @var int
      */
     protected $m_autocomplete_size = 50;
 
     /**
-     * Destination node for auto links (edit, new)
+     * Destination node for auto links (edit, new).
      *
      * @var string
      */
-    protected $m_autolink_destination = "";
+    protected $m_autolink_destination = '';
     // override onchangehandler init
-    var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
+    public $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
-    /**
+    /*
      * Use destination filter for autolink add link?
      *
      * @access private
      * @var boolean
      */
-    var $m_useFilterForAddLink = true;
+    public $m_useFilterForAddLink = true;
 
-    /**
+    /*
      * Set a function to use for determining the descriptor in the getConcatFilter function
      *
      * @access private
      * @var string
      */
-    var $m_concatDescriptorFunction = '';
+    public $m_concatDescriptorFunction = '';
 
     /**
      * When autosearch is set to true, this attribute will automatically submit
      * the search form onchange. This will only happen in the admin action.
      *
-     * @var boolean
+     * @var bool
      */
     protected $m_autoSearch = false;
 
@@ -227,32 +222,33 @@ class ManyToOneRelation extends Relation
 
     /**
      * Constructor.
-     * @param string $name The name of the attribute. This is the name of the
-     *                     field that is the referential key to the
-     *                     destination.
-     *                     For relations with more than one field in the
-     *                     foreign key, you should pass an array of
-     *                     referential key fields. The order of the fields
-     *                     must match the order of the primary key attributes
-     *                     in the destination node.
+     *
+     * @param string $name        The name of the attribute. This is the name of the
+     *                            field that is the referential key to the
+     *                            destination.
+     *                            For relations with more than one field in the
+     *                            foreign key, you should pass an array of
+     *                            referential key fields. The order of the fields
+     *                            must match the order of the primary key attributes
+     *                            in the destination node.
      * @param string $destination The node we have a relationship with.
-     * @param int $flags Flags for the relation
+     * @param int    $flags       Flags for the relation
      */
-    function __construct($name, $destination, $flags = 0)
+    public function __construct($name, $destination, $flags = 0)
     {
-        if (Config::getGlobal("manytoone_autocomplete_default", false)) {
+        if (Config::getGlobal('manytoone_autocomplete_default', false)) {
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
-        if (Config::getGlobal("manytoone_autocomplete_large", true) && Tools::hasFlag($flags, self::AF_LARGE)) {
+        if (Config::getGlobal('manytoone_autocomplete_large', true) && Tools::hasFlag($flags, self::AF_LARGE)) {
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
-        $this->m_autocomplete_minchars = Config::getGlobal("manytoone_autocomplete_minchars", 2);
-        $this->m_autocomplete_searchmode = Config::getGlobal("manytoone_autocomplete_searchmode", "contains");
-        $this->m_autocomplete_search_case_sensitive = Config::getGlobal("manytoone_autocomplete_search_case_sensitive",
+        $this->m_autocomplete_minchars = Config::getGlobal('manytoone_autocomplete_minchars', 2);
+        $this->m_autocomplete_searchmode = Config::getGlobal('manytoone_autocomplete_searchmode', 'contains');
+        $this->m_autocomplete_search_case_sensitive = Config::getGlobal('manytoone_autocomplete_search_case_sensitive',
             false);
-        $this->m_autocomplete_size = Config::getGlobal("manytoone_autocomplete_size",50);
+        $this->m_autocomplete_size = Config::getGlobal('manytoone_autocomplete_size', 50);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
@@ -269,7 +265,7 @@ class ManyToOneRelation extends Relation
         }
 
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
-            Tools::atkerror("self::AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.");
+            Tools::atkerror('self::AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.');
         }
     }
 
@@ -280,22 +276,24 @@ class ManyToOneRelation extends Relation
      * constructor time.
      *
      * @param int $flag The flag to add to the attribute
+     *
      * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
-    function addFlag($flag)
+    public function addFlag($flag)
     {
         parent::addFlag($flag);
-        if (Config::getGlobal("manytoone_autocomplete_large", true) && Tools::hasFlag($flag, self::AF_LARGE)) {
+        if (Config::getGlobal('manytoone_autocomplete_large', true) && Tools::hasFlag($flag, self::AF_LARGE)) {
             $this->m_flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
+
         return $this;
     }
 
     /**
      * When autosearch is set to true, this attribute will automatically submit
      * the search form onchange. This will only happen in the admin action.
+     *
      * @param bool $auto
-     * @return void
      */
     public function setAutoSearch($auto = false)
     {
@@ -307,7 +305,7 @@ class ManyToOneRelation extends Relation
      *
      * @param string $filter join filter
      */
-    function setJoinFilter($filter)
+    public function setJoinFilter($filter)
     {
         $this->m_joinFilter = $filter;
     }
@@ -317,7 +315,7 @@ class ManyToOneRelation extends Relation
      *
      * @param array $searchfields
      */
-    function setAutoCompleteSearchFields($searchfields)
+    public function setAutoCompleteSearchFields($searchfields)
     {
         $this->m_autocomplete_searchfields = $searchfields;
     }
@@ -328,7 +326,7 @@ class ManyToOneRelation extends Relation
      *
      * @param array $mode
      */
-    function setAutoCompleteSearchMode($mode)
+    public function setAutoCompleteSearchMode($mode)
     {
         $this->m_autocomplete_searchmode = $mode;
     }
@@ -338,7 +336,7 @@ class ManyToOneRelation extends Relation
      *
      * @param array $case_sensitive
      */
-    function setAutoCompleteCaseSensitive($case_sensitive)
+    public function setAutoCompleteCaseSensitive($case_sensitive)
     {
         $this->m_autocomplete_search_case_sensitive = $case_sensitive;
     }
@@ -348,38 +346,38 @@ class ManyToOneRelation extends Relation
      *
      * @param int $chars
      */
-    function setAutoCompleteMinChars($chars)
+    public function setAutoCompleteMinChars($chars)
     {
         $this->m_autocomplete_minchars = $chars;
     }
 
     /**
-     * Set if the select link should save form (atkSubmit) or not (for use in admin screen for example)
+     * Set if the select link should save form (atkSubmit) or not (for use in admin screen for example).
      *
-     * @param boolean $saveform
+     * @param bool $saveform
      */
-    function setAutoCompleteSaveForm($saveform = true)
+    public function setAutoCompleteSaveForm($saveform = true)
     {
         $this->m_autocomplete_saveform = $saveform;
     }
 
     /**
      * Set the minimal number of records for the autocomplete to show
-     * If there are less records the normal dropdown is shown
+     * If there are less records the normal dropdown is shown.
      *
-     * @param integer $minrecords
+     * @param int $minrecords
      */
-    function setAutoCompleteMinRecords($minrecords)
+    public function setAutoCompleteMinRecords($minrecords)
     {
         $this->m_autocomplete_minrecords = $minrecords;
     }
 
     /**
-     * Set the size of the rendered autocompletion input element
+     * Set the size of the rendered autocompletion input element.
      *
-     * @param integer $size
+     * @param int $size
      */
-    function setAutoCompleteSize($size)
+    public function setAutoCompleteSize($size)
     {
         $this->m_autocomplete_size = $size;
     }
@@ -387,30 +385,30 @@ class ManyToOneRelation extends Relation
     /**
      * Use destination filter for auto add link?
      *
-     * @param boolean $useFilter use destnation filter for add link?
+     * @param bool $useFilter use destnation filter for add link?
      */
-    function setUseFilterForAddLink($useFilter)
+    public function setUseFilterForAddLink($useFilter)
     {
         $this->m_useFilterForAddLink = $useFilter;
     }
 
     /**
      * Set the function for determining the descriptor in the getConcatFilter function
-     * This function should be implemented in the destination node
+     * This function should be implemented in the destination node.
      *
      * @param string $function
      */
-    function setConcatDescriptorFunction($function)
+    public function setConcatDescriptorFunction($function)
     {
         $this->m_concatDescriptorFunction = $function;
     }
 
     /**
-     * Return the function for determining the descriptor in the getConcatFilter function
+     * Return the function for determining the descriptor in the getConcatFilter function.
      *
      * @return string
      */
-    function getConcatDescriptorFunction()
+    public function getConcatDescriptorFunction()
     {
         return $this->m_concatDescriptorFunction;
     }
@@ -420,25 +418,29 @@ class ManyToOneRelation extends Relation
      * that (only) will be displayed in the recordlist.
      *
      * @param string $attr The attribute to add to the listcolumn
+     *
      * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
-    function addListColumn($attr)
+    public function addListColumn($attr)
     {
         $this->m_listColumns[] = $attr;
+
         return $this;
     }
 
     /**
      * Add multiple list columns. Attributes of the destination node
      * that (only) will be displayed in the recordlist.
+     *
      * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
-    function addListColumns()
+    public function addListColumns()
     {
         $attrs = func_get_args();
         foreach ($attrs as $attr) {
             $this->m_listColumns[] = $attr;
         }
+
         return $this;
     }
 
@@ -450,6 +452,7 @@ class ManyToOneRelation extends Relation
     /**
      * Reset the list columns and add multiple list columns. Attributes of the
      * destination node that (only) will be displayed in the recordlist.
+     *
      * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
     public function setListColumns()
@@ -466,6 +469,7 @@ class ManyToOneRelation extends Relation
         foreach ($columns as $column) {
             $this->m_listColumns[] = $column;
         }
+
         return $this;
     }
 
@@ -474,32 +478,38 @@ class ManyToOneRelation extends Relation
      * even if the attribute itself is hidden?
      *
      * @param bool $value always show list columns?
+     *
      * @return ManyToOneRelation The instance of this ManyToOneRelation
      */
-    function setAlwaysShowListColumns($value)
+    public function setAlwaysShowListColumns($value)
     {
         $this->m_alwaysShowListColumns = $value;
         if ($this->m_alwaysShowListColumns) {
             $this->addFlag(self::AF_FORCE_LOAD);
         }
+
         return $this;
     }
 
     /**
-     * Convert value to DataBase value
+     * Convert value to DataBase value.
+     *
      * @param array $rec Record to convert
+     *
      * @return int Database safe value
      */
-    function value2db($rec)
+    public function value2db($rec)
     {
         if ($this->isEmpty($rec)) {
-            Tools::atkdebug($this->fieldName() . " IS EMPTY!");
-            return null;
+            Tools::atkdebug($this->fieldName().' IS EMPTY!');
+
+            return;
         } else {
             if ($this->createDestination()) {
                 if (is_array($rec[$this->fieldName()])) {
                     $pkfield = $this->m_destInstance->m_primaryKey[0];
                     $pkattr = $this->m_destInstance->getAttribute($pkfield);
+
                     return $pkattr->value2db($rec[$this->fieldName()]);
                 } else {
                     return $rec[$this->fieldName()];
@@ -507,15 +517,17 @@ class ManyToOneRelation extends Relation
             }
         }
         // This never happens, does it?
-        return "";
+        return '';
     }
 
     /**
-     * Fetch value out of record
+     * Fetch value out of record.
+     *
      * @param array $postvars Postvars
+     *
      * @return string decoded value
      */
-    function fetchValue($postvars)
+    public function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
             $result = array();
@@ -540,7 +552,7 @@ class ManyToOneRelation extends Relation
             }
 
             if (count($result) == 0) {
-                return null;
+                return;
             }
 
             // add descriptor fields, this means they can be shown in the title
@@ -551,15 +563,18 @@ class ManyToOneRelation extends Relation
 
             return $result;
         }
-        return null;
+
+        return;
     }
 
     /**
-     * Converts DataBase value to normal value
+     * Converts DataBase value to normal value.
+     *
      * @param array $rec Record
+     *
      * @return string decoded value
      */
-    function db2value($rec)
+    public function db2value($rec)
     {
         $this->createDestination();
 
@@ -568,7 +583,7 @@ class ManyToOneRelation extends Relation
             (!isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) ||
                 empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
         ) {
-            return null;
+            return;
         }
 
         if (isset($rec[$this->fieldName()])) {
@@ -602,7 +617,7 @@ class ManyToOneRelation extends Relation
      *
      * @param string $label The label to use for the "none" option
      */
-    function setNoneLabel($label)
+    public function setNoneLabel($label)
     {
         $this->m_noneLabel = $label;
     }
@@ -610,15 +625,15 @@ class ManyToOneRelation extends Relation
     /**
      * Get none label.
      *
-     * @return String The label for the "none" option
+     * @return string The label for the "none" option
      */
-    function getNoneLabel($mode = '')
+    public function getNoneLabel($mode = '')
     {
         if ($this->m_noneLabel !== null) {
             return $this->m_noneLabel;
         }
 
-        $text_key = "select_none";
+        $text_key = 'select_none';
         if (in_array($mode, array('add', 'edit')) && $this->hasFlag(self::AF_OBLIGATORY)) {
             if ((($mode == 'add' && !$this->hasFlag(self::AF_READONLY_ADD)) || ($mode == 'edit' && !$this->hasFlag(self::AF_READONLY_EDIT)))) {
                 $text_key = 'select_none_obligatory';
@@ -632,9 +647,9 @@ class ManyToOneRelation extends Relation
         $nodename = $this->m_destInstance->m_type;
         $modulename = $this->m_destInstance->m_module;
         $ownermodulename = $this->m_ownerInstance->m_module;
-        $label = Tools::atktext($this->fieldName() . '_' . $text_key, $ownermodulename, $this->m_owner, "", "",
+        $label = Tools::atktext($this->fieldName().'_'.$text_key, $ownermodulename, $this->m_owner, '', '',
             true);
-        if ($label == "") {
+        if ($label == '') {
             $label = Tools::atktext($text_key, $modulename, $nodename);
         }
 
@@ -644,15 +659,16 @@ class ManyToOneRelation extends Relation
     /**
      * Returns a displayable string for this value.
      *
-     * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                     for displaying in recordlists, "edit" for
-     *                     displaying in editscreens, "add" for displaying in
-     *                     add screens. "csv" for csv files. Applications can
-     *                     use additional modes.
+     * @param array  $record The record that holds the value for this attribute
+     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     *                       for displaying in recordlists, "edit" for
+     *                       displaying in editscreens, "add" for displaying in
+     *                       add screens. "csv" for csv files. Applications can
+     *                       use additional modes.
+     *
      * @return string a displayable string
      */
-    function display($record, $mode)
+    public function display($record, $mode)
     {
         if ($this->createDestination()) {
             if (count($record[$this->fieldName()]) == count($this->m_refKey)) {
@@ -662,43 +678,45 @@ class ManyToOneRelation extends Relation
             if (!$this->isEmpty($record)) {
                 $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
                 if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && (!in_array($mode,
-                        array("csv", "plain")))
+                        array('csv', 'plain')))
                 ) { // create link to edit/view screen
-                    if (($this->m_destInstance->allowed("view")) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != "") {
+                    if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
                         $saveForm = $mode == 'add' || $mode == 'edit';
-                        $result = Tools::href(Tools::dispatch_url($this->m_destination, "view",
-                            array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
+                        $result = Tools::href(Tools::dispatch_url($this->m_destination, 'view',
+                            array('atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
                             $result, SessionManager::SESSION_NESTED, $saveForm);
                     }
                 }
             } else {
                 $result = !in_array($mode,
-                    array("csv", "plain", "list")) ? $this->getNoneLabel($mode) : ''; // no record
+                    array('csv', 'plain', 'list')) ? $this->getNoneLabel($mode) : ''; // no record
             }
+
             return $result;
         } else {
             Tools::atkdebug("Can't create destination! ($this -> m_destination");
         }
-        return "";
+
+        return '';
     }
 
     /**
      * Populate the record with the destination record data.
      *
-     * @param array $record record
+     * @param array $record       record
      * @param mixed $fullOrFields load all data, only the given fields or only the descriptor fields?
      */
     public function populate(&$record, $fullOrFields = false)
     {
-        if (!is_array($record) || $record[$this->fieldName()] == "") {
+        if (!is_array($record) || $record[$this->fieldName()] == '') {
             return;
         }
 
-        Tools::atkdebug("Delayed loading of " . ($fullOrFields || is_array($fullOrFields)
-                ? "" : "descriptor ") . "fields for " . $this->m_name);
+        Tools::atkdebug('Delayed loading of '.($fullOrFields || is_array($fullOrFields)
+                ? '' : 'descriptor ').'fields for '.$this->m_name);
         $this->createDestination();
 
-        $includes = "";
+        $includes = '';
         if (is_array($fullOrFields)) {
             $includes = array_merge($this->m_destInstance->m_primaryKey, $fullOrFields);
         } else {
@@ -721,11 +739,12 @@ class ManyToOneRelation extends Relation
     /**
      * Creates HTML for the selection and auto links.
      *
-     * @param string $id attribute id
-     * @param array $record record
+     * @param string $id     attribute id
+     * @param array  $record record
+     *
      * @return string
      */
-    function createSelectAndAutoLinks($id, $record)
+    public function createSelectAndAutoLinks($id, $record)
     {
         $links = array();
 
@@ -735,46 +754,47 @@ class ManyToOneRelation extends Relation
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $sm = SessionManager::getInstance();
 
-            if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(Node::NF_NO_ADD)) {
-                $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), "add", array(
-                    "atkpkret" => $id,
-                    "atkfilter" => ($filter != ""
-                        ? $filter : "")
-                )), Tools::atktext("new"), SessionManager::SESSION_NESTED, true);
+            if ($this->m_destInstance->allowed('add') && !$this->m_destInstance->hasFlag(Node::NF_NO_ADD)) {
+                $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
+                    'atkpkret' => $id,
+                    'atkfilter' => ($filter != ''
+                        ? $filter : ''),
+                )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
             }
 
-            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $record[$this->fieldName()] != null) {
+            if ($this->m_destInstance->allowed('edit') && !$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $editUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
-                    array("atkselector" => "REPLACEME")), SessionManager::SESSION_NESTED);
-                $links[] = "<span id=\"" . $id . "_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"" . Tools::atkurlencode($editUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . Tools::atktext('edit') . "</a></span>";
+                $editUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit',
+                    array('atkselector' => 'REPLACEME')), SessionManager::SESSION_NESTED);
+                $links[] = '<span id="'.$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation\">".Tools::atktext('edit').'</a></span>';
             }
         }
 
-        return implode("&nbsp;", $links);
+        return implode('&nbsp;', $links);
     }
 
     /**
-     * Set destination node for the Autolink links (new/edit)
+     * Set destination node for the Autolink links (new/edit).
      *
      * @param string $node
      */
-    function setAutoLinkDestination($node)
+    public function setAutoLinkDestination($node)
     {
         $this->m_autolink_destination = $node;
     }
 
     /**
-     * Get destination node for the Autolink links (new/edit)
+     * Get destination node for the Autolink links (new/edit).
      *
      * @return string
      */
-    function getAutoLinkDestination()
+    public function getAutoLinkDestination()
     {
         if (!empty($this->m_autolink_destination)) {
             return $this->m_autolink_destination;
         }
+
         return $this->m_destination;
     }
 
@@ -783,9 +803,9 @@ class ManyToOneRelation extends Relation
      * loaded and update the record with the possible selection of the first
      * record.
      *
-     * @param array $record reference to the record
+     * @param array  $record      reference to the record
      * @param string $fieldPrefix field prefix
-     * @param string $mode edit mode
+     * @param string $mode        edit mode
      */
     public function preAddToEditArray(&$record, $fieldPrefix, $mode)
     {
@@ -798,7 +818,7 @@ class ManyToOneRelation extends Relation
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
 
             if (count($this->m_selectableRecords) > 0 &&
-                !Config::getGlobal("list_obligatory_null_item") &&
+                !Config::getGlobal('list_obligatory_null_item') &&
                 (($this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) ||
                     (!$this->hasFlag(self::AF_OBLIGATORY) && $this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)))
             ) {
@@ -830,13 +850,13 @@ class ManyToOneRelation extends Relation
         }
     }
 
-    function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode)
     {
         if (!$this->createDestination()) {
             Tools::atkerror("Could not create destination for destination: $this -> m_destination!");
+
             return;
         }
-
 
         $recordset = $this->m_selectableRecords;
 
@@ -849,7 +869,7 @@ class ManyToOneRelation extends Relation
             return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
         }
 
-        $id = $fieldprefix . $this->fieldName();
+        $id = $fieldprefix.$this->fieldName();
         $editflag = true;
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()]
@@ -869,7 +889,7 @@ class ManyToOneRelation extends Relation
 
             $onchange = '';
             if (count($this->m_onchangecode)) {
-                $onchange = 'onChange="' . $id . '_onChange(this);"';
+                $onchange = 'onChange="'.$id.'_onChange(this);"';
                 $this->_renderChangeHandler($fieldprefix);
             }
 
@@ -883,21 +903,21 @@ class ManyToOneRelation extends Relation
             } else {
                 $this->registerJavaScriptObservers($id);
 
-                $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation '.$this->get_class_name().'" ' . $onchange . '>';
+                $result = '<select id="'.$id.'" name="'.$id.'" class="form-control atkmanytoonerelation '.$this->get_class_name().'" '.$onchange.'>';
 
                 // relation may be empty, so we must provide an empty selectable..
                 if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
                     (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) ||
                     ($this->getConfigOptionObligatoryNullOption() && !is_array($value))
                 ) {
-                    $result .= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
+                    $result .= '<option value="">'.$this->getNoneLabel($mode).'</option>';
                 }
 
                 foreach ($recordset as $selectable) {
                     $pk = $this->getDestination()->primaryKey($selectable);
                     $sel = $pk == $currentPk ? 'selected="selected"' : '';
-                    $result .= '<option value="' . $pk . '" ' . $sel . '>' . str_replace(' ', '&nbsp;',
-                            htmlentities(strip_tags($this->m_destInstance->descriptor($selectable)))) . '</option>';
+                    $result .= '<option value="'.$pk.'" '.$sel.'>'.str_replace(' ', '&nbsp;',
+                            htmlentities(strip_tags($this->m_destInstance->descriptor($selectable)))).'</option>';
                 }
 
                 $result .= '</select>';
@@ -910,21 +930,21 @@ class ManyToOneRelation extends Relation
 
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
-                $result = '<span id="' . $id . '_current" >';
+                $result = '<span id="'.$id.'_current" >';
 
-                if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
-                    $result .= Tools::href(Tools::dispatch_url($this->m_destination, "view",
-                        array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
+                if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
+                    $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'view',
+                        array('atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()]))),
                         $this->m_destInstance->descriptor($destrecord), SessionManager::SESSION_NESTED, true);
                 } else {
                     $result .= $this->m_destInstance->descriptor($destrecord);
                 }
 
-                $result .= "&nbsp;";
+                $result .= '&nbsp;';
 
                 if (!$this->hasFlag(self::AF_OBLIGATORY)) {
-                    $result .= '<a href="#" onClick="document.getElementById(\'' .
-                        $id . '\').value=\'\'; document.getElementById(\'' . $id . '_current\').style.display=\'none\'" class="atkmanytoonerelation">' . Tools::atktext("unselect") . '</a>&nbsp;';
+                    $result .= '<a href="#" onClick="document.getElementById(\''.
+                        $id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'" class="atkmanytoonerelation">'.Tools::atktext('unselect').'</a>&nbsp;';
                 }
                 $result .= '&nbsp;</span>';
             }
@@ -934,88 +954,94 @@ class ManyToOneRelation extends Relation
         }
 
         $autolink = $this->getRelationAutolink($id, $this->parseFilter($this->m_destinationFilter, $record));
-        $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : "";
-        $result .= isset($autolink['add']) ? $autolink['add'] : "";
+        $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : '';
+        $result .= isset($autolink['add']) ? $autolink['add'] : '';
 
         return $result;
     }
 
     /**
-     * Get the select link to select the value using a select action on the destination node
+     * Get the select link to select the value using a select action on the destination node.
      *
      * @param string $selname
      * @param string $filter
-     * @return String HTML-code with the select link
+     *
+     * @return string HTML-code with the select link
      */
-    function _getSelectLink($selname, $filter)
+    public function _getSelectLink($selname, $filter)
     {
-        $result = "";
+        $result = '';
         // we use the current level to automatically return to this page
         // when we come from the select..
         $sm = SessionManager::getInstance();
-        $atktarget = Tools::atkurlencode(Config::getGlobal('dispatcher') . "?atklevel=" . $sm->atkLevel() . "&" . $selname . "=[atkprimkey]");
-        $linkname = Tools::atktext("link_select_" . Tools::getNodeType($this->m_destination),
+        $atktarget = Tools::atkurlencode(Config::getGlobal('dispatcher').'?atklevel='.$sm->atkLevel().'&'.$selname.'=[atkprimkey]');
+        $linkname = Tools::atktext('link_select_'.Tools::getNodeType($this->m_destination),
             $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), '', '', true);
         if (!$linkname) {
-            $linkname = Tools::atktext("link_select_" . Tools::getNodeType($this->m_destination),
+            $linkname = Tools::atktext('link_select_'.Tools::getNodeType($this->m_destination),
                 Tools::getNodeModule($this->m_destination), Tools::getNodeType($this->m_destination), '', '',
                 true);
         }
         if (!$linkname) {
-            $linkname = Tools::atktext("select_a");
+            $linkname = Tools::atktext('select_a');
         } // . ' ' . strtolower(Tools::atktext(Module::getNodeType($this->m_destination), Module::getNodeModule($this->m_destination), Module::getNodeType($this->m_destination)));
-        if ($this->m_destinationFilter != "") {
-            $result .= Tools::href(Tools::dispatch_url($this->m_destination, "select",
-                array("atkfilter" => $filter, "atktarget" => $atktarget)), $linkname, SessionManager::SESSION_NESTED,
+        if ($this->m_destinationFilter != '') {
+            $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select',
+                array('atkfilter' => $filter, 'atktarget' => $atktarget)), $linkname, SessionManager::SESSION_NESTED,
                 $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
         } else {
-            $result .= Tools::href(Tools::dispatch_url($this->m_destination, "select",
-                array("atktarget" => $atktarget)), $linkname, SessionManager::SESSION_NESTED,
+            $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select',
+                array('atktarget' => $atktarget)), $linkname, SessionManager::SESSION_NESTED,
                 $this->m_autocomplete_saveform,
                 'class="atkmanytoonerelation"');
         }
+
         return $result;
     }
 
     /**
-     * Creates and returns the auto edit/view links
-     * @param string $id The field id
+     * Creates and returns the auto edit/view links.
+     *
+     * @param string $id     The field id
      * @param string $filter Filter that we want to apply on the destination node
-     * @return array              The HTML code for the autolink links
+     *
+     * @return array The HTML code for the autolink links
      */
-    function getRelationAutolink($id, $filter)
+    public function getRelationAutolink($id, $filter)
     {
         $autolink = array();
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $page = Page::getInstance();
-            $page->register_script(Config::getGlobal("assets_url") . "javascript/class.atkmanytoonerelation.js");
+            $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
             $sm = SessionManager::getInstance();
 
-            if ($this->m_destInstance->allowed("edit")) {
-                $editlink = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), "edit",
-                    array("atkselector" => "REPLACEME")), SessionManager::SESSION_NESTED);
-                $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . Tools::atkurlencode($editlink) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . Tools::atktext('edit') . "</a>";
+            if ($this->m_destInstance->allowed('edit')) {
+                $editlink = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit',
+                    array('atkselector' => 'REPLACEME')), SessionManager::SESSION_NESTED);
+                $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editlink).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation'>".Tools::atktext('edit').'</a>';
             }
-            if ($this->m_destInstance->allowed("add")) {
-                $autolink['add'] = "&nbsp;" . Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(),
-                        "add", array(
-                            "atkpkret" => $id,
-                            "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
-                                ? $filter : "")
-                        )), Tools::atktext("new"), SessionManager::SESSION_NESTED, true,
+            if ($this->m_destInstance->allowed('add')) {
+                $autolink['add'] = '&nbsp;'.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(),
+                        'add', array(
+                            'atkpkret' => $id,
+                            'atkfilter' => ($this->m_useFilterForAddLink && $filter != ''
+                                ? $filter : ''),
+                        )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true,
                         'class="atkmanytoonerelation"');
             }
         }
+
         return $autolink;
     }
 
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its value. (<input type="hidden">)
+     * while still posting its value. (<input type="hidden">).
      *
-     * @param array $record
+     * @param array  $record
      * @param string $fieldprefix
      * @param string $mode
+     *
      * @return string html
      */
     public function hide($record, $fieldprefix, $mode)
@@ -1024,26 +1050,26 @@ class ManyToOneRelation extends Relation
             return '';
         }
 
-        $currentPk = "";
+        $currentPk = '';
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != null) {
             $this->fixDestinationRecord($record);
             $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
         }
 
-        $result = '<input type="hidden" id="' . $fieldprefix . $this->fieldName() . '"
-                name="' . $fieldprefix . $this->fieldName() . '"
-                value="' . $currentPk . '">';
+        $result = '<input type="hidden" id="'.$fieldprefix.$this->fieldName().'"
+                name="'.$fieldprefix.$this->fieldName().'"
+                value="'.$currentPk.'">';
 
         return $result;
     }
 
     /**
      * Support for destination "records" where only the id is set and the
-     * record itself isn't converted to a real record (array) yet
+     * record itself isn't converted to a real record (array) yet.
      *
      * @param array $record The record to fix
      */
-    function fixDestinationRecord(&$record)
+    public function fixDestinationRecord(&$record)
     {
         if ($this->createDestination() &&
             isset($record[$this->fieldName()]) &&
@@ -1066,16 +1092,18 @@ class ManyToOneRelation extends Relation
      * Framework method, it should not be necessary to call this method
      * directly.
      *
-     * @param string $mode The edit mode ("add" or "edit")
-     * @param array $record The record holding the values for this attribute
+     * @param string $mode        The edit mode ("add" or "edit")
+     * @param array  $record      The record holding the values for this attribute
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @return String the HTML code for this attribute that can be used in an
+     *
+     * @return string the HTML code for this attribute that can be used in an
      *                editpage.
      */
-    function getEdit($mode, &$record, $fieldprefix)
+    public function getEdit($mode, &$record, $fieldprefix)
     {
         $this->fixDestinationRecord($record);
+
         return parent::getEdit($mode, $record, $fieldprefix);
     }
 
@@ -1083,6 +1111,7 @@ class ManyToOneRelation extends Relation
      * Converts a record filter to a record array.
      *
      * @param string $filter filter string
+     *
      * @return array record
      */
     protected function filterToArray($filter)
@@ -1108,22 +1137,22 @@ class ManyToOneRelation extends Relation
      * Returns a piece of html code that can be used to get search terms input
      * from the user.
      *
-     * @param array $record Array with values
-     * @param boolean $extended if set to false, a simple search input is
-     *                          returned for use in the searchbar of the
-     *                          recordlist. If set to true, a more extended
-     *                          search may be returned for the 'extended'
-     *                          search page. The atkAttribute does not
-     *                          make a difference for $extended is true, but
-     *                          derived attributes may reimplement this.
-     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @param DataGrid $grid The datagrid
+     * @param array    $record      Array with values
+     * @param bool     $extended    if set to false, a simple search input is
+     *                              returned for use in the searchbar of the
+     *                              recordlist. If set to true, a more extended
+     *                              search may be returned for the 'extended'
+     *                              search page. The atkAttribute does not
+     *                              make a difference for $extended is true, but
+     *                              derived attributes may reimplement this.
+     * @param string   $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid        The datagrid
      *
-     * @return String A piece of html-code
+     * @return string A piece of html-code
      */
-    function search($record, $extended = false, $fieldprefix = "", DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        $useautocompletion = Config::getGlobal("manytoone_search_autocomplete",
+        $useautocompletion = Config::getGlobal('manytoone_search_autocomplete',
                 true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
             if ($this->createDestination()) {
@@ -1152,9 +1181,9 @@ class ManyToOneRelation extends Relation
 
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
-                $result = '<select class="form-control ' . get_class($this) . '"';
+                $result = '<select class="form-control '.get_class($this).'"';
                 if ($extended) {
-                    $result .= ' multiple size="' . min(5, count($recordset) + 1) . '"';
+                    $result .= ' multiple size="'.min(5, count($recordset) + 1).'"';
                     if (isset($record[$this->fieldName()][$this->fieldName()])) {
                         $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
                     }
@@ -1163,14 +1192,14 @@ class ManyToOneRelation extends Relation
                 // if we use autosearch, register an onchange event that submits the grid
                 if (!is_null($grid) && !$extended && $this->m_autoSearch) {
                     $id = $this->getSearchFieldName($fieldprefix);
-                    $result .= ' id="' . $id . '" ';
-                    $code = '$(\'' . $id . '\').observe(\'change\', function(event) { ' .
-                        $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
+                    $result .= ' id="'.$id.'" ';
+                    $code = '$(\''.$id.'\').observe(\'change\', function(event) { '.
+                        $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides').
                         ' return false; });';
                     $this->getOwnerInstance()->getPage()->register_loadscript($code);
                 }
 
-                $result .= ' name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+                $result .= ' name="'.$this->getSearchFieldName($fieldprefix).'[]">';
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
@@ -1194,7 +1223,7 @@ class ManyToOneRelation extends Relation
                 }
 
                 // normal options
-                for ($i = 0; $i < count($recordset); $i++) {
+                for ($i = 0; $i < count($recordset); ++$i) {
                     $pk = $recordset[$i][$pkfield];
                     $result .= sprintf('<option value="%s"%s>%s</option>',
                         $pk,
@@ -1204,30 +1233,31 @@ class ManyToOneRelation extends Relation
                     );
                 }
                 $result .= '</select>';
+
                 return $result;
             }
-            return "";
+
+            return '';
         } else {
             $id = $this->getSearchFieldName($fieldprefix);
             if (is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()][$this->fieldName()])) {
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
 
-
-            $result = '<input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $id . '" value="' . $record[$this->fieldName()] . '"' .
-                ($useautocompletion ? ' onchange=""' : '') .
-                ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
-                    : '') .
-                ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . '>';
+            $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+                ($useautocompletion ? ' onchange=""' : '').
+                ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"'
+                    : '').
+                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
             if ($useautocompletion) {
                 $page = $this->m_ownerInstance->getPage();
                 $url = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
-                    'attribute.' . $this->fieldName() . '.autocomplete_search');
+                    'attribute.'.$this->fieldName().'.autocomplete_search');
                 $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
-                $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkmanytoonerelation.js');
+                $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
                 $page->register_loadscript($code);
-                $result .= '<div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+                $result .= '<div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
             }
 
             return $result;
@@ -1243,32 +1273,33 @@ class ManyToOneRelation extends Relation
      *
      * @return array List of supported searchmodes
      */
-    function getSearchModes()
+    public function getSearchModes()
     {
         if ($this->hasFlag(self::AF_LARGE) || $this->hasFlag(self::AF_MANYTOONE_AUTOCOMPLETE)) {
-            return array("substring", "exact", "wildcard", "regex");
+            return array('substring', 'exact', 'wildcard', 'regex');
         }
-        return array("exact"); // only support exact search when searching with dropdowns
+
+        return array('exact'); // only support exact search when searching with dropdowns
     }
 
     /**
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
      *
-     * @param Integer $id The unique smart search criterium identifier.
-     * @param Integer $nr The element number in the path.
-     * @param array $path The remaining attribute path.
-     * @param Query $query The query to which the condition will be added.
-     * @param String $ownerAlias The owner table alias to use.
-     * @param Mixed $value The value the user has entered in the searchbox.
-     * @param String $mode The searchmode to use.
+     * @param int    $id         The unique smart search criterium identifier.
+     * @param int    $nr         The element number in the path.
+     * @param array  $path       The remaining attribute path.
+     * @param Query  $query      The query to which the condition will be added.
+     * @param string $ownerAlias The owner table alias to use.
+     * @param mixed  $value      The value the user has entered in the searchbox.
+     * @param string $mode       The searchmode to use.
      */
-    function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    public function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
     {
         if (count($path) > 0) {
             $this->createDestination();
 
-            $destAlias = "ss_{$id}_{$nr}_" . $this->fieldName();
+            $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
 
             $query->addJoin(
                 $this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias),
@@ -1286,8 +1317,7 @@ class ManyToOneRelation extends Relation
         }
     }
 
-
-    function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if (!$this->createDestination()) {
             return;
@@ -1322,18 +1352,18 @@ class ManyToOneRelation extends Relation
                 }
 
                 if (count($value) == 1) { // exactly one value
-                    if ($value[0] == "__NONE__") {
-                        return $query->nullCondition($table . "." . $this->fieldName(), true);
-                    } elseif ($value[0] != "") {
-                        return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+                    if ($value[0] == '__NONE__') {
+                        return $query->nullCondition($table.'.'.$this->fieldName(), true);
+                    } elseif ($value[0] != '') {
+                        return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]));
                     }
                 } else { // search for more values using IN()
-                    return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+                    return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
                 }
             } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
                 // If we have a descriptor with multiple fields, use CONCAT
                 $attribs = $this->m_destInstance->descriptorFields();
-                $alias = $fieldname . $this->fieldName();
+                $alias = $fieldname.$this->fieldName();
                 if (count($attribs) > 1) {
                     $searchcondition = $this->getConcatFilter($value, $alias);
                 } else {
@@ -1341,28 +1371,30 @@ class ManyToOneRelation extends Relation
                     $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname,
                         $value, $this->getChildSearchMode($searchmode, $this->formName()));
                 }
+
                 return $searchcondition;
             }
         }
     }
 
-    function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
+
             return;
         }
 
         if ($this->createDestination()) {
-            if ($mode != "update" && $mode != "add") {
-                $alias = $fieldaliasprefix . $this->fieldName();
+            if ($mode != 'update' && $mode != 'add') {
+                $alias = $fieldaliasprefix.$this->fieldName();
                 $query->addJoin($this->m_destInstance->m_table, $alias,
                     $this->getJoinCondition($query, $tablename, $alias), $this->m_leftjoin);
                 $this->m_destInstance->addToQuery($query, $alias, $level + 1, false, $mode, $this->m_listColumns);
             } else {
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
+                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
                     if ($record[$this->fieldName()] === null) {
-                        $query->addField($this->m_refKey[$i], "NULL", "", "", false);
+                        $query->addField($this->m_refKey[$i], 'NULL', '', '', false);
                     } else {
                         $value = $record[$this->fieldName()];
                         if (is_array($value)) {
@@ -1370,7 +1402,7 @@ class ManyToOneRelation extends Relation
                             $value = $fk->value2db($value);
                         }
 
-                        $query->addField($this->m_refKey[$i], $value, "", "", !$this->hasFlag(self::AF_NO_QUOTES));
+                        $query->addField($this->m_refKey[$i], $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES));
                     }
                 }
             }
@@ -1382,9 +1414,9 @@ class ManyToOneRelation extends Relation
      *
      * Called by the framework to load the detail records.
      *
-     * @param Db $db The database used by the node.
-     * @param array $record The master record
-     * @param string $mode The mode for loading (admin, select, copy, etc)
+     * @param Db     $db     The database used by the node.
+     * @param array  $record The master record
+     * @param string $mode   The mode for loading (admin, select, copy, etc)
      *
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
@@ -1392,7 +1424,7 @@ class ManyToOneRelation extends Relation
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    function load(&$db, $record, $mode)
+    public function load(&$db, $record, $mode)
     {
         return $this->_getSelectedRecord($record, $mode);
     }
@@ -1415,7 +1447,7 @@ class ManyToOneRelation extends Relation
      *             self::POSTLOAD|self::ADDTOQUERY when self::AF_ONETOONE_LAZY is set.
      *             self::ADDTOQUERY when self::AF_ONETOONE_LAZY is not set.
      */
-    function loadType($mode)
+    public function loadType($mode)
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
             return $this->m_loadType[$mode];
@@ -1436,10 +1468,10 @@ class ManyToOneRelation extends Relation
     /**
      * Validate if the record we are referring to really exists.
      *
-     * @param array $record
+     * @param array  $record
      * @param string $mode
      */
-    function validate(&$record, $mode)
+    public function validate(&$record, $mode)
     {
         $sessionmanager = SessionManager::getInstance();
         if ($sessionmanager) {
@@ -1451,21 +1483,23 @@ class ManyToOneRelation extends Relation
     }
 
     /**
-     * Check if two records have the same value for this attribute
+     * Check if two records have the same value for this attribute.
      *
      * @param array $recA Record A
      * @param array $recB Record B
-     * @return boolean to indicate if the records are equal
+     *
+     * @return bool to indicate if the records are equal
      */
-    function equal($recA, $recB)
+    public function equal($recA, $recB)
     {
         if ($this->createDestination()) {
-            return (($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()] ==
+            return ($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()] ==
                     $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) ||
-                ($this->isEmpty($recA) && $this->isEmpty($recB)));
+                ($this->isEmpty($recA) && $this->isEmpty($recB));
             // we must also check empty values, because empty values need not necessarily
             // be equal (can be "", NULL or 0.
         }
+
         return false;
     }
 
@@ -1481,10 +1515,10 @@ class ManyToOneRelation extends Relation
      * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
-     * @return String The 'generic' type of the database field for this
+     * @return string The 'generic' type of the database field for this
      *                attribute.
      */
-    function dbFieldType()
+    public function dbFieldType()
     {
         // The type of field that we need to store the foreign key, is equal to
         // the type of field of the primary key of the node we have a
@@ -1492,15 +1526,17 @@ class ManyToOneRelation extends Relation
         if ($this->createDestination()) {
             if (count($this->m_refKey) > 1) {
                 $keys = array();
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
+                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
                     $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldType();
                 }
+
                 return $keys;
             } else {
                 return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
             }
         }
-        return "";
+
+        return '';
     }
 
     /**
@@ -1516,7 +1552,7 @@ class ManyToOneRelation extends Relation
      *
      * @return int The database field size
      */
-    function dbFieldSize()
+    public function dbFieldSize()
     {
         // The size of the field we need to store the foreign key, is equal to
         // the size of the field of the primary key of the node we have a
@@ -1524,14 +1560,16 @@ class ManyToOneRelation extends Relation
         if ($this->createDestination()) {
             if (count($this->m_refKey) > 1) {
                 $keys = array();
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
+                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
                     $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldSize();
                 }
+
                 return $keys;
             } else {
                 return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
             }
         }
+
         return 0;
     }
 
@@ -1539,13 +1577,14 @@ class ManyToOneRelation extends Relation
      * Returns the selected record for this many-to-one relation. Uses
      * the owner instance $this->fieldName()."_selected" method if it exists.
      *
-     * @param array $record The record
-     * @param string $mode The mode we're in
+     * @param array  $record The record
+     * @param string $mode   The mode we're in
+     *
      * @return array with the selected record
      */
-    function _getSelectedRecord($record = array(), $mode = "")
+    public function _getSelectedRecord($record = array(), $mode = '')
     {
-        $method = $this->fieldName() . "_selected";
+        $method = $this->fieldName().'_selected';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
         } else {
@@ -1556,23 +1595,25 @@ class ManyToOneRelation extends Relation
     /**
      * Returns the currently selected record.
      *
-     * @param array $record The record
-     * @param string $mode The mode we're in
+     * @param array  $record The record
+     * @param string $mode   The mode we're in
+     *
      * @return array with the selected record
      */
-    function getSelectedRecord($record = array(), $mode = "")
+    public function getSelectedRecord($record = array(), $mode = '')
     {
         $this->createDestination();
 
-        $condition = $this->m_destInstance->m_table . '.' . $this->m_destInstance->primaryKeyField() .
-            "='" . $record[$this->fieldName()][$this->m_destInstance->primaryKeyField()] . "'";
+        $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField().
+            "='".$record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]."'";
 
         $filter = $this->createFilter($record, $mode);
         if (!empty($filter)) {
-            $condition = $condition . ' AND ' . $filter;
+            $condition = $condition.' AND '.$filter;
         }
 
         $record = $this->m_destInstance->select($condition)->getFirstRow();
+
         return $record;
     }
 
@@ -1580,13 +1621,14 @@ class ManyToOneRelation extends Relation
      * Returns the selectable records for this many-to-one relation. Uses
      * the owner instance $this->fieldName()."_selection" method if it exists.
      *
-     * @param array $record The record
-     * @param string $mode The mode we're in
+     * @param array  $record The record
+     * @param string $mode   The mode we're in
+     *
      * @return array with the selectable records
      */
-    function _getSelectableRecords($record = array(), $mode = "")
+    public function _getSelectableRecords($record = array(), $mode = '')
     {
-        $method = $this->fieldName() . "_selection";
+        $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
         } else {
@@ -1598,13 +1640,14 @@ class ManyToOneRelation extends Relation
      * Is selectable record? Uses the owner instance $this->fieldName()."_selectable"
      * method if it exists.
      *
-     * @param array $record The record
-     * @param string $mode The mode we're in
-     * @return Boolean to indicate if the record is selectable
+     * @param array  $record The record
+     * @param string $mode   The mode we're in
+     *
+     * @return bool to indicate if the record is selectable
      */
-    function _isSelectableRecord($record = array(), $mode = "")
+    public function _isSelectableRecord($record = array(), $mode = '')
     {
-        $method = $this->fieldName() . "_selectable";
+        $method = $this->fieldName().'_selectable';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
         } else {
@@ -1615,17 +1658,19 @@ class ManyToOneRelation extends Relation
     /**
      * Create the destination filter for the given record.
      *
-     * @param array $record
-     * @param string $mode (not used here, but usable in derived classes)
+     * @param array  $record
+     * @param string $mode   (not used here, but usable in derived classes)
+     *
      * @return string filter
      */
-    function createFilter($record, $mode)
+    public function createFilter($record, $mode)
     {
-        if ($this->m_destinationFilter != "") {
+        if ($this->m_destinationFilter != '') {
             $parser = new StringParser($this->m_destinationFilter);
+
             return $parser->parse($record);
         } else {
-            return "";
+            return '';
         }
     }
 
@@ -1634,11 +1679,12 @@ class ManyToOneRelation extends Relation
      *
      * Use this one from your selectable override when needed.
      *
-     * @param array $record The record
-     * @param string $mode The mode we're in
-     * @return Boolean to indicate if the record is selectable
+     * @param array  $record The record
+     * @param string $mode   The mode we're in
+     *
+     * @return bool to indicate if the record is selectable
      */
-    function isSelectableRecord($record = array(), $mode = "")
+    public function isSelectableRecord($record = array(), $mode = '')
     {
         if ($record[$this->fieldName()] == null) {
             return false;
@@ -1647,7 +1693,7 @@ class ManyToOneRelation extends Relation
         if (in_array($mode,
                 array(
                     'edit',
-                    'update'
+                    'update',
                 )) && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
         ) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
             // in this case we want the current value is selectable, regardless the destination filters
@@ -1660,7 +1706,7 @@ class ManyToOneRelation extends Relation
         // need to convert the value to an array
         if (!is_array($record[$this->fieldName()])) {
             $record[$this->fieldName()] = array(
-                $this->m_destInstance->primaryKeyField() => $record[$this->fieldName()]
+                $this->m_destInstance->primaryKeyField() => $record[$this->fieldName()],
             );
         }
 
@@ -1672,7 +1718,7 @@ class ManyToOneRelation extends Relation
         // If custom selection method exists we use this one, although this is
         // way more inefficient, so if you create a selection override you should
         // also think about creating a selectable override!
-        $method = $this->fieldName() . "_selection";
+        $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
             $rows = $this->m_ownerInstance->$method($record, $mode);
             foreach ($rows as $row) {
@@ -1687,7 +1733,7 @@ class ManyToOneRelation extends Relation
 
         // No selection override exists, simply add the record key to the selector.
         $filter = $this->createFilter($record, $mode);
-        $selector = "($selectedKey)" . ($filter != null ? " AND ($filter)" : "");
+        $selector = "($selectedKey)".($filter != null ? " AND ($filter)" : '');
 
         return $this->m_destInstance->select($selector)->getRowCount() > 0;
     }
@@ -1697,11 +1743,12 @@ class ManyToOneRelation extends Relation
      *
      * Use this one from your selection override when needed.
      *
-     * @param array $record The record
-     * @param string $mode The mode we're in
+     * @param array  $record The record
+     * @param string $mode   The mode we're in
+     *
      * @return array with the selectable records
      */
-    function getSelectableRecords($record = array(), $mode = "")
+    public function getSelectableRecords($record = array(), $mode = '')
     {
         $this->createDestination();
 
@@ -1720,49 +1767,51 @@ class ManyToOneRelation extends Relation
      * Returns the condition (SQL) that should be used when we want to join a relation's
      * owner node with the parent node.
      *
-     * @param Query $query The query object
-     * @param string $tablename The tablename on which to join
+     * @param Query  $query      The query object
+     * @param string $tablename  The tablename on which to join
      * @param string $fieldalias The fieldalias
-     * @return String SQL string for joining the owner with the destination.
+     *
+     * @return string SQL string for joining the owner with the destination.
      *                Returns false when impossible (f.e. attrib is not a relation).
      */
-    function getJoinCondition(&$query, $tablename = "", $fieldalias = "")
+    public function getJoinCondition(&$query, $tablename = '', $fieldalias = '')
     {
         if (!$this->createDestination()) {
             return false;
         }
 
-        if ($tablename != "") {
+        if ($tablename != '') {
             $realtablename = $tablename;
         } else {
             $realtablename = $this->m_ownerInstance->m_table;
         }
         $joinconditions = array();
 
-        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++) {
-            $joinconditions[] = $realtablename . "." . $this->m_refKey[$i] .
-                "=" .
-                $fieldalias . "." . $this->m_destInstance->m_primaryKey[$i];
+        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+            $joinconditions[] = $realtablename.'.'.$this->m_refKey[$i].
+                '='.
+                $fieldalias.'.'.$this->m_destInstance->m_primaryKey[$i];
         }
 
-        if ($this->m_joinFilter != "") {
+        if ($this->m_joinFilter != '') {
             $parser = new StringParser($this->m_joinFilter);
             $filter = $parser->parse(array(
                 'table' => $realtablename,
                 'owner' => $realtablename,
-                'destination' => $fieldalias
+                'destination' => $fieldalias,
             ));
             $joinconditions[] = $filter;
         }
-        return implode(" AND ", $joinconditions);
+
+        return implode(' AND ', $joinconditions);
     }
 
     /**
-     * Make this relation hide itself from the form when there are no items to select
+     * Make this relation hide itself from the form when there are no items to select.
      *
-     * @param boolean $hidewhenempty true - hide when empty, false - always show
+     * @param bool $hidewhenempty true - hide when empty, false - always show
      */
-    function setHideWhenEmpty($hidewhenempty)
+    public function setHideWhenEmpty($hidewhenempty)
     {
         $this->m_hidewhenempty = $hidewhenempty;
     }
@@ -1775,13 +1824,13 @@ class ManyToOneRelation extends Relation
      *
      * This is a framework method, it should never be called directly.
      *
-     * @param string $mode the edit mode ("add" or "edit")
-     * @param array $arr pointer to the edit array
-     * @param array $defaults pointer to the default values array
-     * @param array $error pointer to the error array
+     * @param string $mode        the edit mode ("add" or "edit")
+     * @param array  $arr         pointer to the edit array
+     * @param array  $defaults    pointer to the default values array
+     * @param array  $error       pointer to the error array
      * @param string $fieldprefix the fieldprefix
      */
-    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    public function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         if ($this->createDestination()) {
             // check if destination table is empty
@@ -1793,26 +1842,28 @@ class ManyToOneRelation extends Relation
                 }
             }
         }
+
         return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
 
     /**
      * Retrieves the ORDER BY statement for the relation.
      *
-     * @param array $extra A list of attribute names to add to the order by
-     *                     statement
-     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param array  $extra     A list of attribute names to add to the order by
+     *                          statement
+     * @param string $table     The table name (if not given uses the owner node's table name)
      * @param string $direction Sorting direction (ASC or DESC)
-     * @return String The ORDER BY statement for this attribute
+     *
+     * @return string The ORDER BY statement for this attribute
      */
-    function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
         if (!$this->createDestination()) {
             return parent::getOrderByStatement();
         }
 
         if (!empty($table)) {
-            $table = $table . '_AE_' . $this->fieldName();
+            $table = $table.'_AE_'.$this->fieldName();
         } else {
             $table = $this->fieldName();
         }
@@ -1850,8 +1901,8 @@ class ManyToOneRelation extends Relation
                     $fieldDirection);
 
                 // realias if destination order contains the wrong tablename.
-                if (strpos($newPart, $this->m_destInstance->m_table . '.') !== false) {
-                    $newPart = str_replace($this->m_destInstance->m_table . '.', $table . '.', $newPart);
+                if (strpos($newPart, $this->m_destInstance->m_table.'.') !== false) {
+                    $newPart = str_replace($this->m_destInstance->m_table.'.', $table.'.', $newPart);
                 }
                 $newParts[] = $newPart;
             }
@@ -1863,9 +1914,9 @@ class ManyToOneRelation extends Relation
                 $fields = array($this->m_destInstance->primaryKeyField());
             }
 
-            $order = "";
+            $order = '';
             foreach ($fields as $field) {
-                $order .= (empty($order) ? '' : ', ') . $table . "." . $field;
+                $order .= (empty($order) ? '' : ', ').$table.'.'.$field;
             }
 
             return $order;
@@ -1877,14 +1928,14 @@ class ManyToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
+     * @param string       $action       the action that is being performed on the node
+     * @param array        $arr          reference to the the recordlist array
+     * @param string       $fieldprefix  the fieldprefix
+     * @param int          $flags        the recordlist flags
+     * @param array        $atksearch    the current ATK search list (if not empty)
      * @param ColumnConfig $columnConfig Column configuration object
-     * @param DataGrid $grid The DataGrid this attribute lives on.
-     * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @param DataGrid     $grid         The DataGrid this attribute lives on.
+     * @param string       $column       child column (null for this attribute, * for this attribute and all childs)
      */
     public function addToListArrayHeader(
         $action,
@@ -1897,7 +1948,7 @@ class ManyToOneRelation extends Relation
         $column = '*'
     ) {
         if ($column == null || $column == '*') {
-            $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+            $prefix = $fieldprefix.$this->fieldName().'_AE_';
             parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby,
                 $grid, null);
         }
@@ -1928,14 +1979,14 @@ class ManyToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string $column child column (null for this attribute, * for this attribute and all childs)
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby order by
-     * @param DataGrid $grid The DataGrid this attribute lives on.
+     * @param string   $column      child column (null for this attribute, * for this attribute and all childs)
+     * @param string   $action      the action that is being performed on the node
+     * @param array    $arr         reference to the the recordlist array
+     * @param string   $fieldprefix the fieldprefix
+     * @param int      $flags       the recordlist flags
+     * @param array    $atksearch   the current ATK search list (if not empty)
+     * @param string   $atkorderby  order by
+     * @param DataGrid $grid        The DataGrid this attribute lives on.
      */
     protected function _addColumnToListArrayHeader(
         $column,
@@ -1947,11 +1998,11 @@ class ManyToOneRelation extends Relation
         $atkorderby,
         DataGrid $grid = null
     ) {
-        $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+        $prefix = $fieldprefix.$this->fieldName().'_AE_';
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
         if ($p_attrib == null) {
-            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ManyToOneRelation ".$this->getOwnerInstance()->atkNodeUri().'::'.$this->fieldName());
         }
 
         $p_attrib->m_flags |= self::AF_HIDE_LIST;
@@ -1960,7 +2011,7 @@ class ManyToOneRelation extends Relation
             $grid, null);
 
         // fix order by clause
-        $needle = $prefix . $column;
+        $needle = $prefix.$column;
         foreach (array_keys($arr['heading']) as $key) {
             if (strpos($key, $needle) !== 0) {
                 continue;
@@ -1970,14 +2021,14 @@ class ManyToOneRelation extends Relation
                 continue;
             }
 
-            $order = $this->fieldName() . '.' . $arr['heading'][$key]['order'];
+            $order = $this->fieldName().'.'.$arr['heading'][$key]['order'];
 
             if (is_object($atkorderby) &&
                 isset($atkorderby->m_colcfg[$this->fieldName()]) && isset($atkorderby->m_colcfg[$this->fieldName()]['extra']) && $atkorderby->m_colcfg[$this->fieldName()]['extra'] == $column
             ) {
                 $direction = $atkorderby->getDirection($this->fieldName());
-                if ($direction == "asc") {
-                    $order .= " desc";
+                if ($direction == 'asc') {
+                    $order .= ' desc';
                 }
             }
 
@@ -1990,14 +2041,14 @@ class ManyToOneRelation extends Relation
      *
      * Framework method. It should not be necessary to call this method directly.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param int $nr the current row number
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param boolean $edit editing?
-     * @param DataGrid $grid data grid
-     * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @param string   $action      the action that is being performed on the node
+     * @param array    $arr         reference to the the recordlist array
+     * @param int      $nr          the current row number
+     * @param string   $fieldprefix the fieldprefix
+     * @param int      $flags       the recordlist flags
+     * @param bool     $edit        editing?
+     * @param DataGrid $grid        data grid
+     * @param string   $column      child column (null for this attribute, * for this attribute and all childs)
      */
     public function addToListArrayRow(
         $action,
@@ -2010,7 +2061,7 @@ class ManyToOneRelation extends Relation
         $column = '*'
     ) {
         if ($column == null || $column == '*') {
-            $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+            $prefix = $fieldprefix.$this->fieldName().'_AE_';
             parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
         }
 
@@ -2036,14 +2087,14 @@ class ManyToOneRelation extends Relation
     /**
      * Adds the child attribute / field to the list row.
      *
-     * @param string $column child attribute name
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param int $nr the current row number
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param boolean $edit editing?
-     * @param DataGrid $grid data grid
+     * @param string   $column      child attribute name
+     * @param string   $action      the action that is being performed on the node
+     * @param array    $arr         reference to the the recordlist array
+     * @param int      $nr          the current row number
+     * @param string   $fieldprefix the fieldprefix
+     * @param int      $flags       the recordlist flags
+     * @param bool     $edit        editing?
+     * @param DataGrid $grid        data grid
      */
     protected function _addColumnToListArrayRow(
         $column,
@@ -2055,17 +2106,17 @@ class ManyToOneRelation extends Relation
         $edit = false,
         DataGrid $grid = null
     ) {
-        $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+        $prefix = $fieldprefix.$this->fieldName().'_AE_';
 
         // small trick, the destination record is in a subarray. The destination
         // addToListArrayRow will not expect this though, so we have to modify the
         // record a bit before passing it to the detail columns.
-        $backup = $arr["rows"][$nr]["record"];
-        $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
+        $backup = $arr['rows'][$nr]['record'];
+        $arr['rows'][$nr]['record'] = $arr['rows'][$nr]['record'][$this->fieldName()];
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
         if ($p_attrib == null) {
-            throw new Exception("Invalid list column {$column} for ManyToOneRelation " . $this->getOwnerInstance()->atkNodeUri() . '::' . $this->fieldName());
+            throw new Exception("Invalid list column {$column} for ManyToOneRelation ".$this->getOwnerInstance()->atkNodeUri().'::'.$this->fieldName());
         }
 
         $p_attrib->m_flags |= self::AF_HIDE_LIST;
@@ -2073,7 +2124,7 @@ class ManyToOneRelation extends Relation
 
         $p_attrib->addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
 
-        $arr["rows"][$nr]["record"] = $backup;
+        $arr['rows'][$nr]['record'] = $backup;
     }
 
     /**
@@ -2083,16 +2134,16 @@ class ManyToOneRelation extends Relation
      * attributes hook themselves into the fieldlist instead of hooking the relation
      * in it.
      *
-     * @param array $fields The array containing fields to use in the
-     *                                   extended search
-     * @param Node $node The node where the field is in
-     * @param array $record A record containing default values to put
-     *                                   into the search fields.
+     * @param array $fields      The array containing fields to use in the
+     *                           extended search
+     * @param Node  $node        The node where the field is in
+     * @param array $record      A record containing default values to put
+     *                           into the search fields.
      * @param array $fieldprefix search / mode field prefix
      */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '')
     {
-        $prefix = $fieldprefix . $this->fieldName() . "_AE_";
+        $prefix = $fieldprefix.$this->fieldName().'_AE_';
 
         parent::addToSearchformFields($fields, $node, $record, $prefix);
 
@@ -2117,22 +2168,23 @@ class ManyToOneRelation extends Relation
 
     /**
      * Retrieve the sortorder for the listheader based on the
-     * ColumnConfig
+     * ColumnConfig.
      *
      * @param ColumnConfig $columnConfig The config that contains options for
-     *                                      extended sorting and grouping to a
-     *                                      recordlist.
-     * @return String Returns sort order ASC or DESC
+     *                                   extended sorting and grouping to a
+     *                                   recordlist.
+     *
+     * @return string Returns sort order ASC or DESC
      */
-    function listHeaderSortOrder(&$columnConfig)
+    public function listHeaderSortOrder(&$columnConfig)
     {
         $order = $this->fieldName();
 
         // only add desc if not one of the listColumns is used for the sorting
         if (isset($columnConfig->m_colcfg[$order]) && empty($columnConfig->m_colcfg[$order]['extra'])) {
             $direction = $columnConfig->getDirection($order);
-            if ($direction == "asc") {
-                $order .= " desc";
+            if ($direction == 'asc') {
+                $order .= ' desc';
             }
         }
 
@@ -2147,9 +2199,10 @@ class ManyToOneRelation extends Relation
      * @param string $fieldId
      * @param string $fieldPrefix
      * @param string $none
-     * @return String function name
+     *
+     * @return string function name
      */
-    function createOnChangeCaller($fieldId, $fieldPrefix, $none = 'null')
+    public function createOnChangeCaller($fieldId, $fieldPrefix, $none = 'null')
     {
         $function = $none;
         if (count($this->m_onchangecode)) {
@@ -2173,18 +2226,18 @@ class ManyToOneRelation extends Relation
     /**
      * Draw the auto-complete box.
      *
-     * @param array $record The record
+     * @param array  $record      The record
      * @param string $fieldPrefix The fieldprefix
-     * @param string $mode The mode we're in
+     * @param string $mode        The mode we're in
      */
-    function drawAutoCompleteBox($record, $fieldPrefix, $mode)
+    public function drawAutoCompleteBox($record, $fieldPrefix, $mode)
     {
         $this->createDestination();
 
         // register base JavaScript code
         $page = $this->m_ownerInstance->getPage();
 
-        $page->register_script(Config::getGlobal('assets_url') . 'javascript/class.atkmanytoonerelation.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
 
         $id = $this->getHtmlId($fieldPrefix);
 
@@ -2201,17 +2254,17 @@ class ManyToOneRelation extends Relation
         }
 
         // create the widget
-        $result = '<input type="hidden" id="' . $id . '" name="' . $id . '" value="' . $value . '" />';
-        $result .= '<input type="text" id="' . $id . '_search" value="' . htmlentities($label) . '" class="form-control atkmanytoonerelation_search" size="' . $this->m_autocomplete_size . '" onfocus="this.select()" />';
+        $result = '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />';
+        $result .= '<input type="text" id="'.$id.'_search" value="'.htmlentities($label).'" class="form-control atkmanytoonerelation_search" size="'.$this->m_autocomplete_size.'" onfocus="this.select()" />';
         $result .= ' '.$this->createSelectAndAutoLinks($id, $record);
-        $result .= '<div id="' . $id . '_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+        $result .= '<div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
         $result .= $this->getSpinner(); // spinner for dependency execution
         $result .= $this->getSearchSpinner($id); //spinner for ajax search
 
         // register JavaScript code that attaches the auto-complete behaviour to the search box
         $url = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode,
-            'attribute.' . $this->fieldName() . '.autocomplete');
+            'attribute.'.$this->fieldName().'.autocomplete');
         $function = $this->createOnChangeCaller($id, $fieldPrefix);
         $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";
         $page->register_loadscript($code);
@@ -2219,7 +2272,7 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    function getSearchSpinner($id)
+    public function getSearchSpinner($id)
     {
         return '<div class="atkbusy" id="'.$id.'_spinner"><i class="fa fa-cog fa-spin"></i></div>';
     }
@@ -2229,18 +2282,18 @@ class ManyToOneRelation extends Relation
      *
      * @param string $mode add/edit mode?
      */
-    function partial_autocomplete($mode)
+    public function partial_autocomplete($mode)
     {
         $searchvalue = $this->m_ownerInstance->m_postvars['value'];
         if (Tools::atk_strlen($searchvalue) < $this->m_autocomplete_minchars) {
-            return '<ul><li class="minimum_chars">' . sprintf($this->text('autocomplete_minimum_chars'),
-                $this->m_autocomplete_minchars) . '</li></ul>';
+            return '<ul><li class="minimum_chars">'.sprintf($this->text('autocomplete_minimum_chars'),
+                $this->m_autocomplete_minchars).'</li></ul>';
         }
 
         $this->createDestination();
 
         $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])
-            ? $this->m_ownerInstance->m_postvars['atkfieldprefix'] : "");
+            ? $this->m_ownerInstance->m_postvars['atkfieldprefix'] : '');
         $searchvalue = $this->escapeSQL($searchvalue);
         $record = $this->m_ownerInstance->updateRecord();
 
@@ -2250,13 +2303,13 @@ class ManyToOneRelation extends Relation
         $records = $this->_getSelectableRecords($record, $mode);
 
         if (count($records) == 0) {
-            if (in_array($this->m_autocomplete_searchmode, array("exact", "startswith", "contains"))) {
-                $str = $this->text('autocomplete_no_results_' . $this->m_autocomplete_searchmode);
+            if (in_array($this->m_autocomplete_searchmode, array('exact', 'startswith', 'contains'))) {
+                $str = $this->text('autocomplete_no_results_'.$this->m_autocomplete_searchmode);
             } else {
                 $str = $this->text('autocomplete_no_results');
             }
 
-            return '<ul><li class="no_results">' . $str . '</li></ul>';
+            return '<ul><li class="no_results">'.$str.'</li></ul>';
         }
 
         $result = '';
@@ -2265,20 +2318,21 @@ class ManyToOneRelation extends Relation
             $value = $this->m_destInstance->primaryKey($rec);
             $highlightedOption = $this->highlight_search_result_match($searchvalue, $option);
             $result .= '
-          <li title="' . $option . '">
-            ' . $highlightedOption . '
-            <span class="selection" style="display: none">' . $option . '</span>
-            <span class="value" style="display: none">' . $value . '</span>
+          <li title="'.$option.'">
+            '.$highlightedOption.'
+            <span class="selection" style="display: none">'.$option.'</span>
+            <span class="value" style="display: none">'.$value.'</span>
           </li>';
         }
 
         return "<ul>$result</ul>";
     }
 
-    function highlight_search_result_match($search_value, $result)
+    public function highlight_search_result_match($search_value, $result)
     {
         $escaped_searchvalue = str_replace('/', '\/', preg_quote($search_value));
-        return preg_replace('/(' . $escaped_searchvalue . ')/i', '<span class="atkmanytoone_highlite">\\1</span>',
+
+        return preg_replace('/('.$escaped_searchvalue.')/i', '<span class="atkmanytoone_highlite">\\1</span>',
             $result);
     }
 
@@ -2287,7 +2341,7 @@ class ManyToOneRelation extends Relation
      *
      * @return string HTML code with autocomplete result
      */
-    function partial_autocomplete_search()
+    public function partial_autocomplete_search()
     {
         $this->createDestination();
 
@@ -2304,7 +2358,7 @@ class ManyToOneRelation extends Relation
             $option = $this->m_destInstance->descriptor($rec);
             $value = $this->m_destInstance->primaryKey($rec);
             $result .= '
-          <li title="' . htmlentities($option) . '">' . htmlentities($option) . '</li>';
+          <li title="'.htmlentities($option).'">'.htmlentities($option).'</li>';
         }
 
         return "<ul>$result</ul>";
@@ -2312,14 +2366,15 @@ class ManyToOneRelation extends Relation
 
     /**
      * Creates a search filter with the given search value on the given
-     * descriptor fields
+     * descriptor fields.
      *
      * @param string $searchvalue A searchstring
-     * @return String a search string (WHERE clause)
+     *
+     * @return string a search string (WHERE clause)
      */
-    function createSearchFilter($searchvalue)
+    public function createSearchFilter($searchvalue)
     {
-        if ($this->m_autocomplete_searchfields == "") {
+        if ($this->m_autocomplete_searchfields == '') {
             $searchfields = $this->m_destInstance->descriptorFields();
         } else {
             $searchfields = $this->m_autocomplete_searchfields;
@@ -2334,13 +2389,13 @@ class ManyToOneRelation extends Relation
                 if (strstr($attribname, '.')) {
                     $table = '';
                 } else {
-                    $table = $this->m_destInstance->m_table . ".";
+                    $table = $this->m_destInstance->m_table.'.';
                 }
 
                 if (!$this->m_autocomplete_search_case_sensitive) {
-                    $tmp = "LOWER(" . $table . $attribname . ")";
+                    $tmp = 'LOWER('.$table.$attribname.')';
                 } else {
-                    $tmp = $table . $attribname;
+                    $tmp = $table.$attribname;
                 }
 
                 switch ($this->m_autocomplete_searchmode) {
@@ -2373,38 +2428,40 @@ class ManyToOneRelation extends Relation
             }
 
             if (count($filter) > 0) {
-                $mainFilter[] = "(" . implode(") OR (", $filter) . ")";
+                $mainFilter[] = '('.implode(') OR (', $filter).')';
             }
         }
 
         if (count($mainFilter) > 0) {
-            $searchFilter = "(" . implode(") AND (", $mainFilter) . ")";
+            $searchFilter = '('.implode(') AND (', $mainFilter).')';
         } else {
-            $searchFilter = "";
+            $searchFilter = '';
         }
 
         // When no searchfields are specified and we use the CONTAINS mode
         // add a concat filter
-        if ($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields == "") {
+        if ($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields == '') {
             $filter = $this->getConcatFilter($searchvalue);
             if ($filter) {
                 if ($searchFilter != '') {
-                    $searchFilter .= " OR ";
+                    $searchFilter .= ' OR ';
                 }
                 $searchFilter .= $filter;
             }
         }
+
         return $searchFilter;
     }
 
     /**
-     * Get Concat filter
+     * Get Concat filter.
      *
-     * @param string $searchValue Search value
+     * @param string $searchValue      Search value
      * @param string $fieldaliasprefix Field alias prefix
-     * @return string|boolean
+     *
+     * @return string|bool
      */
-    function getConcatFilter($searchValue, $fieldaliasprefix = "")
+    public function getConcatFilter($searchValue, $fieldaliasprefix = '')
     {
         // If we have a descriptor with multiple fields, use CONCAT
         $attribs = $this->m_destInstance->descriptorFields();
@@ -2414,20 +2471,20 @@ class ManyToOneRelation extends Relation
                 $post = '';
                 if (strstr($attribname, '.')) {
                     if ($fieldaliasprefix != '') {
-                        $table = $fieldaliasprefix . '_AE_';
+                        $table = $fieldaliasprefix.'_AE_';
                     } else {
                         $table = '';
                     }
                     $post = substr($attribname, strpos($attribname, '.'));
                     $attribname = substr($attribname, 0, strpos($attribname, '.'));
                 } elseif ($fieldaliasprefix != '') {
-                    $table = $fieldaliasprefix . ".";
+                    $table = $fieldaliasprefix.'.';
                 } else {
-                    $table = $this->m_destInstance->m_table . ".";
+                    $table = $this->m_destInstance->m_table.'.';
                 }
 
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-                $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName() . $post;
+                $fields[$p_attrib->fieldName()] = $table.$p_attrib->fieldName().$post;
             }
 
             if (is_array($searchValue)) {
@@ -2436,7 +2493,7 @@ class ManyToOneRelation extends Relation
             }
 
             $value = $this->escapeSQL(trim($searchValue));
-            $value = str_replace("  ", " ", $value);
+            $value = str_replace('  ', ' ', $value);
             if (!$value) {
                 return false;
             } else {
@@ -2445,7 +2502,7 @@ class ManyToOneRelation extends Relation
                     $descriptordef = $this->m_destInstance->$function();
                 } elseif ($this->m_destInstance->m_descTemplate != null) {
                     $descriptordef = $this->m_destInstance->m_descTemplate;
-                } elseif (method_exists($this->m_destInstance, "descriptor_def")) {
+                } elseif (method_exists($this->m_destInstance, 'descriptor_def')) {
                     $descriptordef = $this->m_destInstance->descriptor_def();
                 } else {
                     $descriptordef = $this->m_destInstance->descriptor();
@@ -2459,18 +2516,17 @@ class ManyToOneRelation extends Relation
                 // to search independent of characters between tags, like spaces and comma's,
                 // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
                 foreach ($concatSeparators as $separator) {
-                    $value = str_replace($separator, "", $value);
+                    $value = str_replace($separator, '', $value);
                 }
 
                 $db = $this->getDb();
-                $searchcondition = "UPPER(" . $db->func_concat_ws($concatTags, "",
-                        true) . ") LIKE UPPER('%" . $value . "%')";
+                $searchcondition = 'UPPER('.$db->func_concat_ws($concatTags, '',
+                        true).") LIKE UPPER('%".$value."%')";
             }
+
             return $searchcondition;
         }
+
         return false;
     }
-
 }
-
-

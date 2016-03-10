@@ -1,16 +1,15 @@
-<?php namespace Sintattica\Atk\Utils;
+<?php
 
+namespace Sintattica\Atk\Utils;
 
-use \IteratorIterator;
-use \Iterator;
+use IteratorIterator;
+use Iterator;
 
 /**
  * Selector iterator, makes sure that each each row returned by the internal
  * iterator gets transformed before it is returned to the user.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- * @package atk
- * @subpackage utils
  */
 class SelectorIterator extends IteratorIterator
 {
@@ -56,5 +55,4 @@ class SelectorIterator extends IteratorIterator
 
         return $row;
     }
-
 }

@@ -1,5 +1,6 @@
-<?php namespace Sintattica\Atk\Relations;
+<?php
 
+namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\DataGrid\DataGrid;
@@ -14,7 +15,7 @@ class OneToManyRelationSessionGridHandler
     private $_key;
 
     /**
-     * Create a OTM session grid handler
+     * Create a OTM session grid handler.
      *
      * @param string $key
      */
@@ -24,9 +25,10 @@ class OneToManyRelationSessionGridHandler
     }
 
     /**
-     * Select handler, returns the records for the grid
+     * Select handler, returns the records for the grid.
      *
      * @param DataGrid $grid
+     *
      * @return array Records for the grid
      */
     public function selectHandlerForAdd(DataGrid $grid)
@@ -38,11 +40,12 @@ class OneToManyRelationSessionGridHandler
         $records_count = count($records);
 
         // If we don't need to limit the result, then we don't
-        if ((int)$offset === 0 && $limit >= $records_count) {
+        if ((int) $offset === 0 && $limit >= $records_count) {
             // We have to sort the data first, because the datagrid
             // is very sensitive with regards to it's numerical keys
             // being sequential
             sort($records);
+
             return $records;
         }
 
@@ -52,11 +55,12 @@ class OneToManyRelationSessionGridHandler
         for ($i = $offset, $j = 0; $i < $records_count && $j < $limit; $i++, $j++) {
             $ret[] = $records[$records_keys[$i]];
         }
+
         return $ret;
     }
 
     /**
-     * Count handler, return the number of records there are in the session
+     * Count handler, return the number of records there are in the session.
      *
      * @return int
      */
@@ -66,7 +70,7 @@ class OneToManyRelationSessionGridHandler
     }
 
     /**
-     * Get all records for the current key from the session
+     * Get all records for the current key from the session.
      *
      * @return array
      */
@@ -74,5 +78,4 @@ class OneToManyRelationSessionGridHandler
     {
         return SessionStore::getInstance($this->_key)->getData();
     }
-
 }

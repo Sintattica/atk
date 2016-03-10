@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Core;
+<?php
+
+namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
@@ -9,11 +11,10 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Handlers\ActionHandler;
-use \Exception;
+use Exception;
 
 class Tools
 {
-
     /**
      * Converts applicable characters to html entities so they aren't
      * interpreted by the browser.
@@ -38,7 +39,8 @@ class Tools
      */
     const DEBUG_ERROR = 8;
     /**
-     * Accepted charsets for htmlentities and html_entity_decode
+     * Accepted charsets for htmlentities and html_entity_decode.
+     *
      * @var array
      */
     public static $s_acceptedCharsets = array(
@@ -67,21 +69,21 @@ class Tools
         'sjis',
         '932',
         'euc-jp',
-        'eucjp'
+        'eucjp',
     );
     /**
-     * Do we have multibyte support
-     * @var boolean
+     * Do we have multibyte support.
+     *
+     * @var bool
      */
     public static $s_hasMultiByteSupport = null;
-
 
     /**
      * Function self::atkErrorHandler
      * This function catches PHP parse errors etc, and passes
      * them to self::atkerror(), so errors can be mailed and output
      * can be regulated.
-     * This funtion must be registered with set_error_handler("self::atkErrorHandler");
+     * This funtion must be registered with set_error_handler("self::atkErrorHandler");.
      *
      * @param $errtype : One of the PHP errortypes (E_PARSE, E_USER_ERROR, etc)
      * (See http://www.php.net/manual/en/function.error-reporting.php)
@@ -97,29 +99,29 @@ class Tools
         }
 
         $errortype = array(
-            E_ERROR => "Error",
-            E_WARNING => "Warning",
-            E_PARSE => "Parsing Error",
-            E_NOTICE => "Notice",
-            E_CORE_ERROR => "Core Error",
-            E_CORE_WARNING => "Core Warning",
-            E_COMPILE_ERROR => "Compile Error",
-            E_COMPILE_WARNING => "Compile Warning",
-            E_USER_ERROR => "User Error",
-            E_USER_WARNING => "User Warning",
-            E_USER_NOTICE => "User Notice",
-            E_STRICT => "Strict Notice"
+            E_ERROR => 'Error',
+            E_WARNING => 'Warning',
+            E_PARSE => 'Parsing Error',
+            E_NOTICE => 'Notice',
+            E_CORE_ERROR => 'Core Error',
+            E_CORE_WARNING => 'Core Warning',
+            E_COMPILE_ERROR => 'Compile Error',
+            E_COMPILE_WARNING => 'Compile Warning',
+            E_USER_ERROR => 'User Error',
+            E_USER_WARNING => 'User Warning',
+            E_USER_NOTICE => 'User Notice',
+            E_STRICT => 'Strict Notice',
         );
 
         // E_RECOVERABLE_ERROR is available since 5.2.0
         if (defined('E_RECOVERABLE_ERROR')) {
-            $errortype[E_RECOVERABLE_ERROR] = "Recoverable Error";
+            $errortype[E_RECOVERABLE_ERROR] = 'Recoverable Error';
         }
 
         // E_DEPRECATED / E_USER_DEPRECATED are available since 5.3.0
         if (defined('E_DEPRECATED')) {
-            $errortype[E_DEPRECATED] = "Deprecated";
-            $errortype[E_USER_DEPRECATED] = "User Deprecated";
+            $errortype[E_DEPRECATED] = 'Deprecated';
+            $errortype[E_USER_DEPRECATED] = 'User Deprecated';
         }
 
         // Translate the given errortype into a string
@@ -131,17 +133,20 @@ class Tools
         } else {
             if ($errtype == E_NOTICE) {
                 // Just show notices
-                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", Tools::DEBUG_NOTICE);
+                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
+
                 return;
             } else {
                 if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
                     // Just show deprecation warnings in the debug log, but don't influence the program flow
-                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", Tools::DEBUG_NOTICE);
+                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
+
                     return;
                 } else {
                     if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
                         // This is something we should pay attention to, but we don't need to die.
                         self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
+
                         return;
                     } else {
                         self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
@@ -164,36 +169,38 @@ class Tools
      */
     public static function atkExceptionHandler($exception)
     {
-        self::atkdebug($exception->getMessage(), Tools::DEBUG_ERROR);
-        self::atkdebug("Trace:<br/>" . nl2br($exception->getTraceAsString()), Tools::DEBUG_ERROR);
-        self::atkhalt("Uncaught exception: " . $exception->getMessage(), 'critical');
+        self::atkdebug($exception->getMessage(), self::DEBUG_ERROR);
+        self::atkdebug('Trace:<br/>'.nl2br($exception->getTraceAsString()), self::DEBUG_ERROR);
+        self::atkhalt('Uncaught exception: '.$exception->getMessage(), 'critical');
     }
 
     /**
      * Function self::atkhalt
      * Halts on critical errors and also on warnings if specified in the config file.
-     * @param string $msg The message to be displayed
+     *
+     * @param string $msg   The message to be displayed
      * @param string $level The level of the error,
      *                      ("critical"|"warning" (default))
+     *
      * @return bool false if something goes horribly wrong
      */
-    public static function atkhalt($msg, $level = "warning")
+    public static function atkhalt($msg, $level = 'warning')
     {
-        if ($level == $GLOBALS['config_halt_on_error'] || $level == "critical") {
-            if ($level == "warning") {
-                $level_color = "#0000ff";
+        if ($level == $GLOBALS['config_halt_on_error'] || $level == 'critical') {
+            if ($level == 'warning') {
+                $level_color = '#0000ff';
             } else {
                 // critical
-                $level_color = "#ff0000";
+                $level_color = '#ff0000';
             }
 
             if (php_sapi_name() == 'cli') {
-                $res = self::atktext($level, "atk") . ': ' . $msg . "\n";
+                $res = self::atktext($level, 'atk').': '.$msg."\n";
             } else {
-                $res = "<html>";
+                $res = '<html>';
                 $res .= '<body style="background-color: #ffffff; color:#000000;">';
-                $res .= "<span style=\"color:$level_color;\"><b>" . self::atktext($level,
-                        "atk") . "</b></span>: $msg.<br />\n";
+                $res .= "<span style=\"color:$level_color;\"><b>".self::atktext($level,
+                        'atk')."</b></span>: $msg.<br />\n";
             }
 
             Output::getInstance()->output($res);
@@ -202,34 +209,35 @@ class Tools
         } else {
             self::atkerror("$msg");
         }
+
         return false;
     }
 
-
     /**
-     * Function atkdebug
+     * Function atkdebug.
      *
      * Adds debug self::text to the debug log
-     * @param string $txt The self::text that will be added to the log
-     * @param Integer $flags An optional combination of Tools::DEBUG_ flags
+     *
+     * @param string $txt   The self::text that will be added to the log
+     * @param int    $flags An optional combination of Tools::DEBUG_ flags
      */
     public static function atkdebug($txt, $flags = 0)
     {
         global $g_debug_msg;
-        $level = Config::getGlobal("debug");
+        $level = Config::getGlobal('debug');
         if ($level >= 0) {
-            if (self::hasFlag($flags, Tools::DEBUG_HTML)) {
+            if (self::hasFlag($flags, self::DEBUG_HTML)) {
                 $txt = htmlentities($txt);
             }
-            if (self::hasFlag($flags, Tools::DEBUG_WARNING)) {
-                $txt = "<b>" . $txt . "</b>";
+            if (self::hasFlag($flags, self::DEBUG_WARNING)) {
+                $txt = '<b>'.$txt.'</b>';
             }
 
-            $line = self::atkGetTimingInfo() . $txt;
+            $line = self::atkGetTimingInfo().$txt;
             self::atkWriteLog($line);
 
-            if (self::hasFlag($flags, Tools::DEBUG_ERROR)) {
-                $line = '<span class="atkDebugError">' . $line . '</span>';
+            if (self::hasFlag($flags, self::DEBUG_ERROR)) {
+                $line = '<span class="atkDebugError">'.$line.'</span>';
             }
 
             if ($level > 2) {
@@ -237,7 +245,7 @@ class Tools
                     $g_debug_msg[] = $line;
                 }
             } else {
-                if (!self::hasFlag($flags, Tools::DEBUG_NOTICE)) {
+                if (!self::hasFlag($flags, self::DEBUG_NOTICE)) {
                     $g_debug_msg[] = $line;
                 }
             }
@@ -257,7 +265,7 @@ class Tools
      */
     public static function atknotice($txt)
     {
-        self::atkdebug($txt, Tools::DEBUG_NOTICE);
+        self::atkdebug($txt, self::DEBUG_NOTICE);
     }
 
     /**
@@ -270,14 +278,14 @@ class Tools
      */
     public static function atkwarning($txt)
     {
-        self::atkdebug($txt, Tools::DEBUG_WARNING);
+        self::atkdebug($txt, self::DEBUG_WARNING);
     }
 
     public static function atkGetTimingInfo()
     {
-        return "[" . Debugger::elapsed() . (Config::getGlobal('debug') > 0 && function_exists("memory_get_usage")
-            ? " / " . sprintf("%02.02f", (memory_get_usage() / 1024 / 1024)) . "MB"
-            : "") . "] ";
+        return '['.Debugger::elapsed().(Config::getGlobal('debug') > 0 && function_exists('memory_get_usage')
+            ? ' / '.sprintf('%02.02f', (memory_get_usage() / 1024 / 1024)).'MB'
+            : '').'] ';
     }
 
     /**
@@ -289,7 +297,9 @@ class Tools
      * send by e-mail.
      *
      * @param string|Exception $error the error self::text or exception to display
+     *
      * @throws \Exception if throw_exception_on_error
+     *
      * @return bool
      */
     public static function atkerror($error)
@@ -297,15 +307,15 @@ class Tools
         global $g_error_msg;
 
         if ($error instanceof Exception) {
-            $g_error_msg[] = "[" . Debugger::elapsed() . "] " . $error->getMessage();
-            self::atkdebug(nl2br($error->getMessage() . "\n" . $error->getTraceAsString()), Tools::DEBUG_ERROR);
+            $g_error_msg[] = '['.Debugger::elapsed().'] '.$error->getMessage();
+            self::atkdebug(nl2br($error->getMessage()."\n".$error->getTraceAsString()), self::DEBUG_ERROR);
         } else {
-            $g_error_msg[] = "[" . Debugger::elapsed() . "] " . $error;
-            self::atkdebug($error, Tools::DEBUG_ERROR);
+            $g_error_msg[] = '['.Debugger::elapsed().'] '.$error;
+            self::atkdebug($error, self::DEBUG_ERROR);
         }
 
         if (function_exists('debug_backtrace')) {
-            self::atkdebug("Trace:" . self::atkGetTrace(), Tools::DEBUG_ERROR);
+            self::atkdebug('Trace:'.self::atkGetTrace(), self::DEBUG_ERROR);
         }
 
         if (Config::getGlobal('throw_exception_on_error') && $error instanceof Exception) {
@@ -315,16 +325,18 @@ class Tools
                 throw new Exception($error);
             }
         }
+
         return;
     }
 
     /**
-     * Returns a trace-route from all functions where-through the code has been executed
+     * Returns a trace-route from all functions where-through the code has been executed.
      *
      * @param string $format (html|plaintext)
+     *
      * @return string Backtrace in html or plaintext format
      */
-    public static function atkGetTrace($format = "html")
+    public static function atkGetTrace($format = 'html')
     {
         // Get the debug backtrace
         $traceArr = debug_backtrace();
@@ -333,12 +345,12 @@ class Tools
         array_shift($traceArr);
 
         // Start with an empty result;
-        $ret = "";
+        $ret = '';
 
-        $theSpacer = "";
+        $theSpacer = '';
 
         // Loop through all items found in the backtrace
-        for ($i = 0, $_i = count($traceArr); $i < $_i; $i++) {
+        for ($i = 0, $_i = count($traceArr); $i < $_i; ++$i) {
             //for($i=count($traceArr)-1; $i >= 0; $i--)
             // Skip this item in the backtrace if empty
             if (empty($traceArr[$i])) {
@@ -346,36 +358,36 @@ class Tools
             }
 
             // Don't display an self::atkerror statement itself.
-            if ($traceArr[$i]["function"] == "self::atkerror") {
+            if ($traceArr[$i]['function'] == 'self::atkerror') {
                 continue;
             }
 
             // Read the source location
-            if (isset($traceArr[$i]["file"])) {
-                $location = $traceArr[$i]["file"] . (isset($traceArr[$i]["line"]) ? sprintf(", line %d",
-                        $traceArr[$i]["line"])
-                        : "[Unknown line]");
+            if (isset($traceArr[$i]['file'])) {
+                $location = $traceArr[$i]['file'].(isset($traceArr[$i]['line']) ? sprintf(', line %d',
+                        $traceArr[$i]['line'])
+                        : '[Unknown line]');
             } else {
-                $location = "[PHP KERNEL]";
+                $location = '[PHP KERNEL]';
             }
 
             // Read the statement
-            if (isset($traceArr[$i]["class"])) {
-                $statement = $traceArr[$i]["class"];
-                if (isset($traceArr[$i]["type"])) {
-                    $statement .= $traceArr[$i]["type"];
+            if (isset($traceArr[$i]['class'])) {
+                $statement = $traceArr[$i]['class'];
+                if (isset($traceArr[$i]['type'])) {
+                    $statement .= $traceArr[$i]['type'];
                 }
             } else {
-                $statement = "";
+                $statement = '';
             }
-            $statement .= $traceArr[$i]["function"];
+            $statement .= $traceArr[$i]['function'];
 
             // Initialize the functionParamArr array
             $functionParamArr = array();
 
             // Parse any arguments into the array
-            if (isset($traceArr[$i]["args"])) {
-                foreach ($traceArr[$i]["args"] as $val) {
+            if (isset($traceArr[$i]['args'])) {
+                foreach ($traceArr[$i]['args'] as $val) {
                     if (is_array($val)) {
                         $valArr = array();
                         foreach ($val as $name => $value) {
@@ -383,49 +395,49 @@ class Tools
                                 $valArr[] = $name;
                             } else {
                                 if (is_object($value)) {
-                                    $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
+                                    $valArr[] = sprintf('%s=Object(%s)', $name, get_class($value));
                                 } else {
-                                    $valArr[] = $name . "=" . @json_encode($value);
+                                    $valArr[] = $name.'='.@json_encode($value);
                                 }
                             }
                         }
-                        $stringval = "array(" . implode(", ", $valArr) . ")";
+                        $stringval = 'array('.implode(', ', $valArr).')';
                     } else {
                         if (is_null($val)) {
                             $stringval = 'null';
                         } else {
                             if (is_object($val)) {
-                                $stringval = sprintf("Object(%s)", get_class($val));
+                                $stringval = sprintf('Object(%s)', get_class($val));
                             } else {
                                 if (is_bool($val)) {
                                     $stringval = $val ? 'true' : 'false';
                                 } else {
-                                    if (strlen($val . $theSpacer) > 103) {
-                                        $stringval = '"' . substr($val, 0, 100 - strlen($theSpacer)) . '"...';
+                                    if (strlen($val.$theSpacer) > 103) {
+                                        $stringval = '"'.substr($val, 0, 100 - strlen($theSpacer)).'"...';
                                     } else {
-                                        $stringval = '"' . $val . '"';
+                                        $stringval = '"'.$val.'"';
                                     }
                                 }
                             }
                         }
                     }
-                    $functionParamArr[] = $theSpacer . "  " . $stringval;
+                    $functionParamArr[] = $theSpacer.'  '.$stringval;
                 }
             }
             $functionParams = implode(",\n", $functionParamArr);
 
-            $ret .= $theSpacer . "@" . $location . "\n";
-            $ret .= $theSpacer . $statement;
-            $ret .= (strlen($functionParams) ? "\n" . $theSpacer . "(\n" . $functionParams . "\n" . $theSpacer . ")"
-                    : "()") . "\n";
+            $ret .= $theSpacer.'@'.$location."\n";
+            $ret .= $theSpacer.$statement;
+            $ret .= (strlen($functionParams) ? "\n".$theSpacer."(\n".$functionParams."\n".$theSpacer.')'
+                    : '()')."\n";
 
             // Add indentation
-            $theSpacer .= "  ";
+            $theSpacer .= '  ';
         }
 
         // If html format should be used, replace the html special chars with html entities and put the backtrace within preformat tags.
-        if ($format == "html") {
-            $ret = "<pre>" . htmlspecialchars($ret) . "</pre>";
+        if ($format == 'html') {
+            $ret = '<pre>'.htmlspecialchars($ret).'</pre>';
         }
 
         // Return the generated trace
@@ -435,14 +447,15 @@ class Tools
     /**
      * Writes info to a given file.
      * Useful for writing to any log files.
+     *
      * @param string $text self::text to write to the logfile
      * @param string $file the file name
      */
-    public static function atkWriteToFile($text, $file = "")
+    public static function atkWriteToFile($text, $file = '')
     {
-        $fp = @fopen($file, "a");
+        $fp = @fopen($file, 'a');
         if ($fp) {
-            fwrite($fp, $text . "\n");
+            fwrite($fp, $text."\n");
             fclose($fp);
         }
     }
@@ -452,60 +465,62 @@ class Tools
      * Please notice this feature will heavily decrease the performance
      * and should therefore only be used for debugging and development
      * purposes.
+     *
      * @param string $text self::text to write to the logfile
      */
     public static function atkWriteLog($text)
     {
-        if (Config::getGlobal("debug") > 0 && Config::getGlobal("debuglog")) {
-            self::atkWriteToFile($text, Config::getGlobal("debuglog"));
+        if (Config::getGlobal('debug') > 0 && Config::getGlobal('debuglog')) {
+            self::atkWriteToFile($text, Config::getGlobal('debuglog'));
         }
     }
 
     /**
      * Replaces the [vars] with the values from the language files
      * Please note that it is important, for performance reasons,
-     * that you pass along the module where the language files can be found
-     * @param mixed $string string or array of strings containing the name(s) of the string to return
-     *                                when an array of strings is passed, the second will be the fallback if
-     *                                the first one isn't found, and so forth
-     * @param string $module module in which the language file should be looked for,
-     *                                defaults to core module with fallback to ATK
-     * @param string $node the node to which the string belongs
-     * @param string $lng ISO 639-1 language code, defaults to config variable
-     * @param string $firstfallback the first module to check as part of the fallback
-     * @param boolean $nodefaulttext if true, then it doesn't return a default text when it can't find a translation
-     * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback,
-     *                                when looking for strings
-     * @return String the string from the languagefile
+     * that you pass along the module where the language files can be found.
+     *
+     * @param mixed  $string         string or array of strings containing the name(s) of the string to return
+     *                               when an array of strings is passed, the second will be the fallback if
+     *                               the first one isn't found, and so forth
+     * @param string $module         module in which the language file should be looked for,
+     *                               defaults to core module with fallback to ATK
+     * @param string $node           the node to which the string belongs
+     * @param string $lng            ISO 639-1 language code, defaults to config variable
+     * @param string $firstfallback  the first module to check as part of the fallback
+     * @param bool   $nodefaulttext  if true, then it doesn't return a default text when it can't find a translation
+     * @param bool   $modulefallback Wether or not to use all the modules of the application in the fallback,
+     *                               when looking for strings
+     *
+     * @return string the string from the languagefile
      */
     public static function atktext(
         $string,
-        $module = "",
-        $node = "",
-        $lng = "",
-        $firstfallback = "",
+        $module = '',
+        $node = '',
+        $lng = '',
+        $firstfallback = '',
         $nodefaulttext = false,
         $modulefallback = false
-    )
-    {
+    ) {
         return Language::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext, $modulefallback);
     }
-
 
     /**
      * array_merge without duplicates
      * Supports unlimited number of arrays as arguments.
      *
      * @param array $array1 <p>
-     * Initial array to merge.
-     * </p>
+     *                      Initial array to merge.
+     *                      </p>
      * @param array $array2 [optional]
-     * @param array $_ [optional]
+     * @param array $_      [optional]
+     *
      * @return array The result of the merge between $array1 and $array2
      */
     public static function atk_array_merge(array $array1, array $array2 = null, array $_ = null)
     {
-        return array_unique(call_user_func_array("array_merge", func_get_args()), SORT_REGULAR);
+        return array_unique(call_user_func_array('array_merge', func_get_args()), SORT_REGULAR);
     }
 
     /**
@@ -542,6 +557,7 @@ class Tools
      * of arrays as arguments.
      *
      * @param array $array unlimited number of arrays
+     *
      * @return array The result of the merge between the given arrays
      */
     public static function atk_array_merge_keys()
@@ -553,6 +569,7 @@ class Tools
                 $result[$key] = $value;
             }
         }
+
         return $result;
     }
 
@@ -562,39 +579,45 @@ class Tools
      * an is_array on the haystack first, just to make sure the user
      * doesn't get an error message.
      *
-     * @param mixed $needle The value to search for.
+     * @param mixed $needle   The value to search for.
      * @param array $haystack The array to search.
-     * @param boolean $strict If true, type must match.
+     * @param bool  $strict   If true, type must match.
+     *
      * @return bool wether or not the value is in the array
      */
     public static function atk_in_array($needle, $haystack, $strict = false)
     {
-        return (is_array($haystack) && in_array($needle, $haystack, $strict));
+        return is_array($haystack) && in_array($needle, $haystack, $strict);
     }
 
     /**
-     * Function dataSetContains
+     * Function dataSetContains.
      *
      * Checks if a value is in a Array
-     * @param array $set the array
-     * @param mixed $key the key in the array as in $array[$key]
+     *
+     * @param array $set   the array
+     * @param mixed $key   the key in the array as in $array[$key]
      * @param mixed $value the value we are looking for
+     *
      * @return bool wether or not the value is in the array
      */
     public static function dataSetContains($set, $key, $value)
     {
-        for ($i = 0; $i < count($set); $i++) {
+        for ($i = 0; $i < count($set); ++$i) {
             if ($set[$i][$key] == $value) {
                 return true;
             }
         }
+
         return false;
     }
 
     /**
      * Strips ' or  " from the begin and end of a string (only if they are
      * on both sides, e.g. foo' remains foo' but 'bar' becomes bar.
+     *
      * @param string $string the string we need to strip
+     *
      * @return string the stripped string
      */
     public static function stripQuotes($string)
@@ -606,21 +629,24 @@ class Tools
         if (substr($temp, 0, 1) == '"' && substr($temp, -1) == '"') {
             return substr($temp, 1, -1);
         }
+
         return $string;
     }
 
     /**
-     * Translates a string like id='3' into Array("id"=>3)
+     * Translates a string like id='3' into Array("id"=>3).
+     *
      * @param string $pair the string which is to be decoded
+     *
      * @return array the decoded array
      */
     public static function decodeKeyValuePair($pair)
     {
-        $operators = array("==", "!=", "<>", ">=", "<=", "=", "<", ">");
+        $operators = array('==', '!=', '<>', '>=', '<=', '=', '<', '>');
 
         static $s_regex = null;
         if ($s_regex === null) {
-            $s_regex = '/' . implode('|', array_map('preg_quote', $operators)) . '/';
+            $s_regex = '/'.implode('|', array_map('preg_quote', $operators)).'/';
         }
 
         list($key, $value) = preg_split($s_regex, $pair);
@@ -629,49 +655,57 @@ class Tools
     }
 
     /**
-     * Translates a string like id=3 AND name='joe' into Array("id"=>3,"name"=>"joe")
+     * Translates a string like id=3 AND name='joe' into Array("id"=>3,"name"=>"joe").
+     *
      * @todo we should also support <=>, >=, >, <=, <, <>
+     *
      * @param string $set the string to decode
+     *
      * @return array the decoded array
      */
     public static function decodeKeyValueSet($set)
     {
         $result = array();
-        $items = explode(" AND ", $set);
-        for ($i = 0; $i < count($items); $i++) {
+        $items = explode(' AND ', $set);
+        for ($i = 0; $i < count($items); ++$i) {
             $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
             if (strstr($items[$i], '!=') !== false) {
-                list($key, $value) = explode("!=", $items[$i]);
+                list($key, $value) = explode('!=', $items[$i]);
                 $result[trim($key)] = self::stripQuotes($value);
             } elseif (strstr($items[$i], '=') !== false) {
-                list($key, $value) = explode("=", $items[$i]);
+                list($key, $value) = explode('=', $items[$i]);
                 $result[trim($key)] = self::stripQuotes($value);
             } elseif (stristr($items[$i], 'IS NULL') !== false) {
                 list($key) = preg_split('/IS NULL/i', $items[$i]);
                 $result[trim($key)] = null;
             }
         }
+
         return $result;
     }
 
     /**
-     * Translates Array("id"=>3,"name"=>"joe") into a string like id='3 AND name='joe''
+     * Translates Array("id"=>3,"name"=>"joe") into a string like id='3 AND name='joe''.
+     *
      * @param array $set the array to be encoded
+     *
      * @return string the encoded string
      */
     public static function encodeKeyValueSet($set)
     {
         reset($set);
-        $items = Array();
+        $items = array();
         while (list($key, $value) = each($set)) {
-            $items[] = $key . "=" . $value;
+            $items[] = $key.'='.$value;
         }
-        return implode(" AND ", $items);
+
+        return implode(' AND ', $items);
     }
 
     /**
      * Same as strip_slashes from php, but if the passed value is an array,
      * all elements of the array are stripped. Recursive function.
+     *
      * @param $var string|array the value/array to strip the slashes of
      */
     public static function atk_stripslashes(&$var)
@@ -690,11 +724,11 @@ class Tools
      *                 something_AMDAE_other[] into something[][other]
      *                 something_AE_other into something[other]
      *                 (and a_AE_b_AE_c into a[b][c] and so on...
+     *
      * @param array &$vars the array to be stripped and translated
      */
     public static function atkDataDecode(&$vars)
     {
-
         foreach (array_keys($vars) as $varname) {
             $value = &$vars[$varname];
 
@@ -706,10 +740,10 @@ class Tools
                 // at the beginning of the string.. but since that's not a valid
                 // encoded var, we do nothing with it.
                 // This string is encoded.
-                list($dimension1, $dimension2) = explode("_AMDAE_", strtoupper($varname));
+                list($dimension1, $dimension2) = explode('_AMDAE_', strtoupper($varname));
                 if (is_array($value)) {
                     // Multidimensional thing
-                    for ($i = 0; $i < count($value); $i++) {
+                    for ($i = 0; $i < count($value); ++$i) {
                         $vars[strtolower($dimension1)][$i][strtolower($dimension2)] = $value[$i];
                     }
                 } else {
@@ -725,13 +759,14 @@ class Tools
      * Now if you run this function like this:
      *  AE_decode($dest, "a_AE_c_AE_b");
      * then $dest will contain a decoded array:
-     *  echo $dest["a"]["b"]["c"]; <- this will display 3
-     * @param array &$dest the array to put the decoded var in
-     * @param string $var the var to decode
+     *  echo $dest["a"]["b"]["c"]; <- this will display 3.
+     *
+     * @param array  &$dest the array to put the decoded var in
+     * @param string $var   the var to decode
      */
     public static function AE_decode(&$dest, $var)
     {
-        $items = explode("_AE_", $var);
+        $items = explode('_AE_', $var);
         if (count($items) <= 1) {
             return;
         }
@@ -742,7 +777,7 @@ class Tools
         }
 
         if (is_array($dest[$var])) {
-            $current = self::atk_array_merge_recursive((array)$current, $dest[$var]);
+            $current = self::atk_array_merge_recursive((array) $current, $dest[$var]);
         } else {
             $current = $dest[$var];
         }
@@ -750,12 +785,11 @@ class Tools
         unset($dest[$var]);
     }
 
-
     /**
      * Safe urlencode function. Note, you can reencode already encoded strings, but
      * not more than 9 times!
      * If you encode a string more than 9 times, you won't be able to decode it
-     * anymore
+     * anymore.
      *
      * An atkurlencoded string is normaly prefixed with '__', so self::atkurldecode can
      * determine whether the string was encoded or not. Sometimes however, if you
@@ -767,35 +801,36 @@ class Tools
      * @todo Fix a problem where a string containing "_9" will be altered after encoding + decoding it.
      *
      * @param string $string the url to encode
-     * @param bool $pref wether or not to use a prefix, default true
+     * @param bool   $pref   wether or not to use a prefix, default true
+     *
      * @return string the encoded url
      */
     public static function atkurlencode($string, $pref = true)
     {
         $string = rawurlencode($string);
-        for ($i = 8; $i >= 1; $i--) {
-            $string = str_replace("_" . $i, "_" . ($i + 1), $string);
+        for ($i = 8; $i >= 1; --$i) {
+            $string = str_replace('_'.$i, '_'.($i + 1), $string);
         }
-        return ($pref ? "__" : "") . str_replace("%", "_1", $string);
+
+        return ($pref ? '__' : '').str_replace('%', '_1', $string);
     }
 
     public static function atkurldecode($string)
     {
-        if (substr($string, 0, 2) != "__") {
+        if (substr($string, 0, 2) != '__') {
             return $string;
         } else {
-            $string = str_replace("_1", "%", substr($string, 2));
-            for ($i = 1; $i <= 8; $i++) {
-                $string = str_replace("_" . ($i + 1), "_" . $i, $string);
+            $string = str_replace('_1', '%', substr($string, 2));
+            for ($i = 1; $i <= 8; ++$i) {
+                $string = str_replace('_'.($i + 1), '_'.$i, $string);
             }
+
             return rawurldecode($string);
         }
     }
 
-
     /**
      * Send a detailed error report to the maintainer.
-     *
      */
     public static function mailreport()
     {
@@ -807,7 +842,6 @@ class Tools
     /**
      * Handle errors that occurred in ATK, available handlers from /atk/errors/ can be added to
      * the error_handlers config.
-     *
      */
     public static function handleError()
     {
@@ -824,56 +858,62 @@ class Tools
     }
 
     /**
-     * Wrapper for escapeSQL function
-     * @param string $string The string to escape.
-     * @param boolean $wildcard Set to true to convert wildcard chars ('%').
-     *                          False (default) will leave them unescaped.
-     * @return String A SQL compatible version of the input string.
+     * Wrapper for escapeSQL function.
+     *
+     * @param string $string   The string to escape.
+     * @param bool   $wildcard Set to true to convert wildcard chars ('%').
+     *                         False (default) will leave them unescaped.
+     *
+     * @return string A SQL compatible version of the input string.
      */
     public static function escapeSQL($string, $wildcard = false)
     {
         $db = Db::getInstance();
+
         return $db->escapeSQL($string, $wildcard);
     }
 
     /**
-     * Returns a url to open a popup window
-     * @param string $target the target of the popup
-     * @param string $params extra params to pass along
+     * Returns a url to open a popup window.
+     *
+     * @param string $target  the target of the popup
+     * @param string $params  extra params to pass along
      * @param string $winName the name of the window
-     * @param int $width the width of the popup
-     * @param int $height the height of the popup
-     * @param string $scroll allow scrolling? (no (default)|yes)
-     * @param string $resize allow resizing? (no (default)|yes)
-     * return string the url for the popup window
+     * @param int    $width   the width of the popup
+     * @param int    $height  the height of the popup
+     * @param string $scroll  allow scrolling? (no (default)|yes)
+     * @param string $resize  allow resizing? (no (default)|yes)
+     *                        return string the url for the popup window
      */
     public static function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
     {
         $sm = SessionManager::getInstance();
-        $url = $sm->sessionUrl("include.php?file=" . $target . "&" . $params, SessionManager::SESSION_NESTED);
-        $popupurl = "javascript:NewWindow('" . $url . "','" . $winName . "'," . $height . "," . $width . ",'" . $scroll . "','" . $resize . "')";
+        $url = $sm->sessionUrl('include.php?file='.$target.'&'.$params, SessionManager::SESSION_NESTED);
+        $popupurl = "javascript:NewWindow('".$url."','".$winName."',".$height.','.$width.",'".$scroll."','".$resize."')";
+
         return $popupurl;
     }
 
     /**
      * Adds new element to error array en $record. When
      * $msg is empty the multilange error string is used.
-     * @param array &$rec var in which to add element to error array
+     *
+     * @param array        &$rec   var in which to add element to error array
      * @param array|string $attrib attributename or an array with attribute names
-     * @param string $err multilanguage error string
-     * @param string $msg optional error string
+     * @param string       $err    multilanguage error string
+     * @param string       $msg    optional error string
      */
-    public static function triggerError(&$rec, $attrib, $err, $msg = "", $tab = "", $label = '', $module = 'atk')
+    public static function triggerError(&$rec, $attrib, $err, $msg = '', $tab = '', $label = '', $module = 'atk')
     {
-        if ($msg == "") {
+        if ($msg == '') {
             $msg = self::atktext($err, $module);
         }
         $rec['atkerror'][] = array(
-            "attrib_name" => $attrib,
-            "err" => $err,
-            "msg" => $msg,
-            "tab" => $tab,
-            "label" => $label
+            'attrib_name' => $attrib,
+            'err' => $err,
+            'msg' => $msg,
+            'tab' => $tab,
+            'label' => $label,
         );
     }
 
@@ -881,10 +921,10 @@ class Tools
      * Adds new element to the record error array. When no message
      * is given the multi-language error string is used.
      *
-     * @param array $record record
-     * @param Attribute|Attribute[] $attrib attribute or array of attributes
-     * @param string $error multi-language error string
-     * @param string $message error message (optional)
+     * @param array                 $record  record
+     * @param Attribute|Attribute[] $attrib  attribute or array of attributes
+     * @param string                $error   multi-language error string
+     * @param string                $message error message (optional)
      */
     public static function atkTriggerError(&$record, $attrib, $error, $message = '')
     {
@@ -892,7 +932,7 @@ class Tools
             $attribName = array();
             $label = array();
 
-            for ($i = 0; $i < count($attrib); $i++) {
+            for ($i = 0; $i < count($attrib); ++$i) {
                 $attribName[$i] = $attrib[$i]->fieldName();
                 $label[$i] = $attrib[$i]->label($record);
             }
@@ -913,19 +953,18 @@ class Tools
         self::triggerError($record, $attribName, $error, $message, $tab, $label);
     }
 
-
     /**
      * Does a var dump of an array. Makes use of self::atkdebug for displaying the values.
      *
      * @param $a array to be displayed
      * @param $d string name of the data that's being displayed.
      */
-    public static function atk_var_dump($a, $d = "")
+    public static function atk_var_dump($a, $d = '')
     {
         ob_start();
         var_dump($a);
         $data = ob_get_contents();
-        self::atkdebug("vardump: " . ($d != "" ? $d . " = " : "") . "<pre>" . $data . "</pre>");
+        self::atkdebug('vardump: '.($d != '' ? $d.' = ' : '').'<pre>'.$data.'</pre>');
         ob_end_clean();
     }
 
@@ -936,47 +975,47 @@ class Tools
      * $compression can be "zip", "gzip" or "bzip", which causes the data
      *              to be compressed before transmission.
      */
-    public static function exportData($data, $filename, $compression = "")
+    public static function exportData($data, $filename, $compression = '')
     {
         $browser = self::getBrowserInfo();
-        if (preg_match("/ie/i", $browser["browser"])) {
-            $mime = "application/octetstream";
+        if (preg_match('/ie/i', $browser['browser'])) {
+            $mime = 'application/octetstream';
             $disp = 'inline';
         } else {
-            if (preg_match("/opera/i", $browser["browser"])) {
-                $mime = "application/octetstream";
+            if (preg_match('/opera/i', $browser['browser'])) {
+                $mime = 'application/octetstream';
                 $disp = 'attachment';
             } else {
-                $mime = "application/octet-stream";
+                $mime = 'application/octet-stream';
                 $disp = 'attachment';
             }
         }
 
-        if ($compression == "bzip") {
+        if ($compression == 'bzip') {
             $mime = 'application/x-bzip';
-            $filename .= ".bz2";
+            $filename .= '.bz2';
         } else {
-            if ($compression == "gzip") {
+            if ($compression == 'gzip') {
                 $mime = 'application/x-gzip';
-                $filename .= ".gz";
+                $filename .= '.gz';
             } else {
-                if ($compression == "zip") {
+                if ($compression == 'zip') {
                     $mime = 'application/x-zip';
-                    $filename .= ".zip";
+                    $filename .= '.zip';
                 }
             }
         }
 
-        header('Content-Type: ' . $mime);
-        header('Content-Disposition:  ' . $disp . '; filename="' . $filename . '"');
-        if (preg_match("/ie/i", $browser["browser"])) {
+        header('Content-Type: '.$mime);
+        header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
+        if (preg_match('/ie/i', $browser['browser'])) {
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         }
         header('Pragma: no-cache');
         header('Expires: 0');
 
         // 1. as a bzipped file
-        if ($compression == "bzip") {
+        if ($compression == 'bzip') {
             if (@function_exists('bzcompress')) {
                 echo bzcompress($data);
             }
@@ -1002,45 +1041,47 @@ class Tools
 
     /**
      * This function writes a binary file to the browser for download.
-     * @param string $file the local filename (the file you want to open
+     *
+     * @param string $file     the local filename (the file you want to open
      *                         on the serverside)
      * @param string $filename the name the file will get when the user downloads it.
      * @param string $mimetype the mimetype of the file
+     *
      * @return bool wether or not the export worked
      */
-    public static function exportFile($file, $filename, $mimetype = "", $detectmime = true)
+    public static function exportFile($file, $filename, $mimetype = '', $detectmime = true)
     {
         $browser = self::getBrowserInfo();
-        if (preg_match("/ie/i", $browser["browser"])) {
-            $mime = "application/octetstream";
+        if (preg_match('/ie/i', $browser['browser'])) {
+            $mime = 'application/octetstream';
             $disp = 'attachment';
         } else {
-            if (preg_match("/opera/i", $browser["browser"])) {
-                $mime = "application/octetstream";
+            if (preg_match('/opera/i', $browser['browser'])) {
+                $mime = 'application/octetstream';
                 $disp = 'inline';
             } else {
-                $mime = "application/octet-stream";
+                $mime = 'application/octet-stream';
                 $disp = 'attachment';
             }
         }
-        if ($mimetype != "") {
+        if ($mimetype != '') {
             $mime = $mimetype;
         } else {
-            if ($mimetype == "" && $detectmime && function_exists('mime_content_type')) {
+            if ($mimetype == '' && $detectmime && function_exists('mime_content_type')) {
                 $mime = mime_content_type($file);
             }
         }
 
-        $fp = @fopen($file, "rb");
+        $fp = @fopen($file, 'rb');
         if ($fp != null) {
-            header('Content-Type: ' . $mime);
-            header("Content-Length: " . filesize($file));
-            header('Content-Disposition:  ' . $disp . '; filename="' . $filename . '"');
-            if (preg_match("/ie/i", $browser["browser"])) {
+            header('Content-Type: '.$mime);
+            header('Content-Length: '.filesize($file));
+            header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
+            if (preg_match('/ie/i', $browser['browser'])) {
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             }
-            if (($_SERVER["SERVER_PORT"] == "443" || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match("/msie/i",
-                    $_SERVER["HTTP_USER_AGENT"])
+            if (($_SERVER['SERVER_PORT'] == '443' || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match('/msie/i',
+                    $_SERVER['HTTP_USER_AGENT'])
             ) {
                 header('Pragma: public');
             } else {
@@ -1048,36 +1089,41 @@ class Tools
             }
             header('Expires: 0');
 
-            header("Content-Description: File Transfer");
-            header("Content-Transfer-Encoding: binary");
+            header('Content-Description: File Transfer');
+            header('Content-Transfer-Encoding: binary');
 
             fpassthru($fp);
+
             return true;
         }
+
         return false;
     }
 
-
     /**
      * Returns the (virtual) hostname of the server.
+     *
      * @return string the hostname of the server
      */
     public static function atkHost()
     {
-        $atkHost = $_SERVER["HTTP_HOST"] != "" ? $_SERVER["HTTP_HOST"] : $_SERVER["SERVER_NAME"];
+        $atkHost = $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
 
         // if we're running on our cluster environment
         // we seem to have a specific portid within the HTTP_HOST
         // If so, remove it from the hostname
 
-        $dummy = explode(":", $atkHost);
+        $dummy = explode(':', $atkHost);
+
         return $dummy[0];
     }
 
     /**
      * Returns the next unique ID for the given sequence.
      * NOTE: ID's are only unique for the script execution!
+     *
      * @param string $sequence the sequence name
+     *
      * @return int next unique ID for the given sequence
      */
     public static function getUniqueId($sequence)
@@ -1086,13 +1132,16 @@ class Tools
         if (!isset($unique[$sequence])) {
             $unique[$sequence] = 0;
         }
+
         return ++$unique[$sequence];
     }
 
     /**
      * Checks if the variable $var contains the given flag ($flag).
-     * @param string $var the variable which might contain flags
+     *
+     * @param string $var  the variable which might contain flags
      * @param string $flag the flag you want to check for
+     *
      * @return bool result of check
      */
     public static function hasFlag($var, $flag)
@@ -1101,8 +1150,10 @@ class Tools
     }
 
     /**
-     * Makes an url from the target var and all postvars
+     * Makes an url from the target var and all postvars.
+     *
      * @param string $target the path of the file to open
+     *
      * @return string the url with the postvars
      */
     public static function makeUrlFromPostvars($target)
@@ -1110,23 +1161,26 @@ class Tools
         global $ATK_VARS;
 
         if (count($ATK_VARS)) {
-            $url = $target . "?";
+            $url = $target.'?';
             foreach ($ATK_VARS as $key => $val) {
-                $url .= $key . "=" . rawurlencode($val) . "&";
+                $url .= $key.'='.rawurlencode($val).'&';
             }
+
             return $url;
         }
-        return "";
+
+        return '';
     }
 
     /**
-     * Makes an string with hidden input fields containing all posted vars
+     * Makes an string with hidden input fields containing all posted vars.
+     *
      * @param array $excludes array with the vars to exclude, default empty
      */
     public static function makeHiddenPostvars($excludes = array())
     {
         global $ATK_VARS;
-        $str = "";
+        $str = '';
 
         if (count($ATK_VARS)) {
             foreach ($ATK_VARS as $key => $val) {
@@ -1136,9 +1190,11 @@ class Tools
                     $str .= implode('', $inputs);
                 }
             }
+
             return $str;
         }
-        return "";
+
+        return '';
     }
 
     public static function atkMakeHiddenPostVarsRecursion($key, $val, &$inputs, $name = null)
@@ -1146,7 +1202,7 @@ class Tools
         if ($name == null) {
             $name = htmlentities($key);
         } else {
-            $name .= '[' . htmlentities($key) . ']';
+            $name .= '['.htmlentities($key).']';
         }
 
         if (is_array($val)) {
@@ -1154,38 +1210,42 @@ class Tools
                 self::atkMakeHiddenPostVarsRecursion($rKey, $rVal, $inputs, $name);
             }
         } else {
-            $inputs[] = "<input type='hidden' name=\"" . $name . "\" value=\"" . htmlentities(strval($val)) . "\">\n";
+            $inputs[] = "<input type='hidden' name=\"".$name.'" value="'.htmlentities(strval($val))."\">\n";
         }
     }
 
     /**
      * Returns a string representation of an action status.
+     *
      * @param int $status status of the action (ActionHandler::ACTION_FAILED|ActionHandler::ACTION_SUCCESS|ActionHandler::ACTION_CANCELLED)
+     *
      * @return string String representation of an action status.
      */
     public static function atkActionStatus($status)
     {
         switch ($status) {
             case ActionHandler::ACTION_CANCELLED:
-                return "cancelled";
+                return 'cancelled';
             case ActionHandler::ACTION_FAILED:
-                return "failed";
+                return 'failed';
             case ActionHandler::ACTION_SUCCESS:
-                return "success";
+                return 'success';
         }
+
         return '';
     }
 
     /**
      * Build query string based on an array of parameters.
      *
-     * @param array $params array of parameters
+     * @param array  $params array of parameters
      * @param string $parent
+     *
      * @return string query string
      */
-    public static function buildQueryString($params, $parent = "")
+    public static function buildQueryString($params, $parent = '')
     {
-        $query = "";
+        $query = '';
 
         foreach ($params as $key => $value) {
             if (!empty($query)) {
@@ -1197,7 +1257,7 @@ class Tools
             }
 
             if (!is_array($value)) {
-                $query .= "$key=" . rawurlencode($value);
+                $query .= "$key=".rawurlencode($value);
             } else {
                 $query .= self::buildQueryString($value, $key);
             }
@@ -1212,9 +1272,10 @@ class Tools
      *
      *
      * @param string $nodeUri the $nodeUri
-     * @param string $action the atk action the link will perform
-     * @param array $params A key/value array with extra options for the url
+     * @param string $action  the atk action the link will perform
+     * @param array  $params  A key/value array with extra options for the url
      * @param string $phpfile The php file to use for dispatching
+     *
      * @return string url for the node with the action
      */
     public static function dispatch_url($nodeUri, $action, $params = array(), $phpfile = '')
@@ -1222,15 +1283,15 @@ class Tools
         $phpfile = ($phpfile != '') ?: Config::getGlobal('dispatcher');
         $atkParams = array();
         if ($nodeUri != '') {
-            $atkParams["atknodeuri"] = $nodeUri;
+            $atkParams['atknodeuri'] = $nodeUri;
         }
         if ($action != '') {
-            $atkParams["atkaction"] = $action;
+            $atkParams['atkaction'] = $action;
         }
         $params = array_merge($atkParams, $params);
 
         if ($params != '' && is_array($params) && count($params) > 0) {
-            $phpfile .= '?' . self::buildQueryString($params);
+            $phpfile .= '?'.self::buildQueryString($params);
         }
 
         return $phpfile;
@@ -1239,11 +1300,12 @@ class Tools
     /**
      * Generate a partial url.
      *
-     * @param string $node the (module.)node name
-     * @param string $action the atkaction
-     * @param string $partial the partial name
-     * @param array $params a key/value array with extra params
-     * @param int $sessionStatus session status (default SessionManager::SESSION_PARTIAL)
+     * @param string $node          the (module.)node name
+     * @param string $action        the atkaction
+     * @param string $partial       the partial name
+     * @param array  $params        a key/value array with extra params
+     * @param int    $sessionStatus session status (default SessionManager::SESSION_PARTIAL)
+     *
      * @return string url for the partial action
      */
     public static function partial_url(
@@ -1252,8 +1314,7 @@ class Tools
         $partial,
         $params = array(),
         $sessionStatus = SessionManager::SESSION_PARTIAL
-    )
-    {
+    ) {
         if (!is_array($params)) {
             $params = array();
         }
@@ -1264,54 +1325,57 @@ class Tools
     }
 
     /**
-     * Creates a session aware button
-     * @param string $text the self::text to display on the button
-     * @param string $url the url to use for the button
-     * @param int $sessionstatus the session flags
-     *              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
-     *               SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param string $cssclass the css class the button should get
-     * @param bool $embeded wether or not it's an embedded button
+     * Creates a session aware button.
+     *
+     * @param string $text          the self::text to display on the button
+     * @param string $url           the url to use for the button
+     * @param int    $sessionstatus the session flags
+     *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
+     *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
+     * @param string $cssclass      the css class the button should get
+     * @param bool   $embeded       wether or not it's an embedded button
+     *
      * @return string html button
      */
     public static function atkButton(
         $text,
-        $url = "",
+        $url = '',
         $sessionstatus = SessionManager::SESSION_DEFAULT,
         $embedded = true,
-        $cssclass = ""
-    )
-    {
+        $cssclass = ''
+    ) {
         $sm = SessionManager::getInstance();
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal("assets_url") . "javascript/formsubmit.js");
+        $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
         static $cnt = 0;
 
-        if ($cssclass == "") {
-            $cssclass = "btn";
+        if ($cssclass == '') {
+            $cssclass = 'btn';
         }
 
-        $cssclass = ' class="' . $cssclass . '"';
-        $script = 'atkSubmit("' . self::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '")';
-        $button = '<input type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>';
+        $cssclass = ' class="'.$cssclass.'"';
+        $script = 'atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'")';
+        $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
 
         if (!$embedded) {
             $res = '<form name="entryform">';
             $res .= $sm->formState();
-            $res .= $button . '</form>';
+            $res .= $button.'</form>';
+
             return $res;
         } else {
             return $button;
         }
     }
 
-
     /**
      * Compares two assosiative multi dimensonal array's
-     * if arrays differ, return true, otherwise it returns false
+     * if arrays differ, return true, otherwise it returns false.
+     *
      * @param array $array1 original array
      * @param array $array2 new array
-     * @return boolean wether or not the arrays differ
+     *
+     * @return bool wether or not the arrays differ
      */
     public static function atkArrayCompare($array1, $array2)
     {
@@ -1322,9 +1386,11 @@ class Tools
 
     /**
      * Compares two assosiative multi dimensonal array's
-     * if arrays differ, return differences, otherwise it returns false
+     * if arrays differ, return differences, otherwise it returns false.
+     *
      * @param array $array1 original array
      * @param array $array2 new array
+     *
      * @return mixed differences or false if they do not differ
      */
     public static function atkArrayDiff($array1, $array2)
@@ -1357,6 +1423,7 @@ class Tools
      * you may spend a loooong time waiting on your application
      *
      * @param array $array The array that
+     *
      * @return bool Wether or not we found anything
      */
     public static function atk_value_in_array($array)
@@ -1374,19 +1441,21 @@ class Tools
                 }
             }
         }
+
         return false;
     }
 
     /**
-     * Recursive function to look if the needle exists in the haystack
+     * Recursive function to look if the needle exists in the haystack.
      *
      * WARNING: take care with using this function as it is recursive
      * and if you have a value linking back to it's self in one way or another,
      * you may spend a loooong time waiting on your application
      *
-     * @param string $needle The value which will be searched in the haystack
-     * @param array $haystack Array with values
-     * @return Boolean True if needle exists in haystack
+     * @param string $needle   The value which will be searched in the haystack
+     * @param array  $haystack Array with values
+     *
+     * @return bool True if needle exists in haystack
      */
     public static function atk_in_array_recursive($needle, $haystack)
     {
@@ -1401,29 +1470,32 @@ class Tools
                 }
             }
         }
+
         return false;
     }
 
     /**
-     * Escapes the predefined characters
+     * Escapes the predefined characters.
      *
      * When there are predefined characters used this function will escape them
      * and returns right pattern.
      *
      * @param string $pattern Raw string to be escaped
-     * @return String Returns a pattern with the predefined pattern escaped
+     *
+     * @return string Returns a pattern with the predefined pattern escaped
      */
     public static function escapeForRegex($pattern)
     {
         $escaped = '';
-        $escapechars = array("/", "?", '"', "(", ")", "'", "*", ".", "[", "]");
-        for ($counter = 0; $counter < strlen($pattern); $counter++) {
+        $escapechars = array('/', '?', '"', '(', ')', "'", '*', '.', '[', ']');
+        for ($counter = 0; $counter < strlen($pattern); ++$counter) {
             $curchar = substr($pattern, $counter, 1);
             if (in_array($curchar, $escapechars)) {
-                $escaped .= "\\";
+                $escaped .= '\\';
             }
             $escaped .= $curchar;
         }
+
         return $escaped;
     }
 
@@ -1432,15 +1504,16 @@ class Tools
      * Returns a value or an array with all values
      */
 
-    public static function atkGetPostVar($key = "")
+    public static function atkGetPostVar($key = '')
     {
-        if (empty($key) || $key == "") {
+        if (empty($key) || $key == '') {
             return $_REQUEST;
         } else {
-            if (array_key_exists($key, $_REQUEST) && $_REQUEST[$key] != "") {
+            if (array_key_exists($key, $_REQUEST) && $_REQUEST[$key] != '') {
                 return $_REQUEST[$key];
             }
-            return "";
+
+            return '';
         }
     }
 
@@ -1449,11 +1522,11 @@ class Tools
      * htmlentities function, but falls back to atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $string string to convert
-     * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset character set to use (default to atkGetCharset())
+     * @param string $string      string to convert
+     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset     character set to use (default to atkGetCharset())
      *
-     * @return String encoded string
+     * @return string encoded string
      */
     public static function atk_htmlentities($string, $quote_style = ENT_COMPAT, $charset = null)
     {
@@ -1465,11 +1538,11 @@ class Tools
      * html_entity_decode function, but falls back to atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $string string to convert
-     * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset character set to use (default to atkGetCharset())
+     * @param string $string      string to convert
+     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset     character set to use (default to atkGetCharset())
      *
-     * @return String encoded string
+     * @return string encoded string
      */
     public static function atk_html_entity_decode($string, $quote_style = ENT_COMPAT, $charset = null)
     {
@@ -1477,8 +1550,10 @@ class Tools
     }
 
     /**
-     * Get string length
+     * Get string length.
+     *
      * @param string $str The string being checked for length
+     *
      * @return int
      */
     public static function atk_strlen($str)
@@ -1487,10 +1562,12 @@ class Tools
     }
 
     /**
-     * Get part of string
-     * @param string $str The string being checked.
-     * @param int $start The first position used in $str
-     * @param int $length [optional] The maximum length of the returned string
+     * Get part of string.
+     *
+     * @param string $str    The string being checked.
+     * @param int    $start  The first position used in $str
+     * @param int    $length [optional] The maximum length of the returned string
+     *
      * @return string
      */
     public static function atk_substr($str, $start, $length = '')
@@ -1499,11 +1576,13 @@ class Tools
     }
 
     /**
-     *  Find position of first occurrence of string in a string
+     *  Find position of first occurrence of string in a string.
+     *
      * @param object $haystack The string being checked.
-     * @param object $needle The position counted from the beginning of haystack .
-     * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
-     * @return int|boolean
+     * @param object $needle   The position counted from the beginning of haystack .
+     * @param object $offset   [optional] The search offset. If it is not specified, 0 is used.
+     *
+     * @return int|bool
      */
     public static function atk_strpos($haystack, $needle, $offset = 0)
     {
@@ -1511,8 +1590,10 @@ class Tools
     }
 
     /**
-     * Make a string lowercase
+     * Make a string lowercase.
+     *
      * @param string $str The string being lowercased.
+     *
      * @return string
      */
     public static function atk_strtolower($str)
@@ -1521,9 +1602,10 @@ class Tools
     }
 
     /**
+     * Make a string uppercase.
      *
-     * Make a string uppercase
      * @param string $str The string being uppercased.
+     *
      * @return string
      */
     public static function atk_strtoupper($str)
@@ -1534,7 +1616,8 @@ class Tools
     /**
      * Return the default charset, first we look if the
      * config_default_charset is set, else we use the
-     * charset in the languge file;
+     * charset in the languge file;.
+     *
      * @return string
      */
     public static function atkGetCharset()
@@ -1546,16 +1629,16 @@ class Tools
      * Looks up a value using the given key in the given array and returns
      * the value if found or a default value if not found.
      *
-     * @param array $array Array to be searched for key
-     * @param string $key Key for which we are looking in array
-     * @param mixed $defaultvalue Value we will return if key was not found in array
+     * @param array  $array        Array to be searched for key
+     * @param string $key          Key for which we are looking in array
+     * @param mixed  $defaultvalue Value we will return if key was not found in array
+     *
      * @return mixed Value retrieved from array or default value if not found in array
      */
     public static function atkArrayNvl($array, $key, $defaultvalue = null)
     {
-        return (isset($array[$key]) ? $array[$key] : $defaultvalue);
+        return isset($array[$key]) ? $array[$key] : $defaultvalue;
     }
-
 
     /**
      * Returns the IP of the remote client.
@@ -1567,13 +1650,13 @@ class Tools
         static $s_ip = null;
 
         if ($s_ip === null) {
-            if (getenv("HTTP_CLIENT_IP")) {
-                $s_ip = getenv("HTTP_CLIENT_IP");
-            } elseif (getenv("HTTP_X_FORWARDED_FOR")) {
-                $ipArray = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
+            if (getenv('HTTP_CLIENT_IP')) {
+                $s_ip = getenv('HTTP_CLIENT_IP');
+            } elseif (getenv('HTTP_X_FORWARDED_FOR')) {
+                $ipArray = explode(',', getenv('HTTP_X_FORWARDED_FOR'));
                 $s_ip = $ipArray[0];
-            } elseif (getenv("REMOTE_ADDR")) {
-                $s_ip = getenv("REMOTE_ADDR");
+            } elseif (getenv('REMOTE_ADDR')) {
+                $s_ip = getenv('REMOTE_ADDR');
             } else {
                 $s_ip = 'x.x.x.x';
             }
@@ -1584,9 +1667,10 @@ class Tools
 
     /**
      * Function checks php version and clones the
-     * given attribute in the right way
+     * given attribute in the right way.
      *
      * @param object $attribute The attribute to clone
+     *
      * @return object $attr
      */
     public static function atkClone($attribute)
@@ -1594,21 +1678,20 @@ class Tools
         if (intval(substr(phpversion(), 0, 1)) < 5) {
             $attr = $attribute;
         } else {
-            $attr = clone($attribute);
+            $attr = clone $attribute;
         }
 
         return $attr;
     }
-
 
     /**
      * ATK wrapper of the PHP iconv function. Check if iconv function is present in
      * the system. If yes - use it for converting string, if no - save string untouch
      * and make warning about it.
      *
-     * @param string $in_charset from charset
+     * @param string $in_charset  from charset
      * @param string $out_charset to charset
-     * @param string $str string to convert
+     * @param string $str         string to convert
      *
      * @return string encoded string
      */
@@ -1621,18 +1704,19 @@ class Tools
      * Returns the first argument that is not null.
      *
      * @param mixed ... arguments
+     *
      * @return mixed first argument that is not null
      */
     public static function atkNvl()
     {
-        for ($i = 0; $i < func_num_args(); $i++) {
+        for ($i = 0; $i < func_num_args(); ++$i) {
             $arg = func_get_arg($i);
             if (!is_null($arg)) {
                 return $arg;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -1654,27 +1738,27 @@ class Tools
         }
 
         /* format month */
-        $format = str_replace("M", "%-%", $format);
-        $format = str_replace("F", "%=%", $format);
+        $format = str_replace('M', '%-%', $format);
+        $format = str_replace('F', '%=%', $format);
 
         /* format day */
-        $format = str_replace("D", "%&%", $format);
-        $format = str_replace("l", "%*%", $format);
+        $format = str_replace('D', '%&%', $format);
+        $format = str_replace('l', '%*%', $format);
 
         if ($weekday && strpos($format, '%&%') === false && strpos($format, '%*%') === false) {
-            $format = str_replace("d", "%*% d", $format);
-            $format = str_replace("j", "%*% j", $format);
+            $format = str_replace('d', '%*% d', $format);
+            $format = str_replace('j', '%*% j', $format);
         }
 
         /* get date string */
         $str_date = adodb_date($format, $date[0]);
 
         $month = $date['month'];
-        $shortmonth = substr(strtolower($date["month"]), 0, 3);
+        $shortmonth = substr(strtolower($date['month']), 0, 3);
 
         /* store the self::text calls */
         if (!isset($langcache[$month])) {
-            $langcache[$month] = self::atktext(strtolower($month), "atk");
+            $langcache[$month] = self::atktext(strtolower($month), 'atk');
         }
 
         if (!isset($langcache[$shortmonth])) {
@@ -1682,64 +1766,64 @@ class Tools
         }
 
         /* replace month/week name */
-        $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
-        $str_date = str_replace("%=%", $langcache[$month], $str_date);
-        $str_date = str_replace("%*%", self::atktext(strtolower($date["weekday"]), "atk"), $str_date);
-        $str_date = str_replace("%&%", self::atktext(substr(strtolower($date["weekday"]), 0, 3), "atk"), $str_date);
+        $str_date = str_replace('%-%', $langcache[$shortmonth], $str_date);
+        $str_date = str_replace('%=%', $langcache[$month], $str_date);
+        $str_date = str_replace('%*%', self::atktext(strtolower($date['weekday']), 'atk'), $str_date);
+        $str_date = str_replace('%&%', self::atktext(substr(strtolower($date['weekday']), 0, 3), 'atk'), $str_date);
 
         /* return string */
         return $str_date;
     }
 
-
-    public static function getBrowserInfo($useragent = "")
+    public static function getBrowserInfo($useragent = '')
     {
         $tmp = new BrowserInfo($useragent);
-        return array
-        (
-            "ua" => $tmp->ua,
-            "version" => $tmp->full_version,
-            "browser" => $tmp->browser,
-            "major" => $tmp->major,
-            "minor" => $tmp->minor,
-            "os" => $tmp->os,
-            "platform" => $tmp->platform,
-            "short" => $tmp->short,
-            "brName" => $tmp->brName,
-            "osName" => $tmp->osName,
-            "hasGui" => $tmp->hasGui,
-            "spider" => $tmp->spider,
-            "family" => $tmp->family,
-            "gecko" => $tmp->gecko
+
+        return array(
+            'ua' => $tmp->ua,
+            'version' => $tmp->full_version,
+            'browser' => $tmp->browser,
+            'major' => $tmp->major,
+            'minor' => $tmp->minor,
+            'os' => $tmp->os,
+            'platform' => $tmp->platform,
+            'short' => $tmp->short,
+            'brName' => $tmp->brName,
+            'osName' => $tmp->osName,
+            'hasGui' => $tmp->hasGui,
+            'spider' => $tmp->spider,
+            'family' => $tmp->family,
+            'gecko' => $tmp->gecko,
         );
     }
 
     /**
      * Invoke a method on a class based on a string definition.
      * The string must be in the format
-     * "packagename.subpackage.classname#methodname"
+     * "packagename.subpackage.classname#methodname".
      *
      * @static
      *
-     * @param string $str The "classname#method" to invoke.
-     * @param array $params Any params to be passed to the invoked method.
+     * @param string $str    The "classname#method" to invoke.
+     * @param array  $params Any params to be passed to the invoked method.
      *
-     * @return boolean false if the call failed. In all other cases, it
-     *                 returns the output of the invoked method. (be
-     *                 careful with methods that return false).
+     * @return bool false if the call failed. In all other cases, it
+     *              returns the output of the invoked method. (be
+     *              careful with methods that return false).
      */
     public static function invokeFromString($str, $params = array())
     {
-        if (strpos($str, "#") === false) {
+        if (strpos($str, '#') === false) {
             return false;
         }
 
-        list($class, $method) = explode("#", $str);
-        if ($class != "" && $method != "") {
+        list($class, $method) = explode('#', $str);
+        if ($class != '' && $method != '') {
             $handler = new $class();
             if (is_object($handler)) {
                 return call_user_func_array(array($handler, $method), $params);
             }
+
             return false;
         } else {
             return false;
@@ -1751,63 +1835,65 @@ class Tools
      * When using hrefs in the editform, you can set saveform to true. This will save your
      * form variables in the session and restore them whenever you come back.
      *
-     * @param string $url the url to make session aware
-     * @param string $name the name to display (will not be escaped!)
-     * @param int $sessionstatus the session flags
-     *                            (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
-     *                             SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param bool $saveform wether or not to save the form
-     * @param string $extraprops extra props you can add in the link such as
-     *                            'onChange="doSomething()"'
+     * @param string $url           the url to make session aware
+     * @param string $name          the name to display (will not be escaped!)
+     * @param int    $sessionstatus the session flags
+     *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
+     *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
+     * @param bool   $saveform      wether or not to save the form
+     * @param string $extraprops    extra props you can add in the link such as
+     *                              'onChange="doSomething()"'
      * @static
+     *
      * @return string the HTML link for the session aware URI
      */
-    static public function href(
+    public static function href(
         $url,
-        $name = "",
+        $name = '',
         $sessionstatus = SessionManager::SESSION_DEFAULT,
         $saveform = false,
-        $extraprops = ""
-    )
-    {
+        $extraprops = ''
+    ) {
         $sm = SessionManager::getInstance();
         if ($saveform) {
-            $str = 'atkSubmit("' . Tools::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '", true);';
-            return "<a href=\"javascript:void(0)\" onclick=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+            $str = 'atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'", true);';
+
+            return '<a href="javascript:void(0)" onclick="'.htmlentities($str).'" '.$extraprops.'>'.$name.'</a>';
         } else {
             $str = $sm->sessionUrl($url, $sessionstatus);
-            return "<a href=\"" . htmlentities($str) . "\" " . $extraprops . ">" . $name . "</a>";
+
+            return '<a href="'.htmlentities($str).'" '.$extraprops.'>'.$name.'</a>';
         }
     }
 
-    static public function redirect($location, $exit = true)
+    public static function redirect($location, $exit = true)
     {
         // The actual redirect.
-        if (Config::getGlobal("debug") >= 2) {
+        if (Config::getGlobal('debug') >= 2) {
             $debugger = Debugger::getInstance();
             $debugger->setRedirectUrl($location);
-            Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
+            self::atkdebug('Non-debug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
             if ($exit) {
                 $output = Output::getInstance();
                 $output->outputFlush();
                 exit();
             }
         } else {
-            Tools::atkdebug('redirecting to: ' . $location);
+            self::atkdebug('redirecting to: '.$location);
 
-            if (substr($location, -1) == "&") {
+            if (substr($location, -1) == '&') {
                 $location = substr($location, 0, -1);
             }
-            if (substr($location, -1) == "?") {
+            if (substr($location, -1) == '?') {
                 $location = substr($location, 0, -1);
             }
 
             global $g_error_msg;
             if (count($g_error_msg) > 0) {
-                Tools::mailreport();
+                self::mailreport();
             }
 
-            header('Location: ' . $location);
+            header('Location: '.$location);
             if ($exit) {
                 exit();
             }
@@ -1815,28 +1901,32 @@ class Tools
     }
 
     /**
-     * Gets the module of the node
+     * Gets the module of the node.
+     *
      * @param string $nodeUri the node uri
-     * @return String the node's module
+     *
+     * @return string the node's module
      */
     public static function getNodeModule($nodeUri)
     {
-        $arr = explode(".", $nodeUri);
+        $arr = explode('.', $nodeUri);
         if (count($arr) == 2) {
             return $arr[0];
         } else {
-            return "";
+            return '';
         }
     }
 
     /**
-     * Gets the node type of a node string
+     * Gets the node type of a node string.
+     *
      * @param string $nodeUri the node uri
-     * @return String the node type
+     *
+     * @return string the node type
      */
     public static function getNodeType($nodeUri)
     {
-        $arr = explode(".", $nodeUri);
+        $arr = explode('.', $nodeUri);
         if (count($arr) == 2) {
             return $arr[1];
         } else {
@@ -1845,34 +1935,39 @@ class Tools
     }
 
     /**
-     * Check if the system has multibyte support
-     * @return boolean
+     * Check if the system has multibyte support.
+     *
+     * @return bool
      */
     public static function hasMultiByteSupport()
     {
         if (self::$s_hasMultiByteSupport === null) {
             if (function_exists('mb_strlen') && Config::getGlobal('use_mbstring', true)) {
-                mb_internal_encoding(Tools::atkGetCharset());
+                mb_internal_encoding(self::atkGetCharset());
                 self::$s_hasMultiByteSupport = true;
             } else {
                 self::$s_hasMultiByteSupport = false;
             }
         }
+
         return self::$s_hasMultiByteSupport;
     }
 
     /**
-     * Get string length
+     * Get string length.
+     *
      * @param string $str The string being checked for length
+     *
      * @return int
      */
     public static function strlen($str)
     {
         if (self::hasMultiByteSupport()) {
             return mb_strlen($str);
-        } elseif (strtolower(Tools::atkGetCharset()) == 'utf-8') {
-            preg_match_all("/./su", $str, $matches);
+        } elseif (strtolower(self::atkGetCharset()) == 'utf-8') {
+            preg_match_all('/./su', $str, $matches);
             $chars = $matches[0];
+
             return count($chars);
         } else {
             return strlen($str);
@@ -1880,10 +1975,12 @@ class Tools
     }
 
     /**
-     * Get part of string
-     * @param string $str The string being checked.
-     * @param int $start The first position used in $str
-     * @param int $length [optional] The maximum length of the returned string
+     * Get part of string.
+     *
+     * @param string $str    The string being checked.
+     * @param int    $start  The first position used in $str
+     * @param int    $length [optional] The maximum length of the returned string
+     *
      * @return string
      */
     public static function substr($str, $start, $length = '')
@@ -1896,9 +1993,11 @@ class Tools
     }
 
     /**
-     * Return char on given position
+     * Return char on given position.
+     *
      * @param string $str The string being checked
-     * @param int $pos The position of the char
+     * @param int    $pos The position of the char
+     *
      * @return string
      */
     public static function charAt($str, $pos)
@@ -1907,11 +2006,13 @@ class Tools
     }
 
     /**
-     *  Find position of first occurrence of string in a string
+     *  Find position of first occurrence of string in a string.
+     *
      * @param object $haystack The string being checked.
-     * @param object $needle The position counted from the beginning of haystack .
-     * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
-     * @return int|boolean
+     * @param object $needle   The position counted from the beginning of haystack .
+     * @param object $offset   [optional] The search offset. If it is not specified, 0 is used.
+     *
+     * @return int|bool
      */
     public static function strpos($haystack, $needle, $offset = 0)
     {
@@ -1923,8 +2024,10 @@ class Tools
     }
 
     /**
-     * Make a string lowercase
+     * Make a string lowercase.
+     *
      * @param string $str The string being lowercased.
+     *
      * @return string
      */
     public static function strtolower($str)
@@ -1937,8 +2040,10 @@ class Tools
     }
 
     /**
-     * Make a string uppercase
+     * Make a string uppercase.
+     *
      * @param string $str The string being uppercased.
+     *
      * @return string
      */
     public static function strtoupper($str)
@@ -1956,16 +2061,16 @@ class Tools
      * configured charset instead of PHP's default charset, if no
      * charset is given.
      *
-     * @param string $str string to convert
-     * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset character set to use (default to Tools::atktext('charset', 'atk'))
+     * @param string $str         string to convert
+     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset     character set to use (default to Tools::atktext('charset', 'atk'))
      *
-     * @return String encoded string
+     * @return string encoded string
      */
     public static function html_entity_decode($str, $quote_style = ENT_COMPAT, $charset = null)
     {
         if ($charset === null) {
-            $charset = Tools::atkGetCharset();
+            $charset = self::atkGetCharset();
         }
 
         // check if charset is allowed, else use default charset for this function
@@ -1981,16 +2086,16 @@ class Tools
      * htmlentities function, but falls back to Tools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $str string to convert
-     * @param int $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset character set to use (default to Tools::atkGetCharset())
+     * @param string $str         string to convert
+     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset     character set to use (default to Tools::atkGetCharset())
      *
-     * @return String encoded string
+     * @return string encoded string
      */
     public static function htmlentities($str, $quote_style = ENT_COMPAT, $charset = null)
     {
         if ($charset === null) {
-            $charset = Tools::atkGetCharset();
+            $charset = self::atkGetCharset();
         }
 
         // check if charset is allowed, else use default charset for this function
@@ -2006,29 +2111,31 @@ class Tools
      * html_entity_decode function, but falls back to Tools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $in_charset The input charset
+     * @param string $in_charset  The input charset
      * @param string $out_charset The output charset
-     * @param string $str The string to convert
-     * @return String encoded string
+     * @param string $str         The string to convert
+     *
+     * @return string encoded string
      */
     public static function iconv($in_charset, $out_charset, $str)
     {
-        if (function_exists("iconv")) {
+        if (function_exists('iconv')) {
             $str = iconv($in_charset, $out_charset, $str);
         } else {
-            Tools::atkwarning(Tools::atktext("error_iconv_not_install"));
+            self::atkwarning(self::atktext('error_iconv_not_install'));
         }
+
         return $str;
     }
 
     /**
      * ATK version of the Smarty truncate function, multibyte safe.
      *
-     * @param  string $string text to truncate
-     * @param  integer $max Maximum length of the total result string
-     * @param  string $replace text to append to the end of the truncated string
-     * @return string  truncated sting
+     * @param string $string  text to truncate
+     * @param int    $max     Maximum length of the total result string
+     * @param string $replace text to append to the end of the truncated string
      *
+     * @return string truncated sting
      */
     public static function truncate($string, $max, $replace)
     {
@@ -2036,7 +2143,8 @@ class Tools
             return $string;
         } else {
             $length = $max - self::strlen($replace);
-            return self::substr($string, 0, $length) . $replace;
+
+            return self::substr($string, 0, $length).$replace;
         }
     }
 }

@@ -2,8 +2,8 @@
 
 use Sintattica\Atk\Core\Config;
 
-$_configAppRoot = __DIR__ . '/../../../../../../';
-$_configTempDir = $_configAppRoot . 'var/atktmp/';
+$_configAppRoot = __DIR__.'/../../../../../../';
+$_configTempDir = $_configAppRoot.'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
 
@@ -15,30 +15,30 @@ return [
 
     'application_dir' => $_configAppRoot,
 
-    'application_config_dir' => $_configAppRoot . $_configDirName . '/',
+    'application_config_dir' => $_configAppRoot.$_configDirName.'/',
 
-    'application_config' => $_configAppRoot . $_configDirName . '/atk.php',
+    'application_config' => $_configAppRoot.$_configDirName.'/atk.php',
 
-    'atkroot' => "/",
+    'atkroot' => '/',
 
     'assets_url' => $_configAssetsUrl,
 
-    'template_dir' => __DIR__ . '/../templates/',
+    'template_dir' => __DIR__.'/../templates/',
 
-    /**
+    /*
      * The location of a directory that is writable to ATK and that ATK can
      * store it's temporary files in.
      * @var String
      */
     'atktempdir' => $_configTempDir,
 
-    /**
+    /*
      * Use the built-in ATK error handler (highly recommended!)
      * @var Bool
      */
     'use_atkerrorhandler' => true,
 
-    /**
+    /*
      * Cache table meta data and compiled meta node code.
      *
      * On development environments this option should be set to false, but
@@ -51,17 +51,15 @@ return [
      */
     'meta_caching' => Config::env('META_CACHING', 1),
 
-    /**
+    /*
      * Use the given class for creating datagrids.
      */
-    'datagrid_class' => "\\Sintattica\\Atk\\DataGrid\\DataGrid",
+    'datagrid_class' => '\\Sintattica\\Atk\\DataGrid\\DataGrid',
 
-
-    /**
+    /*
      * The dispatcher, all request (should) lead to this setting.
      */
     'dispatcher' => 'index.php',
-
 
     /************************** DATABASE SETTINGS ******************************/
 
@@ -73,10 +71,10 @@ return [
             'password' => Config::env('DB_PASSWORD', ''),
             'charset' => Config::env('DB_CHARSET', 'utf8'),
             'driver' => Config::env('DB_DRIVER', 'MySqli'),
-        ]
+        ],
     ],
 
-    /**
+    /*
      * Wether or not to use a persistent connection.
      *
      * Note that this is usefull if you don't have a lot of applications doing
@@ -87,24 +85,23 @@ return [
      */
     'databasepersistent' => true,
 
-
     /********************************** SECURITY *******************************/
 
-    /**
+    /*
      * The password to use for administrator login.
      * An administrator password that is empty will *DISABLE* administrator login!
      * @var mixed
      */
     'administratorpassword' => Config::env('ADMIN_PASSWORD', ''),
 
-    /**
+    /*
      * The password to use for guest login.
      * A guest password that is empty will *DISABLE* guest login!
      * @var String
      */
     'guestpassword' => Config::env('GUEST_PASSWORD', ''),
 
-    /**
+    /*
      * The method to use for user/password validation.
      *
      * Currently supported are:
@@ -119,37 +116,37 @@ return [
      */
     'authentication' => 'none',
 
-    /**
+    /*
      * Wether your authentication method supports MD5 passwords
      * @var boolean
      */
     'authentication_md5' => true,
 
-    /**
+    /*
      * Use a cookie to store authentication information.
      * @var boolean
      */
     'authentication_cookie' => false,
 
-    /**
+    /*
      * The default cookie expiry time (in minutes) (7 days)
      * @var int
      */
     'authentication_cookie_expire' => 10080,
 
-    /**
+    /*
      * The default state cookie expiry time (in minutes) (7 days)
      * @var int
      */
     'state_cookie_expire' => 10080,
 
-    /**
+    /*
      * Use the session to store authentication information.
      * @var boolean
      */
     'authentication_session' => true,
 
-    /**
+    /*
      * The scheme to use for security.
      *
      * Currently supported are:
@@ -159,39 +156,39 @@ return [
      *
      * @var String
      */
-    'securityscheme' => "none",
+    'securityscheme' => 'none',
 
-    /**
+    /*
      *
      * @var boolean
      */
     'restrictive' => true,
 
-    /**
+    /*
      *
      * @var boolean
      */
     'security_attributes' => false,
 
-    /**
+    /*
      * By default, there is no 'grantall' privilege. Apps can set this if necessary.
      * Syntax: "module.nodename.privilege"
      */
     'auth_grantall_privilege' => '',
 
-    /**
+    /*
      * Zero is no logging
      * @var int
      */
     'logging' => 0,
 
-    /**
+    /*
      *
      * @var String
      */
-    'logfile' => $_configAppRoot . "atk-security.log",
+    'logfile' => $_configAppRoot.'atk-security.log',
 
-    /**
+    /*
      * Password Restrictions if required
      *
      * 0 => ignore restriction
@@ -205,115 +202,114 @@ return [
     'password_minnumbers' => 0,
     'password_minspecialchars' => 0,
 
-
     /************************** AUTHENTICATION *********************************/
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_database' => "default",
+    'auth_database' => 'default',
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_usertable' => "user",
+    'auth_usertable' => 'user',
 
-    /**
+    /*
      * Defaults to usertable
      * @var String
      */
-    'auth_leveltable' => "",
+    'auth_leveltable' => '',
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_accesstable' => "access",
+    'auth_accesstable' => 'access',
 
-    /**
+    /*
      * If left empty auth_levelfield is used.
      *
      * @var String
      */
-    'auth_accessfield' => "",
+    'auth_accessfield' => '',
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_userfield' => "userid",
+    'auth_userfield' => 'userid',
 
-    /**
+    /*
      * Primary key of usertable
      * @var String
      */
-    'auth_userpk' => "userid",
+    'auth_userpk' => 'userid',
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_passwordfield' => "password",
+    'auth_passwordfield' => 'password',
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_languagefield' => "lng",
+    'auth_languagefield' => 'lng',
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_accountdisablefield' => "",
+    'auth_accountdisablefield' => '',
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_levelfield' => "entity",
+    'auth_levelfield' => 'entity',
 
-    /**
+    /*
      * Name of table containing the groups.
      * (only necessary to support hierarchical groups!).
      * @var String
      */
-    'auth_grouptable' => "",
+    'auth_grouptable' => '',
 
-    /**
+    /*
      * Name of primary key attribute in group table.
      * (only necessary to support hierarchical groups!)
      * @var String
      */
-    'auth_groupfield' => "",
+    'auth_groupfield' => '',
 
-    /**
+    /*
      * Name of parent attribute in group table.
      * (only necessary to support hierarchical groups!)
      * @var String
      */
-    'auth_groupparentfield' => "",
+    'auth_groupparentfield' => '',
 
-    /**
+    /*
      * No vmail.
      * @var boolean
      */
     'auth_mail_virtual' => false,
 
-    /**
+    /*
      * Use bugzilla-style crypted password storage
      * @var boolean
      */
     'auth_usecryptedpassword' => false,
 
-    /**
+    /*
      * Setting this to true will make ATK use a loginform instead of a browserpopup.
      */
     'auth_loginform' => true,
 
-    /**
+    /*
      * When changerealm is true, the authentication realm is changed on every
      * login.
      *
@@ -330,166 +326,163 @@ return [
      */
     'auth_changerealm' => false,
 
-    /**
+    /*
      *
      * @var String
      */
-    'auth_userdescriptor' => "[userid]",
+    'auth_userdescriptor' => '[userid]',
 
-    /**
+    /*
      * This parameter can be used to specify a where clause which will be used
      * to validate users login credentials
      * @var String
      */
-    'auth_accountenableexpression' => "",
-
+    'auth_accountenableexpression' => '',
 
     /***************************** LDAP settings *******************************/
-    /**
+    /*
      * To use LDAP you should fill this config_variables with the right values
      */
-    /**
+    /*
      *
      * @var String
      */
-    'authentication_ldap_host' => "",
+    'authentication_ldap_host' => '',
 
-    /**
+    /*
      *
      * @var String
      */
-    'authentication_ldap_context' => "",
+    'authentication_ldap_context' => '',
 
-    /**
+    /*
      *
      * @var String
      */
-    'authentication_ldap_field' => "",
+    'authentication_ldap_field' => '',
 
     /***************** DEBUGGING AND ERROR HANDLING ****************************/
 
-    /**
+    /*
      *
      * @var int
      */
     'debug' => Config::env('DEBUG_LEVEL', 0),
 
-    /**
+    /*
      *
      * @var String
      */
-    'debuglog' => "",
+    'debuglog' => '',
 
-    /**
+    /*
      *
      * @var boolean
      */
     'display_errors' => true,
 
-    /**
+    /*
      *
      * @var String
      */
-    'halt_on_error' => "critical",
+    'halt_on_error' => 'critical',
 
-    /**
+    /*
      * Automatic error reporting is turned off by default.
      * @var String
      */
-    'mailreport' => "",
+    'mailreport' => '',
 
-    /**
+    /*
      * Output missing translation "errors".
      * @var String
      */
     'debug_translations' => false,
 
-
     /************************************ LAYOUT ****************************** */
 
-    /**
+    /*
      * Whatever tabs are enabled or not
      * @var boolean
      */
     'tabs' => true,
 
-    /**
+    /*
      * Whatever DHTML tabs should be stateful or not
      * (E.g. the current tab is saved for the current node/selector combination)
      * @var boolean
      */
     'dhtml_tabs_stateful' => true,
 
-    /**
+    /*
      * The default number of records to display on a single page
      * @var int
      */
     'recordsperpage' => 25,
 
-    /**
+    /*
      * The number of records per page options to display on drop down list
      * @var array
      */
     'recordsperpage_options' => [10, 25, 50, 100],
 
-    /**
+    /*
      * Add a 'show all' option to the records per page selector.
      * @var boolean
      */
     'enable_showall' => true,
 
-    /**
+    /*
      * The (max) number of page navigation links to show
      * @var int
      */
     'pagelinks' => 10,
 
-    /**
+    /*
      * Show go to previous page and go to next page links in recordlist
      * @var bool
      */
     'pagelinks_previous_next' => true,
 
-    /**
+    /*
      * Show go to first page and go to last page links in recordlist
      * @var bool
      */
     'pagelinks_first_last' => false,
 
-    /**
+    /*
      * Display a 'stack' of the user activities in the top right corner.
      * @var boolean
      */
     'stacktrace' => true,
 
-    /**
+    /*
      * The maximum length of an HTML input field generated by Attribute or descendants
      * @var int
      */
     'max_input_size' => 70,
 
-    /**
+    /*
      * The maximum length of an HTML input search field generated by Attribute or descendants
      * @var int
      */
     'max_searchinput_size' => 20,
 
-    /**
+    /*
      * Set to true, clicking on a record redirects to its view or edit page
      * @var boolean
      */
     'recordlist_onclick' => false,
 
-    /**
+    /*
      * The position of MRA (multi record actions): "top" or "bottom"
      * @var string
      */
     'mra_position' => 'bottom',
 
-
     /*********************************** OUTPUT ********************************/
 
-    /**
+    /*
      * Set to true, to output pages gzip compressed to the browser if the
      * browser supports it.
      *
@@ -499,28 +492,27 @@ return [
      */
     'output_gzip' => false,
 
-
     /********************************** LANGUAGE *******************************/
 
-    /**
+    /*
      *
      * @var String
      */
-    'language' => "en",
+    'language' => 'en',
 
-    /**
+    /*
      *
      * @var String
      */
-    'defaultlanguage' => "en",
+    'defaultlanguage' => 'en',
 
-    /**
+    /*
      *
      * @var String
      */
-    'language_basedir' => "languages/",
+    'language_basedir' => 'languages/',
 
-    /**
+    /*
      * Use browser language to detect application language.
      * By default set to false to remain backwards compatible.
      *
@@ -528,8 +520,7 @@ return [
      */
     'use_browser_language' => false,
 
-
-    /**
+    /*
      * Module/node checking for strings in atkLanguage (if you don't know, don't
      * change)
      * comment out to disable checking for module of node
@@ -539,7 +530,7 @@ return [
      */
     'atklangcheckmodule' => 2,
 
-    /**
+    /*
      * Where ATK should look for it's supported languages
      *
      * In your own application you should probably make this the module
@@ -556,25 +547,22 @@ return [
 //'supported_languages_module' => 'atkroot.'atk/languages/',
     'supported_languages_module' => '',
 
-
     /********************* TEMPLATE ENGINE CONFIGURATION ***********************/
 
-    'tplcompiledir' => $_configTempDir . "tpl/",
+    'tplcompiledir' => $_configTempDir.'tpl/',
     'tplcompilecheck' => Config::env('TPL_COMPILE_CHECK', 1),
     'tplforcecompile' => Config::env('TPL_FORCE_COMPILE', 0),
 
-
     /****************** MISCELLANEOUS CONFIGURATION OPTIONS ********************/
 
-    /**
+    /*
      * @var array List of enabled modules
      * eg: [App\Modules\App\Module::class, App\Modules\Auth\Module::class,]
      *
      */
     'modules' => [],
 
-
-    /**
+    /*
      * The cookie application root, used to set the cookiepath when using PHP sessions.
      *
      * If you're using urlrewrites within your httpd or htaccess configuration this should be '/'
@@ -584,15 +572,15 @@ return [
      */
     'cookie_path' => '/',
 
-    /**
+    /*
      * The session name. If this configuration option is not set the
      * 'identifier option is used instead.
      *
      * @var string
      */
-    'session_name' => "",
+    'session_name' => '',
 
-    /**
+    /*
      * The maximum inactivity period for a stack in the session manager before
      * it expires.
      *
@@ -602,34 +590,32 @@ return [
      */
     'session_max_stack_inactivity_period' => 3600, // 1 hour
 
-    /**
+    /*
      * The application identifier.
      *
      * @var String
      */
-    'identifier' => "default",
+    'identifier' => 'default',
 
-
-    /**
+    /*
      * The default encryption method for Encryption
      * @var String
      */
-    'encryption_defaultmethod' => "base64",
+    'encryption_defaultmethod' => 'base64',
 
-    /**
+    /*
      * The default searchmode
      * @var String
      */
-    'search_defaultmode' => "substring",
+    'search_defaultmode' => 'substring',
 
-
-    /**
+    /*
      * Session cache expire (minutes)
      * @var int
      */
     'session_cache_expire' => 180,
 
-    /**
+    /*
      * Session cache limiter
      *
      * Possible values:
@@ -640,22 +626,22 @@ return [
      *   headers >PHP4.2.0)
      * @var String
      */
-    'session_cache_limiter' => "nocache",
+    'session_cache_limiter' => 'nocache',
 
-    /**
+    /*
      * Default sequence prefix.
      * @var String
      */
-    'database_sequenceprefix' => "seq_",
+    'database_sequenceprefix' => 'seq_',
 
-    /**
+    /*
      * Make the recordlist use a javascript
      * confirm box for deleting instead of a seperate page
      * @var boolean
      */
     'recordlist_javascript_delete' => false,
 
-    /**
+    /*
      * This should be turned on when an application makes use
      * of OpenSSL encryption (atk.security.encryption.atkopensslencryption)
      * It makes sure that the user password is available in the session
@@ -664,8 +650,7 @@ return [
      */
     'enable_ssl_encryption' => false,
 
-
-    /**
+    /*
      * Default extended search action. This action can always be overriden
      * in the node by using $node->setExtendedSearchAction. At this time
      * (by default) the following values are supported: 'search' or 'smartsearch'
@@ -674,7 +659,7 @@ return [
      */
     'extended_search_action' => 'search',
 
-    /**
+    /*
      * Lists that are obligatory, by default have no 'Select none' option.
      * This leads to the user just selecting the first item since that is the default.
      * If this is a problem set this config variable to true, this will add a 'Select none'
@@ -685,14 +670,14 @@ return [
      */
     'list_obligatory_null_item' => false,
 
-    /**
+    /*
      * Should all many-to-one relations have the Attribute::AF_RELATION_AUTOCOMPLETE flag set?
      *
      * @var boolean
      */
     'manytoone_autocomplete_default' => false,
 
-    /**
+    /*
      * Should all many-to-one relations that have the Attribute::AF_LARGE flag set also
      * have the Attribute::AF_RELATION_AUTOCOMPLETE flag set?
      *
@@ -700,7 +685,7 @@ return [
      */
     'manytoone_autocomplete_large' => true,
 
-    /**
+    /*
      * Should manytoone relations having the Attribute::AF_RELATION_AUTOCOMPLETE flag also
      * use auto completion in search forms?
      *
@@ -708,7 +693,7 @@ return [
      */
     'manytoone_search_autocomplete' => true,
 
-    /**
+    /*
      * Controls how many characters a user must enter before an auto-completion
      * search is being performed.
      *
@@ -716,29 +701,29 @@ return [
      */
     'manytoone_autocomplete_minchars' => 2,
 
-    /**
+    /*
      * The length of the HTML input field generated in auto-completion mode.
      *
      * @var int
      */
     'manytoone_autocomplete_size' => 50,
 
-    /**
+    /*
      * The search mode of the autocomplete fields. Can be 'startswith', 'exact' or 'contains'.
      *
      * @access private
      * @var String
      */
-    'manytoone_autocomplete_searchmode' => "contains",
+    'manytoone_autocomplete_searchmode' => 'contains',
 
-    /**
+    /*
      * Value determines wether the search of the autocompletion is case-sensitive.
      *
      * @var boolean
      */
     'manytoone_autocomplete_search_case_sensitive' => false,
 
-    /**
+    /*
      * Warn the user if he/she has changed something in a form
      * and leaves the page without pressing save or cancel.
      *
@@ -746,14 +731,14 @@ return [
      */
     'lose_changes_warning' => false,
 
-    /**
+    /*
      * Optionally set the export file parameters
      */
-    'export_delimiter' => ",",
-    'export_enclosure' => "&quot,",
+    'export_delimiter' => ',',
+    'export_enclosure' => '&quot,',
     'export_titlerow_checked' => true,
 
-    /**
+    /*
      * Normally atkerror silently ignores an error and sends an e-mail and/or
      * adds the error to the debug output. Using this switch ATK will throw
      * an exception when atkerror is called.
@@ -762,28 +747,28 @@ return [
      */
     'throw_exception_on_error' => false,
 
-    /**
+    /*
      * Inverts check logic of attributes rights: default all allowed, the
      * "attribaccess" table will store attributes modes not allowed
      */
     'reverse_attributeaccess_logic' => false,
 
-    /**
+    /*
      * atkCKAttribute configuration options override
      */
     'ck_options' => array(),
 
-    /**
+    /*
      * recordlist orientation (left or right)
      */
-    'recordlist_orientation' => "left",
+    'recordlist_orientation' => 'left',
 
-    /**
+    /*
      * logo
      */
-    'login_logo' => $_configAssetsUrl . 'images/login_logo.jpg',
+    'login_logo' => $_configAssetsUrl.'images/login_logo.jpg',
 
-    /**
+    /*
      * icons
      */
     'recordlist_icons' => true,

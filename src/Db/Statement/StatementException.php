@@ -1,12 +1,11 @@
-<?php namespace Sintattica\Atk\Db\Statement;
+<?php
+
+namespace Sintattica\Atk\Db\Statement;
 
 /**
  * Statement exception.
  *
  * @author Peter C. Verhage <peter@achievo.org>
- *
- * @package atk
- * @subpackage db.statement
  */
 class StatementException extends \Exception
 {
@@ -19,11 +18,10 @@ class StatementException extends \Exception
 
     /**
      * @param string $message
-     * @param int $code
+     * @param int    $code
      */
     public function __construct($message, $code)
     {
         parent::__construct($message, $code);
     }
-
 }

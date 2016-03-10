@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Core;
+<?php
+
+namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Security\SecurityManager;
@@ -14,7 +16,6 @@ class Menu
             <li>
         ';
 
-
     private $format_submenuchild = '
             <li>
                 <a href="#">%s <span class="caret"></span></a>
@@ -27,7 +28,7 @@ class Menu
     private $format_single = '<li><a href="%s">%s</a></li>';
 
     /**
-     * Get new menu object
+     * Get new menu object.
      *
      * @return Menu class object
      */
@@ -35,61 +36,65 @@ class Menu
     {
         static $s_instance = null;
         if ($s_instance == null) {
-            Tools::atkdebug("Creating a new menu instance");
+            Tools::atkdebug('Creating a new menu instance');
             $s_instance = new self();
         }
 
         return $s_instance;
     }
 
-
     /**
-     * Translates a menuitem with the menu_ prefix, or if not found without
+     * Translates a menuitem with the menu_ prefix, or if not found without.
      *
      * @param string $menuitem Menuitem to translate
-     * @param string $modname Module to which the menuitem belongs
+     * @param string $modname  Module to which the menuitem belongs
+     *
      * @return string Translation of the given menuitem
      */
-    function getMenuTranslation($menuitem, $modname = 'atk')
+    public function getMenuTranslation($menuitem, $modname = 'atk')
     {
         $s = Tools::atktext("menu_$menuitem", $modname, '', '', '', true);
         if (!$s) {
             $s = Tools::atktext($menuitem, $modname);
         }
+
         return $s;
     }
 
     /**
-     * Render the menu
-     * @return String HTML fragment containing the menu.
+     * Render the menu.
+     *
+     * @return string HTML fragment containing the menu.
      */
-    function render()
+    public function render()
     {
         $page = Page::getInstance();
         $menu = $this->load();
         $page->addContent($menu);
-        return $page->render("Menu", true);
+
+        return $page->render('Menu', true);
     }
 
     /**
-     * Get the menu
+     * Get the menu.
      *
      * @return string The menu
      */
-    function getMenu()
+    public function getMenu()
     {
         return $this->load();
     }
 
     /**
-     * Load the menu
+     * Load the menu.
      *
      * @return string The menu
      */
-    function load()
+    public function load()
     {
         $html_items = $this->parseItems($this->menuItems['main']);
         $html_menu = $this->processMenu($html_items);
+
         return sprintf($this->format_menu, $html_menu);
     }
 
@@ -114,17 +119,18 @@ class Menu
                 }
             }
         }
+
         return $html;
     }
-
 
     /**
      * Recursively checks if a menuitem should be enabled or not.
      *
      * @param array $menuitem menuitem array
+     *
      * @return bool enabled?
      */
-    function isEnabled($menuitem)
+    public function isEnabled($menuitem)
     {
         $secManager = SecurityManager::getInstance();
 
@@ -136,7 +142,7 @@ class Menu
         } else {
             if (is_array($enable)) {
                 $enabled = false;
-                for ($j = 0; $j < (count($enable) / 2); $j++) {
+                for ($j = 0; $j < (count($enable) / 2); ++$j) {
                     $enabled = $enabled || $secManager->allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
                 }
                 $enable = $enabled;
@@ -156,51 +162,49 @@ class Menu
         return $enable;
     }
 
-
     /**
-     * Create a new menu item
+     * Create a new menu item.
      *
      * Both main menu items, separators, submenus or submenu items can be
      * created, depending on the parameters passed.
      *
-     * @param string $name The menuitem name. The name that is displayed in the
-     *                     userinterface can be influenced by putting
-     *                     "menu_something" in the language files, where 'something'
-     *                     is equal to the $name parameter.
-     *                     If "-" is specified as name, the item is a separator.
-     *                     In this case, the $url parameter should be empty.
-     * @param string $url The url to load in the main application area when the
-     *                    menuitem is clicked. If set to "", the menu is treated
-     *                    as a submenu (or a separator if $name equals "-").
-     *                    The dispatch_url() method is a useful function to
-     *                    pass as this parameter.
+     * @param string $name   The menuitem name. The name that is displayed in the
+     *                       userinterface can be influenced by putting
+     *                       "menu_something" in the language files, where 'something'
+     *                       is equal to the $name parameter.
+     *                       If "-" is specified as name, the item is a separator.
+     *                       In this case, the $url parameter should be empty.
+     * @param string $url    The url to load in the main application area when the
+     *                       menuitem is clicked. If set to "", the menu is treated
+     *                       as a submenu (or a separator if $name equals "-").
+     *                       The dispatch_url() method is a useful function to
+     *                       pass as this parameter.
      * @param string $parent The parent menu. If omitted or set to "main", the
      *                       item is added to the main menu.
-     * @param mixed $enable This parameter supports the following options:
-     *                      1: menuitem is always enabled
-     *                      0: menuitem is always disabled
-     *                         (this is useful when you want to use a function
-     *                         call to determine when a menuitem should be
-     *                         enabled. If the function returns 1 or 0, it can
-     *                         directly be passed to this method in the $enable
-     *                         parameter.
-     *                      array: when an array is passed, it should have the
-     *                             following format:
-     *                             array("node","action","node","action",...)
-     *                             When an array is passed, the menu checks user
-     *                             privileges. If the user has any of the
-     *                             node/action privileges, the menuitem is
-     *                             enabled. Otherwise, it's disabled.
-     * @param int $order The order in which the menuitem appears. If omitted,
-     *                   the items appear in the order in which they are added
-     *                   to the menu, with steps of 100. So, if you have a menu
-     *                   with default ordering and you want to place a new
-     *                   menuitem at the third position, pass 250 for $order.
+     * @param mixed  $enable This parameter supports the following options:
+     *                       1: menuitem is always enabled
+     *                       0: menuitem is always disabled
+     *                       (this is useful when you want to use a function
+     *                       call to determine when a menuitem should be
+     *                       enabled. If the function returns 1 or 0, it can
+     *                       directly be passed to this method in the $enable
+     *                       parameter.
+     *                       array: when an array is passed, it should have the
+     *                       following format:
+     *                       array("node","action","node","action",...)
+     *                       When an array is passed, the menu checks user
+     *                       privileges. If the user has any of the
+     *                       node/action privileges, the menuitem is
+     *                       enabled. Otherwise, it's disabled.
+     * @param int    $order  The order in which the menuitem appears. If omitted,
+     *                       the items appear in the order in which they are added
+     *                       to the menu, with steps of 100. So, if you have a menu
+     *                       with default ordering and you want to place a new
+     *                       menuitem at the third position, pass 250 for $order.
      * @param string $module The module name. Used for translations
      */
-    public function addMenuItem($name = "", $url = "", $parent = "main", $enable = 1, $order = 0, $module = "")
+    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '')
     {
-
         static $order_value = 100, $s_dupelookup = array();
         if ($order == 0) {
             $order = $order_value;
@@ -208,14 +212,14 @@ class Menu
         }
 
         $item = array(
-            "name" => $name,
-            "url" => $url,
-            "enable" => $enable,
-            "order" => $order,
-            "module" => $module
+            'name' => $name,
+            'url' => $url,
+            'enable' => $enable,
+            'order' => $order,
+            'module' => $module,
         );
 
-        if (isset($s_dupelookup[$parent][$name]) && ($name != "-")) {
+        if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
             $this->menuItems[$parent][$s_dupelookup[$parent][$name]] = $item;
         } else {
             $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? count($this->menuItems[$parent])
@@ -229,6 +233,7 @@ class Menu
         foreach ($items as &$item) {
             $this->parseItem($item);
         }
+
         return $items;
     }
 
@@ -236,19 +241,18 @@ class Menu
     {
         if ($item['enable'] && array_key_exists($item['name'], $this->menuItems)) {
             $item['submenu'] = $this->parseItems($this->menuItems[$item['name']]);
+
             return $item;
         }
     }
 
-    function _hasSubmenu($item)
+    public function _hasSubmenu($item)
     {
         return isset($item['submenu']) && count($item['submenu']);
     }
 
-    function _getMenuTitle($item, $append = "")
+    public function _getMenuTitle($item, $append = '')
     {
-        return (string)$this->getMenuTranslation($item['name'], $item['module']) . $append;
+        return (string) $this->getMenuTranslation($item['name'], $item['module']).$append;
     }
 }
-
-

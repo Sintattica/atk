@@ -1,4 +1,6 @@
-<?php namespace Sintattica\Atk\Listeners;
+<?php
+
+namespace Sintattica\Atk\Listeners;
 
 use Sintattica\Atk\Utils\TriggerListener;
 use Sintattica\Atk\Core\Tools;
@@ -11,8 +13,6 @@ use Sintattica\Atk\Attributes\Attribute;
  * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
- * @package atk
- * @subpackage listeners
  *
  * @copyright (c)2010 Ibuildings
  * @license http://www.atk-framework.com/licensing ATK Open Source License
@@ -41,9 +41,6 @@ use Sintattica\Atk\Attributes\Attribute;
  * for all the tables in the application.
  *
  * @author Ivo Jansch <ivo@ibuildings.nl>
- * @package atk
- * @subpackage listeners
- *
  */
 class RecycleBin extends TriggerListener
 {
@@ -53,12 +50,12 @@ class RecycleBin extends TriggerListener
     protected $_options = array();
 
     /**
-     * Construct a new atkRecycleBin
+     * Construct a new atkRecycleBin.
      *
      * @param array $options Supports the following keys:
      *                       "node"  - Use a specific node as the recyclebin
      *                       "table" - Use a specfic table as the recyclebin (table needs to be
-     *                                 identical to the table the records are deleted from.
+     *                       identical to the table the records are deleted from.
      *                       If both table and node are ommitted, a default table with
      *                       appendix _bin is assumed.
      */
@@ -71,21 +68,19 @@ class RecycleBin extends TriggerListener
      * This is the actual trigger that moves the record to the recycle bin table.
      *
      * @param array $record The record that is being deleted
+     *
      * @return false if there was an error, true if everything is ok
      */
     public function preDelete($record)
     {
-        Tools::atkdebug("delete performed, storing record in recyclebin");
+        Tools::atkdebug('delete performed, storing record in recyclebin');
 
-        if (isset($this->_options["node"])) {
-
+        if (isset($this->_options['node'])) {
             $atk = Atk::getInstance();
-            $node = $atk->atkGetNode($this->_options["node"]);
+            $node = $atk->atkGetNode($this->_options['node']);
             $node->addDb($record);
         } else {
-
-            $node = clone($this->m_node);
-
+            $node = clone $this->m_node;
 
             $pkFields = $node->m_primaryKey;
             foreach ($pkFields as $fieldName) {
@@ -95,15 +90,15 @@ class RecycleBin extends TriggerListener
                 $node->getAttribute($fieldName)->setForceInsert(true)->removeFlag(Attribute::AF_AUTO_INCREMENT);
             }
 
-            if (isset($this->_options["table"])) {
-                $node->setTable($this->_options["table"]);
+            if (isset($this->_options['table'])) {
+                $node->setTable($this->_options['table']);
             } else { // default behaviour: assume table with _bin appendix
-                $node->setTable($node->getTable() . "_bin");
+                $node->setTable($node->getTable().'_bin');
             }
-            Tools::atkdebug("adding record to recyclebin");
+            Tools::atkdebug('adding record to recyclebin');
             $node->addDb($record);
         }
+
         return true;
     }
-
 }
