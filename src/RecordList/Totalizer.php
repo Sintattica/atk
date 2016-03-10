@@ -74,6 +74,7 @@ class Totalizer
                 $result[] = $this->_subTotalRow($rowset[count($rowset) - 1], $totals, $fieldname, $totalizers);
             }
         }
+
         // end of leftovers
 
         return $result;

@@ -162,10 +162,8 @@ class FieldSet extends Attribute
                 }
 
                 // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. atkEditFormModifier)
-                $html = sprintf('%s<div id="%s_%s_%s">%s</div>',
-                    $label, $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(), $attrName,
-                    $field
-                );
+                $html = sprintf('%s<div id="%s_%s_%s">%s</div>', $label, $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(),
+                    $attrName, $field);
 
                 $replacements[$attrName] = $html;
             } else {
