@@ -24,8 +24,8 @@ class IpAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name  attribute name
-     * @param int    $flags attribute flags.
+     * @param string $name attribute name
+     * @param int $flags attribute flags.
      */
     public function __construct($name, $flags = 0)
     {
@@ -77,10 +77,10 @@ class IpAttribute extends Attribute
     /**
      * Checks if the value is a valid IP address.
      *
-     * @param array  $record The record that holds the value for this
+     * @param array $record The record that holds the value for this
      *                       attribute. If an error occurs, the error will
      *                       be stored in the 'atkerror' field of the record.
-     * @param string $mode   The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                       "update")
      */
     public function validate(&$record, $mode)

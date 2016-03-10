@@ -18,7 +18,7 @@ class HiddenAttribute extends DummyAttribute
      *
      * @param string $name
      * @param string $text
-     * @param int    $flags
+     * @param int $flags
      */
     public function __construct($name, $text = '', $flags = 0)
     {
@@ -32,7 +32,7 @@ class HiddenAttribute extends DummyAttribute
      * This method is called by the framework whenever an attribute needs to be rendered within a hidden form.
      * In this case, the attribute renders a hidden input field using its text as its hidden value.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -41,8 +41,7 @@ class HiddenAttribute extends DummyAttribute
     public function hide($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
-        $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.
-            htmlspecialchars($this->m_text).'">';
+        $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($this->m_text).'">';
 
         return $result;
     }

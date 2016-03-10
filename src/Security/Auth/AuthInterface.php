@@ -46,7 +46,7 @@ class AuthInterface
     /**
      * Authenticate a user.
      *
-     * @param string $user   The login of the user to authenticate.
+     * @param string $user The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
@@ -79,8 +79,7 @@ class AuthInterface
 
         $cookie_params = session_get_cookie_params();
         $cookiepath = Config::getGlobal('cookie_path');
-        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain')
-            : null;
+        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : null;
         session_set_cookie_params($cookie_params['lifetime'], $cookiepath, $cookiedomain);
         @session_start();
     }
@@ -129,9 +128,9 @@ class AuthInterface
      * node.
      *
      * @param SecurityManager $securityMgr The security manager instance.
-     * @param string          $node        The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                                     access privileges. (modulename.nodename notation).
-     * @param string          $privilege   The privilege to check (atkaction).
+     * @param string $privilege The privilege to check (atkaction).
      *
      * @return bool True if the user has the privilege, false if not.
      */
@@ -182,9 +181,9 @@ class AuthInterface
      * an attribute of a node.
      *
      * @param SecurityManager $securityMgr the security manager
-     * @param Attribute       $attr        attribute reference
-     * @param string          $mode        mode (add, edit, view etc.)
-     * @param array           $record      record data
+     * @param Attribute $attr attribute reference
+     * @param string $mode mode (add, edit, view etc.)
+     * @param array $record record data
      *
      * @return bool true if access is granted, false if not.
      */
@@ -234,7 +233,7 @@ class AuthInterface
      * This function returns the level/group(s) that are allowed to perform
      * the given action on a node.
      *
-     * @param string $node   The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                       the privilege. (modulename.nodename)
      * @param string $action The privilege to check.
      *
@@ -250,10 +249,10 @@ class AuthInterface
      * This function returns the level/group(s) that are allowed to
      * view/edit a certain attribute of a given node.
      *
-     * @param string $node   The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                       attribute access.
      * @param string $attrib The name of the attribute to check
-     * @param string $mode   "view" or "edit"
+     * @param string $mode "view" or "edit"
      *
      * @return array
      */

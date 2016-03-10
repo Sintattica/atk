@@ -67,7 +67,7 @@ class RecordListCache
      * The constructor
      * This is a singleton, so please use the getInstance method.
      *
-     * @param object $node     The node of the recordlist
+     * @param object $node The node of the recordlist
      * @param string $postvars The postvars of the recordlist
      */
     public function atkRecordlistCache($node = '', $postvars = '')
@@ -120,10 +120,8 @@ class RecordListCache
             $sm = SessionManager::getInstance();
 
             $stackID = $sm->atkStackID();
-            $page->register_loadscript(str_replace('*|REPLACESTACKID|*', $stackID,
-                file_get_contents($this->m_cacheid.'_actionloader')));
-            $output = str_replace('*|REPLACESTACKID|*', $stackID,
-                file_get_contents(Config::getGlobal('atkroot').$this->m_cacheid));
+            $page->register_loadscript(str_replace('*|REPLACESTACKID|*', $stackID, file_get_contents($this->m_cacheid.'_actionloader')));
+            $output = str_replace('*|REPLACESTACKID|*', $stackID, file_get_contents(Config::getGlobal('atkroot').$this->m_cacheid));
         }
 
         return $output;
@@ -146,7 +144,7 @@ class RecordListCache
     /**
      * Writes a cached recordlist to the rlcache directory.
      *
-     * @param string $output       The HTML output of the recordlist
+     * @param string $output The HTML output of the recordlist
      * @param string $actionloader The actionloader js part of the recordlist
      */
     public function writeCache($output, $actionloader)
@@ -190,10 +188,7 @@ class RecordListCache
      */
     public function noCaching()
     {
-        return
-            $this->m_postvars['atkorderby'] ||
-            ($this->m_postvars['atksearch'] && Tools::atk_value_in_array($this->m_postvars['atksearch'])) ||
-            ($this->m_postvars['atksmartsearch'] && Tools::atk_value_in_array($this->m_postvars['atksmartsearch']));
+        return $this->m_postvars['atkorderby'] || ($this->m_postvars['atksearch'] && Tools::atk_value_in_array($this->m_postvars['atksearch'])) || ($this->m_postvars['atksmartsearch'] && Tools::atk_value_in_array($this->m_postvars['atksmartsearch']));
     }
 
     /**
@@ -243,7 +238,7 @@ class RecordListCache
      * Formats the identifiers in a '_keyvalue' way.
      *
      * @param array $identifiers The identifiers to format
-     * @param array $output      The formatted identifiers so far
+     * @param array $output The formatted identifiers so far
      *
      * @return array The formatted identifiers
      */

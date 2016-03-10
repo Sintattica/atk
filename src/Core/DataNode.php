@@ -22,8 +22,8 @@ class DataNode extends Node
     /**
      * Constructor.
      *
-     * @param string $type  node type (by default the class name)
-     * @param int    $flags node flags
+     * @param string $type node type (by default the class name)
+     * @param int $flags node flags
      *
      * @return DataNode
      */
@@ -57,8 +57,8 @@ class DataNode extends Node
      * Select records using the given criteria.
      *
      * @param string $selector selector string
-     * @param string $order    order string
-     * @param array  $limit    limit array
+     * @param string $order order string
+     * @param array $limit limit array
      *
      * @return array selected records
      */
@@ -75,8 +75,7 @@ class DataNode extends Node
             'order' => $order,
             'offset' => isset($limit['offset']) ? $limit['offset'] : 0,
             'limit' => isset($limit['limit']) ? $limit['limit'] : -1,
-            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                : null,
+            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null,
         );
 
         $result = $this->findData($params);
@@ -96,8 +95,7 @@ class DataNode extends Node
     {
         $params = array(
             'selector' => $selector,
-            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch']
-                : null,
+            'search' => isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null,
         );
 
         return $this->countData($params);
@@ -224,7 +222,7 @@ class DataNode extends Node
                 $value = stripslashes(Tools::stripQuotes($value));
 
                 if (isset($criteria[$column]) && $criteria[$column] != $value) {
-                    $criteria[$column] = array_merge((array) $criteria[$column], (array) $value);
+                    $criteria[$column] = array_merge((array)$criteria[$column], (array)$value);
                 } else {
                     $criteria[$column] = $value;
                 }
@@ -237,9 +235,9 @@ class DataNode extends Node
     /**
      * Filter data using the given selector.
      *
-     * @param array $data     data list
+     * @param array $data data list
      * @param array $criteria selector criteria list
-     * @param array $search   search fields / values
+     * @param array $search search fields / values
      *
      * @return array filtered data
      */
@@ -259,9 +257,9 @@ class DataNode extends Node
     /**
      * Check if record is valid using the given selector criteria and search params.
      *
-     * @param array $record   record
+     * @param array $record record
      * @param array $criteria selector criteria list
-     * @param array $search   search fields / values
+     * @param array $search search fields / values
      *
      * @return bool is valid?
      */
@@ -319,7 +317,7 @@ class DataNode extends Node
     /**
      * Sort data by the given order string.
      *
-     * @param array  $data  data list
+     * @param array $data data list
      * @param string $order order string
      *
      * @return array data list
@@ -332,11 +330,10 @@ class DataNode extends Node
             $attr = $this->getAttribute($column);
 
             if ($attr instanceof NumberAttribute) {
-                usort($data, create_function('$a, $b',
-                    'return $a["'.$column.'"] == $b["'.$column.'"] ? 0 : ($a["'.$column.'"] < $b["'.$column.'"] ? -1 : 1);'));
-            } else {
                 usort($data,
-                    create_function('$a, $b', 'return strcasecmp($a["'.$column.'"], $b["'.$column.'"]);'));
+                    create_function('$a, $b', 'return $a["'.$column.'"] == $b["'.$column.'"] ? 0 : ($a["'.$column.'"] < $b["'.$column.'"] ? -1 : 1);'));
+            } else {
+                usort($data, create_function('$a, $b', 'return strcasecmp($a["'.$column.'"], $b["'.$column.'"]);'));
             }
 
             if (!$asc) {
@@ -350,9 +347,9 @@ class DataNode extends Node
     /**
      * Limit data using the given limit and offset.
      *
-     * @param array $data   data list
-     * @param int   $limit  limit
-     * @param int   $offset offset
+     * @param array $data data list
+     * @param int $limit limit
+     * @param int $offset offset
      *
      * @return array limited data
      */

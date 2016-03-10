@@ -47,9 +47,9 @@ class Relation extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name        The name of the relation.
+     * @param string $name The name of the relation.
      * @param string $destination The destination node (in module.name notation)
-     * @param int    $flags       Flags for the relation
+     * @param int $flags Flags for the relation
      */
     public function __construct($name, $destination, $flags = 0)
     {
@@ -180,7 +180,7 @@ class Relation extends Attribute
      * to the real description handler.
      *
      * @param array $record The record
-     * @param Node  $node   The atknode object
+     * @param Node $node The atknode object
      *
      * @return string with the descriptor
      */
@@ -264,10 +264,10 @@ class Relation extends Attribute
      *
      * @abstract
      *
-     * @param array  $record The record that holds the value for this
+     * @param array $record The record that holds the value for this
      *                       attribute. If an error occurs, the error will
      *                       be stored in the 'atkerror' field of the record.
-     * @param string $mode   The mode for which should be validated ("add" or
+     * @param string $mode The mode for which should be validated ("add" or
      *                       "update")
      */
     public function validate(&$record, $mode)
@@ -313,7 +313,7 @@ class Relation extends Attribute
      * Get the searchmode for nested/child attributes.
      *
      * @param string|array $searchmode searchmode
-     * @param string       $childname  the child attribute's name
+     * @param string $childname the child attribute's name
      *
      * @return string|array the child searchmode
      */
@@ -344,8 +344,8 @@ class Relation extends Attribute
      * Returns the condition (SQL) that should be used when we want to join a relation's
      * owner node with the parent node.
      *
-     * @param Query  $query      The query object
-     * @param string $tablename  The tablename
+     * @param Query $query The query object
+     * @param string $tablename The tablename
      * @param string $fieldalias
      *
      * @return string SQL string for joining the owner with the destination.
@@ -379,8 +379,7 @@ class Relation extends Attribute
     public function getAddLabel()
     {
         $key = 'link_'.$this->fieldName().'_add';
-        $label = Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, '', '',
-            true);
+        $label = Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, '', '', true);
         if ($label == '') {
             $label = Tools::atktext($key, $this->m_destInstance->m_module, '', '', '', true);
             if ($label == '') {
@@ -399,7 +398,7 @@ class Relation extends Attribute
      * Parses the destination filter.
      *
      * @param string $destFilter filter to parse
-     * @param array  $record     the current record
+     * @param array $record the current record
      *
      * @return $filter string filter.
      */

@@ -160,7 +160,7 @@ class TmpFile
      * Exports a PHP variable to a file, makes the file a PHP file.
      *
      * @param string $varname Name of the variable
-     * @param string $data    Variable data
+     * @param string $data Variable data
      *
      * @return bool Wether the action succeeded
      */
@@ -270,8 +270,7 @@ class TmpFile
     public function setBasedir($dir)
     {
         if (!is_dir($dir) || !is_writable($dir)) {
-            $err = 'TmpFile:: Unable to set '.$dir.
-                'as basedir. Directory does not exists or isnot writable';
+            $err = 'TmpFile:: Unable to set '.$dir.'as basedir. Directory does not exists or isnot writable';
 
             Tools::atkwarning($err);
 

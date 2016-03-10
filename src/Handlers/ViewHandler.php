@@ -42,8 +42,7 @@ class ViewHandler extends ViewEditBase
         $page = $this->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
         $this->notify('view', $record);
-        $page->addContent($this->m_node->renderActionPage('admin',
-            $this->invoke('viewPage', $record, $this->m_node, $renderbox)));
+        $page->addContent($this->m_node->renderActionPage('admin', $this->invoke('viewPage', $record, $this->m_node, $renderbox)));
     }
 
     /**
@@ -51,10 +50,7 @@ class ViewHandler extends ViewEditBase
      */
     public function getRecordFromDb()
     {
-        return $this->m_node->select($this->m_postvars['atkselector'])
-            ->excludes($this->m_node->m_viewExcludes)
-            ->mode('view')
-            ->getFirstRow();
+        return $this->m_node->select($this->m_postvars['atkselector'])->excludes($this->m_node->m_viewExcludes)->mode('view')->getFirstRow();
     }
 
     /**
@@ -76,9 +72,9 @@ class ViewHandler extends ViewEditBase
     /**
      * Returns an htmlpage displaying all displayable attributes.
      *
-     * @param array $record    The record to display.
-     * @param Node  $node      The node for which a viewPage is displayed.
-     * @param bool  $renderbox Render this action in a renderbox or just output the HTML
+     * @param array $record The record to display.
+     * @param Node $node The node for which a viewPage is displayed.
+     * @param bool $renderbox Render this action in a renderbox or just output the HTML
      *
      * @return string The html page with a reaonly view of relevant fields.
      */
@@ -106,8 +102,7 @@ class ViewHandler extends ViewEditBase
                 return $output;
             }
 
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle($this->m_action,
-                    $record));
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle($this->m_action, $record));
 
             $vars = array('title' => $node->actionTitle($this->m_action, $record), 'content' => $output);
 
@@ -148,8 +143,8 @@ class ViewHandler extends ViewEditBase
     /**
      * Get the view page.
      *
-     * @param array  $record   The record
-     * @param string $mode     The mode we're in (defaults to "view")
+     * @param array $record The record
+     * @param string $mode The mode we're in (defaults to "view")
      * @param string $template The template to use for the view form
      *
      * @return string HTML code of the page
@@ -202,8 +197,8 @@ class ViewHandler extends ViewEditBase
 
             // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
             // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-            $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab, $field['tabs'])) &&
-                (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+            $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab,
+                        $field['tabs'])) && (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
             // Give the row an id if it doesn't have one yet
             if (!isset($field['id']) || empty($field['id'])) {
@@ -217,14 +212,14 @@ class ViewHandler extends ViewEditBase
             if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
                 $tplfield['line'] = '<hr>';
             } /* double separator, ignore */ elseif ($field['html'] == '-') {
- } /* sections */ elseif ($field['html'] == 'section') {
-     $tplfield['line'] = $this->getSectionControl($field, $mode);
- } /* only full HTML */ elseif (isset($field['line'])) {
-     $tplfield['line'] = $field['line'];
- } /* edit field */ else {
-     if ($field['attribute']->m_ownerInstance->getNumbering()) {
-         $this->_addNumbering($field, $tplfield, $i);
-     }
+            } /* sections */ elseif ($field['html'] == 'section') {
+                $tplfield['line'] = $this->getSectionControl($field, $mode);
+            } /* only full HTML */ elseif (isset($field['line'])) {
+                $tplfield['line'] = $field['line'];
+            } /* edit field */ else {
+                if ($field['attribute']->m_ownerInstance->getNumbering()) {
+                    $this->_addNumbering($field, $tplfield, $i);
+                }
 
                 /* does the field have a label? */
                 if ((isset($field['label']) && $field['label'] !== 'Attribute::AF_NO_LABEL') || !isset($field['label'])) {
@@ -239,19 +234,19 @@ class ViewHandler extends ViewEditBase
 
                 // Make the attribute and node names available in the template.
                 $tplfield['attribute'] = $field['attribute']->fieldName();
-     $tplfield['node'] = $field['attribute']->m_ownerInstance->atkNodeUri();
+                $tplfield['node'] = $field['attribute']->m_ownerInstance->atkNodeUri();
 
                 /* html source */
                 $tplfield['widget'] = $field['html'];
-     $editsrc = $field['html'];
+                $editsrc = $field['html'];
 
-     $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
+                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
 
-     $tplfield['full'] = $editsrc;
+                $tplfield['full'] = $editsrc;
 
-     $column = $field['attribute']->getColumn();
-     $tplfield['column'] = $column;
- }
+                $column = $field['attribute']->getColumn();
+                $tplfield['column'] = $column;
+            }
             $fields[] = $tplfield; // make field available in numeric array
             $params[$field['name']] = $tplfield; // make field available in associative array
             $attributes[$field['name']] = $tplfield; // make field available in associative array
@@ -267,8 +262,7 @@ class ViewHandler extends ViewEditBase
                 $tabForm = $this->_renderTabs($fields, $tabTpl);
                 $innerform = implode(null, $tabForm);
             } else {
-                $innerform = $ui->render($node->getTemplate('view', $record, $tab),
-                    array('fields' => $fields, 'attributes' => $attributes));
+                $innerform = $ui->render($node->getTemplate('view', $record, $tab), array('fields' => $fields, 'attributes' => $attributes));
             }
         }
 

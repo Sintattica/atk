@@ -176,8 +176,7 @@ class ActionBoxBuilder
     {
         if ($this->m_sessionStatus !== null) {
             $sm = SessionManager::getInstance();
-            $this->m_params['formend'] = $sm->formState($this->m_sessionStatus).
-                $this->m_params['formend'];
+            $this->m_params['formend'] = $sm->formState($this->m_sessionStatus).$this->m_params['formend'];
         }
 
         $this->m_pageBuilder->actionBox($this->m_params, $this->m_title, $this->m_template);

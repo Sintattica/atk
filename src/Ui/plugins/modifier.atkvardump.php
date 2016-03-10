@@ -9,7 +9,7 @@ use Sintattica\Atk\Core\Tools;
  *
  * @author Boy Baukema <boy@ibuildings.nl>
  *
- * @param mixed  $data
+ * @param mixed $data
  * @param string $name Label for the dump
  *
  * @return string

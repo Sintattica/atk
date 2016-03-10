@@ -354,7 +354,7 @@ function adodb_date_test()
         echo 'Error in gregorian leap years<br>';
     }
 
-    echo  adodb_mktime(0, 0, 0, 10, 4, 1582).' ';
+    echo adodb_mktime(0, 0, 0, 10, 4, 1582).' ';
     echo adodb_mktime(0, 0, 0, 10, 15, 1582);
     $diff = (adodb_mktime(0, 0, 0, 10, 15, 1582) - adodb_mktime(0, 0, 0, 10, 4, 1582));
     if ($diff != 3600 * 24) {
@@ -517,9 +517,7 @@ function adodb_dow($year, $month, $day)
     Thursday, October 4, 1582 (Julian) was followed immediately by Friday, October 15, 1582 (Gregorian).
     */
     if ($year <= 1582) {
-        if ($year < 1582 ||
-            ($year == 1582 && ($month < 10 || ($month == 10 && $day < 15)))
-        ) {
+        if ($year < 1582 || ($year == 1582 && ($month < 10 || ($month == 10 && $day < 15)))) {
             $greg_correction = 3;
         } else {
             $greg_correction = 0;
@@ -535,11 +533,7 @@ function adodb_dow($year, $month, $day)
         --$year;
     }
 
-    $day = (floor((13 * $month - 1) / 5) +
-        $day + ($year % 100) +
-        floor(($year % 100) / 4) +
-        floor(($year / 100) / 4) - 2 *
-        floor($year / 100) + 77);
+    $day = (floor((13 * $month - 1) / 5) + $day + ($year % 100) + floor(($year % 100) / 4) + floor(($year / 100) / 4) - 2 * floor($year / 100) + 77);
 
     return (($day - 7 * floor($day / 7))) + $greg_correction;
 }
@@ -581,8 +575,8 @@ function adodb_is_leap_year($year)
 function adodb_year_digit_check($y)
 {
     if ($y < 100) {
-        $yr = (integer) date('Y');
-        $century = (integer) ($yr / 100);
+        $yr = (integer)date('Y');
+        $century = (integer)($yr / 100);
 
         if ($yr % 100 > 50) {
             $c1 = $century + 1;
@@ -702,7 +696,7 @@ function _adodb_getdate($origd = false, $fast = false, $is_gmt = false)
         $d += ($ndays - $day + 1) * $_day_power;
         $hour = floor($d / $_hour_power);
     } else {
-        for ($a = 1970;; ++$a) {
+        for ($a = 1970; ; ++$a) {
             $lastd = $d;
 
             if ($leaf = _adodb_is_leap_year($a)) {
@@ -776,10 +770,7 @@ function adodb_gmdate($fmt, $d = false)
 function adodb_date2($fmt, $d = false, $is_gmt = false)
 {
     if ($d !== false) {
-        if (!preg_match(
-            "|^([0-9]{4})[-/\.]?([0-9]{1,2})[-/\.]?([0-9]{1,2})[ -]?(([0-9]{1,2}):?([0-9]{1,2}):?([0-9\.]{1,4}))?|",
-            ($d), $rr)
-        ) {
+        if (!preg_match("|^([0-9]{4})[-/\.]?([0-9]{1,2})[-/\.]?([0-9]{1,2})[ -]?(([0-9]{1,2}):?([0-9]{1,2}):?([0-9\.]{1,4}))?|", ($d), $rr)) {
             return adodb_date($fmt, false, $is_gmt);
         }
 
@@ -852,8 +843,7 @@ function adodb_date($fmt, $d = false, $is_gmt = false)
                 break;
             case 'r': // Thu, 21 Dec 2000 16:01:07 +0200
 
-                $dates .= gmdate('D', $_day_power * (3 + adodb_dow($year, $month, $day))).', '
-                    .($day < 10 ? ' '.$day : $day).' '.date('M',
+                $dates .= gmdate('D', $_day_power * (3 + adodb_dow($year, $month, $day))).', '.($day < 10 ? ' '.$day : $day).' '.date('M',
                         mktime(0, 0, 0, $month, 2, 1971)).' '.$year.' ';
 
                 if ($hour < 10) {
@@ -1068,13 +1058,8 @@ function adodb_mktime($hr, $min, $sec, $mon = false, $day = false, $year = false
     if (!defined('ADODB_TEST_DATES')) {
         // for windows, we don't check 1970 because with timezone differences,
         // 1 Jan 1970 could generate negative timestamp, which is illegal
-        if (1971 < $year && $year < 2038
-            || $mon === false
-            || !defined('ADODB_NO_NEGATIVE_TS') && (1901 < $year && $year < 2038)
-        ) {
-            return $is_gmt ?
-                @gmmktime($hr, $min, $sec, $mon, $day, $year) :
-                @mktime($hr, $min, $sec, $mon, $day, $year);
+        if (1971 < $year && $year < 2038 || $mon === false || !defined('ADODB_NO_NEGATIVE_TS') && (1901 < $year && $year < 2038)) {
+            return $is_gmt ? @gmmktime($hr, $min, $sec, $mon, $day, $year) : @mktime($hr, $min, $sec, $mon, $day, $year);
         }
     }
 
@@ -1155,6 +1140,7 @@ function adodb_mktime($hr, $min, $sec, $mon = false, $day = false, $year = false
             }
         } // if in limbo, reset to 15 Oct 1582.
     }
+
     //print " dmy=$day/$mon/$year $hr:$min:$sec => " .$ret;
     return $ret;
 }

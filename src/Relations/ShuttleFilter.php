@@ -43,7 +43,7 @@ abstract class ShuttleFilter extends ShuttleControl
     /**
      * Renders the shuttle filter control.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
      * @param string $prefix
      *

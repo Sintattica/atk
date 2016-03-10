@@ -26,10 +26,10 @@ class EmailAttribute extends Attribute
      *   $this->add(new atkEmailAttribute("email", false, self::AF_OBLIGATORY));
      * </code>
      *
-     * @param string $name   Name of the attribute
-     * @param bool   $search Search DNS for MX records in validate function
-     * @param int    $flags  Flags for the attribute
-     * @param int    $size   The size of the field in characters
+     * @param string $name Name of the attribute
+     * @param bool $search Search DNS for MX records in validate function
+     * @param int $flags Flags for the attribute
+     * @param int $size The size of the field in characters
      */
     public function __construct($name, $search = false, $flags = 0, $size = 0)
     {
@@ -40,8 +40,8 @@ class EmailAttribute extends Attribute
     /**
      * Returns a displayable string for this value.
      *
-     * @param array  $record The record to display
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record to display
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -65,10 +65,10 @@ class EmailAttribute extends Attribute
     /**
      * Validates email address through regular expression and dns check.
      *
-     * @param array  $record Record that contains value to be validated.
+     * @param array $record Record that contains value to be validated.
      *                       Errors are saved in this record, in the 'atkerror'
      *                       field.
-     * @param string $mode   Validation mode. Can be either "add" or "update"
+     * @param string $mode Validation mode. Can be either "add" or "update"
      */
     public function validate(&$record, $mode)
     {
@@ -81,8 +81,7 @@ class EmailAttribute extends Attribute
                 //now check if domain exists, searches DNS for MX records
                 list($username, $domain) = explode('@', $email, 2);
                 if (!(self::validateAddressDomain($domain, false))) {
-                    Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain',
-                        Tools::atktext('error_unkown_domain').' '.$domain);
+                    Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain', Tools::atktext('error_unkown_domain').' '.$domain);
                 }
             }
         }
@@ -98,8 +97,7 @@ class EmailAttribute extends Attribute
     public static function validateAddressSyntax($email)
     {
         $email = strtolower($email); // to allow uppercase
-        if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/",
-            $email)) {
+        if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email)) {
             return true;
         } else {
             return false;
@@ -112,7 +110,7 @@ class EmailAttribute extends Attribute
      * The strict parameter decides if the MX record gets checked.
      *
      * @param string $domain
-     * @param bool   $strict
+     * @param bool $strict
      *
      * @return bool $result
      * @static
@@ -164,6 +162,7 @@ if (!function_exists('checkdnsrr')) {
                     return true;
                 }
             }
+
             // otherwise there was no mail handler for the domain
             return false;
         }

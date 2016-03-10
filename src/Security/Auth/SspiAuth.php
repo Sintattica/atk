@@ -72,9 +72,7 @@ class SspiAuth extends DbAuth
         $position = strpos($sspipath, '\\');
         $domain = substr($sspipath, 0, $position);
         $user = substr($sspipath, $position + 1, strlen($sspipath) - $position);
-        if (!isset($sspipath) || ($sspipath == '') || !in_array($domain,
-                Config::getGlobal('auth_sspi_trusted_domains'))
-        ) {
+        if (!isset($sspipath) || ($sspipath == '') || !in_array($domain, Config::getGlobal('auth_sspi_trusted_domains'))) {
             return SecurityManager::AUTH_UNVERIFIED;
         }
 
@@ -89,9 +87,8 @@ class SspiAuth extends DbAuth
         $_SERVER['PHP_AUTH_USER'] = '';
         $ATK_VARS['auth_user'] = '';
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $this->buildSelectUserQuery($user, Config::getGlobal('auth_usertable'),
-            Config::getGlobal('auth_userfield'), Config::getGlobal('auth_sspi_accountfield'),
-            Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
+        $query = $this->buildSelectUserQuery($user, Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
+            Config::getGlobal('auth_sspi_accountfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
 
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {

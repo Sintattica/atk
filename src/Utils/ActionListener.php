@@ -66,7 +66,7 @@ class ActionListener
      * call is forwarded to the actionPerformed($action, $record) method.
      *
      * @param string $action The action being performed
-     * @param array  $record The record on which the action is performed
+     * @param array $record The record on which the action is performed
      */
     public function notify($action, $record)
     {
@@ -85,7 +85,7 @@ class ActionListener
      * @abstract
      *
      * @param string $action The action being performed
-     * @param array  $record The record on which the action is performed
+     * @param array $record The record on which the action is performed
      */
     public function actionPerformed($action, $record)
     {
@@ -99,7 +99,7 @@ class ActionListener
      * call is forwarded to the preActionPerformed($action, $record) method.
      *
      * @param string $action The action about to be performed
-     * @param array  $record The record on which the action is about to be performed
+     * @param array $record The record on which the action is about to be performed
      */
     public function preNotify($action, &$record)
     {
@@ -118,7 +118,7 @@ class ActionListener
      * @abstract
      *
      * @param string $action The action about to be performed
-     * @param array  $record The record on which the action is about to be performed
+     * @param array $record The record on which the action is about to be performed
      */
     public function preActionPerformed($action, &$record)
     {

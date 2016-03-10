@@ -29,15 +29,15 @@ class TimeAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string    $name      Name of the attribute
-     * @param int       $beginTime Time to start with (eg 8)
-     * @param int       $endTime   Time to end with (eg 24)
-     * @param int|array $steps     containing possible minute or seconds values (eg array("00","15","30","45"))
+     * @param string $name Name of the attribute
+     * @param int $beginTime Time to start with (eg 8)
+     * @param int $endTime Time to end with (eg 24)
+     * @param int|array $steps containing possible minute or seconds values (eg array("00","15","30","45"))
      *                             or the interval (eg 5 for 00,05,10,15, etc.)
      *                             if the flag self::AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
      *                             else this is for the minutes and the seconds will not be displayed
-     * @param string    $default   Start Time (exp: 20:30)
-     * @param int       $flags     Flags for this attribute
+     * @param string $default Start Time (exp: 20:30)
+     * @param int $flags Flags for this attribute
      */
     public function __construct(
         $name,
@@ -97,7 +97,7 @@ class TimeAttribute extends Attribute
     /**
      * Display's text version of Record.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
      *
      * @return string text string of $record
@@ -165,18 +165,16 @@ class TimeAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        if ((($this->m_default == 'NOW' && $this->m_ownerInstance->m_action == 'add') ||
-            ($this->m_default == '' && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
-        ) {
+        if ((($this->m_default == 'NOW' && $this->m_ownerInstance->m_action == 'add') || ($this->m_default == '' && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))) {
             $this->m_default = date('H:i:s');
         }
         $default = explode(':', $this->m_default);
@@ -264,8 +262,7 @@ class TimeAttribute extends Attribute
                 $sel = '';
             }
 
-            $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n", $this->m_steps[$i], $sel,
-                $this->m_steps[$i]);
+            $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n", $this->m_steps[$i], $sel, $this->m_steps[$i]);
         }
         $size_secbox = count($this->m_steps);
 
@@ -284,8 +281,7 @@ class TimeAttribute extends Attribute
         $timeedit = $m_hourBox.':'.$m_minBox.$m_secBox;
 
         if ($this->hasFlag(self::AF_CLEAR_TOUCH_BUTTONS)) {
-            $tmp = $timeedit.'&nbsp;&nbsp;'.
-                ' <input type="button" onclick="
+            $tmp = $timeedit.'&nbsp;&nbsp;'.' <input type="button" onclick="
          $(\''.$this->getAttributeHtmlId().'[hours]\').selectedIndex=0;
          $(\''.$this->getAttributeHtmlId().'[minutes]\').selectedIndex=0;';
             if ($this->hasFlag(self::AF_TIME_SECONDS)) {
@@ -357,8 +353,8 @@ class TimeAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used in a form to search values.
      *
-     * @param array  $record      Array with fields
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with fields
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -392,7 +388,7 @@ class TimeAttribute extends Attribute
     /**
      * Checks if a value is valid.
      *
-     * @param array  $rec  The record that holds the value for this
+     * @param array $rec The record that holds the value for this
      *                     attribute. If an error occurs, the error will
      *                     be stored in the 'atkerror' field of the record.
      * @param string $mode The mode for which should be validated ("add" or
@@ -435,7 +431,7 @@ class TimeAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -461,10 +457,10 @@ class TimeAttribute extends Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query  $query      The query object where the search condition should be placed on
-     * @param string $table      The name of the table in which this attribute
+     * @param Query $query The query object where the search condition should be placed on
+     * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed  $value      The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.

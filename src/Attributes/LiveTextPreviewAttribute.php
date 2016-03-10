@@ -24,9 +24,9 @@ class LiveTextPreviewAttribute extends DummyAttribute
     /**
      * Constructor.
      *
-     * @param string $name            The name of the attribute
+     * @param string $name The name of the attribute
      * @param string $masterattribute The attribute that should be previewed.
-     * @param int    $flags           Flags for this attribute. Use self::AF_LIVETEXT_SHOWLABEL if the
+     * @param int $flags Flags for this attribute. Use self::AF_LIVETEXT_SHOWLABEL if the
      *                                preview should be labeled.
      *                                Use self::AF_LIVETEXT_NL2BR if the data should be nl2br'd before
      *                                display.
@@ -46,8 +46,7 @@ class LiveTextPreviewAttribute extends DummyAttribute
                                   {
                                     var NewText = document.getElementById('{$master}').value;
                                     var DivElement = document.getElementById('{$id}_preview');
-                                    ".($this->hasFlag(self::AF_LIVETEXT_NL2BR) ? "NewText = NewText.split(/\\n/).join('<br />');"
-                : '').'
+                                    ".($this->hasFlag(self::AF_LIVETEXT_NL2BR) ? "NewText = NewText.split(/\\n/).join('<br />');" : '').'
                                     DivElement.innerHTML = NewText;
                                   }                                                                    
                                   ');

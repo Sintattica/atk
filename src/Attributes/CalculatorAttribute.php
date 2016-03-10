@@ -54,9 +54,9 @@ class CalculatorAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name        Unique name of this attribute within the node.
+     * @param string $name Unique name of this attribute within the node.
      * @param string $calculation The calculation to perform. Must be a valid php expression.
-     * @param int    $flags       Flags of the attribute.
+     * @param int $flags Flags of the attribute.
      */
     public function __construct($name, $calculation, $flags = 0)
     {
@@ -88,7 +88,7 @@ class CalculatorAttribute extends Attribute
     /**
      * The load method performs the calculation.
      *
-     * @param Db    $db
+     * @param Db $db
      * @param array $record
      *
      * @return string result of the calculation
@@ -104,8 +104,8 @@ class CalculatorAttribute extends Attribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode.
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode.
      *
      * @return string HTML String
      */

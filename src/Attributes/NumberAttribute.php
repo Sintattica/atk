@@ -32,10 +32,10 @@ class NumberAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name     Name of the attribute
-     * @param int    $flags    Flags for this attribute
-     * @param mixed  $size     The size(s) of integral part (before seperator) for this attribute, also accepts an array (see setAttribSize for format)
-     * @param int    $decimals The number of decimals to use.
+     * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
+     * @param mixed $size The size(s) of integral part (before seperator) for this attribute, also accepts an array (see setAttribSize for format)
+     * @param int $decimals The number of decimals to use.
      */
     public function __construct($name, $flags = 0, $size = 0, $decimals = null)
     {
@@ -53,7 +53,7 @@ class NumberAttribute extends Attribute
      */
     public function getDecimals()
     {
-        return (int) $this->m_decimals;
+        return (int)$this->m_decimals;
     }
 
     /**
@@ -83,9 +83,9 @@ class NumberAttribute extends Attribute
      * Derived attributes may override this functionality to implement other
      * ordering statements using the given parameters.
      *
-     * @param array  $extra     A list of attribute names to add to the order by
+     * @param array $extra A list of attribute names to add to the order by
      *                          statement
-     * @param string $table     The table name (if not given uses the owner node's table name)
+     * @param string $table The table name (if not given uses the owner node's table name)
      * @param string $direction Sorting direction (ASC or DESC)
      *
      * @return string The ORDER BY statement for this attribute
@@ -117,8 +117,8 @@ class NumberAttribute extends Attribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -142,7 +142,7 @@ class NumberAttribute extends Attribute
      * We have to format the value, so it matches the display value
      * Otherwise the value will be corrupted by removeSeparators
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -166,8 +166,8 @@ class NumberAttribute extends Attribute
     /**
      * convert a formatted number to a real number.
      *
-     * @param string $number              The number that needs to be converted
-     * @param string $decimal_separator   override decimal separator
+     * @param string $number The number that needs to be converted
+     * @param string $decimal_separator override decimal separator
      * @param string $thousands_separator override thousands separator
      *
      * @return string The converted number
@@ -216,7 +216,7 @@ class NumberAttribute extends Attribute
      */
     public function setUseThousandsSeparator($use_separator)
     {
-        $this->m_use_thousands_separator = (bool) $use_separator;
+        $this->m_use_thousands_separator = (bool)$use_separator;
     }
 
     /**
@@ -283,8 +283,8 @@ class NumberAttribute extends Attribute
     /**
      * Formats the number based on setting in the language file.
      *
-     * @param float  $number             number
-     * @param string $decimalSeparator   override decimal separator
+     * @param float $number number
+     * @param string $decimalSeparator override decimal separator
      * @param string $thousandsSeparator override thousands separator
      *
      * @return string nicely formatted number
@@ -294,8 +294,7 @@ class NumberAttribute extends Attribute
         $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
         $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
         // (never shows the thousands separator in add/edit mode)
-        $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode,
-                array('add', 'edit'))) ? $thousandsSeparator : '';
+        $thousandsSeparator = ($this->m_use_thousands_separator && !in_array($mode, array('add', 'edit'))) ? $thousandsSeparator : '';
 
         if ($decimalSeparator == $thousandsSeparator) {
             Tools::atkwarning('invalid thousandsseparator. identical to the decimal_separator');
@@ -305,7 +304,7 @@ class NumberAttribute extends Attribute
         // NOTE: we don't use number_format because this sometimes causes rounding issues
         //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
 
-        $tmp1 = abs(round((float) $number, $this->getDecimals()));
+        $tmp1 = abs(round((float)$number, $this->getDecimals()));
         $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
         $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
 
@@ -332,9 +331,9 @@ class NumberAttribute extends Attribute
     /**
      * Validates if value is numeric.
      *
-     * @param array  $record Record that contains value to be validated.
+     * @param array $record Record that contains value to be validated.
      *                       Errors are saved in this record
-     * @param string $mode   can be either "add" or "update"
+     * @param string $mode can be either "add" or "update"
      */
     public function validate(&$record, $mode)
     {
@@ -388,7 +387,7 @@ class NumberAttribute extends Attribute
             return;
         }
         if ($this->getDecimals() > 0) {
-            return round((float) $rec[$this->fieldName()], $this->getDecimals());
+            return round((float)$rec[$this->fieldName()], $this->getDecimals());
         } else {
             return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
         }
@@ -464,8 +463,8 @@ class NumberAttribute extends Attribute
         if (isset($metadata[$attribname])) {
             if (strpos($metadata[$attribname]['len'], ',') !== false) {
                 list($metaSize, $metaDecimals) = explode(',', $metadata[$attribname]['len']);
-                $metaSize = (int) $metaSize;
-                $metaDecimals = (int) $metaDecimals;
+                $metaSize = (int)$metaSize;
+                $metaDecimals = (int)$metaDecimals;
 
                 // decimals
                 if ($this->m_decimals === null) {
@@ -500,10 +499,10 @@ class NumberAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      Array with values
+     * @param array $record Array with values
      * @param string $fieldprefix The attribute must use this to prefix its form elements (used for
      *                            embedded forms)
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string Piece of htmlcode
      */
@@ -534,9 +533,7 @@ class NumberAttribute extends Attribute
 
         $id = $fieldprefix.$this->fieldName();
 
-        $result = '<input type="text" id="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' name="'.$id.'" value="'.$value.'"'.
-            ($size > 0 ? ' size="'.$size.'"' : '').
-            ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
+        $result = '<input type="text" id="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' name="'.$id.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
 
         return $result;
     }
@@ -545,8 +542,8 @@ class NumberAttribute extends Attribute
      * Returns a piece of html code that can be used to search for an
      * attribute's value.
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -586,8 +583,7 @@ class NumberAttribute extends Attribute
 
             $id = $this->getSearchFieldName($fieldprefix);
 
-            $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.
-                ($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
+            $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
         } else {
             $id = $this->getSearchFieldName($fieldprefix).'[from]';
 
@@ -599,12 +595,10 @@ class NumberAttribute extends Attribute
             }
 
             $result = '<div class="form-inline">';
-            $result .= '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($valueFrom).'"'.
-                ($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
+            $result .= '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($valueFrom).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
             $id = $this->getSearchFieldName($fieldprefix).'[to]';
 
-            $result .= ' ('.Tools::atktext('until').' <input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($valueTo).'"'.
-                ($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>)';
+            $result .= ' ('.Tools::atktext('until').' <input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($valueTo).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>)';
             $result .= '</div>';
         }
 
@@ -614,7 +608,7 @@ class NumberAttribute extends Attribute
     /**
      * Process the search value.
      *
-     * @param string $value      The search value
+     * @param string $value The search value
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
@@ -656,9 +650,9 @@ class NumberAttribute extends Attribute
     /**
      * Get the between search condition.
      *
-     * @param Query  $query     The query object where the search condition should be placed on
+     * @param Query $query The query object where the search condition should be placed on
      * @param string $fieldname The name of the field in the database
-     * @param string $value     The processed search value
+     * @param string $value The processed search value
      *
      * @return query where clause for searching
      */
@@ -687,10 +681,10 @@ class NumberAttribute extends Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query  $query      The query object where the search condition should be placed on
-     * @param string $table      The name of the table in which this attribute
+     * @param Query $query The query object where the search condition should be placed on
+     * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed  $value      The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.

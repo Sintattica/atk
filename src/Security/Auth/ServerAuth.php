@@ -21,7 +21,7 @@ class ServerAuth extends AuthInterface
     /**
      * Authenticate a user.
      *
-     * @param string $user   The login of the user to authenticate.
+     * @param string $user The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.

@@ -47,7 +47,7 @@ class Menu
      * Translates a menuitem with the menu_ prefix, or if not found without.
      *
      * @param string $menuitem Menuitem to translate
-     * @param string $modname  Module to which the menuitem belongs
+     * @param string $modname Module to which the menuitem belongs
      *
      * @return string Translation of the given menuitem
      */
@@ -135,9 +135,7 @@ class Menu
         $secManager = SecurityManager::getInstance();
 
         $enable = $menuitem['enable'];
-        if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) &&
-            is_callable($enable)
-        ) {
+        if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) && is_callable($enable)) {
             $enable = call_user_func($enable);
         } else {
             if (is_array($enable)) {
@@ -147,9 +145,7 @@ class Menu
                 }
                 $enable = $enabled;
             } else {
-                if (array_key_exists($menuitem['name'],
-                        $this->menuItems) && is_array($this->menuItems[$menuitem['name']])
-                ) {
+                if (array_key_exists($menuitem['name'], $this->menuItems) && is_array($this->menuItems[$menuitem['name']])) {
                     $enabled = false;
                     foreach ($this->menuItems[$menuitem['name']] as $item) {
                         $enabled = $enabled || $this->isEnabled($item);
@@ -168,20 +164,20 @@ class Menu
      * Both main menu items, separators, submenus or submenu items can be
      * created, depending on the parameters passed.
      *
-     * @param string $name   The menuitem name. The name that is displayed in the
+     * @param string $name The menuitem name. The name that is displayed in the
      *                       userinterface can be influenced by putting
      *                       "menu_something" in the language files, where 'something'
      *                       is equal to the $name parameter.
      *                       If "-" is specified as name, the item is a separator.
      *                       In this case, the $url parameter should be empty.
-     * @param string $url    The url to load in the main application area when the
+     * @param string $url The url to load in the main application area when the
      *                       menuitem is clicked. If set to "", the menu is treated
      *                       as a submenu (or a separator if $name equals "-").
      *                       The dispatch_url() method is a useful function to
      *                       pass as this parameter.
      * @param string $parent The parent menu. If omitted or set to "main", the
      *                       item is added to the main menu.
-     * @param mixed  $enable This parameter supports the following options:
+     * @param mixed $enable This parameter supports the following options:
      *                       1: menuitem is always enabled
      *                       0: menuitem is always disabled
      *                       (this is useful when you want to use a function
@@ -196,7 +192,7 @@ class Menu
      *                       privileges. If the user has any of the
      *                       node/action privileges, the menuitem is
      *                       enabled. Otherwise, it's disabled.
-     * @param int    $order  The order in which the menuitem appears. If omitted,
+     * @param int $order The order in which the menuitem appears. If omitted,
      *                       the items appear in the order in which they are added
      *                       to the menu, with steps of 100. So, if you have a menu
      *                       with default ordering and you want to place a new
@@ -222,8 +218,7 @@ class Menu
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
             $this->menuItems[$parent][$s_dupelookup[$parent][$name]] = $item;
         } else {
-            $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? count($this->menuItems[$parent])
-                : 0;
+            $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? count($this->menuItems[$parent]) : 0;
             $this->menuItems[$parent][] = $item;
         }
     }
@@ -253,6 +248,6 @@ class Menu
 
     public function _getMenuTitle($item, $append = '')
     {
-        return (string) $this->getMenuTranslation($item['name'], $item['module']).$append;
+        return (string)$this->getMenuTranslation($item['name'], $item['module']).$append;
     }
 }

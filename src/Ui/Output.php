@@ -71,7 +71,7 @@ class Output
      * Send the caching headers.
      *
      * @param mixed $lastmodificationstamp Timestamp of the last modification
-     * @param bool  $nocache               Send cache headers?
+     * @param bool $nocache Send cache headers?
      */
     public function sendCachingHeaders($lastmodificationstamp = '', $nocache = true)
     {
@@ -81,8 +81,7 @@ class Output
             self::sendNoCacheHeaders();
         } else {
             if ($lastmodificationstamp != 0) {
-                $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0,
-                    strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
+                $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
                 $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp).' GMT';
                 if ($_last_modified_date == $_gmt_mtime) {
                     self::header('HTTP/1.0 304 Not Modified');
@@ -113,15 +112,15 @@ class Output
     /**
      * Send all output to the browser.
      *
-     * @param bool   $nocache               If true, sends no-cache headers to the browser,
+     * @param bool $nocache If true, sends no-cache headers to the browser,
      *                                      so the browser will not cache the output in its
      *                                      browsercache.
-     * @param mixed  $lastmodificationstamp Timestamp of last modification. If
+     * @param mixed $lastmodificationstamp Timestamp of last modification. If
      *                                      set, a last-modified header
      *                                      containing this stamp will be sent to
      *                                      the browser. If $nocache is true,
      *                                      this parameter is ignored.
-     * @param string $charset               The character set
+     * @param string $charset The character set
      */
     public function outputFlush($nocache = true, $lastmodificationstamp = '', $charset = '')
     {
@@ -134,8 +133,7 @@ class Output
             $this->sendCachingHeaders($lastmodificationstamp, $nocache);
 
             // Set the content type and the character set (as defined in the language files)
-            self::header('Content-Type: text/html; charset='.($charset == ''
-                    ? Tools::atkGetCharset() : $charset));
+            self::header('Content-Type: text/html; charset='.($charset == '' ? Tools::atkGetCharset() : $charset));
 
             $res = $this->m_content;
 
@@ -149,10 +147,9 @@ class Output
             $res .= $debugger->renderDebugAndErrorMessages();
         }
 
-        if (Config::getGlobal('output_gzip') &&
-            phpversion() >= '4.0.4pl1' &&
-            (strstr($_SERVER['HTTP_USER_AGENT'], 'compatible') || strstr($_SERVER['HTTP_USER_AGENT'], 'Gecko')) &&
-            isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
+        if (Config::getGlobal('output_gzip') && phpversion() >= '4.0.4pl1' && (strstr($_SERVER['HTTP_USER_AGENT'],
+                    'compatible') || strstr($_SERVER['HTTP_USER_AGENT'],
+                    'Gecko')) && isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
         ) {
             self::header('Content-Encoding: gzip');
             echo $this->gzip($res);

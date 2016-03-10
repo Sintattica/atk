@@ -2,19 +2,19 @@
 
 namespace Sintattica\Atk\Utils;
 
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- *
- * @copyright (c)2007 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6320 $
- * $Id$
- */
+    /**
+     * This file is part of the ATK distribution on GitHub.
+     * Detailed copyright and licensing information can be found
+     * in the doc/COPYRIGHT and doc/LICENSE files which should be
+     * included in the distribution.
+     *
+     *
+     * @copyright (c)2007 Ibuildings.nl BV
+     * @license http://www.achievo.org/atk/licensing ATK Open Source License
+     *
+     * @version $Revision: 6320 $
+     * $Id$
+     */
 
 /**
  * The atkDataHolder class represents a class
@@ -63,8 +63,8 @@ class DataHolder
     /**
      * Set variable.
      *
-     * @param string $name  variable name
-     * @param mixed  $value variable value
+     * @param string $name variable name
+     * @param mixed $value variable value
      */
     public function __set($name, $value)
     {
@@ -77,7 +77,7 @@ class DataHolder
      * NOTE: this will always return a *copy* of the variable value!
      *
      * @param string $method method name
-     * @param array  $args   arguments
+     * @param array $args arguments
      *
      * @return mixed variabel value (copy!)
      */

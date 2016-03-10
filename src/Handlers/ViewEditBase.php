@@ -92,7 +92,7 @@ class ViewEditBase extends ActionHandler
     /**
      * Get section label.
      *
-     * @param Node   $node
+     * @param Node $node
      * @param string $rawName
      *
      * @return string label
@@ -110,7 +110,7 @@ class ViewEditBase extends ActionHandler
     /**
      * Get tab label.
      *
-     * @param Node   $node
+     * @param Node $node
      * @param string $tab
      *
      * @return string label
@@ -127,7 +127,7 @@ class ViewEditBase extends ActionHandler
     /**
      * Create the clickable label for the section.
      *
-     * @param array  $field
+     * @param array $field
      * @param string $mode
      *
      * @return string Html
@@ -141,16 +141,14 @@ class ViewEditBase extends ActionHandler
         list($tab, $section) = explode('.', $field['name']);
         $name = "section_{$tab}_{$section}";
 
-        $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, 'sectionstate',
-            array('atksectionname' => $name));
+        $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, 'sectionstate', array('atksectionname' => $name));
 
         // create onclick statement.
         $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
         $initClass = 'openedSection';
 
         //if the section is not active, we close it on load.
-        $default = in_array($field['name'], $this->m_node->getActiveSections($tab, $mode))
-            ? 'opened' : 'closed';
+        $default = in_array($field['name'], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
         $sectionstate = State::get(array('nodetype' => $this->m_node->atkNodeUri(), 'section' => $name), $default);
 
         if ($sectionstate == 'closed') {
@@ -168,16 +166,14 @@ class ViewEditBase extends ActionHandler
      * check if this section should initially be shown or not.
      *
      * @param string $section section name
-     * @param array  $fields  edit fields
+     * @param array $fields edit fields
      *
      * @return bool
      */
     public function isSectionInitialHidden($section, $fields)
     {
         foreach ($fields as $field) {
-            if (is_array($field['sections']) && in_array($section,
-                    $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden'])
-            ) {
+            if (is_array($field['sections']) && in_array($section, $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden'])) {
                 return false;
             }
         }
@@ -188,9 +184,9 @@ class ViewEditBase extends ActionHandler
     /**
      * Adds numbering to the label of a field.
      *
-     * @param array $field    the currently handled attribute
+     * @param array $field the currently handled attribute
      * @param array $tplfield the template data for the current attribute
-     * @param int   $i        the counter being used to loop the node for each attribute
+     * @param int $i the counter being used to loop the node for each attribute
      */
     public static function _addNumbering(&$field, &$tplfield, &$i)
     {
@@ -235,9 +231,9 @@ class ViewEditBase extends ActionHandler
      * Get array with tab name as key and tab template as value.
      *
      * @param object $node
-     * @param array  $tabs
+     * @param array $tabs
      * @param string $mode
-     * @param array  $record
+     * @param array $record
      *
      * @return array with tab=>template pear
      */

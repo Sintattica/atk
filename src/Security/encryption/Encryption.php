@@ -43,7 +43,7 @@ class Encryption
      * Encryptionmethod, encrypts your input with a key.
      *
      * @param mixed $input the data we want to encrypt
-     * @param mixed $key   the key we want to encrypt the data with
+     * @param mixed $key the key we want to encrypt the data with
      *
      * @return mixed the encrypted data
      */
@@ -57,7 +57,7 @@ class Encryption
      * Decryptionmethod, decrypts your input with a key.
      *
      * @param mixed $input the encrypted data that we want to decrypt
-     * @param mixed $key   the key with which to decrypt the data
+     * @param mixed $key the key with which to decrypt the data
      *
      * @return mixed the decrypted data
      */
@@ -70,7 +70,7 @@ class Encryption
     /**
      * Decryptionmethod for a key. This implementation returns simple the input.
      *
-     * @param string $key  The encrypted key
+     * @param string $key The encrypted key
      * @param string $pass The password to decrypt de key
      *
      * @return string The decrypted key
@@ -84,7 +84,7 @@ class Encryption
     /**
      * Encryptionmethod for a key. This implementation returns simple the input.
      *
-     * @param string $key  The decrypted key
+     * @param string $key The decrypted key
      * @param string $pass The password to encrypt de key
      *
      * @return string The encrypted key

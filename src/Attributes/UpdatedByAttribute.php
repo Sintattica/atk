@@ -20,8 +20,8 @@ class UpdatedByAttribute extends ManyToOneRelation
     /**
      * Constructor.
      *
-     * @param string $name  Name of the field
-     * @param int    $flags Flags for this attribute.
+     * @param string $name Name of the field
+     * @param int $flags Flags for this attribute.
      *
      * @return UpdatedByAttribute
      */

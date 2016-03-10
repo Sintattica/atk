@@ -103,7 +103,9 @@ class ShuttleRelation extends ManyToManyRelation
         $width = 100;
 
         for ($i = 0; $i < count($recordset); ++$i) {
-            if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()], $this->initialValue()) && $mode == 'add')) {
+            if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()],
+                        $this->initialValue()) && $mode == 'add')
+            ) {
                 $right[] = $recordset[$i];
             } else {
                 $left[] = $recordset[$i];
@@ -195,10 +197,10 @@ class ShuttleRelation extends ManyToManyRelation
     /**
      * Render the multiselect list control.
      *
-     * @param string $name      The name of the list control
-     * @param array  $recordset The list of records to render in the control
-     * @param int    $width     The width of the control in pixels
-     * @param string $opposite  The name of the list control connected to this list control for shuttle actions
+     * @param string $name The name of the list control
+     * @param array $recordset The list of records to render in the control
+     * @param int $width The width of the control in pixels
+     * @param string $opposite The name of the list control connected to this list control for shuttle actions
      * @param string $fieldname The fieldname
      * @param string $filterbox Filter box id (if present)
      *

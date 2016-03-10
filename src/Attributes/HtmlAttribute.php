@@ -24,9 +24,9 @@ class HtmlAttribute extends TextAttribute
     /**
      * Constructor.
      *
-     * @param string $name  Name of the attribute
-     * @param int    $flags Flags of the attribute
-     * @param bool   $nl2br nl2br boolean
+     * @param string $name Name of the attribute
+     * @param int $flags Flags of the attribute
+     * @param bool $nl2br nl2br boolean
      */
     public function __construct($name, $flags = 0, $nl2br = false)
     {

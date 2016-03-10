@@ -335,11 +335,11 @@ class DataGrid
     /**
      * Create a new DataGrid instance.
      *
-     * @param Node   $node       node
-     * @param string $name       name (will be auto-generated if left empty)
-     * @param string $class      class (by default the DataGrid class)
-     * @param bool   $isEmbedded is embedded?
-     * @param bool   $useSession use session
+     * @param Node $node node
+     * @param string $name name (will be auto-generated if left empty)
+     * @param string $class class (by default the DataGrid class)
+     * @param bool $isEmbedded is embedded?
+     * @param bool $useSession use session
      *
      * @return DataGrid datagrid instance
      */
@@ -398,11 +398,11 @@ class DataGrid
     /**
      * Constructor.
      *
-     * @param Node   $node       datagrid node
-     * @param string $name       datagrid name
-     * @param int    $mode       creation mode
-     * @param bool   $isEmbedded is embedded?
-     * @param bool   $useSession use session?
+     * @param Node $node datagrid node
+     * @param string $name datagrid name
+     * @param int $mode creation mode
+     * @param bool $isEmbedded is embedded?
+     * @param bool $useSession use session?
      */
     public function __construct(Node $node, $name, $mode = self::CREATE, $isEmbedded = false, $useSession = true)
     {
@@ -420,11 +420,10 @@ class DataGrid
         if (!$this->isEmbedded() && empty($node->m_postvars)) {
             $allVars = $GLOBALS['ATK_VARS'];
         } else {
-            $allVars = (array) $node->m_postvars;
+            $allVars = (array)$node->m_postvars;
         }
 
-        $vars = isset($GLOBALS['ATK_VARS']['atkdg'][$name]) ? $GLOBALS['ATK_VARS']['atkdg'][$name]
-            : null;
+        $vars = isset($GLOBALS['ATK_VARS']['atkdg'][$name]) ? $GLOBALS['ATK_VARS']['atkdg'][$name] : null;
 
         $vars = !is_array($vars) ? array() : $vars;
         $this->setPostvars(array_merge($allVars, $vars));
@@ -444,8 +443,7 @@ class DataGrid
     protected function initOnCreate()
     {
         $this->setFlags($this->convertNodeFlags($this->getNode()->getFlags()));
-        $this->setBaseUrl(Tools::partial_url($this->getNode()->atkNodeUri(), $this->getNode()->m_action,
-            'datagrid'));
+        $this->setBaseUrl(Tools::partial_url($this->getNode()->atkNodeUri(), $this->getNode()->m_action, 'datagrid'));
 
         $this->setDefaultLimit(Config::getGlobal('recordsperpage'));
         $this->setDefaultActions($this->getNode()->defaultActions('admin'));
@@ -469,8 +467,7 @@ class DataGrid
 
         $this->addComponent('list', __NAMESPACE__.'\\DataGridList');
         $this->addComponent('summary', __NAMESPACE__.'\\DataGridSummary');
-        $this->addComponent('limit', __NAMESPACE__.'\\DataGridLimit',
-            array('showAll' => Config::getGlobal('enable_showall')));
+        $this->addComponent('limit', __NAMESPACE__.'\\DataGridLimit', array('showAll' => Config::getGlobal('enable_showall')));
         $this->addComponent('norecordsfound', __NAMESPACE__.'\\DataGridNoRecordsFound');
         $this->addComponent('paginator', __NAMESPACE__.'\\DataGridPaginator');
 
@@ -893,8 +890,8 @@ class DataGrid
     /**
      * Sets the postvar with the given name to the given value.
      *
-     * @param string $name  name
-     * @param mixed  $value value
+     * @param string $name name
+     * @param mixed $value value
      */
     public function setPostvar($name, $value)
     {
@@ -916,7 +913,7 @@ class DataGrid
      * not set an optional default value will be returned instead.
      *
      * @param string $name
-     * @param mixed  $fallback
+     * @param mixed $fallback
      *
      * @return mixed
      */
@@ -1023,9 +1020,9 @@ class DataGrid
      *
      * @see DGComponent::__construct
      *
-     * @param string $name    name
-     * @param string $class   class name
-     * @param array  $options component options
+     * @param string $name name
+     * @param string $class class name
+     * @param array $options component options
      */
     public function addComponent($name, $class, $options = array())
     {
@@ -1037,8 +1034,8 @@ class DataGrid
      * components haven't been instantiated  yet.
      *
      * @param string $component component name
-     * @param string $option    option name
-     * @param string $value     value
+     * @param string $option option name
+     * @param string $value value
      */
     public function setComponentOption($component, $option, $value)
     {
@@ -1324,7 +1321,7 @@ class DataGrid
      * count handlers are used!).
      *
      * @param string $filter filter / condition
-     * @param array  $params bind parameters
+     * @param array $params bind parameters
      */
     public function addFilter($filter, $params = array())
     {
@@ -1536,13 +1533,8 @@ class DataGrid
             $excludes = array_merge($excludes, $this->getExcludes());
         }
 
-        $selector = $this->getNode()
-            ->select()
-            ->excludes($excludes)
-            ->orderBy($this->getOrderBy())
-            ->limit($this->getLimit(), $this->getOffset())
-            ->mode($this->getMode())
-            ->ignoreDefaultFilters();
+        $selector = $this->getNode()->select()->excludes($excludes)->orderBy($this->getOrderBy())->limit($this->getLimit(),
+                $this->getOffset())->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
             $selector->where($filter['filter'], $filter['params']);
@@ -1563,11 +1555,7 @@ class DataGrid
         $excludes = $this->getMode() == 'copy' ? array() : $this->getNode()->m_listExcludes;
         $excludes = array_merge($excludes, $this->getExcludes());
 
-        $selector = $this->getNode()
-            ->select()
-            ->excludes($excludes)
-            ->mode($this->getMode())
-            ->ignoreDefaultFilters();
+        $selector = $this->getNode()->select()->excludes($excludes)->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
             $selector->where($filter['filter'], $filter['params']);
@@ -1647,8 +1635,8 @@ class DataGrid
      * JavaScript overrides. The simply overrides are used directly, the
      * JavaScript overrides are evaluated at run-time.
      *
-     * @param array $overrides           key/value overrides
-     * @param array $overridesJs         key/value run-time overrides
+     * @param array $overrides key/value overrides
+     * @param array $overridesJs key/value run-time overrides
      * @param array $overridesJsCallback JavaScript function which returns an overrides Hash
      *
      * @return string JavaScript call (might need escaping when used in HTML code)
@@ -1672,8 +1660,7 @@ class DataGrid
     public function getSaveCall()
     {
         $sm = SessionManager::getInstance();
-        $url = $sm->sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeUri(), 'multiupdate',
-            array('output' => 'json')), SessionManager::SESSION_PARTIAL);
+        $url = $sm->sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeUri(), 'multiupdate', array('output' => 'json')), SessionManager::SESSION_PARTIAL);
 
         return 'ATK.DataGrid.save('.JSON::encode($this->getName()).', '.JSON::encode($url).');';
     }
@@ -1685,9 +1672,9 @@ class DataGrid
      * If you want NULL to be returned when no translation can be found then
      * leave the fallback empty and set $useDefault to false.
      *
-     * @param string $string     string to translate
-     * @param string $fallback   fallback in-case no translation can be found
-     * @param bool   $useDefault use default ATK translation if no translation can be found?
+     * @param string $string string to translate
+     * @param string $fallback fallback in-case no translation can be found
+     * @param bool $useDefault use default ATK translation if no translation can be found?
      *
      * @return string translation
      */
@@ -1817,7 +1804,7 @@ class DataGrid
      * Call grid modifiers for the given grid.
      *
      * @param DataGrid $grid grid
-     * @param int      $mode creation mode
+     * @param int $mode creation mode
      */
     private static function callModifiers(DataGrid $grid, $mode)
     {
@@ -1838,12 +1825,11 @@ class DataGrid
      * Unregister datagrid modifier.
      *
      * @param string|null $nodeType node type (e.g. module.node), leave null to match all nodes
-     * @param mixed       $callback callback method
+     * @param mixed $callback callback method
      */
     public static function unregisterModifier($nodeType, $callback)
     {
-        self::$s_modifiers[$nodeType == null ? '*' : $nodeType] = array_diff(self::$s_modifiers[$nodeType == null
-            ? '*' : $nodeType], array($callback));
+        self::$s_modifiers[$nodeType == null ? '*' : $nodeType] = array_diff(self::$s_modifiers[$nodeType == null ? '*' : $nodeType], array($callback));
     }
 
     /**
@@ -1855,7 +1841,7 @@ class DataGrid
      * or DataGrid::RESUME).
      *
      * @param string|null $nodeType node type (e.g. module.node), leave null to match all nodes
-     * @param mixed       $callback callback method
+     * @param mixed $callback callback method
      */
     public static function registerModifier($nodeType, $callback)
     {

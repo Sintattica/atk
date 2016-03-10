@@ -79,12 +79,12 @@ class Ddl
     /**
      * Add a field to the table definition.
      *
-     * @param string $name        The name of the field
+     * @param string $name The name of the field
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
-     * @param int    $size        The size of the field (if appropriate)
-     * @param int    $flags       The self::DDL_ flags for this field.
-     * @param mixed  $default     The default value to be used when inserting new
+     * @param int $size The size of the field (if appropriate)
+     * @param int $flags The self::DDL_ flags for this field.
+     * @param mixed $default The default value to be used when inserting new
      *                            rows.
      */
     public function addField($name, $generictype, $size = 0, $flags = 0, $default = null)
@@ -292,12 +292,12 @@ class Ddl
      * number of databases. Databases that won't work with this syntax,
      * should override this method in the database specific ddl class.
      *
-     * @param string $name        The name of the field
+     * @param string $name The name of the field
      * @param string $generictype The datatype of the field (should be one of the
      *                            generic types supported by ATK).
-     * @param int    $size        The size of the field (if appropriate)
-     * @param int    $flags       The self::DDL_ flags for this field.
-     * @param mixed  $default     The default value to be used when inserting new
+     * @param int $size The size of the field (if appropriate)
+     * @param int $flags The self::DDL_ flags for this field.
+     * @param mixed $default The default value to be used when inserting new
      *                            rows.
      */
     public function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
@@ -391,8 +391,7 @@ class Ddl
 
         foreach ($this->m_fields as $fieldname => $fieldconfig) {
             if ($fieldname != '' && $fieldconfig['type'] != '' && $this->getType($fieldconfig['type']) != '') {
-                $fields[] = $this->buildField($fieldname, $fieldconfig['type'], $fieldconfig['size'],
-                    $fieldconfig['flags'], $fieldconfig['default']);
+                $fields[] = $this->buildField($fieldname, $fieldconfig['type'], $fieldconfig['size'], $fieldconfig['flags'], $fieldconfig['default']);
             }
         }
 
@@ -530,8 +529,8 @@ class Ddl
     /**
      * Build and execute CREATE VIEW query.
      *
-     * @param string $name              - name of view
-     * @param string $select            - SQL SELECT statement
+     * @param string $name - name of view
+     * @param string $select - SQL SELECT statement
      * @param string $with_check_option - use SQL WITH CHECK OPTION
      *
      * @return true if view create successfully
@@ -556,8 +555,8 @@ class Ddl
     /**
      * Build CREATE VIEW query.
      *
-     * @param string $name              - name of view
-     * @param string $select            - SQL SELECT statement
+     * @param string $name - name of view
+     * @param string $select - SQL SELECT statement
      * @param string $with_check_option - use SQL WITH CHECK OPTION
      *
      * @return string CREATE VIEW query string
@@ -610,8 +609,8 @@ class Ddl
     /**
      * Create an index.
      *
-     * @param string $name       Index name
-     * @param array  $definition associative array that defines properties of the index to be created.
+     * @param string $name Index name
+     * @param array $definition associative array that defines properties of the index to be created.
      *
      *                          example
      *                          array('fields' => array('user_id' => array('sorting' => 'ascending'
@@ -672,7 +671,7 @@ class Ddl
     /**
      * Rename sequence.
      *
-     * @param string $name     The current sequence name
+     * @param string $name The current sequence name
      * @param string $new_name The new sequence name
      *
      * @return bool
@@ -697,7 +696,7 @@ class Ddl
     /**
      * Rename table name.
      *
-     * @param string $name     Table name
+     * @param string $name Table name
      * @param string $new_name New table name
      *
      * @return bool

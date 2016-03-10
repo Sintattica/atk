@@ -50,8 +50,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Constructs a new many-to-many select relation.
      *
-     * @param string $name        The name of the relation
-     * @param string $link        The full name of the node that is used as
+     * @param string $name The name of the relation
+     * @param string $link The full name of the node that is used as
      *                            intermediairy node. The intermediairy node is
      *                            assumed to have 2 attributes that are named
      *                            after the nodes at both ends of the relation.
@@ -63,14 +63,13 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int    $flags       Flags for the relation.
+     * @param int $flags Flags for the relation.
      */
     public function __construct($name, $link, $destination, $flags = 0)
     {
         parent::__construct($name, $link, $destination, $flags);
 
-        $relation = new ManyToOneRelation($this->fieldName().'_m2msr_add', $this->m_destination,
-            ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE);
+        $relation = new ManyToOneRelation($this->fieldName().'_m2msr_add', $this->m_destination, ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE);
         $relation->setDisabledModes(self::DISABLED_VIEW | self::DISABLED_EDIT);
         $relation->setLoadType(self::NOLOAD);
         $relation->setStorageType(self::NOSTORE);
@@ -117,7 +116,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * this if the position attribute has been set.
      *
      * @param array $selectedRecords selected records
-     * @param array $selectedKey     selected keys
+     * @param array $selectedKey selected keys
      */
     private function orderSelectedRecords(&$selectedRecords, $selectedKeys)
     {
@@ -137,10 +136,10 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Return a piece of html code to edit the attribute.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code
      */
@@ -210,9 +209,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Return the selected keys for a given record.
      *
-     * @param array  $record       The record that holds the value for this attribute.
-     * @param string $id           is the html id of the relation
-     * @param int    $uniqueFilter is the type of array_unique filter to use on
+     * @param array $record The record that holds the value for this attribute.
+     * @param string $id is the html id of the relation
+     * @param int $uniqueFilter is the type of array_unique filter to use on
      *                             the results. Use boolean false to dissable
      *
      * @return array of selected keys in the order they were submitted
@@ -243,9 +242,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Load function.
      *
-     * @param Db     $db     database instance.
-     * @param array  $record record
-     * @param string $mode   load mode
+     * @param Db $db database instance.
+     * @param array $record record
+     * @param string $mode load mode
      */
     public function load($db, $record, $mode)
     {
@@ -263,10 +262,10 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Perform the create action on a record that is new.
      *
-     * @param array $selectedKey    the selected keys
+     * @param array $selectedKey the selected keys
      * @param array $selectedRecord the selected record
-     * @param array $ownerRecord    the owner record
-     * @param int   $index          the index of the item in the set
+     * @param array $ownerRecord the owner record
+     * @param int $index the index of the item in the set
      *
      * @return array the newly created record
      */
@@ -285,7 +284,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * Perform the update action on a record that's been changed.
      *
      * @param array $record the record that has been changed
-     * @param int   $index  the index of the item in the set
+     * @param int $index the index of the item in the set
      *
      * @return bool true if the update was performed successfuly, false if there were issues
      */
@@ -310,7 +309,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Render selected record.
      *
-     * @param array  $record      selected record
+     * @param array $record selected record
      * @param string $fieldprefix field prefix
      */
     protected function renderSelectedRecord($record, $fieldprefix)
@@ -319,11 +318,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $key = $record[$this->getDestination()->primaryKeyField()];
 
         // Get the descriptor and ensure it's presentible
-        $descriptor = nl2br(
-            htmlentities(
-                $this->getdestination()->descriptor($record)
-            )
-        );
+        $descriptor = nl2br(htmlentities($this->getdestination()->descriptor($record)));
 
         // Build the record
         $result = '
@@ -383,7 +378,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * This method returns the HTML for the link of a certain action.
      *
      * @param string $action
-     * @param array  $record
+     * @param array $record
      *
      * @return string
      */
@@ -401,10 +396,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getAddActionLink($record, $fieldprefix, $params = array())
     {
         $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
-        $params = array_merge($params,
-            array('atkfilter' => $filter, 'atkpkret' => $this->getHtmlId($fieldprefix).'_newsel'));
-        $link = Tools::href(Tools::dispatch_url($this->m_destination, 'add', $params), $this->getAddLabel(),
-            SessionManager::SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link"');
+        $params = array_merge($params, array('atkfilter' => $filter, 'atkpkret' => $this->getHtmlId($fieldprefix).'_newsel'));
+        $link = Tools::href(Tools::dispatch_url($this->m_destination, 'add', $params), $this->getAddLabel(), SessionManager::SESSION_NESTED, true,
+            'class="atkmanytomanyselectrelation-link"');
 
         return $link;
     }
@@ -419,8 +413,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getEditActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'edit',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED,
-            true, 'class="atkmanytomanyselectrelation-link"');
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
+            'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -433,8 +427,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getViewActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'view',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED,
-            true, 'class="atkmanytomanyselectrelation-link"');
+            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
+            'class="atkmanytomanyselectrelation-link"');
     }
 
     /**
@@ -453,7 +447,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * Function that is called for each record in a recordlist, to determine
      * what actions may be performed on the record.
      *
-     * @param array $record   The record for which the actions need to be
+     * @param array $record The record for which the actions need to be
      *                        determined.
      * @param array &$actions Reference to an array with the already defined
      *                        actions.
@@ -474,8 +468,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
             return '';
         }
 
-        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode,
-            'attribute.'.$this->fieldName().'.selectedrecord', array('fieldprefix' => $fieldprefix));
+        $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.selectedrecord',
+            array('fieldprefix' => $fieldprefix));
 
         $relation = $this->getManyToOneRelation();
 
@@ -577,7 +571,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * Set the positional attribute/column of the many to many join. It is the column
      * in the join table that denotes the position of the item in the set.
      *
-     * @param string $attr           the position attribute/column name of the join
+     * @param string $attr the position attribute/column name of the join
      * @param string $htmlIdentifier is the html string to add to the end of the label.
      *                               Defaults to an up down image.
      */
@@ -615,8 +609,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * returns the HTML label, while the getLabel() method is 'smart', by
      * taking the self::AF_NOLABEL and self::AF_BLANKLABEL flags into account.
      *
-     * @param array  $record The record holding the value for this attribute.
-     * @param string $mode   The mode ("add", "edit" or "view")
+     * @param array $record The record holding the value for this attribute.
+     * @param string $mode The mode ("add", "edit" or "view")
      *
      * @return string The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no

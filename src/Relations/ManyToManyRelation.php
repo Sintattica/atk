@@ -33,7 +33,7 @@ class ManyToManyRelation extends Relation
     public $m_remoteKey = '';
     public $m_link = '';
 
-    /* @var Node null  */
+    /* @var Node null */
     public $m_linkInstance = null;
 
     public $m_store_deletion_filter = '';
@@ -46,8 +46,8 @@ class ManyToManyRelation extends Relation
     /**
      * Constructor.
      *
-     * @param string $name        The name of the relation
-     * @param string $link        The full name of the node that is used as
+     * @param string $name The name of the relation
+     * @param string $link The full name of the node that is used as
      *                            intermediairy node. The intermediairy node is
      *                            assumed to have 2 attributes that are named
      *                            after the nodes at both ends of the relation.
@@ -59,7 +59,7 @@ class ManyToManyRelation extends Relation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int    $flags       Flags for the relation.
+     * @param int $flags Flags for the relation.
      */
     public function __construct($name, $link, $destination, $flags = 0)
     {
@@ -71,9 +71,9 @@ class ManyToManyRelation extends Relation
      * Returns the selectable records. Checks for an override in the owner instance
      * with name <attribname>_selection.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
-     * @param bool   $force
+     * @param bool $force
      *
      * @return array
      */
@@ -108,7 +108,7 @@ class ManyToManyRelation extends Relation
     /**
      * Returns the selectable record count.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
      *
      * @return int
@@ -127,9 +127,9 @@ class ManyToManyRelation extends Relation
      * Returns the selectable record count. The count is cached unless the
      * $force parameter is set to true.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
-     * @param bool   $force
+     * @param bool $force
      *
      * @return int
      */
@@ -143,9 +143,7 @@ class ManyToManyRelation extends Relation
 
         $cacheKey = md5($filter);
         if (!array_key_exists($cacheKey, $this->m_selectableRecordCountCache) || $force) {
-            $this->m_selectableRecordCountCache[$cacheKey] = $this->getDestination()
-                ->select($filter)
-                ->getRowCount();
+            $this->m_selectableRecordCountCache[$cacheKey] = $this->getDestination()->select($filter)->getRowCount();
         }
 
         return $this->m_selectableRecordCountCache[$cacheKey];
@@ -155,9 +153,9 @@ class ManyToManyRelation extends Relation
      * Returns the selectable records for this relation. The records are cached
      * unless the $force parameter is set to true.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
-     * @param bool   $force
+     * @param bool $force
      *
      * @return array selectable records
      */
@@ -171,12 +169,8 @@ class ManyToManyRelation extends Relation
 
         $cacheKey = md5($filter);
         if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force) {
-            $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()
-                ->select($filter)
-                ->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)
-                ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-                    $this->m_destInstance->m_primaryKey))
-                ->getAllRows();
+            $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()->select($filter)->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+                    $this->m_destInstance->m_primaryKey))->getAllRows();
         }
 
         return $this->m_selectableRecordsCache[$cacheKey];
@@ -366,8 +360,8 @@ class ManyToManyRelation extends Relation
     /**
      * Returns a displayable string for this value.
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -391,8 +385,8 @@ class ManyToManyRelation extends Relation
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
                 if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
-                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view',
-                        array('atkselector' => $this->getdestination()->primarykey($rec))), $descr, SessionManager::SESSION_NESTED);
+                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getdestination()->primarykey($rec))),
+                        $descr, SessionManager::SESSION_NESTED);
                 }
                 $recordset[] = $descr;
             }
@@ -413,10 +407,10 @@ class ManyToManyRelation extends Relation
     /**
      * Dummy function.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string A piece of htmlcode for editing this attribute
      */
@@ -505,9 +499,9 @@ class ManyToManyRelation extends Relation
      * Returns an array with the existing records indexed by their
      * primary key selector string.
      *
-     * @param Db     $db     database instance
-     * @param array  $record record
-     * @param string $mode   mode
+     * @param Db $db database instance
+     * @param array $record record
+     * @param string $mode mode
      *
      * @return array
      */
@@ -516,11 +510,7 @@ class ManyToManyRelation extends Relation
         $existingRecords = $this->load($db, $record, $mode);
         $existingRecordsByKey = array();
         foreach ($existingRecords as $existingRecord) {
-            $existingRecordKey = is_array($existingRecord[$this->getRemoteKey()])
-                ?
-                $existingRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()]
-                :
-                $existingRecord[$this->getRemoteKey()];
+            $existingRecordKey = is_array($existingRecord[$this->getRemoteKey()]) ? $existingRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] : $existingRecord[$this->getRemoteKey()];
 
             $existingRecordsByKey[$existingRecordKey] = $existingRecord;
         }
@@ -542,10 +532,7 @@ class ManyToManyRelation extends Relation
 
         if (isset($record[$this->fieldName()])) {
             foreach ($record[$this->fieldName()] as $selectedRecord) {
-                $selectedKey = is_array($selectedRecord[$this->getRemoteKey()]) ?
-                    $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()]
-                    :
-                    $selectedRecord[$this->getRemoteKey()];
+                $selectedKey = is_array($selectedRecord[$this->getRemoteKey()]) ? $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] : $selectedRecord[$this->getRemoteKey()];
 
                 $selectedRecordsByKey[$selectedKey] = $selectedRecord;
             }
@@ -583,7 +570,7 @@ class ManyToManyRelation extends Relation
      * Update existing link record.
      *
      * @param array $record link record
-     * @param int   $index  (new) index (0-based)
+     * @param int $index (new) index (0-based)
      *
      * @return bool
      */
@@ -596,10 +583,10 @@ class ManyToManyRelation extends Relation
     /**
      * Create new link record.
      *
-     * @param string $selectedKey    primary key selector string of destination record
-     * @param array  $selectedRecord selected destination record (might only contain the key attributes)
-     * @param array  $ownerRecord    owner instance record
-     * @param int    $index          (new) index (0-based)
+     * @param string $selectedKey primary key selector string of destination record
+     * @param array $selectedRecord selected destination record (might only contain the key attributes)
+     * @param array $ownerRecord owner instance record
+     * @param int $index (new) index (0-based)
      *
      * @return array new link record (not saved yet!)
      */
@@ -627,9 +614,9 @@ class ManyToManyRelation extends Relation
     /**
      * Add new link record to the database.
      *
-     * @param array  $record link record
-     * @param int    $index  (new) index (0-based)
-     * @param string $mode   storage mode
+     * @param array $record link record
+     * @param int $index (new) index (0-based)
+     * @param string $mode storage mode
      *
      * @return bool
      */
@@ -641,9 +628,9 @@ class ManyToManyRelation extends Relation
     /**
      * Stores the values in the database.
      *
-     * @param Db     $db     database instance
-     * @param array  $record owner instance record
-     * @param string $mode   storage mode
+     * @param Db $db database instance
+     * @param array $record owner instance record
+     * @param string $mode storage mode
      *
      * @return bool
      */
@@ -704,7 +691,7 @@ class ManyToManyRelation extends Relation
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -717,16 +704,12 @@ class ManyToManyRelation extends Relation
             $ownerFields = $this->getOwnerFields();
             for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; ++$i) {
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey())) {
-                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().
-                        '['.$i.']['.$this->getLocalKey().']" value="'.
-                        $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
+                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$i.']['.$this->getLocalKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
                             $ownerFields[0]).'">';
                 }
 
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getRemoteKey())) {
-                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().
-                        '['.$i.']['.$this->getRemoteKey().']" value="'.
-                        $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()],
+                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$i.']['.$this->getRemoteKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()],
                             $this->m_destInstance->primaryKeyField()).'">';
                 }
             }
@@ -738,8 +721,8 @@ class ManyToManyRelation extends Relation
     /**
      * Returns a piece of html code that can be used in a form to search.
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -755,9 +738,8 @@ class ManyToManyRelation extends Relation
         $this->createDestination();
 
         // now select all records
-        $recordset = $this->m_destInstance->select()->excludes('*')
-            ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey))
-            ->getAllRows();
+        $recordset = $this->m_destInstance->select()->excludes('*')->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+                $this->m_destInstance->m_primaryKey))->getAllRows();
         $result = '<select class="form-control"';
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, count($recordset) + 1).'"';
@@ -788,11 +770,11 @@ class ManyToManyRelation extends Relation
     /**
      * Creates an search condition for a given search value.
      *
-     * @param Query  $query            The query to which the condition will be added.
-     * @param string $table            The name of the table in which this attribute
+     * @param Query $query The query to which the condition will be added.
+     * @param string $table The name of the table in which this attribute
      *                                 is stored
-     * @param mixed  $value            The value the user has entered in the searchbox
-     * @param string $searchmode       The searchmode to use. This can be any one
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param string $searchmode The searchmode to use. This can be any one
      *                                 of the supported modes, as returned by this
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
@@ -806,16 +788,14 @@ class ManyToManyRelation extends Relation
         // which should work in any ansi compatible database.
         if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $this->createLink();
-            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(),
-                $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(), false);
+            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(),
+                false);
             $query->setDistinct(true);
 
             if (count($value) == 1) { // exactly one value
-                $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(),
-                    $this->escapeSQL($value[0])));
+                $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(), $this->escapeSQL($value[0])));
             } else { // search for more values using IN()
-                $query->addSearchCondition($this->fieldName().'.'.$this->getRemoteKey()." IN ('".implode("','",
-                        $value)."')");
+                $query->addSearchCondition($this->fieldName().'.'.$this->getRemoteKey()." IN ('".implode("','", $value)."')");
             }
         }
     }
@@ -823,7 +803,7 @@ class ManyToManyRelation extends Relation
     /**
      * Checks if a key is not an array.
      *
-     * @param string $key   field containing the key values
+     * @param string $key field containing the key values
      * @param string $field field to return if an array
      *
      * @return string of $field

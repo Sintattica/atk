@@ -178,7 +178,7 @@ class Tools
      * Function self::atkhalt
      * Halts on critical errors and also on warnings if specified in the config file.
      *
-     * @param string $msg   The message to be displayed
+     * @param string $msg The message to be displayed
      * @param string $level The level of the error,
      *                      ("critical"|"warning" (default))
      *
@@ -199,8 +199,7 @@ class Tools
             } else {
                 $res = '<html>';
                 $res .= '<body style="background-color: #ffffff; color:#000000;">';
-                $res .= "<span style=\"color:$level_color;\"><b>".self::atktext($level,
-                        'atk')."</b></span>: $msg.<br />\n";
+                $res .= "<span style=\"color:$level_color;\"><b>".self::atktext($level, 'atk')."</b></span>: $msg.<br />\n";
             }
 
             Output::getInstance()->output($res);
@@ -218,8 +217,8 @@ class Tools
      *
      * Adds debug self::text to the debug log
      *
-     * @param string $txt   The self::text that will be added to the log
-     * @param int    $flags An optional combination of Tools::DEBUG_ flags
+     * @param string $txt The self::text that will be added to the log
+     * @param int $flags An optional combination of Tools::DEBUG_ flags
      */
     public static function atkdebug($txt, $flags = 0)
     {
@@ -283,9 +282,8 @@ class Tools
 
     public static function atkGetTimingInfo()
     {
-        return '['.Debugger::elapsed().(Config::getGlobal('debug') > 0 && function_exists('memory_get_usage')
-            ? ' / '.sprintf('%02.02f', (memory_get_usage() / 1024 / 1024)).'MB'
-            : '').'] ';
+        return '['.Debugger::elapsed().(Config::getGlobal('debug') > 0 && function_exists('memory_get_usage') ? ' / '.sprintf('%02.02f',
+                (memory_get_usage() / 1024 / 1024)).'MB' : '').'] ';
     }
 
     /**
@@ -364,9 +362,7 @@ class Tools
 
             // Read the source location
             if (isset($traceArr[$i]['file'])) {
-                $location = $traceArr[$i]['file'].(isset($traceArr[$i]['line']) ? sprintf(', line %d',
-                        $traceArr[$i]['line'])
-                        : '[Unknown line]');
+                $location = $traceArr[$i]['file'].(isset($traceArr[$i]['line']) ? sprintf(', line %d', $traceArr[$i]['line']) : '[Unknown line]');
             } else {
                 $location = '[PHP KERNEL]';
             }
@@ -428,8 +424,7 @@ class Tools
 
             $ret .= $theSpacer.'@'.$location."\n";
             $ret .= $theSpacer.$statement;
-            $ret .= (strlen($functionParams) ? "\n".$theSpacer."(\n".$functionParams."\n".$theSpacer.')'
-                    : '()')."\n";
+            $ret .= (strlen($functionParams) ? "\n".$theSpacer."(\n".$functionParams."\n".$theSpacer.')' : '()')."\n";
 
             // Add indentation
             $theSpacer .= '  ';
@@ -480,16 +475,16 @@ class Tools
      * Please note that it is important, for performance reasons,
      * that you pass along the module where the language files can be found.
      *
-     * @param mixed  $string         string or array of strings containing the name(s) of the string to return
+     * @param mixed $string string or array of strings containing the name(s) of the string to return
      *                               when an array of strings is passed, the second will be the fallback if
      *                               the first one isn't found, and so forth
-     * @param string $module         module in which the language file should be looked for,
+     * @param string $module module in which the language file should be looked for,
      *                               defaults to core module with fallback to ATK
-     * @param string $node           the node to which the string belongs
-     * @param string $lng            ISO 639-1 language code, defaults to config variable
-     * @param string $firstfallback  the first module to check as part of the fallback
-     * @param bool   $nodefaulttext  if true, then it doesn't return a default text when it can't find a translation
-     * @param bool   $modulefallback Wether or not to use all the modules of the application in the fallback,
+     * @param string $node the node to which the string belongs
+     * @param string $lng ISO 639-1 language code, defaults to config variable
+     * @param string $firstfallback the first module to check as part of the fallback
+     * @param bool $nodefaulttext if true, then it doesn't return a default text when it can't find a translation
+     * @param bool $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                               when looking for strings
      *
      * @return string the string from the languagefile
@@ -514,7 +509,7 @@ class Tools
      *                      Initial array to merge.
      *                      </p>
      * @param array $array2 [optional]
-     * @param array $_      [optional]
+     * @param array $_ [optional]
      *
      * @return array The result of the merge between $array1 and $array2
      */
@@ -579,9 +574,9 @@ class Tools
      * an is_array on the haystack first, just to make sure the user
      * doesn't get an error message.
      *
-     * @param mixed $needle   The value to search for.
+     * @param mixed $needle The value to search for.
      * @param array $haystack The array to search.
-     * @param bool  $strict   If true, type must match.
+     * @param bool $strict If true, type must match.
      *
      * @return bool wether or not the value is in the array
      */
@@ -595,8 +590,8 @@ class Tools
      *
      * Checks if a value is in a Array
      *
-     * @param array $set   the array
-     * @param mixed $key   the key in the array as in $array[$key]
+     * @param array $set the array
+     * @param mixed $key the key in the array as in $array[$key]
      * @param mixed $value the value we are looking for
      *
      * @return bool wether or not the value is in the array
@@ -734,9 +729,7 @@ class Tools
 
             self::AE_decode($vars, $varname);
 
-            if (strpos(strtoupper($varname),
-                    '_AMDAE_') > 0
-            ) { // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
+            if (strpos(strtoupper($varname), '_AMDAE_') > 0) { // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
                 // at the beginning of the string.. but since that's not a valid
                 // encoded var, we do nothing with it.
                 // This string is encoded.
@@ -761,8 +754,8 @@ class Tools
      * then $dest will contain a decoded array:
      *  echo $dest["a"]["b"]["c"]; <- this will display 3.
      *
-     * @param array  &$dest the array to put the decoded var in
-     * @param string $var   the var to decode
+     * @param array &$dest the array to put the decoded var in
+     * @param string $var the var to decode
      */
     public static function AE_decode(&$dest, $var)
     {
@@ -777,7 +770,7 @@ class Tools
         }
 
         if (is_array($dest[$var])) {
-            $current = self::atk_array_merge_recursive((array) $current, $dest[$var]);
+            $current = self::atk_array_merge_recursive((array)$current, $dest[$var]);
         } else {
             $current = $dest[$var];
         }
@@ -801,7 +794,7 @@ class Tools
      * @todo Fix a problem where a string containing "_9" will be altered after encoding + decoding it.
      *
      * @param string $string the url to encode
-     * @param bool   $pref   wether or not to use a prefix, default true
+     * @param bool $pref wether or not to use a prefix, default true
      *
      * @return string the encoded url
      */
@@ -846,8 +839,7 @@ class Tools
     public static function handleError()
     {
         global $g_error_msg, $g_debug_msg;
-        $errorHandlers = Config::getGlobal('error_handlers',
-            array('mail' => array('mailto' => Config::getGlobal('mailreport'))));
+        $errorHandlers = Config::getGlobal('error_handlers', array('mail' => array('mailto' => Config::getGlobal('mailreport'))));
         foreach ($errorHandlers as $key => $value) {
             if (is_numeric($key)) {
                 $key = $value;
@@ -860,8 +852,8 @@ class Tools
     /**
      * Wrapper for escapeSQL function.
      *
-     * @param string $string   The string to escape.
-     * @param bool   $wildcard Set to true to convert wildcard chars ('%').
+     * @param string $string The string to escape.
+     * @param bool $wildcard Set to true to convert wildcard chars ('%').
      *                         False (default) will leave them unescaped.
      *
      * @return string A SQL compatible version of the input string.
@@ -876,13 +868,13 @@ class Tools
     /**
      * Returns a url to open a popup window.
      *
-     * @param string $target  the target of the popup
-     * @param string $params  extra params to pass along
+     * @param string $target the target of the popup
+     * @param string $params extra params to pass along
      * @param string $winName the name of the window
-     * @param int    $width   the width of the popup
-     * @param int    $height  the height of the popup
-     * @param string $scroll  allow scrolling? (no (default)|yes)
-     * @param string $resize  allow resizing? (no (default)|yes)
+     * @param int $width the width of the popup
+     * @param int $height the height of the popup
+     * @param string $scroll allow scrolling? (no (default)|yes)
+     * @param string $resize allow resizing? (no (default)|yes)
      *                        return string the url for the popup window
      */
     public static function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
@@ -898,10 +890,10 @@ class Tools
      * Adds new element to error array en $record. When
      * $msg is empty the multilange error string is used.
      *
-     * @param array        &$rec   var in which to add element to error array
+     * @param array &$rec var in which to add element to error array
      * @param array|string $attrib attributename or an array with attribute names
-     * @param string       $err    multilanguage error string
-     * @param string       $msg    optional error string
+     * @param string $err multilanguage error string
+     * @param string $msg optional error string
      */
     public static function triggerError(&$rec, $attrib, $err, $msg = '', $tab = '', $label = '', $module = 'atk')
     {
@@ -921,10 +913,10 @@ class Tools
      * Adds new element to the record error array. When no message
      * is given the multi-language error string is used.
      *
-     * @param array                 $record  record
-     * @param Attribute|Attribute[] $attrib  attribute or array of attributes
-     * @param string                $error   multi-language error string
-     * @param string                $message error message (optional)
+     * @param array $record record
+     * @param Attribute|Attribute[] $attrib attribute or array of attributes
+     * @param string $error multi-language error string
+     * @param string $message error message (optional)
      */
     public static function atkTriggerError(&$record, $attrib, $error, $message = '')
     {
@@ -1042,7 +1034,7 @@ class Tools
     /**
      * This function writes a binary file to the browser for download.
      *
-     * @param string $file     the local filename (the file you want to open
+     * @param string $file the local filename (the file you want to open
      *                         on the serverside)
      * @param string $filename the name the file will get when the user downloads it.
      * @param string $mimetype the mimetype of the file
@@ -1080,9 +1072,7 @@ class Tools
             if (preg_match('/ie/i', $browser['browser'])) {
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             }
-            if (($_SERVER['SERVER_PORT'] == '443' || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match('/msie/i',
-                    $_SERVER['HTTP_USER_AGENT'])
-            ) {
+            if (($_SERVER['SERVER_PORT'] == '443' || $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') && preg_match('/msie/i', $_SERVER['HTTP_USER_AGENT'])) {
                 header('Pragma: public');
             } else {
                 header('Pragma: no-cache');
@@ -1139,7 +1129,7 @@ class Tools
     /**
      * Checks if the variable $var contains the given flag ($flag).
      *
-     * @param string $var  the variable which might contain flags
+     * @param string $var the variable which might contain flags
      * @param string $flag the flag you want to check for
      *
      * @return bool result of check
@@ -1238,7 +1228,7 @@ class Tools
     /**
      * Build query string based on an array of parameters.
      *
-     * @param array  $params array of parameters
+     * @param array $params array of parameters
      * @param string $parent
      *
      * @return string query string
@@ -1272,8 +1262,8 @@ class Tools
      *
      *
      * @param string $nodeUri the $nodeUri
-     * @param string $action  the atk action the link will perform
-     * @param array  $params  A key/value array with extra options for the url
+     * @param string $action the atk action the link will perform
+     * @param array $params A key/value array with extra options for the url
      * @param string $phpfile The php file to use for dispatching
      *
      * @return string url for the node with the action
@@ -1300,11 +1290,11 @@ class Tools
     /**
      * Generate a partial url.
      *
-     * @param string $node          the (module.)node name
-     * @param string $action        the atkaction
-     * @param string $partial       the partial name
-     * @param array  $params        a key/value array with extra params
-     * @param int    $sessionStatus session status (default SessionManager::SESSION_PARTIAL)
+     * @param string $node the (module.)node name
+     * @param string $action the atkaction
+     * @param string $partial the partial name
+     * @param array $params a key/value array with extra params
+     * @param int $sessionStatus session status (default SessionManager::SESSION_PARTIAL)
      *
      * @return string url for the partial action
      */
@@ -1327,13 +1317,13 @@ class Tools
     /**
      * Creates a session aware button.
      *
-     * @param string $text          the self::text to display on the button
-     * @param string $url           the url to use for the button
-     * @param int    $sessionstatus the session flags
+     * @param string $text the self::text to display on the button
+     * @param string $url the url to use for the button
+     * @param int $sessionstatus the session flags
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param string $cssclass      the css class the button should get
-     * @param bool   $embeded       wether or not it's an embedded button
+     * @param string $cssclass the css class the button should get
+     * @param bool $embeded wether or not it's an embedded button
      *
      * @return string html button
      */
@@ -1452,8 +1442,8 @@ class Tools
      * and if you have a value linking back to it's self in one way or another,
      * you may spend a loooong time waiting on your application
      *
-     * @param string $needle   The value which will be searched in the haystack
-     * @param array  $haystack Array with values
+     * @param string $needle The value which will be searched in the haystack
+     * @param array $haystack Array with values
      *
      * @return bool True if needle exists in haystack
      */
@@ -1522,9 +1512,9 @@ class Tools
      * htmlentities function, but falls back to atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $string      string to convert
-     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset     character set to use (default to atkGetCharset())
+     * @param string $string string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset character set to use (default to atkGetCharset())
      *
      * @return string encoded string
      */
@@ -1538,9 +1528,9 @@ class Tools
      * html_entity_decode function, but falls back to atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $string      string to convert
-     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset     character set to use (default to atkGetCharset())
+     * @param string $string string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset character set to use (default to atkGetCharset())
      *
      * @return string encoded string
      */
@@ -1564,9 +1554,9 @@ class Tools
     /**
      * Get part of string.
      *
-     * @param string $str    The string being checked.
-     * @param int    $start  The first position used in $str
-     * @param int    $length [optional] The maximum length of the returned string
+     * @param string $str The string being checked.
+     * @param int $start The first position used in $str
+     * @param int $length [optional] The maximum length of the returned string
      *
      * @return string
      */
@@ -1579,8 +1569,8 @@ class Tools
      *  Find position of first occurrence of string in a string.
      *
      * @param object $haystack The string being checked.
-     * @param object $needle   The position counted from the beginning of haystack .
-     * @param object $offset   [optional] The search offset. If it is not specified, 0 is used.
+     * @param object $needle The position counted from the beginning of haystack .
+     * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
      *
      * @return int|bool
      */
@@ -1629,9 +1619,9 @@ class Tools
      * Looks up a value using the given key in the given array and returns
      * the value if found or a default value if not found.
      *
-     * @param array  $array        Array to be searched for key
-     * @param string $key          Key for which we are looking in array
-     * @param mixed  $defaultvalue Value we will return if key was not found in array
+     * @param array $array Array to be searched for key
+     * @param string $key Key for which we are looking in array
+     * @param mixed $defaultvalue Value we will return if key was not found in array
      *
      * @return mixed Value retrieved from array or default value if not found in array
      */
@@ -1689,9 +1679,9 @@ class Tools
      * the system. If yes - use it for converting string, if no - save string untouch
      * and make warning about it.
      *
-     * @param string $in_charset  from charset
+     * @param string $in_charset from charset
      * @param string $out_charset to charset
-     * @param string $str         string to convert
+     * @param string $str string to convert
      *
      * @return string encoded string
      */
@@ -1772,6 +1762,7 @@ class Tools
         $str_date = str_replace('%&%', self::atktext(substr(strtolower($date['weekday']), 0, 3), 'atk'), $str_date);
 
         /* return string */
+
         return $str_date;
     }
 
@@ -1804,8 +1795,8 @@ class Tools
      *
      * @static
      *
-     * @param string $str    The "classname#method" to invoke.
-     * @param array  $params Any params to be passed to the invoked method.
+     * @param string $str The "classname#method" to invoke.
+     * @param array $params Any params to be passed to the invoked method.
      *
      * @return bool false if the call failed. In all other cases, it
      *              returns the output of the invoked method. (be
@@ -1835,13 +1826,13 @@ class Tools
      * When using hrefs in the editform, you can set saveform to true. This will save your
      * form variables in the session and restore them whenever you come back.
      *
-     * @param string $url           the url to make session aware
-     * @param string $name          the name to display (will not be escaped!)
-     * @param int    $sessionstatus the session flags
+     * @param string $url the url to make session aware
+     * @param string $name the name to display (will not be escaped!)
+     * @param int $sessionstatus the session flags
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param bool   $saveform      wether or not to save the form
-     * @param string $extraprops    extra props you can add in the link such as
+     * @param bool $saveform wether or not to save the form
+     * @param string $extraprops extra props you can add in the link such as
      *                              'onChange="doSomething()"'
      * @static
      *
@@ -1977,9 +1968,9 @@ class Tools
     /**
      * Get part of string.
      *
-     * @param string $str    The string being checked.
-     * @param int    $start  The first position used in $str
-     * @param int    $length [optional] The maximum length of the returned string
+     * @param string $str The string being checked.
+     * @param int $start The first position used in $str
+     * @param int $length [optional] The maximum length of the returned string
      *
      * @return string
      */
@@ -1996,7 +1987,7 @@ class Tools
      * Return char on given position.
      *
      * @param string $str The string being checked
-     * @param int    $pos The position of the char
+     * @param int $pos The position of the char
      *
      * @return string
      */
@@ -2009,8 +2000,8 @@ class Tools
      *  Find position of first occurrence of string in a string.
      *
      * @param object $haystack The string being checked.
-     * @param object $needle   The position counted from the beginning of haystack .
-     * @param object $offset   [optional] The search offset. If it is not specified, 0 is used.
+     * @param object $needle The position counted from the beginning of haystack .
+     * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
      *
      * @return int|bool
      */
@@ -2061,9 +2052,9 @@ class Tools
      * configured charset instead of PHP's default charset, if no
      * charset is given.
      *
-     * @param string $str         string to convert
-     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset     character set to use (default to Tools::atktext('charset', 'atk'))
+     * @param string $str string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset character set to use (default to Tools::atktext('charset', 'atk'))
      *
      * @return string encoded string
      */
@@ -2086,9 +2077,9 @@ class Tools
      * htmlentities function, but falls back to Tools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $str         string to convert
-     * @param int    $quote_style quote style (defaults to ENT_COMPAT)
-     * @param string $charset     character set to use (default to Tools::atkGetCharset())
+     * @param string $str string to convert
+     * @param int $quote_style quote style (defaults to ENT_COMPAT)
+     * @param string $charset character set to use (default to Tools::atkGetCharset())
      *
      * @return string encoded string
      */
@@ -2111,9 +2102,9 @@ class Tools
      * html_entity_decode function, but falls back to Tools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.
      *
-     * @param string $in_charset  The input charset
+     * @param string $in_charset The input charset
      * @param string $out_charset The output charset
-     * @param string $str         The string to convert
+     * @param string $str The string to convert
      *
      * @return string encoded string
      */
@@ -2131,8 +2122,8 @@ class Tools
     /**
      * ATK version of the Smarty truncate function, multibyte safe.
      *
-     * @param string $string  text to truncate
-     * @param int    $max     Maximum length of the total result string
+     * @param string $string text to truncate
+     * @param int $max Maximum length of the total result string
      * @param string $replace text to append to the end of the truncated string
      *
      * @return string truncated sting

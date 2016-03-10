@@ -106,12 +106,12 @@ class ListAttribute extends Attribute
      * implemented, but it has now been removed. Keep this in mind
      * when upgrading from a very old ATK version (pre ATK4).
      *
-     * @param string $name        Name of the attribute
-     * @param array  $optionArray Array with options
-     * @param array  $valueArray  Array with values. If you don't use this parameter,
+     * @param string $name Name of the attribute
+     * @param array $optionArray Array with options
+     * @param array $valueArray Array with values. If you don't use this parameter,
      *                            values are assumed to be the same as the options.
-     * @param int    $flags       Flags for this attribute
-     * @param int    $size        Size of the attribute.
+     * @param int $flags Flags for this attribute
+     * @param int $size Size of the attribute.
      */
     public function __construct($name, $optionArray, $valueArray = null, $flags = 0, $size = 0)
     {
@@ -212,7 +212,7 @@ class ListAttribute extends Attribute
      * lookup => lookuparray.
      *
      * @param string $type ("options", "values" or "lookup")
-     * @param array  $rec  The record
+     * @param array $rec The record
      *
      * @return array with options, values or lookup
      */
@@ -227,8 +227,8 @@ class ListAttribute extends Attribute
      * values => valuearray
      * lookup => lookuparray.
      *
-     * @param string $type  ("options", "values" or "lookup)
-     * @param array  $value
+     * @param string $type ("options", "values" or "lookup)
+     * @param array $value
      *
      * @return true
      */
@@ -242,7 +242,7 @@ class ListAttribute extends Attribute
     /**
      * Display's text version of Record.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $mode
      *
      * @return string of $record
@@ -256,7 +256,7 @@ class ListAttribute extends Attribute
      * Translates the database value.
      *
      * @param string $value
-     * @param array  $rec   The record
+     * @param array $rec The record
      *
      * @return string
      */
@@ -279,10 +279,10 @@ class ListAttribute extends Attribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      Array with fields
+     * @param array $record Array with fields
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code with a checkbox
      */
@@ -298,8 +298,7 @@ class ListAttribute extends Attribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select id="'.$id.'" name="'.$id.'"  class="form-control atklistattribute" '.$onchange.($this->m_width
-                ? " style='width: {$this->m_width}px'" : '').'>';
+        $result = '<select id="'.$id.'" name="'.$id.'"  class="form-control atklistattribute" '.$onchange.($this->m_width ? " style='width: {$this->m_width}px'" : '').'>';
 
         $result .= $this->_addEmptyListOption();
 
@@ -308,16 +307,13 @@ class ListAttribute extends Attribute
 
         for ($i = 0; $i < count($values); ++$i) {
             // If the current value is selected or occurs in the record
-            if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) ||
-                (is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== '')
-            ) {
+            if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) || (is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== '')) {
                 $sel = 'selected';
             } else {
                 $sel = '';
             }
 
-            $result .= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],
-                    $record);
+            $result .= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
         }
 
         $result .= '</select>';
@@ -370,13 +366,11 @@ class ListAttribute extends Attribute
         $text_key = $this->hasFlag(self::AF_OBLIGATORY) ? 'list_null_value_obligatory' : 'list_null_value';
 
         if (!$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) {
-            if (!$this->hasFlag(self::AF_OBLIGATORY) || (
-                    $this->hasFlag(self::AF_LIST_OBLIGATORY_NULL_ITEM) ||
-                    (Config::getGlobal('list_obligatory_null_item') && !$this->hasFlag(self::AF_LIST_NO_OBLIGATORY_NULL_ITEM))
-                )
-            ) {
+            if (!$this->hasFlag(self::AF_OBLIGATORY) || ($this->hasFlag(self::AF_LIST_OBLIGATORY_NULL_ITEM) || (Config::getGlobal('list_obligatory_null_item') && !$this->hasFlag(self::AF_LIST_NO_OBLIGATORY_NULL_ITEM)))) {
                 $ret = '<option value="'.$this->m_emptyvalue.'">'.htmlentities($this->text(array(
-                            $this->fieldName().'_'.$text_key, $text_key, ))).'</option>';
+                        $this->fieldName().'_'.$text_key,
+                        $text_key,
+                    ))).'</option>';
             }
         }
 
@@ -403,8 +397,8 @@ class ListAttribute extends Attribute
      *
      * @todo Configurable rows
      *
-     * @param array  $record      Array with values
-     * @param bool   $extended    if set to false, a simple search input is
+     * @param array $record Array with values
+     * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
      *                            search may be returned for the 'extended'
@@ -430,9 +424,8 @@ class ListAttribute extends Attribute
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
             $id = $this->getSearchFieldName($fieldprefix);
             $result .= ' id="'.$id.'" ';
-            $code = '$(\''.$id.'\').observe(\'change\', function(event) { '.
-                $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides').
-                ' return false; });';
+            $code = '$(\''.$id.'\').observe(\'change\', function(event) { '.$grid->getUpdateCall(array('atkstartat' => 0), array(),
+                    'ATK.DataGrid.extractSearchOverrides').' return false; });';
             $this->getOwnerInstance()->getPage()->register_loadscript($code);
         }
 
@@ -453,22 +446,19 @@ class ListAttribute extends Attribute
             $selValues = array(''); // has precedence (even if another options are selected together)
         }
         $notSelectFirst = false;
-        $result .= sprintf('<option value=""%s>%s</option>',
-            (!$notSelectFirst && $selValues[0] == '') ? ' selected="selected"' : '',
+        $result .= sprintf('<option value=""%s>%s</option>', (!$notSelectFirst && $selValues[0] == '') ? ' selected="selected"' : '',
             Tools::atktext('search_all'));
 
         // "none" option
         if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) {
-            $result .= sprintf('<option value="__NONE__"%s>%s</option>',
-                Tools::atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
+            $result .= sprintf('<option value="__NONE__"%s>%s</option>', Tools::atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
                 Tools::atktext('search_none'));
         }
 
         // normal options
         foreach ($values as $value) {
             $result .= sprintf('<option value="%s"%s>%s</option>', $value,
-                Tools::atk_in_array(((string) $value), $selValues, true) ? ' selected="selected"' : '',
-                $this->_translateValue($value, $record));
+                Tools::atk_in_array(((string)$value), $selValues, true) ? ' selected="selected"' : '', $this->_translateValue($value, $record));
         }
 
         $result .= '</select>';
@@ -481,10 +471,10 @@ class ListAttribute extends Attribute
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
-     * @param Query  $query      The query object where the search condition should be placed on
-     * @param string $table      The name of the table in which this attribute
+     * @param Query $query The query object where the search condition should be placed on
+     * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed  $value      The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
@@ -518,8 +508,7 @@ class ListAttribute extends Attribute
                 if (in_array('__NONE__', $value)) {
                     unset($value[array_search('__NONE__', $value)]);
 
-                    return sprintf('(%s OR %s)',
-                        $query->nullCondition($table.'.'.$this->fieldName(), true),
+                    return sprintf('(%s OR %s)', $query->nullCondition($table.'.'.$this->fieldName(), true),
                         $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')");
                 } else {
                     return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
@@ -561,7 +550,7 @@ class ListAttribute extends Attribute
      * Set autohide for the given attribute.
      *
      * @param string $attrib
-     * @param array  $valuearr
+     * @param array $valuearr
      */
     public function setAutoHide($attrib, $valuearr)
     {
@@ -569,8 +558,7 @@ class ListAttribute extends Attribute
         foreach ($valuearr as $value) {
             $conditions[] = "newvalue=='$value'";
         }
-        $this->addOnChangeHandler('if ('.implode('||',
-                $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
+        $this->addOnChangeHandler('if ('.implode('||', $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
     }
 
     /**
@@ -711,7 +699,7 @@ class ListAttribute extends Attribute
      * Set the option and value array.
      *
      * @param array $optionArray array with options
-     * @param array $valueArray  array with values
+     * @param array $valueArray array with values
      *
      * @return object reference to this attribute
      */

@@ -124,7 +124,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Adds a condition..
      *
      * @param string $condition where clause
-     * @param array  $params    bind parameters
+     * @param array $params bind parameters
      *
      * @return Selector
      */
@@ -239,7 +239,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Limit the results bij the given limit (and from the optional offset).
      *
-     * @param int $limit  limit
+     * @param int $limit limit
      * @param int $offset offset
      *
      * @return Selector
@@ -307,13 +307,9 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
         $searchCriteria = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
         $smartSearchCriteria = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
-        $indexValue = $this->_getNode()->m_index != '' ? Tools::atkArrayNvl($this->_getNode()->m_postvars,
-            'atkindex', '')
-            : '';
+        $indexValue = $this->_getNode()->m_index != '' ? Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '') : '';
 
-        return (is_array($searchCriteria) && count($searchCriteria) > 0) ||
-        (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0) ||
-        !empty($indexValue);
+        return (is_array($searchCriteria) && count($searchCriteria) > 0) || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0) || !empty($indexValue);
     }
 
     /**
@@ -376,7 +372,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Apply posted (normal) search criteria to query.
      *
-     * @param Query $query           query object
+     * @param Query $query query object
      * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyPostedSearchCriteriaToQuery(Query $query, array $attrsByLoadType)
@@ -387,8 +383,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         foreach ($searchCriteria as $key => $value) {
-            if ($value === null || $value === '' ||
-                ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
+            if ($value === null || $value === '' || ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
                         $attrsByLoadType[Attribute::ADDTOQUERY]))
             ) {
                 continue;
@@ -412,8 +407,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
                 $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
             } else {
                 Tools::atkdebug("Using default search method for $key");
-                $condition = 'LOWER('.$this->_getNode()->getTable().'.'.$key.") LIKE LOWER('%".$this->_getDb()->escapeSQL($value,
-                        true)."%')";
+                $condition = 'LOWER('.$this->_getNode()->getTable().'.'.$key.") LIKE LOWER('%".$this->_getDb()->escapeSQL($value, true)."%')";
                 $query->addSearchCondition($condition);
             }
         }
@@ -440,8 +434,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $attr = $this->_getNode()->getAttribute($attrName);
 
             if (is_object($attr)) {
-                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode,
-                    '');
+                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode, '');
             }
         }
     }
@@ -449,7 +442,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Apply criteria that are part of the postvars (e.g. filter, index, search criteria).
      *
-     * @param Query $query           query
+     * @param Query $query query
      * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyPostvarsToQuery(Query $query, array $attrsByLoadType)
@@ -498,13 +491,10 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $attrName = $attr->fieldName();
 
-        return
-            (!$this->m_ignorePrimaryKey && in_array($attrName, $this->_getNode()->m_primaryKey)) ||
-            (!$this->m_ignoreForceLoad && $attr->hasFlag(Attribute::AF_FORCE_LOAD)) ||
-            (($this->m_includes != null && in_array($attrName,
-                        $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName,
-                        $this->m_excludes))) ||
-            ($this->m_excludes == null && $this->m_includes == null);
+        return (!$this->m_ignorePrimaryKey && in_array($attrName,
+                $this->_getNode()->m_primaryKey)) || (!$this->m_ignoreForceLoad && $attr->hasFlag(Attribute::AF_FORCE_LOAD)) || (($this->m_includes != null && in_array($attrName,
+                    $this->m_includes)) || ($this->m_excludes != null && !in_array($attrName,
+                    $this->m_excludes))) || ($this->m_excludes == null && $this->m_includes == null);
     }
 
     /**
@@ -543,7 +533,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Apply attributes to query, e.g. add columns etc.
      *
-     * @param Query $query           query object
+     * @param Query $query query object
      * @param array $attrsByLoadType attributes by load type
      */
     protected function _applyAttributesToQuery(Query $query, array $attrsByLoadType)
@@ -632,8 +622,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Transform raw database row to node compatible row.
      *
-     * @param array $row             raw database row
-     * @param Query $query           query object
+     * @param array $row raw database row
+     * @param Query $query query object
      * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible row
@@ -662,8 +652,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Transform raw database rows to node compatible rows.
      *
-     * @param array $rows            raw database rows
-     * @param Query $query           query object
+     * @param array $rows raw database rows
+     * @param Query $query query object
      * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible rows
@@ -817,7 +807,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Sets the value for the given offset.
      *
      * @param string|int $key
-     * @param mixed      $value
+     * @param mixed $value
      *
      * @return mixed
      */

@@ -33,13 +33,13 @@ class MultiSelectAttribute extends ListAttribute
     /**
      * Constructor.
      *
-     * @param string $name        Name of the attribute
-     * @param array  $optionArray Array with options
+     * @param string $name Name of the attribute
+     * @param array $optionArray Array with options
      * @param $valueArray $value Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
-     * @param int $cols  Number of columns
+     * @param int $cols Number of columns
      * @param int $flags Flags for this attribute
-     * @param int $size  Size of the attribute.
+     * @param int $size Size of the attribute.
      */
     public function __construct($name, $optionArray, $valueArray = null, $cols = null, $flags = 0, $size = '')
     {
@@ -61,7 +61,7 @@ class MultiSelectAttribute extends ListAttribute
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -134,8 +134,8 @@ class MultiSelectAttribute extends ListAttribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -158,10 +158,10 @@ class MultiSelectAttribute extends ListAttribute
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
-     * @param array  $record      Array with fields
+     * @param array $record Array with fields
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code with radioboxes
      */
@@ -216,9 +216,9 @@ class MultiSelectAttribute extends ListAttribute
      * @todo code below can't possibly work.
      *  really needs to be fixed.
      *
-     * @param Query  $query
+     * @param Query $query
      * @param string $table
-     * @param mixed  $value
+     * @param mixed $value
      * @param string $searchmode
      *
      * @return string condition to use in a where clause
@@ -229,12 +229,10 @@ class MultiSelectAttribute extends ListAttribute
         $searchcondition = null;
         if (is_array($value) && $value[0] != '' && count($value) > 0) {
             if (count($value) == 1) {
-                $searchcondition = $query->substringCondition($table.'.'.$this->fieldName(),
-                    $this->escapeSQL($value[0]));
+                $searchcondition = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]));
             } else {
                 foreach ($value as $str) {
-                    $searchcondition = $query->substringCondition($table.'.'.$this->fieldName(),
-                        $this->escapeSQL($str));
+                    $searchcondition = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
                 }
             }
         }
@@ -279,12 +277,7 @@ class MultiSelectAttribute extends ListAttribute
     {
         if (count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
             return '<div align="left"><font size="-2">
-                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.
-            Tools::atktext('check_all').
-            '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.
-            Tools::atktext('check_none').
-            '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.
-            Tools::atktext('invert_selection').'</a>]</font></div>';
+                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</font></div>';
         }
 
         return '';

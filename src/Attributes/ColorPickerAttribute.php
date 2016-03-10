@@ -61,14 +61,10 @@ class ColorPickerAttribute extends Attribute
             $size = 20;
         }
 
-        $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()])
-            ? htmlspecialchars($record[$this->fieldName()]) : '');
+        $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
         $result = '<div class="input-group ColorPickerAttribute_group" id="'.$id.'_group">';
-        $result .= '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).
-            ' value="'.$value.'"'.
-            ($size > 0 ? ' size="'.$size.'"' : '').
-            ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
+        $result .= '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
 
         $result .= '<span class="input-group-addon"><i></i></span>';
         $result .= '</div>';

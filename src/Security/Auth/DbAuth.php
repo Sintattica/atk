@@ -53,7 +53,7 @@ class DbAuth extends AuthInterface
     /**
      * Authenticate a user.
      *
-     * @param string $user   The login of the user to authenticate.
+     * @param string $user The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
@@ -76,16 +76,15 @@ class DbAuth extends AuthInterface
         } // can't verify if we have no userid
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $this->buildSelectUserQuery($db->escapeSql($user), Config::getGlobal('auth_usertable'),
-            Config::getGlobal('auth_userfield'), Config::getGlobal('auth_passwordfield'),
-            Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
+        $query = $this->buildSelectUserQuery($db->escapeSql($user), Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
+            Config::getGlobal('auth_passwordfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
         $recs = $db->getrows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
 
-        return (count($recs) > 0 && $user != '' && $this->matchPasswords($this->getPassword($recs[0]), $passwd))
-            ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
+        return (count($recs) > 0 && $user != '' && $this->matchPasswords($this->getPassword($recs[0]),
+                $passwd)) ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
     }
 
     /**
@@ -97,8 +96,7 @@ class DbAuth extends AuthInterface
      */
     public function getPassword($rec)
     {
-        return (isset($rec[Config::getGlobal('auth_passwordfield')])) ? $rec[Config::getGlobal('auth_passwordfield')]
-            : false;
+        return (isset($rec[Config::getGlobal('auth_passwordfield')])) ? $rec[Config::getGlobal('auth_passwordfield')] : false;
     }
 
     /**
@@ -121,7 +119,7 @@ class DbAuth extends AuthInterface
      * crypt() of $userpasswd, where $dbpassword itself is used as the 'salt'.
      * (This method is used by Bugzilla, among other apps).
      *
-     * @param string $dbpasswd   The password from the database
+     * @param string $dbpasswd The password from the database
      * @param string $userpasswd The password the user provided
      *
      * @return bool which indicates if the passwords are equal
@@ -324,7 +322,7 @@ class DbAuth extends AuthInterface
      * This function returns the level/group(s) that are allowed to perform
      * the given action on a node.
      *
-     * @param string $node   The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                       the privilege. (modulename.nodename)
      * @param string $action The privilege to check.
      *
@@ -363,10 +361,10 @@ class DbAuth extends AuthInterface
      * This function returns the level/group(s) that are allowed to
      * view/edit a certain attribute of a given node.
      *
-     * @param string $node   The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                       attribute access.
      * @param string $attrib The name of the attribute to check
-     * @param string $mode   "view" or "edit"
+     * @param string $mode "view" or "edit"
      *
      * @return array
      */
@@ -465,10 +463,8 @@ class DbAuth extends AuthInterface
         // Query the database for user records having the given username and return if not found
         $atk = Atk::getInstance();
         $usernode = $atk->atkGetNode(Config::getGlobal('auth_usernode'));
-        $selector = sprintf("%s.%s = '%s'", Config::getGlobal('auth_usertable'),
-            Config::getGlobal('auth_userfield'), $username);
-        $userrecords = $usernode->select($selector)->mode('edit')
-            ->includes(array(
+        $selector = sprintf("%s.%s = '%s'", Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'), $username);
+        $userrecords = $usernode->select($selector)->mode('edit')->includes(array(
                 Config::getGlobal('auth_userpk'),
                 Config::getGlobal('auth_emailfield'),
                 Config::getGlobal('auth_passwordfield'),

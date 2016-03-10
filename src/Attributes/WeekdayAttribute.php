@@ -41,12 +41,12 @@ class WeekdayAttribute extends NumberAttribute
     /**
      * Constructor.
      *
-     * @param string $name         Name of the attribute (unique within a node, and
+     * @param string $name Name of the attribute (unique within a node, and
      *                             corresponds to the name of the datetime field
      *                             in the database where the stamp is stored.
-     * @param int    $extraOrFlags Flags for the attribute or array of extra options
+     * @param int $extraOrFlags Flags for the attribute or array of extra options
      *                             these options will be numbered from 2^7 (128) to 2^x.
-     * @param int    $flags        Flags for the attribute. Only used if no set in previous param.
+     * @param int $flags Flags for the attribute. Only used if no set in previous param.
      */
     public function __construct($name, $extraOrFlags = 0, $flags = 0)
     {
@@ -85,10 +85,9 @@ class WeekdayAttribute extends NumberAttribute
         $result = '';
 
         $name = $fieldprefix.$this->fieldName();
-        $value = (int) $record[$this->fieldName()];
+        $value = (int)$record[$this->fieldName()];
 
-        $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;'
-            : '<br>';
+        $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;' : '<br>';
 
         $max = 7 + count($this->m_extra);
         for ($i = 1; $i <= $max; ++$i) {
@@ -108,8 +107,7 @@ class WeekdayAttribute extends NumberAttribute
 
             $checked = Tools::hasFlag($value, $day) ? ' checked' : '';
 
-            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$name.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute('atkcheckbox').' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max
-                    ? $separator : '');
+            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$name.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute('atkcheckbox').' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max ? $separator : '');
         }
 
         return $result;
@@ -120,8 +118,8 @@ class WeekdayAttribute extends NumberAttribute
      *
      * In this case, the timestamp is returned in human readable format.
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists). The regular
      *                       Attribute does not use this parameter, but
      *                       derived attributes may use it to distinguish
@@ -132,7 +130,7 @@ class WeekdayAttribute extends NumberAttribute
     public function display($record, $mode)
     {
         $result = '';
-        $value = (int) $record[$this->fieldName()];
+        $value = (int)$record[$this->fieldName()];
 
         $max = 7 + count($this->m_extra);
         for ($i = 1; $i <= $max; ++$i) {

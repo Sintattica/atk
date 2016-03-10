@@ -37,8 +37,8 @@ class FileEditor extends Node
      *
      * This function is called when a new atkFileEditor is instantiated.
      *
-     * @param string $name   The name of the node.
-     * @param string $dir    The directory that the fileeditor lists. If you
+     * @param string $name The name of the node.
+     * @param string $dir The directory that the fileeditor lists. If you
      *                       want to enable addition of new files, make sure
      *                       that the webserver has write access to this dir.
      *                       Only regular files (not subdirs or special files)
@@ -53,7 +53,7 @@ class FileEditor extends Node
      *                       Note 2: Watch out when using $ in your regular
      *                       expression; PHP parses this, so use single quotes
      *                       or escape the dollarsign with \.
-     * @param int    $flags  The node flags. See Node for a list of possible
+     * @param int $flags The node flags. See Node for a list of possible
      *                       flags.
      */
     public function __construct($name, $dir = '', $filter = '', $flags = 0)
@@ -116,7 +116,7 @@ class FileEditor extends Node
      * This function adds a file or directory to the list in the node.
      *
      * @param string $entry The directory that is added to the list
-     * @param array  $arr   The array containing the result of the
+     * @param array $arr The array containing the result of the
      *                      added item
      */
     public function addFileEntry($entry, &$arr)
@@ -150,16 +150,15 @@ class FileEditor extends Node
     /**
      * This function sets the actions of the items in the list.
      *
-     * @param string $record     Identifier for the record
-     * @param array  $actions    Result array containing the options
+     * @param string $record Identifier for the record
+     * @param array $actions Result array containing the options
      * @param unknow $mraactions
      */
     public function recordActions($record, &$actions, &$mraactions)
     {
         $this->m_dir = $this->stripDir($this->m_dir);
         if (is_dir($this->m_dir.'/'.$record['filename'])) {
-            $actions['view'] = Tools::dispatch_url($this->atkNodeUri(), 'dirchange',
-                array('atkselector' => $this->m_dir.$record['filename']));
+            $actions['view'] = Tools::dispatch_url($this->atkNodeUri(), 'dirchange', array('atkselector' => $this->m_dir.$record['filename']));
             unset($actions['edit']);
             unset($actions['delete']);
 
@@ -178,9 +177,9 @@ class FileEditor extends Node
      * and calls functions to print the results.
      *
      * @param string $selector Identifier for the selected item
-     * @param string $orderby  The list of items is ordered by the item type
+     * @param string $orderby The list of items is ordered by the item type
      *                         mentioned in this variable
-     * @param mixed  $limit
+     * @param mixed $limit
      *
      * @return array
      */
@@ -251,7 +250,7 @@ class FileEditor extends Node
     /**
      * This function controls actions on the selected file is allowed.
      *
-     * @param array  $rec  Array that contains the identifier of the record
+     * @param array $rec Array that contains the identifier of the record
      * @param string $mode The mode we're in
      */
     public function validate(&$rec, $mode)
@@ -272,8 +271,7 @@ class FileEditor extends Node
      */
     public function adminHeader()
     {
-        return '<p><b>'.$this->text('current_dir').': '.substr_replace($this->m_dir, '', 0,
-            strlen($this->m_basedir)).'</b></p>';
+        return '<p><b>'.$this->text('current_dir').': '.substr_replace($this->m_dir, '', 0, strlen($this->m_basedir)).'</b></p>';
     }
 
     /**
@@ -422,8 +420,7 @@ class FileEditor extends Node
     {
         // normalizes the given string to a relative dir that should always start with the base directory
         if (strpos(realpath($dirname), realpath($this->m_basedir)) === 0) {
-            $resultdir = rtrim(str_replace(realpath($this->m_basedir), $this->m_basedir, realpath($dirname)),
-                    '/').'/';
+            $resultdir = rtrim(str_replace(realpath($this->m_basedir), $this->m_basedir, realpath($dirname)), '/').'/';
             if ($resultdir == '' || !is_dir($resultdir)) {
                 $resultdir = rtrim($this->m_basedir, '/').'/';
             }
@@ -441,6 +438,6 @@ class FileEditor extends Node
      */
     public function showDirs($bool)
     {
-        $this->m_showdirs = (bool) $bool;
+        $this->m_showdirs = (bool)$bool;
     }
 }

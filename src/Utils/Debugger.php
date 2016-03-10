@@ -78,7 +78,7 @@ class Debugger
      * Add a query string to the debugger.
      *
      * @param string $query
-     * @param bool   $system is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     * @param bool $system is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
      *
      * @return bool Indication if query is added
      */
@@ -140,8 +140,8 @@ class Debugger
 
             $data['queries'][] = array('query' => $query, 'trace' => Tools::atkGetTrace());
 
-            Tools::atkdebug('['.$this->consoleLink('query&nbsp;details', 'query',
-                    array('query_id' => count($data['queries']) - 1), true).'] '.htmlentities($query));
+            Tools::atkdebug('['.$this->consoleLink('query&nbsp;details', 'query', array('query_id' => count($data['queries']) - 1),
+                    true).'] '.htmlentities($query));
 
             return true;
         }
@@ -152,11 +152,11 @@ class Debugger
     /**
      * Create the console link.
      *
-     * @param string $text    The name of the link
-     * @param string $action  The action
-     * @param array  $params  Array with parameters to add to the url
-     * @param bool   $popup   IS this a popup link?
-     * @param int    $stackId The stack id
+     * @param string $text The name of the link
+     * @param string $action The action
+     * @param array $params Array with parameters to add to the url
+     * @param bool $popup IS this a popup link?
+     * @param int $stackId The stack id
      *
      * @return string HTML code with the console link
      */
@@ -240,15 +240,14 @@ class Debugger
     public function consoleControls()
     {
         return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index',
-            '', array(), false,
-            $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
+            '', array(), false, $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
 
     /**
      * Get details for the query.
      *
      * @param array $queries Array with queries
-     * @param int   $id      The index in the queries array we want the details from
+     * @param int $id The index in the queries array we want the details from
      *
      * @return string The query details
      */
@@ -282,7 +281,7 @@ class Debugger
      * Get the statement details.
      *
      * @param array $stmts Array with statements
-     * @param int   $id    The index in the statements array we want the details from
+     * @param int $id The index in the statements array we want the details from
      *
      * @return string The statement details
      */
@@ -304,8 +303,8 @@ class Debugger
      * Convert an array to a table.
      *
      * @param array $result The array to convert
-     * @param bool  $full   All results?
-     * @param int   $id
+     * @param bool $full All results?
+     * @param int $id
      *
      * @return string HTML table
      */
@@ -323,8 +322,7 @@ class Debugger
             }
             $data .= '</table>';
             if ($i != $_i) {
-                $data .= ($_i - $i).' more results. '.$this->consoleLink('Full result', 'query',
-                        array('query_id' => $id, 'full' => 1));
+                $data .= ($_i - $i).' more results. '.$this->consoleLink('Full result', 'query', array('query_id' => $id, 'full' => 1));
             }
 
             return $data;
@@ -362,7 +360,7 @@ class Debugger
      * Get debugger data.
      *
      * @param bool $clean
-     * @param int  $stackId
+     * @param int $stackId
      *
      * @return array Array with data
      */
@@ -475,26 +473,20 @@ class Debugger
 
         $time = strftime('%H:%M:%S', $g_startTime);
         $duration = sprintf('%02.05f', self::getMicroTime() - $g_startTime);
-        $usage = function_exists('memory_get_usage') ? sprintf('%02.02f', (memory_get_usage() / 1024 / 1024))
-            : '? ';
+        $usage = function_exists('memory_get_usage') ? sprintf('%02.02f', (memory_get_usage() / 1024 / 1024)) : '? ';
         $method = $_SERVER['REQUEST_METHOD'];
-        $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off'
-            ? 'http' : 'https';
-        $url = $protocol.'://'.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80
-                ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
+        $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off' ? 'http' : 'https';
+        $url = $protocol.'://'.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
 
         $label = "[{$time}h / {$duration}s / {$usage}MB / ".self::$s_queryCount.' Queries / '.self::$s_systemQueryCount." System Queries] $method $url";
 
         $output = '
-        <div class="atkDebugBlock'.(count($g_error_msg) > 0 ? ' atkDebugBlockContainsErrors'
-                : '').' atkDebug'.($expanded ? 'Expanded' : 'Collapsed').'">
+        <div class="atkDebugBlock'.(count($g_error_msg) > 0 ? ' atkDebugBlockContainsErrors' : '').' atkDebug'.($expanded ? 'Expanded' : 'Collapsed').'">
           <div class="atkDebugToggle" onclick="ATK.Debug.toggle(this)">
            '.$label.'
           </div>
           <div class="atkDebugData">
-            '.(count($g_debug_msg) > 0 ? '<div class="atkDebugLine">'.implode($g_debug_msg,
-                    '</div><div class="atkDebugLine">').'</div>'
-                : '').'
+            '.(count($g_debug_msg) > 0 ? '<div class="atkDebugLine">'.implode($g_debug_msg, '</div><div class="atkDebugLine">').'</div>' : '').'
           </div>
         </div>';
 
@@ -504,8 +496,8 @@ class Debugger
     /**
      * Set redirect URL.
      *
-     * @param string $url   The redirect url
-     * @param bool   $force Force to set this redirect url
+     * @param string $url The redirect url
+     * @param bool $force Force to set this redirect url
      */
     public function setRedirectUrl($url, $force = false)
     {
@@ -595,7 +587,7 @@ class Debugger
     {
         list($usec, $sec) = explode(' ', microtime());
 
-        return (float) $usec + (float) $sec;
+        return (float)$usec + (float)$sec;
     }
 
     /**

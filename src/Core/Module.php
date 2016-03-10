@@ -32,7 +32,8 @@ abstract class Module
 
     public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main')
     {
-        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, [static::$module.'.'.$nodeName, $action], 0, static::$module);
+        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, [static::$module.'.'.$nodeName, $action], 0,
+            static::$module);
     }
 
     public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1)

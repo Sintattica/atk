@@ -28,11 +28,11 @@ class TagAttribute extends FuzzySearchAttribute
 
     public $m_link = '';
 
-    /* @var Node null  */
+    /* @var Node null */
     public $m_linkInstance = null;
     public $m_destination = '';
 
-    /* @var Node null  */
+    /* @var Node null */
     public $m_destInstance = null;
 
     public $m_destinationfield = '';
@@ -47,9 +47,9 @@ class TagAttribute extends FuzzySearchAttribute
      * @param string $destination
      * @param string $destinationfield
      * @param string $link
-     * @param int    $mode
-     * @param int    $flags
-     * @param int    $size
+     * @param int $mode
+     * @param int $flags
+     * @param int $size
      *
      * @return TagAttribute
      */
@@ -126,7 +126,7 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Validate the input based on the current mode.
      *
-     * @param array  $rec  The record which holds the values to validate
+     * @param array $rec The record which holds the values to validate
      * @param string $mode The mode we're in
      *
      * @return true on validation, False otherwise.
@@ -145,12 +145,10 @@ class TagAttribute extends FuzzySearchAttribute
 
         foreach ($this->m_nonematching as $keyword) {
             if ($this->m_mode == self::TA_ERROR) {
-                Tools::triggerError($rec, $this, 'notallowed_new_defaulttag',
-                    sprintf($this->text('notallowed_new_defaulttag'), $keyword));
+                Tools::triggerError($rec, $this, 'notallowed_new_defaulttag', sprintf($this->text('notallowed_new_defaulttag'), $keyword));
                 $valid = false;
             } elseif ($this->m_mode == self::TA_ADD && !$this->isValidKeyWord($keyword)) {
-                Tools::triggerError($rec, $this, 'error_tag_illegalvalue',
-                    sprintf($this->text('error_tag_illegalvalue'), $keyword));
+                Tools::triggerError($rec, $this, 'error_tag_illegalvalue', sprintf($this->text('error_tag_illegalvalue'), $keyword));
                 $valid = false;
             }
         }
@@ -270,8 +268,8 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @param array  $record The record that holds the value for this attribute
-     * @param string $mode   The display mode ("view" for viewpages, or "list"
+     * @param array $record The record that holds the value for this attribute
+     * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
      *                       add screens. "csv" for csv files. Applications can
@@ -382,8 +380,8 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Store the value of this attribute.
      *
-     * @param Db     $db   The database object
-     * @param array  $rec  The record to store
+     * @param Db $db The database object
+     * @param array $rec The record to store
      * @param string $mode The mode we're in
      *
      * @return bool True if succesfull, false if not
@@ -440,9 +438,7 @@ class TagAttribute extends FuzzySearchAttribute
                 $defaultsRec[$this->m_destinationfield] = $keyword;
 
                 //if one keyword could not be added, stop adding them.
-                if (!$this->m_destInstance->validate($defaultsRec,
-                        'add') || !$this->m_destInstance->addDb($defaultsRec)
-                ) {
+                if (!$this->m_destInstance->validate($defaultsRec, 'add') || !$this->m_destInstance->addDb($defaultsRec)) {
                     Tools::atkdebug('could not add default keyword');
 
                     return false;
@@ -470,15 +466,9 @@ class TagAttribute extends FuzzySearchAttribute
             $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey;
 
             // First check if the record does not exist yet.
-            $where = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".
-                $rec[$this->m_ownerInstance->primaryKeyField()]."'".
-                ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".
-                $remKey."'";
+            $where = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$rec[$this->m_ownerInstance->primaryKeyField()]."'".' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".$remKey."'";
 
-            $existing = $this->m_linkInstance
-                ->select($where)
-                ->includes($this->m_linkInstance->m_primaryKey)
-                ->getAllRows();
+            $existing = $this->m_linkInstance->select($where)->includes($this->m_linkInstance->m_primaryKey)->getAllRows();
 
             if (!count($existing)) {
                 Tools::atkdebug('does not exist, adding new record.');
@@ -497,16 +487,14 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * load function.
      *
-     * @param Db    $notused
+     * @param Db $notused
      * @param array $record
      */
     public function load($notused, $record)
     {
         Tools::atkdebug('calling load');
         if ($this->createLink()) {
-            return $this->m_linkInstance
-                ->select($this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'")
-                ->getAllRows();
+            return $this->m_linkInstance->select($this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'")->getAllRows();
         }
 
         return array();
@@ -519,7 +507,7 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Dummy implementation.
      *
-     * @param array  $record
+     * @param array $record
      * @param string $fieldprefix
      * @param string $mode
      *
@@ -584,7 +572,7 @@ class TagAttribute extends FuzzySearchAttribute
      *
      * @param string $filter The fieldname you want to filter OR a SQL where
      *                       clause expression.
-     * @param string $value  Required value. (Ommit this parameter if you pass
+     * @param string $value Required value. (Ommit this parameter if you pass
      *                       an SQL expression for $filter.)
      */
     public function addSearchFilter($filter, $value = '')
@@ -676,7 +664,7 @@ class TagAttribute extends FuzzySearchAttribute
     /**
      * Checks if a key is not an array.
      *
-     * @param array  $key   field containing the key values
+     * @param array $key field containing the key values
      * @param string $field field to return if an array
      *
      * @return mixed value of $field

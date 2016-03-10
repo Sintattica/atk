@@ -14,9 +14,9 @@ use ZipArchive;
 class Zip
 {
     /**
- * Some constants.
- */
-const ATKZIP_ZIP = 0;
+     * Some constants.
+     */
+    const ATKZIP_ZIP = 0;
     const ATKZIP_UNZIP = 1;
 
     public $m_zip_bin = '';
@@ -42,7 +42,7 @@ const ATKZIP_ZIP = 0;
     /**
      * Get the (un)zip command.
      *
-     * @param int    $type   The type of zip (ATK_ZIP or ATK_UNZIP)
+     * @param int $type The type of zip (ATK_ZIP or ATK_UNZIP)
      * @param string $params The parameters for zippping or unzipping
      *
      * @return string The command to execute
@@ -66,7 +66,7 @@ const ATKZIP_ZIP = 0;
     /**
      * Run the (un)zip command.
      *
-     * @param int    $type   The type of zip (ATK_ZIP or ATK_UNZIP)
+     * @param int $type The type of zip (ATK_ZIP or ATK_UNZIP)
      * @param string $params The parameters for zipping or unzipping
      *
      * @return string The return code
@@ -87,7 +87,7 @@ const ATKZIP_ZIP = 0;
     /**
      * Get the error message based on the errorcode.
      *
-     * @param int $type      The type of zip (ATK_ZIP or ATK_UNZIP)
+     * @param int $type The type of zip (ATK_ZIP or ATK_UNZIP)
      * @param int $errorcode The errorcode
      *
      * @return string The errormessage
@@ -160,8 +160,7 @@ const ATKZIP_ZIP = 0;
             $phpversion = phpversion();
             $zipextensionloaded = @extension_loaded('zip');
             Tools::atkdebug('atkZip->test: PHP Version = '.$phpversion);
-            Tools::atkdebug("atkZip->test: extension_loaded('zip') = ".($zipextensionloaded
-                    ? 'true' : 'false'));
+            Tools::atkdebug("atkZip->test: extension_loaded('zip') = ".($zipextensionloaded ? 'true' : 'false'));
             if (version_compare($phpversion, '5.2') > 0 && $zipextensionloaded) {
                 Tools::atkdebug('atkZip->test: PHP 5.2 or newer and the ZIP extension are present, TEST SUCCESFULL!');
                 if ($this->m_zipmode == 'auto') {
@@ -199,9 +198,9 @@ const ATKZIP_ZIP = 0;
     /**
      * Extract a zipfile.
      *
-     * @param string $archive     The zip file
+     * @param string $archive The zip file
      * @param string $destination The destination folder
-     * @param array  $entries     The entries
+     * @param array $entries The entries
      *
      * @return bool True if extract went successfull or false if not
      */
@@ -249,7 +248,7 @@ const ATKZIP_ZIP = 0;
     /**
      * Add file to archive with optional filepath.
      *
-     * @param string $archive  archive-path
+     * @param string $archive archive-path
      * @param string $filename file to add
      * @param string $filepath path where file will be placed in (optional, and only for zipmode "internal")
      *
@@ -282,8 +281,8 @@ const ATKZIP_ZIP = 0;
             if ($returncode <= 0) {
                 return true;
             } else {
-                Tools::atkerror(sprintf('atkZip->add: Infozip returned an error: %s (return code %d)',
-                    $this->getInfozipError(self::ATKZIP_ZIP, $returncode), $returncode));
+                Tools::atkerror(sprintf('atkZip->add: Infozip returned an error: %s (return code %d)', $this->getInfozipError(self::ATKZIP_ZIP, $returncode),
+                    $returncode));
 
                 return false;
             }

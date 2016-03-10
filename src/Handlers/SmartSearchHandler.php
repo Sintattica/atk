@@ -95,7 +95,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      */
     public function partialCriterium()
     {
-        $criterium = $this->getCriterium((int) $this->m_postvars['next_criterium_id']);
+        $criterium = $this->getCriterium((int)$this->m_postvars['next_criterium_id']);
 
         return $this->renderCriterium($criterium);
     }
@@ -116,8 +116,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $path = array_slice($path, $field_nr + 1);
 
         if (count($path) > 0) {
-            return $this->getCriteriumField($criterium_id, $path, $scriptCode).
-            '<script language="javascript">'.implode("\n", $scriptCode).'</script>';
+            return $this->getCriteriumField($criterium_id, $path, $scriptCode).'<script language="javascript">'.implode("\n", $scriptCode).'</script>';
         } else {
             return '';
         }
@@ -237,7 +236,7 @@ class SmartSearchHandler extends AbstractSearchHandler
     /**
      * Get searchable attributes for the given node.
      *
-     * @param Node  $node     reference to the node
+     * @param Node $node reference to the node
      * @param array $excludes attribute exclude list
      *
      * @return array list of reference to searchable attributes
@@ -274,27 +273,21 @@ class SmartSearchHandler extends AbstractSearchHandler
             return $label.'<input type="hidden" name="'.$entry['name'].'" value="'.$attr->fieldName().'">';
         }
 
-        $result = '<select id="'.$entry['name'].'" name="'.$entry['name'].'">'.
-            '<option value=""></option>';
+        $result = '<select id="'.$entry['name'].'" name="'.$entry['name'].'">'.'<option value=""></option>';
 
         if ($entry['includeSelf']) {
-            $result .=
-                '<option value="."'.($entry['selectSelf'] ? ' selected="selected"'
-                    : '').'>'.$this->m_node->text('self').'</option>'.
-                '<option value=""></option>';
+            $result .= '<option value="."'.($entry['selectSelf'] ? ' selected="selected"' : '').'>'.$this->m_node->text('self').'</option>'.'<option value=""></option>';
         }
 
         $current = &$entry['attr'];
         for ($i = 0, $_i = count($entry['attrs']); $i < $_i; ++$i) {
             $attr = &$entry['attrs'][$i];
-            $selected = $current != null && $attr->fieldName() == $current->fieldName()
-                ? ' selected="selected"' : '';
+            $selected = $current != null && $attr->fieldName() == $current->fieldName() ? ' selected="selected"' : '';
             $label = htmlentities(strip_tags($attr->label()));
             $result .= '<option value="'.$attr->fieldName().'"'.$selected.'>'.$label.'</option>';
         }
 
-        $result .=
-            '</select>';
+        $result .= '</select>';
 
         return $result;
     }
@@ -313,11 +306,11 @@ class SmartSearchHandler extends AbstractSearchHandler
      * This method will modify the $path, $includeSelf and $excludes parameters to prepare
      * them for the next call to this method.
      *
-     * @param array  $path        reference to the current path
-     * @param Node   $node        reference to the current node
-     * @param string $attrName    currently selected attribute
-     * @param bool   $includeSelf should we include ourselves?
-     * @param array  $excludes    attributes to exclude
+     * @param array $path reference to the current path
+     * @param Node $node reference to the current node
+     * @param string $attrName currently selected attribute
+     * @param bool $includeSelf should we include ourselves?
+     * @param array $excludes attributes to exclude
      *
      * @return Node next node
      */
@@ -391,8 +384,8 @@ class SmartSearchHandler extends AbstractSearchHandler
     /**
      * Returns the criterium field for the given path.
      *
-     * @param int   $id         criterium id
-     * @param array $path       criterium path
+     * @param int $id criterium id
+     * @param array $path criterium path
      * @param array $scriptCode lines of JavaScript
      *
      * @return string criterium field HTML
@@ -438,11 +431,11 @@ class SmartSearchHandler extends AbstractSearchHandler
     /**
      * Returns the criterium value or mode field for the given path.
      *
-     * @param int    $id    criterium id
-     * @param array  $path  criterium path
-     * @param array  $value current search value
-     * @param array  $mode  current search mode
-     * @param string $type  return either 'value' or 'mode' field
+     * @param int $id criterium id
+     * @param array $path criterium path
+     * @param array $value current search value
+     * @param array $mode current search mode
+     * @param string $type return either 'value' or 'mode' field
      * @param string criterium value or mode field HTML
      */
     public function _getCriteriumValueOrMode($id, $path, $value, $mode, $type)
@@ -496,10 +489,10 @@ class SmartSearchHandler extends AbstractSearchHandler
     /**
      * Returns the criterium value field for the given path.
      *
-     * @param int   $id    criterium id
-     * @param array $path  criterium path
+     * @param int $id criterium id
+     * @param array $path criterium path
      * @param array $value current search value
-     * @param array $mode  current search mode
+     * @param array $mode current search mode
      * @param string criterium value field HTML
      */
     public function getCriteriumValue($id, $path, $value = array(), $mode = array())
@@ -510,10 +503,10 @@ class SmartSearchHandler extends AbstractSearchHandler
     /**
      * Returns the criterium mode field for the given path.
      *
-     * @param int   $id    criterium id
-     * @param array $path  criterium path
+     * @param int $id criterium id
+     * @param array $path criterium path
      * @param array $value current search value
-     * @param array $mode  current search mode
+     * @param array $mode current search mode
      * @param string criterium mode field HTML
      */
     public function getCriteriumMode($id, $path, $value = array(), $mode = array())
@@ -526,8 +519,8 @@ class SmartSearchHandler extends AbstractSearchHandler
      * structure contains the already known information about the currently
      * selected field and values (if any).
      *
-     * @param string $id   criterium identifier
-     * @param array  $data criterium data
+     * @param string $id criterium identifier
+     * @param array $data criterium data
      */
     public function getCriterium($id, $data = array())
     {
@@ -580,15 +573,14 @@ class SmartSearchHandler extends AbstractSearchHandler
     {
         $sm = SessionManager::getInstance();
 
-        return $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->m_action),
-            SessionManager::SESSION_REPLACE);
+        return $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->m_action), SessionManager::SESSION_REPLACE);
     }
 
     /**
      * This method returns a form that the user can use to search records.
      *
      * @param string $name
-     * @param array  $criteria
+     * @param array $criteria
      *
      * @return string The searchform in html form.
      */
@@ -613,8 +605,8 @@ class SmartSearchHandler extends AbstractSearchHandler
             $params['criteria'][] = $this->getCriterium($i, $criterium);
         }
 
-        $url = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'smartsearch',
-            array('atkpartial' => 'criterium')), SessionManager::SESSION_NEW);
+        $url = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'smartsearch', array('atkpartial' => 'criterium')),
+            SessionManager::SESSION_NEW);
         $params['action_add'] = "ATK.SmartSearchHandler.addCriterium('".addslashes($url)."')";
 
         return $ui->render($this->getTemplate('form'), $params);
@@ -624,7 +616,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      * This method returns an html page that can be used as a search form.
      *
      * @param string $name
-     * @param array  $criteria
+     * @param array $criteria
      *
      * @return string The html search page.
      */
@@ -643,15 +635,11 @@ class SmartSearchHandler extends AbstractSearchHandler
 
         $params = array();
 
-        $params['formstart'] = '<form name="entryform" action="'.Config::getGlobal('dispatcher').'" method="post" class="form">'
-            .$sm->formState(SessionManager::SESSION_REPLACE)
-            .'<input type="hidden" name="atkaction" value="smartsearch">'
-            .'<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
+        $params['formstart'] = '<form name="entryform" action="'.Config::getGlobal('dispatcher').'" method="post" class="form">'.$sm->formState(SessionManager::SESSION_REPLACE).'<input type="hidden" name="atkaction" value="smartsearch">'.'<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
 
         $params['content'] = $this->invoke('smartSearchForm', $name, $criteria);
 
-        $params['buttons'][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="'.Tools::atktext('search',
-                'atk').'">';
+        $params['buttons'][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="'.Tools::atktext('search', 'atk').'">';
 
         $params['formend'] = '</form>';
 

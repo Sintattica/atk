@@ -87,9 +87,9 @@ class PgSqlDb extends Db
     /**
      * Performs a query.
      *
-     * @param string $query  the query
-     * @param int    $offset offset in record list
-     * @param int    $limit  maximum number of records
+     * @param string $query the query
+     * @param int $offset offset in record list
+     * @param int $limit maximum number of records
      */
     public function query($query, $offset = -1, $limit = -1)
     {
@@ -146,6 +146,7 @@ class PgSqlDb extends Db
         }
 
         /* return result */
+
         return $result;
     }
 
@@ -165,7 +166,7 @@ class PgSqlDb extends Db
      * Lock a certain table in the database.
      *
      * @param string $table the table name
-     * @param string $mode  the type of locking
+     * @param string $mode the type of locking
      *
      * @return result of locking
      */
@@ -181,6 +182,7 @@ class PgSqlDb extends Db
             }
 
             /* return result */
+
             return $result;
         }
 
@@ -200,6 +202,7 @@ class PgSqlDb extends Db
             $result = @pg_query($this->m_link_id, 'commit') or $this->halt('cannot unlock tables');
 
             /* return result */
+
             return $result;
         }
 
@@ -278,8 +281,7 @@ class PgSqlDb extends Db
                 /* try again */
                 $query = "SELECT nextval('".$sequencename."') AS nextid";
 
-                $id = @pg_query($this->m_link_id,
-                    $query) or $this->halt("cannot get nextval() of sequence '$sequencename'");
+                $id = @pg_query($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence '$sequencename'");
 
                 /* empty? */
                 if (empty($id)) {
@@ -291,6 +293,7 @@ class PgSqlDb extends Db
             $result = @pg_fetch_result($id, 0, 'nextid');
 
             /* return id */
+
             return $result;
         }
 
@@ -301,7 +304,7 @@ class PgSqlDb extends Db
      * Return the meta data of a certain table.
      *
      * @param string $table the table name
-     * @param bool   $full  all meta data or not
+     * @param bool $full all meta data or not
      *
      * @return array with meta data
      */
@@ -372,19 +375,14 @@ class PgSqlDb extends Db
             $meta[$i]['gentype'] = $ddl->getGenericType($row['type']);
             $meta[$i]['name'] = $row['name'];
             $meta[$i]['len'] = $row['length'];
-            $meta[$i]['flags'] = ($row['is_primary'] == 1 ? Db::MF_PRIMARY : 0) |
-                ($row['is_unique'] == 1 ? Db::MF_UNIQUE : 0) |
-                ($row['is_not_null'] == 1 ? Db::MF_NOT_NULL : 0) |
-                ($row['is_auto_inc'] == 1 ? Db::MF_AUTO_INCREMENT : 0);
+            $meta[$i]['flags'] = ($row['is_primary'] == 1 ? Db::MF_PRIMARY : 0) | ($row['is_unique'] == 1 ? Db::MF_UNIQUE : 0) | ($row['is_not_null'] == 1 ? Db::MF_NOT_NULL : 0) | ($row['is_auto_inc'] == 1 ? Db::MF_AUTO_INCREMENT : 0);
 
             if ($row['is_auto_inc'] == 1) {
                 $meta[$i]['sequence'] = $row['sequence'];
             } else {
                 if (Tools::atk_strlen($row['default']) > 0) {
                     // date/time/datetime
-                    if (strtolower($row['default']) == 'now' && in_array($meta[$i]['gentype'],
-                            array('date', 'time', 'datetime'))
-                    ) {
+                    if (strtolower($row['default']) == 'now' && in_array($meta[$i]['gentype'], array('date', 'time', 'datetime'))) {
                         $meta[$i]['default'] = 'NOW';
                     } // numbers
                     else {
@@ -397,8 +395,7 @@ class PgSqlDb extends Db
                             } // boolean
                             else {
                                 if ($meta[$i]['gentype'] == 'boolean') {
-                                    $meta[$i]['default'] = strtolower($row['default']) == 't' ? 1
-                                        : 0;
+                                    $meta[$i]['default'] = strtolower($row['default']) == 't' ? 1 : 0;
                                 }
                             }
                         }
@@ -436,6 +433,7 @@ class PgSqlDb extends Db
         }
 
         /* return result */
+
         return $result;
     }
 

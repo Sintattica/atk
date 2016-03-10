@@ -130,7 +130,6 @@ class EditHandler extends ViewEditBase
      * Render the edit page.
      *
      * @param array $record The record to edit
-     
      * @return string HTML code for the edit page
      */
     public function editPage($record)
@@ -226,8 +225,7 @@ class EditHandler extends ViewEditBase
         $ui = &$node->getUi();
 
         if (is_object($ui)) {
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle('edit',
-                    $record));
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle('edit', $record));
 
             $output = $ui->render('action.tpl', $params, $node->m_module);
             $this->addRenderBoxVar('title', $node->actionTitle('edit', $record));
@@ -273,9 +271,7 @@ class EditHandler extends ViewEditBase
     {
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.
-            ' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">'.
-            $sm->formState($this->getUpdateSessionStatus());
+        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">'.$sm->formState($this->getUpdateSessionStatus());
 
         $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getUpdateAction().'" />';
         $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkprevaction" value="'.$this->getNode()->m_action.'" />';
@@ -315,10 +311,10 @@ class EditHandler extends ViewEditBase
     /**
      * Create template field array for the given edit field.
      *
-     * @param array  $fields all fields
-     * @param int    $index  field index
-     * @param string $mode   mode (add/edit)
-     * @param string $tab    active tab
+     * @param array $fields all fields
+     * @param int $index field index
+     * @param string $mode mode (add/edit)
+     * @param string $tab active tab
      *
      * @return array template field
      */
@@ -361,8 +357,8 @@ class EditHandler extends ViewEditBase
         $tplfield['tab'] = $tplfield['class']; // for backwards compatibility
         // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
         // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-        $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab, $field['tabs'])) &&
-            (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+        $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab,
+                    $field['tabs'])) && (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
         // ar_ stands voor 'attribrow'.
         $tplfield['rowid'] = 'ar_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueID('anonymousattribrows')); // The id of the containing row
@@ -371,18 +367,15 @@ class EditHandler extends ViewEditBase
             $tplfield['type'] = 'line';
             $tplfield['line'] = '<hr>';
         } /* double separator, ignore */ elseif ($field['html'] == '-') {
- } /* sections */
-        elseif ($field['html'] == 'section') {
+        } /* sections */ elseif ($field['html'] == 'section') {
             $tplfield['type'] = 'section';
             list($tab, $section) = explode('.', $field['name']);
             $tplfield['section_name'] = "section_{$tab}_{$section}";
             $tplfield['line'] = $this->getSectionControl($field, $mode);
-        } /* only full HTML */
-        elseif (isset($field['line'])) {
+        } /* only full HTML */ elseif (isset($field['line'])) {
             $tplfield['type'] = 'custom';
             $tplfield['line'] = $field['line'];
-        } /* edit field */
-        else {
+        } /* edit field */ else {
             $tplfield['type'] = 'attribute';
 
             if ($field['attribute']->m_ownerInstance->getNumbering()) {
@@ -438,16 +431,16 @@ class EditHandler extends ViewEditBase
     /**
      * Function returns a generic html form for editing a record.
      *
-     * @param string $mode         The edit mode ("add" or "edit").
-     * @param array  $record       The record to edit.
-     * @param array  $forceList    A key-value array used to preset certain
+     * @param string $mode The edit mode ("add" or "edit").
+     * @param array $record The record to edit.
+     * @param array $forceList A key-value array used to preset certain
      *                             fields to a certain value.
-     * @param array  $suppressList An array of fields that will be hidden.
-     * @param string $fieldprefix  If set, each form element is prefixed with
+     * @param array $suppressList An array of fields that will be hidden.
+     * @param string $fieldprefix If set, each form element is prefixed with
      *                             the specified prefix (used in embedded
      *                             forms)
-     * @param string $template     The template to use for the edit form
-     * @param bool   $ignoreTab    Ignore the tabs an attribute should be shown on.
+     * @param string $template The template to use for the edit form
+     * @param bool $ignoreTab Ignore the tabs an attribute should be shown on.
      *
      * @return string the edit form as a string
      */
@@ -561,9 +554,7 @@ class EditHandler extends ViewEditBase
             // a selection using the select handler or generated an error, in either way we assume
             // the form has been changed, so we always warn the user when leaving the page.
             $isChanged = 'false';
-            if ((isset($record['atkerror']) && count($record['atkerror']) > 0) ||
-                (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper'])
-            ) {
+            if ((isset($record['atkerror']) && count($record['atkerror']) > 0) || (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper'])) {
                 $isChanged = 'true';
             }
 
@@ -599,7 +590,7 @@ class EditHandler extends ViewEditBase
     /**
      * Get the link fo a tab.
      *
-     * @param Node  $node  The node
+     * @param Node $node The node
      * @param array $error
      *
      * @return string HTML code with link
@@ -610,8 +601,7 @@ class EditHandler extends ViewEditBase
             return '';
         }
 
-        return '<a href="javascript:void(0)" onclick="showTab(\''.$error['tab'].'\'); return false;">'.$this->getTabLabel($node,
-            $error['tab']).'</a>';
+        return '<a href="javascript:void(0)" onclick="showTab(\''.$error['tab'].'\'); return false;">'.$this->getTabLabel($node, $error['tab']).'</a>';
     }
 
     /**

@@ -21,7 +21,7 @@ class ConfigAuth extends AuthInterface
     /**
      * Authenticate a user.
      *
-     * @param string $user   The login of the user to authenticate.
+     * @param string $user The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
      *                       $passwd will be passed as an md5 string.
@@ -90,7 +90,7 @@ class ConfigAuth extends AuthInterface
      * This function returns the level/group(s) that are allowed to perform
      * the given action on a node.
      *
-     * @param string $node   The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                       the privilege. (modulename.nodename)
      * @param string $action The privilege to check.
      *
@@ -120,10 +120,10 @@ class ConfigAuth extends AuthInterface
      * This function returns the level/group(s) that are allowed to
      * view/edit a certain attribute of a given node.
      *
-     * @param string $node   The full nodename of the node for which to check
+     * @param string $node The full nodename of the node for which to check
      *                       attribute access.
      * @param string $attrib The name of the attribute to check
-     * @param string $mode   "view" or "edit"
+     * @param string $mode "view" or "edit"
      *
      * @return array
      */

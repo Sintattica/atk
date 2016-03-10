@@ -20,18 +20,17 @@ class FeedbackHandler extends ActionHandler
     public function action_feedback()
     {
         $page = $this->getPage();
-        $output = $this->invoke('feedbackPage', $this->m_postvars['atkfbaction'], $this->m_postvars['atkactionstatus'],
-            $this->m_postvars['atkfbmessage']);
+        $output = $this->invoke('feedbackPage', $this->m_postvars['atkfbaction'], $this->m_postvars['atkactionstatus'], $this->m_postvars['atkfbmessage']);
         $page->addContent($this->m_node->renderActionPage('feedback', $output));
     }
 
     /**
      * The method returns a complete html page containing the feedback info.
      *
-     * @param string $action       The action for which feedback is provided
-     * @param int    $actionstatus The status of the action for which feedback is
+     * @param string $action The action for which feedback is provided
+     * @param int $actionstatus The status of the action for which feedback is
      *                             provided
-     * @param string $message      An optional message to display in addition to the
+     * @param string $message An optional message to display in addition to the
      *                             default feedback information message.
      *
      * @return string The feedback page as an html String.
@@ -41,8 +40,7 @@ class FeedbackHandler extends ActionHandler
         $node = $this->m_node;
         $ui = $this->getUi();
 
-        $params['content'] = '<br>'.Tools::atktext('feedback_'.$action.'_'.Tools::atkActionStatus($actionstatus),
-                $node->m_module, $node->m_type);
+        $params['content'] = '<br>'.Tools::atktext('feedback_'.$action.'_'.Tools::atkActionStatus($actionstatus), $node->m_module, $node->m_type);
         if ($message) {
             $params['content'] .= ' <br>'.$message;
         }

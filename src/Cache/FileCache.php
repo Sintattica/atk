@@ -44,8 +44,7 @@ class FileCache extends Cache
      */
     protected function setCachePath()
     {
-        $this->m_path = $this->getCacheConfig('path',
-                Config::getGlobal('atktempdir').'cache/').$this->getFileSafeNamespace().'/';
+        $this->m_path = $this->getCacheConfig('path', Config::getGlobal('atktempdir').'cache/').$this->getFileSafeNamespace().'/';
         FileAttribute::mkdir($this->m_path);
     }
 
@@ -73,8 +72,8 @@ class FileCache extends Cache
     /**
      * Inserts cache entry data, but only if the entry does not already exist.
      *
-     * @param string   $key      The entry ID.
-     * @param mixed    $data     The data to write into the entry.
+     * @param string $key The entry ID.
+     * @param mixed $data The data to write into the entry.
      * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      *
      * @return bool True on success, false on failure.
@@ -109,8 +108,8 @@ class FileCache extends Cache
     /**
      * Sets cache entry data.
      *
-     * @param string   $key      The entry ID.
-     * @param mixed    $data     The data to write into the entry.
+     * @param string $key The entry ID.
+     * @param mixed $data The data to write into the entry.
      * @param int|bool $lifetime give a specific lifetime for this cache entry. When $lifetime is false the default lifetime is used.
      *
      * @return bool True on success, false on failure.
@@ -266,7 +265,7 @@ class FileCache extends Cache
             return false;
         }
 
-        $list = (array) @scandir($this->m_path, null, $this->m_context);
+        $list = (array)@scandir($this->m_path, null, $this->m_context);
 
         // delete each file
         foreach ($list as $file) {

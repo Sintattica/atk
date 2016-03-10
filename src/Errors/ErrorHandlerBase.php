@@ -29,7 +29,7 @@ abstract class ErrorHandlerBase
      * Returns an error handler by name, params are passed to the handler.
      *
      * @param string $handlerName
-     * @param array  $params
+     * @param array $params
      *
      * @return mixed
      */

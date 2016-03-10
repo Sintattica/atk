@@ -16,14 +16,14 @@ class HtmlRecordList extends CustomRecordList
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable.
      *
-     * @param Node   $node         The node to use as definition for the columns.
-     * @param array  $recordset    The records to render
-     * @param string $compression  Compression technique (bzip / gzip)
-     * @param array  $suppressList List of attributes from $node that should be ignored
-     * @param array  $outputparams Key-Value parameters for output. Currently existing:
+     * @param Node $node The node to use as definition for the columns.
+     * @param array $recordset The records to render
+     * @param string $compression Compression technique (bzip / gzip)
+     * @param array $suppressList List of attributes from $node that should be ignored
+     * @param array $outputparams Key-Value parameters for output. Currently existing:
      *                             filename - the name of the file (without extension .csv)
-     * @param bool   $titlerow     Should titlerow be rendered or not
-     * @param bool   $decode       Should data be decoded or not (for exports)
+     * @param bool $titlerow Should titlerow be rendered or not
+     * @param bool $decode Should data be decoded or not (for exports)
      *
      * @return string
      */
@@ -36,7 +36,7 @@ class HtmlRecordList extends CustomRecordList
         $titlerow = true,
         $decode = false
     ) {
-        return parent::render($node, $recordset, '<tr>', '<td>', '</td>', "<tr>\n", '0', $compression, $suppressList,
-            $outputparams, 'list', $titlerow, $decode, '', '<br>');
+        return parent::render($node, $recordset, '<tr>', '<td>', '</td>', "<tr>\n", '0', $compression, $suppressList, $outputparams, 'list', $titlerow, $decode,
+            '', '<br>');
     }
 }

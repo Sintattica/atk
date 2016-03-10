@@ -27,8 +27,8 @@ class SessionStore
     /**
      * Get the current instance for the session storage.
      *
-     * @param mixed $key   Key to use
-     * @param bool  $reset Wether to reset the singleton
+     * @param mixed $key Key to use
+     * @param bool $reset Wether to reset the singleton
      *
      * @return SessionStore Storage
      */
@@ -62,8 +62,8 @@ class SessionStore
     /**
      * Create a new sessionstore.
      *
-     * @param mixed $key   Key to use
-     * @param bool  $reset Reset data
+     * @param mixed $key Key to use
+     * @param bool $reset Reset data
      */
     private function __construct($key, $reset = false)
     {
@@ -88,14 +88,15 @@ class SessionStore
      *
      * Also sets the primary key field to a fake negative id
      *
-     * @param array  $row               Row to store in the session
+     * @param array $row Row to store in the session
      * @param string $primary_key_field Primary key field to use and set with the row key
      *
      * @return mixed Primary key for the added record, or false if we don't have a session
      */
     public function addDataRow($row, $primary_key_field)
     {
-        Tools::atk_var_dump($row, __CLASS__.'->'.__METHOD__.": Adding a new row to session store with primary key field '$primary_key_field' and key: ".$this->getKey());
+        Tools::atk_var_dump($row,
+            __CLASS__.'->'.__METHOD__.": Adding a new row to session store with primary key field '$primary_key_field' and key: ".$this->getKey());
         $data = $this->getData();
         if ($data === false) {
             return false;
@@ -137,7 +138,7 @@ class SessionStore
      * Update (set) a row in the session for an ATK/SQL selector.
      *
      * @param string $selector ATK/SQL selector
-     * @param array  $row      New row
+     * @param array $row New row
      *
      * @return mixed Updated row or false if updating failed
      */
@@ -274,8 +275,8 @@ class SessionStore
     /**
      * Check if the given row key is valid.
      *
-     * @param int   $rowKey Row key
-     * @param array $data   Data array
+     * @param int $rowKey Row key
+     * @param array $data Data array
      *
      * @return bool
      */

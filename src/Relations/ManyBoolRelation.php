@@ -40,10 +40,10 @@ class ManyBoolRelation extends ManyToManyRelation
     /**
      * Return a piece of html code to edit the attribute.
      *
-     * @param array  $record      Current record
+     * @param array $record Current record
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string piece of html code
      */
@@ -65,12 +65,10 @@ class ManyBoolRelation extends ManyToManyRelation
 
             if (!$this->hasFlag(self::AF_MANYBOOL_NO_TOOLBAR)) {
                 $result .= '<div align="left"><font size="-2">
-                      [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                    Tools::atktext('check_all', 'atk').
-                    '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                    Tools::atktext('check_none', 'atk').
-                    '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                    Tools::atktext('invert_selection', 'atk').'</a>]</font></div>';
+                      [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('check_all',
+                        'atk').'</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('check_none',
+                        'atk').'</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('invert_selection',
+                        'atk').'</a>]</font></div>';
             }
 
             $result .= '<table border="0"><tr>';
@@ -79,21 +77,17 @@ class ManyBoolRelation extends ManyToManyRelation
                 $selector = '';
                 if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk)) {
                     $sel = 'checked';
-                    if ($this->getShowDetailsLink() && !$this->m_linkInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_linkInstance->allowed('edit')
-                    ) {
+                    if ($this->getShowDetailsLink() && !$this->m_linkInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_linkInstance->allowed('edit')) {
                         $localPkAttr = $this->getOwnerInstance()->getAttribute($this->getOwnerInstance()->primaryKeyField());
                         $localValue = $localPkAttr->value2db($record);
 
                         $remotePkAttr = $this->getDestination()->getAttribute($this->getDestination()->primaryKeyField());
                         $remoteValue = $remotePkAttr->value2db($recordset[$i]);
 
-                        $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey().'='.$localValue.''.
-                            ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
-                            "='".$remoteValue."'";
+                        $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey().'='.$localValue.''.' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".$remoteValue."'";
                         // Create link to details.
-                        $detaillink = Tools::href(Tools::dispatch_url($this->m_link, 'edit',
-                            array('atkselector' => $selector)), '['.Tools::atktext('details', 'atk').']',
-                            SessionManager::SESSION_NESTED, true);
+                        $detaillink = Tools::href(Tools::dispatch_url($this->m_link, 'edit', array('atkselector' => $selector)),
+                            '['.Tools::atktext('details', 'atk').']', SessionManager::SESSION_NESTED, true);
                     }
                 } else {
                     $sel = '';
@@ -108,14 +102,7 @@ class ManyBoolRelation extends ManyToManyRelation
                     $onchange = '';
                 }
 
-                $result .= '<td class="table"><input type="checkbox" id="'.$inputId.'" name="'.
-                    $this->getHtmlId($fieldprefix).
-                    '[]['.$this->getRemoteKey().
-                    ']" value="'.
-                    $recordset[$i][$this->m_destInstance->primaryKeyField()].
-                    '" '.$this->getCSSClassAttribute('atkcheckbox').' '.$sel.$onchange.'></td><td class="table">'.
-                    '<label for="'.$inputId.'">'.$this->m_destInstance->descriptor($recordset[$i]).'</label>'.
-                    '</td><td class="table">'.$detaillink.'</td>';
+                $result .= '<td class="table"><input type="checkbox" id="'.$inputId.'" name="'.$this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']" value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'" '.$this->getCSSClassAttribute('atkcheckbox').' '.$sel.$onchange.'></td><td class="table">'.'<label for="'.$inputId.'">'.$this->m_destInstance->descriptor($recordset[$i]).'</label>'.'</td><td class="table">'.$detaillink.'</td>';
                 if ($i % $cols == $modcols) {
                     $result .= "</tr><tr>\n";
                 }
@@ -128,8 +115,7 @@ class ManyBoolRelation extends ManyToManyRelation
         }
         // Add the add link if self::AF_MANYBOOL_AUTOLINK used
         if (($this->hasFlag(self::AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed('add'))) {
-            $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'add'), $this->getAddLabel(),
-                    SessionManager::SESSION_NESTED)."\n";
+            $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'add'), $this->getAddLabel(), SessionManager::SESSION_NESTED)."\n";
         }
 
         return $result;

@@ -28,7 +28,7 @@ class GroupByFilter extends Filter
      *
      * @param string $name
      * @param string $groupbystmt
-     * @param int    $flags
+     * @param int $flags
      */
     public function __construct($name, $groupbystmt, $flags = 0)
     {

@@ -22,10 +22,10 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * Constructor.
      *
-     * @param string       $name  Name of the attribute
-     * @param string|array $dir   Can be a string with the Directory with images/files or an array with a Directory and a Display Url
-     * @param int          $flags Flags for this attribute
-     * @param int          $size  Filename size
+     * @param string $name Name of the attribute
+     * @param string|array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
+     * @param int $flags Flags for this attribute
+     * @param int $size Filename size
      */
     public function __construct($name, $dir, $flags = 0, $size = 0)
     {
@@ -110,8 +110,7 @@ class MultipleFileAttribute extends FileAttribute
             $file = $this->fetchValue($_POST);
             $file['filename'] = str_replace(' ', '_', $file['filename']);
             if ($file['filename'] != '') {
-                @copy($file['tmpfile'],
-                    $this->m_dir.$file['filename']) or die('Save failed!');
+                @copy($file['tmpfile'], $this->m_dir.$file['filename']) or die('Save failed!');
                 $r .= $file['filename'].';';
             }
         }
@@ -141,7 +140,7 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * Display values.
      *
-     * @param array  $record Array with fields
+     * @param array $record Array with fields
      * @param string $mode
      *
      * @return string html

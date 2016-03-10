@@ -124,7 +124,7 @@ class ConsoleController
      * Tries to execute the given action.
      *
      * @param string $action action name
-     * @param array  $params action parameters
+     * @param array $params action parameters
      */
     protected function executeAction($action, $params)
     {
@@ -151,7 +151,7 @@ class ConsoleController
      * created automatically.
      *
      * @param string $message info message
-     * @param mixed  $data    data that should be logged (optional)
+     * @param mixed $data data that should be logged (optional)
      */
     public function info($message, $data = null)
     {
@@ -170,7 +170,7 @@ class ConsoleController
      * created automatically.
      *
      * @param string $message error message
-     * @param mixed  $data    data that should be logged (optional)
+     * @param mixed $data data that should be logged (optional)
      */
     public function error($message, $data = null)
     {
@@ -186,9 +186,9 @@ class ConsoleController
      * yyyymmdd part is replaced by the current date and the type is replaced by the value of
      * the $type parameter.
      *
-     * @param string $type    type (max 5 chars)
+     * @param string $type type (max 5 chars)
      * @param string $message message
-     * @param mixed  $data    optional data
+     * @param mixed $data optional data
      */
     protected function log($type, $message, $data)
     {

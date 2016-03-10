@@ -172,14 +172,14 @@ class Query
     /**
      * Add's a field to the query.
      *
-     * @param string $name             Field name
-     * @param string $value            Field value
-     * @param string $table            Table name
+     * @param string $name Field name
+     * @param string $value Field value
+     * @param string $table Table name
      * @param string $fieldaliasprefix Field alias prefix
-     * @param bool   $quote            If this parameter is true, stuff is inserted into the db
+     * @param bool $quote If this parameter is true, stuff is inserted into the db
      *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
      *                                 done without quotes, e.d. SET number = 4.
-     * @param bool   $quotefield       Wether or not to quote the fieldname
+     * @param bool $quotefield Wether or not to quote the fieldname
      *
      * @return Query The query object itself (for fluent usage)
      */
@@ -217,10 +217,10 @@ class Query
      * Add's a sequence field to the query.
      *
      * @param string $fieldName field name
-     * @param int    $value     field to store the new sequence value in, note certain drivers
+     * @param int $value field to store the new sequence value in, note certain drivers
      *                          might populate this field only after the insert query has been
      *                          executed
-     * @param string $seqName   sequence name (optional for certain drivers)
+     * @param string $seqName sequence name (optional for certain drivers)
      *
      * @return Query
      */
@@ -235,13 +235,13 @@ class Query
     /**
      * Add multiple fields at once.
      *
-     * @param array  $fields           array with field value pairs
-     * @param string $table            Table name
+     * @param array $fields array with field value pairs
+     * @param string $table Table name
      * @param string $fieldaliasprefix Field alias prefix
-     * @param bool   $quote            If this parameter is true, stuff is inserted into the db
+     * @param bool $quote If this parameter is true, stuff is inserted into the db
      *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
      *                                 done without quotes, e.d. SET number = 4.
-     * @param bool   $quotefield       Wether or not to quote the fieldname
+     * @param bool $quotefield Wether or not to quote the fieldname
      *
      * @return Query The query object itself (for fluent usage)
      */
@@ -257,10 +257,10 @@ class Query
     /**
      * Add's an expression to the select query.
      *
-     * @param string $fieldName        expression field name
-     * @param string $expression       expression value
+     * @param string $fieldName expression field name
+     * @param string $expression expression value
      * @param string $fieldAliasPrefix field alias prefix
-     * @param bool   $quoteFieldName   wether or not to quote the expression field name
+     * @param bool $quoteFieldName wether or not to quote the expression field name
      *
      * @return Query The query object itself (for fluent usage)
      */
@@ -300,7 +300,7 @@ class Query
     /**
      * Add table to Tables array.
      *
-     * @param string $name  Table name
+     * @param string $name Table name
      * @param string $alias Alias of table
      *
      * @return Query The query object itself (for fluent usage)
@@ -316,10 +316,10 @@ class Query
     /**
      * Add join to Join Array.
      *
-     * @param string $table     Table name
-     * @param string $alias     Alias of table
+     * @param string $table Table name
+     * @param string $alias Alias of table
      * @param string $condition Condition for the Join
-     * @param bool   $outer     Wether to use an outer (left) join or an inner join
+     * @param bool $outer Wether to use an outer (left) join or an inner join
      *
      * @return Query The query object itself (for fluent usage)
      */
@@ -430,7 +430,7 @@ class Query
      * Set a limit to the number of results.
      *
      * @param int $offset Retrieve records starting with record ...
-     * @param int $limit  Retrieve only this many records.
+     * @param int $limit Retrieve only this many records.
      *
      * @return Query The query object itself (for fluent usage)
      */
@@ -457,8 +457,7 @@ class Query
         $result = 'SELECT '.($distinct || $this->m_distinct ? 'DISTINCT ' : '');
         for ($i = 0; $i < count($this->m_fields); ++$i) {
             $result .= $this->quoteField($this->m_fields[$i]);
-            $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]]) ? $this->m_fieldaliases[$this->m_fields[$i]]
-                : '');
+            $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]]) ? $this->m_fieldaliases[$this->m_fields[$i]] : '');
             if ($fieldalias != '') {
                 $result .= ' AS '.$fieldalias;
             }
@@ -473,8 +472,7 @@ class Query
             }
             $fieldName = $entry['name'];
             $expression = $entry['expression'];
-            $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName]
-                : $this->quoteField($fieldName);
+            $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName] : $this->quoteField($fieldName);
             $result .= "($expression) AS $fieldAlias";
             $first = false;
         }
@@ -751,7 +749,7 @@ class Query
      * Generate a searchcondition that checks if the field is null.
      *
      * @param string $field
-     * @param bool   $emptyStringIsNull
+     * @param bool $emptyStringIsNull
      */
     public function nullCondition($field, $emptyStringIsNull = false)
     {
@@ -767,7 +765,7 @@ class Query
      * Generate a searchcondition that checks if the field is not null.
      *
      * @param string $field
-     * @param bool   $emptyStringIsNull
+     * @param bool $emptyStringIsNull
      */
     public function notNullCondition($field, $emptyStringIsNull = false)
     {
@@ -782,8 +780,8 @@ class Query
     /**
      * Generate a searchcondition that checks whether $value matches $field exactly.
      *
-     * @param string $field       full qualified table column
-     * @param mixed  $value       string/number/decimal expected column value
+     * @param string $field full qualified table column
+     * @param mixed $value string/number/decimal expected column value
      * @param string $dbFieldType help determine exact search method
      *
      * @return string piece of where clause to use in your SQL statement
@@ -805,7 +803,7 @@ class Query
      * Generate a searchcondition that check number/decimal literal values.
      *
      * @param string $field full qualified table column
-     * @param mixed  $value integer/float/double etc.
+     * @param mixed $value integer/float/double etc.
      *
      * @return string piece of where clause to use in your SQL statement
      */
@@ -840,8 +838,7 @@ class Query
     public function wildcardCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return 'UPPER('.$field.") NOT LIKE UPPER('".str_replace('*', '%',
-                substr($value, 1, Tools::atk_strlen($value)))."')";
+            return 'UPPER('.$field.") NOT LIKE UPPER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
         } else {
             return 'UPPER('.$field.") LIKE UPPER('".str_replace('*', '%', $value)."')";
         }
@@ -910,10 +907,10 @@ class Query
     /**
      * Get the between condition.
      *
-     * @param string $field  The database field
-     * @param mixed  $value1 The first value
-     * @param mixed  $value2 The second value
-     * @param bool   $quote  Add quotes?
+     * @param string $field The database field
+     * @param mixed $value1 The first value
+     * @param mixed $value2 The second value
+     * @param bool $quote Add quotes?
      *
      * @return unknown
      */
@@ -953,10 +950,7 @@ class Query
     public function quoteField($field)
     {
         $quotefield = false;
-        if ((in_array($field, $this->m_quotedfields) ||
-                in_array($field, $this->m_tables)) &&
-            preg_match('/(^[\w\.]+)/', $field)."'"
-        ) {
+        if ((in_array($field, $this->m_quotedfields) || in_array($field, $this->m_tables)) && preg_match('/(^[\w\.]+)/', $field)."'") {
             $quotefield = true;
         }
 

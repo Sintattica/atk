@@ -28,11 +28,11 @@ class TextAttribute extends Attribute
      * parameters and the second one is not an array, the attribute assumes
      * the second parameters is the $flags param, not the $size param.
      *
-     * @param string    $name  Name of the attribute
-     * @param int|array $size  Can be an array with cols and rows key for size and
+     * @param string $name Name of the attribute
+     * @param int|array $size Can be an array with cols and rows key for size and
      *                         an autoadjust value or just the rows size (in which case
      *                         $flags is mandatory).
-     * @param int       $flags Flags for this attribute
+     * @param int $flags Flags for this attribute
      */
     public function __construct($name, $size = 0, $flags = 0)
     {
@@ -108,8 +108,7 @@ class TextAttribute extends Attribute
           };
         ");
 
-            $html = '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
-                '<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
+            $html = '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.'<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
 
             return $html;
         }
@@ -231,8 +230,8 @@ class TextAttribute extends Attribute
      * and adjust rows to ensure that all the data is actually displayed.
      *
      * @param string $data Data we want to display
-     * @param int    $rows Rows of the textarea
-     * @param int    $cols Columns of the textarea
+     * @param int $rows Rows of the textarea
+     * @param int $cols Columns of the textarea
      */
     public function doAutoAdjust($data, &$rows, &$cols)
     {

@@ -200,12 +200,10 @@ class IndexPage
                     // using dispatch_url to redirect to the node
                     $isIndexed = array_values($this->m_defaultDestination) === $this->m_defaultDestination;
                     if ($isIndexed) {
-                        $destination = Tools::dispatch_url($this->m_defaultDestination[0],
-                            $this->m_defaultDestination[1],
+                        $destination = Tools::dispatch_url($this->m_defaultDestination[0], $this->m_defaultDestination[1],
                             $this->m_defaultDestination[2] ? $this->m_defaultDestination[2] : array());
                     } else {
-                        $destination = Tools::dispatch_url($this->m_defaultDestination['atknodeuri'],
-                            $this->m_defaultDestination['atkaction'],
+                        $destination = Tools::dispatch_url($this->m_defaultDestination['atknodeuri'], $this->m_defaultDestination['atkaction'],
                             $this->m_defaultDestination[0] ? $this->m_defaultDestination[0] : array());
                     }
                     header('Location: '.$destination);
@@ -241,7 +239,7 @@ class IndexPage
      * And adds it to the page for the dispatch() method to render.
      *
      * @param array $postvars The request variables for the node.
-     * @param Node  $node
+     * @param Node $node
      */
     public function loadDispatchPage($postvars, Node $node)
     {
@@ -252,8 +250,7 @@ class IndexPage
         }
 
         $page = $node->getPage();
-        $page->setTitle(Tools::atktext('app_shorttitle').' - '.$node->getUi()->title($node->m_module,
-                $node->m_type, $node->m_action));
+        $page->setTitle(Tools::atktext('app_shorttitle').' - '.$node->getUi()->title($node->m_module, $node->m_type, $node->m_action));
 
         if ($node->allowed($node->m_action)) {
             $secMgr = SecurityManager::getInstance();

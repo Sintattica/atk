@@ -23,8 +23,7 @@ function smarty_function_atktext($params, &$smarty)
     switch (substr_count($params['id'], '.')) {
         case 1: {
             list($module, $id) = explode('.', $params['id']);
-            $str = Tools::atktext($id, $module, isset($params['node']) ? $params['node']
-                : '');
+            $str = Tools::atktext($id, $module, isset($params['node']) ? $params['node'] : '');
             break;
         }
         case 2: {
@@ -33,8 +32,8 @@ function smarty_function_atktext($params, &$smarty)
             break;
         }
         default:
-            $str = Tools::atktext($params['id'], Tools::atkArrayNvl($params, 'module', ''),
-                Tools::atkArrayNvl($params, 'node', ''), Tools::atkArrayNvl($params, 'lng', ''));
+            $str = Tools::atktext($params['id'], Tools::atkArrayNvl($params, 'module', ''), Tools::atkArrayNvl($params, 'node', ''),
+                Tools::atkArrayNvl($params, 'lng', ''));
     }
 
     if (isset($params['filter'])) {

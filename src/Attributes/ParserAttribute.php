@@ -18,9 +18,9 @@ class ParserAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @param string $name  Name of the attribute
-     * @param string $text  text field
-     * @param int    $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param string $text text field
+     * @param int $flags Flags for this attribute
      */
     public function __construct($name, $text, $flags = 0)
     {
@@ -31,10 +31,10 @@ class ParserAttribute extends Attribute
     /**
      * Parses a record.
      *
-     * @param array  $record      The record that holds the value for this attribute.
+     * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
-     * @param string $mode        The mode we're in ('add' or 'edit')
+     * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string Parsed string
      */
@@ -56,7 +56,7 @@ class ParserAttribute extends Attribute
     /**
      * Parses a record.
      *
-     * @param array  $record Array with fields
+     * @param array $record Array with fields
      * @param string $mode
      *
      * @return string Parsed string
@@ -71,8 +71,8 @@ class ParserAttribute extends Attribute
     /**
      * No function, but is neccesary.
      *
-     * @param Db     $db     The database object
-     * @param array  $record The record
+     * @param Db $db The database object
+     * @param array $record The record
      * @param string $mode
      */
     public function store($db, $record, $mode)

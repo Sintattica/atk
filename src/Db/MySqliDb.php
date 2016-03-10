@@ -49,12 +49,12 @@ class MySqliDb extends Db
     /**
      * Connect to the database.
      *
-     * @param string $host     Hostname
-     * @param string $user     Username
+     * @param string $host Hostname
+     * @param string $user Username
      * @param string $password Password
      * @param string $database The database to connect to
-     * @param int    $port     The portnumber to use for connecting
-     * @param string $charset  The charset to use
+     * @param int $port The portnumber to use for connecting
+     * @param string $charset The charset to use
      *
      * @return mixed Connection status
      */
@@ -83,6 +83,7 @@ class MySqliDb extends Db
         }
 
         /* return link identifier */
+
         return self::DB_SUCCESS;
     }
 
@@ -120,8 +121,7 @@ class MySqliDb extends Db
             case 2005:
                 return self::DB_UNKNOWNHOST;
             default:
-                Tools::atkdebug('mysqldb::translateError -> MySQL Error: '.
-                    $this->m_errno.' -> '.$this->m_error);
+                Tools::atkdebug('mysqldb::translateError -> MySQL Error: '.$this->m_errno.' -> '.$this->m_error);
 
                 return self::DB_UNKNOWNERROR;
         }
@@ -157,7 +157,7 @@ class MySqliDb extends Db
      * Escaping a MySQL string, in a mysqli safe way.
      *
      * @param string $string
-     * @param bool   $wildcard
+     * @param bool $wildcard
      */
     public function escapeSQL($string, $wildcard = false)
     {
@@ -175,9 +175,9 @@ class MySqliDb extends Db
     /**
      * Performs a query.
      *
-     * @param string $query  the query
-     * @param int    $offset offset in record list
-     * @param int    $limit  maximum number of records
+     * @param string $query the query
+     * @param int $offset offset in record list
+     * @param int $limit maximum number of records
      */
     public function query($query, $offset = -1, $limit = -1)
     {
@@ -242,8 +242,8 @@ class MySqliDb extends Db
     /**
      * Execute and log query.
      *
-     * @param string $query         query
-     * @param bool   $isSystemQuery is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     * @param string $query query
+     * @param bool $isSystemQuery is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
      */
     protected function _query($query, $isSystemQuery)
     {
@@ -277,7 +277,7 @@ class MySqliDb extends Db
      * (Table ... not locked using LOCK TABLES). This method locks
      * the table and runs the query again.
      *
-     * @param string $query     The original query that failed
+     * @param string $query The original query that failed
      * @param string $querymode Kind of query - 'w' for write or 'r' for read
      */
     public function locktables_fallback_on_error($query, $querymode = 'w')
@@ -314,8 +314,7 @@ class MySqliDb extends Db
     public function next_record()
     {
         /* goto next record */
-        $this->m_record = @mysqli_fetch_array($this->m_query_id,
-            MYSQLI_ASSOC | Config::getGlobal('mysqlfetchmode'));
+        $this->m_record = @mysqli_fetch_array($this->m_query_id, MYSQLI_ASSOC | Config::getGlobal('mysqlfetchmode'));
         ++$this->m_row;
         $this->m_errno = mysqli_errno($this->m_link_id);
         $this->m_error = mysqli_error($this->m_link_id);
@@ -328,6 +327,7 @@ class MySqliDb extends Db
         }
 
         /* return result */
+
         return $result;
     }
 
@@ -352,7 +352,7 @@ class MySqliDb extends Db
      * Lock a certain table in the database.
      *
      * @param string $table the table name
-     * @param string $mode  the type of locking
+     * @param string $mode the type of locking
      *
      * @return bool of locking
      */
@@ -373,6 +373,7 @@ class MySqliDb extends Db
             }
 
             /* return result */
+
             return $result;
         }
 
@@ -396,6 +397,7 @@ class MySqliDb extends Db
             }
 
             /* return result */
+
             return $result;
         }
 
@@ -463,20 +465,20 @@ class MySqliDb extends Db
 
                     return 1;
                 } /* enter next value */ else {
-     $nextid = $result[$this->m_seq_field] + 1;
-     $query = 'UPDATE '.$this->m_seq_table.' SET '.$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
+                    $nextid = $result[$this->m_seq_field] + 1;
+                    $query = 'UPDATE '.$this->m_seq_table.' SET '.$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
 
-     $id = $this->_query($query, true);
-     $this->unlock();
+                    $id = $this->_query($query, true);
+                    $this->unlock();
 
-     return $nextid;
- }
+                    return $nextid;
+                }
             }
 
             return 0;
         } /* cannot connect */ else {
-     $this->halt('cannot connect to '.$this->m_host);
- }
+            $this->halt('cannot connect to '.$this->m_host);
+        }
     }
 
     /**
@@ -541,7 +543,7 @@ class MySqliDb extends Db
      * specific conversion.
      *
      * @param string $fieldname The field to generate the to_char for.
-     * @param string $format    Format specifier. The format is compatible with
+     * @param string $format Format specifier. The format is compatible with
      *                          php's date() function (http://www.php.net/date)
      *                          The default is what's specified by
      *                          $config_date_to_char, or "Y-m-d" if not
@@ -591,8 +593,7 @@ class MySqliDb extends Db
         $this->connect('r');
         $id = $this->_query("SHOW TABLE STATUS LIKE '".$table."'", true);
         $status = @mysqli_fetch_array($id, MYSQLI_ASSOC);
-        $result = $status != null && isset($status['Engine']) ? $status['Engine']
-            : null;
+        $result = $status != null && isset($status['Engine']) ? $status['Engine'] : null;
         Tools::atkdebug("Table type? $table => $result");
 
         return $result;
@@ -602,7 +603,7 @@ class MySqliDb extends Db
      * Return the meta data of a certain table.
      *
      * @param string $table the table name
-     * @param bool   $full  all meta data or not
+     * @param bool $full all meta data or not
      *
      * @return array with meta data
      */

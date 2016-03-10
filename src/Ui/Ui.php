@@ -51,7 +51,7 @@ class Ui
      * Currently only the view action is implemented.
      *
      * @param string $action the action for which to render the template
-     * @param array  $vars   the template variables
+     * @param array $vars the template variables
      * @param string $module the name of the module requesting to render a template
      *
      * @return string the rendered template
@@ -65,7 +65,7 @@ class Ui
      * Renders a list template.
      *
      * @param string $action not used (deprecated?)
-     * @param array  $vars   the variables with which to parse the list template
+     * @param array $vars the variables with which to parse the list template
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered list
@@ -84,8 +84,8 @@ class Ui
      * will make it search for a menu.tpl first and use that
      * if it's available, otherwise it will just use box.tpl
      *
-     * @param array  $vars   the variables for the template
-     * @param string $name   The name of the template
+     * @param array $vars the variables for the template
+     * @param string $name The name of the template
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered box
@@ -103,7 +103,7 @@ class Ui
      * Renders a tabulated template
      * Registers some scriptcode for dhtml tab.
      *
-     * @param array  $vars   the variables with which to render the template
+     * @param array $vars the variables with which to render the template
      * @param string $module the name of the module requesting to render a template
      *
      * @return string the rendered template
@@ -123,8 +123,8 @@ class Ui
      * the name ends with ".tpl" and a file with the extension ".tpl.php" exists
      * PHP will be used, otherwise Smarty will be used to render the template.
      *
-     * @param string $name   the name of the template to render
-     * @param array  $vars   the variables with which to render the template
+     * @param string $name the name of the template to render
+     * @param array $vars the variables with which to render the template
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered template
@@ -135,9 +135,7 @@ class Ui
         $result = $this->renderSmarty($path, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
-            $result = "\n<!-- START [{$path}] -->\n".
-                $result.
-                "\n<!-- END [{$path}] -->\n";
+            $result = "\n<!-- START [{$path}] -->\n".$result."\n<!-- END [{$path}] -->\n";
         }
 
         return $result;
@@ -147,7 +145,7 @@ class Ui
      * Render Smarty-based template.
      *
      * @param string $path template path
-     * @param array  $vars template variables
+     * @param array $vars template variables
      *
      * @return string rendered template
      */
@@ -165,10 +163,10 @@ class Ui
     /**
      * Return the title to render.
      *
-     * @param string $module     the module in which to look
-     * @param string $nodetype   the nodetype of the action
-     * @param string $action     the action that we are trying to find a title for
-     * @param bool   $actiononly wether or not to return a name of the node
+     * @param string $module the module in which to look
+     * @param string $nodetype the nodetype of the action
+     * @param string $action the action that we are trying to find a title for
+     * @param bool $actiononly wether or not to return a name of the node
      *                           if we couldn't find a specific title
      *
      * @return string the title for the action
@@ -188,9 +186,9 @@ class Ui
      * Example: echo $ui->title("users", "employee", "edit"); might return:
      *          'Edit an existing employee'.
      *
-     * @param Node   $node       the node to get the title from
-     * @param string $action     the action that we are trying to find a title for
-     * @param bool   $actiononly wether or not to return a name of the node
+     * @param Node $node the node to get the title from
+     * @param string $action the action that we are trying to find a title for
+     * @param bool $actiononly wether or not to return a name of the node
      *                           if we couldn't find a specific title
      *
      * @return string the title for the action
