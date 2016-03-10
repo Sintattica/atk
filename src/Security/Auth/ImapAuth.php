@@ -61,15 +61,4 @@ class ImapAuth extends AuthInterface
             return SecurityManager::AUTH_SUCCESS;
         }
     }
-
-    /**
-     * Does this authentication method support md5 encoding of passwords?
-     * Imap authentication cannot support md5 encoding of passwords.
-     *
-     * @return bool false
-     */
-    public function canMd5()
-    {
-        return false;
-    }
 }

@@ -39,15 +39,4 @@ class NoneAuth extends AuthInterface
             return SecurityManager::AUTH_MISMATCH;
         }
     }
-
-    /**
-     * This authentication method does not support md5 storage of passwords
-     * since this method is not using passwords.
-     *
-     * @return bool false
-     */
-    public function canMd5()
-    {
-        return false;
-    }
 }

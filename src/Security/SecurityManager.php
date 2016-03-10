@@ -178,10 +178,10 @@ class SecurityManager
         $selector = sprintf("%s.%s = '%s'", Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'), $username);
 
         $userrecords = $userNode->select($selector)->includes(array(
-                Config::getGlobal('auth_userpk'),
-                Config::getGlobal('auth_emailfield'),
-                Config::getGlobal('auth_passwordfield'),
-            ))->mode('edit')->getAllRows();
+            Config::getGlobal('auth_userpk'),
+            Config::getGlobal('auth_emailfield'),
+            Config::getGlobal('auth_passwordfield'),
+        ))->mode('edit')->getAllRows();
 
         if (count($userrecords) != 1) {
             Tools::atkdebug("User '$username' not found.");
@@ -202,7 +202,7 @@ class SecurityManager
         $newPassword = $passwordAttr->generatePassword();
 
         // Update the record in the database
-        $userrecords[0][Config::getGlobal('auth_passwordfield')]['hash'] = md5($newPassword);
+        $userrecords[0][Config::getGlobal('auth_passwordfield')]['hash'] = password_hash($newPassword, PASSWORD_DEFAULT);
         $userNode->updateDb($userrecords[0], true, '', array(Config::getGlobal('auth_passwordfield')));
 
         $db = $userNode->getDB();
@@ -219,6 +219,20 @@ class SecurityManager
 
         // Return true
         return true;
+    }
+
+    /**
+     * @param $password string
+     * @param $hash string
+     * @return bool
+     */
+    public function verify($password, $hash)
+    {
+        if (!Config::getGlobal('auth_usecryptedpassword')) {
+            return $password == $hash;
+        }
+
+        return password_verify($password, $hash);
     }
 
     /**
@@ -243,7 +257,6 @@ class SecurityManager
         // throw post login event?
         $throwPostLoginEvent = false;
 
-        $md5 = false; // PHP_SecurityManager::AUTH_PW is plain text..
         // first check if we want to logout
         if (isset($ATK_VARS['atklogout']) && (!isset($session['relogin']) || $session['relogin'] != 1)) {
             $this->notifyListeners('preLogout', isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
@@ -256,13 +269,6 @@ class SecurityManager
             $session = array();
             $session['relogin'] = 1;
 
-            // destroy cookie
-            if (Config::getGlobal('authentication_cookie') && $auth_user != 'administrator') {
-                $cookiename = $this->_getAuthCookieName();
-                if (!empty($_COOKIE[$cookiename])) {
-                    setcookie($cookiename, '', 0);
-                }
-            }
 
             $this->notifyListeners('postLogout', isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
 
@@ -286,21 +292,6 @@ class SecurityManager
                     $auth_pw = $_SERVER['PHP_AUTH_PW'];
                 }
 
-                // check previous sessions..
-                if (Config::getGlobal('authentication_cookie')) {
-                    // Cookiename is based on the app_title, for there may be more than 1 atk app running,
-                    // each with their own cookie..
-                    $cookiename = $this->_getAuthCookieName();
-                    list($enc, $user, $passwd) = explode('.', base64_decode(Tools::atkArrayNvl($_COOKIE, $cookiename, 'Li4=')));
-
-                    // for security reasons administrator will never be cookied..
-                    if ($auth_user == '' && $user != '' && $user != 'administrator') {
-                        Tools::atkdebug('Using cookie to retrieve previously used userid/password');
-                        $auth_user = $user;
-                        $auth_pw = $passwd;
-                        $md5 = ($enc == 'MD5'); // cookie may already be md5;
-                    }
-                }
 
                 $authenticated = false;
 
@@ -321,7 +312,8 @@ class SecurityManager
                         // check administrator and guest user
                         if ($auth_user == 'administrator' || $auth_user == 'guest') {
                             $config_pw = Config::getGlobal($auth_user.'password');
-                            if (!empty($config_pw) && (($auth_pw == $config_pw) || (Config::getGlobal('authentication_md5') && (md5($auth_pw) == strtolower($config_pw))))) {
+
+                            if (!empty($config_pw) && $this->verify($auth_pw, $config_pw)) {
                                 $authenticated = true;
                                 $response = self::AUTH_SUCCESS;
                                 if ($auth_user == 'administrator') {
@@ -348,8 +340,7 @@ class SecurityManager
                                     // We have a username, which we must now validate against several
                                     // checks. If all of these fail, we have a status of SecurityManager::AUTH_MISMATCH.
                                     foreach ($this->m_authentication as $name => $obj) {
-                                        $obj->canMd5() && !$md5 ? $tmp_pw = md5($auth_pw) : $tmp_pw = $auth_pw;
-                                        $response = $obj->validateUser($auth_user, $tmp_pw);
+                                        $response = $obj->validateUser($auth_user, $auth_pw);
                                         if ($response == self::AUTH_SUCCESS) {
                                             Tools::atkdebug("SecurityManager::authenticate() using $name authentication");
                                             $authname = $name;
@@ -360,7 +351,7 @@ class SecurityManager
                                 if ($response == self::AUTH_SUCCESS) { // succesful login
                                     // We store the username + securitylevel of the logged in user.
                                     $this->m_user = $this->m_authorization->getUser($auth_user);
-                                    $this->m_user['AUTH'] = $authname; // something to see wich auth scheme is used
+                                    $this->m_user['AUTH'] = $authname; // something to see which auth scheme is used
                                     if (Config::getGlobal('enable_ssl_encryption')) {
                                         $this->m_user['PASS'] = $auth_pw;
                                     } // used by aktsecurerelation to decrypt an linkpass
@@ -369,32 +360,6 @@ class SecurityManager
                                     (is_array($this->m_user['level'])) ? $dbg = implode(',', $this->m_user['level']) : $dbg = $this->m_user['level'];
                                     Tools::atkdebug('Logged in user: '.$this->m_user['name'].' (level: '.$dbg.')');
                                     $authenticated = true;
-
-                                    // Remember that we are logged in..
-                                    // write cookie
-                                    if (Config::getGlobal('authentication_cookie') && $auth_user != 'administrator') {
-                                        // if the authentication scheme supports md5 passwords, we can safely store
-                                        // the password as md5 in the cookie.
-                                        if ($md5) { // Password is already md5 encoded
-                                            $tmppw = $auth_pw;
-                                            $enc = 'MD5';
-                                        } else { // password is not md5 encoded
-                                            if ($this->m_authentication[$authname]->canMd5()) { // we can encode it
-                                                $tmppw = md5($auth_pw);
-                                                $enc = 'MD5';
-                                            } else { // authentication scheme does not support md5 encoding.
-                                                // our only choice is to store the password plain text
-                                                // :-(
-                                                // NOTE: If you use a non-md5 enabled authentication
-                                                // scheme then, for security reasons, you shouldn't use
-                                                // $config_authentication_cookie at all.
-                                                $tmppw = $auth_pw;
-                                                $enc = 'PLAIN';
-                                            }
-                                        }
-                                        setcookie($cookiename, base64_encode($enc.'.'.$auth_user.'.'.$tmppw),
-                                            time() + 60 * (Config::getGlobal('authentication_cookie_expire')));
-                                    }
                                 } else {
                                     // login was incorrect. Either the supplied username/password combination is
                                     // incorrect (we just try again) or there was an error (we display an error
@@ -677,17 +642,6 @@ class SecurityManager
                 Tools::atkdebug('error opening logfile');
             }
         }
-    }
-
-    /**
-     * If we are using cookies to store the login information this function will generate
-     * the cookiename.
-     *
-     * @return string cookiename based on the application title
-     */
-    public function _getAuthCookieName()
-    {
-        return 'atkauth_3'.str_replace(' ', '_', Tools::atktext('app_title'));
     }
 
     /**

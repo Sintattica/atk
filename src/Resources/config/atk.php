@@ -117,24 +117,6 @@ return [
     'authentication' => 'none',
 
     /*
-     * Wether your authentication method supports MD5 passwords
-     * @var boolean
-     */
-    'authentication_md5' => true,
-
-    /*
-     * Use a cookie to store authentication information.
-     * @var boolean
-     */
-    'authentication_cookie' => false,
-
-    /*
-     * The default cookie expiry time (in minutes) (7 days)
-     * @var int
-     */
-    'authentication_cookie_expire' => 10080,
-
-    /*
      * The default state cookie expiry time (in minutes) (7 days)
      * @var int
      */

@@ -8,7 +8,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 /**
  * The PasswordAttribute class represents an attribute of a node
  * that is a password field. It automatically encrypts passwords
- * with the MD5 method of PHP. To update a password a user has to
+ * with the password_hash() method of PHP. To update a password a user has to
  * supply the old password first, unless you use the special created
  * self::AF_PASSWORD_NO_VALIDATE flag, in which case the password just gets
  * overwritten without any check.
@@ -79,7 +79,21 @@ class PasswordAttribute extends Attribute
      */
     public function encode($value)
     {
-        return $this->hasFlag(self::AF_PASSWORD_NO_ENCODE) ? $value : md5($this->getSalt().$value);
+        return $this->hasFlag(self::AF_PASSWORD_NO_ENCODE) ? $value : password_hash($value, PASSWORD_DEFAULT);
+    }
+
+    /**
+     * @param $password string
+     * @param $hash string
+     * @return bool
+     */
+    public function verify($password, $hash)
+    {
+        if ($this->hasFlag(self::AF_PASSWORD_NO_ENCODE)) {
+            return $password == $hash;
+        }
+
+        return password_verify($password, $hash);
     }
 
     /**
@@ -138,8 +152,9 @@ class PasswordAttribute extends Attribute
     public function edit($record, $fieldprefix, $mode)
     {
         $id = $fieldprefix.$this->fieldName();
-        /* insert */
+
         if ($mode != 'edit' && $mode != 'update') {
+            /* insert */
             if (!$this->m_generate) {
                 $result = Tools::atktext('password_new',
                         'atk').':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext('password_again',
@@ -148,7 +163,9 @@ class PasswordAttribute extends Attribute
                 $password = $this->generatePassword(8, true);
                 $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.' value ="'.$password.'">'.'<input type="text" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
             }
-        } /* edit */ else {
+        }  else {
+            /* edit */
+
             $result = '<input type="hidden" name="'.$id.'[hash]"'.' value="'.$record[$this->fieldName()]['hash'].'">';
 
             if (!$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE)) {
@@ -176,29 +193,25 @@ class PasswordAttribute extends Attribute
     }
 
     /**
-     * Add's slashes to the string for the database.
-     *
      * @param array $rec Array with values
      *
-     * @return string with slashes
+     * @return string
      */
     public function value2db($rec)
     {
-        return addslashes($rec[$this->fieldName()]['hash']);
+        return $rec[$this->fieldName()]['hash'];
     }
 
     /**
-     * Removes slashes from the string and save to array.
-     *
      * @param array $rec array with values
      *
-     * @return array with hash field without slashes
+     * @return array with hash field
      */
     public function db2value($rec)
     {
-        $value = isset($rec[$this->fieldName()]) ? stripslashes($rec[$this->fieldName()]) : null;
+        $value = isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
 
-        return array('hash' => $value);
+        return ['hash' => $value];
     }
 
     /**
@@ -311,8 +324,7 @@ class PasswordAttribute extends Attribute
         $error = false;
         $value = $record[$this->fieldName()];
 
-        if ($mode == 'update' && (Tools::atk_strlen($value['new']) > 0 || Tools::atk_strlen($value['again']) > 0) && !$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE) && $value['current'] != $value['hash']) {
-            $error = true;
+        if ($mode == 'update' && (Tools::atk_strlen($value['new']) > 0 || Tools::atk_strlen($value['again']) > 0) && !$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE) && !$this->verify($value['current'], $value['hash'])) {
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 
@@ -328,14 +340,14 @@ class PasswordAttribute extends Attribute
 
         // Check if the password meets the restrictions. If not, set error to true and
         // triger an error with the human readable form of the restrictions as message.
-        if ((Tools::atk_strlen($value['new']) > 0) && (!$this->validateRestrictions($value['newplain']))) {
+        if (isset($value['new']) && !$this->validateRestrictions($value['new'])) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), $this->getRestrictionsText());
         }
 
         // new password?
-        if (!$error && Tools::atk_strlen($value['new']) > 0) {
-            $record[$this->fieldName()]['hash'] = $record[$this->fieldName()]['new'];
+        if (!$error && isset($value['new'])) {
+            $record[$this->fieldName()]['hash'] = $this->encode($record[$this->fieldName()]['new']);
         }
     }
 
@@ -479,17 +491,6 @@ class PasswordAttribute extends Attribute
      */
     public function fetchValue($rec)
     {
-        if (isset($rec[$this->fieldName()]['current']) && !empty($rec[$this->fieldName()]['current'])) {
-            $rec[$this->fieldName()]['current'] = $this->encode($rec[$this->fieldName()]['current']);
-        }
-        if (isset($rec[$this->fieldName()]['new']) && !empty($rec[$this->fieldName()]['new'])) {
-            $rec[$this->fieldName()]['newplain'] = $rec[$this->fieldName()]['new'];
-            $rec[$this->fieldName()]['new'] = $this->encode($rec[$this->fieldName()]['new']);
-        }
-        if (isset($rec[$this->fieldName()]['again']) && !empty($rec[$this->fieldName()]['again'])) {
-            $rec[$this->fieldName()]['again'] = $this->encode($rec[$this->fieldName()]['again']);
-        }
-
         return $rec[$this->fieldName()];
     }
 
@@ -514,26 +515,5 @@ class PasswordAttribute extends Attribute
         }
 
         return false;
-    }
-
-    /**
-     * Set the salt we're using for encoding passwords. Passwords will be
-     * prefixed with this salt.
-     *
-     * @param string $salt the salt we should use
-     */
-    public function setSalt($salt)
-    {
-        $this->m_salt = (string)$salt;
-    }
-
-    /**
-     * Returns the salt we're currently using for encoding passwords.
-     *
-     * @return string the salt we're using
-     */
-    public function getSalt()
-    {
-        return $this->m_salt;
     }
 }
