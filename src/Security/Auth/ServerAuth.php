@@ -45,14 +45,4 @@ class ServerAuth extends AuthInterface
             return SecurityManager::AUTH_MISMATCH;
         }
     }
-
-    /**
-     * Does this authentication method support md5 encoding of passwords?
-     *
-     * @return bool false
-     */
-    public function canMd5()
-    {
-        return false;
-    }
 }

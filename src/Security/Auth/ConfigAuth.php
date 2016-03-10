@@ -22,9 +22,7 @@ class ConfigAuth extends AuthInterface
      * Authenticate a user.
      *
      * @param string $user The login of the user to authenticate.
-     * @param string $passwd The password of the user. Note: if the canMd5
-     *                       function of an implementation returns true,
-     *                       $passwd will be passed as an md5 string.
+     * @param string $passwd The password of the user.
      *
      * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
      *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
@@ -50,20 +48,6 @@ class ConfigAuth extends AuthInterface
         } else {
             return SecurityManager::AUTH_MISMATCH;
         }
-    }
-
-    /**
-     * Does the authentication method support md5 encoding of passwords?
-     *
-     * @return bool True if md5 is always used. false if md5 is not
-     *              supported.
-     *              Drivers that support both md5 and cleartext passwords
-     *              can return Config::getGlobal("authentication_md5") to let the
-     *              application decide whether to use md5.
-     */
-    public function canMd5()
-    {
-        return Config::getGlobal('authentication_md5');
     }
 
     /**

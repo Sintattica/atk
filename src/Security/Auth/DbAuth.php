@@ -83,8 +83,9 @@ class DbAuth extends AuthInterface
             return SecurityManager::AUTH_LOCKED;
         }
 
-        return (count($recs) > 0 && $user != '' && $this->matchPasswords($this->getPassword($recs[0]),
-                $passwd)) ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
+        $matchPassword = $this->matchPasswords($this->getPassword($recs[0]), $passwd);
+
+        return (count($recs) > 0 && $user != '' && $matchPassword) ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
     }
 
     /**
@@ -112,12 +113,7 @@ class DbAuth extends AuthInterface
     }
 
     /**
-     * Match 2 passwords.
-     * In normal situations, $dbpassword and $userpasswd are considered equal
-     * if they are a case-insensitive match. When $config_auth_cryptedpassword
-     * is true, they are only considered a match if $dbpassword is equal to the
-     * crypt() of $userpasswd, where $dbpassword itself is used as the 'salt'.
-     * (This method is used by Bugzilla, among other apps).
+     * Match 2 passwords
      *
      * @param string $dbpasswd The password from the database
      * @param string $userpasswd The password the user provided
@@ -128,26 +124,11 @@ class DbAuth extends AuthInterface
     {
         // crypt password method, like in bugzilla
         if (Config::getGlobal('auth_usecryptedpassword', false)) {
-            // password is stored using the crypt method, using the cryptedpassword itself as the salt.
-            return crypt($userpasswd, $dbpasswd) == $dbpasswd;
+            return password_verify($userpasswd, $dbpasswd);
         } else {
-            // regular match, perhaps with md5.
-            return strtoupper($dbpasswd) == strtoupper($userpasswd);
+            // regular match
+            return $dbpasswd === $userpasswd;
         }
-    }
-
-    /**
-     * Does the authentication method support md5 encoding of passwords?
-     *
-     * @return bool True if md5 is always used. false if md5 is not
-     *              supported.
-     *              Drivers that support both md5 and cleartext passwords
-     *              can return Config::getGlobal("authentication_md5") to let the
-     *              application decide whether to use md5.
-     */
-    public function canMd5()
-    {
-        return Config::getGlobal('authentication_md5');
     }
 
     /**
@@ -465,10 +446,10 @@ class DbAuth extends AuthInterface
         $usernode = $atk->atkGetNode(Config::getGlobal('auth_usernode'));
         $selector = sprintf("%s.%s = '%s'", Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'), $username);
         $userrecords = $usernode->select($selector)->mode('edit')->includes(array(
-                Config::getGlobal('auth_userpk'),
-                Config::getGlobal('auth_emailfield'),
-                Config::getGlobal('auth_passwordfield'),
-            ))->getAllRows();
+            Config::getGlobal('auth_userpk'),
+            Config::getGlobal('auth_emailfield'),
+            Config::getGlobal('auth_passwordfield'),
+        ))->getAllRows();
         if (count($userrecords) != 1) {
             Tools::atkdebug("User '$username' not found.");
 
@@ -489,7 +470,7 @@ class DbAuth extends AuthInterface
         $newpassword = $passwordattr->generatePassword();
 
         // Update the record in the database
-        $userrecords[0][Config::getGlobal('auth_passwordfield')]['hash'] = md5($newpassword);
+        $userrecords[0][Config::getGlobal('auth_passwordfield')]['hash'] = password_hash($newpassword, PASSWORD_DEFAULT);
         $usernode->updateDb($userrecords[0], true, '', array(Config::getGlobal('auth_passwordfield')));
 
         $usernode->getDb()->commit();
