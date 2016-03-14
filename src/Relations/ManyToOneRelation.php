@@ -129,7 +129,7 @@ class ManyToOneRelation extends Relation
      * @access private
      * @var int
      */
-    public $m_autocomplete_minchars = 2;
+    public $m_autocomplete_minchars;
 
     /*
      * An array with the fieldnames of the destination node in which the autocompletion must search
@@ -146,14 +146,14 @@ class ManyToOneRelation extends Relation
      * @access private
      * @var String
      */
-    public $m_autocomplete_searchmode = 'contains';
+    public $m_autocomplete_searchmode;
 
     /*
      * Value determines wether the search of the autocompletion is case-sensitive.
      *
      * @var boolean
      */
-    public $m_autocomplete_search_case_sensitive = false;
+    public $m_autocomplete_search_case_sensitive;
 
     /*
      * Value determines if select link for autocomplete should use atkSubmit or not (for use in admin screen for example)
@@ -163,20 +163,17 @@ class ManyToOneRelation extends Relation
     public $m_autocomplete_saveform = true;
 
     /*
-     * Set the minimal number of records for showing the automcomplete. If there are less records
-     * the normal dropdown is shown
-     *
-     * @access private
+     * Set the minimal number of records for showing the automcomplete. If there are less records the normal dropdown is shown
      * @var integer
      */
-    public $m_autocomplete_minrecords = -1;
+    public $m_autocomplete_minrecords;
 
     /**
      * Set the size attribute of the autocompletion input element.
      *
      * @var int
      */
-    protected $m_autocomplete_size = 50;
+    protected $m_autocomplete_size;
 
     /**
      * Destination node for auto links (edit, new).
@@ -248,6 +245,7 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_searchmode = Config::getGlobal('manytoone_autocomplete_searchmode', 'contains');
         $this->m_autocomplete_search_case_sensitive = Config::getGlobal('manytoone_autocomplete_search_case_sensitive', false);
         $this->m_autocomplete_size = Config::getGlobal('manytoone_autocomplete_size', 50);
+        $this->m_autocomplete_minrecords = Config::getGlobal('manytoone_autocomplete_minrecords', -1);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
