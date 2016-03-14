@@ -706,6 +706,13 @@ return [
     'manytoone_autocomplete_search_case_sensitive' => false,
 
     /*
+     * Value determines the minimal number of records for showing the automcomplete. If there are less records the normal dropdown is shown
+     *
+     * @var int
+     */
+    'manytoone_autocomplete_minrecords' => -1,
+
+    /*
      * Warn the user if he/she has changed something in a form
      * and leaves the page without pressing save or cancel.
      *
