@@ -408,9 +408,9 @@ class atkListAttribute extends atkAttribute
         $values = $this->getValues($record);
         $result = '<select class="form-control"';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            if (count($values) > 2) {
-                $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
-                $result .= ' multiple size="' . min(5, $cnt) . '"';
+            $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 1 : 0);
+            if ($cnt > 2) {
+                $result .= ' multiple size="' . min(5, $cnt + 1) . '"';
             }
         }
 
