@@ -212,7 +212,7 @@ class AdminHandler extends ActionHandler
                 SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
-                $script = 'document.location.href = '.JSON::encode($url).';';
+                $script = 'document.location.href = '.Json::encode($url).';';
                 $node->getPage()->register_loadscript($script);
             } else {
                 $node->redirect($url);

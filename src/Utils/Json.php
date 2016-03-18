@@ -68,7 +68,7 @@ class Json
     {
         ++$depth;
         if ($depth >= self::UTF8_CONVERSION_RECURSION_LIMIT) {
-            throw new Exception('atkJSON recustion limit reached');
+            throw new Exception('Json recustion limit reached');
         }
 
         if (is_string($data)) {

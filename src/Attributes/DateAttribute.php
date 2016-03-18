@@ -663,7 +663,7 @@ class DateAttribute extends Attribute
         );
 
         if (!$this->m_simplemode) {
-            $result .= '<div class="'.$this->get_class_name().' form-inline"><script language="javascript">var atkdateattribute_'.$fieldname.' = '.JSON::encode($info).';</script>';
+            $result .= '<div class="'.$this->get_class_name().' form-inline"><script language="javascript">var atkdateattribute_'.$fieldname.' = '.Json::encode($info).';</script>';
         }
 
         /* other date selections */

@@ -547,7 +547,7 @@ class EditHandler extends ViewEditBase
         $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
 
         // register fields that contain errornous values
-        $page->register_scriptcode('var atkErrorFields = '.JSON::encode($errorFields).';');
+        $page->register_scriptcode('var atkErrorFields = '.Json::encode($errorFields).';');
 
         if (Config::getGlobal('lose_changes_warning', true)) {
             // If we are in the save or update action the user has added a nested record, has done
