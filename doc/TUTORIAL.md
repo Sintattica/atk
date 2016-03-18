@@ -39,7 +39,7 @@ If you don't have composer go to:
 www.getcomposer.org
 
 And read de installation instructions.
-It's advisable to read composer "Basig usage" documentation.
+It's advisable to read composer "Basic usage" documentation.
 
 # Dive In
 
@@ -133,6 +133,20 @@ section:
 
 
 with the correct database parameters
+
+Every app/frameworks needs an entry point, namely an index.php, atk9 is no exception
+lets create a file called index.php with the following code:
+
+```
+<?php
+require 'vendor/autoload.php';
+Use Atk/Core/Atk;
+
+$atk = new Atk('','');
+$atk->run();
+
+?>
+```
 
 We are all set now, in order to serve the application we
 will be using the built in php server, execute the following
