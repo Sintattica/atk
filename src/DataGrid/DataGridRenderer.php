@@ -2,7 +2,7 @@
 
 namespace Sintattica\Atk\DataGrid;
 
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
 
@@ -74,8 +74,8 @@ class DataGridRenderer extends DataGridComponent
             return;
         }
 
-        $name = JSON::encode($this->getGrid()->getName());
-        $baseUrl = JSON::encode($this->getGrid()->getBaseUrl());
+        $name = Json::encode($this->getGrid()->getName());
+        $baseUrl = Json::encode($this->getGrid()->getBaseUrl());
         $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
 
         $this->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkdatagrid.js');
