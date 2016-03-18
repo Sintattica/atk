@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\Json;
 
 /**
  * Allows to make some modifications to the add/edit. Depending on which
@@ -203,7 +204,7 @@ class EditFormModifier
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
             $element = str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
-            $value = JSON::encode(Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html'])); // JSON::encode excepts string in UTF-8
+            $value = Json::encode(Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html'])); // JSON::encode excepts string in UTF-8
             $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";
         }
 
