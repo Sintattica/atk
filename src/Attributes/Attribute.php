@@ -10,7 +10,7 @@ use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Utils\EditFormModifier;
 use Exception;
 

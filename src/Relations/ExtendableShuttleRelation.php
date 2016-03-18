@@ -5,7 +5,7 @@ namespace Sintattica\Atk\Relations;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Utils\StringParser;
 
 /**

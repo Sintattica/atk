@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
++ JSON -> Json
 + Module::getMenu and Module::getAtk methods
 + Db::newInstance() for retrive a fresh new Db instance
 + ManyToOne global config m_autocomplete_minrecords

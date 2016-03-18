@@ -8,7 +8,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Utils\BrowserInfo;
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 
 /**
  * The DateAttribute class offers a date widget for date fields.

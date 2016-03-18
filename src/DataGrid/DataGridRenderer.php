@@ -2,7 +2,7 @@
 
 namespace Sintattica\Atk\DataGrid;
 
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
 
