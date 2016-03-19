@@ -99,7 +99,7 @@ class MessageQueue
      */
     public function _addMessage($txt, $type)
     {
-        $q = $this->getQueue();
+        $q = &$this->getQueue();
         $q[] = array('message' => $txt, 'type' => $this->_getTypeName($type));
 
         return true;
