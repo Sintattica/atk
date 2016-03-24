@@ -15,6 +15,10 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
++ ManyToOneRelation with multiple search items
+* Clean MultiSelectAttribute code
+* ListAttribute with Select2 support
++ Included Select2 library (https://select2.github.io/)
 + html5 viewport meta
 + JSON -> Json
 + Module::getMenu and Module::getAtk methods

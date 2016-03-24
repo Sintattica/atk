@@ -18,12 +18,6 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: '.tmp/',
-                        src: ['style.css.map'],
-                        dest: '../public/styles/'
-                    },
-                    {
-                        expand: true,
                         cwd: 'bower_components/smartmenus/src/addons/bootstrap/',
                         src: ['**/*.css'],
                         dest: 'bower_components/smartmenus/scss/',
@@ -57,7 +51,9 @@ module.exports = function (grunt) {
                         'bower_components/smartmenus/src/jquery.smartmenus.js',
                         'bower_components/smartmenus/src/addons/bootstrap/jquery.smartmenus.bootstrap.js',
                         'bower_components/moment/min/moment-with-locales.js',
-                        'js/compatibility.js'
+                        'bower_components/select2/dist/js/select2.min.js',
+                        'bower_components/select2/dist/js/i18n/*.js',
+                        'js/atk.js'
                     ]
                 }
             }

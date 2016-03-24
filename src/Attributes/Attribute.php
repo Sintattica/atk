@@ -348,12 +348,9 @@ class Attribute
      */
     public $m_module = '';
 
-    /*
-     * Instance of the Node that owns this attribute
-     * @access private
-     * @var Node
-     */
-    public $m_ownerInstance = '';
+
+    /** @var Node $m_ownerInstance */
+    public $m_ownerInstance;
 
     /*
      * The size the attribute's field.

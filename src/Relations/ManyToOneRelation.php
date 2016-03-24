@@ -2,16 +2,18 @@
 
 namespace Sintattica\Atk\Relations;
 
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Utils\StringParser;
-use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Db\Query;
-use Sintattica\Atk\Db\Db;
 use Exception;
+use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\RecordList\ColumnConfig;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Utils\StringParser;
 
 /**
  * A N:1 relation between two classes.
@@ -618,7 +620,7 @@ class ManyToOneRelation extends Relation
 
     /**
      * Get none label.
-     *
+     * @param string $mode
      * @return string The label for the "none" option
      */
     public function getNoneLabel($mode = '')
@@ -874,8 +876,6 @@ class ManyToOneRelation extends Relation
             // autoselect if there is only one record (if obligatory is not set,
             // we don't autoselect, since user may wist to select 'none' instead
             // of the 1 record.
-            $result = '';
-
             if (count($recordset) == 0) {
                 $result = $this->getNoneLabel();
             } else {
@@ -884,8 +884,12 @@ class ManyToOneRelation extends Relation
                 $result = '<select id="'.$id.'" name="'.$id.'" class="form-control atkmanytoonerelation '.$this->get_class_name().'" '.$onchange.'>';
 
                 // relation may be empty, so we must provide an empty selectable..
-                if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) || ($this->getConfigOptionObligatoryNullOption() && !is_array($value))) {
-                    $result .= '<option value="">'.$this->getNoneLabel($mode).'</option>';
+                $hasNullOption = false;
+                $noneLabel = '';
+                if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) || (Config::getGlobal('list_obligatory_null_item') && !is_array($value))) {
+                    $hasNullOption = true;
+                    $noneLabel = $this->getNoneLabel($mode);
+                    $result .= '<option value="">'.$noneLabel.'</option>';
                 }
 
                 foreach ($recordset as $selectable) {
@@ -896,6 +900,14 @@ class ManyToOneRelation extends Relation
                 }
 
                 $result .= '</select>';
+
+                $selectOptions = [];
+                if ($hasNullOption) {
+                    $selectOptions['allowClear'] = true;
+                    $selectOptions['placeholder'] = $noneLabel;
+                }
+
+                $result .= "<script>jQuery('#$id').select2(".json_encode($selectOptions).");</script>";
                 $result .= $this->getSpinner();
             }
         } else {
@@ -918,7 +930,7 @@ class ManyToOneRelation extends Relation
                 $result .= '&nbsp;';
 
                 if (!$this->hasFlag(self::AF_OBLIGATORY)) {
-                    $result .= '<a href="#" onClick="document.getElementById(\''.$id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'" class="atkmanytoonerelation">'.Tools::atktext('unselect').'</a>&nbsp;';
+                    $result .= '<a href="#" onClick="jQuery(\'#'.$id.'\').val(\'\');jQuery(\'#'.$id.'_current\').hide();" class="atkmanytoonerelation">'.Tools::atktext('unselect').'</a>&nbsp;';
                 }
                 $result .= '&nbsp;</span>';
             }
@@ -1096,119 +1108,106 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    /**
-     * Returns a piece of html code that can be used to get search terms input
-     * from the user.
-     *
-     * @param array $record Array with values
-     * @param bool $extended if set to false, a simple search input is
-     *                              returned for use in the searchbar of the
-     *                              recordlist. If set to true, a more extended
-     *                              search may be returned for the 'extended'
-     *                              search page. The atkAttribute does not
-     *                              make a difference for $extended is true, but
-     *                              derived attributes may reimplement this.
-     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @param DataGrid $grid The datagrid
-     *
-     * @return string A piece of html-code
-     */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
+        $id = $this->getSearchFieldName($fieldprefix);
+
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
             if ($this->createDestination()) {
 
-                /* (it's not perfect... and no other attributes use this kind of pre-compilation...)
-                 if ($this->m_destinationFilter != "") {
-                    $filterRecord = array();
-                    if ($grid != null) {
-                        foreach ($grid->getFilters() as $filter) {
-                            $filter = $filter['filter'];
-                            $arr = $this->filterToArray($filter);
-                            $arr = (isset($arr[$this->getOwnerInstance()->m_table]) && is_array($arr[$this->getOwnerInstance()->m_table]))
-                                    ? $arr[$this->getOwnerInstance()->m_table] : array();
-                            foreach ($arr as $attrName => $value) {
-                                $attr = $this->getOwnerInstance()->getAttribute($attrName);
-                                if (!is_array($value) && is_a($attr, 'atkManyToOneRelation') && count($attr->m_refKey) == 1) {
-                                    $attr->createDestination();
-                                    $arr[$attrName] = array($attr->getDestination()->primaryKeyField() => $value);
-                                }
-                            }
-                            $filterRecord = array_merge($filterRecord, $arr);
-                        }
-                    }
-                    $record = array_merge($filterRecord, is_array($record) ? $record : array());
-                }*/
-
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
-                $result = '<select class="form-control '.get_class($this).'"';
-                if ($extended) {
-                    $result .= ' multiple size="'.min(5, count($recordset) + 1).'"';
-                    if (isset($record[$this->fieldName()][$this->fieldName()])) {
-                        $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
-                    }
+                if (isset($record[$this->fieldName()][$this->fieldName()])) {
+                    $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
                 }
 
-                // if we use autosearch, register an onchange event that submits the grid
-                if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-                    $id = $this->getSearchFieldName($fieldprefix);
-                    $result .= ' id="'.$id.'" ';
-                    $code = '$(\''.$id.'\').observe(\'change\', function(event) { '.$grid->getUpdateCall(array('atkstartat' => 0), array(),
-                            'ATK.DataGrid.extractSearchOverrides').' return false; });';
-                    $this->getOwnerInstance()->getPage()->register_loadscript($code);
-                }
 
-                $result .= ' name="'.$this->getSearchFieldName($fieldprefix).'[]">';
+                $result = '<select multiple class="form-control '.$this->get_class_name().'" id="'.$id.'" name="'.$id.'[]">';
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
                 $selValues = $record[$this->fieldName()];
+
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
                 }
 
-                // "search all" option
-                if ($selValues[0] == '') {
-                    $selValues = array(''); // has precedence (even if another options are selected together)
+                if(in_array('', $selValues)){
+                    $selValues = [''];
                 }
-                $result .= sprintf('<option value=""%s>%s</option>', $selValues[0] == '' ? ' selected="selected"' : '', Tools::atktext('search_all'));
+
+                // "search all" option
+                $selected = $selValues[0] == '' ? ' selected' : '';
+                $result .= sprintf('<option value=""%s>%s</option>', $selected, Tools::atktext('search_all'));
 
                 // "none" option
                 if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) {
-                    $result .= sprintf('<option value="__NONE__"%s>%s</option>', Tools::atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
-                        $this->getNoneLabel('search'));
+                    $selected = Tools::atk_in_array('__NONE__', $selValues) ? ' selected' : '';
+                    $result .= sprintf('<option value="__NONE__"%s>%s</option>', $selected, $this->getNoneLabel('search'));
                 }
 
                 // normal options
                 for ($i = 0; $i < count($recordset); ++$i) {
                     $pk = $recordset[$i][$pkfield];
-                    $result .= sprintf('<option value="%s"%s>%s</option>', $pk, Tools::atk_in_array($pk, $selValues) ? ' selected="selected"' : '',
-                        str_replace(' ', '&nbsp;', Tools::atk_htmlentities(strip_tags($this->m_destInstance->descriptor($recordset[$i])))));
+                    $selected = Tools::atk_in_array($pk, $selValues) ? ' selected' : '';
+                    $option = htmlspecialchars($this->m_destInstance->descriptor($recordset[$i]));
+                    $result .= sprintf('<option value="%s"%s>%s</option>', $pk, $selected, $option);
                 }
+
                 $result .= '</select>';
+
+                $selectOptions = [];
+                $selectOptions['width'] = '100%';
+                $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
+
+                // if we use autosearch, register an onchange event that submits the grid
+                if (!is_null($grid) && !$extended && $this->m_autoSearch) {
+                    $onchange = $grid->getUpdateCall(['atkstartat' => 0], [], 'ATK.DataGrid.extractSearchOverrides');
+                    $script .= '.on("change", function(){'.$onchange.'})';
+                }
+                $result .= '<script>'.$script.';</script>';
 
                 return $result;
             }
 
             return '';
         } else {
-            $id = $this->getSearchFieldName($fieldprefix);
             if (is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()][$this->fieldName()])) {
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
-
-            $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.($useautocompletion ? ' onchange=""' : '').($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+            $current = $record[$this->fieldName()];
 
             if ($useautocompletion) {
+                $noneLabel = $this->getNoneLabel('search');
+                $result = '<select id="'.$id.'" class="form-control '.$this->get_class_name().'" name="'.$id.'">';
+                $result .= '<option value="">'.$noneLabel.'</option>';
+
+                if ($current) {
+                    $result .= '<option value="'.htmlspecialchars($current).'" selected>'.$current.'</option>';
+                }
+
+                $result .= '</select>';
+
                 $page = $this->m_ownerInstance->getPage();
+                $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
+
                 $url = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
-                $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
-                $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
-                $page->register_loadscript($code);
-                $result .= '<div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+
+                $selectOptions = [];
+                $selectOptions['tags'] = true;
+                $selectOptions['ajax']['url'] = $url;
+                $selectOptions['minimumInputLength'] = $this->m_autocomplete_minchars;
+                $selectOptions['allowClear'] = true;
+                $selectOptions['placeholder'] = $noneLabel;
+                $selectOptions['width'] = '100%';
+
+                $code = "ATK.ManyToOneRelation.completeSearch('{$id}', ".json_encode($selectOptions).");";
+                $result .= '<script>jQuery(function(){'.$code.'});</script>';
+            } else {
+                //normal input field
+                $result = '<input type="text" id="'.$id.'" class="form-control '.$this->get_class_name().'" name="'.$id.'" value="'.$current.'"'.($useautocompletion ? ' onchange=""' : '').($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
             }
 
             return $result;
@@ -1316,7 +1315,7 @@ class ManyToOneRelation extends Relation
                 } else {
                     // ask the destination node for it's search condition
                     $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $value,
-                        $this->getChildSearchMode($searchmode, $this->formName()));
+                        $this->getChildSearchMode($searchmode, $this->fieldName()));
                 }
 
                 return $searchcondition;
@@ -1634,9 +1633,9 @@ class ManyToOneRelation extends Relation
         }
 
         if (in_array($mode, array(
-                    'edit',
-                    'update',
-                )) && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
+                'edit',
+                'update',
+            )) && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
         ) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
             // in this case we want the current value is selectable, regardless the destination filters
             return true;
@@ -1696,7 +1695,7 @@ class ManyToOneRelation extends Relation
 
         $selector = $this->createFilter($record, $mode);
         $result = $this->m_destInstance->select($selector)->orderBy($this->getDestination()->getOrder())->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-                $this->m_destInstance->m_primaryKey))->getAllRows();
+            $this->m_destInstance->m_primaryKey))->getAllRows();
 
         return $result;
     }
@@ -2085,6 +2084,7 @@ class ManyToOneRelation extends Relation
         }
 
         foreach ($this->m_listColumns as $attribname) {
+            /** @var Attribute $p_attrib */
             $p_attrib = $this->m_destInstance->m_attribList[$attribname];
             $p_attrib->m_flags |= self::AF_HIDE_LIST;
             $p_attrib->m_flags ^= self::AF_HIDE_LIST;
@@ -2105,7 +2105,7 @@ class ManyToOneRelation extends Relation
      *
      * @return string Returns sort order ASC or DESC
      */
-    public function listHeaderSortOrder(&$columnConfig)
+    public function listHeaderSortOrder(ColumnConfig &$columnConfig)
     {
         $order = $this->fieldName();
 
@@ -2158,6 +2158,7 @@ class ManyToOneRelation extends Relation
      * @param array $record The record
      * @param string $fieldPrefix The fieldprefix
      * @param string $mode The mode we're in
+     * @return string html
      */
     public function drawAutoCompleteBox($record, $fieldPrefix, $mode)
     {
@@ -2182,11 +2183,23 @@ class ManyToOneRelation extends Relation
             $value = '';
         }
 
+        $hasNullOption = false;
+        $noneLabel = '';
+
         // create the widget
-        $result = '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />';
-        $result .= '<input type="text" id="'.$id.'_search" value="'.htmlentities($label).'" class="form-control atkmanytoonerelation_search" size="'.$this->m_autocomplete_size.'" onfocus="this.select()" />';
+        $result = '<select id="'.$id.'" name="'.$id.'" class="form-control atkmanytoonerelation" style="width: 300px;">';
+
+        if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) || (Config::getGlobal('list_obligatory_null_item') && !is_array($value))) {
+            $hasNullOption = true;
+            $noneLabel = $this->getNoneLabel($mode);
+            $result .= '<option value="">'.$noneLabel.'</option>';
+        }
+
+        if ($current) {
+            $result .= '<option value="'.htmlspecialchars($value).'" selected>'.htmlspecialchars($label).'</option>';
+        }
+        $result .= '</select>';
         $result .= ' '.$this->createSelectAndAutoLinks($id, $record);
-        $result .= '<div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
         $result .= $this->getSpinner(); // spinner for dependency execution
         $result .= $this->getSearchSpinner($id); //spinner for ajax search
@@ -2194,8 +2207,17 @@ class ManyToOneRelation extends Relation
         // register JavaScript code that attaches the auto-complete behaviour to the search box
         $url = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
         $function = $this->createOnChangeCaller($id, $fieldPrefix);
-        $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";
-        $page->register_loadscript($code);
+        $minchars = $this->m_autocomplete_minchars;
+
+        $selectOptions = [];
+        $selectOptions['ajax']['url'] = $url;
+        $selectOptions['minimumInputLength'] = $minchars;
+        if ($hasNullOption) {
+            $selectOptions['allowClear'] = true;
+            $selectOptions['placeholder'] = $noneLabel;
+        }
+        $code = "ATK.ManyToOneRelation.completeEdit('{$id}', ".json_encode($selectOptions).", '{$id}_spinner', $function);";
+        $result .= '<script>jQuery(function(){'.$code.'});</script>';
 
         return $result;
     }
@@ -2213,13 +2235,9 @@ class ManyToOneRelation extends Relation
     public function partial_autocomplete($mode)
     {
         $searchvalue = $this->m_ownerInstance->m_postvars['value'];
-        if (Tools::atk_strlen($searchvalue) < $this->m_autocomplete_minchars) {
-            return '<ul><li class="minimum_chars">'.sprintf($this->text('autocomplete_minimum_chars'), $this->m_autocomplete_minchars).'</li></ul>';
-        }
 
         $this->createDestination();
 
-        $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix']) ? $this->m_ownerInstance->m_postvars['atkfieldprefix'] : '');
         $searchvalue = $this->escapeSQL($searchvalue);
         $record = $this->m_ownerInstance->updateRecord();
 
@@ -2228,37 +2246,14 @@ class ManyToOneRelation extends Relation
 
         $records = $this->_getSelectableRecords($record, $mode);
 
-        if (count($records) == 0) {
-            if (in_array($this->m_autocomplete_searchmode, array('exact', 'startswith', 'contains'))) {
-                $str = $this->text('autocomplete_no_results_'.$this->m_autocomplete_searchmode);
-            } else {
-                $str = $this->text('autocomplete_no_results');
-            }
-
-            return '<ul><li class="no_results">'.$str.'</li></ul>';
-        }
-
         $result = '';
         foreach ($records as $rec) {
-            $option = htmlentities(strip_tags($this->m_destInstance->descriptor($rec)));
+            $option = htmlentities($this->m_destInstance->descriptor($rec));
             $value = $this->m_destInstance->primaryKey($rec);
-            $highlightedOption = $this->highlight_search_result_match($searchvalue, $option);
-            $result .= '
-          <li title="'.$option.'">
-            '.$highlightedOption.'
-            <span class="selection" style="display: none">'.$option.'</span>
-            <span class="value" style="display: none">'.$value.'</span>
-          </li>';
+            $result .= '<li value="'.$value.'">'.$option.'</li>';
         }
 
         return "<ul>$result</ul>";
-    }
-
-    public function highlight_search_result_match($search_value, $result)
-    {
-        $escaped_searchvalue = str_replace('/', '\/', preg_quote($search_value));
-
-        return preg_replace('/('.$escaped_searchvalue.')/i', '<span class="atkmanytoone_highlite">\\1</span>', $result);
     }
 
     /**
@@ -2283,7 +2278,7 @@ class ManyToOneRelation extends Relation
             $option = $this->m_destInstance->descriptor($rec);
             $value = $this->m_destInstance->primaryKey($rec);
             $result .= '
-          <li title="'.htmlentities($option).'">'.htmlentities($option).'</li>';
+          <li value="'.htmlentities($option).'">'.htmlentities($option).'</li>';
         }
 
         return "<ul>$result</ul>";

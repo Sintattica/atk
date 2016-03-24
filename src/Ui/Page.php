@@ -126,6 +126,8 @@ class Page
         // register default scripts
         $assetsUrl = Config::getGlobal('assets_url');
 
+        $this->register_scriptcode("var LANGUAGE='".Config::getGlobal('language')."';", true);
+
         $this->register_script($assetsUrl.'javascript/prototype/prototype.js');
         $this->register_script($assetsUrl.'javascript/prototype-ext.js');
         $this->register_script($assetsUrl.'javascript/scriptaculous/scriptaculous.js');
@@ -133,6 +135,8 @@ class Page
         $this->register_script($assetsUrl.'javascript/class.atktools.js');
         $this->register_script($assetsUrl.'javascript/atkbusy.js');
         $this->register_script($assetsUrl.'javascript/atk.min.js');
+
+
 
         $this->register_style($assetsUrl.'styles/style.css');
     }

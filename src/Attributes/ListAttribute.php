@@ -288,29 +288,34 @@ class ListAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        // todo: configurable rows
         $id = $this->getHtmlId($fieldprefix);
         $this->registerJavaScriptObservers($id);
 
+        $selectOptions = [];
+
         $onchange = '';
         if (count($this->m_onchangecode)) {
-            $onchange = 'onChange="'.$id.'_onChange(this);"';
+            $onchange = $id.'_onChange(this);';
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select id="'.$id.'" name="'.$id.'"  class="form-control atklistattribute" '.$onchange.($this->m_width ? " style='width: {$this->m_width}px'" : '').'>';
+        $width = $this->m_width ? " style='width: {$this->m_width}px'" : '';
+        $result = '<select id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$width.'>';
 
-        $result .= $this->_addEmptyListOption();
+        $nullLabel = '';
+        if ($hasNullOption = $this->hasNullOption()) {
+            $nullLabel = $this->getNullLabel();
+            $result .= '<option value="'.$this->m_emptyvalue.'">'.$nullLabel.'</option>';
+        }
 
         $values = $this->getValues($record);
         $recvalue = Tools::atkArrayNvl($record, $this->fieldName());
 
         for ($i = 0; $i < count($values); ++$i) {
+            $sel = '';
             // If the current value is selected or occurs in the record
             if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) || (is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== '')) {
                 $sel = 'selected';
-            } else {
-                $sel = '';
             }
 
             $result .= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
@@ -322,12 +327,22 @@ class ListAttribute extends Attribute
         if ($this->m_expandAsButtons) {
             // use Quick[select] plugin to expand the selection as a series of buttons
             $page = $this->m_ownerInstance ? $this->m_ownerInstance->getPage() : Page::getInstance();
-            $page->register_script(Config::getGlobal('atkroot').'atk/javascript/quickselect/jquery.quickselect.min.js');
-            $page->register_style(Config::getGlobal('atkroot').'atk/javascript/quickselect/quickselect.css');
+            $page->register_script(Config::getGlobal('assets_url').'javascript/quickselect/jquery.quickselect.min.js');
+            $page->register_style(Config::getGlobal('assets_url').'javascript/quickselect/quickselect.css');
             $options = json_encode($this->m_expandAsButtons);
-            $page->register_loadscript("
-                jQuery('#$id').quickselect($options);
-            ");
+            $result .= "<script>jQuery('#$id').quickselect($options);</script>";
+        } else {
+
+            if ($hasNullOption) {
+                $selectOptions['allowClear'] = true;
+                $selectOptions['placeholder'] = $nullLabel;
+            }
+
+            $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
+            if ($onchange != '') {
+                $script .= '.on("change", function(){'.$onchange.'})';
+            }
+            $result .= '<script>'.$script.';</script>';
         }
 
         return $result;
@@ -336,7 +351,7 @@ class ListAttribute extends Attribute
     /**
      * Enable Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
      *
-     * @param array Quick[select] Options (or null for default options)
+     * @param array $options Quick[select] Options (or null for default options)
      */
     public function expandAsButtons($options = null)
     {
@@ -353,28 +368,28 @@ class ListAttribute extends Attribute
         $this->m_expandAsButtons = array_merge($defaultOptions, $options);
     }
 
-    /**
-     * Add an empty list option if appropriate.
-     *
-     * @return string The empty list option or an empty string
-     */
-    public function _addEmptyListOption()
+
+    public function getNullLabel()
     {
-        $ret = '';
+        if ($this->hasNullOption()) {
+            // use a different (more descriptive) text for obligatory items
+            $text_key = $this->hasFlag(self::AF_OBLIGATORY) ? 'list_null_value_obligatory' : 'list_null_value';
 
-        // use a different (more descriptive) text for obligatory items
-        $text_key = $this->hasFlag(self::AF_OBLIGATORY) ? 'list_null_value_obligatory' : 'list_null_value';
+            return htmlentities($this->text([$this->fieldName().'_'.$text_key, $text_key,]));
+        }
 
+        return '';
+    }
+
+    public function hasNullOption()
+    {
         if (!$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) {
             if (!$this->hasFlag(self::AF_OBLIGATORY) || ($this->hasFlag(self::AF_LIST_OBLIGATORY_NULL_ITEM) || (Config::getGlobal('list_obligatory_null_item') && !$this->hasFlag(self::AF_LIST_NO_OBLIGATORY_NULL_ITEM)))) {
-                $ret = '<option value="'.$this->m_emptyvalue.'">'.htmlentities($this->text(array(
-                        $this->fieldName().'_'.$text_key,
-                        $text_key,
-                    ))).'</option>';
+                return true;
             }
         }
 
-        return $ret;
+        return false;
     }
 
     public function getMultipleInSimpleSearch()
@@ -408,60 +423,67 @@ class ListAttribute extends Attribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      *
      * @return string A piece of html-code with a checkbox
+     *
+     *
      */
     public function search($record = '', $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $values = $this->getValues($record);
-        $result = '<select class="form-control"';
-        if ($extended || $this->getMultipleInSimpleSearch()) {
-            if (count($values) > 2) {
-                $cnt = count($values) + ((!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
-                $result .= ' multiple size="'.min(5, $cnt).'"';
-            }
-        }
+        $id = $this->getSearchFieldName($fieldprefix);
 
-        // if we use autosearch, register an onchange event that submits the grid
-        if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-            $id = $this->getSearchFieldName($fieldprefix);
-            $result .= ' id="'.$id.'" ';
-            $code = '$(\''.$id.'\').observe(\'change\', function(event) { '.$grid->getUpdateCall(array('atkstartat' => 0), array(),
-                    'ATK.DataGrid.extractSearchOverrides').' return false; });';
-            $this->getOwnerInstance()->getPage()->register_loadscript($code);
-        }
+        $result = '<select multiple class="form-control '.$this->get_class_name().'" id="'.$id.'" name="'.$id.'[]">';
 
-        $result .= ' name="'.$this->getSearchFieldName($fieldprefix).'[]">';
 
         $selValues = $record[$this->fieldName()];
         if (!is_array($selValues)) {
             $selValues = [$selValues];
         }
 
+        if (in_array('', $selValues)) {
+            $selValues = [''];
+        }
+
+        /*
         if ($this->getMultipleInSimpleSearch() && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
             // in case of multiple select in simple search, we have the selected values into a single string (csv)
             $selValues = explode(',', $selValues[0]);
         }
+        */
 
-        // "search all" option
-        if ($selValues[0] == '') {
-            $selValues = array(''); // has precedence (even if another options are selected together)
-        }
         $notSelectFirst = false;
-        $result .= sprintf('<option value=""%s>%s</option>', (!$notSelectFirst && $selValues[0] == '') ? ' selected="selected"' : '',
-            Tools::atktext('search_all'));
+        $selected = (!$notSelectFirst && $selValues[0] == '') ? ' selected' : '';
+        $option = Tools::atktext('search_all');
+        $result .= sprintf('<option value=""%s>%s</option>', $selected, $option);
 
         // "none" option
         if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_LIST_NO_NULL_ITEM)) {
-            $result .= sprintf('<option value="__NONE__"%s>%s</option>', Tools::atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
-                Tools::atktext('search_none'));
+            $selected = Tools::atk_in_array('__NONE__', $selValues) ? ' selected' : '';
+            $option = Tools::atktext('search_none');
+            $result .= sprintf('<option value="__NONE__"%s>%s</option>', $selected, $option);
         }
 
         // normal options
         foreach ($values as $value) {
-            $result .= sprintf('<option value="%s"%s>%s</option>', $value,
-                Tools::atk_in_array(((string)$value), $selValues, true) ? ' selected="selected"' : '', $this->_translateValue($value, $record));
+            $selected = Tools::atk_in_array(((string)$value), $selValues, true) ? ' selected' : '';
+            $option = $this->_translateValue($value, $record);
+            $result .= sprintf('<option value="%s"%s>%s</option>', $value, $selected, $option);
         }
 
         $result .= '</select>';
+
+        $selectOptions = [];
+        $selectOptions['width'] = '100%';
+
+        $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
+
+
+        // if we use autosearch, register an onchange event that submits the grid
+        if (!is_null($grid) && !$extended && $this->m_autoSearch) {
+            $onchange = $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides');
+            $script .= '.on("change", function(){'.$onchange.'})';
+        }
+
+        $result .= '<script>'.$script.';</script>';
 
         return $result;
     }
@@ -684,7 +706,6 @@ class ListAttribute extends Attribute
         $currentValues = $this->_get('values');
 
         $index = array_search($option, $currentOptions);
-        $value = $currentValues[$index];
 
         array_splice($currentOptions, $index, 1); // remove option
         array_splice($currentValues, $index, 1);  // remove value
