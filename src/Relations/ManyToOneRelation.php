@@ -1123,7 +1123,7 @@ class ManyToOneRelation extends Relation
                 }
 
 
-                $result = '<select multiple class="form-control '.$this->get_class_name().'" id="'.$id.'" name="'.$id.'[]">';
+                $result = '<select class="form-control '.$this->get_class_name().'" id="'.$id.'" name="'.$id.'[]">';
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
@@ -1138,8 +1138,9 @@ class ManyToOneRelation extends Relation
                 }
 
                 // "search all" option
+                $placeholder = Tools::atktext('search_all');
                 $selected = $selValues[0] == '' ? ' selected' : '';
-                $result .= sprintf('<option value=""%s>%s</option>', $selected, Tools::atktext('search_all'));
+                $result .= sprintf('<option value=""%s>%s</option>', $selected, $placeholder);
 
                 // "none" option
                 if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) {
@@ -1158,8 +1159,11 @@ class ManyToOneRelation extends Relation
                 $result .= '</select>';
 
                 $selectOptions = [];
+                $selectOptions['allowClear'] = true;
+                $selectOptions['placeholder'] = ['id' => '', 'text' => $placeholder];
+
                 $selectOptions['width'] = '100%';
-                $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
+                $script = "jQuery(function(){jQuery('#$id').select2(".json_encode($selectOptions).")});";
 
                 // if we use autosearch, register an onchange event that submits the grid
                 if (!is_null($grid) && !$extended && $this->m_autoSearch) {

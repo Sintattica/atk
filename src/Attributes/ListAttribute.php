@@ -335,7 +335,7 @@ class ListAttribute extends Attribute
 
             if ($hasNullOption) {
                 $selectOptions['allowClear'] = true;
-                $selectOptions['placeholder'] = $nullLabel;
+                $selectOptions['placeholder'] = ['id' => $this->m_emptyvalue, 'text' => $nullLabel];
             }
 
             $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
