@@ -94,11 +94,11 @@ class DateTimeAttribute extends Attribute
             $flags = $default_date;
         }
 
-        if ($this->hasFlag(Dateattribute::AF_CLEAR_TOUCH_BUTTONS)) {
-            $flags .= '|Dateattribute::AF_CLEAR_TOUCH_BUTTONS';
+        if ($this->hasFlag(DateAttribute::AF_CLEAR_TOUCH_BUTTONS)) {
+            $flags .= '|DateAttribute::AF_CLEAR_TOUCH_BUTTONS';
         }
-        $this->m_time = new Timeattribute($name, 0, 23, $default_steps, $default_time, $flags);
-        $this->m_date = new Dateattribute($name, '', '', 0, 0, $flags);
+        $this->m_time = new TimeAttribute($name, 0, 23, $default_steps, $default_time, $flags);
+        $this->m_date = new DateAttribute($name, '', '', 0, 0, $flags);
 
         parent::__construct($name, $flags); // base class constructor
     }
