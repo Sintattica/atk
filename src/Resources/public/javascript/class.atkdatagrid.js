@@ -88,8 +88,6 @@ ATK.DataGrid = {
             }
         });
 
-        console.log(queryComponents);
-
         // if embedded we also serialize the edit data form fields
         if (grid.embedded) {
             var elements = Form.getElements(this.getForm(grid.name));
