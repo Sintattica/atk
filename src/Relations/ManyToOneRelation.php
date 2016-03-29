@@ -177,6 +177,8 @@ class ManyToOneRelation extends Relation
      */
     protected $m_autocomplete_size;
 
+    public $m_autocomplete_pagination_limit;
+
     /**
      * Destination node for auto links (edit, new).
      *
@@ -248,6 +250,7 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_search_case_sensitive = Config::getGlobal('manytoone_autocomplete_search_case_sensitive', false);
         $this->m_autocomplete_size = Config::getGlobal('manytoone_autocomplete_size', 50);
         $this->m_autocomplete_minrecords = Config::getGlobal('manytoone_autocomplete_minrecords', -1);
+        $this->m_autocomplete_pagination_limit = Config::getGlobal('manytoone_autocomplete_pagination_limit', 50);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
@@ -1582,6 +1585,16 @@ class ManyToOneRelation extends Relation
         }
     }
 
+    public function _getSelectableRecordsSelector($record = array(), $mode = '')
+    {
+        $method = $this->fieldName().'_selectionSelector';
+        if (method_exists($this->m_ownerInstance, $method)) {
+            return $this->m_ownerInstance->$method($record, $mode);
+        } else {
+            return $this->getSelectableRecordsSelector($record, $mode);
+        }
+    }
+
     /**
      * Is selectable record? Uses the owner instance $this->fieldName()."_selectable"
      * method if it exists.
@@ -1640,7 +1653,7 @@ class ManyToOneRelation extends Relation
                 'edit',
                 'update',
             )) && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
-        ) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
+        ) { // || ($this->hasFlag(AF_AJAX) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
             // in this case we want the current value is selectable, regardless the destination filters
             return true;
         }
@@ -1695,11 +1708,16 @@ class ManyToOneRelation extends Relation
      */
     public function getSelectableRecords($record = array(), $mode = '')
     {
+        return $this->getSelectableRecordsSelector($record, $mode)->getAllRows();
+    }
+
+    public function getSelectableRecordsSelector($record = array(), $mode = '')
+    {
         $this->createDestination();
 
         $selector = $this->createFilter($record, $mode);
         $result = $this->m_destInstance->select($selector)->orderBy($this->getDestination()->getOrder())->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-            $this->m_destInstance->m_primaryKey))->getAllRows();
+            $this->m_destInstance->m_primaryKey));
 
         return $result;
     }
@@ -2238,26 +2256,40 @@ class ManyToOneRelation extends Relation
      */
     public function partial_autocomplete($mode)
     {
-        $searchvalue = $this->m_ownerInstance->m_postvars['value'];
-
         $this->createDestination();
-
-        $searchvalue = $this->escapeSQL($searchvalue);
-        $record = $this->m_ownerInstance->updateRecord();
-
+        $searchvalue = $this->escapeSQL($this->m_ownerInstance->m_postvars['value']);
         $filter = $this->createSearchFilter($searchvalue);
         $this->addDestinationFilter($filter);
+        $record = $this->m_ownerInstance->updateRecord();
 
-        $records = $this->_getSelectableRecords($record, $mode);
-
-        $result = '';
-        foreach ($records as $rec) {
-            $option = htmlentities($this->m_destInstance->descriptor($rec));
-            $value = $this->m_destInstance->primaryKey($rec);
-            $result .= '<li value="'.$value.'">'.$option.'</li>';
+        $result = "\n";
+        $limit = $this->m_autocomplete_pagination_limit;
+        $page = 1;
+        if (isset($this->m_ownerInstance->m_postvars['page']) && is_numeric($this->m_ownerInstance->m_postvars['page'])) {
+            $page = $this->m_ownerInstance->m_postvars['page'];
         }
+        $offset = ($page - 1) * $limit;
 
-        return "<ul>$result</ul>";
+        $selector = $this->_getSelectableRecordsSelector($record, $mode);
+        $selector->limit($limit, $offset);
+        $count = $selector->getRowCount();
+        $iterator = $selector->getIterator();
+        $more = ($offset + $limit > $count) ? 'false' : 'true';
+
+        $result .= '<div id="total">'.$count.'</div>'."\n";
+        $result .= '<div id="page">'.$page.'</div>'."\n";
+        $result .= '<div id="more">'.$more.'</div>'."\n";
+
+        $result .= '<ul>';
+        foreach ($iterator as $rec) {
+            $option = $this->m_destInstance->descriptor($rec);
+            $value = $this->m_destInstance->primaryKey($rec);
+            $result .= '
+          <li value="'.htmlentities($value).'">'.htmlentities($option).'</li>';
+        }
+        $result .= '</ul>';
+
+        return $result;
     }
 
     /**
@@ -2268,24 +2300,40 @@ class ManyToOneRelation extends Relation
     public function partial_autocomplete_search()
     {
         $this->createDestination();
-
-        $searchvalue = $this->m_ownerInstance->m_postvars['value'];
-        $searchvalue = $this->escapeSQL($searchvalue);
+        $searchvalue = $this->escapeSQL($this->m_ownerInstance->m_postvars['value']);
         $filter = $this->createSearchFilter($searchvalue);
         $this->addDestinationFilter($filter);
+        $record = [];
+        $mode = 'search';
 
-        $record = array();
-        $records = $this->_getSelectableRecords($record, 'search');
+        $result = "\n";
+        $limit = $this->m_autocomplete_pagination_limit;
+        $page = 1;
+        if (isset($this->m_ownerInstance->m_postvars['page']) && is_numeric($this->m_ownerInstance->m_postvars['page'])) {
+            $page = $this->m_ownerInstance->m_postvars['page'];
+        }
+        $offset = ($page - 1) * $limit;
 
-        $result = '';
-        foreach ($records as $rec) {
+        $selector = $this->_getSelectableRecordsSelector($record, $mode);
+        $selector->limit($limit, $offset);
+        $count = $selector->getRowCount();
+        $iterator = $selector->getIterator();
+        $more = ($offset + $limit > $count) ? 'false' : 'true';
+
+        $result .= '<div id="total">'.$count.'</div>'."\n";
+        $result .= '<div id="page">'.$page.'</div>'."\n";
+        $result .= '<div id="more">'.$more.'</div>'."\n";
+
+        $result .= '<ul>';
+        foreach ($iterator as $rec) {
             $option = $this->m_destInstance->descriptor($rec);
             $value = $this->m_destInstance->primaryKey($rec);
             $result .= '
           <li value="'.htmlentities($option).'">'.htmlentities($option).'</li>';
         }
+        $result .= '</ul>';
 
-        return "<ul>$result</ul>";
+        return $result;
     }
 
     /**

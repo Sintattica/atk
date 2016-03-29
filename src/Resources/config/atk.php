@@ -712,6 +712,8 @@ return [
      */
     'manytoone_autocomplete_minrecords' => -1,
 
+    'manytoone_autocomplete_pagination_limit' => 50,
+
     /*
      * Warn the user if he/she has changed something in a form
      * and leaves the page without pressing save or cancel.

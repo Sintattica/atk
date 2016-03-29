@@ -28,7 +28,7 @@ ATK.ManyToOneRelation = {
     autocomplete: function (searchField, options, spinnerElement, afterUpdate) {
         var $ = jQuery;
 
-        if(spinnerElement) {
+        if (spinnerElement) {
             var $spinner = $('#' + spinnerElement);
         }
         var $field = $('#' + searchField);
@@ -39,26 +39,27 @@ ATK.ManyToOneRelation = {
                 delay: 300,
 
                 beforeSend: function () {
-                    if($spinner) {
+                    if ($spinner) {
                         $spinner.visible();
                     }
                 },
                 complete: function () {
-                    if($spinner) {
+                    if ($spinner) {
                         $spinner.invisible();
                     }
                 },
                 data: function (params) {
+                    console.log(params);
                     return {
-                        value: params.term
+                        value: params.term,
+                        page: params.page || 1
                     };
                 },
-                processResults: function (data, params) {
-
+                processResults: function (data) {
                     var results = [];
-                    params.page = params.page || 1;
 
                     var $dom = $.parseHTML(data, document, true);
+                    var more = false;
 
                     $.each($dom, function (i, item) {
                         var $item = $(item);
@@ -76,13 +77,17 @@ ATK.ManyToOneRelation = {
                             if (html) {
                                 $.globalEval(html);
                             }
+                        } else if ($item.is('div')) {
+                            if ($item.attr('id') == 'more') {
+                                more = $item.html() === 'true';
+                            }
                         }
                     });
 
                     return {
                         results: results,
                         pagination: {
-                            more: (params.page * 30) < data.total_count
+                            more: more
                         }
                     };
                 },
