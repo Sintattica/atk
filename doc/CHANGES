@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
++ Initial implementation of stats handler
 + Select2 ajax pagination
 + Included Select2 library (https://select2.github.io/)
 + html5 viewport meta
