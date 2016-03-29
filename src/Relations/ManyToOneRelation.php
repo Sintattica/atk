@@ -1197,7 +1197,9 @@ class ManyToOneRelation extends Relation
 
             if ($useautocompletion) {
                 $noneLabel = $this->getNoneLabel('search');
-                $result = '<select id="'.$id.'" class="form-control '.$this->get_class_name().'" name="'.$id.'">';
+                $class = $this->getCSSClassAttribute('form-control');
+
+                $result = '<select id="'.$id.'" '.$class.' name="'.$id.'">';
                 $result .= '<option value="">'.$noneLabel.'</option>';
 
                 if ($current) {
