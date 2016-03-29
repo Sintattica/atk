@@ -49,7 +49,6 @@ ATK.ManyToOneRelation = {
                     }
                 },
                 data: function (params) {
-                    console.log(params);
                     return {
                         value: params.term,
                         page: params.page || 1

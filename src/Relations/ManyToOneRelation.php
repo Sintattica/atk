@@ -177,8 +177,6 @@ class ManyToOneRelation extends Relation
      */
     protected $m_autocomplete_size;
 
-    public $m_autocomplete_pagination_limit;
-
     /**
      * Destination node for auto links (edit, new).
      *
@@ -221,6 +219,13 @@ class ManyToOneRelation extends Relation
      */
     protected $m_selectableRecords = null;
 
+
+    /**
+     * How many items for each ajax call
+     * @var int
+     */
+    protected $m_autocomplete_pagination_limit;
+
     /**
      * Constructor.
      *
@@ -250,7 +255,7 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_search_case_sensitive = Config::getGlobal('manytoone_autocomplete_search_case_sensitive', false);
         $this->m_autocomplete_size = Config::getGlobal('manytoone_autocomplete_size', 50);
         $this->m_autocomplete_minrecords = Config::getGlobal('manytoone_autocomplete_minrecords', -1);
-        $this->m_autocomplete_pagination_limit = Config::getGlobal('manytoone_autocomplete_pagination_limit', 50);
+        $this->m_autocomplete_pagination_limit = Config::getGlobal('manytoone_autocomplete_pagination_limit', 25);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
@@ -491,6 +496,15 @@ class ManyToOneRelation extends Relation
         }
 
         return $this;
+    }
+
+    /**
+     * Set the maximum rows of each ajax call
+     * @param int $limit
+     */
+    public function setPaginationLimit($limit)
+    {
+        $this->m_autocomplete_pagination_limit = $limit;
     }
 
     /**
@@ -1126,7 +1140,7 @@ class ManyToOneRelation extends Relation
                 }
 
 
-                $result = '<select class="form-control '.$this->get_class_name().'" id="'.$id.'" name="'.$id.'[]">';
+                $result = '<select multiple class="form-control '.$this->get_class_name().'" id="'.$id.'" name="'.$id.'[]">';
 
                 $pkfield = $this->m_destInstance->primaryKeyField();
 
@@ -1136,14 +1150,13 @@ class ManyToOneRelation extends Relation
                     $selValues = [$selValues];
                 }
 
-                if(in_array('', $selValues)){
+                if (in_array('', $selValues)) {
                     $selValues = [''];
                 }
 
                 // "search all" option
-                $placeholder = Tools::atktext('search_all');
                 $selected = $selValues[0] == '' ? ' selected' : '';
-                $result .= sprintf('<option value=""%s>%s</option>', $selected, $placeholder);
+                $result .= sprintf('<option value=""%s>%s</option>', $selected, Tools::atktext('search_all'));
 
                 // "none" option
                 if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) {
@@ -1162,11 +1175,8 @@ class ManyToOneRelation extends Relation
                 $result .= '</select>';
 
                 $selectOptions = [];
-                $selectOptions['allowClear'] = true;
-                $selectOptions['placeholder'] = ['id' => '', 'text' => $placeholder];
-
                 $selectOptions['width'] = '100%';
-                $script = "jQuery(function(){jQuery('#$id').select2(".json_encode($selectOptions).")});";
+                $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
 
                 // if we use autosearch, register an onchange event that submits the grid
                 if (!is_null($grid) && !$extended && $this->m_autoSearch) {
@@ -1653,7 +1663,7 @@ class ManyToOneRelation extends Relation
                 'edit',
                 'update',
             )) && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
-        ) { // || ($this->hasFlag(AF_AJAX) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
+        ) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
             // in this case we want the current value is selectable, regardless the destination filters
             return true;
         }
@@ -2335,6 +2345,7 @@ class ManyToOneRelation extends Relation
 
         return $result;
     }
+
 
     /**
      * Creates a search filter with the given search value on the given
