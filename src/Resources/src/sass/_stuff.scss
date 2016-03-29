@@ -3,7 +3,6 @@ body {
   background-color: #ededed;
 }
 
-
 .form-control {
   width: unset;
   max-width: 100%;
@@ -33,11 +32,9 @@ body {
   position: absolute;
 }
 
-
 span.form-control-static {
   display: block;
 }
-
 
 .form-group.required .control-label:before, span.required:before {
   content: "✲";
@@ -49,11 +46,9 @@ span.form-control-static {
   color: #A94442;
 }
 
-
 .clickable {
   cursor: pointer;
 }
-
 
 .atkmessages {
   background-color: #EEEEEE;
@@ -129,7 +124,6 @@ div.panel-heading {
   position: relative;
 }
 
-
 /*
  * We show/hide the spinner with visibility, not display!
 */
@@ -152,7 +146,6 @@ div.atkbusy {
   color: #808080;
   font-size: $fa-font-size-base*1.1;
 }
-
 
 /* action buttons spinner */
 #action-buttons .spinner {
@@ -202,4 +195,11 @@ select.ManyToOneRelation, select.MultiSelectAttribute {
 
 span.select2.select2-container.select2-container--bootstrap {
   display: inline-block;
+}
+
+.stats-form.form-inline {
+  .form-group {
+    vertical-align: top;
+  }
+  margin-bottom: 15px;
 }

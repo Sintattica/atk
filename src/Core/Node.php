@@ -2437,6 +2437,8 @@ class Node
                 return 'smartsearchform.tpl';
             case 'admin':
                 return 'recordlist.tpl';
+            case 'stats':
+                return 'statsform.tpl';
         }
     }
 
