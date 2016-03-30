@@ -1511,6 +1511,7 @@ class Attribute
      * @param bool $edit editing?
      * @param DataGrid $grid data grid
      * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @throws Exception
      */
     public function addToListArrayRow(
         $action,
@@ -1625,7 +1626,6 @@ class Attribute
     /**
      * Retrieve the current set or default searchmode of this attribute.
      *
-     * @param bool $extended Whether extended search is being used
      *
      * @return string the default searchmode for this attribute.
      */

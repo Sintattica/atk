@@ -21,7 +21,6 @@ ATK.ManyToOneRelation = {
 
         };
         var opts = $.extend(true, {}, defaultOptions, options);
-        console.log(opts);
         $field.select2(opts);
         return $field;
     },

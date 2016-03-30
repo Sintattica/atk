@@ -575,6 +575,7 @@ class ManyToOneRelation extends Relation
                 $result = array();
                 if ($this->createDestination()) {
                     foreach (array_keys($this->m_destInstance->m_attribList) as $attrName) {
+                        /** @var Attribute $attr */
                         $attr = &$this->m_destInstance->m_attribList[$attrName];
                         if ($attr) {
                             $result[$attrName] = $attr->db2value($myrec);
@@ -788,9 +789,11 @@ class ManyToOneRelation extends Relation
                 }
             }
         } else {
+
             if (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, $mode)) {
                 $record[$this->fieldName()] = null;
             } else {
+
                 if (is_array($record[$this->fieldName()])) {
                     $this->populate($record);
                 }
@@ -1202,6 +1205,7 @@ class ManyToOneRelation extends Relation
             foreach ($this->m_listColumns as $attr) {
                 $attrValue = $value[$attr];
                 if (!empty($attrValue)) {
+                    /** @var Attribute $p_attrib */
                     $p_attrib = $this->m_destInstance->m_attribList[$attr];
                     if (!$p_attrib == null) {
                         $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
@@ -1323,6 +1327,7 @@ class ManyToOneRelation extends Relation
     public function validate(&$record, $mode)
     {
         $sessionmanager = SessionManager::getInstance();
+        $storetype = null;
         if ($sessionmanager) {
             $storetype = $sessionmanager->stackVar('atkstore');
         }
@@ -1351,12 +1356,16 @@ class ManyToOneRelation extends Relation
             if (count($this->m_refKey) > 1) {
                 $keys = array();
                 for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
-                    $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldType();
+                    /** @var Attribute $attrib */
+                    $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
+                    $keys [] = $attrib->dbFieldType();
                 }
 
                 return $keys;
             } else {
-                return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
+                /** @var Attribute $attrib */
+                $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
+                return $attrib->dbFieldType();
             }
         }
 
@@ -1372,12 +1381,16 @@ class ManyToOneRelation extends Relation
             if (count($this->m_refKey) > 1) {
                 $keys = array();
                 for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
-                    $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldSize();
+                    /** @var Attribute $attrib */
+                    $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
+                    $keys [] = $attrib->dbFieldSize();
                 }
 
                 return $keys;
             } else {
-                return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
+                /** @var Attribute $attrib */
+                $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
+                return $attrib->dbFieldSize();
             }
         }
 
@@ -1636,7 +1649,7 @@ class ManyToOneRelation extends Relation
             }
         }
 
-        return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+        parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
 
     public function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
@@ -1997,15 +2010,12 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    public function getSearchSpinner($id)
-    {
-        return '<div class="atkbusy" id="'.$id.'__spinner"><i class="fa fa-cog fa-spin"></i></div>';
-    }
 
     /**
      * Auto-complete partial.
      *
      * @param string $mode add/edit mode?
+     * @return string html
      */
     public function partial_autocomplete($mode)
     {
@@ -2080,7 +2090,7 @@ class ManyToOneRelation extends Relation
         $result .= '<ul>';
         foreach ($iterator as $rec) {
             $option = $this->m_destInstance->descriptor($rec);
-            $value = $this->m_destInstance->primaryKey($rec);
+            //$value = $this->m_destInstance->primaryKey($rec);
             $result .= '
           <li value="'.htmlentities($option).'">'.htmlentities($option).'</li>';
         }
@@ -2209,6 +2219,7 @@ class ManyToOneRelation extends Relation
                     $table = $this->m_destInstance->m_table.'.';
                 }
 
+                /** @var Attribute $p_attrib */
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
                 $fields[$p_attrib->fieldName()] = $table.$p_attrib->fieldName().$post;
             }
@@ -2231,7 +2242,7 @@ class ManyToOneRelation extends Relation
                 } elseif (method_exists($this->m_destInstance, 'descriptor_def')) {
                     $descriptordef = $this->m_destInstance->descriptor_def();
                 } else {
-                    $descriptordef = $this->m_destInstance->descriptor();
+                    $descriptordef = $this->m_destInstance->descriptor(null);
                 }
 
                 $parser = new StringParser($descriptordef);
