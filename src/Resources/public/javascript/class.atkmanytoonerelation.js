@@ -11,29 +11,29 @@ if (!window.ATK) {
 }
 
 ATK.ManyToOneRelation = {
-    /**
-     * Auto-complete search field using Ajax.
-     */
-    completeSearch: function (searchField, options) {
-        ATK.ManyToOneRelation.autocomplete(searchField, options, null, null);
-    },
 
-    /**
-     * Auto-complete edit field using Ajax.
-     */
-    completeEdit: function (searchField, options, spinnerElement, afterUpdate) {
-        ATK.ManyToOneRelation.autocomplete(searchField, options, spinnerElement, afterUpdate);
-    },
+    select: function (field, options) {
+        var $ = jQuery;
+        var $field = $('#' + field);
+        var defaultOptions = {
+            'dropdownAutoWidth': true,
+            'width': 'resolve'
 
-    autocomplete: function (searchField, options, spinnerElement, afterUpdate) {
+        };
+        var opts = $.extend(true, {}, defaultOptions, options);
+        console.log(opts);
+        $field.select2(opts);
+        return $field;
+    },
+    
+    autocomplete: function (field, options) {
         var $ = jQuery;
 
-        if (spinnerElement) {
-            var $spinner = $('#' + spinnerElement);
-        }
-        var $field = $('#' + searchField);
+        var $spinner = $('#' + field + '__spinner');
+        var $field = $('#' + field);
 
         var defaultOptions = {
+            width: '100%',
             ajax: {
                 url: '',
                 delay: 300,
@@ -96,11 +96,7 @@ ATK.ManyToOneRelation = {
         };
 
         var opts = $.extend(true, {}, defaultOptions, options);
-
         $field.select2(opts);
-
-        if (afterUpdate) {
-            $field.on('change', afterUpdate);
-        }
+        return $field;
     }
 };

@@ -1026,16 +1026,17 @@ class Attribute
 
     /**
      * Returns the html of the spinner to show during dependencies execution (next to the attribute).
-     *
+     * @param string $fieldprefix
      * @return string
      */
-    public function getSpinner()
+    public function getSpinner($fieldprefix = '')
     {
-        if (count($this->getDependencies()) && $this->m_showSpinner) {
-            return '<div class="atkbusy spinner"><i class="fa fa-cog fa-spin"></i></div>';
+        $ret = '<div class="atkbusy spinner" id="'.$this->getHtmlId($fieldprefix).'__spinner">';
+        if($this->m_showSpinner) {
+            $ret .= '<i class="fa fa-cog fa-spin"></i>';
         }
-
-        return '';
+        $ret .= '</div>';
+        return $ret;
     }
 
     /**
@@ -1043,7 +1044,7 @@ class Attribute
      *
      * @param bool $value
      */
-    public function showSpinner($value)
+    public function showSpinner($value = true)
     {
         $this->m_showSpinner = $value;
     }

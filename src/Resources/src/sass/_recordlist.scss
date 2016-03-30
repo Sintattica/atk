@@ -21,6 +21,7 @@ table.recordList {
       border-left-color: #f2f2f2;
       border-right-color: #f2f2f2;
       font-weight: normal;
+      position: relative;
 
       &:first-child {
         border-left-color: inherit;

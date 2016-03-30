@@ -57,7 +57,7 @@ class StatsHandler extends ActionHandler
 
         return $ui->renderBox([
             'title' => $node->actionTitle('stats'),
-            'content' => $ui->renderAction('search', $params),
+            'content' => $ui->renderAction('stats', $params),
         ]);
     }
 

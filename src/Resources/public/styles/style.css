@@ -9259,7 +9259,8 @@ table.recordList {
       background: #ddd;
       border-left-color: #f2f2f2;
       border-right-color: #f2f2f2;
-      font-weight: normal; }
+      font-weight: normal;
+      position: relative; }
       table.recordList th.recordListSearch:first-child {
         border-left-color: inherit; }
       table.recordList th.recordListSearch:last-child {
