@@ -13,6 +13,7 @@ use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Utils\Selector;
 use Sintattica\Atk\Utils\StringParser;
 
 /**
@@ -227,6 +228,11 @@ class ManyToOneRelation extends Relation
 
     public $m_onchangehandler_init = "var newvalue = el.value;\n";
 
+
+    public $m_select_options = [];
+
+    public $m_search_by_pk = false;
+
     /**
      * Constructor.
      *
@@ -399,6 +405,16 @@ class ManyToOneRelation extends Relation
     public function setConcatDescriptorFunction($function)
     {
         $this->m_concatDescriptorFunction = $function;
+    }
+
+    /**
+     * Set select2 Options
+     *
+     * @param Array
+     */
+    public function setSelectOptions($options)
+    {
+        $this->m_select_options = $options;
     }
 
     /**
@@ -827,11 +843,11 @@ class ManyToOneRelation extends Relation
         $editflag = true;
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
-        $currentPk = $value != null ? $this->getDestination()->primaryKey($value) : null;
-        $selValues = ($currentPk!=null) ? [$currentPk] : [];
+        $currentPk = ($value != null) ? $this->getDestination()->primaryKey($value) : null;
+        $selValues = ($currentPk != null) ? [$currentPk] : [];
 
         if ($this->hasFlag(self::AF_LARGE)) {
-            //autocomplete
+            //no select list, but a link for select
             $editflag = false;
             $result = '';
 
@@ -867,6 +883,8 @@ class ManyToOneRelation extends Relation
                 $editflag = false;
             }
 
+            $isCurrentPresent = false;
+
             // autoselect if there is only one record (if obligatory is not set,
             // we don't autoselect, since user may wist to select 'none' instead
             // of the 1 record.
@@ -874,13 +892,13 @@ class ManyToOneRelation extends Relation
                 $result = $this->getNoneLabel();
             } else {
 
+
                 // relation may be empty, so we must provide an empty selectable..
                 $hasNullOption = false;
                 $noneLabel = '';
                 if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) || (Config::getGlobal('list_obligatory_null_item') && !is_array($value))) {
                     $hasNullOption = true;
                     $noneLabel = $this->getNoneLabel($mode);
-
                     $options[''] = $noneLabel;
                 }
 
@@ -889,11 +907,13 @@ class ManyToOneRelation extends Relation
                     $options[$pk] = $this->m_destInstance->descriptor($selectable);
                 }
 
+
                 $selectOptions = [];
                 if ($hasNullOption) {
                     $selectOptions['allowClear'] = true;
                     $selectOptions['placeholder'] = $noneLabel;
                 }
+                $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
 
                 $this->registerJavaScriptObservers($id);
                 $select2Js = '';
@@ -1081,7 +1101,7 @@ class ManyToOneRelation extends Relation
         $id = $this->getSearchFieldName($fieldprefix);
 
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
-
+            //Normal dropdown search
             if (!$this->createDestination()) {
                 return '';
             }
@@ -1123,9 +1143,12 @@ class ManyToOneRelation extends Relation
             $selectOptions['allowClear'] = true;
             $selectOptions['placeholder'] = Tools::atktext('search_all');
 
+            $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
+
             return $this->drawSelect($id, $options, $selValues, $selectOptions, $select2Js);
 
         } else {
+            //Autocomplete search
             if (is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()][$this->fieldName()])) {
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
@@ -1152,6 +1175,7 @@ class ManyToOneRelation extends Relation
                 $selectOptions['minimumInputLength'] = $this->m_autocomplete_minchars;
                 $selectOptions['allowClear'] = true;
                 $selectOptions['placeholder'] = $noneLabel;
+                $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
 
                 $select2Js = '';
 
@@ -1159,7 +1183,7 @@ class ManyToOneRelation extends Relation
 
             } else {
                 //normal input field
-                $result = '<input type="text" id="'.$id.'" '.$this->getCSSClassAttribute('form-control').' name="'.$id.'" value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+                $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute('form-control').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
             }
 
             return $result;
@@ -1365,6 +1389,7 @@ class ManyToOneRelation extends Relation
             } else {
                 /** @var Attribute $attrib */
                 $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
+
                 return $attrib->dbFieldType();
             }
         }
@@ -1390,6 +1415,7 @@ class ManyToOneRelation extends Relation
             } else {
                 /** @var Attribute $attrib */
                 $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
+
                 return $attrib->dbFieldSize();
             }
         }
@@ -1532,6 +1558,7 @@ class ManyToOneRelation extends Relation
             return true;
         }
 
+
         $this->createDestination();
 
         // if the value is set directly in the record field we first
@@ -1563,11 +1590,10 @@ class ManyToOneRelation extends Relation
             return false;
         }
 
-        // No selection override exists, simply add the record key to the selector.
-        $filter = $this->createFilter($record, $mode);
-        $selector = "($selectedKey)".($filter != null ? " AND ($filter)" : '');
+        $selector = $this->getSelectableRecordsSelector($record, $mode);
+        $selector->where($selectedKey);
 
-        return $this->m_destInstance->select($selector)->getRowCount() > 0;
+        return $selector->getRowCount() > 0;
     }
 
     /**
@@ -1589,9 +1615,25 @@ class ManyToOneRelation extends Relation
     {
         $this->createDestination();
 
-        $selector = $this->createFilter($record, $mode);
-        $result = $this->m_destInstance->select($selector)->orderBy($this->getDestination()->getOrder())->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-            $this->m_destInstance->m_primaryKey));
+        $selector = $this->m_destInstance->select();
+        $filter = $this->createFilter($record, $mode);
+
+        if (in_array($mode, ['edit', 'update'])) {
+            $selector->ignoreDefaultFilters();
+            $filters = $selector->getFiltersConditions();
+
+            if ($filter) {
+                $filters[] = $filter;
+            }
+
+            $primaryKey = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+            $filter = '(('.implode(') AND (', $filters).')) OR '.$primaryKey;
+        }
+
+        $result = $selector
+            ->where($filter)
+            ->orderBy($this->getDestination()->getOrder())
+            ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
         return $result;
     }
@@ -1979,7 +2021,7 @@ class ManyToOneRelation extends Relation
         if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) || (Config::getGlobal('list_obligatory_null_item') && !is_array($value))) {
             $hasNullOption = true;
             $noneLabel = $this->getNoneLabel($mode);
-            $options[''] =  $noneLabel;
+            $options[''] = $noneLabel;
         }
 
         if ($currentValue) {
@@ -1996,6 +2038,7 @@ class ManyToOneRelation extends Relation
             $selectOptions['allowClear'] = true;
             $selectOptions['placeholder'] = $noneLabel;
         }
+        $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
 
         $select2Js = '';
         if (count($this->m_onchangecode)) {
@@ -2089,10 +2132,9 @@ class ManyToOneRelation extends Relation
 
         $result .= '<ul>';
         foreach ($iterator as $rec) {
-            $option = $this->m_destInstance->descriptor($rec);
-            //$value = $this->m_destInstance->primaryKey($rec);
+            $option = $value = $this->m_destInstance->descriptor($rec);
             $result .= '
-          <li value="'.htmlentities($option).'">'.htmlentities($option).'</li>';
+          <li value="'.htmlentities($value).'">'.htmlentities($option).'</li>';
         }
         $result .= '</ul>';
 
