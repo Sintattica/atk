@@ -1289,7 +1289,27 @@ class Db
     }
 
     /**
-     * Get database instance.
+     * Get a new database instance
+     * @param $conn
+     * @param string $mode
+     * @return Db
+     */
+    public static function &newInstance($conn, $mode = 'rw')
+    {
+        // Resolve any potential aliases
+        $conn = self::getTranslatedDatabaseName($conn);
+        $dbconfig = Config::getGlobal('db');
+        $driver = __NAMESPACE__.'\\'.$dbconfig[$conn]['driver'].'Db';
+        Tools::atkdebug("Creating new database instance with '{$driver}' driver");
+
+        /** @var Db $driverInstance */
+        $driverInstance = new $driver();
+
+        return $driverInstance->init($conn, $mode);
+    }
+
+    /**
+     * Get a database instance (singleton)
      *
      * This method instantiates and returns the correct (vendor specific)
      * database instance, depending on the configuration.

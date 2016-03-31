@@ -10,7 +10,7 @@ use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Utils\EditFormModifier;
 use Exception;
 
@@ -348,12 +348,9 @@ class Attribute
      */
     public $m_module = '';
 
-    /*
-     * Instance of the Node that owns this attribute
-     * @access private
-     * @var Node
-     */
-    public $m_ownerInstance = '';
+
+    /** @var Node $m_ownerInstance */
+    public $m_ownerInstance;
 
     /*
      * The size the attribute's field.
@@ -1029,16 +1026,17 @@ class Attribute
 
     /**
      * Returns the html of the spinner to show during dependencies execution (next to the attribute).
-     *
+     * @param string $fieldprefix
      * @return string
      */
-    public function getSpinner()
+    public function getSpinner($fieldprefix = '')
     {
-        if (count($this->getDependencies()) && $this->m_showSpinner) {
-            return '<div class="atkbusy spinner"><i class="fa fa-cog fa-spin"></i></div>';
+        $ret = '<div class="atkbusy spinner" id="'.$this->getHtmlId($fieldprefix).'__spinner">';
+        if($this->m_showSpinner) {
+            $ret .= '<i class="fa fa-cog fa-spin"></i>';
         }
-
-        return '';
+        $ret .= '</div>';
+        return $ret;
     }
 
     /**
@@ -1046,7 +1044,7 @@ class Attribute
      *
      * @param bool $value
      */
-    public function showSpinner($value)
+    public function showSpinner($value = true)
     {
         $this->m_showSpinner = $value;
     }
@@ -1513,6 +1511,7 @@ class Attribute
      * @param bool $edit editing?
      * @param DataGrid $grid data grid
      * @param string $column child column (null for this attribute, * for this attribute and all childs)
+     * @throws Exception
      */
     public function addToListArrayRow(
         $action,
@@ -1627,7 +1626,6 @@ class Attribute
     /**
      * Retrieve the current set or default searchmode of this attribute.
      *
-     * @param bool $extended Whether extended search is being used
      *
      * @return string the default searchmode for this attribute.
      */
@@ -2804,9 +2802,9 @@ class Attribute
 
         $script = '';
         foreach ($arr['fields'] as $field) {
-            //JSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
+            //Json::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
             $value = Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html']);
-            $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$field['id'])."').update(".JSON::encode($value).");\r\n";
+            $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$field['id'])."').update(".Json::encode($value).");\r\n";
         }
 
         return '<script type="text/javascript">'.$script.'</script>';
@@ -2863,7 +2861,7 @@ class Attribute
 
         $url = Tools::partial_url($this->getOwnerInstance()->atkNodeUri(), $action, 'attribute.'.$this->fieldName().'.dependencies',
             array('atkdata' => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
-        $url = JSON::encode($url);
+        $url = Json::encode($url);
 
         $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkattribute.js');
         $code = "ATK.Attribute.callDependencies({$url}, el);";

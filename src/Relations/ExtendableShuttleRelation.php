@@ -5,7 +5,7 @@ namespace Sintattica\Atk\Relations;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Utils\StringParser;
 
 /**
@@ -110,12 +110,12 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $res = '<script language="text/javascript">';
         foreach ($this->m_controlsBySection[$record[$this->fieldName()]['section']] as $control) {
             if ($control->needsRefresh('filter', $record)) {
-                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".JSON::encode($control->render($record, $mode, $prefix)).';';
+                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".Json::encode($control->render($record, $mode, $prefix)).';';
             }
         }
 
         if ($redraw) {
-            $res .= "$('".$this->getHtmlId($prefix).'_'.$record[$this->fieldName()]['section']."').innerHTML = ".JSON::encode($this->renderSelectBoxes($record[$this->fieldName()]['section'],
+            $res .= "$('".$this->getHtmlId($prefix).'_'.$record[$this->fieldName()]['section']."').innerHTML = ".Json::encode($this->renderSelectBoxes($record[$this->fieldName()]['section'],
                     $record, $mode, $prefix)).';';
         }
         $res .= '</script>';
@@ -197,12 +197,12 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $res = '<script language="text/javascript">';
         foreach ($this->m_controlsBySection[ShuttleControl::AVAILABLE] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".JSON::encode($control->render($record, $mode, $prefix)).';';
+                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".Json::encode($control->render($record, $mode, $prefix)).';';
             }
         }
         foreach ($this->m_controlsBySection[ShuttleControl::SELECTED] as $control) {
             if ($control->needsRefresh('selection', $record)) {
-                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".JSON::encode($control->render($record, $mode, $prefix)).';';
+                $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".Json::encode($control->render($record, $mode, $prefix)).';';
             }
         }
         $res .= '</script>';
@@ -288,7 +288,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         foreach ($right as $fld) {
             $vals[] = $fld[$this->m_destInstance->primaryKeyField()];
         }
-        $value = JSON::encode($vals);
+        $value = Json::encode($vals);
         if ($value == 'null') {
             $value = '[]';
         }
@@ -341,7 +341,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     public function fetchValue($postvars)
     {
         $ret = array();
-        $vals = JSON::decode($postvars[$this->fieldName()]['selected'][0][$this->getRemoteKey()], true);
+        $vals = Json::decode($postvars[$this->fieldName()]['selected'][0][$this->getRemoteKey()], true);
         if (is_array($vals)) {
             foreach ($vals as $val) {
                 $ret[][$this->getRemoteKey()] = $val;

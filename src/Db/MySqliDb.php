@@ -611,7 +611,7 @@ class MySqliDb extends Db
     {
         /* first connect */
         if ($this->connect('r') == self::DB_SUCCESS) {
-            $ddl = Ddl::create('mysqli');
+            $ddl = Ddl::create('MySqli');
 
             /* list fields */
             Tools::atkdebug("Retrieving metadata for $table");

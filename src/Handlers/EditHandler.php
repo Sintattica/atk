@@ -4,7 +4,7 @@ namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
 
@@ -547,7 +547,7 @@ class EditHandler extends ViewEditBase
         $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
 
         // register fields that contain errornous values
-        $page->register_scriptcode('var atkErrorFields = '.JSON::encode($errorFields).';');
+        $page->register_scriptcode('var atkErrorFields = '.Json::encode($errorFields).';');
 
         if (Config::getGlobal('lose_changes_warning', true)) {
             // If we are in the save or update action the user has added a nested record, has done

@@ -2,7 +2,7 @@
 
 namespace Sintattica\Atk\DataGrid;
 
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
@@ -1649,7 +1649,7 @@ class DataGrid
             $overridesJsStr .= (!empty($overridesJsStr) ? ', ' : '')."'$key': $js";
         }
 
-        return 'ATK.DataGrid.update('.JSON::encode($this->getName()).', '.JSON::encode($overrides).', {'.$overridesJsStr.'}, '.$overridesJsCallback.');';
+        return 'ATK.DataGrid.update('.Json::encode($this->getName()).', '.Json::encode($overrides).', {'.$overridesJsStr.'}, '.$overridesJsCallback.');';
     }
 
     /**
@@ -1662,7 +1662,7 @@ class DataGrid
         $sm = SessionManager::getInstance();
         $url = $sm->sessionUrl(Tools::dispatch_url($this->getNode()->atkNodeUri(), 'multiupdate', array('output' => 'json')), SessionManager::SESSION_PARTIAL);
 
-        return 'ATK.DataGrid.save('.JSON::encode($this->getName()).', '.JSON::encode($url).');';
+        return 'ATK.DataGrid.save('.Json::encode($this->getName()).', '.Json::encode($url).');';
     }
 
     /**

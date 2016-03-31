@@ -23,6 +23,14 @@ abstract class Module
         $this->menu = $menu;
     }
 
+    protected function getMenu(){
+        return $this->menu;
+    }
+
+    protected function getAtk(){
+        return $this->atk;
+    }
+
     abstract public function boot();
 
     public function registerNode($nodeName, $nodeClass, $actions = null)

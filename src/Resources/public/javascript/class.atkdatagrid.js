@@ -73,9 +73,19 @@ ATK.DataGrid = {
         // convert overrides to query components
         var queryComponents = [];
         $H(overrides).each(function(item) {
+
             var key = 'atkdg_AE_' + grid.name + '_AE_' + item.key;
-            var queryComponent = encodeURIComponent(key) + '=' + encodeURIComponent(item.value);
-            queryComponents.push(queryComponent);
+            var queryComponent;
+
+            if(Object.isArray(item.value)){
+                for (var i = 0; i < item.value.length; i++) {
+                    queryComponent = encodeURIComponent(key) + '=' + encodeURIComponent(item.value[i]);
+                    queryComponents.push(queryComponent);
+                }
+            }else {
+                queryComponent = encodeURIComponent(key) + '=' + encodeURIComponent(item.value);
+                queryComponents.push(queryComponent);
+            }
         });
 
         // if embedded we also serialize the edit data form fields
@@ -84,13 +94,16 @@ ATK.DataGrid = {
             for (var i = 0; i < elements.length; i++) {
                 if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
                     var queryComponent = Form.Element.serialize(elements[i]);
-                    if (queryComponent)
+                    if (queryComponent) {
                         queryComponents.push(queryComponent);
+                    }
                 }
             }
         }
 
         queryComponents.push('atkdatagrid=' + encodeURIComponent(name));
+
+
 
         var params = queryComponents.join('&');
         var options = {parameters: params, evalScripts: true,

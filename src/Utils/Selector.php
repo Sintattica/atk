@@ -467,17 +467,28 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             return;
         }
 
+        $filters = $this->getFiltersConditions();
+        foreach ($filters as $filter) {
+            $query->addCondition($filter);
+        }
+    }
+
+    public function getFiltersConditions()
+    {
+        $filters = [];
+
         // key/value filters
         foreach ($this->_getNode()->m_filters as $key => $value) {
-            $query->addCondition($key."='".$this->_getDb()->escapeSQL($value)."'");
+            $filters[] = $key."='".$this->_getDb()->escapeSQL($value)."'";
         }
 
         // fuzzy filters
         foreach ($this->_getNode()->m_fuzzyFilters as $filter) {
             $parser = new StringParser($filter);
-            $filter = $parser->parse(array('table' => $this->_getNode()->getTable()));
-            $query->addCondition($filter);
+            $filters[] = $parser->parse(array('table' => $this->_getNode()->getTable()));
         }
+
+        return $filters;
     }
 
     /**

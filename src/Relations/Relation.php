@@ -21,11 +21,9 @@ class Relation extends Attribute
      * @var String Destination node.
      */
     public $m_destination;
-
-    /*
-     * @var Node Destination instance.
-     */
-    public $m_destInstance = '';
+    
+    /** @var Node $m_destInstance Destination instance */
+    public $m_destInstance;
 
     /*
      * @var String Filter for destination records.

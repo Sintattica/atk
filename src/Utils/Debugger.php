@@ -557,7 +557,7 @@ class Debugger
 
         if ($isPartial) {
             $output = '<script type="text/javascript">
-            ATK.Debug.addContent('.JSON::encode($block).');
+            ATK.Debug.addContent('.Json::encode($block).');
            </script>';
         } else {
             $ui = Ui::getInstance();

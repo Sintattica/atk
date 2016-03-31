@@ -20,9 +20,6 @@ class MultiSelectAttribute extends ListAttribute
     const AF_CHECK_ALL = 134217728;
     const AF_LINKS_BOTTOM = 268435456;
 
-    // number of cols
-    public $m_cols;
-
     /**
      * Default field separator.
      *
@@ -37,24 +34,22 @@ class MultiSelectAttribute extends ListAttribute
      * @param array $optionArray Array with options
      * @param $valueArray $value Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
-     * @param int $cols Number of columns
      * @param int $flags Flags for this attribute
      * @param int $size Size of the attribute.
      */
-    public function __construct($name, $optionArray, $valueArray = null, $cols = null, $flags = 0, $size = '')
+    public function __construct($name, $optionArray, $valueArray = null, $flags = 0, $size = 0)
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
             $valueArray = $optionArray;
         }
         // size must be large enough to store a combination of all values.
-        if ($size == '') {
+        if ($size == 0) {
             $size = 0;
             for ($i = 0, $_i = count($valueArray); $i < $_i; ++$i) {
                 $size += (Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
             }
         }
         parent::__construct($name, $optionArray, $valueArray, $flags, $size); // base class constructor
-        ($cols < 1) ? $this->m_cols = 3 : $this->m_cols = $cols;
     }
 
     /**
@@ -85,17 +80,10 @@ class MultiSelectAttribute extends ListAttribute
         return $result;
     }
 
-    /**
-     * Converts the internal attribute value to one that is understood by the
-     * database.
-     *
-     * @param array $rec The record that holds this attribute's value.
-     *
-     * @return string The database compatible value
-     */
+
     public function value2db($rec)
     {
-        if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
+        if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]) >= 1) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
         } else {
             return '';
@@ -167,10 +155,6 @@ class MultiSelectAttribute extends ListAttribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        $this->m_record = $record;
-        $cols = $this->m_cols;
-        $modcols = $cols - 1;
-
         $id = $fieldprefix.$this->fieldName();
 
         $page = Page::getInstance();
@@ -181,30 +165,32 @@ class MultiSelectAttribute extends ListAttribute
             $result .= $this->_addLinks($fieldprefix);
         }
 
-        $result .= "\n<table><tr>\n";
+        $css = $this->getCSSClassAttribute('');
+        $result .= '<div '.$css.'>';
 
         $values = $this->getValues($record);
-        if (!is_array($record[$this->fieldname()])) {
+        if (!is_array($record[$this->fieldName()])) {
             $recordvalue = $this->db2value($record);
         } else {
             $recordvalue = $record[$this->fieldName()];
         }
 
         for ($i = 0; $i < count($values); ++$i) {
+            $checkId = $id.'_'.$i;
+            $checkName = $fieldprefix.$this->fieldName().'[]';
+
             if (!$this->hasFlag(self::AF_CHECK_ALL)) {
-                (Tools::atk_in_array($values[$i], $recordvalue)) ? $sel = 'checked' : $sel = '';
+                $sel = (Tools::atk_in_array($values[$i], $recordvalue)) ? 'checked' : '';
             } else {
                 $sel = 'checked';
             }
 
-            $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" '.$this->getCSSClassAttribute('atkcheckbox').' name="'.$fieldprefix.$this->fieldName().'[]" value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],
-                    $record).'</td>';
-
-            if ($i % $cols == $modcols) {
-                $result .= "</tr><tr>\n";
-            }
+            $result .= '<div>';
+            $result .= '<input type="checkbox" id="'.$checkId.'" name="'.$checkName.'" value="'.$values[$i].'" '.$sel.'> ';
+            $result .= $this->_translateValue($values[$i], $record);
+            $result .= '</div>';
         }
-        $result .= "</tr></table>\n";
+        $result .= '</div>';
         if ($this->hasFlag(self::AF_LINKS_BOTTOM)) {
             $result .= $this->_addLinks($fieldprefix);
         }
@@ -212,29 +198,16 @@ class MultiSelectAttribute extends ListAttribute
         return $result;
     }
 
-    /**
-     * @todo code below can't possibly work.
-     *  really needs to be fixed.
-     *
-     * @param Query $query
-     * @param string $table
-     * @param mixed $value
-     * @param string $searchmode
-     *
-     * @return string condition to use in a where clause
-     */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // Multiselect attribute has only 1 searchmode, and that is substring.
         $searchcondition = null;
         if (is_array($value) && $value[0] != '' && count($value) > 0) {
-            if (count($value) == 1) {
-                $searchcondition = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]));
-            } else {
-                foreach ($value as $str) {
-                    $searchcondition = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
-                }
+            $searchcondition = [];
+            foreach ($value as $str) {
+                $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
             }
+            $searchcondition = implode(' OR ', $searchcondition);
         }
 
         return $searchcondition;
@@ -276,8 +249,8 @@ class MultiSelectAttribute extends ListAttribute
     public function _addLinks($fieldprefix)
     {
         if (count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
-            return '<div align="left"><font size="-2">
-                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</font></div>';
+            return '<div align="left">
+                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
         }
 
         return '';

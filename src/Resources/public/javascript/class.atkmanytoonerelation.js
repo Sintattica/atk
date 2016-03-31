@@ -1,21 +1,4 @@
-/**
- * This file is part of the ATK distribution on GitHub.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be
- * included in the distribution.
- *
- * @package atk
- * @subpackage javascript
- *
- * @copyright (c)2000-2004 Ibuildings.nl BV
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision: 6264 $
- * $Id$
- */
-
-function mto_parse(link, value)
-{
+function mto_parse(link, value) {
     var value_array = value.split('=');
     if (value_array[1] == '' || typeof value_array[1] == "undefined")
         return -1;
@@ -28,183 +11,91 @@ if (!window.ATK) {
 }
 
 ATK.ManyToOneRelation = {
-    /**
-     * Auto-complete search field using Ajax.
-     */
-    completeSearch: function(searchField, update, url, minimumChars) {
-        new ATK.ManyToOneRelation.Autocompleter(searchField, update, url, {
-            paramName: 'value', minChars: minimumChars, frequency: 0.5});
+
+    select: function (field, options) {
+        var $ = jQuery;
+        var $field = $('#' + field);
+        var defaultOptions = {
+            'dropdownAutoWidth': true,
+            'width': 'resolve'
+
+        };
+        var opts = $.extend(true, {}, defaultOptions, options);
+        $field.select2(opts);
+        return $field;
     },
-    /**
-     * Auto-complete edit field using Ajax.
-     */
-    completeEdit: function(searchField, resultField, valueField, spinnerElement, url, afterUpdate, minimumChars) {
-        new ATK.ManyToOneRelation.AdvancedAutocompleter(searchField, resultField, valueField, url, {
-            paramName: 'value',
-            minChars: minimumChars,
-            frequency: 0.5,
-            afterUpdateElement: afterUpdate,
-            serializeForm: true,
-            indicator: spinnerElement
-        });
+    
+    autocomplete: function (field, options) {
+        var $ = jQuery;
+
+        var $spinner = $('#' + field + '__spinner');
+        var $field = $('#' + field);
+
+        var defaultOptions = {
+            width: '100%',
+            ajax: {
+                url: '',
+                delay: 300,
+
+                beforeSend: function () {
+                    if ($spinner) {
+                        $spinner.visible();
+                    }
+                },
+                complete: function () {
+                    if ($spinner) {
+                        $spinner.invisible();
+                    }
+                },
+                data: function (params) {
+                    return {
+                        value: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data) {
+                    var results = [];
+
+                    var $dom = $.parseHTML(data, document, true);
+                    var more = false;
+
+                    $.each($dom, function (i, item) {
+                        var $item = $(item);
+                        if ($item.is('ul')) {
+                            $.each($item.find('li'), function (j, li) {
+                                var $li = $(li);
+                                results.push({
+                                    'id': $li.attr('value'),
+                                    'text': $li.text()
+                                });
+                            });
+                        }
+                        else if ($item.is('script')) {
+                            var html = $item.html();
+                            if (html) {
+                                $.globalEval(html);
+                            }
+                        } else if ($item.is('div')) {
+                            if ($item.attr('id') == 'more') {
+                                more = $item.html() === 'true';
+                            }
+                        }
+                    });
+
+                    return {
+                        results: results,
+                        pagination: {
+                            more: more
+                        }
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1
+        };
+
+        var opts = $.extend(true, {}, defaultOptions, options);
+        $field.select2(opts);
+        return $field;
     }
 };
-
-
-ATK.ManyToOneRelation.Autocompleter = Class.create();
-Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.Autocompleter.prototype), {
-    initialize: function(element, update, url, options) {
-        Ajax.Autocompleter.prototype.initialize.apply(this, new Array(element, update, url, options));
-    },
-    // Fix for resetting the scollbar position.
-    // See: http://dev.rubyonrails.org/ticket/4782
-    hide: function() {
-        this.stopIndicator();
-        if (Element.getStyle(this.update, 'display') != 'none')
-        {
-            this.options.onHide(this.element, this.update);
-        }
-        if (this.iefix)
-            Element.hide(this.iefix);
-        this.update.scrollTop = 0;
-    },
-    // Fix autocompleter scrollbar support on IE.
-    // See: http://dev.rubyonrails.org/ticket/4782
-    onBlur: function(event) {
-        if (navigator.appVersion.match(/\bMSIE\b/) &&
-            Element.getStyle(this.update, 'display') != 'none' &&
-            (this.update.offsetWidth - this.update.clientLeft * 2) > this.update.clientWidth) {
-            // We have IE, the autocomplete box visible, and it has a vertical scrollbar. The last
-            // check above and some calculations below assume equal left/right & top/bottom borders.
-            var scrollbarLeft, scrollbarRight, scrollbarTop, scrollbarBottom,
-                x = event.clientX, y = event.clientY;
-            with (this.update) {
-                scrollbarLeft = document.body.clientLeft + offsetLeft + clientLeft + clientWidth;
-                scrollbarRight = document.body.clientLeft + offsetLeft + offsetWidth - clientLeft;
-                scrollbarTop = document.body.clientTop + offsetTop + clientTop;
-                scrollbarBottom = scrollbarTop + clientHeight;
-            }
-            if (x >= scrollbarLeft && x <= scrollbarRight && y >= scrollbarTop && y <= scrollbarBottom) {
-                this.element.focus();
-                return;
-            }
-        }
-
-        // needed to make click events working
-        setTimeout(this.hide.bind(this), 250);
-        this.hasFocus = false;
-        this.active = false;
-    },
-    onComplete: function(request) {
-        this.updateChoices(request.responseText.stripScripts());
-        request.responseText.evalScripts();
-    }
-});
-
-ATK.ManyToOneRelation.AdvancedAutocompleter = Class.create();
-Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototype, ATK.ManyToOneRelation.Autocompleter.prototype), {
-    initialize: function(element, update, valueElement, url, options) {
-        ATK.ManyToOneRelation.Autocompleter.prototype.initialize.apply(this, new Array(element, update, url, options));
-
-        this.valueElement = $(valueElement);
-
-        if (this.options.serializeForm) {
-            this.options.callback = this.parametersCallback.bind(this);
-        }
-    },
-    parametersCallback: function(element, entry) {
-        var elements = Form.getElements(element.form).findAll(function(el) {
-            return el.name && el.name.substring(0, 3) != 'atk'
-        });
-
-        var queryComponents = elements.collect(function(el) {
-            return Form.Element.serialize(el);
-        }).concat([entry]);
-
-        return queryComponents.join('&');
-    },
-    findFirstNodeByClass: function(element, className) {
-        var nodes = $(element).childNodes;
-        for (var i = 0; i < nodes.length; i++)
-        {
-            if (nodes[i].nodeType != 3 && Element.hasClassName(nodes[i], className))
-                return nodes[i];
-            else if (nodes[i].nodeType != 3)
-            {
-                node = this.findFirstNodeByClass(nodes[i], className)
-                if (node != null)
-                    return node;
-            }
-        }
-        return null;
-    },
-    // Fix for resetting the scollbar position.
-    // See: http://dev.rubyonrails.org/ticket/4782
-    hide: function() {
-        this.stopIndicator();
-        if (Element.getStyle(this.update, 'display') != 'none')
-        {
-            this.options.onHide(this.element, this.update);
-
-            // needed to clear the value if the user has entered a search
-            // query but doesn't select anything from the list
-            if (this.clearValue) {
-                this.clear();
-                //this.valueElement.value = '';
-                //this.element.value = ''; // clear value
-            }
-        }
-        if (this.iefix)
-            Element.hide(this.iefix);
-        this.update.scrollTop = 0;
-    },
-    updateElement: function(selectedElement) {
-        var valueEl = this.findFirstNodeByClass(selectedElement, 'value');
-        var labelEl = this.findFirstNodeByClass(selectedElement, 'selection');
-
-        var value = valueEl != null ? valueEl.innerHTML : '';
-        var label = labelEl != null ? labelEl.innerHTML : '';
-
-        this.valueElement.value = value;
-        this.element.value = label.unescapeHTML();
-        this.element.focus();
-        this.element.select();
-
-        this.clearValue = false;
-
-        if (this.options.afterUpdateElement)
-            this.options.afterUpdateElement(this.element, selectedElement);
-    },
-    onKeyPress: function(event) {
-        if (!this.active && (event.keyCode == Event.KEY_TAB || event.keyCode == Event.KEY_RETURN ||
-            (navigator.appVersion.indexOf('AppleWebKit') > 0 && event.keyCode == 0)))
-            return;
-
-        this.clearValue = true;
-
-        ATK.ManyToOneRelation.Autocompleter.prototype.onKeyPress.apply(this, [
-            event]);
-    },
-    clear: function() {
-        this.element.value = '';
-        this.valueElement.value = '';
-        this.clearValue = false;
-
-        if (this.options.afterUpdateElement)
-            this.options.afterUpdateElement(this.element, null);
-    },
-    onObserverEvent: function() {
-        if (this.getToken().length < this.options.minChars) {
-            this.clear();
-        }
-
-        if (!this.hasFocus)
-        {
-            if (this.clearValue)
-                this.clear();
-            return;
-        }
-
-        ATK.ManyToOneRelation.Autocompleter.prototype.onObserverEvent.apply(this);
-    }
-});

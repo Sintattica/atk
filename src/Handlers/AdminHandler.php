@@ -6,7 +6,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Utils\JSON;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
 use Exception;
@@ -212,7 +212,7 @@ class AdminHandler extends ActionHandler
                 SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
-                $script = 'document.location.href = '.JSON::encode($url).';';
+                $script = 'document.location.href = '.Json::encode($url).';';
                 $node->getPage()->register_loadscript($script);
             } else {
                 $node->redirect($url);
