@@ -417,10 +417,15 @@ class Attribute
 
     /*
      * The css classes of the attribute
-     * @access private
      * @var array
      */
     public $m_cssclasses = array();
+
+    /*
+     * The css classes of the container of the attribute
+     * @var array
+     */
+    public $m_rowCssClasses = array();
 
     /*
      * The label of the attribute.
@@ -769,7 +774,7 @@ class Attribute
 
         return $this;
     }
-
+    
     /**
      * Removes a disabled mode from the attribute.
      *
@@ -1032,10 +1037,11 @@ class Attribute
     public function getSpinner($fieldprefix = '')
     {
         $ret = '<div class="atkbusy spinner" id="'.$this->getHtmlId($fieldprefix).'__spinner">';
-        if($this->m_showSpinner) {
+        if ($this->m_showSpinner) {
             $ret .= '<i class="fa fa-cog fa-spin"></i>';
         }
         $ret .= '</div>';
+
         return $ret;
     }
 
@@ -1186,11 +1192,15 @@ class Attribute
         } /* edit */ else {
             global $ATK_VARS;
 
+
             $entry = array(
                 'name' => $this->m_name,
                 'obligatory' => $this->hasFlag(self::AF_OBLIGATORY),
                 'attribute' => &$this,
             );
+
+            $entry['class'] = $this->m_rowCssClasses;
+
             $entry['id'] = $this->getHtmlId($fieldprefix);
 
             /* label? */
@@ -1578,10 +1588,12 @@ class Attribute
             $value = $record[$this->fieldName()];
         }
 
-        $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
+        $class = $this->getCSSClassAttribute(['form-control']);
+        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.htmlentities($value).'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
 
         return $result;
     }
+
 
     /**
      * Returns piece of html which is used for setting/selecting the search
@@ -2506,7 +2518,7 @@ class Attribute
 
     /**
      * Adds the needed searchbox(es) for this attribute to the fields array. This
-     * method should only be called by the atkSearchHandler.
+     * method should only be called by the SearchHandler.
      *
      * @param array $fields The array containing fields to use in the
      *                            extended search
@@ -2514,10 +2526,11 @@ class Attribute
      * @param array $record A record containing default values to put
      *                            into the search fields.
      * @param string $fieldprefix search / mode field prefix
+     * @param bool $extended enable extended search mode
      *
      * @return Attribute The instance of this Attribute
      */
-    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '')
+    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $extended = true)
     {
         $field = array();
         $defaults = $record;
@@ -2526,15 +2539,49 @@ class Attribute
         $funcname = $this->m_name.'_search';
 
         if (method_exists($node, $funcname)) {
-            $field['widget'] = $node->$funcname($defaults, true, $fieldprefix);
+            $field['widget'] = $node->$funcname($defaults, $extended, $fieldprefix);
         } else {
-            $field['widget'] = $this->search($defaults, true, $fieldprefix); // second param indicates extended search.
+            $field['widget'] = $this->search($defaults, $extended, $fieldprefix); // second param indicates extended search.
         }
 
         // pre-emptive set "full" value:
         $field['full'] = $field['widget']; // lateron, we might add more to full
         // set "searchmode" value:
-        $field['searchmode'] = $this->searchmode(true, $fieldprefix);
+        $field['searchmode'] = $this->searchMode($extended, $fieldprefix);
+
+        // set "label" value:
+        $field['label'] = $this->label();
+
+        // add $field to fields array
+        $fields[] = $field;
+
+        return $this;
+    }
+
+    public function addToStatsformFields(&$fields, &$node, &$record, $fieldprefix = '')
+    {
+        $field = array();
+        $defaults = $record;
+        $opts = $this->getStatOptions();
+        $extended = $opts['extended'];
+        //$this->m_isStatsMode = true;
+
+        // set "widget" value:
+        $funcname = $this->m_name.'_search';
+
+        if (method_exists($node, $funcname)) {
+            $field['widget'] = $node->$funcname($defaults, $extended, $fieldprefix);
+        } else {
+            $field['widget'] = $this->stats($defaults, $extended, $fieldprefix); // second param indicates extended search.
+        }
+
+        $field['id'] = $this->getSearchFieldName($fieldprefix);
+        $field['rowid'] = 'ar_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
+
+        // pre-emptive set "full" value:
+        $field['full'] = $field['widget']; // lateron, we might add more to full
+        // set "searchmode" value:
+        $field['searchmode'] = $opts['showSearchMode'] ? $this->searchMode($extended, $fieldprefix) : '';
 
         // set "label" value:
         $field['label'] = $this->label();
@@ -2926,6 +2973,22 @@ class Attribute
     {
         if (!in_array($classname, $this->m_cssclasses)) {
             $this->m_cssclasses[] = $classname;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add a CSS class for the container of this attribute on an HTML form.
+     *
+     * @param string $classname The name of a class.
+     *
+     * @return Attribute The instance of this Attribute
+     */
+    public function addRowCSSClass($classname)
+    {
+        if (!in_array($classname, $this->m_rowCssClasses)) {
+            $this->m_rowCssClasses[] = $classname;
         }
 
         return $this;

@@ -1132,37 +1132,20 @@ class OneToOneRelation extends Relation
         return $condition;
     }
 
-    /**
-     * Overridden method; in the integrated version, we should let the destination
-     * attributes hook themselves into the fieldlist instead of hooking the relation
-     * in it.
-     * For original documentation for this method, please see the Attribute class.
-     *
-     * @param array $fields The array containing fields to use in the
-     *                                 extended search
-     * @param Node $node The node where the field is in
-     * @param array $record A record containing default values to put
-     *                                 into the search fields.
-     * @param array $fieldprefix search / mode field prefix
-     * @param array $currentSearchMode current search mode
-     */
-    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $currentSearchMode = array())
-    {
-        if (!is_array($currentSearchMode)) {
-            $currentSearchMode = array();
-        }
 
+    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $extended = true)
+    {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $prefix = $fieldprefix.$this->fieldName().'_AE_';
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
 
                 if (!$p_attrib->hasFlag(self::AF_HIDE_SEARCH)) {
-                    $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix, $currentSearchMode[$this->fieldName()]);
+                    $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix, $extended);
                 }
             }
         } else {
-            parent::addToSearchformFields($fields, $node, $record, $fieldprefix, $currentSearchMode);
+            parent::addToSearchformFields($fields, $node, $record, $fieldprefix, $extended);
         }
     }
 

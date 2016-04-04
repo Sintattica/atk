@@ -3,17 +3,13 @@
 namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Session\SessionManager;
-use Khill\Lavacharts\Lavacharts;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 
-class StatsHandler extends ActionHandler
+class StatsHandler extends SearchHandler
 {
-
-    /** @var Attribute[] array  */
-    private $attribs = [];
-
     public function action_stats()
     {
         if (!empty($this->m_partial)) {
@@ -24,13 +20,30 @@ class StatsHandler extends ActionHandler
         $page = $this->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
 
-        $record = $this->m_postvars['atksearch'];
 
-        $page->addContent($this->m_node->renderActionPage('stats', $this->invoke('statsPage', $record)));
+
+        $page->addContent($this->m_node->renderActionPage('stats', $this->invoke('statsPage')));
     }
 
     public function statsPage($record = null)
     {
+        $result = $this->getStatsPage($record);
+        if ($result !== false) {
+            return $result;
+        }
+
+        return;
+    }
+
+    public function getStatsPage($record = null)
+    {
+        if ($record == null) {
+            $record = $this->getNode()->updateRecord('', null, null, true);
+        }
+
+        $page = $this->getPage();
+        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
+
         $res = [];
         $res[] = $this->invoke('statsFormPage', $record);
         $res[] = $this->invoke('statsGraphPage', $record);
@@ -40,19 +53,13 @@ class StatsHandler extends ActionHandler
 
     public function statsFormPage($record = null)
     {
-        $node = $this->m_node;
-        $page = $this->getPage();
+        $node = $this->getNode();
         $ui = $this->getUi();
 
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
-        $sm = SessionManager::getInstance();
         $params = [];
-        $params['formstart'] = '<form name="entryform" action="'.Config::getGlobal('dispatcher').'" method="get">';
-        $params['formstart'] .= $sm->formState(SessionManager::SESSION_REPLACE);
-        $params['formstart'] .= '<input type="hidden" name="atkaction" value="stats">';
-        $params['formstart'] .= '<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
+        $params['formstart'] = $this->getFormStart();
         $params['content'] = $this->invoke('statsForm', $record);
-        $params['buttons'] = $node->getFormButtons('search');
+        $params['buttons'] = $node->getFormButtons('stats');
         $params['formend'] = '</form>';
 
         return $ui->renderBox([
@@ -61,7 +68,19 @@ class StatsHandler extends ActionHandler
         ]);
     }
 
-    public function statsGraphPage($record = null)
+    public function getFormStart()
+    {
+        $sm = SessionManager::getInstance();
+
+        $formstart = '<form name="entryform" action="'.Config::getGlobal('dispatcher').'" method="get">';
+        $formstart .= $sm->formState(SessionManager::SESSION_REPLACE);
+        $formstart .= '<input type="hidden" name="atkaction" value="stats">';
+        $formstart .= '<input type="hidden" name="atknodeuri" value="'.$this->getNode()->atkNodeUri().'">';
+
+        return $formstart;
+    }
+
+    public function statsGraphPage($record)
     {
         $ui = $this->getUi();
         $vars = array(
@@ -72,44 +91,29 @@ class StatsHandler extends ActionHandler
         return $ui->renderBox($vars);
     }
 
-    public function statsForm($record = null)
+    public function statsForm($record)
     {
         $params = [];
         $params['fields'] = [];
         $ui = $this->getUi();
         $node = $this->getNode();
-        $node->setAttribSizes();
 
-        foreach ($node->getStatsAttributes() as &$p_attrib) {
-            /** @var Attribute $p_attrib */
-            $p_attrib->m_owner = $node->getType();
-            $p_attrib->setOwnerInstance($node);
-            $p_attrib->init();
-            $p_attrib->addToSearchformFields($params['fields'], $node, $record, '');
-            $this->attribs[] = $p_attrib;
-        }
-
-        return $ui->render($node->getTemplate('stats', $record), $params);
-
+        /** @var EditHandler $edithandler */
+        $edithandler = $node->getHandler('edit');
+        $form = $edithandler->editForm('stats', $record, [], '', $node->getEditFieldPrefix(), $node->getTemplate('stats', $record), true);
+        return $form;
     }
 
-    public function renderStatsGraphPage($record = null)
+    public function renderStatsGraphPage($record)
     {
-        $query = $this->getNode()->getDb()->createQuery();
-        $ret = [];
-        foreach($this->attribs as &$attrib){
-            $value = $attrib->getSearchCondition($query, $attrib->getOwnerInstance()->getTable(), $record[$attrib->fieldName()], '');
-            $ret[] = $value;
-        }
-
-        return implode('<br />', $ret);
-       // return print_r($record, true);
+        return print_r($record, 1);
     }
+
 
     /**
-     * Attribute handler.
+     * Handler for partial actions on an stats page.
      *
-     * @param string $partial full partial
+     * @param string $partial full partial name
      *
      * @return string
      */

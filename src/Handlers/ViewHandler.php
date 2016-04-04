@@ -202,7 +202,7 @@ class ViewHandler extends ViewEditBase
 
             // Give the row an id if it doesn't have one yet
             if (!isset($field['id']) || empty($field['id'])) {
-                $field['id'] = Tools::getUniqueID('anonymousattribrows');
+                $field['id'] = Tools::getUniqueId('anonymousattribrows');
             }
 
             // ar_ stands voor 'attribrow'.

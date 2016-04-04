@@ -6,7 +6,7 @@ ATK.Attribute = {
     /**
      * Refresh the attribute input form using Ajax.
      */
-    callDependencies: function(url, el) {
+    callDependencies: function (url, el) {
         var form = null, pn = el.parentNode;
 
         // Loop trough the previous nodes to find the parent form element of our
@@ -42,25 +42,30 @@ ATK.Attribute = {
             }
         }
 
-        atkErrorFields.each(function(field) {
-            var queryComponent = $H({'atkerrorfields[]': field
-            }).toQueryString();
-            queryComponents.push(queryComponent);
-        });
+        if (typeof atkErrorFields != 'undefined') {
+            atkErrorFields.each(function (field) {
+                var queryComponent = $H({
+                    'atkerrorfields[]': field
+                }).toQueryString();
+                queryComponents.push(queryComponent);
+            });
+        }
 
         var params = queryComponents.join('&');
 
-        var func = function(transport) {
+        var func = function (transport) {
             transport.responseText.evalScripts();
         };
 
-        new Ajax.Request(url, {method: 'post', parameters: params,
-            evalScripts: true, onComplete: func});
+        new Ajax.Request(url, {
+            method: 'post', parameters: params,
+            evalScripts: true, onComplete: func
+        });
     },
     /**
      * Refresh the attribute input form using Ajax.
      */
-    refresh: function(url, focusFirstFormEl) {
+    refresh: function (url, focusFirstFormEl) {
         var form = 'entryform';
 
         var elements = Form.getElements(form);
@@ -82,27 +87,32 @@ ATK.Attribute = {
             }
         }
 
-        atkErrorFields.each(function(field) {
-            var queryComponent = $H({'atkerrorfields[]': field
-            }).toQueryString();
-            queryComponents.push(queryComponent);
-        });
+        if (typeof atkErrorFields != 'undefined') {
+            atkErrorFields.each(function (field) {
+                var queryComponent = $H({
+                    'atkerrorfields[]': field
+                }).toQueryString();
+                queryComponents.push(queryComponent);
+            });
+        }
 
         var params = queryComponents.join('&');
 
-        var func = function(transport) {
+        var func = function (transport) {
             transport.responseText.evalScripts();
         };
         if (focusFirstFormEl) {
-            func = function(transport) {
+            func = function (transport) {
                 transport.responseText.evalScripts();
             };
         }
 
-        new Ajax.Request(url, {method: 'post', parameters: params,
-            evalScripts: true, onComplete: func});
+        new Ajax.Request(url, {
+            method: 'post', parameters: params,
+            evalScripts: true, onComplete: func
+        });
     },
-    serializeShuttle: function(element) {
+    serializeShuttle: function (element) {
         var values, length = element.length;
         if (!length)
             return null;
@@ -115,11 +125,13 @@ ATK.Attribute = {
         pair[element.name] = values;
         return Object.toQueryString(pair);
     },
-    refreshDisplay: function(url) {
-        var func = function(transport) {
+    refreshDisplay: function (url) {
+        var func = function (transport) {
             transport.responseText.evalScripts();
         };
-        new Ajax.Request(url, {method: 'post', evalScripts: true,
-            onComplete: func});
+        new Ajax.Request(url, {
+            method: 'post', evalScripts: true,
+            onComplete: func
+        });
     }
 };
