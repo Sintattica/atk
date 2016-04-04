@@ -328,7 +328,11 @@ class EditHandler extends ViewEditBase
 
         $tplfield = array();
 
-        $classes = isset($field['class']) ? explode(' ', $field['class']) : array();
+        $classes = [];
+        if(isset($field['class'])){
+            $classes = is_array($field['class'])?$field['class']:explode(' ', $field['class']);
+        }
+
         if ($field['sections'] == '*') {
             $classes[] = 'alltabs';
         } else {
@@ -360,8 +364,8 @@ class EditHandler extends ViewEditBase
         $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab,
                     $field['tabs'])) && (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
-        // ar_ stands voor 'attribrow'.
-        $tplfield['rowid'] = 'ar_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueID('anonymousattribrows')); // The id of the containing row
+        // ar_ stands for 'attribrow'.
+        $tplfield['rowid'] = 'ar_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
         // check for separator
         if ($field['html'] == '-' && $index > 0 && $fields[$index - 1]['html'] != '-') {
             $tplfield['type'] = 'line';

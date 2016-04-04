@@ -532,12 +532,12 @@ class NumberAttribute extends Attribute
         }
 
         $id = $fieldprefix.$this->fieldName();
-
-        $result = '<input type="text" id="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' name="'.$id.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
+        $class = $this->getCSSClassAttribute(['form-control']);
+        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
 
         return $result;
     }
-
+    
     /**
      * Returns a piece of html code that can be used to search for an
      * attribute's value.
@@ -562,10 +562,12 @@ class NumberAttribute extends Attribute
         }
 
         $searchsize = $this->m_searchsize;
-        if ($this->m_decimals > 0) { // (don't use getDecimals to avoid fatal error when called from atkExpressionAttribute)
+        if ($this->m_decimals > 0) { // (don't use getDecimals to avoid fatal error when called from ExpressionAttribute)
             $searchsize += ($this->m_decimals + 1); // make room for the number of decimals
             // TODO we should also consider the sign symbol (for signed type)
         }
+
+        $class = $this->getCSSClassAttribute(['form-control']);
 
         if (!$extended) {
             if (is_array($value)) { // values entered in the extended search
@@ -582,8 +584,7 @@ class NumberAttribute extends Attribute
             }
 
             $id = $this->getSearchFieldName($fieldprefix);
-
-            $result = '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
+            $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
         } else {
             $id = $this->getSearchFieldName($fieldprefix).'[from]';
 
@@ -595,7 +596,7 @@ class NumberAttribute extends Attribute
             }
 
             $result = '<div class="form-inline">';
-            $result .= '<input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($valueFrom).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
+            $result .= '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.htmlentities($valueFrom).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
             $id = $this->getSearchFieldName($fieldprefix).'[to]';
 
             $result .= ' ('.Tools::atktext('until').' <input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($valueTo).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>)';

@@ -221,8 +221,7 @@ class Relation extends Attribute
             foreach (array_keys($this->m_destInstance->m_attribList) as $key) {
                 $attribute = $this->m_destInstance->m_attribList[$key];
 
-                if (is_subclass_of($attribute,
-                        'atkrelation') && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeUri()
+                if (is_subclass_of($attribute, 'Relation') && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeUri()
                 ) {
                     $attribute->m_destInstance = $this->m_ownerInstance;
 

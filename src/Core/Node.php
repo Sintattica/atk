@@ -1790,6 +1790,8 @@ class Node
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
             $result[] = $this->getButton('cancel');
+        } elseif ($mode == 'stats') {
+            $result[] = $this->getButton('search', true);
         }
 
         return $result;

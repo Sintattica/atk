@@ -213,7 +213,7 @@ class TabbedPane extends Attribute
                 $tplfield['class'] .= ' atkAttrRowHidden';
             }
 
-            $tplfield['rowid'] = 'tabbedPaneAttr_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueID('anonymousattribrows')); // The id of the containing row
+            $tplfield['rowid'] = 'tabbedPaneAttr_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
 
             /* check for separator */
             if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
@@ -312,7 +312,7 @@ class TabbedPane extends Attribute
                     $fieldtab = $this->m_attribsList[$name];
 
                     $tplfield['class'] = "tabbedPaneAttr tabbedPaneTab{$fieldtab}";
-                    $tplfield['rowid'] = 'tabbedPaneAttr_'.Tools::getUniqueID('anonymousattribrows'); // The id of the containing row
+                    $tplfield['rowid'] = 'tabbedPaneAttr_'.Tools::getUniqueId('anonymousattribrows'); // The id of the containing row
                     $tplfield['tab'] = $tplfield['class']; // for backwards compatibility
 
                     $tplfield['initial_on_tab'] = ($fieldtab == $active_tab);

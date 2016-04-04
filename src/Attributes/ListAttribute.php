@@ -81,12 +81,6 @@ class ListAttribute extends Attribute
      */
     protected $m_autoSearch = false;
 
-    /**
-     * Render a multiple select also in simple search (grid).
-     *
-     * @var bool
-     */
-    private $m_multipleInSimpleSearch = false;
 
     /**
      * Use Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
@@ -96,6 +90,11 @@ class ListAttribute extends Attribute
      * @var bool|array False (disabled), True (enabled with default options), Array of options
      */
     private $m_expandAsButtons = false;
+
+    protected $m_multipleSearch = [
+        'normal' => false,
+        'extended' => true,
+    ];
 
     /**
      * Constructor.
@@ -392,15 +391,6 @@ class ListAttribute extends Attribute
         return false;
     }
 
-    public function getMultipleInSimpleSearch()
-    {
-        return $this->m_multipleInSimpleSearch;
-    }
-
-    public function setMultipleInSimpleSearch($value)
-    {
-        $this->m_multipleInSimpleSearch = $value;
-    }
 
     /**
      * Returns a piece of html code that can be used to get search terms input
@@ -431,7 +421,10 @@ class ListAttribute extends Attribute
         $values = $this->getValues($record);
         $id = $this->getSearchFieldName($fieldprefix);
 
-        $result = '<select multiple class="form-control '.$this->get_class_name().'" id="'.$id.'" name="'.$id.'[]">';
+        $isMultiple = $this->isMultipleSearch($extended);
+
+        $class = $this->getCSSClassAttribute(['form-control']);
+        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$id.'[]">';
 
 
         $selValues = $record[$this->fieldName()];
@@ -442,13 +435,6 @@ class ListAttribute extends Attribute
         if (in_array('', $selValues)) {
             $selValues = [''];
         }
-
-        /*
-        if ($this->getMultipleInSimpleSearch() && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
-            // in case of multiple select in simple search, we have the selected values into a single string (csv)
-            $selValues = explode(',', $selValues[0]);
-        }
-        */
 
         $notSelectFirst = false;
         $selected = (!$notSelectFirst && $selValues[0] == '') ? ' selected' : '';
@@ -511,14 +497,8 @@ class ListAttribute extends Attribute
         $searchcondition = '';
         if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
 
-            if ($this->getMultipleInSimpleSearch() && count($value) == 1 && strpos($value[0], ',') !== false) {
-                // in case of multiple select in simple search, we have the selected values into a single string (csv)
-                $value = explode(',', $value[0]);
-                // "search all" option has precedence (when another options are selected together)
-                if ($value[0] == '') {
-                    return;
-                }
-            }
+
+
 
             if (count($value) == 1 && $value[0]) { // exactly one value
                 if ($value[0] == '__NONE__') {
@@ -756,5 +736,36 @@ class ListAttribute extends Attribute
         $this->_set('values', $currentValues);
 
         return $this;
+    }
+
+    /**
+     * @param bool $normal
+     * @param bool $extended
+     * @return array $m_multipleSearch
+     */
+    public function setMultipleSearch($normal = true, $extended = true)
+    {
+        $this->m_multipleSearch = [
+            'normal' => $normal,
+            'extended' => $extended,
+        ];
+
+        return $this->m_multipleSearch;
+    }
+
+    public function getMultipleSearch()
+    {
+        return $this->m_multipleSearch;
+    }
+
+    /**
+     * @param bool $extended
+     * @return bool
+     */
+    public function isMultipleSearch($extended)
+    {
+        $ms = $this->getMultipleSearch();
+
+        return $ms[$extended ? 'extended' : 'normal'];
     }
 }

@@ -1933,11 +1933,11 @@ class ManyToOneRelation extends Relation
         $arr['rows'][$nr]['record'] = $backup;
     }
 
-    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '')
+    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $extended = true)
     {
         $prefix = $fieldprefix.$this->fieldName().'_AE_';
 
-        parent::addToSearchformFields($fields, $node, $record, $prefix);
+        parent::addToSearchformFields($fields, $node, $record, $prefix, $extended);
 
         // only add extra columns when needed
         if ($this->hasFlag(self::AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
@@ -1954,7 +1954,7 @@ class ManyToOneRelation extends Relation
             $p_attrib->m_flags ^= self::AF_HIDE_LIST;
 
             if (!$p_attrib->hasFlag(self::AF_HIDE_SEARCH)) {
-                $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix);
+                $p_attrib->addToSearchformFields($fields, $node, $record[$this->fieldName()], $prefix, $extended);
             }
         }
     }

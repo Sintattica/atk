@@ -478,8 +478,7 @@ class SmartSearchHandler extends AbstractSearchHandler
             $prefix = "criteria_AE_{$id}_AE_";
 
             $valueArray = $value == null ? null : array($attr->fieldName() => $value);
-            $modeArray = $mode == null ? null : array($attr->fieldName() => $mode);
-            $attr->addToSearchFormFields($fields, $entry['node'], $valueArray, $prefix, $modeArray);
+            $attr->addToSearchformFields($fields, $entry['node'], $valueArray, $prefix, true);
             $field = array_shift($fields); // we only support the first field returned
 
             return $type == 'mode' ? $field['searchmode'] : $field['widget'];
