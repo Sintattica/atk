@@ -1626,8 +1626,10 @@ class ManyToOneRelation extends Relation
                 $filters[] = $filter;
             }
 
-            $primaryKey = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-            $filter = '(('.implode(') AND (', $filters).')) OR '.$primaryKey;
+            $filter = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+            if (count($filters)) {
+                $filter .= ' OR (('.implode(') AND (', $filters).'))';
+            }
         }
 
         $result = $selector
