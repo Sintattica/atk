@@ -65,7 +65,7 @@ Thanks!
 ## Resources
 
 ### 8.2
-The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica and to give us the sources of two historically valuable resources for ATK: the [forum](http://atk-framework.com/wiki/) and the [wiki](http://atk-framework.com/forum/).
+The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica and to give us the sources of two historically valuable resources for ATK: the [forum](http://atk-framework.com/forum/) and the [wiki](http://atk-framework.com/wiki/).
 
 ### 9.0
 Currently there's no documentation for v. 9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
