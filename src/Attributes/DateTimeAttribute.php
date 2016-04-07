@@ -71,33 +71,22 @@ class DateTimeAttribute extends Attribute
     /**
      * Constructor.
      *
-     * @todo I don't know who added the default_date and default_time parameters,
-     *       but at least the atkDateAttribute doesn't support a default date. if
-     *       you want to set a default date you should use initial_values anyways
-     *       so I think the default_date / default_time parameters should be removed.
-     *       But can we keep this backwards compatible somehow? At least now we
-     *       are certain it doesn't work. ;) (PCV)
-     *
      * @param string $name Name of the attribute
      * @param string|int $default_date start date
      * @param string $default_time start time
      * @param int $flags Flags for this attribute
      */
-    public function __construct($name, $default_date = '', $default_time = '', $flags = 0)
+    public function __construct($name, $flags = 0)
     {
         $default_steps = array();
         for ($i = 0; $i < 60; ++$i) {
             $default_steps[$i] = $i;
         }
-
-        if (is_numeric($default_date)) {
-            $flags = $default_date;
-        }
-
+        
         if ($this->hasFlag(DateAttribute::AF_CLEAR_TOUCH_BUTTONS)) {
             $flags .= '|DateAttribute::AF_CLEAR_TOUCH_BUTTONS';
         }
-        $this->m_time = new TimeAttribute($name, 0, 23, $default_steps, $default_time, $flags);
+        $this->m_time = new TimeAttribute($name, 0, 23, $default_steps, $flags);
         $this->m_date = new DateAttribute($name, '', '', 0, 0, $flags);
 
         parent::__construct($name, $flags); // base class constructor

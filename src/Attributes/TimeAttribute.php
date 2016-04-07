@@ -24,7 +24,6 @@ class TimeAttribute extends Attribute
     public $m_beginTime = 0;
     public $m_endTime = 23;
     public $m_steps = array('0', '30');
-    public $m_default = '';
 
     /**
      * Constructor.
@@ -36,7 +35,6 @@ class TimeAttribute extends Attribute
      *                             or the interval (eg 5 for 00,05,10,15, etc.)
      *                             if the flag self::AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
      *                             else this is for the minutes and the seconds will not be displayed
-     * @param string $default Start Time (exp: 20:30)
      * @param int $flags Flags for this attribute
      */
     public function __construct(
@@ -44,7 +42,6 @@ class TimeAttribute extends Attribute
         $beginTime = 0,
         $endTime = 23,
         $steps = array('00', '15', '30', '45'),
-        $default = '',
         $flags = 0
     ) {
         parent::__construct($name, $flags); // base class constructor
@@ -55,7 +52,6 @@ class TimeAttribute extends Attribute
         } else {
             $this->m_steps = $this->intervalToSteps($steps);
         }
-        $this->m_default = $default;
     }
 
     /**
@@ -174,10 +170,6 @@ class TimeAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        if ((($this->m_default == 'NOW' && $this->m_ownerInstance->m_action == 'add') || ($this->m_default == '' && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))) {
-            $this->m_default = date('H:i:s');
-        }
-        $default = explode(':', $this->m_default);
 
         $id = $fieldprefix.$this->fieldName();
         $field = $record[$this->fieldName()];
@@ -193,16 +185,12 @@ class TimeAttribute extends Attribute
         $m_minBox = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         $m_secBox = '<select id="'.$id.'[seconds]" name="'.$id."[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         // set default values for both boxes
-        // depends upon atkaction
-        // if add/admin, use $default param, else use time in $record
+
+        $m_defHour = $m_defMin = $m_defSec = '';
         if (is_array($field)) {
             $m_defHour = $field['hours'];
             $m_defMin = $field['minutes'];
             $m_defSec = $field['seconds'];
-        } else {
-            $m_defHour = $default[0];
-            $m_defMin = $default[1];
-            $m_defSec = $default[2];
         }
 
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
