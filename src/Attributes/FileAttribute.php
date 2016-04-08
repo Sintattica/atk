@@ -92,18 +92,14 @@ class FileAttribute extends Attribute
      * Constructor.
      *
      * @param string $name Name of the attribute
-     * @param array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      * @param int $flags Flags for this attribute
-     * @param int $size Filename size
+     * @param array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      */
-    public function __construct($name, $dir, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $dir)
     {
-        /*if ($size == 0)
-            $size = 255;
-        */
-
-        // Call base class constructor.
-        parent::__construct($name, $flags | self::AF_CASCADE_DELETE, $size);
+        $flags = $flags | self::AF_CASCADE_DELETE;
+        parent::__construct($name, $flags);
+        
         $this->setDir($dir);
     }
 
@@ -112,6 +108,7 @@ class FileAttribute extends Attribute
      * for some other ways of manipulating the names of uploaded files.).
      *
      * @param mixed $dir string with directory path or array with directory path and display url (see constructor)
+     * @return FileAttribute
      */
     public function setDir($dir)
     {
@@ -134,6 +131,7 @@ class FileAttribute extends Attribute
      * sequence number.
      *
      * @param bool $autonumbering
+     * @return FileAttribute
      */
     public function setAutonumbering($autonumbering = true)
     {

@@ -14,7 +14,7 @@ class SwitchAttribute extends BoolAttribute
 
     protected $switchOptions;
 
-    public function __construct($name, $switchOptions = array(), $flags = 0)
+    public function __construct($name, $flags = 0, $switchOptions = [])
     {
         $defaultOptions = array(
             'offText' => mb_strtoupper($this->text('no'), 'UTF-8'),

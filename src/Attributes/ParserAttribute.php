@@ -19,13 +19,14 @@ class ParserAttribute extends Attribute
      * Constructor.
      *
      * @param string $name Name of the attribute
-     * @param string $text text field
      * @param int $flags Flags for this attribute
+     * @param string $text text field
      */
-    public function __construct($name, $text, $flags = 0)
+    public function __construct($name, $flags = 0, $text)
     {
-        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_NO_SORT); // base class constructor
+        $flags = $flags | self::AF_HIDE_SEARCH | self::AF_NO_SORT;
         $this->m_text = $text;
+        parent::__construct($name, $flags);
     }
 
     /**

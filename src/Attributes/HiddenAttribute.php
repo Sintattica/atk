@@ -17,15 +17,14 @@ class HiddenAttribute extends DummyAttribute
      * constructor in every other way.
      *
      * @param string $name
-     * @param string $text
      * @param int $flags
+     * @param string $text
      */
-    public function __construct($name, $text = '', $flags = 0)
+    public function __construct($name, $flags = 0, $text = '')
     {
-        // A hidden  attribute should be... HIDDEN! (srlsy?)
         $flags |= self::AF_HIDE;
 
-        parent::__construct($name, $text, $flags);
+        parent::__construct($name, $flags, $text);
     }
 
     /**

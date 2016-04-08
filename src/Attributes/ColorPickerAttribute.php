@@ -18,10 +18,10 @@ class ColorPickerAttribute extends Attribute
 
     protected $colorPickerOptions;
 
-    public function __construct($name, $colorPickerOptions = array(), $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $colorPickerOptions = [])
     {
         $this->colorPickerOptions = $colorPickerOptions;
-        parent::__construct($name, $flags, $size);
+        parent::__construct($name, $flags);
     }
 
     public function registerScriptsAndStyles($fieldprefix)

@@ -106,18 +106,14 @@ class ListAttribute extends Attribute
      * when upgrading from a very old ATK version (pre ATK4).
      *
      * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      * @param array $optionArray Array with options
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                            values are assumed to be the same as the options.
-     * @param int $flags Flags for this attribute
-     * @param int $size Size of the attribute.
      */
-    public function __construct($name, $optionArray, $valueArray = null, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
-            if (is_numeric($valueArray)) {
-                $flags = $valueArray;
-            }
             $valueArray = $optionArray;
         }
 
@@ -132,14 +128,16 @@ class ListAttribute extends Attribute
             // the loop is stopped.
         }
 
-        // If no size is specified, the max size we have is equal to the biggest value.
-        if ($size == 0) {
-            for ($i = 0, $_i = count($valueArray); $i < $_i; ++$i) {
-                $size = max($size, Tools::atk_strlen($valueArray[$i]));
-            }
+        // the max size we have is equal to the biggest value.
+        $size = 0;
+        for ($i = 0, $_i = count($valueArray); $i < $_i; ++$i) {
+            $size = max($size, Tools::atk_strlen($valueArray[$i]));
+        }
+        if ($size > 0) {
+            $this->setAttribSize($size);
         }
 
-        parent::__construct($name, $flags, $size); // base class constructor
+        parent::__construct($name, $flags);
 
         $this->setOptions($optionArray, $valueArray);
     }
@@ -497,10 +495,7 @@ class ListAttribute extends Attribute
         $searchcondition = '';
         if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
 
-
-
-
-            if (count($value) == 1 && $value[0]) { // exactly one value
+            if (count($value) == 1 && $value[0] != '') { // exactly one value
                 if ($value[0] == '__NONE__') {
                     return $query->nullCondition($table.'.'.$this->fieldName(), true);
                 } else {

@@ -18,7 +18,6 @@ class CurrencyAttribute extends NumberAttribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param int $size The size(s) for this attribute (default 10)
      * @param string $currencysymbol The symbol which is printed in front of the value.
      * @param int $decimals The number of decimals (default 2)
      * @param string $decimalseparator The separator which is printed for the decimals.
@@ -27,13 +26,13 @@ class CurrencyAttribute extends NumberAttribute
     public function __construct(
         $name,
         $flags = 0,
-        $size = 10,
         $currencysymbol = '',
         $decimals = 2,
         $decimalseparator = '',
         $thousandsseparator = ''
     ) {
-        parent::__construct($name, $flags, $size, $decimals); // base class constructor
+        parent::__construct($name, $flags, $decimals);
+        $this->setAttribSize(10);
 
         if ($currencysymbol == '') {
             $currencysymbol = Tools::atktext('currencysymbol', 'atk', '', '', '', true);

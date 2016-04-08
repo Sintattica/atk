@@ -46,10 +46,10 @@ class Relation extends Attribute
      * Constructor.
      *
      * @param string $name The name of the relation.
-     * @param string $destination The destination node (in module.name notation)
      * @param int $flags Flags for the relation
+     * @param string $destination The destination node (in module.name notation)
      */
-    public function __construct($name, $destination, $flags = 0)
+    public function __construct($name, $flags = 0, $destination)
     {
         parent::__construct($name, $flags);
         $this->m_destination = strtolower($destination);

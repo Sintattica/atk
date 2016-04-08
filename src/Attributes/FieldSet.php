@@ -19,12 +19,14 @@ class FieldSet extends Attribute
      * Constructor.
      *
      * @param string $name fieldset name
-     * @param string $template template string
      * @param int $flags flags
+     * @param string $template template string
      */
-    public function __construct($name, $template, $flags = 0)
+    public function __construct($name, $flags = 0, $template)
     {
-        parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH);
+        $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH;
+        parent::__construct($name, $flags);
+        
         $this->setTemplate($template);
         $this->setLoadType(self::NOLOAD);
         $this->setStorageType(self::NOSTORE);

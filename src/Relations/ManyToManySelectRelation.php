@@ -51,6 +51,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * Constructs a new many-to-many select relation.
      *
      * @param string $name The name of the relation
+     * @param int $flags Flags for the relation.
      * @param string $link The full name of the node that is used as
      *                            intermediairy node. The intermediairy node is
      *                            assumed to have 2 attributes that are named
@@ -63,13 +64,13 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int $flags Flags for the relation.
      */
-    public function __construct($name, $link, $destination, $flags = 0)
+    public function __construct($name, $flags = 0, $link, $destination)
     {
-        parent::__construct($name, $link, $destination, $flags);
+        parent::__construct($name, $flags, $link, $destination);
 
-        $relation = new ManyToOneRelation($this->fieldName().'_m2msr_add', $this->m_destination, ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE);
+        $relationFlags = ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE;
+        $relation = new ManyToOneRelation($this->fieldName().'_m2msr_add', $relationFlags, $this->m_destination);
         $relation->setDisabledModes(self::DISABLED_VIEW | self::DISABLED_EDIT);
         $relation->setLoadType(self::NOLOAD);
         $relation->setStorageType(self::NOSTORE);

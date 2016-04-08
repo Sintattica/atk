@@ -208,28 +208,17 @@ class DateAttribute extends Attribute
      * backwards compatible with existing modules!
      *
      * @param string $name the attribute's name
+     * @param int $flags the attribute's flags
      * @param string $format_edit the format the edit/add box(es) will look like
      * @param string $format_view the format in which dates are listed
      * @param mixed $min the minimum date that has to be selected (0 is unlimited)
      * @param mixed $max the maximum date that may be selected (0 is unlimited)
-     * @param int $flags the attribute's flags
      *
      * @see Attribute
      */
-    public function __construct($name, $format_edit = '', $format_view = '', $min = 0, $max = 0, $flags = 0)
+    public function __construct($name, $flags = 0, $format_edit = '', $format_view = '', $min = 0, $max = 0)
     {
-        /*         * ** API SUPPORT HACK ***
-         * Because of backwards compatability and because of the number
-         * of arguments this method has we also support the old API: ($name, $flags=0).
-         */
-        if (is_int($format_edit)) {
-            $flags = $format_edit;
-            $format_edit = '';
-            $format_view = '';
-            $min = 0;
-            $max = 0;
-        }
-
+        
         /* edit and display date format */
         $this->setFormatEdit($format_edit);
         $this->setFormatView($format_view);

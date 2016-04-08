@@ -40,6 +40,7 @@ class RadioDetailsAttribute extends Attribute
      * given option.
      *
      * @param string $name attribute name
+     * @param int $flags
      * @param string $options can either be an array of values or a key/value
      *                        array in which case the key is used for the
      *                        translation and value is the value which is saved
@@ -48,9 +49,8 @@ class RadioDetailsAttribute extends Attribute
      *                        used for the detail selection for certain options
      *                        the key should be the option value and the value
      *                        should be the attribute name
-     * @param int $flags
      */
-    public function __construct($name, $options, $details, $flags = 0)
+    public function __construct($name, $flags = 0, $options, $details)
     {
         parent::__construct($name, $flags);
 

@@ -26,16 +26,16 @@ class DurationAttribute extends Attribute
      * Default Constructor, sets up Attribute.
      *
      * @param string $name The name of this attribute
+     * @param int $flags The falgs of this attribute
      * @param string $resolution
      * @param string $maxtime
-     * @param int $flags The falgs of this attribute
-     * @param int $size This attributes size
      *
      * @see Attribute
      */
-    public function __construct($name, $resolution = '1m', $maxtime = '10h', $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $resolution = '1m', $maxtime = '10h')
     {
-        parent::__construct($name, $flags, $size); // base class constructor
+        parent::__construct($name, $flags);
+        
         $hms = substr($resolution, -1);
         $resolution = substr($resolution, 0, -1);
 

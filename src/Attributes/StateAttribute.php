@@ -86,31 +86,20 @@ class StateAttribute extends ListAttribute
      * It will display the full state name.
      *
      * @param string $name Name of the attribute
-     * @param string $switch Choose usa for USA states
      * @param int $flags Flags for the attribute
+     * @param string $switch Choose usa for USA states
      * @param bool $defaulttocurrent Set the default selected state to the
      *                                 current state based on the atk language
      */
-    public function __construct(
-        $name,
-        $switch = 'usa',
-        $flags = 0,
-        $defaulttocurrent = true
-    ) {
-        if (is_numeric($switch)) {
-            $flags = $switch;
-            $switch = 'usa';
-        }
-
-        // When switch is not user get country options
-        Tools::atkdebug("StateAttribute - $name - $switch");
-
+    public function __construct($name, $flags = 0, $switch = 'usa', $defaulttocurrent = true)
+    {
+        $flags = $flags | self::AF_NO_TRANSLATION;
         $this->fillStateArray();
         $valueArray = $this->getStateValueArray($switch);
         $optionsArray = $this->getStateOptionArray($switch);
 
         $this->m_defaulttocurrent = $defaulttocurrent;
-        parent::__construct($name, $optionsArray, $valueArray, $flags | self::AF_NO_TRANSLATION, 0);
+        parent::__construct($name, $flags, $optionsArray, $valueArray);
     }
 
     /**

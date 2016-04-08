@@ -25,16 +25,16 @@ class LiveTextPreviewAttribute extends DummyAttribute
      * Constructor.
      *
      * @param string $name The name of the attribute
-     * @param string $masterattribute The attribute that should be previewed.
-     * @param int $flags Flags for this attribute. Use self::AF_LIVETEXT_SHOWLABEL if the
-     *                                preview should be labeled.
-     *                                Use self::AF_LIVETEXT_NL2BR if the data should be nl2br'd before
-     *                                display.
+     * @param int $flags Flags for this attribute.
+     *                   Use self::AF_LIVETEXT_SHOWLABEL if the preview should be labeled.
+     *                   Use self::AF_LIVETEXT_NL2BR if the data should be nl2br'd before display.
+     * @param string $masterAttribute The attribute that should be previewed.
+     *
      */
-    public function __construct($name, $masterattribute, $flags = 0)
+    public function __construct($name, $flags = 0, $masterAttribute)
     {
-        parent::__construct($name, '', $flags);
-        $this->m_masterattribute = $masterattribute;
+        parent::__construct($name, $flags, '');
+        $this->m_masterattribute = $masterAttribute;
     }
 
     public function edit($record, $fieldprefix, $mode)

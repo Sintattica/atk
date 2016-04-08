@@ -29,6 +29,7 @@ class FormatAttribute extends Attribute
      *
      * @param string $name Name of the attribute (unique within a node, and
      *                       corresponds to a field in the database.
+     * @param int $flags Flags for the attribute.
      * @param string $format The format specifier. Each character defines
      *                       what type of input is expected.
      *                       Currently supported format characters:
@@ -38,12 +39,12 @@ class FormatAttribute extends Attribute
      *                       9 - Accept a digit
      *                       Any other char is seen as a literal and displayed
      *                       literally as non-editable chars in the editor.
-     * @param int $flags Flags for the attribute.
      */
-    public function __construct($name, $format, $flags = 0)
+    public function __construct($name, $flags = 0, $format)
     {
         $this->m_format = $format;
-        parent::__construct($name, $flags, strlen($format));
+        parent::__construct($name, $flags);
+        $this->setAttribSize(strlen($format));
     }
 
     /**

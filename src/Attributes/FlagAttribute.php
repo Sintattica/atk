@@ -16,16 +16,14 @@ class FlagAttribute extends MultiSelectAttribute
      * Constructor.
      *
      * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      * @param array $optionArray Array with options
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                            values are assumed to be the same as the options.
-     * @param int $cols Number of columns
-     * @param int $flags Flags for this attribute
-     * @param int $size Size of the attribute.
      */
-    public function __construct($name, $optionArray, $valueArray = '', $cols = '', $flags = 0, $size = '')
+    public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
-        parent::__construct($name, $optionArray, $valueArray, $cols, $flags, $size);
+        parent::__construct($name, $flags, $optionArray, $valueArray);
         $this->m_dbfieldtype = 'number';
     }
 

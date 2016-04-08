@@ -32,12 +32,7 @@ class BootstrapDateTimeAttribute extends Attribute
     public $m_minDate;
     public $m_maxDate;
     public $m_sideBySide = true;
-
-    public function __construct($name, $flags = 0)
-    {
-        parent::__construct($name, $flags);
-    }
-
+    
     public function postInit()
     {
         if ($this->m_type == 'datetime') {

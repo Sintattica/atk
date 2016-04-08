@@ -51,21 +51,7 @@ class UrlAttribute extends Attribute
      */
     public $m_baseUrl = null;
 
-    /**
-     * The atk url attribute.
-     *
-     * @param string $name Name of the attribute (unique within a node, and
-     *                      for most attributes, corresponds to a field in
-     *                      the database.
-     * @param int $flags Flags for the attribute.
-     * @param mixed $size The size(s) of the attribute. See the $size
-     *                      parameter of the setAttribSize() method for more
-     *                      information on the possible values of this
-     *                      parameter.
-     *
-     * @return UrlAttribute
-     */
-    public function __construct($name, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0)
     {
         if (self::AF_POPUP === ($flags & self::AF_POPUP)) {
             $this->m_newWindow = true;
@@ -82,7 +68,7 @@ class UrlAttribute extends Attribute
             $flags &= (~self::AF_URL_STRIPHTTP);
         }
 
-        parent::__construct($name, $flags, $size);
+        parent::__construct($name, $flags);
     }
 
     /**

@@ -28,10 +28,10 @@ class DummyAttribute extends Attribute
      * Constructor.
      *
      * @param string $name The name of the attribute
-     * @param string $text The text to display
      * @param int $flags The flags for this attribute
+     * @param string $text The text to display
      */
-    public function __construct($name, $text = '', $flags = 0)
+    public function __construct($name, $flags = 0, $text = '')
     {
         // A Dummy attrikbute should not be searchable and sortable
         $flags |= self::AF_HIDE_SEARCH | self::AF_NO_SORT;

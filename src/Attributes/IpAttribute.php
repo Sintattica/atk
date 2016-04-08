@@ -29,7 +29,8 @@ class IpAttribute extends Attribute
      */
     public function __construct($name, $flags = 0)
     {
-        parent::__construct($name, $flags, 15);
+        parent::__construct($name, $flags);
+        $this->setAttribSize(15);
     }
 
     /**

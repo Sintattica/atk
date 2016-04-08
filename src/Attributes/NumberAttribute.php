@@ -34,14 +34,14 @@ class NumberAttribute extends Attribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param mixed $size The size(s) of integral part (before seperator) for this attribute, also accepts an array (see setAttribSize for format)
      * @param int $decimals The number of decimals to use.
      */
-    public function __construct($name, $flags = 0, $size = 0, $decimals = null)
+    public function __construct($name, $flags = 0, $decimals = null)
     {
-        parent::__construct($name, $flags | self::AF_NO_QUOTES, $size); // base class constructor
-        $this->m_decimals = $decimals;
+        $flags = $flags | self::AF_NO_QUOTES;
+        parent::__construct($name, $flags);
 
+        $this->m_decimals = $decimals;
         $this->m_decimalseparator = Tools::atktext(self::SEPARATOR_DECIMAL, 'atk');
         $this->m_thousandsseparator = Tools::atktext(self::SEPARATOR_THOUSAND, 'atk');
     }
@@ -537,7 +537,7 @@ class NumberAttribute extends Attribute
 
         return $result;
     }
-    
+
     /**
      * Returns a piece of html code that can be used to search for an
      * attribute's value.

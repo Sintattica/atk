@@ -24,12 +24,13 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * Constructor.
      *
      * @param string $name Name of the attribute
-     * @param string $destination Destination node for this relation
      * @param int $flags Flags for the relation
+     * @param string $destination Destination node for this relation
+     *
      */
-    public function __construct($name, $destination, $flags = 0)
+    public function __construct($name, $flags = 0, $destination)
     {
-        parent::__construct($name, $destination, $flags);
+        parent::__construct($name, $flags, $destination);
     }
 
     /**

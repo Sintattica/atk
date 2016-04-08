@@ -141,18 +141,18 @@ class OneToManyRelation extends Relation
      *                            in one2many relations, the databasefield that
      *                            stores the link, is in the destination node and not
      *                            in the owner node).
+     * @param int $flags Attribute flags that influence this attributes' behavior.
      * @param string $destination The node to which the relationship is made
      *                            (in module.nodename notation).
-     * @param mixed $refKey For regular oneToMany relationships, $refKey is
+     * @param string|array $refKey For regular oneToMany relationships, $refKey is
      *                            name of the referential key in the destination
      *                            node. In the case of multi-foreign key
      *                            relationships, $refKey can be an array of fields.
-     * @param int $flags Attribute flags that influence this attributes'
-     *                            behavior.
      */
-    public function __construct($name, $destination, $refKey = '', $flags = 0)
+    public function __construct($name, $flags = 0, $destination, $refKey = '')
     {
-        parent::__construct($name, $destination, $flags | self::AF_NO_SORT | self::AF_HIDE_ADD);
+        $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_ADD;
+        parent::__construct($name, $flags, $destination);
 
         if (is_array($refKey)) {
             $this->m_refKey = $refKey;

@@ -37,11 +37,12 @@ class BoolAttribute extends Attribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
+     * @param int $size Size for this attribute
      */
     public function __construct($name, $flags = 0)
     {
-        // Call base class constructor. Size of boolean value is always 1.
-        parent::__construct($name, $flags, 1);
+        parent::__construct($name, $flags);
+        $this->setAttribSize(1);
         if ($this->hasFlag(self::AF_BOOL_OBLIGATORY)) {
             $this->addFlag(self::AF_OBLIGATORY);
         }

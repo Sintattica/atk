@@ -30,7 +30,7 @@ class HtmlAttribute extends TextAttribute
      */
     public function __construct($name, $flags = 0, $nl2br = false)
     {
-        parent::__construct($name, $flags); // base class constructor
+        parent::__construct($name, $flags);
         $this->nl2br = $nl2br;
     }
 

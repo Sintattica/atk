@@ -86,18 +86,18 @@ class OneToOneRelation extends Relation
      *                            this corresponds to the foreign key field in the
      *                            database table.  (The name is also used as the section
      *                            heading.)
+     * @param int $flags Attribute flags that influence this attributes' behavior.
      * @param string $destination the destination node (in module.nodename
      *                            notation)
      * @param string $refKey In master mode, this specifies the foreign key
      *                            field from the destination node that points to
      *                            the master record. In slave mode, this parameter
      *                            should be empty.
-     * @param int $flags Attribute flags that influence this attributes'
-     *                            behavior.
      */
-    public function __construct($name, $destination, $refKey = '', $flags = 0)
+    public function __construct($name, $flags = 0, $destination, $refKey = '')
     {
-        parent::__construct($name, $destination, $flags | self::AF_ONETOONE_LAZY);
+        $flags = $flags | self::AF_ONETOONE_LAZY;
+        parent::__construct($name, $flags, $destination);
         $this->m_refKey = $refKey;
     }
 

@@ -72,8 +72,6 @@ class DateTimeAttribute extends Attribute
      * Constructor.
      *
      * @param string $name Name of the attribute
-     * @param string|int $default_date start date
-     * @param string $default_time start time
      * @param int $flags Flags for this attribute
      */
     public function __construct($name, $flags = 0)
@@ -82,12 +80,12 @@ class DateTimeAttribute extends Attribute
         for ($i = 0; $i < 60; ++$i) {
             $default_steps[$i] = $i;
         }
-        
+
         if ($this->hasFlag(DateAttribute::AF_CLEAR_TOUCH_BUTTONS)) {
             $flags .= '|DateAttribute::AF_CLEAR_TOUCH_BUTTONS';
         }
-        $this->m_time = new TimeAttribute($name, 0, 23, $default_steps, $flags);
-        $this->m_date = new DateAttribute($name, '', '', 0, 0, $flags);
+        $this->m_time = new TimeAttribute($name, $flags, 0, 23, $default_steps);
+        $this->m_date = new DateAttribute($name, $flags);
 
         parent::__construct($name, $flags); // base class constructor
     }

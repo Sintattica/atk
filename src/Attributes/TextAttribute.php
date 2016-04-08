@@ -23,39 +23,23 @@ class TextAttribute extends Attribute
     private $m_wrapMode = 'soft';
 
     /**
-     * Constructor
-     * Note that for backwardscompatibility reasons, if you only pass 2
-     * parameters and the second one is not an array, the attribute assumes
-     * the second parameters is the $flags param, not the $size param.
-     *
      * @param string $name Name of the attribute
-     * @param int|array $size Can be an array with cols and rows key for size and
-     *                         an autoadjust value or just the rows size (in which case
-     *                         $flags is mandatory).
      * @param int $flags Flags for this attribute
+     * @param array $options: rows, cols, autoadjust
      */
-    public function __construct($name, $size = 0, $flags = 0)
+    public function __construct($name, $flags = 0, $options = [])
     {
-        // compatiblity with old versions (old apps expect a 2 param call to be $name, $flags)
-        if (func_num_args() == 3 || is_array($size)) {
-            if (is_array($size)) {
-                if (isset($size['rows']) != '') {
-                    $this->m_rows = $size['rows'];
-                }
-                if (isset($size['cols']) != '') {
-                    $this->m_cols = $size['cols'];
-                }
-                if (isset($size['autoadjust'])) {
-                    $this->m_autoadjust = $size['autoadjust'];
-                }
-            } else {
-                $this->m_rows = $size;
-            }
-        } else {
-            $flags = $size;
-        }
+        parent::__construct($name, $flags);
 
-        parent::__construct($name, $flags); // base class constructor
+        if (isset($options['rows'])) {
+            $this->m_rows = $options['rows'];
+        }
+        if (isset($options['cols'])) {
+            $this->m_rows = $options['cols'];
+        }
+        if (isset($options['autoadjust'])) {
+            $this->m_autoadjust = $options['autoadjust'];
+        }
     }
 
     /**

@@ -15,14 +15,14 @@ class TimeZoneAttribute extends ListAttribute
      * Constructor.
      *
      * <b>Example:</b>
-     *        $this->add(new atkTimeZoneAttribute("timezone",self::AF_OBLIGATORY));
+     *        $this->add(new TimeZoneAttribute("timezone",Attribute::AF_OBLIGATORY));
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for the attribute
      */
     public function __construct($name, $flags = 0)
     {
-        $optionsArray = array(
+        $optionArray = array(
             'timezone_utc_-1200',
             'timezone_utc_-1100',
             'timezone_utc_-1000',
@@ -51,7 +51,7 @@ class TimeZoneAttribute extends ListAttribute
             'timezone_utc_+1300',
         );
 
-        $valuesArray = array(
+        $valueArray = array(
             '-1200',
             '-1100',
             '-1000',
@@ -80,7 +80,7 @@ class TimeZoneAttribute extends ListAttribute
             '+1300',
         );
 
-        parent::__construct($name, $optionsArray, $valuesArray, $flags, 0);
+        parent::__construct($name, $flags, $optionArray, $valueArray);
     }
 
     /**

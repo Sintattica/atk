@@ -592,11 +592,10 @@ class Attribute
      *                      information on the possible values of this
      *                      parameter.
      */
-    public function __construct($name, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0)
     {
         $this->m_name = $name;
         $this->setFlags((int)$flags);
-        $this->setAttribSize($size);
 
         // default class
         $this->addCSSClass($this->get_class_name());

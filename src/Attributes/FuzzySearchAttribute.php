@@ -70,22 +70,19 @@ class FuzzySearchAttribute extends Attribute
      * - multiselect      ?
      *
      * @param string $name The name of the attribute
+     * @param int $flags The flags of the attribute
      * @param string $searchnode The node to search on
      * @param string $callback The function of the owner node to call
      *                           with the record to store and the results of the search
      *                           Has to return a status (true or false)
      * @param string $mode The mode of the search (all(default)|first|firstperkeyword|
      *                           select|selectperkeyword|multiselect)
-     * @param int $flags The flags of the attribute
-     * @param int $size The size of the search field
      */
-    public function __construct($name, $searchnode, $callback, $mode = 'all', $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $searchnode, $callback, $mode = 'all')
     {
-        /*if ($size == 0) {
-            $size = $this->maxInputSize();
-        }*/
-
-        parent::__construct($name, $flags | self::AF_HIDE_VIEW | self::AF_HIDE_LIST, $size);
+        $flags = $flags | self::AF_HIDE_VIEW | self::AF_HIDE_LIST;
+        parent::__construct($name, $flags);
+        
         $this->m_searchnode = $searchnode;
         $this->m_callback = $callback;
         $this->m_mode = strtolower($mode);

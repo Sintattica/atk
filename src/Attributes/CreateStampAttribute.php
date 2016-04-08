@@ -19,19 +19,7 @@ namespace Sintattica\Atk\Attributes;
  */
 class CreateStampAttribute extends UpdateStampAttribute
 {
-    /**
-     * Constructor.
-     *
-     * @param string $name Name of the attribute (unique within a node, and
-     *                      corresponds to the name of the datetime field
-     *                      in the database where the stamp is stored.
-     * @param int $flags Flags for the attribute.
-     */
-    public function __construct($name, $flags = 0)
-    {
-        parent::__construct($name, $flags);
-    }
-
+    
     /**
      * This function is called by the framework to determine if the attribute
      * needs to be saved to the database in an updateDb call.

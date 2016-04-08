@@ -314,47 +314,44 @@ class CountryAttribute extends ListAttribute
      *        $this->add(new atkCountryAttribute("zipcode","world","","",self::AF_OBLIGATORY));
      *
      * @param string $name Name of the attribute
+     * @param int $flags Flags for the attribute
      * @param string $switch Can be "benelux", "europe", "world", "world_shortlist", "user"
      *                                 If user, it will use the option and value Array.
      * @param array $optionArray Array with options
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                                 values are assumed to be the same as the options.
-     * @param int $flags Flags for the attribute
-     * @param bool $defaulttocurrent Set the default selected country to the
+     * @param bool $defaultToCurrent Set the default selected country to the
      *                                 current country based on the atk language
      */
     public function __construct(
         $name,
-        $switch = 'world',
-        $optionArray = '',
-        $valueArray = '',
         $flags = 0,
-        $defaulttocurrent = true
+        $switch = 'world',
+        $optionArray = [],
+        $valueArray = null,
+        $defaultToCurrent = true
     ) {
-        if (is_numeric($switch)) {
-            $flags = $switch;
-            $switch = 'world';
+
+        $flags = $flags | self::AF_NO_TRANSLATION;
+
+        if (empty($valueArray)) {
+            $valueArray = $optionArray;
         }
 
         // When switch is not user get country options
-        Tools::atkdebug("CountryAttribute - $name - $switch");
         if ($switch != 'user') {
-            //we assume that the 3 param is flags
-            if (is_numeric($optionArray)) {
-                $flags = $optionArray;
-            }
-
-            if ($switch != 'world') {
-                $this->fillCountriesArray();
-            } else {
+            if ($switch == 'world') {
                 $this->fillWorldCountriesArray();
+            } else {
+                $this->fillCountriesArray();
             }
 
-            $optionsArray = $this->getCountryOptionArray($switch);
+            $optionArray = $this->getCountryOptionArray($switch);
             $valueArray = $this->getCountryValueArray($switch);
         }
-        $this->m_defaulttocurrent = $defaulttocurrent;
-        parent::__construct($name, $optionsArray, $valueArray, $flags | self::AF_NO_TRANSLATION, 0);
+
+        $this->m_defaulttocurrent = $defaultToCurrent;
+        parent::__construct($name, $flags, $optionArray, $valueArray);
     }
 
     /**

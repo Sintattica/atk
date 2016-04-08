@@ -236,18 +236,15 @@ class ManyToOneRelation extends Relation
     /**
      * Constructor.
      *
-     * @param string $name The name of the attribute. This is the name of the
-     *                            field that is the referential key to the
-     *                            destination.
-     *                            For relations with more than one field in the
-     *                            foreign key, you should pass an array of
-     *                            referential key fields. The order of the fields
-     *                            must match the order of the primary key attributes
-     *                            in the destination node.
-     * @param string $destination The node we have a relationship with.
+     * @param string $name The name of the attribute. This is the name of the field that is the referential key to the destination.
+     *                     For relations with more than one field in the foreign key, you should pass an array of referential key fields.
+     *                     The order of the fields must match the order of the primary key attributes in the destination node.
      * @param int $flags Flags for the relation
+     *
+     * @param string $destination The node we have a relationship with.
+     *
      */
-    public function __construct($name, $destination, $flags = 0)
+    public function __construct($name, $flags = 0, $destination)
     {
         if (Config::getGlobal('manytoone_autocomplete_default', false)) {
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
@@ -272,10 +269,10 @@ class ManyToOneRelation extends Relation
             // keys.
             // Languagefiles, overrides, etc should use this first name to
             // override the relation.
-            parent::__construct($name[0], $destination, $flags);
+            parent::__construct($name[0], $flags, $destination);
         } else {
             $this->m_refKey[] = $name;
-            parent::__construct($name, $destination, $flags);
+            parent::__construct($name, $flags, $destination);
         }
 
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {

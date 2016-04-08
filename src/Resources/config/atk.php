@@ -7,6 +7,13 @@ $_configTempDir = $_configAppRoot.'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
 
+$_public_dir = $_configAppRoot.'web';
+if($_public_dir_real = realpath($_public_dir)){
+    $_public_dir = $_public_dir_real.'/';
+}else{
+    $_public_dir = $_public_dir.'/';
+}
+
 return [
 
     /********************* FILE LOCATIONS & PATHS ******************************/
@@ -24,6 +31,8 @@ return [
     'assets_url' => $_configAssetsUrl,
 
     'template_dir' => __DIR__.'/../templates/',
+
+    'public_dir' => $_public_dir,
 
     /*
      * The location of a directory that is writable to ATK and that ATK can
@@ -747,7 +756,7 @@ return [
     /*
      * atkCKAttribute configuration options override
      */
-    'ck_options' => array(),
+    'ck_options' => [],
 
     /*
      * recordlist orientation (left or right)

@@ -27,7 +27,9 @@ class UpdateStampAttribute extends DateTimeAttribute
      */
     public function __construct($name, $flags = 0)
     {
-        parent::__construct($name, date('Y-m-d'), date('H:i:s'), $flags | self::AF_READONLY | self::AF_HIDE_ADD);
+        $flags = $flags | self::AF_READONLY | self::AF_HIDE_ADD;
+        parent::__construct($name, $flags);
+        
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
         $this->setInitialValue(self::datetimeArray());

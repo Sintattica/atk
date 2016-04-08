@@ -55,17 +55,14 @@ class PasswordAttribute extends Attribute
      * Constructor.
      *
      * @param string $name Name of the attribute
-     * @param bool $generate Generate password (boolean)
      * @param int $flags Flags for this attribute
-     * @param mixed $size The size(s) of the attribute. See the $size
-     *                             parameter of the setAttribSize() method for more
-     *                             information on the possible values of this
-     *                             parameter.
+     * @param bool $generate Generate password (boolean)
      * @param array $restrictions
      */
-    public function __construct($name, $generate = false, $flags = 0, $size = 0, $restrictions = [])
+    public function __construct($name, $flags = 0, $generate = false, $restrictions = [])
     {
-        parent::__construct($name, $flags | self::AF_HIDE_SEARCH, $size);
+        $flags = $flags | self::AF_HIDE_SEARCH;
+        parent::__construct($name, $flags);
         $this->setRestrictions($restrictions);
     }
 
@@ -163,7 +160,7 @@ class PasswordAttribute extends Attribute
                 $password = $this->generatePassword(8, true);
                 $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.' value ="'.$password.'">'.'<input type="text" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
             }
-        }  else {
+        } else {
             /* edit */
 
             $result = '<input type="hidden" name="'.$id.'[hash]"'.' value="'.$record[$this->fieldName()]['hash'].'">';
@@ -324,7 +321,9 @@ class PasswordAttribute extends Attribute
         $error = false;
         $value = $record[$this->fieldName()];
 
-        if ($mode == 'update' && (Tools::atk_strlen($value['new']) > 0 || Tools::atk_strlen($value['again']) > 0) && !$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE) && !$this->verify($value['current'], $value['hash'])) {
+        if ($mode == 'update' && (Tools::atk_strlen($value['new']) > 0 || Tools::atk_strlen($value['again']) > 0) && !$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE) && !$this->verify($value['current'],
+                $value['hash'])
+        ) {
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 

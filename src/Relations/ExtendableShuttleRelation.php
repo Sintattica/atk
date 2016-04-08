@@ -34,6 +34,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * Constructor.
      *
      * @param string $name The name of the relation
+     * @param int $flags Flags for the relation.
      * @param string $link The full name of the node that is used as
      *                            intermediairy node. The intermediairy node is
      *                            assumed to have 2 attributes that are named
@@ -46,11 +47,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int $flags Flags for the relation.
      */
-    public function __construct($name, $link, $destination, $flags = 0)
+    public function __construct($name, $flags = 0, $link, $destination)
     {
-        parent::__construct($name, $link, $destination, $flags);
+        parent::__construct($name, $flags, $link, $destination);
         $this->m_controlsBySection[ShuttleControl::AVAILABLE] = array();
         $this->m_controlsBySection[ShuttleControl::SELECTED] = array();
     }

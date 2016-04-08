@@ -25,21 +25,16 @@ class ProfileAttribute extends Attribute
      * Constructor.
      *
      * @param string $name The name of the attribute
-     * @param string $parentAttrName
      * @param int $flags The flags of this attribute
-     *
+     * @param string $parentAttrName
      * @return ProfileAttribute
      */
-    public function __construct($name, $parentAttrName = '', $flags = 0)
+    public function __construct($name, $flags = 0, $parentAttrName = '')
     {
-        if (is_numeric($parentAttrName)) {
-            $flags = $parentAttrName;
-            $parentAttrName = '';
-        }
-
-        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST);
+        $flags = $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST;
+        parent::__construct($name, $flags);
+        
         $this->m_parentAttrName = $parentAttrName;
-
         $this->m_accessField = Config::getGlobal('auth_accessfield');
         if (empty($this->m_accessField)) {
             $this->m_accessField = Config::getGlobal('auth_levelfield');

@@ -55,12 +55,13 @@ class CalculatorAttribute extends Attribute
      * Constructor.
      *
      * @param string $name Unique name of this attribute within the node.
-     * @param string $calculation The calculation to perform. Must be a valid php expression.
      * @param int $flags Flags of the attribute.
+     * @param string $calculation The calculation to perform. Must be a valid php expression.
      */
-    public function __construct($name, $calculation, $flags = 0)
+    public function __construct($name, $flags = 0, $calculation)
     {
-        parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH | self::AF_READONLY);
+        $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH | self::AF_READONLY;
+        parent::__construct($name, $flags);
 
         $this->m_calculation = $calculation;
     }

@@ -26,25 +26,19 @@ class TimeAttribute extends Attribute
     public $m_steps = array('0', '30');
 
     /**
-     * Constructor.
-     *
      * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      * @param int $beginTime Time to start with (eg 8)
      * @param int $endTime Time to end with (eg 24)
      * @param int|array $steps containing possible minute or seconds values (eg array("00","15","30","45"))
      *                             or the interval (eg 5 for 00,05,10,15, etc.)
      *                             if the flag self::AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
      *                             else this is for the minutes and the seconds will not be displayed
-     * @param int $flags Flags for this attribute
      */
-    public function __construct(
-        $name,
-        $beginTime = 0,
-        $endTime = 23,
-        $steps = array('00', '15', '30', '45'),
-        $flags = 0
-    ) {
-        parent::__construct($name, $flags); // base class constructor
+    public function __construct($name, $flags = 0, $beginTime = 0, $endTime = 23, $steps = ['00', '15', '30', '45'])
+    {
+        parent::__construct($name, $flags);
+        
         $this->m_beginTime = $beginTime;
         $this->m_endTime = $endTime;
         if (is_array($steps)) {

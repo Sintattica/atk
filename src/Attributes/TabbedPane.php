@@ -33,18 +33,21 @@ class TabbedPane extends Attribute
      * Constructor.
      *
      * @param string $name The name of the attribute
-     * @param array $tabs The arrays looks like array("tabname1"=>("attribname1,"attribname2),"tabname1"=>(..),..)
      * @param int $flags The flags for this attribute
+     * @param array $tabs The arrays looks like array("tabname1"=>("attribname1,"attribname2),"tabname1"=>(..),..)
      */
-    public function __construct($name, $tabs = array(), $flags = 0)
+    public function __construct($name, $flags = 0, $tabs = [])
     {
+        // A TabbedPane attribute should be display only in edit/view mode
+        $flags = $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST | self::AF_HIDE_SELECT;
+
         foreach ($tabs as $tab => $attribs) {
             foreach ($attribs as $attrib) {
                 $this->add($attrib, $tab);
             }
         }
-        // A atkTabbedPane attribute should be display only in edit/view mode
-        parent::__construct($name, $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST | self::AF_HIDE_SELECT); // base class constructor
+
+        parent::__construct($name, $flags);
     }
 
     /**

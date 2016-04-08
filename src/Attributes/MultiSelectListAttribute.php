@@ -21,25 +21,23 @@ class MultiSelectListAttribute extends ListAttribute
      * Constructor.
      *
      * @param string $name Name of the attribute
+     * @param int $flags Flags for this attribute
      * @param array $optionArray Array with options
      * @param $valueArray $value Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
-     * @param int $flags Flags for this attribute
-     * @param int $size Size of the attribute.
      */
-    public function __construct($name, $optionArray, $valueArray = null, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
-        if (!is_array($valueArray) || count($valueArray) == 0) {
-            $valueArray = $optionArray;
+        parent::__construct($name, $flags, $optionArray, $valueArray);
+
+        $size = 0;
+        $valueArray = $this->getValues();
+        for ($i = 0, $_i = count($valueArray); $i < $_i; ++$i) {
+            $size += (Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
         }
-        // size must be large enough to store a combination of all values.
-        if ($size == 0) {
-            $size = 0;
-            for ($i = 0, $_i = count($valueArray); $i < $_i; ++$i) {
-                $size += (Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
-            }
+        if ($size > 0) {
+            $this->setAttribSize($size);
         }
-        parent::__construct($name, $optionArray, $valueArray, $flags, $size); // base class constructor
     }
 
     /**

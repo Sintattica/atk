@@ -23,13 +23,15 @@ class MultipleFileAttribute extends FileAttribute
      * Constructor.
      *
      * @param string $name Name of the attribute
-     * @param string|array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      * @param int $flags Flags for this attribute
-     * @param int $size Filename size
+     * @param string|array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
+     *
      */
-    public function __construct($name, $dir, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $dir)
     {
-        parent::__construct($name, array(), $flags | self::AF_CASCADE_DELETE, $size); // base class constructor
+        $flags = $flags | self::AF_CASCADE_DELETE;
+        
+        parent::__construct($name, $flags, []); // base class constructor
         if (is_array($dir)) {
             $this->m_dir = $this->AddSlash($dir[0]);
             $this->m_url = $this->AddSlash($dir[1]);

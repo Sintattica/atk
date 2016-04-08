@@ -19,7 +19,8 @@ class RowCounterAttribute extends DummyAttribute
      */
     public function __construct($name, $flags = 0)
     {
-        parent::__construct($name, '', $flags | self::AF_HIDE_VIEW | self::AF_HIDE_EDIT | self::AF_HIDE_ADD);
+        $flags = $flags | self::AF_HIDE_VIEW | self::AF_HIDE_EDIT | self::AF_HIDE_ADD;
+        parent::__construct($name, $flags, '');
     }
 
     /**

@@ -47,6 +47,7 @@ class ManyToManyRelation extends Relation
      * Constructor.
      *
      * @param string $name The name of the relation
+     * @param int $flags Flags for the relation.
      * @param string $link The full name of the node that is used as
      *                            intermediairy node. The intermediairy node is
      *                            assumed to have 2 attributes that are named
@@ -59,12 +60,12 @@ class ManyToManyRelation extends Relation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
-     * @param int $flags Flags for the relation.
      */
-    public function __construct($name, $link, $destination, $flags = 0)
+    public function __construct($name, $flags = 0, $link, $destination)
     {
+        $flags = $flags | self::AF_CASCADE_DELETE | self::AF_NO_SORT;
         $this->m_link = $link;
-        parent::__construct($name, $destination, $flags | self::AF_CASCADE_DELETE | self::AF_NO_SORT);
+        parent::__construct($name, $flags, $destination);
     }
 
     /**
@@ -170,7 +171,7 @@ class ManyToManyRelation extends Relation
         $cacheKey = md5($filter);
         if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force) {
             $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()->select($filter)->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-                    $this->m_destInstance->m_primaryKey))->getAllRows();
+                $this->m_destInstance->m_primaryKey))->getAllRows();
         }
 
         return $this->m_selectableRecordsCache[$cacheKey];
@@ -738,8 +739,8 @@ class ManyToManyRelation extends Relation
         $this->createDestination();
 
         // now select all records
-        $recordset = $this->m_destInstance->select()->excludes('*')->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-                $this->m_destInstance->m_primaryKey))->getAllRows();
+        $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+            $this->m_destInstance->m_primaryKey))->getAllRows();
         $result = '<select class="form-control"';
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, count($recordset) + 1).'"';

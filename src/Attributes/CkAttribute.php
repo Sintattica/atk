@@ -43,23 +43,15 @@ class CkAttribute extends TextAttribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for the attribute
-     * @param array $options CKEditor configuration options (overrides default)
+     * @param array $options CKEditor configuration options
      */
-    public function __construct($name, $flags = 0, $options = null)
+    public function __construct($name, $flags = 0, $options = [])
     {
-        /* update CKEditor configuration options */
         $this->ckOptions['language'] = Language::getLanguage();
         $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = Tools::atktext('locale');
-        // global config override
-        if (is_array(Config::getGlobal('ck_options'))) {
-            $this->ckOptions = array_merge($this->ckOptions, Config::getGlobal('ck_options'));
-        }
-        // instance override
-        if (is_array($options)) {
-            $this->ckOptions = array_merge($this->ckOptions, $options);
-        }
+        $this->ckOptions = array_merge($this->ckOptions, Config::getGlobal('ck_options'), $options);
 
-        parent::__construct($name, 0, $flags);
+        parent::__construct($name, $flags);
     }
 
     public function edit($record, $fieldprefix, $mode)

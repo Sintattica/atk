@@ -27,14 +27,13 @@ class EmailAttribute extends Attribute
      * </code>
      *
      * @param string $name Name of the attribute
-     * @param bool $search Search DNS for MX records in validate function
      * @param int $flags Flags for the attribute
-     * @param int $size The size of the field in characters
+     * @param bool $search Search DNS for MX records in validate function
      */
-    public function __construct($name, $search = false, $flags = 0, $size = 0)
+    public function __construct($name, $flags = 0, $search = false)
     {
         $this->m_dnsSearch = $search;
-        parent::__construct($name, $flags, $size);
+        parent::__construct($name, $flags);
     }
 
     /**

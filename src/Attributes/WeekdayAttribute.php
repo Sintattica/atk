@@ -27,7 +27,7 @@ class WeekdayAttribute extends NumberAttribute
     const WD_SATURDAY = 32;
     const WD_SUNDAY = 64;
 
-    public $m_mapping = array(
+    public $m_mapping = [
         1 => 'monday',
         2 => 'tuesday',
         4 => 'wednesday',
@@ -35,8 +35,8 @@ class WeekdayAttribute extends NumberAttribute
         16 => 'friday',
         32 => 'saturday',
         64 => 'sunday',
-    );
-    public $m_extra = array();
+    ];
+    public $m_extra = [];
 
     /**
      * Constructor.
@@ -44,19 +44,15 @@ class WeekdayAttribute extends NumberAttribute
      * @param string $name Name of the attribute (unique within a node, and
      *                             corresponds to the name of the datetime field
      *                             in the database where the stamp is stored.
-     * @param int $extraOrFlags Flags for the attribute or array of extra options
-     *                             these options will be numbered from 2^7 (128) to 2^x.
-     * @param int $flags Flags for the attribute. Only used if no set in previous param.
+     * @param int $flags Flags for the attribute
+     * @param array $extra Array of extra options. these options will be numbered from 2^7 (128) to 2^x.
      */
-    public function __construct($name, $extraOrFlags = 0, $flags = 0)
+    public function __construct($name, $flags = 0, $extra = [])
     {
-        if (is_numeric($extraOrFlags)) {
-            $flags = $extraOrFlags;
-        } elseif (is_array($extraOrFlags)) {
-            $this->m_extra = $extraOrFlags;
-        }
+        $flags = ($flags | self::AF_HIDE_SEARCH) ^ self::AF_SEARCHABLE;
+        $this->m_extra = $extra;
 
-        parent::__construct($name, ($flags | self::AF_HIDE_SEARCH) ^ self::AF_SEARCHABLE);
+        parent::__construct($name, $flags);
     }
 
     /**

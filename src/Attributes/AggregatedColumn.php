@@ -45,23 +45,24 @@ class AggregatedColumn extends Attribute
      * Constructor.
      *
      * @param string $name Name of the attribute
-     * @param string $template Display/sort template.
      * @param int $flags Flags for this attribute
-     * @param array $searchfields Array with fields, in which search will be perform
-     *                             If ommited, fields from $template will be used
+     * @param string $template Display/sort template.
+     * @param array $searchFields Array with fields, in which search will be perform. If ommited, fields from $template will be used
      */
-    public function __construct($name, $template, $flags = 0, $searchfields = array())
+    public function __construct($name, $flags = 0, $template, $searchFields = [])
     {
-        parent::__construct($name, $flags | self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_VIEW); // base class constructor
+        $flags = $flags | self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_VIEW;
+
+        parent::__construct($name, $flags); // base class constructor
         $this->m_template = $template;
 
         $parser = new StringParser($template);
         $this->m_displayfields = $parser->getFields();
 
-        if (!is_array($searchfields)) {
+        if (!count($searchFields)) {
             $this->m_searchfields = $this->m_displayfields;
         } else {
-            $this->m_searchfields = $searchfields;
+            $this->m_searchfields = $searchFields;
         }
     }
 

@@ -20,23 +20,20 @@ class ExpressionAttribute extends Attribute
      * Constructor.
      *
      * @param string $name The name of the attribute.
-     * @param string $expression The SQL expression.
-     * @param mixed $searchTypeOrFlags The search type (string) or flags (numeric) for this attribute. At the moment
-     *                                  only search types "string", "number" and "date" are supported.
      * @param int $flags The flags for this attribute.
+     * @param string $expression The SQL expression.
+     * @param string $searchType The search type (string) for this attribute.
+     * At the moment only search types "string", "number" and "date" are supported.
      */
-    public function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
+    public function __construct($name, $flags = 0, $expression, $searchType = '')
     {
-        if (is_numeric($searchTypeOrFlags)) {
-            $flags = $searchTypeOrFlags;
-        }
-
-        parent::__construct($name, $flags | self::AF_HIDE_ADD | self::AF_READONLY_EDIT);
+        $flags = $flags | self::AF_HIDE_ADD | self::AF_READONLY_EDIT;
+        parent::__construct($name, $flags);
 
         $this->m_expression = $expression;
 
-        if (!is_numeric($searchTypeOrFlags)) {
-            $this->setSearchType($searchTypeOrFlags);
+        if ($searchType != '') {
+            $this->setSearchType($searchType);
         }
     }
 
