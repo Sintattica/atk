@@ -731,7 +731,7 @@ class atkManyToManyRelation extends atkRelation
         $this->createDestination();
 
         // now select all records
-        $recordset = $this->m_destInstance->selectDb("", "", "", "*", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $recordset = $this->m_destInstance->selectDb("", "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
         $result = '<select class="form-control"';
         if ($extended) {
             $result.='multiple="multiple" size="' . min(5, count($recordset) + 1) . '"';
