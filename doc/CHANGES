@@ -15,6 +15,10 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+
+
+Changes in ATK 9.0.0 (2016-04-11)
+---------------------------------
 * Huge refactor: attributes and relations construct now must be (attributeName, flags, ...args...)
 + Initial implementation of stats handler
 + Select2 ajax pagination
@@ -24,19 +28,11 @@ WIP Changes
 + Module::getMenu and Module::getAtk methods
 + Db::newInstance() for retrive a fresh new Db instance
 + ManyToOne global config m_autocomplete_minrecords
-
-
-Changes in ATK 9.0.2 (2016-03-10)
----------------------------------
 - removed md5 encoding for authentication
 - removed LdapAuth
 - removed Cookie Auth
 + password are now hashed with password_hash()
 * PasswordAttribute uses password_hash() instead of md5
-
-
-Changes in ATK 9.0.1 (2016-03-09)
----------------------------------
 + Module boot method
 + constant VERSION in Atk class
 * updated documentation
