@@ -12,7 +12,7 @@ use Dotenv\Dotenv;
 
 class Atk
 {
-    const VERSION = '9.0.2-dev';
+    const VERSION = '9.0.0';
 
     public $g_nodes = [];
     public $g_nodesClasses = [];

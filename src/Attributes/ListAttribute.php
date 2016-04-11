@@ -296,8 +296,7 @@ class ListAttribute extends Attribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $width = $this->m_width ? " style='width: {$this->m_width}px'" : '';
-        $result = '<select id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$width.'>';
+        $result = '<select id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.'>';
 
         $nullLabel = '';
         if ($hasNullOption = $this->hasNullOption()) {
@@ -331,8 +330,18 @@ class ListAttribute extends Attribute
 
             if ($hasNullOption) {
                 $selectOptions['allowClear'] = true;
-                $selectOptions['placeholder'] = ['id' => $this->m_emptyvalue, 'text' => $nullLabel];
+                $selectOptions['placeholder'] = $nullLabel;
             }
+
+            $selectOptions['dropdownAutoWidth'] = 'true';
+            $selectOptions['minimumResultsForSearch'] = 10;
+
+            if($this->m_width){
+                $selectOptions['width'] = $this->m_width;
+            }else{
+                $selectOptions['width'] = 'auto';
+            }
+
 
             $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
             if ($onchange != '') {
@@ -626,9 +635,9 @@ class ListAttribute extends Attribute
     }
 
     /**
-     * Set the width of the dropdown list in pixels.
+     * Set the css width of the dropdown list
      *
-     * @param int $width The width of the dropdown list in pixels
+     * @param string $width The width of the dropdown list in pixels
      */
     public function setWidth($width)
     {
@@ -636,9 +645,9 @@ class ListAttribute extends Attribute
     }
 
     /**
-     * Gets the width of the dropdown list in pixels.
+     * Gets the css width of the dropdown list in pixels.
      *
-     * @return int The width of the dropdown list in pixels
+     * @return string The width of the dropdown list in pixels
      */
     public function getWidth()
     {

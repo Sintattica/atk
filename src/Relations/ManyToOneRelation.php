@@ -907,8 +907,10 @@ class ManyToOneRelation extends Relation
                 if ($hasNullOption) {
                     $selectOptions['allowClear'] = true;
                     $selectOptions['placeholder'] = $noneLabel;
-                    $selectOptions['dropdownAutoWidth'] = 'true';
+
                 }
+                $selectOptions['dropdownAutoWidth'] = 'true';
+                $selectOptions['width'] = 'auto';
                 $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
 
                 $this->registerJavaScriptObservers($id);
@@ -2027,7 +2029,7 @@ class ManyToOneRelation extends Relation
         }
 
         $selectOptions = [];
-        $selectOptions['width'] = '75%';
+        $selectOptions['width'] = 'auto';
         $selectOptions['dropdownAutoWidth'] = 'false';
         $selectOptions['ajax']['url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
         $selectOptions['minimumInputLength'] = $this->m_autocomplete_minchars;
