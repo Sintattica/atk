@@ -565,13 +565,6 @@ class Attribute
     private $m_editCallback = null;
 
     /**
-     * Whether to show a spinner (next to the attribute) during dependencies execution.
-     *
-     * @var bool
-     */
-    private $m_showSpinner = true;
-
-    /**
      * Constructor.
      *
      * <b>Example:</b>
@@ -773,7 +766,7 @@ class Attribute
 
         return $this;
     }
-    
+
     /**
      * Removes a disabled mode from the attribute.
      *
@@ -969,9 +962,7 @@ class Attribute
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
         $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
-
-        $result .= $this->getSpinner();
-
+        
         return $result;
     }
 
@@ -1001,21 +992,6 @@ class Attribute
     {
         if (count($this->m_onchangecode)) {
 
-            // js code to show the spinner during dependencies execution
-            if (count($this->getDependencies()) && $this->m_showSpinner) {
-                $id = $this->getHtmlId($fieldprefix);
-                if ($this->m_ownerInstance) {
-                    $id = str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$id);
-                }
-                $spinnerCode = "
-      var spinner = $$('#$id .atkbusy');
-      if (spinner.length) {
-        spinner[spinner.length-1].style.visibility = 'visible';
-      }
-      ";
-            } else {
-                $spinnerCode = '';
-            }
 
             $page = Page::getInstance();
             $page->register_scriptcode('
@@ -1023,37 +999,10 @@ class Attribute
     {
       {$this->m_onchangehandler_init}
       ".implode("\n      ", $this->m_onchangecode)."
-      $spinnerCode
     }\n");
         }
     }
-
-    /**
-     * Returns the html of the spinner to show during dependencies execution (next to the attribute).
-     * @param string $fieldprefix
-     * @return string
-     */
-    public function getSpinner($fieldprefix = '')
-    {
-        $ret = '<div class="atkbusy spinner" id="'.$this->getHtmlId($fieldprefix).'__spinner">';
-        if ($this->m_showSpinner) {
-            $ret .= '<i class="fa fa-cog fa-spin"></i>';
-        }
-        $ret .= '</div>';
-
-        return $ret;
-    }
-
-    /**
-     * Sets whether to show a spinner (next to the attribute) during dependencies execution.
-     *
-     * @param bool $value
-     */
-    public function showSpinner($value = true)
-    {
-        $this->m_showSpinner = $value;
-    }
-
+    
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).

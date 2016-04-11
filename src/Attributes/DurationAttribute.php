@@ -32,7 +32,7 @@ class DurationAttribute extends Attribute
      *
      * @see Attribute
      */
-    public function __construct($name, $flags = 0, $resolution = '1m', $maxtime = '10h')
+    public function         __construct($name, $flags = 0, $resolution = '1m', $maxtime = '10h')
     {
         parent::__construct($name, $flags);
         

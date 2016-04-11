@@ -9448,15 +9448,6 @@ div.panel-heading {
   top: 5px;
   color: #808080; }
 
-/* attributes spinner */
-div.atkbusy {
-  display: inline;
-  visibility: hidden;
-  margin-left: 5px;
-  vertical-align: middle;
-  color: #808080;
-  font-size: 15.4px; }
-
 /* action buttons spinner */
 #action-buttons .spinner {
   visibility: hidden;
@@ -9484,9 +9475,6 @@ br.atkFileAttributeCheckboxSeparator {
 td.fieldlabel {
   font-weight: bold; }
 
-select {
-  min-width: 150px; }
-
 select.ManyToOneRelation, select.MultiSelectAttribute {
   display: none; }
 
@@ -9497,6 +9485,12 @@ span.select2.select2-container.select2-container--bootstrap {
   margin-bottom: 15px; }
   .stats-form.form-inline .form-group {
     vertical-align: top; }
+
+hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 0;
+  border-top: 1px solid #eeeeee; }
 
 .tabsContent {
   margin-top: 10px; }

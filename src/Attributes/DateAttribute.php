@@ -547,7 +547,6 @@ class DateAttribute extends Attribute
                         'form-control',
                     )).' type="button" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \''.$format.'\', false, '.$mondayFirst.');">';
             }
-            $result .= $this->getSpinner();
 
             return $result;
         }
@@ -628,7 +627,6 @@ class DateAttribute extends Attribute
                         $str_format, !$this->hasFlag(self::AF_DATE_EDIT_NO_DAY)).'</option>';
             }
             $result .= '</select>';
-            $result .= $this->getSpinner();
 
             return $result;
         }
@@ -699,10 +697,7 @@ class DateAttribute extends Attribute
         if (!$this->m_simplemode) {
             $result .= '</div>'; // form-inline
         }
-        $result .= $this->getSpinner();
-
-        /* return result */
-
+        
         return $result;
     }
 

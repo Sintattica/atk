@@ -880,8 +880,6 @@ class ManyToOneRelation extends Relation
                 $editflag = false;
             }
 
-            $isCurrentPresent = false;
-
             // autoselect if there is only one record (if obligatory is not set,
             // we don't autoselect, since user may wist to select 'none' instead
             // of the 1 record.
@@ -909,6 +907,7 @@ class ManyToOneRelation extends Relation
                 if ($hasNullOption) {
                     $selectOptions['allowClear'] = true;
                     $selectOptions['placeholder'] = $noneLabel;
+                    $selectOptions['dropdownAutoWidth'] = 'true';
                 }
                 $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
 
@@ -920,7 +919,6 @@ class ManyToOneRelation extends Relation
                 }
 
                 $result .= $this->drawSelect($id, $options, $selValues, $selectOptions, $select2Js);
-                $result .= $this->getSpinner();
             }
         }
 
@@ -2047,8 +2045,7 @@ class ManyToOneRelation extends Relation
 
         $result .= $this->drawSelect($id, $options, $selValues, $selectOptions, $select2Js);
         $result .= ' '.$this->createSelectAndAutoLinks($id, $record);
-        $result .= $this->getSpinner($fieldprefix);
-
+        
         return $result;
     }
 

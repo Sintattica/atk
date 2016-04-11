@@ -281,10 +281,10 @@ class TimeAttribute extends Attribute
             }
             $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
 
-            return '<div class="form-inline">'.$tmp.'</div>'.$this->getSpinner();
+            return '<div class="form-inline">'.$tmp.'</div>';
         }
 
-        return '<div class="'.$this->get_class_name().' form-inline">'.$timeedit.'</div>'.$this->getSpinner();
+        return '<div class="'.$this->get_class_name().' form-inline">'.$timeedit.'</div>';
     }
 
     /**

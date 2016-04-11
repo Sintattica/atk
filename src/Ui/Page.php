@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Atk;
 
 /**
  * Page renderer.
@@ -637,6 +638,7 @@ class Page
         }
 
         $layout['hiddenvars'] = $this->hiddenVars();
+        $layout['atkversion'] = Atk::VERSION;
 
         return $ui->render('layout.tpl', $layout);
     }

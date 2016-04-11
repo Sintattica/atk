@@ -319,7 +319,6 @@ class ListAttribute extends Attribute
         }
 
         $result .= '</select>';
-        $result .= $this->getSpinner();
 
         if ($this->m_expandAsButtons) {
             // use Quick[select] plugin to expand the selection as a series of buttons

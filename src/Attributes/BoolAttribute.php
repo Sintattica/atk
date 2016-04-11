@@ -121,9 +121,7 @@ class BoolAttribute extends Attribute
                     parent::label($record),
                 )).'</label>';
         }
-
-        $result .= $this->getSpinner();
-
+        
         return $result;
     }
 

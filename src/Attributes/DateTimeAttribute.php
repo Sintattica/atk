@@ -254,13 +254,7 @@ class DateTimeAttribute extends Attribute
 
         return $this;
     }
-
-    public function showSpinner($value)
-    {
-        $this->m_date->showSpinner($value);
-        $this->m_time->showSpinner($value);
-    }
-
+    
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.

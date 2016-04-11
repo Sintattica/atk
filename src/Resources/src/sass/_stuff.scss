@@ -137,16 +137,6 @@ div.panel-heading {
   color: #808080;
 }
 
-/* attributes spinner */
-div.atkbusy {
-  display: inline;
-  visibility: hidden;
-  margin-left: 5px;
-  vertical-align: middle;
-  color: #808080;
-  font-size: $fa-font-size-base*1.1;
-}
-
 /* action buttons spinner */
 #action-buttons .spinner {
   visibility: hidden;
@@ -184,10 +174,6 @@ td.fieldlabel {
   font-weight: bold;
 }
 
-select {
-  min-width: 150px;
-}
-
 select.ManyToOneRelation, select.MultiSelectAttribute {
   //hack to avoid flashing standard select while select2 is not initialized (especially on ajax datagrid search form)
   display: none;
@@ -202,4 +188,11 @@ span.select2.select2-container.select2-container--bootstrap {
     vertical-align: top;
   }
   margin-bottom: 15px;
+}
+
+hr {
+  margin-top:    5px;
+  margin-bottom: 5px;
+  border: 0;
+  border-top: 1px solid $hr-border;
 }

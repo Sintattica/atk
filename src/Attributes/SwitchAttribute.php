@@ -65,8 +65,6 @@ class SwitchAttribute extends BoolAttribute
                 )).'</label>';
         }
 
-        $result .= $this->getSpinner();
-
         return $result;
     }
 

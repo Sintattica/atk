@@ -171,7 +171,6 @@ class MultiSelectListAttribute extends ListAttribute
         }
 
         $result .= '</select>';
-        $result .= $this->getSpinner();
 
         $selectOptions['tags'] = true;
         $selectOptions['width'] = '100%';
