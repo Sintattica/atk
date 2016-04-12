@@ -17,32 +17,6 @@ WIP Changes
 -----------
 
 
-Changes in ATK 9.0.1 (2016-04-12)
----------------------------------
-+ IndexPage is configurable in config file
-
-
-Changes in ATK 9.0.0 (2016-04-11)
----------------------------------
-* Huge refactor: attributes and relations construct now must be (attributeName, flags, ...args...)
-+ Initial implementation of stats handler
-+ Select2 ajax pagination
-+ Included Select2 library (https://select2.github.io/)
-+ html5 viewport meta
-+ JSON -> Json
-+ Module::getMenu and Module::getAtk methods
-+ Db::newInstance() for retrive a fresh new Db instance
-+ ManyToOne global config m_autocomplete_minrecords
-- removed md5 encoding for authentication
-- removed LdapAuth
-- removed Cookie Auth
-+ password are now hashed with password_hash()
-* PasswordAttribute uses password_hash() instead of md5
-+ Module boot method
-+ constant VERSION in Atk class
-* updated documentation
-
-
 New Release ATK 9.0 (2016-03-09)
 ---------------------------------
 Say welcome to Atk 9.0!
