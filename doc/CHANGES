@@ -17,6 +17,11 @@ WIP Changes
 -----------
 
 
+Changes in ATK 9.0.1 (2016-04-12)
+---------------------------------
++ IndexPage is configurable in config file
+
+
 Changes in ATK 9.0.0 (2016-04-11)
 ---------------------------------
 * Huge refactor: attributes and relations construct now must be (attributeName, flags, ...args...)
