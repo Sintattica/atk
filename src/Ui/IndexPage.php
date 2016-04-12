@@ -209,17 +209,27 @@ class IndexPage
                     header('Location: '.$destination);
                     exit;
                 } else {
-                    $box = $this->m_ui->renderBox(array(
-                        'title' => Tools::atktext('app_shorttitle'),
-                        'content' => Tools::atktext('app_description'),
-                    ));
-
-                    $box = '<div class="container-fluid">'.$box.'</div>';
-
-                    $this->m_page->addContent($box);
+                    $this->renderContent();
                 }
             }
         }
+    }
+
+    public function renderContent()
+    {
+        $content = $this->getContent();
+        $this->m_page->addContent('<div class="container-fluid">'.$content.'</div>');
+    }
+
+    public function getContent()
+    {
+        $box = $this->m_ui->renderBox([
+            'title' => Tools::atktext('app_shorttitle'),
+            'content' => Tools::atktext('app_description'),
+
+        ]);
+
+        return $box;
     }
 
     /**

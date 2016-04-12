@@ -12,7 +12,7 @@ use Dotenv\Dotenv;
 
 class Atk
 {
-    const VERSION = '9.0.0';
+    const VERSION = 'v9.0.1-dev';
 
     public $g_nodes = [];
     public $g_nodesClasses = [];
@@ -101,10 +101,15 @@ class Atk
 
         $securityManager = SecurityManager::getInstance();
         if ($securityManager->authenticate()) {
-            $indexPage = new IndexPage($this);
+
+            $indexPageClass = Config::getGlobal('indexPage');
+
+            /** @var IndexPage $indexPage */
+            $indexPage = new $indexPageClass($this);
             $indexPage->generate();
         }
     }
+    
 
     /**
      * Tells ATK that a node exists, and what actions are available to

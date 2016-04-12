@@ -790,4 +790,9 @@ return [
     'icon_print' => 'fa fa-print',
     'icon_plussquare' => 'fa fa-plus-square-o',
     'icon_minussquare' => 'fa fa-minus-square-o',
+
+
+    /****************** CLASSES ********************/
+
+    'indexPage' => Sintattica\Atk\Ui\IndexPage::class
 ];
