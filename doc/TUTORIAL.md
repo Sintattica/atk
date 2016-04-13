@@ -1,258 +1,220 @@
-# Surgeons general warning!!!
+# The ATK Book
+[TOC]
 
-This tutorial is based on a pre alpha atk9, it can and certainlly will change
-a lot as the development of atk9 advances.
-It is provided to get you going on atk9, specially if you are an old atk user 
-who is lost in the brave new world of modern php (As I am :-) )
+## What is it? 
+ATK is a PHP Framework intended to build business application. ATK has some very high level capabilities for CRUD building, validating inputs and controlling access.
+ATK lets yo build a table "admin", a paginated list of rows in a database table, this list comes paired with create, read, update and delete forms with allmost zero coding on your part.
+ATK is the right tool if you are writing an application where editing database tables is the main functionallity and design and presentation of individual pages are not a strong concern (Because ATK generates the pages for you automagically).
+
+## A little history
+ATK names comes from "Achievo Tool Kit". Achievo was a project planning software written by a Ducth company called iBuildings. ATK was the framework developed to help create the application and was later released as a stand alone tool, hence it's name.
+iBuildings created and maintained ATK until 2006 when they stopped supporting it, from that time on, several forks has been made by people wanting to keep it alive.
+The guys at Sintattica.it talked to iBuildings founder, Ivo Jansch who handed them the ATK wiki and forum in order to keep those resources online.
+Sintatica made several improvements on ATK, moving the version from 6.7 (The last iBuildings release) to ATK 8. But ATK 8 was irremediably old. ATK was written initially with PHP4 and a lot of water has passed under the bridge since ATK first appearence, so the guys at Sinttatica.it decided to go a little further and rebuild ATK with modern PHP and modern tools, this new version is called ATK 9 and makes use of modern PHP object orientation constructs and tools. 
+This book will cover how to build applications with ATK 9, this book will not discuss differences with previous version at all, if you are an old ATK user keep in mind that while ATK 9 is "philosophically" similar to older versions, it is not retro compatible and if you want to port an old ATK pre 9 app you will find that some heavy lifting is in order, hopefully, you will also find that it worths the trouble too.
+
+## Let's dive in: Building our first app
+
+Let build's a conference app our app will allow us to register the Speaker, the onference titles, and the conference attendants for each conference.
+
+### Getting the necesary tools.
+
+We will be using a debian based Linux distro in this book.
+We will need to have **git** installed, in a debian based Linux distribution it can 
+be installed with:
+
+`sudo apt-get install git`
 
 
-# Introduction
+Now we will need **composer.phar** Composer is a tool for dependency management in PHP. It allows you to declare the libraries your project depends on and it will manage (install/update) them for you.
+To grab a copy please execute:
+`
+ php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php 
+`
 
-I'm assuming you are an old pre atk9 user and know about
-basic atk concepts as modules, nodes and actions.
-In the case you are completely new to the atk world i'll try
-to briefly explain the core concept so you can follow the 
-tutorial.
-An Atk application consist of modules, every module have one or
-more nodes, every node has a certain number of actions.
-So, to create an atk app, you need to create Modules that contains
-nodes and nodes wich can execute certain actions.
-The "standard" actions are:
+And then, run the setup script wth:
+`
+./composer-setup.php
+`
 
-- admin: Show a List of table rows
-- add: Show an add Form
-- edit: Shows an edit Form
-- view: Shows a view Form
-- delete: Shows a delete Form
+This will leave a **composer.phar** file in your work directory, now you can get rid of the setup script with :
 
-Besides the "standard" actions, you can also declare your own.
-Most of the time, a node have a correspondence to a database
-table and provides you with CRUD functionallity, validations
-and a lot of extras that I will not discuss in this tutorial.
+`rm composer-setup.php`
 
-# Pre - Requisites
+To simplify typing, rename **composer.phar** to just composer with:
 
-In order to begin using atk9 you will need to have composer installed
-in your computer.
-If you don't have composer go to:
+`mv composer.phar composer`
 
-www.getcomposer.org
+And make sure it is executable with:
 
-And read de installation instructions.
-It's advisable to read composer "Basic usage" documentation.
+`chmod +x composer`
 
-# Dive In
+Finally, you should put composer in the path to be readily available when needed, please run:
 
-Once you have composer installed we are gonna need a folder
-to work on, so create a folder named i.e. MyApp
+`sudo mv composer.phar /usr/local/bin/composer`
 
-Inside this folder we are gonna need the following 
-"composer.json" file:
+Now we are gonna need to clone the Sintattica/atk-skeleton project. The skeleton project is an empty project to serve as boiler plate for your own project. In order to graba a copy you will need git:
 
-```
-{
-    "require": {
-				"sintattica/atk": "9.*"
-    },
-		"autoload": {
-			"psr-4": {"App\\Modules\\": "App/Modules"}
-		}
-}
-```
+`
+git clone https://github.com/Sintattica/atk-skeleton.git conference
+`
 
-Create the file "composer.json" inside MyApp directory
-and issue the command:
-
-composer.phar install
-
-Composer will create a directory called "vendor"
-with all the libraries you are gonna need.
-
-There are several directories an atk9 application needs to run
-properly, we need to create the following directories:
-
-- Modules Directory: This will contains our app's modules, execute:
-
-> mkdir -p App/Modules
-
-- Temp Directory: This will be used to atk9 to compile the smarty templates, execute:
-		
-> mkdir -p var/atktmp
-> chmod -R 777 var/atktmp
-
-- config Directory: This will contain our atk.php config file, execute:
-
-> cp -R vendor/sintattica/atk/src/Resources/config/ .
-
-- templates Directory: This contains our app templates, execute:
-
-> cp -R vendor/sintattica/atk/src/Resources/templates/ .
-
-- bundle Directory: This contains the App resources, execute
-
-> mkdir -p bundles/atk
-> cp vendor/sintattica/atk/src/Resources/public/  bundles/atk
-
-	
-Now enter the mysql cli with:
-
-> mysql  -u root -p 
-
-and create a database for us to play with the following mysql command
-		
-> create database atk;
-
-And grant permissions to it with:
-
-> grant all on atk.* to atk@localhost identified by 'atk';
-
-Now we can leave the mysql cli with:
-
-> exit
-
-He have created a database called atk and granted all privileges
-to the atk user with atk password, we need to reflect these parameters
-in the config file, edit the file config/atk.php and edit the database
-section:
+This should download a copy of the skeleton project in a directory called **conference**, the directory should have the following structure:
 
 ```
-    /************************** DATABASE SETTINGS ******************************/
-
-    'db' => [
-        'default' => [
-            'host' => Config::env('DB_HOST', 'localhost'),
-            'db' => Config::env('DB_NAME', 'atk'),
-            'user' => Config::env('DB_USER', 'atk'),
-            'password' => Config::env('DB_PASSWORD', 'atk'),
-            'charset' => Config::env('DB_CHARSET', 'utf8'),
-            'driver' => Config::env('DB_DRIVER', 'MySqli'),
-        ],
-    ],
-```
-    
-
-
-with the correct database parameters
-
-Every app/frameworks needs an entry point, namely an index.php, atk9 is no exception
-lets create a file called index.php with the following code:
-
-```
-<?php
-require 'vendor/autoload.php';
-Use Atk/Core/Atk;
-
-$atk = new Atk('','');
-$atk->run();
-
-?>
-```
-
-We are all set now, in order to serve the application we
-will be using the built in php server, execute the following
-command:
-
-> php -S localhost:8000
-
-Open a browser and navigate to the following url
-
-> http://localhost:8000
-
-And you should see your first atk9 app.
-
-You will probably found a couple of messages in red, these
-are because our application does not have any module, it's 
-an empty app so far, our next step will be the creation of
-a module.
-
-To Create a module we will make a subdirectory of App/Modules
-i.e.:
-
-> mkdir -p App/Modules/Test
-
-Inside our Test module folder we will create a Module.php file
-with the following content:
-
-```
-<?php
-namespace App\Modules\Test;
-
-use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Core\Menu;
-
-class Module extends \Sintattica\Atk\Core\Module
-{
-  public static  $module="test";
-
-  public function __construct(Atk $atk, Menu $menu)
-  {
-    parent::__construct($atk, $menu);
-    $this->addNodeToMenu("Hello", "miprimernodito", "hola_mundo");
-    $this->registerNode("myfirstnode", "App\Modules\Test\MyFirstNode", array("hello_world"));
-
-  }
-
-  public function boot()
-  {
-  }
-}
-?>
-
+conference/
+├── composer.json
+├── config
+│   ├── app.php
+│   └── atk.php
+├── README.md
+├── src
+│   ├── atk-skeleton.sql
+│   ├── languages
+│   │   ├── en.php
+│   │   └── it.php
+│   └── Modules
+│       ├── App
+│       │   ├── languages
+│       │   │   ├── en.php
+│       │   │   └── it.php
+│       │   ├── Module.php
+│       │   └── TestNode.php
+│       └── Auth
+│           ├── Groups.php
+│           ├── languages
+│           │   ├── en.php
+│           │   └── it.php
+│           ├── Module.php
+│           ├── UsersGroups.php
+│           └── Users.php
+├── var
+└── web
+    ├── bundles
+    │   └── atk -> ../../vendor/sintattica/atk/src/Resources/public
+    └── index.php
 ```
 
-In the previous Module definition we are declaring a node,
-the MyFirstNide node and an action on that node, the hello_world
-action. 
-In order to create the node, let's create a file called:
+Let's take a quick look to some files and directories:
 
-MyFirstNode.php in the module folder, with the following content:
+- composer.json: It is the composer dependencies file, any time you need a new software librry you should add its name here and run **composer update**.
+- The config direcory contains the configuration files.
+- The src directory: Our work will go mainly in this directory, this is the diretory where our application sources will reside, more specifically in the modules directory.
+- The var directory is for temporary files
+- The web directory is the directory that will need to be served by a web server (Apache, Nginx, Lighttpd or any other).
+
+Maybe you have observed that the web/bundles subdirectory is a symbolic link to an inexistent vendor directory, that directory is the directory that composer uses to store the downloaded dependencies and it will be created when composer updates the dependencies, let's do that with:
+
+`
+composer update
+`
+
+After composer finishes the updating you will have a vendor directory containing all the project dependencies.
+
+### Creating a Database
+
+As we've said, ATK is a business oriented framework and that implies that building CRUD interfaces for SQL Tables is a breeze, then, it is obvious that we are gonna need a Database, ATK has "drivers" for:
+
+- MySQL
+- PostGress
+
+In this text we will gonna use MySQL.
+Let's create a database called **conference** and grant all privileges to user **conference** with password **conference**.
+The above requirment can be achieved by excuting:
+
+`mysql -u  root -p `
+
+And once you are inside the mysql cli prompt issue the following commands:
+
+`create database conference;`
+
+And :
+
+`grant all on conference.* to conference@localhost identified by 'conference';`
+
+If you take a look around the skeleton project maybe you noticed a file called **atk-skeleton.sql** lying in the **src/** directory, this file contains the table definitions for ATK security system, your database should have these tables, we will create them with:
+
+`mysql -u root -p conference < src/atk-skeleton.sql `
+
+Now, we will need to configure our application.
+
+### Configuring our application
+
+If you take a look at the root directory of our project you will see a file called **.env.example**.  You can set ATK options and parameters by setting environmental variables, i.e. you can set the database user and password by setting two environment vars :
+
+- DB_USER
+- DB_PASSWORD
+
+In linux it can be achieved by issuing:
+
+`export DB_USER=root` and `export DB_PASSWORD=xxxx`
+
+But these setting will last until the job ends, so, how to avoid having to re-enter all the parameters in each session?. That is the job of the .env file. You can set your environment variables in the file and ATK will load all the env vars for you.
+The **.env.example**  file is to be copied to a customized **.env** with the proper values edited in.
+So copy it wit:
+
+`cp .env.example .env`
+
+Let's take a look at the contents of the file:
 
 ```
-<?php
+DB_NAME=atk-skeleton
+DEBUG_LEVEL=1
 
-namespace App\Modules\Test;
+# adminpwd
+ADMIN_PASSWORD="$2y$10$H17EjSHXZckjBoIWEd.SUe7pHcDqRH5RZhpu.VVv3H48M5Im7Z0Tq"
 
-use Sintattica\Atk\Core\Atk\Node;
-use Sintattica\Atk\Db;
-
-class MyFirstNode extends \Sintattica\Atk\Core\Node
-{
-  public function __create($uri, $flags)
-  {
-  }
-
-  public function action_hello_world()
-  {
-    die("It works!!!! ");
-  }
-}
-
-
-?>
 ```
-Now in order to make it work, we need to edit the config/atk.php
-file and declare our recently created Module, edit the config file:
+It's allready obvious that we need to change DB_NAME from atk-skeleton to our database wich is called 'conference', but  what about the funny line ADMIN_PASSWORD?
+The admin password is the administrative ATK password, when you login into an ATK application with the user **administrator**, all security is bypassed and you can do anything. It is the super user password.
+You have to set an administrative password in the **.env** file, but you have to store it encrypted, ATK provides a tool to encrypt the password, and you invoke it like this:
 
- /*
-     * @var array List of enabled modules
-     * eg: [App\Modules\App\Module::class, App\Modules\Auth\Module::class,]
-     *
-     */
-    'modules' => [],
+` php ./vendor/sintattica/atk/src/Utils/generatehash.php demo`
+
+The clear password is **demo**, once you run the command you'll get:
+
+``` 
+clean: demo
+hash: $2y$10$HURwCzn3JJmSV.8UZEVW/eaO/RSlYKELKFacIwTyKSPssxp101XDC
+```
+
+Let's edit our .env file, to look like this:
+
+```
+DB_NAME=conference
+DB_USER=conference
+DB_PASSWORD=conference
+DEBUG_LEVEL=1
+
+# adminpwd
+ADMIN_PASSWORD="$2y$10$HURwCzn3JJmSV.8UZEVW/eaO/RSlYKELKFacIwTyKSPssxp101XDC"
+```
+
+Ok, our basic configuration is done, now we can have a little gratification, let's 
+take a look to our app, in order to do so, let's start our personal php web server with:
+
+`php -S 0.0.0.0:8000 -t web/`
+
+Now open your browser and navigate to **http://localhost:8000** you should see a login form. You can now login with user **administrator** and password **demo**.
+Most probably, the login form is shown in the italian language (As the Sintattica.it are italians that should come as not surprising), let's tell our app to show up in good old english, edit de **config/atk.php** file and change the line:
+
+`'language' => 'it', `
 
 to
 
- /*
-     * @var array List of enabled modules
-     * eg: [App\Modules\App\Module::class, App\Modules\Auth\Module::class,]
-     *
-     */
-    'modules' => [App\Modules\Test\Module::class],
+`'language' => 'en',`
 
-And it's ready to test, launch the webserver again with:
+Taking a look to **vendor/sintattica/atk/src/Resources/languages/** you should see:
 
-php -S localhost:8000
+```
+bp.php  cf.php  da.php  el.php  es.php  fr.php  id.php  ja.php  no.php  pt.php  sk.php  tr.php  zh.php  ca.php  cs.php  de.php  en.php  fi.php  hu.php  it.php  nl.php  pl.php  ru.php  sv.php  uk.php
+```
 
-And test it.
+This is the complete list of languages that atk is translated to, if your language isn't there, copy the **en.php** to your **xx.php**, translate it and add it to the project git.
 
-Good Luck!
+### Our first Module
+ *this is work in progress *
+ 
+## Let's dive further: Adding a Relation				
+
+ *this is work in progress *
