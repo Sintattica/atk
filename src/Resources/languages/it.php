@@ -33,6 +33,7 @@ return [
     'auth_passwordmail_sent' => 'Se lo username fornito esiste, una nuova password è stata inviata al relativo indirizzo email.',
     'auth_passwordmail_subjectnew_password' => 'Nuova password',
     'auth_unable_to_connect' => "Non è possibile connettersi al server di autenticazione (contatta l'amministratore).",
+    'auth_rememberme' => "Ricordami su questo computer",
     'autocomplete_minimum_chars' => 'Inserisci almeno %d caratteri.',
     'autocomplete_no_results' => 'Nessun risultato per il valore cercato.',
     'autocomplete_no_results_contains' => 'Nessun risultato contenente il valore cercato.',
@@ -385,7 +386,7 @@ return [
     'update' => 'Aggiornare',
     // TODO corretto?
     'upperchars' => 'caratteri maiuscoli',
-    'username' => 'Username',
+    'username' => 'Nome utente',
     'view' => 'Vedi',
     'view_all' => 'Vedi tutti',
     'wed' => 'Mer',

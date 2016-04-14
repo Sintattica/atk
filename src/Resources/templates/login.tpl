@@ -26,6 +26,15 @@
                                 <label for="auth_pw">{atktext id="password"}</label>
                                 <input class="form-control" size="20" type="password" id="auth_pw" name="auth_pw" value="">
                             </div>
+                            {if isset($auth_enable_rememberme)}
+                                <div class="form-group">
+                                    <label for="auth_rememberme">
+                                        <input type="checkbox" id="auth_rememberme" name="auth_rememberme" value="1"
+                                               {if isset($auth_rememberme)}checked{/if}>
+                                        {atktext id="auth_rememberme"}
+                                    </label>
+                                </div>
+                            {/if}
                             <button type="submit" name="login" class="btn btn-primary center-block" value="{atktext id="login"}">{atktext id="login"}</button>
                             {if $auth_enablepasswordmailer}<input name="login" class="btn btn-default" type="submit" value="{atktext id="password_forgotten"}">{/if}
                         </form>

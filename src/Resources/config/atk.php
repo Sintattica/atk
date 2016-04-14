@@ -330,6 +330,29 @@ return [
      */
     'auth_accountenableexpression' => '',
 
+    /************************** REMEMBER ME *********************************/
+
+    /*
+     * Enable or disable Remember me
+     * For security reasons, remember me is not available for administrator and guest users
+     */
+    'auth_enable_rememberme' => false,
+
+    /*
+     * Set Remember me expire interval in DateTime format
+     */
+    'auth_rememberme_expireinterval' => '+14 days',
+
+    /*
+     * The Remember me cookie name
+     */
+    'auth_rememberme_cookiename' => 'rememberme',
+
+    /*
+     * The table where to store remember me tokens
+     */
+    'auth_rememberme_dbtable' => 'auth_tokens',
+
     /***************************** LDAP settings *******************************/
     /*
      * To use LDAP you should fill this config_variables with the right values
