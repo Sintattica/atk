@@ -15,10 +15,14 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+
+
+Changes in ATK 8.2.5 (2016-04-14)
+---------------------------------
 + Remember me [michele]
+* Better search_none label in atkListAttribute [luca]
 * Fixing select multiple in atkListAttribute search [luca]
 + Added manytoone_autocomplete_minrecords global config [luca]
-
 
 
 Changes in ATK 8.2.4 (2016-03-09)
