@@ -445,9 +445,12 @@ class atkListAttribute extends atkAttribute
 
         // "none" option
         if (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) {
+            $label = atktext($this->fieldName() . '_' . 'search_none', $this->getModule(), $this->m_owner, "", "", true);
+            if ($label == "") {
+                $label = atktext('search_none', $this->getModule(), $this->m_owner);
+            }
             $result .= sprintf('<option value="__NONE__"%s>%s</option>',
-                atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
-                atktext('search_none'));
+                atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '', $label);
         }
 
         // normal options
