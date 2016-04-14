@@ -839,7 +839,7 @@ class Tools
     public static function handleError()
     {
         global $g_error_msg, $g_debug_msg;
-        $errorHandlers = Config::getGlobal('error_handlers', array('mail' => array('mailto' => Config::getGlobal('mailreport'))));
+        $errorHandlers = Config::getGlobal('error_handlers', array('Mail' => array('mailto' => Config::getGlobal('mailreport'))));
         foreach ($errorHandlers as $key => $value) {
             if (is_numeric($key)) {
                 $key = $value;
