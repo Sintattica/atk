@@ -243,18 +243,6 @@ $config_authentication = "none";
 $config_authentication_md5 = true;
 
 /**
- * Use a cookie to store authentication information.
- * @var boolean
- */
-$config_authentication_cookie = false;
-
-/**
- * The default cookie expiry time (in minutes) (7 days)
- * @var int
- */
-$config_authentication_cookie_expire = 10080;
-
-/**
  * The default state cookie expiry time (in minutes) (7 days)
  * @var int
  */
@@ -473,8 +461,31 @@ $config_auth_userdescriptor = "[" . $config_auth_userfield . "]";
  */
 $config_auth_accountenableexpression = "";
 
+/* * ************************ REMEMBER ME ********************************** */
+
+/**
+ * Enable or disable Remember me
+ * For security reasons, remember me is not available for administrator and guest users
+ */
+$config_auth_enable_rememberme = false;
+
+/**
+ * Set Remember me expire interval in DateTime format
+ */
+$config_auth_rememberme_expireinterval = '+14 days';
+
+/**
+ * The Remember me cookie name
+ */
+$config_auth_rememberme_cookiename = 'rememberme';
+
+/**
+ * The table where to store remember me tokens
+ */
+$config_auth_rememberme_dbtable = 'auth_tokens';
 
 /* * *************************** LDAP settings ****************************** */
+
 /**
  * To use LDAP you should fill this config_variables with the right values
  */
@@ -925,15 +936,6 @@ $config_database_sequenceprefix = "seq_";
  * @var boolean
  */
 $config_recordlist_javascript_delete = false;
-
-/**
- * This should be turned on when an application makes use
- * of OpenSSL encryption (atk.security.encryption.atkopensslencryption)
- * It makes sure that the user password is available in the session
- * for the private key.
- * @var boolean
- */
-$config_enable_ssl_encryption = false;
 
 /**
  * Enable / disable sending of e-mails (works only if the atk.utils.atkMailer::Send

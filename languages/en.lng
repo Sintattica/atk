@@ -47,6 +47,7 @@ $en = array(
     "auth_passwordmail_sent" => "If the given username exists, a new password is sent to the corresponding email address.",
     "auth_passwordmail_subjectnew_password" => "New password",
     "auth_unable_to_connect" => "Unable to connect to server for authentication (please consult your system administrator).",
+    "auth_rememberme" => "Remember me",
     "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
     "autocomplete_no_results" => "No results found for the given search value.",
     "autocomplete_no_results_contains" => "No results found that contain the given search value.",

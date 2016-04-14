@@ -747,7 +747,7 @@ class atkImportHandler extends atkActionHandler
      */
     function integrateAttribute($attr)
     {
-        return in_array(get_class($attr), array("atkonetoonerelation", "atksecurerelation")) && $attr->hasFlag(AF_ONETOONE_INTEGRATE);
+        return in_array(get_class($attr), array("atkonetoonerelation")) && $attr->hasFlag(AF_ONETOONE_INTEGRATE);
     }
 
     /**
