@@ -1,4 +1,5 @@
 {atkconfig var="theme_logo" smartyvar="theme_logo"}
+{atkconfig var="dispatcher" smartyvar="dispatcher"}
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -23,7 +24,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {if $user}
                     <li id="top-logout">
-                        <a href="./?atklogout=1" target="{$logouttarget}">{$user}&nbsp;&nbsp;<span class="glyphicon glyphicon-log-out"></span></a>
+                        <a href="{$dispatcher}?atklogout=1">{$user}&nbsp;&nbsp;<span class="glyphicon glyphicon-log-out"></span></a>
                     </li>
                 {/if}
             </ul>
