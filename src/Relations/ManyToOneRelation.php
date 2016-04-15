@@ -1555,7 +1555,6 @@ class ManyToOneRelation extends Relation
             return true;
         }
 
-
         $this->createDestination();
 
         // if the value is set directly in the record field we first
@@ -1587,10 +1586,11 @@ class ManyToOneRelation extends Relation
             return false;
         }
 
-        $selector = $this->getSelectableRecordsSelector($record, $mode);
-        $selector->where($selectedKey);
+        // No selection override exists, simply add the record key to the selector.
+        $filter = $this->createFilter($record, $mode);
+        $selector = "($selectedKey)".($filter != null ? " AND ($filter)" : '');
 
-        return $selector->getRowCount() > 0;
+        return $this->m_destInstance->select($selector)->getRowCount() > 0;
     }
 
     /**
@@ -1612,27 +1612,9 @@ class ManyToOneRelation extends Relation
     {
         $this->createDestination();
 
-        $selector = $this->m_destInstance->select();
-        $filter = $this->createFilter($record, $mode);
-
-        if (in_array($mode, ['edit', 'update'])) {
-            $selector->ignoreDefaultFilters();
-            $filters = $selector->getFiltersConditions();
-
-            if ($filter) {
-                $filters[] = $filter;
-            }
-
-            $filter = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-            if (count($filters)) {
-                $filter .= ' OR (('.implode(') AND (', $filters).'))';
-            }
-        }
-
-        $result = $selector
-            ->where($filter)
-            ->orderBy($this->getDestination()->getOrder())
-            ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+        $selector = $this->createFilter($record, $mode);
+        $result = $this->m_destInstance->select($selector)->orderBy($this->getDestination()->getOrder())->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
+            $this->m_destInstance->m_primaryKey));
 
         return $result;
     }
