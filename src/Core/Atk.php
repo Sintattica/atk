@@ -37,7 +37,7 @@ class Atk
         static::$s_instance = $this;
 
         //load .env variables only in development environment
-        if (!$environment || in_array(strtolower($environment), ['dev', 'develop', 'development'])) {
+        if (file_exists($basedir.'.env') && (!$environment || in_array(strtolower($environment), ['dev', 'develop', 'development']))) {
             $dotEnv = new Dotenv($basedir);
             $dotEnv->load();
         }
