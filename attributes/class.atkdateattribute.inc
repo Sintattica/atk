@@ -898,9 +898,9 @@ class atkDateAttribute extends atkAttribute
 
         $fieldname = $db->func_datetochar($fieldname ? $fieldname : ($table . "." . $this->fieldName()));
 
-        if ($fromval == NULL && $toval == NULL)
-            ; // do nothing
-        else if ($fromval != NULL && $toval != NULL) {
+        if ($fromval == NULL && $toval == NULL) {
+            // do nothing
+        } else if ($fromval != NULL && $toval != NULL) {
             if ($fromval > $toval) {
                 // User entered dates in wrong order. Let's put them in the right order.
                 $tmp = $fromval;

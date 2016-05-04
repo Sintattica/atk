@@ -3149,6 +3149,9 @@ class atkNode
             $keys = array_keys($this->m_attribList);
             $fields[0] = $keys[0];
         }
+
+        $fields = array_unique($fields);
+
         return $fields;
     }
 

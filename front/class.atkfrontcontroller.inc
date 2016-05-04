@@ -469,7 +469,7 @@ class atkFrontController implements ArrayAccess
             $this->postFilter();
 
             if ($this->m_partial && $this->isRoot()) {
-                while (@ob_end_clean());
+                while (@ob_end_clean()) {}
 
                 foreach ($this->m_headers as $header)
                     header($header);

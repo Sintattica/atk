@@ -1274,9 +1274,6 @@ class atkDb
                 $driver = $dbconfig[$conn]["driver"];
             } else if (!empty($dbconfig[$conn]["driver"])) {
                 $driver = "atk.db.atk{$dbconfig[$conn]["driver"]}db";
-            } else if (!empty($dbconfig[$conn]["driver"])) {
-                atkhalt("Driver {$dbconfig[$conn]["driver"]} not found for connection '$conn'!");
-                return null;
             } else {
                 atkhalt("Driver not specified for connection '$conn'!");
                 return null;
