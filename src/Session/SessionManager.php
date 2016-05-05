@@ -1171,4 +1171,12 @@ class SessionManager
 
         return $this->atkprevlevel;
     }
+
+    public static function getSessionAutoRefreshJs()
+    {
+        $url = Config::getGlobal('dispatcher').'?'.Config::getGlobal('session_autorefresh_key');
+        $time = Config::getGlobal('session_autorefresh_time', 3600);
+
+        return 'jQuery(function($){window.setInterval(function(){$.ajax({cache:false,type:"GET",url:"'.$url.'"});},'.$time.');});';
+    }
 }
