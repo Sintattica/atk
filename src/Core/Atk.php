@@ -99,6 +99,10 @@ class Atk
         $sessionManager = SessionManager::getInstance();
         $sessionManager->start();
 
+        if(Config::getGlobal('session_autorefresh') && array_key_exists(Config::getGlobal('session_autorefresh_key'), $_GET)){
+            die(session_id());
+        }
+
         $securityManager = SecurityManager::getInstance();
         if ($securityManager->authenticate()) {
 

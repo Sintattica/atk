@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Ui;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Atk;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Page renderer.
@@ -136,9 +137,9 @@ class Page
         $this->register_script($assetsUrl.'javascript/class.atktools.js');
         $this->register_script($assetsUrl.'javascript/atkbusy.js');
         $this->register_script($assetsUrl.'javascript/atk.min.js');
-
-
-
+        if(Config::getGlobal('session_autorefresh')){
+            $this->register_scriptcode(SessionManager::getSessionAutoRefreshJs());
+        }
         $this->register_style($assetsUrl.'styles/style.css');
     }
 
