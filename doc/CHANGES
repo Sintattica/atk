@@ -2,10 +2,6 @@
 - : deprecated feature
 * : bugfix or changed code
 
-Issue numbers are references to issues in the ATK project issue tracker
-    on GitHub: https://github.com/atkphpframework/atk/issues
-Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
-	http://bugzilla.achievo.org
 [names] are references to contributors listed in the AUTHORS file.
 
 * Please do not exceed 80 characters per line.
@@ -14,6 +10,10 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 
 WIP Changes
+-----------
+
+
+Changes in ATK 8.2.6 (2016-05-05)
 -----------
 + Session keepalive with ajax calls (see: $config_session_autorefresh) [michele]
 * Minor fixings [luca]
