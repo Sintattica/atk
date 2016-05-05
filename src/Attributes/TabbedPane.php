@@ -150,7 +150,7 @@ class TabbedPane extends Attribute
 
         //collecting output from attributes
         foreach ($this->m_attribsList as $name => $tab) {
-            $p_attrib = &$node->getAttribute($name);
+            $p_attrib = $node->getAttribute($name);
             if (is_object($p_attrib)) {
                 /* hide - nothing to do with tabbedpane, must be render on higher level */
                 if (($mode == 'edit' && $p_attrib->hasFlag(self::AF_HIDE_EDIT)) || ($mode == 'add' && $p_attrib->hasFlag(self::AF_HIDE_ADD))) {
@@ -302,13 +302,13 @@ class TabbedPane extends Attribute
         $fields = array();
 
         $node = $this->m_ownerInstance;
-        $ui = &$node->getUi();
+        $ui = $node->getUi();
 
         // For all attributes we use the display() function to display the
         // attributes current value. This may be overridden by supplying
         // an <attributename>_display function in the derived classes.
         foreach ($this->m_attribsList as $name => $tab) {
-            $p_attrib = &$node->getAttribute($name);
+            $p_attrib = $node->getAttribute($name);
             if (is_object($p_attrib)) {
                 $tplfield = array();
                 if (!$p_attrib->hasFlag(self::AF_HIDE_VIEW)) {
@@ -377,11 +377,11 @@ class TabbedPane extends Attribute
         if (count($list) > 0) {
             $node = $this->m_ownerInstance;
 
-            $page = &$node->getPage();
+            $page = $node->getPage();
             $page->register_script(Config::getGlobal('assets_url').'javascript/class.atktabbedpane.js');
             $page->register_loadscript("ATK.TabbedPane.showTab('tabbedPane{$fieldprefix}{$this->m_name}', '$activeTabName');");
 
-            $ui = &$node->getUi();
+            $ui = $node->getUi();
             if (is_object($ui)) {
                 $content = $ui->renderBox(array(
                     'tabs' => $this->buildTabs($action, $fieldprefix),

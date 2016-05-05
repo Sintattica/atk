@@ -1336,7 +1336,7 @@ class Db
         // Resolve any potential aliases
         $conn = self::getTranslatedDatabaseName($conn);
 
-        $dbInstance = $s_dbInstances[$conn];
+        $dbInstance = array_key_exists($conn,$s_dbInstances)?$s_dbInstances[$conn]:null;
 
         if ($reset || !$dbInstance || !$dbInstance->hasMode($mode)) {
             $dbconfig = Config::getGlobal('db');

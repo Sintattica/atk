@@ -222,7 +222,7 @@ class EditHandler extends ViewEditBase
     public function renderEditPage($record, $params)
     {
         $node = $this->m_node;
-        $ui = &$node->getUi();
+        $ui = $node->getUi();
 
         if (is_object($ui)) {
             $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle('edit', $record));

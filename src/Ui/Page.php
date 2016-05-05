@@ -679,9 +679,10 @@ class Page
      *
      * This is useful to check at the rendering stage of scripts whether there is something to render.
      *
+     * @param array $record The record that holds this attribute's value.
      * @return bool true if there is no content in the page, false if there is
      */
-    public function isEmpty()
+    public function isEmpty($record)
     {
         return $this->m_content == '';
     }

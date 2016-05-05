@@ -655,7 +655,8 @@ class ManyToOneRelation extends Relation
     public function display($record, $mode)
     {
         if ($this->createDestination()) {
-            if (count($record[$this->fieldName()]) == count($this->m_refKey)) {
+            $cnt = isset($record[$this->fieldName()])?count(count($record[$this->fieldName()])):null;
+            if ($cnt == count($this->m_refKey)) {
                 $this->populate($record);
             }
 
@@ -1322,7 +1323,7 @@ class ManyToOneRelation extends Relation
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    public function load(&$db, $record, $mode)
+    public function load($db, $record, $mode)
     {
         return $this->_getSelectedRecord($record, $mode);
     }

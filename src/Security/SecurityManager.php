@@ -272,7 +272,7 @@ class SecurityManager
 
             if (Config::getGlobal('auth_enable_rememberme')) {
                 $this->rememberMeClearCookie();
-                if ($session['remembermeTokenId']) {
+                if (isset($session['remembermeTokenId'])) {
                     $this->rememberMeDeleteToken($session['remembermeTokenId']);
                 }
             }

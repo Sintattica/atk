@@ -88,10 +88,10 @@ class UpdateStampAttribute extends DateTimeAttribute
 
     /**
      * We always have a value, even if we're not even in the record.
-     *
+     * @param array $record The record that holds this attribute's value.
      * @return bool false
      * */
-    public function isEmpty()
+    public function isEmpty($record)
     {
         return false;
     }

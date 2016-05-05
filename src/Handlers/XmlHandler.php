@@ -45,7 +45,7 @@ class XmlHandler extends ActionHandler
 
         $attrs = array();
         foreach (array_keys($node->m_attribList) as $attribname) {
-            $p_attrib = &$node->m_attribList[$attribname];
+            $p_attrib = $node->m_attribList[$attribname];
             if (!$p_attrib->isEmpty($record)) {
                 $attrs[] = $attribname.'="'.$p_attrib->display($record, 'xml').'"';
             }

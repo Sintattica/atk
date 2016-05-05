@@ -203,7 +203,7 @@ class OneToOneRelation extends Relation
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    public function load(&$db, $record, $mode)
+    public function load($db, $record, $mode)
     {
         if ($this->createDestination()) {
             if ($this->m_refKey == '') {

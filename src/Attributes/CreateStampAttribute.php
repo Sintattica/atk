@@ -25,12 +25,12 @@ class CreateStampAttribute extends UpdateStampAttribute
      * needs to be saved to the database in an updateDb call.
      * This attribute should never be updated.
      *
-     * @param array $rec The record that is going to be saved.
+     * @param array $record The record that is going to be saved.
      *
      * @return bool True if this attribute should participate in the update
      *              query; false if not.
      */
-    public function needsUpdate($rec)
+    public function needsUpdate($record)
     {
         // no matter what, we NEVER save a new value.
         return false;

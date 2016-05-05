@@ -633,7 +633,7 @@ class DateTimeAttribute extends Attribute
         if ($this->m_timezoneAttribute !== null) {
             $node = $this->getOwnerInstance();
             $parts = explode('.', $this->m_timezoneAttribute);
-            $attr = &$node->getAttribute($parts[0]);
+            $attr = $node->getAttribute($parts[0]);
             $attr->addFlag(self::AF_FORCE_LOAD);
         }
 

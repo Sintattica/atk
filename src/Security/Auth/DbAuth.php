@@ -83,7 +83,7 @@ class DbAuth extends AuthInterface
             return SecurityManager::AUTH_LOCKED;
         }
 
-        $matchPassword = $this->matchPasswords($this->getPassword($recs[0]), $passwd);
+        $matchPassword = $this->matchPasswords($this->getPassword(isset($recs[0])?$recs[0]:null), $passwd);
 
         return (count($recs) > 0 && $user != '' && $matchPassword) ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
     }

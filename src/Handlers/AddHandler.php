@@ -154,7 +154,7 @@ class AddHandler extends ActionHandler
     public function getAddParams($record = null)
     {
         $node = $this->m_node;
-        $ui = &$node->getUi();
+        $ui = $node->getUi();
 
         if (!is_object($ui)) {
             Tools::atkerror('ui object failure');
@@ -297,7 +297,7 @@ class AddHandler extends ActionHandler
     public function renderAddPage($params)
     {
         $node = $this->m_node;
-        $ui = &$node->getUi();
+        $ui = $node->getUi();
 
         if (is_object($ui)) {
             $output = $ui->renderAction('add', $params);

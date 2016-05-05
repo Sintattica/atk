@@ -166,7 +166,7 @@ class TimeAttribute extends Attribute
     {
 
         $id = $fieldprefix.$this->fieldName();
-        $field = $record[$this->fieldName()];
+        $field = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
 
         $onChangeCode = '';
         if (count($this->m_onchangecode)) {

@@ -31,13 +31,8 @@ class FieldSet extends Attribute
         $this->setLoadType(self::NOLOAD);
         $this->setStorageType(self::NOSTORE);
     }
-
-    /**
-     * Is empty?
-     *
-     * @return bool
-     */
-    public function isEmpty()
+    
+    public function isEmpty($record)
     {
         // always return false, this way you can mark a field-set as obligatory
         // as a visual cue without ATK complaining that no value has been set

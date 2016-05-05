@@ -200,7 +200,7 @@ class Atk
 
     public function isModule($moduleName)
     {
-        return is_object($this->g_moduleRepository[$moduleName]);
+        return array_key_exists($moduleName, $this->g_moduleRepository) && is_object($this->g_moduleRepository[$moduleName]);
     }
 
     /**

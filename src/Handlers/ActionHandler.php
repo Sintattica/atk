@@ -221,7 +221,7 @@ class ActionHandler
      *
      * @return Page The active page instance.
      */
-    public function &getPage()
+    public function getPage()
     {
         return $this->m_node->getPage();
     }
@@ -231,7 +231,7 @@ class ActionHandler
      *
      * @return Ui An Ui instance for drawing and templating.
      */
-    public function &getUi()
+    public function getUi()
     {
         return $this->m_node->getUi();
     }

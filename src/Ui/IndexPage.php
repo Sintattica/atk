@@ -304,9 +304,9 @@ class IndexPage
             $this->m_ui->renderBox(array(
                 'title' => Tools::atktext('access_denied'),
                 'content' => $content,
-            ), 'dispatch'),
+            )),
         ];
 
-        return $this->m_ui->render('action.tpl', array('blocks' => $blocks, 'title' => Tools::atktext('access_denied')));
+        return $this->m_ui->render('actionpage.tpl', array('blocks' => $blocks, 'title' => Tools::atktext('access_denied')));
     }
 }

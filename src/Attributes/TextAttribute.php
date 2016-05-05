@@ -203,7 +203,7 @@ class TextAttribute extends Attribute
      */
     public function fetchMeta($metadata)
     {
-        $this->m_dbfieldtype = $metadata[$this->fieldName()]['gentype'];
+        $this->m_dbfieldtype = isset($metadata[$this->fieldName()]['gentype'])?$metadata[$this->fieldName()]['gentype']:null;
         if ($this->m_dbfieldtype == 'string') {
             parent::fetchMeta($metadata);
         }

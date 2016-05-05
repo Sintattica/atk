@@ -72,7 +72,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      * @return array Sets the destination from the record and
      *               return the atkonetoone load function
      */
-    public function load(&$db, $record, $mode)
+    public function load($db, $record, $mode)
     {
         $this->m_destination = $this->m_modulename.'.'.$record[$this->m_typefk][$this->m_discriminatorfield];
         $this->m_destInstance = $this->m_modulename.'.'.$record[$this->m_typefk][$this->m_discriminatorfield];

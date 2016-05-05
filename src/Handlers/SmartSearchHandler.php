@@ -249,7 +249,7 @@ class SmartSearchHandler extends AbstractSearchHandler
 
         $attrs = array();
         foreach ($attrNames as $attrName) {
-            $attr = &$node->getAttribute($attrName);
+            $attr = $node->getAttribute($attrName);
             if (!$attr->hasFlag(Attribute::AF_HIDE_SEARCH)) {
                 $attrs[] = &$attr;
             }
@@ -314,9 +314,9 @@ class SmartSearchHandler extends AbstractSearchHandler
      *
      * @return Node next node
      */
-    public function &addNodeAndAttrEntry(&$path, &$node, $attrName, &$includeSelf, &$excludes)
+    public function &addNodeAndAttrEntry(&$path, $node, $attrName, &$includeSelf, &$excludes)
     {
-        $attr = &$node->getAttribute($attrName);
+        $attr = $node->getAttribute($attrName);
 
         $nr = count($path);
         $attrs = $this->getSearchableAttributes($node, $excludes);

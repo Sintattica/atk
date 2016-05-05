@@ -94,7 +94,7 @@ class CalculatorAttribute extends Attribute
      *
      * @return string result of the calculation
      */
-    public function load(&$db, $record)
+    public function load($db, $record)
     {
         $parser = new StringParser($this->m_calculation);
         eval('$result = '.$parser->parse($record).';');

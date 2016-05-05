@@ -2030,10 +2030,11 @@ class Attribute
      * self::AF_HIDE_EDIT are set, but derived attributes may override this
      * behavior.
      *
+     * @param array $record The record that is going to be saved.
      * @return bool True if this attribute should participate in the update
      *              query; false if not.
      */
-    public function needsUpdate()
+    public function needsUpdate($record)
     {
         return (!$this->hasFlag(self::AF_READONLY_EDIT) && !$this->hasFlag(self::AF_HIDE_EDIT)) || $this->m_forceupdate;
     }
@@ -2662,7 +2663,7 @@ class Attribute
      *
      * @return string Returns sort order ASC or DESC
      */
-    public function listHeaderSortOrder(&$columnConfig)
+    public function listHeaderSortOrder(ColumnConfig &$columnConfig)
     {
         $order = $this->fieldName();
 

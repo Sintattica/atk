@@ -760,7 +760,7 @@ class OneToManyRelation extends Relation
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    public function load(&$db, $record, $mode = '', $paging = false)
+    public function load($db, $record, $mode = '', $paging = false)
     {
         $result = null;
 

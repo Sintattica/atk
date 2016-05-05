@@ -12,10 +12,10 @@ class CreatedByAttribute extends UpdatedByAttribute
 {
     /**
      * needsUpdate always returns false for this attribute.
-     *
+     * @param array $record The record that is going to be saved.
      * @return false
      */
-    public function needsUpdate()
+    public function needsUpdate($record)
     {
         return false;
     }

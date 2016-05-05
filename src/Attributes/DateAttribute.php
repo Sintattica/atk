@@ -461,24 +461,30 @@ class DateAttribute extends Attribute
      * */
     protected function renderDay($fieldname, $str_script, $current, $format, $obligatory, $weekdayFormat)
     {
+        $c_mon = isset($current['mon'])?$current['mon']:null;
+        $c_year = isset($current['year'])?$current['year']:null;
+        $c_dmin = isset($current['d_min'])?$current['d_min']:null;
+        $c_dmax = isset($current['d_max'])?$current['d_max']:null;
+        $c_mday = isset($current['mday'])?$current['mday']:null;
+
         $result = '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
         if (!$this->m_simplemode) {
-            for ($j = $current['d_min']; $j <= $current['d_max']; ++$j) {
-                $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $current['mon'], $j, $current['year']));
-                if (($current['year'] != '') && ($current['mon'] != '')) {
+            for ($j = $c_dmin; $j <= $c_dmax; ++$j) {
+                $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $c_mon, $j, $c_year));
+                if (($c_year != '') && ($c_mon != '')) {
                     $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $format : "$weekdayFormat {$format}"),
                         !$this->hasFlag(self::AF_DATE_EDIT_NO_DAY));
                 } else {
                     $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $format : "$weekdayFormat {$format}"), 0);
                 }
-                $result .= '<option value="'.$j.'" '.($current !== null && $j == $current['mday'] ? 'selected' : '').'>'.$str_day.'</option>';
+                $result .= '<option value="'.$j.'" '.($current !== null && $j == $c_mday ? 'selected' : '').'>'.$str_day.'</option>';
             }
         } else {
             for ($j = 1; $j <= 31; ++$j) {
-                $result .= '<option value="'.$j.'" '.($current !== null && $j == $current['mday'] ? 'selected' : '').'>'.sprintf('%02d', $j).'</option>';
+                $result .= '<option value="'.$j.'" '.($current !== null && $j == $c_mday ? 'selected' : '').'>'.sprintf('%02d', $j).'</option>';
             }
         }
         $result .= '</select>';
