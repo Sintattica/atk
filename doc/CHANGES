@@ -15,7 +15,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
-
++ Session keepalive with ajax calls (see: $config_session_autorefresh) [michele]
+* Minor fixings [luca]
 
 Changes in ATK 8.2.5 (2016-04-14)
 ---------------------------------

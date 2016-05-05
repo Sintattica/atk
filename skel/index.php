@@ -27,6 +27,13 @@
 $config_atkroot = "./";
 include_once("atk.inc");
 atksession();
+
+// check autorefresh call
+if(atkConfig::getGlobal('session_autorefresh') && array_key_exists(atkConfig::getGlobal('session_autorefresh_key'), $_GET)) {
+    die(session_id());
+}
+
+
 atksecure();
 
 $theme = &atkinstance('atk.ui.atktheme');
