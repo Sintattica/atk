@@ -149,16 +149,17 @@ class PasswordAttribute extends Attribute
     public function edit($record, $fieldprefix, $mode)
     {
         $id = $fieldprefix.$this->fieldName();
+        $cssClass = $this->getCSSClassAttribute(array('form-control'));
 
         if ($mode != 'edit' && $mode != 'update') {
             /* insert */
             if (!$this->m_generate) {
                 $result = Tools::atktext('password_new',
-                        'atk').':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext('password_again',
-                        'atk').':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
+                        'atk').':<br>'.'<input autocomplete="off" '.$cssClass.' type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext('password_again',
+                        'atk').':<br>'.'<input autocomplete="off" '.$cssClass.' type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
             } else {
                 $password = $this->generatePassword(8, true);
-                $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.' value ="'.$password.'">'.'<input type="text" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
+                $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.' value ="'.$password.'" '.$cssClass.'>'.'<input type="text" '.$cssClass.' id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
             }
         } else {
             /* edit */
@@ -167,11 +168,11 @@ class PasswordAttribute extends Attribute
 
             if (!$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE)) {
                 $result .= Tools::atktext('password_current',
-                        'atk').':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[current]" name="'.$id.'[current]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
+                        'atk').':<br>'.'<input autocomplete="off" type="password" '.$cssClass.' id="'.$id.'[current]" name="'.$id.'[current]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
             }
             $result .= Tools::atktext('password_new',
-                    'atk').':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext('password_again',
-                    'atk').':<br>'.'<input autocomplete="off" type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
+                    'atk').':<br>'.'<input autocomplete="off" type="password" '.$cssClass.' id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext('password_again',
+                    'atk').':<br>'.'<input autocomplete="off" type="password" '.$cssClass.' id="'.$id.'[again]" name="'.$id.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
         }
 
         return $result;
