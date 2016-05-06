@@ -49,7 +49,6 @@ class Atk
         if (Config::getGlobal('debug') > 0) {
             ini_set('display_errors', 1);
         }
-
         if (Config::getGlobal('use_atkerrorhandler', true)) {
             set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
             error_reporting(E_ALL);
@@ -65,9 +64,14 @@ class Atk
         if ($locale) {
             setlocale(LC_TIME, $locale);
         }
+        
+        $debug = 'Created a new Atk ('.self::VERSION.') instance.';
+        $debug .= ' Environment: '.$environment.'.';
 
-        $debug = 'Created a new Atk ('.self::VERSION.') instance: Server info: '.$_SERVER['SERVER_NAME'].' ('.$_SERVER['SERVER_ADDR'].')';
-        $debug .= ' Environment: '.$environment;
+        if(isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
+            $debug .= ' Server info: '.$_SERVER['SERVER_NAME'].' ('.$_SERVER['SERVER_ADDR'].')';
+        }
+
 
         Tools::atkdebug($debug);
 
