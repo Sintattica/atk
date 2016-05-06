@@ -186,7 +186,7 @@ class Tools
      */
     public static function atkhalt($msg, $level = 'warning')
     {
-        if ($level == $GLOBALS['config_halt_on_error'] || $level == 'critical') {
+        if ($level == Config::getGlobal('halt_on_error') || $level == 'critical') {
             if ($level == 'warning') {
                 $level_color = '#0000ff';
             } else {
