@@ -19,6 +19,7 @@ class SwitchAttribute extends BoolAttribute
         $defaultOptions = array(
             'offText' => mb_strtoupper($this->text('no'), 'UTF-8'),
             'onText' => mb_strtoupper($this->text('yes'), 'UTF-8'),
+            'size' => 'small'
         );
         $this->switchOptions = array_merge($defaultOptions, $switchOptions);
         parent::__construct($name, $flags);
@@ -66,22 +67,5 @@ class SwitchAttribute extends BoolAttribute
         }
 
         return $result;
-    }
-
-    public function display($record, $mode)
-    {
-        $this->registerScriptsAndStyles('');
-
-        $id = $this->getHtmlId('');
-
-        if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
-            return '
-    		  <div align="left">
-    		    <input type="checkbox" id="'.$id.'" disabled="disabled" '.($record[$this->fieldName()] ? 'checked="checked"' : '').' />
-    		  </div>
-    		';
-        } else {
-            return $this->text($record[$this->fieldName()] ? 'yes' : 'no');
-        }
     }
 }
