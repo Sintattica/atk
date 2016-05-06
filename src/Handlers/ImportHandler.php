@@ -874,7 +874,7 @@ class ImportHandler extends ActionHandler
      *
      * @return Attribute|Relation object         instance of the attribute
      */
-    public function &getUsableAttribute($name)
+    public function getUsableAttribute($name)
     {
         if (array_key_exists($name, $this->m_importNode->m_attribList)) {
             return $this->m_importNode->getAttribute($name);

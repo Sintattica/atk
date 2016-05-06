@@ -42,7 +42,7 @@ class Output
      *
      * @return Output The instance.
      */
-    public static function &getInstance()
+    public static function getInstance()
     {
         static $s_instance = null;
         if ($s_instance == null) {

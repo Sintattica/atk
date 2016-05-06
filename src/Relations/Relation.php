@@ -138,7 +138,7 @@ class Relation extends Attribute
      *
      * @return object descriptor handler
      */
-    public function &getDescriptorHandler()
+    public function getDescriptorHandler()
     {
         return $this->m_descHandler;
     }
@@ -148,9 +148,9 @@ class Relation extends Attribute
      *
      * @param object $handler The descriptor handler.
      */
-    public function setDescriptorHandler(&$handler)
+    public function setDescriptorHandler($handler)
     {
-        $this->m_descHandler = &$handler;
+        $this->m_descHandler = $handler;
     }
 
     /**
@@ -359,7 +359,7 @@ class Relation extends Attribute
      * @return Node The node that this relation points to, or
      *              NULL if the destination is not valid.
      */
-    public function &getDestination()
+    public function getDestination()
     {
         if ($this->createDestination()) {
             return $this->m_destInstance;

@@ -609,7 +609,7 @@ class Attribute
      *
      * @return Node owner instance
      */
-    public function &getOwnerInstance()
+    public function getOwnerInstance()
     {
         return $this->m_ownerInstance;
     }
@@ -619,9 +619,9 @@ class Attribute
      *
      * @param Node $instance
      */
-    public function setOwnerInstance(&$instance)
+    public function setOwnerInstance($instance)
     {
-        $this->m_ownerInstance = &$instance;
+        $this->m_ownerInstance = $instance;
     }
 
     /**

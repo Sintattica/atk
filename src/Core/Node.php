@@ -1044,11 +1044,11 @@ class Node
      *
      * @return Attribute The attribute.
      */
-    public function &getAttribute($name)
+    public function getAttribute($name)
     {
-        $returnValue = isset($this->m_attribList[$name]) ? $this->m_attribList[$name] : null;
+        $ret = isset($this->m_attribList[$name]) ? $this->m_attribList[$name] : null;
 
-        return $returnValue;
+        return $ret;
     }
 
     /**
@@ -1059,7 +1059,7 @@ class Node
      *
      * @return boolean.
      */
-    public function &filledInForm()
+    public function filledInForm()
     {
         if (is_null($this->getAttributes())) {
             return false;
@@ -2944,7 +2944,7 @@ class Node
      *
      * @return Page The page instance.
      */
-    public function &getPage()
+    public function getPage()
     {
         $page = Page::getInstance();
 
@@ -3075,7 +3075,7 @@ class Node
      *
      * @return object descriptor handler
      */
-    public function &getDescriptorHandler()
+    public function getDescriptorHandler()
     {
         return $this->m_descHandler;
     }
@@ -3085,9 +3085,9 @@ class Node
      *
      * @param object $handler The descriptor handler.
      */
-    public function setDescriptorHandler(&$handler)
+    public function setDescriptorHandler($handler)
     {
-        $this->m_descHandler = &$handler;
+        $this->m_descHandler = $handler;
     }
 
     /**
@@ -4675,7 +4675,7 @@ class Node
      *
      * @return ColumnConfig
      */
-    public function &getColumnConfig($id = null, $forceNew = false)
+    public function getColumnConfig($id = null, $forceNew = false)
     {
         $columnConfig = ColumnConfig::getConfig($this, $id, $forceNew);
 

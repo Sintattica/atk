@@ -183,7 +183,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &addField($name, $value = '', $table = '', $fieldaliasprefix = '', $quote = true, $quotefield = false)
+    public function addField($name, $value = '', $table = '', $fieldaliasprefix = '', $quote = true, $quotefield = false)
     {
         if ($table != '') {
             $fieldname = $table.'.'.$name;
@@ -264,7 +264,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &addExpression($fieldName, $expression, $fieldAliasPrefix = '', $quoteFieldName = false)
+    public function addExpression($fieldName, $expression, $fieldAliasPrefix = '', $quoteFieldName = false)
     {
         if ($quoteFieldName) {
             $this->m_quotedfields[] = $fieldName;
@@ -305,7 +305,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &addTable($name, $alias = '')
+    public function addTable($name, $alias = '')
     {
         $this->m_tables[] = $name;
         $this->m_aliases[count($this->m_tables) - 1] = $alias;
@@ -323,7 +323,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &addJoin($table, $alias, $condition, $outer = false)
+    public function addJoin($table, $alias, $condition, $outer = false)
     {
         $join = ' '.($outer ? 'LEFT JOIN ' : 'JOIN ').$this->quoteField($table).' '.$this->quoteField($alias).' ON ('.$condition.') ';
         if (!in_array($join, $this->m_joins)) {
@@ -340,7 +340,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &addGroupBy($element)
+    public function addGroupBy($element)
     {
         $this->m_groupbys[] = $element;
 
@@ -354,7 +354,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &addOrderBy($element)
+    public function addOrderBy($element)
     {
         $this->m_orderbys[] = $element;
 
@@ -400,7 +400,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &addSearchCondition($condition)
+    public function addSearchCondition($condition)
     {
         if ($condition != '') {
             $this->m_searchconditions[] = $condition;
@@ -419,7 +419,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &setDistinct($distinct)
+    public function setDistinct($distinct)
     {
         $this->m_distinct = $distinct;
 
@@ -434,7 +434,7 @@ class Query
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function &setLimit($offset, $limit)
+    public function setLimit($offset, $limit)
     {
         $this->m_offset = $offset;
         $this->m_limit = $limit;
@@ -931,7 +931,7 @@ class Query
      *
      * @return Query A Query object for the appropriate database
      */
-    public function &create($basepath = 'atk.db.')
+    public function create($basepath = 'atk.db.')
     {
         $dbconfig = Config::getGlobal('db');
         $class = $dbconfig['default']['driver'].'Query';

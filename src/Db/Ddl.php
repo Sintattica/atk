@@ -55,7 +55,7 @@ class Ddl
      *
      * @return Ddl instance of db specific DDL driver
      */
-    public static function &create($database = null)
+    public static function create($database = null)
     {
         $db = Config::getGlobal('db');
         $database = $database === null ? $db['default']['driver'] : $database;

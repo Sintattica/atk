@@ -34,7 +34,7 @@ class Ui
      *
      * @return Ui
      */
-    public static function &getInstance()
+    public static function getInstance()
     {
         static $s_instance = null;
 

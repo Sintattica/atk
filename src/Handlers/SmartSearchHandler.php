@@ -314,7 +314,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      *
      * @return Node next node
      */
-    public function &addNodeAndAttrEntry(&$path, $node, $attrName, &$includeSelf, &$excludes)
+    public function addNodeAndAttrEntry(&$path, $node, $attrName, &$includeSelf, &$excludes)
     {
         $attr = $node->getAttribute($attrName);
 

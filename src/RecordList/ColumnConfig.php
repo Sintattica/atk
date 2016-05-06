@@ -48,7 +48,7 @@ class ColumnConfig
      *
      * @return Node The node
      */
-    public function &getNode()
+    public function getNode()
     {
         return $this->m_node;
     }

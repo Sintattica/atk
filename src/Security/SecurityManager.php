@@ -41,7 +41,7 @@ class SecurityManager
      */
     protected $m_enablepasswordmailer = false;
 
-    public static function &getInstance()
+    public static function getInstance()
     {
         static $s_instance = null;
         if ($s_instance == null) {

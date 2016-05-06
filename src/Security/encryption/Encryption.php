@@ -26,7 +26,7 @@ class Encryption
      *
      * @return Encryption the node with which to encrypt or decrypt your data
      */
-    public function &getEncryption($type = '')
+    public function getEncryption($type = '')
     {
         if ($type == '') {
             $type = Config::getGlobal('encryption_defaultmethod');

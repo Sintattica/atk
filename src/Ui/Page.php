@@ -109,7 +109,7 @@ class Page
      *
      * @return Page
      */
-    public static function &getInstance()
+    public static function getInstance()
     {
         static $s_page = null;
         if ($s_page == null) {

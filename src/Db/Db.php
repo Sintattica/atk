@@ -1199,7 +1199,7 @@ class Db
      *
      * @return Query Query class.
      */
-    public function &createQuery()
+    public function createQuery()
     {
         $class = __NAMESPACE__.'\\'.$this->m_type.'Query';
         $query = new $class();
@@ -1278,9 +1278,9 @@ class Db
     /**
      * Create an atkDdl object for constructing ddl queries.
      *
-     * @return atkDdl Ddl object
+     * @return Ddl Ddl object
      */
-    public function &createDdl()
+    public function createDdl()
     {
         $ddl = Ddl::create($this->m_type);
         $ddl->m_db = &$this;
@@ -1294,7 +1294,7 @@ class Db
      * @param string $mode
      * @return Db
      */
-    public static function &newInstance($conn, $mode = 'rw')
+    public static function newInstance($conn, $mode = 'rw')
     {
         // Resolve any potential aliases
         $conn = self::getTranslatedDatabaseName($conn);
@@ -1323,7 +1323,7 @@ class Db
      *
      * @return Db Instance of the database class.
      */
-    public static function &getInstance($conn = 'default', $reset = false, $mode = 'rw')
+    public static function getInstance($conn = 'default', $reset = false, $mode = 'rw')
     {
         static $s_dbInstances = null;
         if ($s_dbInstances == null) {
