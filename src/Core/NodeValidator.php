@@ -209,7 +209,7 @@ class NodeValidator
             foreach ($uniqueFieldSet as $field) {
                 $attrib = $this->m_nodeObj->m_attribList[$field];
                 if ($attrib) {
-                    $attribs[] = &$attrib;
+                    $attribs[] = $attrib;
 
                     if (is_a($attrib, 'ManyToOneRelation') && count($attrib->m_refKey) > 1) {
                         $attrib->createDestination();
