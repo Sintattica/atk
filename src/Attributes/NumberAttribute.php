@@ -25,7 +25,7 @@ class NumberAttribute extends Attribute
     public $m_thousandsseparator;
     public $m_trailingzeros = false; // Show trailing zeros
 
-    protected $touchspin = false;
+    protected $touchspin;
 
     // ids of separators in atk language file
     const SEPARATOR_DECIMAL = 'decimal_separator';
@@ -562,7 +562,6 @@ class NumberAttribute extends Attribute
             $base = Config::getGlobal('assets_url') . 'lib/bootstrap-touchspin/';
             $page->register_script($base . 'jquery.bootstrap-touchspin.min.js');
             $page->register_style($base . 'jquery.bootstrap-touchspin.min.css');
-            $page->register_style($base . 'touchspin.customization.css');
             $opts = json_encode($this->touchspin);
             $page->register_loadscript("
                 jQuery(function($){
