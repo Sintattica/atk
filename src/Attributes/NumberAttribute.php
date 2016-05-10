@@ -2,9 +2,11 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * The NumberAttribute can be used for numeric values.
@@ -22,6 +24,8 @@ class NumberAttribute extends Attribute
     public $m_decimalseparator;
     public $m_thousandsseparator;
     public $m_trailingzeros = false; // Show trailing zeros
+
+    protected $touchspin;
 
     // ids of separators in atk language file
     const SEPARATOR_DECIMAL = 'decimal_separator';
@@ -496,6 +500,24 @@ class NumberAttribute extends Attribute
     }
 
     /**
+     * See http://www.virtuosoft.eu/code/bootstrap-touchspin/
+     * @param array $options
+     */
+    public function enableTouchspin($options = [])
+    {
+        if ($this->m_decimals) {
+            $options['decimals'] = $this->m_decimals;
+        }
+        if ($this->m_minvalue) {
+            $options['min'] = $this->m_minvalue;
+        }
+        if ($this->m_maxvalue) {
+            $options['max'] = $this->m_maxvalue;
+        }
+        $this->touchspin = $options;
+    }
+
+    /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      *
@@ -534,6 +556,18 @@ class NumberAttribute extends Attribute
         $id = $fieldprefix.$this->fieldName();
         $class = $this->getCSSClassAttribute(['form-control']);
         $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
+
+        if (is_array($this->touchspin)) {
+            $page = Page::getInstance();
+            $base = Config::getGlobal('assets_url') . 'lib/bootstrap-touchspin/';
+            $page->register_script($base . 'jquery.bootstrap-touchspin.min.js');
+            $page->register_style($base . 'jquery.bootstrap-touchspin.min.css');
+            $opts = json_encode($this->touchspin);
+            $page->register_loadscript("
+                jQuery(function($){
+                    $('#$id').TouchSpin($opts);
+                });");
+        }
 
         return $result;
     }
