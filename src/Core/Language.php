@@ -564,10 +564,12 @@ class Language
      */
     protected function _getStringFromFile($key, $module, $lng)
     {
-        $this->_includeLanguage($module, $lng);
+        if (isset($key)) {
+            $this->_includeLanguage($module, $lng);
 
-        if (isset($this->m_cachedlang[$module]) && is_array($this->m_cachedlang[$module][$lng]) && isset($this->m_cachedlang[$module][$lng][$key])) {
-            return $this->m_cachedlang[$module][$lng][$key];
+            if (isset($this->m_cachedlang[$module]) && is_array($this->m_cachedlang[$module][$lng]) && isset($this->m_cachedlang[$module][$lng][$key])) {
+                return $this->m_cachedlang[$module][$lng][$key];
+            }
         }
 
         return '';

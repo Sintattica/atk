@@ -18,7 +18,7 @@ class TreeToolsTree
     public function addNode($id, $naam, $parent = 0, $img = '')
     {
         $n = new TreeToolsNode($id, $naam, $img);
-        $this->m_allnodes[$id] = &$n;
+        $this->m_allnodes[$id] = $n;
 
         if (array_key_exists($id, $this->m_parentless) && is_array($this->m_parentless[$id])) {
             // In the parentless array, there are children that belong to this new record.
@@ -27,14 +27,14 @@ class TreeToolsTree
         }
 
         if (empty($parent)) {
-            $this->m_tree[] = &$n;
+            $this->m_tree[] = $n;
         } else {
             $tmp = $this->m_allnodes[$parent];
             if (is_object($tmp)) {
-                $tmp->m_sub[] = &$n;
+                $tmp->m_sub[] = $n;
             } else {
                 // Dangling thingee.
-                $this->m_parentless[$parent][] = &$n;
+                $this->m_parentless[$parent][] = $n;
             }
         }
     }

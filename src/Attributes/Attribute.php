@@ -1076,7 +1076,7 @@ class Attribute
     public function addToViewArray($mode, &$arr, &$defaults)
     {
         if (!$this->hasFlag(self::AF_HIDE_VIEW)) {
-            $entry = array('name' => $this->m_name, 'attribute' => &$this);
+            $entry = array('name' => $this->m_name, 'attribute' => $this);
 
             /* label? */
             $entry['label'] = $this->getLabel();
@@ -1564,7 +1564,7 @@ class Attribute
         $searchMode = $this->getSearchMode();
         // Set current searchmode to first searchmode if not searching in extended form or no searchmode is set
         if (!$extended || empty($searchMode) || !in_array($searchMode, $searchModes)) {
-            $searchMode = $searchModes[0];
+            $searchMode = isset($searchModes[0])?$searchModes[0]:null;
         }
 
         if ($extended && count($searchModes) > 1) {
@@ -1594,7 +1594,7 @@ class Attribute
         $searchmode = $this->m_ownerInstance->getSearchMode();
 
         if (is_array($searchmode)) {
-            return $searchmode[$this->fieldName()];
+            return isset($searchmode[$this->fieldName()])?$searchmode[$this->fieldName()]:null;
         }
 
         return $searchmode;
@@ -1612,7 +1612,7 @@ class Attribute
      * @param mixed $value The value the user has entered in the searchbox.
      * @param string $mode The searchmode to use.
      */
-    public function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)
     {
         // default implementation doesn't supported nested paths, this method
         // should be overriden by relations etc. if they want to support this
@@ -1635,9 +1635,9 @@ class Attribute
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
      */
-    public function searchCondition(&$query, $table, $value, $searchmode)
+    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-        $searchCondition = $this->getSearchCondition($query, $table, $value, $searchmode);
+        $searchCondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
         if ($searchCondition) {
             $query->addSearchCondition($searchCondition);
         }
@@ -2479,7 +2479,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $extended = true)
+    public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
         $field = array();
         $defaults = $record;
@@ -2507,7 +2507,7 @@ class Attribute
         return $this;
     }
 
-    public function addToStatsformFields(&$fields, &$node, &$record, $fieldprefix = '')
+    public function addToStatsformFields(&$fields, $node, &$record, $fieldprefix = '')
     {
         $field = array();
         $defaults = $record;
@@ -2576,7 +2576,7 @@ class Attribute
      *
      * @return string HTML
      */
-    public function extendedSort(&$columnConfig, $fieldprefix = '', $grid = null)
+    public function extendedSort($columnConfig, $fieldprefix = '', $grid = null)
     {
         $result = $this->sortOptions($columnConfig, $fieldprefix, $grid).' '.$this->sortOrder($columnConfig, $fieldprefix, $grid);
 
@@ -2595,7 +2595,7 @@ class Attribute
      *
      * @return string HTML
      */
-    public function sortOptions(&$columnConfig, $fieldprefix = '', $grid = null)
+    public function sortOptions($columnConfig, $fieldprefix = '', $grid = null)
     {
         if (!$this->hasFlag(self::AF_TOTAL) && $columnConfig->totalizable()) {
             // if we are not the sumcolumn itself, but there are totalcolumns present, we can perform subtotalling
@@ -2625,7 +2625,7 @@ class Attribute
      *
      * @return string HTML
      */
-    public function sortOrder(&$columnConfig, $fieldprefix = '', $grid = null)
+    public function sortOrder($columnConfig, $fieldprefix = '', $grid = null)
     {
         $fieldname = $this->fieldName();
         $currentOrder = $columnConfig->getOrder($fieldname);
@@ -2663,7 +2663,7 @@ class Attribute
      *
      * @return string Returns sort order ASC or DESC
      */
-    public function listHeaderSortOrder(ColumnConfig &$columnConfig)
+    public function listHeaderSortOrder(ColumnConfig $columnConfig)
     {
         $order = $this->fieldName();
 

@@ -319,7 +319,7 @@ class OneToOneRelation extends Relation
     /**
      * Initialize this destinations attribute sizes.
      */
-    public function fetchMeta()
+    public function fetchMeta($metadata)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE)) {
             $this->createDestination();
@@ -373,7 +373,7 @@ class OneToOneRelation extends Relation
      *             self::POSTSTORE  when in master mode.
      *             self::PRESTORE|self::ADDTOQUERY when in slave mode.
      */
-    public function storageType($mode)
+    public function storageType($mode = null)
     {
         // Mode specific storage type.
         if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null) {
@@ -443,7 +443,7 @@ class OneToOneRelation extends Relation
      *
      * @return bool true if store was successful, false otherwise.
      */
-    public function store(&$db, &$record, $mode)
+    public function store($db, &$record, $mode)
     {
         if ($this->createDestination()) {
             $vars = $this->_getStoreValue($record);
@@ -1123,7 +1123,7 @@ class OneToOneRelation extends Relation
      *
      * @return string condition the condition that can be pasted into the query
      */
-    public function getJoinCondition(&$query, $tablename = '', $fieldalias = '')
+    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
     {
         $condition = $this->m_ownerInstance->m_table.'.'.$this->fieldName();
         $condition .= '=';
@@ -1133,7 +1133,7 @@ class OneToOneRelation extends Relation
     }
 
 
-    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $extended = true)
+    public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $prefix = $fieldprefix.$this->fieldName().'_AE_';

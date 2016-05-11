@@ -206,8 +206,10 @@ class FileAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
+        $result = '';
+
         // When in add mode or we have errors, don't show the filename above the input.
-        if ($mode != 'add' && $record[$this->fieldName()]['error'] == 0) {
+        if (!($mode == 'add' || empty($record[$this->fieldName()]['error']))) {
             if (method_exists($this->getOwnerInstance(), $this->fieldName().'_display')) {
                 $method = $this->fieldName().'_display';
                 $result = $this->m_ownerInstance->$method($record, 'view');
@@ -224,8 +226,8 @@ class FileAttribute extends Attribute
 
         $id = $fieldprefix.$this->fieldName();
 
-        if ($result != '') {
-            $result .= '<br>';
+        if (isset($record[$this->fieldName()]['orgfilename'])) {
+            $result .= '<br />';
             $result .= '<input type="hidden" name="'.$id.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
         }
 
@@ -586,7 +588,7 @@ class FileAttribute extends Attribute
             // if an error occured during the upload process
             // and the error is not 'no file' while the field isn't obligatory or a file was already selected
             $fileselected = isset($rec[$this->fieldName()]['select']) && $rec[$this->fieldName()]['select'] != '';
-            if ($_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE)) {
+            if (isset($_FILES[$postfiles_basename]) && $_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE)) {
                 return array(
                     'filename' => $_FILES[$this->fieldName()]['name'],
                     'error' => $_FILES[$this->fieldName()]['error'],

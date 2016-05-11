@@ -24,10 +24,10 @@ class Totalizer
      *
      * @return Totalizer
      */
-    public function __construct(&$node, &$columnConfig)
+    public function __construct($node, $columnConfig)
     {
-        $this->m_node = &$node;
-        $this->m_columnConfig = &$columnConfig;
+        $this->m_node = $node;
+        $this->m_columnConfig = $columnConfig;
     }
 
     /**

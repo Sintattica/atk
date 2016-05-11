@@ -157,12 +157,12 @@ class BoolAttribute extends Attribute
         $result = '<select name="'.$this->getSearchFieldName($fieldprefix).'" class="form-control">';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         $result .= '<option value="0" ';
-        if ($record[$this->fieldName()] === '0' && !empty($record)) {
+        if (!empty($record[$this->fieldName()]) && $record[$this->fieldName()] === '0') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('no', 'atk').'</option>';
         $result .= '<option value="1" ';
-        if ($record[$this->fieldName()] === '1') {
+        if (!empty($record[$this->fieldName()]) && $record[$this->fieldName()] === '1') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('yes', 'atk').'</option>';

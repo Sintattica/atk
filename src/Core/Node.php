@@ -908,7 +908,7 @@ class Node
         }
 
         // Order the tablist
-        $this->m_attribList[$attribute->fieldName()] = &$attribute;
+        $this->m_attribList[$attribute->fieldName()] = $attribute;
         $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
         $attribute->setSections($this->m_attribIndexList[$attribute->m_index]['sections']);
         $attribute->setColumn($column);
@@ -1448,7 +1448,7 @@ class Node
      */
     public function getTabs($action)
     {
-        $list = $this->m_tabList[$action];
+        $list = isset($this->m_tabList[$action])?$this->m_tabList[$action]:null;
         $disable = $this->checkTabRights($list);
 
         if (!is_array($list)) {
@@ -2154,7 +2154,7 @@ class Node
 
                     if ($attribname != '') {
                         if (isset($this->m_attribList[$attribname])) {
-                            $p_attrib = &$this->m_attribList[$attribname];
+                            $p_attrib = $this->m_attribList[$attribname];
                             if (is_object($p_attrib) && (!$p_attrib->hasFlag($p_attrib::AF_NO_FILTER))) {
                                 $p_attrib->m_flags |= $p_attrib::AF_READONLY | $p_attrib::AF_HIDE_ADD;
                             }
@@ -2187,7 +2187,7 @@ class Node
 
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]['name'];
-            $p_attrib = &$this->m_attribList[$attribname];
+            $p_attrib = $this->m_attribList[$attribname];
 
             if ($p_attrib) {
                 if ($p_attrib->hasDisabledMode($p_attrib::DISABLED_EDIT)) {
@@ -3289,7 +3289,7 @@ class Node
     public function updateDb(&$record, $exectrigger = true, $excludes = '', $includes = '')
     {
         $db = $this->getDb();
-        $query = &$db->createQuery();
+        $query = $db->createQuery();
 
         $query->addTable($this->m_table);
 
@@ -3511,7 +3511,7 @@ class Node
      * @param string $mode The mode we're in
      * @param array $includes List of fields that should be included
      */
-    public function addToQuery(&$query, $alias = '', $level = 0, $allfields = false, $mode = 'select', $includes = array())
+    public function addToQuery($query, $alias = '', $level = 0, $allfields = false, $mode = 'select', $includes = array())
     {
         if ($level >= 4) {
             return;
@@ -3571,7 +3571,7 @@ class Node
      *
      * @return string The search condition
      */
-    public function getSearchCondition(&$query, $table, $alias, $value, $searchmode)
+    public function getSearchCondition($query, $table, $alias, $value, $searchmode)
     {
         $usefieldalias = false;
 
@@ -3657,15 +3657,15 @@ class Node
             }
         }
 
-        $db = &$this->getDb();
-        $query = &$db->createQuery();
+        $db = $this->getDb();
+        $query = $db->createQuery();
 
         $storelist = array('pre' => array(), 'post' => array(), 'query' => array());
 
         $query->addTable($this->m_table);
 
         foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = &$this->m_attribList[$attribname];
+            $p_attrib = $this->m_attribList[$attribname];
             if (!Tools::atk_in_array($attribname, $excludelist) && ($mode != 'add' || $p_attrib->needsInsert($record))) {
                 $storemode = $p_attrib->storageType($mode);
                 if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
@@ -3685,7 +3685,7 @@ class Node
         }
 
         for ($i = 0, $_i = count($storelist['query']); $i < $_i; ++$i) {
-            $p_attrib = &$this->m_attribList[$storelist['query'][$i]];
+            $p_attrib = $this->m_attribList[$storelist['query'][$i]];
             $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'add'); // start at level 1
         }
 
@@ -4626,15 +4626,15 @@ class Node
      *
      * @param ActionListener $listener
      */
-    public function addListener(&$listener)
+    public function addListener($listener)
     {
         $listener->setNode($this);
 
         if (is_a($listener, 'ActionListener')) {
-            $this->m_actionListeners[] = &$listener;
+            $this->m_actionListeners[] = $listener;
         } else {
             if (is_a($listener, 'TriggerListener')) {
-                $this->m_triggerListeners[] = &$listener;
+                $this->m_triggerListeners[] = $listener;
             } else {
                 Tools::atkdebug('self::addListener: Unknown listener base class '.get_class($listener));
             }

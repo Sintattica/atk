@@ -11,7 +11,7 @@
         {/foreach}
     </div>
 {/if}
-<div>{$header}</div>
+{if isset($header)}<div>{$header}</div>{/if}
 {$formstart}
 <div> <!-- div added to enable nested forms -->
     <div id="action-content">

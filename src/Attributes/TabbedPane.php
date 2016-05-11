@@ -466,13 +466,12 @@ class TabbedPane extends Attribute
      * Determine the load type of this attribute.
      *
      * @param string $mode The type of load (view,admin,edit etc)
-     * @param bool $searching
      *
      * @return int NOLOAD     - nor load(), nor addtoquery() should be
      *             called (attribute can not be loaded from the
      *             database)
      */
-    public function loadType($mode, $searching = false)
+    public function loadType($mode)
     {
         return self::NOLOAD;
     }
@@ -486,7 +485,7 @@ class TabbedPane extends Attribute
      *             called (attribute can not be stored in the
      *             database)
      */
-    public function storageType($mode)
+    public function storageType($mode = null)
     {
         return self::NOSTORE;
     }

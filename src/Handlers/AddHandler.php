@@ -127,9 +127,9 @@ class AddHandler extends ActionHandler
      *
      * @param object $object An object that implements the getFormButtons() method
      */
-    public function setButtonSource(&$object)
+    public function setButtonSource($object)
     {
-        $this->m_buttonsource = &$object;
+        $this->m_buttonsource = $object;
     }
 
     /**

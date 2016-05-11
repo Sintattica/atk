@@ -38,7 +38,7 @@ class CsvRecordList extends CustomRecordList
      * @param bool $decode Should data be decoded or not (for exports)
      */
     public function render(
-        &$node,
+        $node,
         $recordset,
         $compression = '',
         $suppressList = '',

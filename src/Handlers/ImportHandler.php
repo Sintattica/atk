@@ -71,7 +71,7 @@ class ImportHandler extends ActionHandler
      *
      * @see setImportNode
      */
-    public function setNode(&$node)
+    public function setNode($node)
     {
         parent::setNode($node);
         $this->setImportNode($node);
@@ -86,9 +86,9 @@ class ImportHandler extends ActionHandler
      *
      * @see setNode
      */
-    public function setImportNode(&$node)
+    public function setImportNode($node)
     {
-        $this->m_importNode = &$node;
+        $this->m_importNode = $node;
     }
 
     /**
@@ -734,7 +734,7 @@ class ImportHandler extends ActionHandler
             if ($this->integrateAttribute($attrib)) {
                 $attrib->createDestination();
                 foreach (array_keys($attrib->m_destInstance->m_attribList) as $relattribname) {
-                    $relattrib = &$attrib->m_destInstance->getAttribute($relattribname);
+                    $relattrib = $attrib->m_destInstance->getAttribute($relattribname);
 
                     if ($this->_usableForImport($obligatoryOnly, $relattrib)) {
                         $attrs[] = $relattribname;
@@ -758,7 +758,7 @@ class ImportHandler extends ActionHandler
      *
      * @return bool Wether or not the attribute is usable for import
      */
-    public function _usableForImport($obligatoryOnly, &$attrib)
+    public function _usableForImport($obligatoryOnly, $attrib)
     {
         return (!$obligatoryOnly || $this->isObligatory($attrib)) && !$attrib->hasFlag(Attribute::AF_AUTOINCREMENT) && !$this->isHide($attrib) && !is_a($attrib,
             'DummyAttribute');

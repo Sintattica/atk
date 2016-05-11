@@ -17,7 +17,7 @@
 /**
  * Smarty string resource for parsing strings as template.
  */
-function smarty_resource_string_source($tpl_name, &$tpl_source, &$smarty)
+function smarty_resource_string_source($tpl_name, &$tpl_source, $smarty)
 {
     $tpl_source = $tpl_name;
 
@@ -29,7 +29,7 @@ function smarty_resource_string_source($tpl_name, &$tpl_source, &$smarty)
  *
  * @todo make string resource use timestamp feature
  */
-function smarty_resource_string_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
+function smarty_resource_string_timestamp($tpl_name, &$tpl_timestamp, $smarty)
 {
     $tpl_timestamp = 1000;
 
@@ -41,7 +41,7 @@ function smarty_resource_string_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
  *
  * @todo make this useful
  */
-function smarty_resource_string_secure($tpl_name, &$smarty)
+function smarty_resource_string_secure($tpl_name, $smarty)
 {
     // assume all templates are secure
     return true;
@@ -52,7 +52,7 @@ function smarty_resource_string_secure($tpl_name, &$smarty)
  *
  * @todo make this useful
  */
-function smarty_resource_string_trusted($tpl_name, &$smarty)
+function smarty_resource_string_trusted($tpl_name, $smarty)
 {
     // not used for templates
     return true;

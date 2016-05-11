@@ -756,7 +756,7 @@ class ManyToManyRelation extends Relation
 
         for ($i = 0; $i < count($recordset); ++$i) {
             $pk = $recordset[$i][$pkfield];
-            if (Tools::atk_in_array($pk, $record[$this->fieldName()])) {
+            if (!empty($record[$this->fieldName()]) && Tools::atk_in_array($pk, $record[$this->fieldName()])) {
                 $sel = ' selected="selected"';
             } else {
                 $sel = '';
@@ -780,7 +780,7 @@ class ManyToManyRelation extends Relation
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    public function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
         $ownerFields = $this->getOwnerFields();
 

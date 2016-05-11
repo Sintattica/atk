@@ -49,7 +49,7 @@ class ProfileAttribute extends Attribute
      *
      * @return array Array with loaded values
      */
-    public function load(&$db, $record)
+    public function load($db, $record)
     {
         $query = 'SELECT *
                 FROM '.Config::getGlobal('auth_accesstable').'
@@ -72,7 +72,7 @@ class ProfileAttribute extends Attribute
      *
      * @return array
      */
-    public function getChildGroups(&$db, $id)
+    public function getChildGroups($db, $id)
     {
         $result = array();
         if (!is_numeric($id)) {
@@ -99,7 +99,7 @@ class ProfileAttribute extends Attribute
      *
      * @return bool True if succesfull, false if not
      */
-    public function store(&$db, $record, $mode)
+    public function store($db, $record, $mode)
     {
 
         // Read the current actions available/editable and user rights before changing them
@@ -648,7 +648,7 @@ class ProfileAttribute extends Attribute
      *
      * @param Page $page
      */
-    public function _restoreDivStates(&$page)
+    public function _restoreDivStates($page)
     {
         $postvars = $this->m_ownerInstance->m_postvars;
         if (!isset($postvars['divstate']) || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0) {

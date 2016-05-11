@@ -119,7 +119,7 @@ class AuthInterface
      *
      * @return bool True if the user has the privilege, false if not.
      */
-    public function allowed(&$securityMgr, $node, $privilege)
+    public function allowed($securityMgr, $node, $privilege)
     {
         // security disabled or user is superuser? (may do anything)
         if (($securityMgr->m_scheme == 'none') || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user['name']) == 'administrator')) {
@@ -172,7 +172,7 @@ class AuthInterface
      *
      * @return bool true if access is granted, false if not.
      */
-    public function attribAllowed(&$securityMgr, &$attr, $mode, $record = null)
+    public function attribAllowed($securityMgr, $attr, $mode, $record = null)
     {
         $node = $attr->m_ownerInstance->atkNodeUri();
         $attribute = $attr->fieldName();

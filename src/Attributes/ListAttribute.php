@@ -433,7 +433,7 @@ class ListAttribute extends Attribute
         $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$id.'[]">';
 
 
-        $selValues = $record[$this->fieldName()];
+        $selValues = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
         if (!is_array($selValues)) {
             $selValues = [$selValues];
         }

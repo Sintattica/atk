@@ -55,7 +55,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
         $this->m_modulename = $modulename;
     }
 
-    public function loadType()
+    public function loadType($mode)
     {
         return self::POSTLOAD;
     }

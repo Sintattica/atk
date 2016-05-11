@@ -94,6 +94,7 @@ class RadioAttribute extends ListAttribute
         $values = $this->getValues($record);
 
         $total_items = count($values);
+        $items = 0;
         if ($this->m_cols && !$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $items = $this->m_amount;
         } elseif ($this->m_rows && !$this->hasFlag(self::AF_DISPLAY_VERT)) {
@@ -131,14 +132,15 @@ class RadioAttribute extends ListAttribute
                 $this->_renderChangeHandler($fieldprefix);
             }
 
-            $commenthtml = '<br/><div class="atkradio_comment">'.$this->m_comments[$i].'</div>';
+            $comment = isset($this->m_comments[$i])?$this->m_comments[$i]:'';
+
+            $commenthtml = '<br/><div class="atkradio_comment">'.$comment.'</div>';
 
             $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->fieldName().'" '.$this->getCSSClassAttribute('atkradio').' value="'.$values[$i].'" '.$onchange.$sel.'>
         '.$this->renderValue($labelID, $this->_translateValue($values[$i],
-                    $record)).($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
+                    $record)).($this->hasFlag(self::AF_DISPLAY_VERT) && $comment != '' ? $commenthtml : '').'</td>';
 
-            if ($this->hasflag(self::AF_DISPLAY_VERT)) {
-                $tmp_items = $items;
+            if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                 if ($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_rows) {
                     $tmp_items = count($values);
                 } else {
@@ -153,7 +155,7 @@ class RadioAttribute extends ListAttribute
                     }
                     if ($values[$j] != '') {
                         $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->fieldName().'" '.$this->getCSSClassAttribute('atkradio').' value="'.$values[$j].'" '.$onchange.$sel.'>
-              '.$this->renderValue($labelID, $this->_translateValue($values[$j], $record)).($this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
+              '.$this->renderValue($labelID, $this->_translateValue($values[$j], $record)).($comment != '' ? $commenthtml : '').'</td>';
                     } else {
                         $result .= '<td>&nbsp;</td>';
                     }

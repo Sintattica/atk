@@ -19,7 +19,7 @@ use Sintattica\Atk\Core\Config;
  *
  * @author Lineke Kerckhoffs-Willems <lineke@ibuildings.nl>
  */
-function smarty_function_atkconfig($params, &$smarty)
+function smarty_function_atkconfig($params, $smarty)
 {
     $smarty->assign($params['smartyvar'], Config::getGlobal($params['var']));
 }

@@ -413,9 +413,9 @@ class DateTimeAttribute extends Attribute
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    public function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-        $this->m_date->searchCondition($query, $table, $value, $searchmode);
+        $this->m_date->searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
     }
 
     /**

@@ -38,9 +38,9 @@ class ColumnConfig
      *
      * @param Node $node
      */
-    public function setNode(&$node)
+    public function setNode($node)
     {
-        $this->m_node = &$node;
+        $this->m_node = $node;
     }
 
     /**
@@ -62,7 +62,7 @@ class ColumnConfig
      *
      * @return ColumnConfig An instance of the columnconfig class
      */
-    public static function getConfig(&$node, $id = null, $forceNew = false)
+    public static function getConfig($node, $id = null, $forceNew = false)
     {
         static $s_instances = array();
 

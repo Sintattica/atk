@@ -36,6 +36,7 @@ class RowCounterAttribute extends DummyAttribute
         static $s_counter = 0;
         $node = $this->m_ownerInstance;
 
-        return $node->m_postvars['atkstartat'] + (++$s_counter);
+        $startat = isset($node->m_postvars['atkstartat'])?:0;
+        return $startat + (++$s_counter);
     }
 }

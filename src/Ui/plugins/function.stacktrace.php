@@ -20,7 +20,7 @@ use Sintattica\Atk\Session\SessionManager;
  *
  * @author Ivo Jansch <ivo@achievo.org>
  */
-function smarty_function_stacktrace($params, &$smarty)
+function smarty_function_stacktrace($params, $smarty)
 {
     $sessionManager = SessionManager::getInstance();
     if (is_object($sessionManager)) {

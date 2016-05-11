@@ -31,7 +31,8 @@ class MultipleFileAttribute extends FileAttribute
     {
         $flags = $flags | self::AF_CASCADE_DELETE;
         
-        parent::__construct($name, $flags, []); // base class constructor
+        parent::__construct($name, $flags, '');
+        
         if (is_array($dir)) {
             $this->m_dir = $this->AddSlash($dir[0]);
             $this->m_url = $this->AddSlash($dir[1]);

@@ -136,7 +136,7 @@ class SspiAuth extends DbAuth
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one
             // level.
-            $qryobj = &$db->createQuery();
+            $qryobj = $db->createQuery();
             $qryobj->addTable($usertable);
             $qryobj->addField("$usertable.*");
             $qryobj->addField('usergroup.*');

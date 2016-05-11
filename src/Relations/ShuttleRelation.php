@@ -124,6 +124,8 @@ class ShuttleRelation extends ManyToManyRelation
         $fieldname = $fieldprefix.$this->fieldName();
         $leftname = $fieldname.'_sel';
         $rightname = $fieldname.'[]['.$this->getRemoteKey().']';
+        $filterbox_left = false;
+        $filterbox_right = false;
 
         if ($this->m_filterBox) {
             // fix for selecting with jQuery
@@ -160,7 +162,7 @@ class ShuttleRelation extends ManyToManyRelation
 
         // on submit, we must select all items in the right selector, as unselected items
         // will not be posted.
-        $page = &$this->m_ownerInstance->getPage();
+        $page = $this->m_ownerInstance->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkshuttlerelation.js');
 
         if ($this->m_filterBox) {

@@ -22,7 +22,7 @@ use Sintattica\Atk\Session\SessionManager;
  *
  * @author Patrick van der Velden <patrick@ibuildings.nl>
  */
-function smarty_function_atkmessages($params, &$smarty)
+function smarty_function_atkmessages($params, $smarty)
 {
     $sessionManager = SessionManager::getInstance();
     if (is_object($sessionManager)) {

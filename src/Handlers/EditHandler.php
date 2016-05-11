@@ -336,7 +336,7 @@ class EditHandler extends ViewEditBase
         if ($field['sections'] == '*') {
             $classes[] = 'alltabs';
         } else {
-            if ($field['html'] == 'section') {
+            if (isset($field['html']) && $field['html'] == 'section') {
                 // section should only have the tab section classes
                 foreach ($field['tabs'] as $section) {
                     $classes[] = 'section_'.str_replace('.', '_', $section);
@@ -365,13 +365,13 @@ class EditHandler extends ViewEditBase
                     $field['tabs'])) && (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
 
         // ar_ stands for 'attribrow'.
-        $tplfield['rowid'] = 'ar_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
+        $tplfield['rowid'] = 'ar_'.(!empty($field['id']) ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
         // check for separator
-        if ($field['html'] == '-' && $index > 0 && $fields[$index - 1]['html'] != '-') {
+        if (isset($field['html']) && $field['html'] == '-' && $index > 0 && $fields[$index - 1]['html'] != '-') {
             $tplfield['type'] = 'line';
             $tplfield['line'] = '<hr>';
-        } /* double separator, ignore */ elseif ($field['html'] == '-') {
-        } /* sections */ elseif ($field['html'] == 'section') {
+        } /* double separator, ignore */ elseif (isset($field['html']) && $field['html'] == '-') {
+        } /* sections */ elseif (isset($field['html']) && $field['html'] == 'section') {
             $tplfield['type'] = 'section';
             list($tab, $section) = explode('.', $field['name']);
             $tplfield['section_name'] = "section_{$tab}_{$section}";
@@ -538,10 +538,10 @@ class EditHandler extends ViewEditBase
             $field = &$data['fields'][$i];
             $tplfield = $this->createTplField($data['fields'], $i, $mode, $tab);
             $fields[] = $tplfield; // make field available in numeric array
-            $params[$field['name']] = $tplfield; // make field available in associative array
-            $attributes[$field['name']] = $tplfield; // make field available in associative array
+            $params[isset($field['name'])?$field['name']:null] = $tplfield; // make field available in associative array
+            $attributes[isset($field['name'])?$field['name']:null] = $tplfield; // make field available in associative array
 
-            if ($field['error']) {
+            if (!empty($field['error'])) {
                 $errorFields[] = $field['id'];
             }
         }
@@ -599,7 +599,7 @@ class EditHandler extends ViewEditBase
      *
      * @return string HTML code with link
      */
-    public function getTabLink(&$node, $error)
+    public function getTabLink($node, $error)
     {
         if (count($node->getTabs($node->m_action)) < 2) {
             return '';

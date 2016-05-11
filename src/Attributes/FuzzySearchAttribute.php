@@ -414,7 +414,7 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    public function searchCondition()
+    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
     }
 
@@ -428,7 +428,7 @@ class FuzzySearchAttribute extends Attribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    public function fetchMeta()
+    public function fetchMeta($metadata)
     {
     }
 

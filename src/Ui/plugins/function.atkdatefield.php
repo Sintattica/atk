@@ -9,7 +9,7 @@ use Sintattica\Atk\Attributes\DateAttribute;
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-function smarty_function_atkdatefield($params, &$smarty)
+function smarty_function_atkdatefield($params, $smarty)
 {
     $name = isset($params['name']) ? $params['name'] : 'date';
     $format = isset($params['format']) ? $params['format'] : Tools::atktext('date_format_edit', 'atk', '', '', '', true);

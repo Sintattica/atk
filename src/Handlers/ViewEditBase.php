@@ -273,8 +273,8 @@ class ViewEditBase extends ActionHandler
             } // again a workaround for this horribly broken method
             $tab = $allMatchingTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
             $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i]; //make field available in numeric array
-            $perTpl[$tabTpl[$tab]][$fields[$i]['attribute']] = $fields[$i]; //make field available in associative array
-            $perTpl[$tabTpl[$tab]]['attributes'][$fields[$i]['attribute']] = $fields[$i]; //make field available in associative array
+            $perTpl[$tabTpl[$tab]][isset($fields[$i]['attribute'])?$fields[$i]['attribute']:null] = $fields[$i]; //make field available in associative array
+            $perTpl[$tabTpl[$tab]]['attributes'][isset($fields[$i]['attribute'])?$fields[$i]['attribute']:null] = $fields[$i]; //make field available in associative array
         }
 
         // Add 'alltab' fields to all templates

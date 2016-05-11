@@ -687,7 +687,7 @@ class SessionManager
                     $var = $recursive ? substr($var, 0, -1) : $var;
 
                     if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
-                        if ($recursive && is_array($currentitem[$var]) && is_array($postvars[$var])) {
+                        if ($recursive && isset($currentitem[$var]) && is_array($currentitem[$var]) && is_array($postvars[$var])) {
                             $currentitem[$var] = Tools::atk_array_merge_recursive($currentitem[$var], $postvars[$var]);
                         } else {
                             $currentitem[$var] = $postvars[$var];
@@ -1112,6 +1112,8 @@ class SessionManager
         if (empty($name)) {
             $name = Config::getGlobal('identifier');
         }
+
+        global ${$name};
 
         if (isset($_COOKIE[$name]) && $_COOKIE[$name]) {
             $sessionid = $_COOKIE[$name];

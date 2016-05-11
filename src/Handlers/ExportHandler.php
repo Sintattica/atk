@@ -533,17 +533,14 @@ class ExportHandler extends ActionHandler
         $atts = &$node_bk->m_attribList;
 
         foreach ($atts as $name => $object) {
-            $att = &$node_bk->getAttribute($name);
+            $att = $node_bk->getAttribute($name);
             if (in_array($name, $list_includes) && $att->hasFlag(Attribute::AF_HIDE_LIST)) {
                 $att->removeFlag(Attribute::AF_HIDE_LIST);
             } elseif (!in_array($name, $list_includes)) {
                 $att->addFlag(Attribute::AF_HIDE_LIST);
             }
         }
-
-        if (!is_array($actions)) {
-            $actions = $node->defaultActions('export');
-        }
+        
         $rl = new CustomRecordList();
         $flags = ($node_bk->hasFlag(Node::NF_MRA) ? RecordList::RL_MRA : 0) | ($node_bk->hasFlag(Node::NF_MRPA) ? RecordList::RL_MRPA : 0);
         $node_bk->m_postvars = $session_back;

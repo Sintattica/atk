@@ -915,6 +915,7 @@ class DateAttribute extends Attribute
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $db = $this->getDb();
+        $searchcondition = null;
 
         // If we search through datagrid we got no from/to values
         // Therefore we will simulate them

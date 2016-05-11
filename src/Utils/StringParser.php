@@ -51,7 +51,6 @@ class StringParser
                         $value = $value[$el];
                     } else {
                         if ($replaceUnknownFields) {
-                            Tools::atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$el}', but {$elements[$i - 1]} is not an array!");
                             $value = '';
                             break;
                         } else {

@@ -58,9 +58,9 @@ class TriggerListener
      *
      * @param Node $node The node to set as owner
      */
-    public function setNode(&$node)
+    public function setNode($node)
     {
-        $this->m_node = &$node;
+        $this->m_node = $node;
     }
 
     /**

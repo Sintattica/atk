@@ -1262,7 +1262,7 @@ class Db
      *
      * @param Db $otherDb other database instance
      */
-    public function cloneAll(&$otherDb)
+    public function cloneAll($otherDb)
     {
         $this->dropAll();
         $tables = $otherDb->table_names();
@@ -1283,7 +1283,7 @@ class Db
     public function createDdl()
     {
         $ddl = Ddl::create($this->m_type);
-        $ddl->m_db = &$this;
+        $ddl->m_db = $this;
 
         return $ddl;
     }

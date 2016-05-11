@@ -1009,7 +1009,7 @@ class OneToManyRelation extends Relation
      *
      * @return string SQL string for joining the owner with the destination.
      */
-    public function getJoinCondition(&$query, $ownerAlias = '', $destAlias = '')
+    public function getJoinCondition($query, $ownerAlias = '', $destAlias = '')
     {
         if (!$this->createDestination()) {
             return false;
@@ -1041,7 +1041,7 @@ class OneToManyRelation extends Relation
      * @param mixed $value The value the user has entered in the searchbox.
      * @param string $mode The searchmode to use.
      */
-    public function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)
     {
         // one-to-many join means we need to perform a distinct select
         $query->setDistinct(true);
@@ -1076,7 +1076,7 @@ class OneToManyRelation extends Relation
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    public function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
         if ($this->createDestination()) {
             $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
@@ -1155,7 +1155,7 @@ class OneToManyRelation extends Relation
      *
      * @return string the search condition
      */
-    public function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field, $reftable)
+    public function _callSearchConditionOnDestField($query, $table, $value, $searchmode, $field, $reftable)
     {
         if ($this->createDestination()) {
             $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;

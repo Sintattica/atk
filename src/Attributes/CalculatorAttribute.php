@@ -71,7 +71,7 @@ class CalculatorAttribute extends Attribute
      *
      * @return int
      */
-    public function storageType()
+    public function storageType($mode = null)
     {
         return self::NOSTORE;
     }
@@ -81,7 +81,7 @@ class CalculatorAttribute extends Attribute
      *
      * @return int
      */
-    public function loadType()
+    public function loadType($mode)
     {
         return self::POSTLOAD;
     }

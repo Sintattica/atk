@@ -691,7 +691,7 @@ class NumberAttribute extends Attribute
      *
      * @return query where clause for searching
      */
-    public function getBetweenCondition(&$query, $fieldname, $value)
+    public function getBetweenCondition($query, $fieldname, $value)
     {
         if ($value['from'] != '' && $value['to'] != '') {
             if ($value['from'] > $value['to']) {

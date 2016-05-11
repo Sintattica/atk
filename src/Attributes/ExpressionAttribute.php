@@ -37,7 +37,7 @@ class ExpressionAttribute extends Attribute
         }
     }
 
-    public function storageType($mode = '')
+    public function storageType($mode = null)
     {
         return self::NOSTORE;
     }

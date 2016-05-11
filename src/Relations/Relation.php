@@ -182,7 +182,7 @@ class Relation extends Attribute
      *
      * @return string with the descriptor
      */
-    public function descriptor($record, &$node)
+    public function descriptor($record, $node)
     {
         $method = $this->m_name.'_descriptor';
         if (method_exists($this->m_descHandler, $method)) {
@@ -348,7 +348,7 @@ class Relation extends Attribute
      * @return string SQL string for joining the owner with the destination.
      *                Defaults to false.
      */
-    public function getJoinCondition(&$query, $tablename = '', $fieldalias = '')
+    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
     {
         return false;
     }

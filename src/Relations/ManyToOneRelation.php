@@ -641,9 +641,12 @@ class ManyToOneRelation extends Relation
             }
         }
 
-        $nodename = $this->m_destInstance->m_type;
-        $modulename = $this->m_destInstance->m_module;
-        $ownermodulename = $this->m_ownerInstance->m_module;
+        $nodename = $modulename = $ownermodulename = '';
+        if ($this->createDestination()) {
+            $nodename = $this->m_destInstance->m_type;
+            $modulename = $this->m_destInstance->m_module;
+            $ownermodulename = $this->m_ownerInstance->m_module;
+        }
         $label = Tools::atktext($this->fieldName().'_'.$text_key, $ownermodulename, $this->m_owner, '', '', true);
         if ($label == '') {
             $label = Tools::atktext($text_key, $modulename, $nodename);
@@ -1110,7 +1113,7 @@ class ManyToOneRelation extends Relation
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
 
-            $selValues = $record[$this->fieldName()];
+            $selValues = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
 
             if (!is_array($selValues)) {
                 $selValues = [$selValues];
@@ -1147,10 +1150,10 @@ class ManyToOneRelation extends Relation
 
         } else {
             //Autocomplete search
-            if (is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()][$this->fieldName()])) {
+            if (isset($record[$this->fieldName()][$this->fieldName()])) {
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
-            $current = $record[$this->fieldName()];
+            $current = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
 
             if ($useautocompletion) {
                 $noneLabel = $this->getNoneLabel('search');
@@ -1158,7 +1161,7 @@ class ManyToOneRelation extends Relation
                 $options = [];
                 $options[''] = $noneLabel;
 
-                $selValues = $record[$this->fieldName()];
+                $selValues = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
                 }
@@ -1197,7 +1200,7 @@ class ManyToOneRelation extends Relation
         return array('exact'); // only support exact search when searching with dropdowns
     }
 
-    public function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)
     {
         if (count($path) > 0) {
             $this->createDestination();
@@ -1207,7 +1210,7 @@ class ManyToOneRelation extends Relation
             $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias), false);
 
             $attrName = array_shift($path);
-            $attr = &$this->m_destInstance->getAttribute($attrName);
+            $attr = $this->m_destInstance->getAttribute($attrName);
 
             if (is_object($attr)) {
                 $attr->smartSearchCondition($id, $nr + 1, $path, $query, $destAlias, $value, $mode);
@@ -1620,7 +1623,7 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    public function getJoinCondition(&$query, $tablename = '', $fieldalias = '')
+    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
     {
         if (!$this->createDestination()) {
             return false;
@@ -1915,7 +1918,7 @@ class ManyToOneRelation extends Relation
         $arr['rows'][$nr]['record'] = $backup;
     }
 
-    public function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = '', $extended = true)
+    public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
         $prefix = $fieldprefix.$this->fieldName().'_AE_';
 
@@ -1951,7 +1954,7 @@ class ManyToOneRelation extends Relation
      *
      * @return string Returns sort order ASC or DESC
      */
-    public function listHeaderSortOrder(ColumnConfig &$columnConfig)
+    public function listHeaderSortOrder(ColumnConfig $columnConfig)
     {
         $order = $this->fieldName();
 

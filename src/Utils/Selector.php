@@ -434,7 +434,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $attr = $this->_getNode()->getAttribute($attrName);
 
             if (is_object($attr)) {
-                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode, '');
+                $attr->smartSearchCondition($id, 0, $path, $query, $this->_getNode()->getTable(), $value, $this->m_mode);
             }
         }
     }

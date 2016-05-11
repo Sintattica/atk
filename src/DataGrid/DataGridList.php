@@ -647,7 +647,7 @@ class DataGridList extends DataGridComponent
             'mra' => array(),
         );
 
-        $columnConfig = &$grid->getNode()->getColumnConfig($grid->getName());
+        $columnConfig = $grid->getNode()->getColumnConfig($grid->getName());
 
         if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) || $grid->isEditing()) {
             $grid->getNode()->setAttribSizes();

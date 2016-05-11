@@ -60,7 +60,7 @@ class SecurityManager
      *
      * @param SecurityListener $listener
      */
-    public function addListener(&$listener)
+    public function addListener($listener)
     {
         $this->m_listeners[] = $listener;
     }
@@ -620,7 +620,7 @@ class SecurityManager
      *
      * @return bool true if access is granted, false if not.
      */
-    public function attribAllowed(&$attr, $mode, $record = null)
+    public function attribAllowed($attr, $mode, $record = null)
     {
         return $this->m_authorization->attribAllowed($this, $attr, $mode, $record);
     }

@@ -165,7 +165,7 @@ class AggregatedColumn extends Attribute
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fiedalias in the table
      */
-    public function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
         $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
         if (!empty($searchcondition)) {

@@ -63,7 +63,7 @@ class TreeNode extends Node
      * @param ActionHandler $handler
      * @param array $record
      */
-    public function action_admin(&$handler, $record = '')
+    public function action_admin($handler, $record = '')
     {
         if ($this->hasFlag(self::NF_TREE_NO_ROOT_ADD)) {
             $this->m_flags |= self::NF_NO_ADD;
@@ -96,7 +96,7 @@ class TreeNode extends Node
      *
      * @param ActionHandler $handler The action handler object
      */
-    public function adminPage(&$handler)
+    public function adminPage($handler)
     {
         global $g_maxlevel;
 

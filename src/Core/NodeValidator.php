@@ -70,9 +70,9 @@ class NodeValidator
      *
      * @param Node $nodeObj The node for validation
      */
-    public function setNode(&$nodeObj)
+    public function setNode($nodeObj)
     {
-        $this->m_nodeObj = &$nodeObj;
+        $this->m_nodeObj = $nodeObj;
     }
 
     /**
@@ -177,7 +177,7 @@ class NodeValidator
      * @param Attribute $p_attrib pointer to the attribute
      * @param array $record record
      */
-    public function validateAttributeValue(&$p_attrib, &$record)
+    public function validateAttributeValue($p_attrib, &$record)
     {
         if (!$p_attrib->isEmpty($record)) {
             $funcname = $p_attrib->m_name.'_validate';
@@ -201,7 +201,7 @@ class NodeValidator
     {
         $db = $this->m_nodeObj->getDb();
         foreach ($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet) {
-            $query = &$db->createQuery();
+            $query = $db->createQuery();
             $query->addField('*');
             $query->addTable($this->m_nodeObj->m_table);
 

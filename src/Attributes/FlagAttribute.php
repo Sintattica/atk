@@ -100,6 +100,7 @@ class FlagAttribute extends MultiSelectAttribute
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
+        $searchcondition = null;
         if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $field = $table.'.'.$this->fieldName();
             if (count($value) == 1) { // exactly one value

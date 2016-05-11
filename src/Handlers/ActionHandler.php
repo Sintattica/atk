@@ -115,7 +115,7 @@ class ActionHandler
      * @param string $action The action that is being performed.
      * @param array $postvars Any variables from the request
      */
-    public function handle(&$node, $action, &$postvars)
+    public function handle($node, $action, &$postvars)
     {
         $this->m_postvars = $postvars;
         $this->m_node = $node;
@@ -174,7 +174,7 @@ class ActionHandler
      *
      * @param Node $node The node on which the action should be performed.
      */
-    public function setNode(&$node)
+    public function setNode($node)
     {
         $this->m_node = $node;
         $this->m_partial = $node->m_partial;
@@ -281,7 +281,7 @@ class ActionHandler
             // We pass the original object as first parameter to the override.
             array_unshift($arguments, $this);
             $arguments[0] = &$this; // reference copy workaround;
-            return call_user_func_array(array($this->m_node, $methodname), $arguments);
+            return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
         } else {
             if (method_exists($this, $methodname)) {
                 Tools::atkdebug("Invoking '$methodname' on ActionHandler for action ".$this->m_action);

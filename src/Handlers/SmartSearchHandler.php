@@ -241,7 +241,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      *
      * @return array list of reference to searchable attributes
      */
-    public function getSearchableAttributes(&$node, $excludes)
+    public function getSearchableAttributes($node, $excludes)
     {
         $attrNames = array_keys($node->m_attribList);
         $attrNames = array_diff($attrNames, $excludes);
@@ -251,7 +251,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         foreach ($attrNames as $attrName) {
             $attr = $node->getAttribute($attrName);
             if (!$attr->hasFlag(Attribute::AF_HIDE_SEARCH)) {
-                $attrs[] = &$attr;
+                $attrs[] = $attr;
             }
         }
 
@@ -267,7 +267,7 @@ class SmartSearchHandler extends AbstractSearchHandler
     public function getAttributeList($entry)
     {
         if (count($entry['attrs']) == 1 && !$entry['includeSelf']) {
-            $attr = &$entry['attrs'][0];
+            $attr = $entry['attrs'][0];
             $label = is_a($attr, 'ManyToOneRelation') ? '' : htmlentities(strip_tags($attr->label()));
 
             return $label.'<input type="hidden" name="'.$entry['name'].'" value="'.$attr->fieldName().'">';
@@ -279,9 +279,9 @@ class SmartSearchHandler extends AbstractSearchHandler
             $result .= '<option value="."'.($entry['selectSelf'] ? ' selected="selected"' : '').'>'.$this->m_node->text('self').'</option>'.'<option value=""></option>';
         }
 
-        $current = &$entry['attr'];
+        $current = $entry['attr'];
         for ($i = 0, $_i = count($entry['attrs']); $i < $_i; ++$i) {
-            $attr = &$entry['attrs'][$i];
+            $attr = $entry['attrs'][$i];
             $selected = $current != null && $attr->fieldName() == $current->fieldName() ? ' selected="selected"' : '';
             $label = htmlentities(strip_tags($attr->label()));
             $result .= '<option value="'.$attr->fieldName().'"'.$selected.'>'.$label.'</option>';
@@ -322,16 +322,16 @@ class SmartSearchHandler extends AbstractSearchHandler
         $attrs = $this->getSearchableAttributes($node, $excludes);
 
         if (count($attrs) == 1 && !$includeSelf) {
-            $attr = &$attrs[0];
+            $attr = $attrs[0];
         }
 
         $selectSelf = $includeSelf && $attrName == '.';
 
         $entry = array(
             'nr' => $nr,
-            'node' => &$node,
+            'node' => $node,
             'attrs' => $attrs,
-            'attr' => &$attr,
+            'attr' => $attr,
             'includeSelf' => $includeSelf,
             'selectSelf' => $selectSelf,
         );
@@ -446,10 +446,10 @@ class SmartSearchHandler extends AbstractSearchHandler
         }
 
         /** @var Attribute $attr */
-        $attr = &$entry['attr'];
+        $attr = $entry['attr'];
 
         if ($attr == null) {
-            $node = &$entry['node'];
+            $node = $entry['node'];
 
             return $node->text('none');
         } else {

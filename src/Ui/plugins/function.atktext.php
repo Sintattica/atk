@@ -15,7 +15,7 @@ use Sintattica\Atk\Utils\StringParser;
  *          {atktext id="userinfo.description" module="users"}
  *          {atktext id="description" module="users" node="userinfo"}
  */
-function smarty_function_atktext($params, &$smarty)
+function smarty_function_atktext($params, $smarty)
 {
     if (!isset($params['id'])) {
         $params['id'] = $params[0];

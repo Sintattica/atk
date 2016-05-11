@@ -1,5 +1,5 @@
 <div class="form-horizontal">
-    {if $saved_criteria.load_criteria}
+    {if isset($saved_criteria.load_criteria)}
         <div class="row form-group load_criteria">
             <div class="col-sm-2 control-label fieldlabel">{$saved_criteria.label_load_criteria}</div>
             <div class="col-sm-10 form-inline">
@@ -30,7 +30,7 @@
 
     {foreach from=$fields item=field}
         <div class="row form-group">
-            {if $field.line!=""}
+            {if isset($field.line) && $field.line!=""}
                 <div class="col-md-8 field">{$field.line}</div>
             {else}
                 <div class="col-sm-2 control-label fieldlabel">{if $field.label!=""}{$field.label}{/if}</div>
@@ -40,7 +40,7 @@
         </div>
     {/foreach}
 
-    {if $saved_criteria.toggle_save_criteria }
+    {if isset($saved_criteria.toggle_save_criteria) }
         <hr/>
         <div class="row form-group save_criteria">
             <div class="col-sm-2">

@@ -41,7 +41,7 @@ class CustomRecordList extends RecordList
      * @return string|null
      */
     public function render(
-        &$node,
+        $node,
         $recordset,
         $sol,
         $sof,

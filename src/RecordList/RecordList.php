@@ -29,9 +29,9 @@ abstract class RecordList
     /**
      * @param Node $node
      */
-    public function setNode(&$node)
+    public function setNode($node)
     {
-        $this->m_node = &$node;
+        $this->m_node = $node;
     }
 
     /**
@@ -50,9 +50,9 @@ abstract class RecordList
      *
      * @param Node $masternode
      */
-    public function setMasterNode(&$masternode)
+    public function setMasterNode($masternode)
     {
-        $this->m_masternode = &$masternode;
+        $this->m_masternode = $masternode;
     }
 
     /**

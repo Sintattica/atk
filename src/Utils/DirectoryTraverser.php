@@ -55,9 +55,9 @@ class DirectoryTraverser
      * @param object|mixed $callbackObject An object instance to be called back for
      *                                     each file/dir.
      */
-    public function addCallbackObject(&$callbackObject)
+    public function addCallbackObject($callbackObject)
     {
-        $this->m_callbackObjects[] = &$callbackObject;
+        $this->m_callbackObjects[] = $callbackObject;
     }
 
     /**
