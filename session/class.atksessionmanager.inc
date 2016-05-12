@@ -986,6 +986,17 @@ class atkSessionManager
         }
     }
 
+    /**
+     * Render the javascript that performs the ajax calls in order to keep the session alive
+     * @return string
+     */
+    static public function getSessionAutoRefreshJs()
+    {
+        $url = atkConfig::getGlobal('dispatcher').'?'.atkConfig::getGlobal('session_autorefresh_key');
+        $time = atkConfig::getGlobal('session_autorefresh_time', 3600);
+
+        return 'jQuery(function($){window.setInterval(function(){$.ajax({cache:false,type:"GET",url:"'.$url.'"});},'.$time.');});';
+    }
 }
 
 /**

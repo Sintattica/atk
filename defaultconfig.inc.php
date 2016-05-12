@@ -829,6 +829,24 @@ $config_session_name = "";
 $config_session_max_stack_inactivity_period = 3600; // 1 hour
 
 /**
+ * Enable the session autorefresh ajax call
+ * @var bool
+ */
+$config_session_autorefresh = false;
+
+/**
+ * Refresh every n milliseconds
+ * @var int
+ */
+$config_session_autorefresh_time = 300000; // milliseconds (300000 = 5 minutes)
+
+/**
+ * Key used to detect the autorefresh calls from ajax
+ * @var string
+ */
+$config_session_autorefresh_key = '_sessionautorefresh';
+
+/**
  * The application identifier.
  *
  * @var String

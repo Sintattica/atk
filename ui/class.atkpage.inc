@@ -134,15 +134,20 @@ class atkPage
     public function __construct()
     {
         // register default scripts
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/jquery-2.1.1.min.js");
+        $atkroot = atkConfig::getGlobal("atkroot");
+        $this->register_script($atkroot . "atk/javascript/jquery-2.1.1.min.js");
         $this->register_scriptcode('jQuery.noConflict();');
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/prototype/prototype.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/prototype-ext.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/scriptaculous/scriptaculous.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/scriptaculous-ext.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/class.atktools.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/atkbusy.js");
-        $this->register_script(atkconfig("atkroot") . "atk/javascript/moment.min.js");
+        $this->register_script($atkroot . "atk/javascript/prototype/prototype.js");
+        $this->register_script($atkroot . "atk/javascript/prototype-ext.js");
+        $this->register_script($atkroot . "atk/javascript/scriptaculous/scriptaculous.js");
+        $this->register_script($atkroot . "atk/javascript/scriptaculous-ext.js");
+        $this->register_script($atkroot . "atk/javascript/class.atktools.js");
+        $this->register_script($atkroot . "atk/javascript/atkbusy.js");
+        $this->register_script($atkroot . "atk/javascript/moment.min.js");
+
+        if(atkConfig::getGlobal('session_autorefresh')) {
+            $this->register_scriptcode(atkSessionManager::getSessionAutoRefreshJs());
+        }
     }
 
     /**
