@@ -415,7 +415,7 @@ class atkRecordList
                 foreach ($list["rows"][$i]["actions"] as $name => $url) {
                     if (substr($url, 0, 11) == 'javascript:') {
                         $call = substr($url, 11);
-                        $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";
+                            $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = function(rlId) { $call; };";
                     } else {
                         $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
                     }

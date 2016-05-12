@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+* Better handling of javascript in recordActions [luca]
 
 
 Changes in ATK 8.2.5 (2016-04-14)
