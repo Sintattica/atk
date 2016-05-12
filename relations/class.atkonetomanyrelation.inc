@@ -467,7 +467,9 @@ class atkOneToManyRelation extends atkRelation
             $this->editFooter($record, $grid->getRecords());
 
         if ($this->m_destInstance->allowed("add")) {
-            $this->_addAddToEditOutput($output, $grid->getRecords(), $record, $mode, $fieldprefix);
+            if (!$this->m_maxRecords || $this->m_maxRecords > count($grid->getRecords())) {
+                $this->_addAddToEditOutput($output, $record, $mode, $fieldprefix);
+            }
         }
 
         return $output;
@@ -477,17 +479,14 @@ class atkOneToManyRelation extends atkRelation
      * Adds the 'add' option to the onetomany, either integrated or as a link
      *
      * @param String $output   The HTML output of the edit function
-     * @param Array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
      */
-    function _addAddToEditOutput(&$output, $myrecords, $record, $mode = "", $fieldprefix = "")
+    function _addAddToEditOutput(&$output, $record, $mode = "", $fieldprefix = "")
     {
         $add_link = '';
 
         if (!$this->getDestination()->hasFlag(NF_NO_ADD)) {
-            $add_link = $this->_getAddLink(
-                $myrecords, $record, true, $mode, $fieldprefix
-            );
+            $add_link = $this->_getAddLink($record, true, $mode, $fieldprefix);
         }
 
         $add_link .= '<br />';
@@ -515,12 +514,11 @@ class atkOneToManyRelation extends atkRelation
 
     /**
      * Internal function to get the add link for a atkOneToManyRelation
-     * @param Array $myrecords  The load of all attributes (see comment in edit() code)
      * @param Array $record     The record that holds the value for this attribute.
      * @param bool $saveform    Save the form values?
      * @return String  The link to add records to the onetomany
      */
-    function _getAddLink($myrecords, $record, $saveform = true, $mode = "", $fieldprefix = "")
+    function _getAddLink($record, $saveform = true, $mode = "", $fieldprefix = "")
     {
         $params = array();
         if ($mode === 'add') {
@@ -552,7 +550,7 @@ class atkOneToManyRelation extends atkRelation
         if ($is_dialog_mode)
             return $this->_getDialogAddLink($record, 'add', $params);
         else
-            return $this->_getNestedAddLink($myrecords, $record, $saveform, $fieldprefix, $params);
+            return $this->_getNestedAddLink($record, $saveform, $fieldprefix, $params);
     }
 
     /**
@@ -631,16 +629,13 @@ class atkOneToManyRelation extends atkRelation
     /**
      * Internal function to get the add link for a atkOneToManyRelation.
      *
-     * @param Array $myrecords  The load of all attributes (see comment in edit() code)
      * @param Array $record     The record that holds the value for this attribute.
      * @param bool $saveform    Save the values of the form?
      * @return String  The link to add records to the onetomany
      */
-    function _getNestedAddLink($myrecords, $record, $saveform = true, $fieldprefix = '', $params = array())
+    function _getNestedAddLink($record, $saveform = true, $fieldprefix = '', $params = array())
     {
         $url = "";
-        if ((int) $this->m_maxRecords !== 0 && $this->m_maxRecords <= count($myrecords))
-            return $url;
         if (!$this->createDestination())
             return $url;
         if ($this->m_destInstance->hasFlag(NF_NO_ADD))
