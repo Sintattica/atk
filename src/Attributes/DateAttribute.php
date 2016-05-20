@@ -218,7 +218,7 @@ class DateAttribute extends Attribute
      */
     public function __construct($name, $flags = 0, $format_edit = '', $format_view = '', $min = 0, $max = 0)
     {
-        
+
         /* edit and display date format */
         $this->setFormatEdit($format_edit);
         $this->setFormatView($format_view);
@@ -461,11 +461,11 @@ class DateAttribute extends Attribute
      * */
     protected function renderDay($fieldname, $str_script, $current, $format, $obligatory, $weekdayFormat)
     {
-        $c_mon = isset($current['mon'])?$current['mon']:null;
-        $c_year = isset($current['year'])?$current['year']:null;
-        $c_dmin = isset($current['d_min'])?$current['d_min']:null;
-        $c_dmax = isset($current['d_max'])?$current['d_max']:null;
-        $c_mday = isset($current['mday'])?$current['mday']:null;
+        $c_mon = isset($current['mon']) ? $current['mon'] : null;
+        $c_year = isset($current['year']) ? $current['year'] : null;
+        $c_dmin = isset($current['d_min']) ? $current['d_min'] : null;
+        $c_dmax = isset($current['d_max']) ? $current['d_max'] : null;
+        $c_mday = isset($current['mday']) ? $current['mday'] : null;
 
         $result = '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
@@ -703,7 +703,7 @@ class DateAttribute extends Attribute
         if (!$this->m_simplemode) {
             $result .= '</div>'; // form-inline
         }
-        
+
         return $result;
     }
 
@@ -839,7 +839,7 @@ class DateAttribute extends Attribute
     public function hide($record, $fieldprefix, $mode)
     {
         $result = '';
-        $field = $record[$this->fieldName()];
+        $field = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
 
         if (is_array($field)) {
             foreach ($field as $key => $value) {
@@ -1285,7 +1285,7 @@ class DateAttribute extends Attribute
      */
     public function display($record, $mode)
     {
-        $value = $record[$this->fieldName()];
+        $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         if (!is_array($value) || empty($value['month']) || empty($value['day']) || empty($value['year'])) {
             return '';
         }

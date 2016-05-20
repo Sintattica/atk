@@ -962,7 +962,7 @@ class Attribute
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
         $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
-        
+
         return $result;
     }
 
@@ -1002,7 +1002,7 @@ class Attribute
     }\n");
         }
     }
-    
+
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
@@ -1018,9 +1018,10 @@ class Attribute
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
-        if (!is_array($record[$this->fieldName()])) {
+        $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+        if (!is_array($value)) {
             $id = $id = $this->getHtmlId($fieldprefix);
-            $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+            $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($value).'">';
 
             return $result;
         } else {
@@ -1564,7 +1565,7 @@ class Attribute
         $searchMode = $this->getSearchMode();
         // Set current searchmode to first searchmode if not searching in extended form or no searchmode is set
         if (!$extended || empty($searchMode) || !in_array($searchMode, $searchModes)) {
-            $searchMode = isset($searchModes[0])?$searchModes[0]:null;
+            $searchMode = isset($searchModes[0]) ? $searchModes[0] : null;
         }
 
         if ($extended && count($searchModes) > 1) {
@@ -1594,7 +1595,7 @@ class Attribute
         $searchmode = $this->m_ownerInstance->getSearchMode();
 
         if (is_array($searchmode)) {
-            return isset($searchmode[$this->fieldName()])?$searchmode[$this->fieldName()]:null;
+            return isset($searchmode[$this->fieldName()]) ? $searchmode[$this->fieldName()] : null;
         }
 
         return $searchmode;
@@ -1724,13 +1725,15 @@ class Attribute
         // the next if-statement is a workaround for derived attributes which do
         // not override the display() method properly. This will not give them a
         // working display() functionality but at least it will not give error messages.
-        if (!is_array($record[$this->fieldName()])) {
+        $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+
+        if (!is_array($value)) {
             // default behaviour is that we display a value 'as is'.
             if (($mode == 'csv') || ($mode == 'plain')) {
-                return $record[$this->fieldName()];
+                return $value;
             }
 
-            return nl2br(htmlspecialchars($record[$this->fieldName()]));
+            return nl2br(htmlspecialchars($value));
         }
 
         return '';
