@@ -94,7 +94,7 @@ class NumberAttribute extends Attribute
      *
      * @return string The ORDER BY statement for this attribute
      */
-    public function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
@@ -290,6 +290,7 @@ class NumberAttribute extends Attribute
      * @param float $number number
      * @param string $decimalSeparator override decimal separator
      * @param string $thousandsSeparator override thousands separator
+     * @param string $mode
      *
      * @return string nicely formatted number
      */
@@ -413,6 +414,11 @@ class NumberAttribute extends Attribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+        return self::getStaticSearchModes();
+    }
+
+    public static function getStaticSearchModes()
+    {
         return array('exact', 'between', 'greaterthan', 'greaterthanequal', 'lessthan', 'lessthanequal');
     }
 
@@ -455,6 +461,7 @@ class NumberAttribute extends Attribute
 
     /**
      * Apply database metadata for setting the attribute size.
+     * @param array $metadata
      */
     public function fetchMeta($metadata)
     {
@@ -572,22 +579,6 @@ class NumberAttribute extends Attribute
         return $result;
     }
 
-    /**
-     * Returns a piece of html code that can be used to search for an
-     * attribute's value.
-     *
-     * @param array $record Array with values
-     * @param bool $extended if set to false, a simple search input is
-     *                            returned for use in the searchbar of the
-     *                            recordlist. If set to true, a more extended
-     *                            search may be returned for the 'extended'
-     *                            search page. The Attribute does not
-     *                            make a difference for $extended is true, but
-     *                            derived attributes may reimplement this.
-     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     *
-     * @return string A piece of html-code
-     */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $value = '';
@@ -652,19 +643,20 @@ class NumberAttribute extends Attribute
      */
     public function processSearchValue($value, &$searchmode)
     {
+        $processed = null;
         if (!is_array($value)) {
             // quicksearch
             $value = trim($value);
             if (strpos($value, '/') !== false) { // from/to searches
                 list($from, $to) = explode('/', $value);
-                $from = self::removeSeparators(trim($from));
-                $to = self::removeSeparators(trim($to));
+                $from = $this->removeSeparators(trim($from));
+                $to = $this->removeSeparators(trim($to));
                 $from = is_numeric($from) ? $from : '';
                 $to = is_numeric($to) ? $to : '';
                 $processed = array('from' => $from, 'to' => $to);
                 $searchmode = 'between';
             } else { // single value
-                $value = self::removeSeparators($value);
+                $value = $this->removeSeparators($value);
                 if (is_numeric($value)) {
                     $processed['from'] = $value;
                 } else {
@@ -674,7 +666,7 @@ class NumberAttribute extends Attribute
         } else {
             // assumes array('from'=><intval>, 'to'=><intval>)
             foreach ($value as $key => $search) {
-                $v = self::removeSeparators($search);
+                $v = $this->removeSeparators($search);
                 $processed[$key] = is_numeric($v) ? $v : '';
             }
         }
@@ -687,7 +679,7 @@ class NumberAttribute extends Attribute
      *
      * @param Query $query The query object where the search condition should be placed on
      * @param string $fieldname The name of the field in the database
-     * @param string $value The processed search value
+     * @param array $value The processed search value
      *
      * @return query where clause for searching
      */
@@ -711,21 +703,6 @@ class NumberAttribute extends Attribute
         return false;
     }
 
-    /**
-     * Creates a searchcondition for the field,
-     * was once part of searchCondition, however,
-     * searchcondition() also immediately adds the search condition.
-     *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                           is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                           of the supported modes, as returned by this
-     *                           attribute's getSearchModes() method.
-     *
-     * @return string The searchcondition to use.
-     */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $value = $this->processSearchValue($value, $searchmode);

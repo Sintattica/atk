@@ -6,7 +6,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 
 /**
- * With the atkExpressionAttribute class you can select arbitrary SQL expressions
+ * With the ExpressionAttribute class you can select arbitrary SQL expressions
  * like subqueries etc. It's not possible to save values using this attribute.
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
@@ -58,7 +58,7 @@ class ExpressionAttribute extends Attribute
      *
      * @return string order by statement
      */
-    public function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
@@ -116,35 +116,23 @@ class ExpressionAttribute extends Attribute
     public function getSearchModes()
     {
         if ($this->getSearchType() == 'number') {
-            return NumberAttribute::getSearchModes();
+            return NumberAttribute::getStaticSearchModes();
         } else {
             if ($this->getSearchType() == 'date') {
-                return DateAttribute::getSearchModes();
+                return DateAttribute::getStaticSearchModes();
             } else {
                 return parent::getSearchModes();
             }
         }
     }
 
-    /**
-     * Returns a piece of html code that can be used to search for an attribute's value.
-     *
-     * @param array $record Array with values
-     * @param bool $extended if set to false, a simple search input is
-     *                            returned for use in the searchbar of the
-     *                            recordlist. If set to true, a more extended
-     *                            search may be returned for the 'extended'
-     *                            search page. The Attribute does not
-     *                            make a difference for $extended is true, but
-     *                            derived attributes may reimplement this.
-     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     *
-     * @return string A piece of html-code
-     */
+
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         if ($this->getSearchType() == 'number') {
-            return NumberAttribute::search($record, $extended, $fieldprefix);
+            $attr = new NumberAttribute($this->fieldName());
+
+            return $attr->search($record, $extended, $fieldprefix);
         } else {
             if ($this->getSearchType() == 'date') {
                 $attr = new DateAttribute($this->fieldName());
@@ -157,19 +145,6 @@ class ExpressionAttribute extends Attribute
         }
     }
 
-    /**
-     * Creates a search condition for this attribute.
-     *
-     * @param Query $query The query object where the search condition should be placed on
-     * @param string $table The name of the table in which this attribute
-     *                           is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                           of the supported modes, as returned by this
-     *                           attribute's getSearchModes() method.
-     *
-     * @return string The searchcondition to use.
-     */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // If we are accidentally mistaken for a relation and passed an array
@@ -187,29 +162,29 @@ class ExpressionAttribute extends Attribute
         }
 
         if ($this->getSearchType() == 'number') {
-            $value = NumberAttribute::processSearchValue($value, $searchmode);
-        }
+            $attr = new NumberAttribute($this->fieldName());
+            $value = $attr->processSearchValue($value, $searchmode);
 
-        if ($searchmode != 'between') {
-            if ($this->getSearchType() == 'number') {
-                if ($value['from'] != '') {
-                    $value = $value['from'];
+            if ($searchmode == 'between') {
+                return $attr->getBetweenCondition($query, $expression, $value);
+            }
+
+            if (isset($value['from']) && $value['from'] != '') {
+                $value = $value['from'];
+            } else {
+                if (isset($value['to']) && $value['to'] != '') {
+                    $value = $value['to'];
                 } else {
-                    if ($value['to'] != '') {
-                        $value = $value['to'];
-                    } else {
-                        return false;
-                    }
+                    return false;
                 }
             }
-            $func = $searchmode.'Condition';
-            if (method_exists($query, $func) && $value !== '' && $value !== null) {
-                return $query->$func($expression, $this->escapeSQL($value));
-            } else {
-                return false;
-            }
-        } else {
-            return NumberAttribute::getBetweenCondition($query, $expression, $value);
         }
+
+        $func = $searchmode.'Condition';
+        if (method_exists($query, $func) && $value !== '' && $value !== null) {
+            return $query->$func($expression, $this->escapeSQL($value));
+        }
+
+        return false;
     }
 }

@@ -1313,6 +1313,11 @@ class DateAttribute extends Attribute
      */
     public function getSearchModes()
     {
+        return self::getStaticSearchModes();
+    }
+
+    public static function getStaticSearchModes()
+    {
         return array('between');
     }
 
