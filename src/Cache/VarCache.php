@@ -23,7 +23,7 @@ class VarCache extends Cache
      */
     public function __construct()
     {
-        $this->setLifeTime($this->getCacheConfig('lifetime', 3600));
+        $this->setLifetime($this->getCacheConfig('lifetime', 3600));
     }
 
     /**

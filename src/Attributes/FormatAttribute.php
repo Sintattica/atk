@@ -85,7 +85,7 @@ class FormatAttribute extends Attribute
     public function edit($record, $fieldprefix, $mode)
     {
         $elems = $this->_breakDown();
-        $values = $this->_valueBreakdown($record[$this->fieldName()]);
+        $values = $this->_valueBreakDown($record[$this->fieldName()]);
 
         $inputs = array();
         $hints = array();

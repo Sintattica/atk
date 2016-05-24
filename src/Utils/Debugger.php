@@ -259,14 +259,14 @@ class Debugger
         $db = Db::getInstance();
         if (strtolower(substr(trim($query), 0, 6)) == 'select') {
             $output .= '<h1>Resultset</h1>';
-            $result = $db->getrows($query);
+            $result = $db->getRows($query);
             if (count($result)) {
                 $output .= $this->arrToTable($result, $_REQUEST['full'], $id);
             } else {
                 $output .= 'Query returned no rows';
             }
             $output .= '<h1>Explain plan</h1>';
-            $result = $db->getrows('EXPLAIN '.$query);
+            $result = $db->getRows('EXPLAIN '.$query);
             $output .= $this->arrToTable($result);
         }
         if ($queries[$id]['trace'] != '') {

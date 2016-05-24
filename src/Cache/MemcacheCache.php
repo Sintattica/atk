@@ -17,7 +17,7 @@ class MemcacheCache extends Cache
             throw new \Exception('The memcache extension is not loaded');
         }
         $this->m_memcache = new \Memcache();
-        $result = @$this->m_memcache->connect($this->getCacheCOnfig('host', 'localhost'), $this->getCacheConfig('port', 11211),
+        $result = @$this->m_memcache->connect($this->getCacheConfig('host', 'localhost'), $this->getCacheConfig('port', 11211),
             $this->getCacheConfig('timeout', 1));
         if (!$result) {
             throw new \Exception('Can\'t connect to the memcache server');

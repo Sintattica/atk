@@ -238,7 +238,7 @@ class TmpFile
      */
     public function fileAge()
     {
-        $filectime = $this->filectime();
+        $filectime = $this->filecTime();
         if ($filectime != false) {
             return time() - $filectime;
         }

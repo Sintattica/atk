@@ -189,7 +189,7 @@ class TimeAttribute extends Attribute
 
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
         // generate hour dropdown
-        if (!$this->hasflag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
+        if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
             $m_hourBox .= '<option value=""'.($m_defHour === '' ? ' selected' : '').'></option>';
         }
         for ($i = $this->m_beginTime; $i <= $this->m_endTime; ++$i) {
@@ -202,7 +202,7 @@ class TimeAttribute extends Attribute
         }
 
         // generate minute dropdown
-        if (!$this->hasflag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
+        if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
             $m_minBox .= '<option value=""'.($m_defMin === '' ? ' selected' : '').'></option>';
         }
 

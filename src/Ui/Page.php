@@ -613,7 +613,7 @@ class Page
     public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '')
     {
         if ($title == null) {
-            $title = $this->m_title != '' ? $this->m_title : Tools::atkText('app_title');
+            $title = $this->m_title != '' ? $this->m_title : Tools::atktext('app_title');
         }
 
         $ui = Ui::getInstance();

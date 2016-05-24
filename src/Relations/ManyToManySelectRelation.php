@@ -319,7 +319,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $key = $record[$this->getDestination()->primaryKeyField()];
 
         // Get the descriptor and ensure it's presentible
-        $descriptor = nl2br(htmlentities($this->getdestination()->descriptor($record)));
+        $descriptor = nl2br(htmlentities($this->getDestination()->descriptor($record)));
 
         // Build the record
         $result = '
@@ -413,8 +413,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getEditActionLink($record)
     {
-        return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'edit',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
+        return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'edit',
+            array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
     }
 
@@ -427,8 +427,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getViewActionLink($record)
     {
-        return Tools::href(Tools::dispatch_url($this->getdestination()->atkNodeUri(), 'view',
-            array('atkselector' => $this->getdestination()->primarykey($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
+        return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'view',
+            array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
     }
 

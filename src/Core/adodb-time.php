@@ -1123,8 +1123,8 @@ function adodb_date($fmt,$d=false,$is_gmt=false)
             case 'T':
                 if ($ADODB_DATETIME_CLASS) {
                     $dt = new DateTime();
-                    $dt->SetDate($year,$month,$day);
-                    $dates .= $dt->Format('T');
+                    $dt->setDate($year,$month,$day);
+                    $dates .= $dt->format('T');
                 } else
                     $dates .= date('T');
                 break;

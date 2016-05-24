@@ -446,7 +446,7 @@ class PgSqlDb extends Db
      */
     public function tableExists($table)
     {
-        $res = $this->getrows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('".$table."')");
+        $res = $this->getRows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('".$table."')");
 
         return count($res) == 0 ? false : true;
     }

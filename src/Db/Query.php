@@ -548,7 +548,7 @@ class Query
     {
         $query = $this->buildSelect($distinct);
 
-        return $this->getDb()->getrows($query);
+        return $this->getDb()->getRows($query);
     }
 
     /**

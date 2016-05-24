@@ -76,9 +76,9 @@ class DbAuth extends AuthInterface
         } // can't verify if we have no userid
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $this->buildSelectUserQuery($db->escapeSql($user), Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
+        $query = $this->buildSelectUserQuery($db->escapeSQL($user), Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_passwordfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
-        $recs = $db->getrows($query);
+        $recs = $db->getRows($query);
         if (count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
@@ -177,7 +177,7 @@ class DbAuth extends AuthInterface
         if ($accountenableexpression) {
             $query .= " AND $accountenableexpression";
         }
-        $recs = $db->getrows($query);
+        $recs = $db->getRows($query);
 
         return $recs;
     }
@@ -201,7 +201,7 @@ class DbAuth extends AuthInterface
         $query->addField($groupparentfield);
         $query->addTable($grouptable);
         $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).')');
-        $recs = $db->getrows($query->buildSelect(true));
+        $recs = $db->getRows($query->buildSelect(true));
 
         return $recs;
     }
@@ -317,7 +317,7 @@ class DbAuth extends AuthInterface
         if (!isset($this->m_rightscache[$node]) || count($this->m_rightscache[$node]) == 0) {
             $query = 'SELECT * FROM '.Config::getGlobal('auth_accesstable')." WHERE node='$node'";
 
-            $this->m_rightscache[$node] = $db->getrows($query);
+            $this->m_rightscache[$node] = $db->getRows($query);
         }
 
         $result = array();
@@ -355,7 +355,7 @@ class DbAuth extends AuthInterface
 
         $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
 
-        $rights = $db->getrows($query);
+        $rights = $db->getRows($query);
 
         $result = array();
 
@@ -407,7 +407,7 @@ class DbAuth extends AuthInterface
             }
         }
 
-        $recs = $db->getrows($query);
+        $recs = $db->getRows($query);
 
         $userlist = array();
         $stringparser = new StringParser(Config::getGlobal('auth_userdescriptor'));

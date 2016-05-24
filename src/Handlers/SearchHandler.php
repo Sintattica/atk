@@ -62,7 +62,7 @@ class SearchHandler extends AbstractSearchHandler
         } elseif (isset($this->m_postvars['atksearch'])) {
             $searcharray = $this->m_postvars['atksearch'];
         }
-        $page->addcontent($this->m_node->renderActionPage('search', $this->invoke('searchPage', $searcharray)));
+        $page->addContent($this->m_node->renderActionPage('search', $this->invoke('searchPage', $searcharray)));
     }
 
     /**
