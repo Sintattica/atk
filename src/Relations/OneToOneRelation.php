@@ -592,7 +592,7 @@ class OneToOneRelation extends Relation
 
             $output = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
             $forceList = Tools::decodeKeyValueSet($this->getFilter());
-            $output .= $this->m_destInstance->hideform($mode, $myrecord, $forceList, $fieldprefix.$this->fieldName().'_AE_');
+            $output .= $this->m_destInstance->hideForm($mode, $myrecord, $forceList, $fieldprefix.$this->fieldName().'_AE_');
 
             return $output;
         }

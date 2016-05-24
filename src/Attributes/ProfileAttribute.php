@@ -56,7 +56,7 @@ class ProfileAttribute extends Attribute
                 WHERE '.$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
         $result = array();
-        $rows = $db->getrows($query);
+        $rows = $db->getRows($query);
         for ($i = 0; $i < count($rows); ++$i) {
             $result[$rows[$i]['node']][] = $rows[$i]['action'];
         }

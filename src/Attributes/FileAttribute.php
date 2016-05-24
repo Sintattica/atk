@@ -265,7 +265,7 @@ class FileAttribute extends Attribute
             }
         }
 
-        if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldname()]['orgfilename']) && $record[$this->fieldname()]['orgfilename'] != '') {
+        if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
             $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="'.$id.'_del" type="checkbox" name="'.$id.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
                     'atk');
         }
@@ -671,7 +671,7 @@ class FileAttribute extends Attribute
      */
     public function delete($record)
     {
-        if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldname()]['orgfilename'] != '')) {
+        if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldName()]['orgfilename'] != '')) {
             if (file_exists($this->m_dir.$record[$this->fieldName()]['orgfilename']) && !@unlink($this->m_dir.$record[$this->fieldName()]['orgfilename'])) {
                 return false;
             }
@@ -695,7 +695,7 @@ class FileAttribute extends Attribute
         $randval = mt_rand();
 
         $filename = isset($record[$this->fieldName()]['filename']) ? $record[$this->fieldName()]['filename'] : null;
-        Tools::atkdebug($this->fieldname()." - File: $filename");
+        Tools::atkdebug($this->fieldName()." - File: $filename");
         $prev_type = array(
             'jpg',
             'jpeg',
@@ -715,7 +715,7 @@ class FileAttribute extends Attribute
                     return '<a href="'.$this->m_url."$filename\" target=\"_blank\">$filename</a>";
                 } elseif (in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_POPUP)) {
                     if (in_array($ext, $imgtype_prev)) {
-                        $imagehw = GetImageSize($this->m_dir.$filename);
+                        $imagehw = getimagesize($this->m_dir.$filename);
                     } else {
                         $imagehw = array('0' => '640', '1' => '480');
                     }
@@ -811,7 +811,7 @@ class FileAttribute extends Attribute
         } else {
             $parser = new StringParser($this->m_filenameTpl);
             $includes = $parser->getAttributes();
-            $record = $this->m_ownerInstance->updateRecord($rec, $includes, array($this->fieldname()));
+            $record = $this->m_ownerInstance->updateRecord($rec, $includes, array($this->fieldName()));
             $record[$this->fieldName()] = substr($default, 0, strrpos($default, '.'));
             $ext = $this->getFileExtension($default);
             $filename = $parser->parse($record).($ext != '' ? '.'.$ext : '');

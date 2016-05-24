@@ -380,7 +380,7 @@ class DateAttribute extends Attribute
         /* date must be within specified (default: 25) years */
         if (!empty($current['y_max']) && !empty($current['y_min']) && $current['y_max'] - $current['y_min'] <= $this->m_maxyears) {
             $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
-            if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
+            if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
                 $result .= '<option value="0"'.($current === null ? ' selected' : '').'></option>';
             }
 
@@ -428,7 +428,7 @@ class DateAttribute extends Attribute
     protected function renderMonth($fieldname, $str_script, $current, $format, $obligatory)
     {
         $result = '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
-        if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
+        if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
         if (!$this->m_simplemode) {
@@ -468,7 +468,7 @@ class DateAttribute extends Attribute
         $c_mday = isset($current['mday']) ? $current['mday'] : null;
 
         $result = '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
-        if (!$obligatory || $this->hasflag(self::AF_DATE_EMPTYFIELD)) {
+        if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
         if (!$this->m_simplemode) {
@@ -743,7 +743,7 @@ class DateAttribute extends Attribute
      */
     public static function registerScriptsAndStyles($useCalendar = true)
     {
-        $page = Page::getinstance();
+        $page = Page::getInstance();
 
         // make sure we register the script code with translations for the months etc. only once!
         if (!self::$s_baseScriptsRegistered) {

@@ -206,7 +206,7 @@ class SecurityManager
         $userrecords[0][Config::getGlobal('auth_passwordfield')]['hash'] = password_hash($newPassword, PASSWORD_DEFAULT);
         $userNode->updateDb($userrecords[0], true, '', array(Config::getGlobal('auth_passwordfield')));
 
-        $db = $userNode->getDB();
+        $db = $userNode->getDb();
         $db->commit();
 
         // Send an email containing the new password to user
@@ -529,7 +529,7 @@ class SecurityManager
 
         $tplvars = array();
         $output = '<form action="'.Config::getGlobal('dispatcher').'" method="post">';
-        $output .= Tools::makeHiddenPostVars(array('atklogout'));
+        $output .= Tools::makeHiddenPostvars(array('atklogout'));
         $output .= '<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
         $tplvars['atksessionformvars'] = Tools::makeHiddenPostvars(['atklogout', 'auth_rememberme']);

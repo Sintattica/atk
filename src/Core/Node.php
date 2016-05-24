@@ -904,7 +904,7 @@ class Node
             $attribute->m_index = max(array_keys($this->m_attribIndexList)); // might contain gaps
             $attribute->setTabs($tabs);
             $attribute->setSections($sections);
-            $this->m_attributeTabs[$attribute->fieldname()] = $tabs;
+            $this->m_attributeTabs[$attribute->fieldName()] = $tabs;
         }
 
         // Order the tablist

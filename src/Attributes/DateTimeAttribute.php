@@ -329,17 +329,17 @@ class DateTimeAttribute extends Attribute
                 return '';
             }
 
-            $datetime = explode(' ', $rec[$this->fieldname()]);
+            $datetime = explode(' ', $rec[$this->fieldName()]);
 
             $tmp_rec = $rec;
-            $tmp_rec[$this->fieldname()] = $datetime[0];
+            $tmp_rec[$this->fieldName()] = $datetime[0];
             $result_date = $this->m_date->db2value($tmp_rec);
             if ($result_date == null) {
                 return;
             }
 
             $tmp_rec = $rec;
-            $tmp_rec[$this->fieldname()] = isset($datetime[1]) ? $datetime[1] : null;
+            $tmp_rec[$this->fieldName()] = isset($datetime[1]) ? $datetime[1] : null;
             $result_time = $this->m_time->db2value($tmp_rec);
             if ($result_time == null) {
                 $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');

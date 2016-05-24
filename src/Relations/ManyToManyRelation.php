@@ -386,7 +386,7 @@ class ManyToManyRelation extends Relation
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
                 if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
-                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getdestination()->primarykey($rec))),
+                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getDestination()->primaryKey($rec))),
                         $descr, SessionManager::SESSION_NESTED);
                 }
                 $recordset[] = $descr;

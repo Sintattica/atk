@@ -159,7 +159,7 @@ class MultipleFileAttribute extends FileAttribute
                 $ext = strtolower(substr($files[$i], strrpos($files[$i], '.') + 1, strlen($files[$i])));
                 if (in_array($ext, $prev_type)) {
                     if (in_array($ext, $imgtype_prev)) {
-                        $imagehw = GetImageSize($this->m_dir.$files[$i]);
+                        $imagehw = getimagesize($this->m_dir.$files[$i]);
                     } else {
                         $imagehw = array('0' => '640', '1' => '480');
                     }
