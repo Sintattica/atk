@@ -760,6 +760,14 @@ class atkNode
      */
     private $m_attribOrder = 0;
 
+
+    /**
+     * Default datagrid limit, to override config. variable "recordsperpage"
+     * 
+     * @var int
+     */
+    private $m_recordsPerPage;
+
     /**
      * Constructor.
      *
@@ -4945,5 +4953,19 @@ class atkNode
                 $attr->removeFlag($flag);
             }
         }
+    }
+
+    public function getRecordsPerPage()
+    {
+        if ($this->m_recordsPerPage) {
+            return $this->m_recordsPerPage;
+        } else {
+            return atkConfig::getGlobal('recordsperpage');
+        }
+    }
+
+    public function setRecordsPerPage($value)
+    {
+        $this->m_recordsPerPage = $value;
     }
 }
