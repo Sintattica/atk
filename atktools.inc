@@ -74,7 +74,8 @@ function atkErrorHandler($errtype, $errstr, $errfile, $errline)
         E_USER_ERROR => "User Error",
         E_USER_WARNING => "User Warning",
         E_USER_NOTICE => "User Notice",
-        E_STRICT => "Strict Notice"
+        E_STRICT => "Strict Notice",
+        'EXCEPTION' => 'Uncaught exception'
     );
 
     // E_RECOVERABLE_ERROR is available since 5.2.0
@@ -107,13 +108,10 @@ function atkErrorHandler($errtype, $errstr, $errfile, $errline)
         atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
         return;
     } else {
-        atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
-
+        atkerror("[$errortypestring] $errstr in $errfile (line $errline)", ($errtype == 'EXCEPTION'));
         // we must die. we can't even output anything anymore..
         // we can do something with the info though.
-        handleError();
-        atkOutput::getInstance()->outputFlush();
-        die;
+        atkhalt($errstr, 'critical');
     }
 }
 
@@ -124,17 +122,18 @@ function atkErrorHandler($errtype, $errstr, $errfile, $errline)
  */
 function atkExceptionHandler(Exception $exception)
 {
-    atkdebug($exception->getMessage(), DEBUG_ERROR);
-    atkdebug("Trace:<br/>" . nl2br($exception->getTraceAsString()), DEBUG_ERROR);
-    atkhalt("Uncaught exception: " . $exception->getMessage(), 'critical');
+    atkErrorHandler('EXCEPTION', $exception->getMessage(), $exception->getFile(), $exception->getLine());
 }
 
 /**
- * @deprecated Use atkhalt instead.
+ * Default ATK fatal handler
  */
-function halt($msg, $level = "warning")
+function atkFatalHandler()
 {
-    return atkhalt($msg, $level);
+    $error = error_get_last();
+    if ($error) {
+        atkErrorHandler(E_ERROR, $error['message'], $error['file'], $error['line']);
+    }
 }
 
 /**
@@ -270,11 +269,16 @@ function atkGetTimingInfo()
  * If error reporting by email is turned on, the error messages are also
  * send by e-mail.
  *
+ * Available handlers from /atk/errors/ can be added to the error_handlers config.
+ *
  * @param string|Exception $error the error text or exception to display
+ * @param bool $skipThrow
  */
-function atkerror($error)
+function atkerror($error, $skipThrow = false)
 {
-    global $g_error_msg;
+    include_once(atkConfig::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.inc');
+
+    global $g_error_msg, $g_debug_msg;
 
     if ($error instanceof Exception) {
         $g_error_msg[] = "[" . elapsed() . "] " . $error->getMessage();
@@ -288,10 +292,27 @@ function atkerror($error)
         atkdebug("Trace:" . atk_get_trace(), DEBUG_ERROR);
     }
 
-    if (atkconfig('throw_exception_on_error') && $error instanceof Exception) {
-        throw $error;
-    } else if (atkconfig('throw_exception_on_error')) {
-        throw new Exception($error);
+    $default_error_handlers = [];
+    $mailReport = atkConfig::getGlobal('mailreport');
+    if($mailReport){
+        $default_error_handlers['mail'] = array('mailto' => $mailReport);
+    }
+
+    $errorHandlers = atkConfig::getGlobal('error_handlers', $default_error_handlers);
+    foreach ($errorHandlers as $key => $value) {
+        if (is_numeric($key)) {
+            $key = $value;
+        }
+        $errorHandlerObject = atkErrorHandlerBase::get($key, $value);
+        $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
+    }
+
+    if (!$skipThrow && atkConfig::getGlobal('throw_exception_on_error')) {
+        if ($error instanceof Exception) {
+            throw $error;
+        } else {
+            throw new Exception($error);
+        }
     }
 }
 
@@ -894,36 +915,6 @@ function _wordwrap($line)
 }
 
 /**
- * Send a detailed error report to the maintainer.
- *
- */
-function mailreport()
-{
-    global $g_error_msg, $g_debug_msg;
-    include_once(atkconfig('atkroot') . 'atk/errors/class.atkerrorhandlerbase.inc');
-    $errorHandlerObject = atkErrorHandlerBase::get('mail', array('mailto' => atkconfig('mailreport')));
-    $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
-}
-
-/**
- * Handle errors that occurred in ATK, available handlers from /atk/errors/ can be added to
- * the error_handlers config.
- *
- */
-function handleError()
-{
-    global $g_error_msg, $g_debug_msg;
-    include_once(atkconfig('atkroot') . 'atk/errors/class.atkerrorhandlerbase.inc');
-    $errorHandlers = atkconfig('error_handlers', array('mail' => array('mailto' => atkconfig('mailreport'))));
-    foreach ($errorHandlers as $key => $value) {
-        if (is_numeric($key))
-            $key = $value;
-        $errorHandlerObject = atkErrorHandlerBase::get($key, $value);
-        $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
-    }
-}
-
-/**
  * Wrapper for escapeSQL function
  * @param String $string The string to escape.
  * @param boolean $wildcard Set to true to convert wildcard chars ('%').
@@ -942,8 +933,7 @@ function escapeSQL($string, $wildcard = false)
  */
 function atkversion()
 {
-    include(atkconfig("atkroot") . "atk/version.inc");
-    return $atk_version;
+    return include(atkConfig::getGlobal("atkroot") . "atk/version.inc");
 }
 
 /**

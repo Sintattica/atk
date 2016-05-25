@@ -3018,11 +3018,6 @@ class atkNode
                 $location = substr($location, 0, -1);
             }
 
-            global $g_error_msg;
-            if (count($g_error_msg) > 0) {
-                mailreport();
-            }
-
             header('Location: ' . $location);
             if ($exit) {
                 exit();
