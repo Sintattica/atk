@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Db\Db;
+
 class PolymorphicOneToOneRelation extends OneToOneRelation
 {
     /*

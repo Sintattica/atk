@@ -118,7 +118,7 @@ class BoolAttribute extends Attribute
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
                     $this->fieldName().'_label',
-                    parent::label($record),
+                    parent::label(),
                 )).'</label>';
         }
         
@@ -218,7 +218,7 @@ class BoolAttribute extends Attribute
     public function getLabel($record = array(), $mode = '')
     {
         if ($mode == 'view' && $this->hasFlag(self::AF_BLANK_LABEL | self::AF_BOOL_INLINE_LABEL)) {
-            return $this->label($record);
+            return $this->label();
         } else {
             return parent::getLabel($record);
         }

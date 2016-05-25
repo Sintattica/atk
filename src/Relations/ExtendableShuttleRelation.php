@@ -7,6 +7,7 @@ use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Db\Db;
 
 /**
  * Shuttle relation with widget extensions.
@@ -318,14 +319,15 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     /**
      * Load the records for this relation.
      *
-     * @param Db $notused The database object
+     * @param Db $db The database object
      * @param array $record The record
+     * @param string $mode
      *
      * @return array Array with records
      */
-    public function load($notused, $record)
+    public function load($db, $record, $mode)
     {
-        $res = parent::load($notused, $record);
+        $res = parent::load($db, $record, $mode);
         $ret['selected'] = $res;
 
         return $ret;

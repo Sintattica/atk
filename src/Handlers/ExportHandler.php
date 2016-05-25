@@ -143,7 +143,7 @@ class ExportHandler extends ActionHandler
     {
         $value = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue'] : null;
 
-        return $this->getAttributeSelect($value);
+        return $this->getAttributeSelect();
     }
 
     /**

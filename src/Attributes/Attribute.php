@@ -914,7 +914,7 @@ class Attribute
 
         return;
     }
-
+    
     /**
      * Register JavaScript event handlers.
      *
@@ -1080,7 +1080,7 @@ class Attribute
             $entry = array('name' => $this->m_name, 'attribute' => $this);
 
             /* label? */
-            $entry['label'] = $this->getLabel();
+            $entry['label'] = $this->getLabel($defaults, $mode);
             // on which tab?
             $entry['tabs'] = $this->getTabs();
             //on which sections?
@@ -1153,7 +1153,7 @@ class Attribute
             $entry['id'] = $this->getHtmlId($fieldprefix);
 
             /* label? */
-            $entry['label'] = $this->getLabel();
+            $entry['label'] = $this->getLabel($defaults, $mode);
             /* error? */
             $entry['error'] = $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
             // on which tab?
@@ -2245,11 +2245,14 @@ class Attribute
      * returns the HTML label, while the getLabel() method is 'smart', by
      * taking the self::AF_NOLABEL and self::AF_BLANKLABEL flags into account.
      *
+     * @param array $record The record holding the value for this attribute.
+     * @param string $mode The mode ("add", "edit" or "view")
+     *
      * @return string The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    public function getLabel()
+    public function getLabel($record = array(), $mode = '')
     {
         if ($this->hasFlag(self::AF_NOLABEL)) {
             return '';
@@ -2414,12 +2417,14 @@ class Attribute
      * Attributes can add new tabs to tabbed screens. This method will be
      * called to retrieve the tabs. The regular Attribute has no
      * implementation for this method. Derived attributes may override this.
-     *
+     * 
+     * @param string $action The action for which additional tabs should be loaded.
+     * 
      * @return array The list of tabs to add to the screen.
      */
-    public function getAdditionalTabs()
+    public function getAdditionalTabs($action = null)
     {
-        return array();
+        return [];
     }
 
     /**

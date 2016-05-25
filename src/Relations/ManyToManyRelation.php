@@ -8,6 +8,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * Many to many relation. Should not be used directly.
@@ -427,12 +428,13 @@ class ManyToManyRelation extends Relation
     /**
      * load function.
      *
-     * @param mixed $notused
+     * @param Db $db
      * @param array $record
+     * @param string $mode
      *
      * @return array
      */
-    public function load($notused, $record)
+    public function load($db, $record, $mode)
     {
         if ($this->createLink()) {
             $where = $this->_getLoadWhereClause($record);

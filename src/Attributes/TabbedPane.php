@@ -167,7 +167,7 @@ class TabbedPane extends Attribute
                     $entry['id'] = $p_attrib->getHtmlId($fieldprefix);
 
                     /* label? */
-                    $entry['label'] = $p_attrib->getLabel($defaults);
+                    $entry['label'] = $p_attrib->getLabel($defaults, $mode);
                     /* error? */
                     $entry['error'] = $p_attrib->getError($error);
                     // on which tab? - from tabbedpane properties
@@ -343,7 +343,7 @@ class TabbedPane extends Attribute
                         if ($p_attrib->hasFlag(self::AF_BLANKLABEL)) {
                             $tplfield['label'] = '';
                         } else {
-                            $tplfield['label'] = $p_attrib->label($record);
+                            $tplfield['label'] = $p_attrib->label();
                         }
                     } else {
                         // Make the rest fill up the entire line

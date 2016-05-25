@@ -926,7 +926,7 @@ class Tools
 
             for ($i = 0; $i < count($attrib); ++$i) {
                 $attribName[$i] = $attrib[$i]->fieldName();
-                $label[$i] = $attrib[$i]->label($record);
+                $label[$i] = $attrib[$i]->label();
             }
 
             $tab = $attrib[0]->m_tabs[0];
@@ -935,7 +935,7 @@ class Tools
             }
         } else {
             $attribName = $attrib->fieldName();
-            $label = $attrib->label($record);
+            $label = $attrib->label();
             $tab = $attrib->m_tabs[0];
             if (!$message) {
                 $message = $attrib->text($error);

@@ -512,7 +512,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
                 continue;
             }
 
-            $loadType = $attr->loadType($this->m_mode, $isSearching);
+            $loadType = $attr->loadType($this->m_mode);
 
             if (Tools::hasFlag($loadType, Attribute::PRELOAD)) {
                 $result[Attribute::PRELOAD][$attr->fieldName()] = $attr;

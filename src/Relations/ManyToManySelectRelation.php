@@ -246,6 +246,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * @param Db $db database instance.
      * @param array $record record
      * @param string $mode load mode
+     *
+     * @return array values
      */
     public function load($db, $record, $mode)
     {

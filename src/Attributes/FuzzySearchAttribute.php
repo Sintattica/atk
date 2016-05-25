@@ -370,35 +370,26 @@ class FuzzySearchAttribute extends Attribute
         return true;
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
-    public function load()
+
+    public function load($db, $record, $mode)
     {
+        //noop
     }
 
+    
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
+        //noop
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     *
-     * @param array $record
-     * @param string $fieldprefix
-     * @param string $mode
-     *
-     * @return string html
-     */
     public function hide($record, $fieldprefix, $mode)
     {
+        //noop
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
+        //noop
     }
 
     /**

@@ -365,14 +365,14 @@ class DateTimeAttribute extends Attribute
                     $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
                 } else {
                     $value = $this->value2db($record);
-                    $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES), $mode, 'DATETIME');
+                    $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
                 }
             }
         } else {
             if (Config::getGlobal('database') != 'oci9') {
                 $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
             } else {
-                $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), $mode, 'DATETIME');
+                $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
             }
         }
     }

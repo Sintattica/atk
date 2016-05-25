@@ -172,7 +172,7 @@ class OneToOneRelation extends Relation
                 }
 
                 $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
-                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true, $mode);
+                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true);
 
                 // we pass true as the last param to addToQuery, because we need all fields..
                 $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level + 1, true, $mode);
@@ -878,8 +878,7 @@ class OneToOneRelation extends Relation
      * screen, so the attributes are seamlessly integrated but still on their
      * own tabs.
      *
-     * @param string $action The action for which additional tabs should be
-     *                       loaded.
+     * @param string $action The action for which additional tabs should be loaded.
      *
      * @return array The list of tabs to add to the screen.
      */

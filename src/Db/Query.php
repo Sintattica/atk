@@ -669,7 +669,7 @@ class Query
      */
     public function executeInsert()
     {
-        $query = $this->buildInsert(true);
+        $query = $this->buildInsert();
 
         return $this->getDb()->query($query);
     }

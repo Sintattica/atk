@@ -124,7 +124,7 @@ class AggregatedColumn extends Attribute
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
                 $arr['search'][$fieldprefix.$this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr['search'][$fieldprefix.$this->fieldName()] .= '<input type="hidden" name="atksearchmode['.$this->fieldName().']" value="'.$this->getSearchMode(false).'">';
+                $arr['search'][$fieldprefix.$this->fieldName()] .= '<input type="hidden" name="atksearchmode['.$this->fieldName().']" value="'.$this->getSearchMode().'">';
             }
         }
     }

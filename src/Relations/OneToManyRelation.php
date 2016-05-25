@@ -752,7 +752,6 @@ class OneToManyRelation extends Relation
      * @param Db $db The database used by the node.
      * @param array $record The master record
      * @param string $mode The mode for loading (admin, select, copy, etc)
-     * @param bool $paging divide the result records on multiple pages ($config_recordsperpage)
      *
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
@@ -760,7 +759,7 @@ class OneToManyRelation extends Relation
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    public function load($db, $record, $mode = '', $paging = false)
+    public function load($db, $record, $mode)
     {
         $result = null;
 
@@ -795,7 +794,7 @@ class OneToManyRelation extends Relation
         if (!isset($record[$this->fieldName()]) || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == 0)) {
             // empty. It might be that the record has not yet been fetched. In this case, we do
             // a forced load to see if it's really empty.
-            $recs = $this->load($this->m_ownerInstance->getDb(), $record);
+            $recs = $this->load($this->m_ownerInstance->getDb(), $record, null);
 
             return count($recs) == 0;
         }

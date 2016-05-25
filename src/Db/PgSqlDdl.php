@@ -104,8 +104,6 @@ class PgSqlDdl extends Ddl
             default:
                 return false;
         }
-
-        return false; // in case we have an unsupported type.
     }
 
     /**

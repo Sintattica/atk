@@ -91,10 +91,11 @@ class CalculatorAttribute extends Attribute
      *
      * @param Db $db
      * @param array $record
+     * @param string $mode
      *
      * @return string result of the calculation
      */
-    public function load($db, $record)
+    public function load($db, $record, $mode)
     {
         $parser = new StringParser($this->m_calculation);
         eval('$result = '.$parser->parse($record).';');
@@ -113,7 +114,7 @@ class CalculatorAttribute extends Attribute
     public function display($record, $mode)
     {
         if ($this->m_ownerInstance->m_partial == 'attribute.'.$this->fieldName().'.refresh') {
-            $record[$this->fieldName()] = $this->load($db, $record);
+            $record[$this->fieldName()] = $this->load($this->m_ownerInstance->getDb(), $record, $mode);
         }
 
         return parent::display($record, $mode);

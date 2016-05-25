@@ -46,10 +46,11 @@ class ProfileAttribute extends Attribute
      *
      * @param Db $db The database object
      * @param array $record The record
+     * @param string $mode
      *
      * @return array Array with loaded values
      */
-    public function load($db, $record)
+    public function load($db, $record, $mode)
     {
         $query = 'SELECT *
                 FROM '.Config::getGlobal('auth_accesstable').'

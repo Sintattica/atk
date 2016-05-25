@@ -1448,7 +1448,7 @@ class Node
      */
     public function getTabs($action)
     {
-        $list = isset($this->m_tabList[$action])?$this->m_tabList[$action]:null;
+        $list = isset($this->m_tabList[$action]) ? $this->m_tabList[$action] : null;
         $disable = $this->checkTabRights($list);
 
         if (!is_array($list)) {
@@ -1473,7 +1473,7 @@ class Node
             }
 
             if (is_object($p_attrib)) {
-                $additional = $p_attrib->getAdditionalTabs();
+                $additional = $p_attrib->getAdditionalTabs(null);
                 if (is_array($additional) && count($additional) > 0) {
                     $list = Tools::atk_array_merge($list, $additional);
                     $this->m_filledTabs = Tools::atk_array_merge($this->m_filledTabs, $additional);
@@ -3351,13 +3351,11 @@ class Node
             } else {
                 return true;
             }
-        } else {
-            Tools::atkdebug('NOT UPDATING! NO SELECTOR SET!');
-
-            return false;
         }
 
-        return true;
+        Tools::atkdebug('NOT UPDATING! NO SELECTOR SET!');
+
+        return false;
     }
 
     /**
