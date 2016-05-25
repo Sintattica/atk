@@ -450,7 +450,7 @@ class atkDataGrid
         $this->setFlags($this->convertNodeFlags($this->getNode()->getFlags()));
         $this->setBaseUrl(partial_url($this->getNode()->atkNodeType(), $this->getNode()->m_action, 'datagrid'));
 
-        $this->setDefaultLimit(atkconfig('recordsperpage'));
+        $this->setDefaultLimit($this->getNode()->getRecordsPerPage());
         $this->setDefaultActions($this->getNode()->defaultActions("admin"));
         $this->setDefaultOrderBy($this->getNode()->getOrder());
         $this->setTemplate('datagrid.tpl');
