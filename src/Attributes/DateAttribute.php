@@ -710,10 +710,12 @@ class DateAttribute extends Attribute
     /**
      * Check the given $current date and return a current date that fits in the allowed range.
      *
-     * @param date $current
-     * @param date $minimum
-     * @param date $maximum
+     * @param int $current time
+     * @param int $minimum
+     * @param int $maximum
      * @param string $mode The mode
+     *
+     * @return int time
      */
     public function getValidCurrentDate($current, $minimum, $maximum, $mode)
     {
@@ -1168,7 +1170,7 @@ class DateAttribute extends Attribute
         else {
             if (!empty($value)) {
                 // maybe we should use strptime in PHP >= 5.1
-                $formats = array();
+                $formats = [];
                 $formats[] = str_replace(array('y', 'Y', 'm', 'n', 'F', 'd', 'j'), array('yyyy', 'yyyy', 'mm', 'mm', 'mm', 'dd', 'dd'),
                     $this->m_date_format_edit);
                 $formats[] = str_replace(array('y', 'Y', 'm', 'n', 'F', 'd', 'j'), array('yyyy', 'yyyy', 'm', 'm', 'm', 'dd', 'dd'), $this->m_date_format_edit);
@@ -1408,7 +1410,7 @@ class DateAttribute extends Attribute
             }
 
             //analyze the formate and make a regular expression
-            $replaces = array();
+            $replaces = [];
             $replaces[$dayBegin] = array('[0-9]{'.$dayLength.'}', $dayLength);
             $replaces[$monthBegin] = array('[0-9]{'.$monthLength.'}', $monthLength);
             $replaces[$yearBegin] = array('[0-9]{'.$yearLength.'}', $yearLength);

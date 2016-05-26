@@ -39,7 +39,7 @@ abstract class ShuttleControl
     /**
      * Set the shuttle.
      *
-     * @param ShuttleControl $shuttle
+     * @param ExtendableShuttleRelation $shuttle
      */
     public function setShuttle($shuttle)
     {

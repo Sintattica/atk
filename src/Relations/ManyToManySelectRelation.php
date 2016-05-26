@@ -117,11 +117,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * this if the position attribute has been set.
      *
      * @param array $selectedRecords selected records
-     * @param array $selectedKey selected keys
+     * @param array $selectedKeys selected keys
      */
     private function orderSelectedRecords(&$selectedRecords, $selectedKeys)
     {
-        $orderedRecords = array();
+        $orderedRecords = [];
 
         foreach ($selectedKeys as $key) {
             foreach ($selectedRecords as $record) {
@@ -161,10 +161,10 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         $selectedKeys = $this->getSelectedKeys($record, $id);
 
-        $selectedRecords = array();
+        $selectedRecords = [];
         if (count($selectedKeys) > 0) {
             $selector = '('.implode(') OR (', $selectedKeys).')';
-            $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields());
+            $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->getAllRows();
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
         }
 
@@ -344,7 +344,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
     protected function renderSelectedRecordActions($record)
     {
-        $actions = array();
+        $actions = [];
 
         if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && !$this->hasFlag(self::AF_MANYTOMANYSELECT_DETAILEDIT) && $this->getDestination()->allowed('view')) {
             $actions[] = 'view';
@@ -361,7 +361,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $this->recordActions($record, $actions);
 
         // Call the renderButton action for those actions
-        $actionLinks = array();
+        $actionLinks = [];
         foreach ($actions as $action) {
             $actionLink = $this->getActionLink($action, $record);
             if ($actionLink != null) {
@@ -619,7 +619,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    public function getLabel($record = array(), $mode = '')
+    public function getLabel($record = [], $mode = '')
     {
         $additional = '';
         if ($this->hasPositionAttribute()) {

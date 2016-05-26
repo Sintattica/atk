@@ -163,7 +163,7 @@ class SessionManager
     public static function &getSession()
     {
         if (!isset($_SESSION[Config::getGlobal('identifier')]) || !is_array($_SESSION[Config::getGlobal('identifier')])) {
-            $_SESSION[Config::getGlobal('identifier')] = array();
+            $_SESSION[Config::getGlobal('identifier')] = [];
         }
 
         return $_SESSION[Config::getGlobal('identifier')];
@@ -299,7 +299,7 @@ class SessionManager
             // call to stackVar for this var in this request without an explicit value. If
             // we would this for every call without an explicit value we would overwrite values
             // that are set somewhere between those calls.
-            static $requestStackVars = array();
+            static $requestStackVars = [];
             if (!in_array($var, $requestStackVars)) {
                 $value = $_REQUEST[$var];
                 $requestStackVars[] = $var;
@@ -340,7 +340,7 @@ class SessionManager
         $sessionData = &$this->getSession();
         $top_stack_level = &$sessionData[$this->m_namespace]['globals']['#STACK#'][$this->atkStackID()];
         if (!is_array($top_stack_level)) {
-            $top_stack_level = array();
+            $top_stack_level = [];
         }
 
         if ($value === '') {
@@ -420,7 +420,7 @@ class SessionManager
 
         $current = &$sessionData[$this->m_namespace]['globals'];
         if (!is_array($current)) {
-            $current = array();
+            $current = [];
         }
 
         // Posted vars always overwrite anything in the current session..
@@ -573,7 +573,7 @@ class SessionManager
 
             unset($currentitem['atkreject']); // clear old reject info
 
-            $atkformdata = array();
+            $atkformdata = [];
             foreach (array_keys($postvars) as $varname) {
                 // Only save formdata itself, hence no $atk.. variables.
                 // Except atktab because it could be changed in the page load.
@@ -604,7 +604,7 @@ class SessionManager
 
             if ($this->atklevel == -1 || !is_array($stack)) { // SessionManager::SESSION_NEW
                 Tools::atkdebug('Cleaning stack');
-                $stack = array();
+                $stack = [];
                 $this->atklevel = 0;
             } else {
                 if ($this->atklevel == -2) { // SessionManager::SESSION_REPLACE
@@ -634,7 +634,7 @@ class SessionManager
             if (!isset($currentitem) || $currentitem == '') {
                 Tools::atkdebug('New level on session stack');
                 // Initialise
-                $currentitem = array();
+                $currentitem = [];
                 // new level.. always based on the previous level
                 if (isset($stack[count($stack) - 1])) {
                     $copieditem = $stack[count($stack) - 1];
@@ -754,7 +754,7 @@ class SessionManager
 
         $ui = Ui::getInstance();
 
-        $res = array();
+        $res = [];
         $stack = $sessionData[$this->m_namespace]['stack'][$this->atkStackID()];
 
         for ($i = 0; $i < count($stack); ++$i) {
@@ -804,7 +804,7 @@ class SessionManager
         $sessionData = &self::getSession();
 
         $stack = $sessionData[$this->m_namespace]['stack'][$this->atkStackID()];
-        $res = array();
+        $res = [];
         $node = null;
         $module = null;
         $nodename = null;

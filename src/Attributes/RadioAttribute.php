@@ -32,7 +32,7 @@ class RadioAttribute extends ListAttribute
      *
      * @var array
      */
-    public $m_comments = array();
+    public $m_comments = [];
     public $m_onchangehandler_init = "var newvalue = el.value;\n";
 
     /**
@@ -91,7 +91,7 @@ class RadioAttribute extends ListAttribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        $values = $this->getValues($record);
+        $values = $this->getValues();
 
         $total_items = count($values);
         $items = 0;

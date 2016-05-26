@@ -51,7 +51,7 @@ class MailErrorHandler extends ErrorHandlerBase
 
             $body .= "\nDEBUGMESSAGES\n".str_repeat('-', 70)."\n";
 
-            $lines = array();
+            $lines = [];
             for ($i = 0, $_ = count($debugMessage); $i < $_; ++$i) {
                 $lines[] = $this->_wordwrap(Tools::atk_html_entity_decode(preg_replace('(\[<a.*</a>\])', '', $debugMessage[$i])));
             }

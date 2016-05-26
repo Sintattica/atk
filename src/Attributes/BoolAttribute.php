@@ -186,7 +186,7 @@ class BoolAttribute extends Attribute
      *
      * @param array $record Array with boolean field
      *
-     * @return yes or no
+     * @return string yes or no
      */
     public function display($record, $mode)
     {
@@ -215,7 +215,7 @@ class BoolAttribute extends Attribute
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    public function getLabel($record = array(), $mode = '')
+    public function getLabel($record = [], $mode = '')
     {
         if ($mode == 'view' && $this->hasFlag(self::AF_BLANK_LABEL | self::AF_BOOL_INLINE_LABEL)) {
             return $this->label();
@@ -267,22 +267,7 @@ class BoolAttribute extends Attribute
     {
         return 'number';
     }
-
-    /**
-     * Return the label of the field.
-     *
-     * @param array $record The record that holds the value of this attribute
-     *
-     * @return The label for this attribute
-     */
-    /*
-    function label($record = array())
-    {
-        $label_txt = parent::label($record);
-        return '<label for="' . $this->m_name . '">' . $label_txt . '</label>';
-    }
-    */
-
+    
     /**
      * Convert a String representation into an internal value.
      *

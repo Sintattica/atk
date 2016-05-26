@@ -25,7 +25,7 @@ class PageBuilder
     protected $m_action = null;
     protected $m_record = null;
     protected $m_title = null;
-    protected $m_boxes = array();
+    protected $m_boxes = [];
 
     /**
      * Constructor.
@@ -141,7 +141,7 @@ class PageBuilder
             $this->m_title = $this->getNode()->actionTitle($this->m_action, $this->m_record);
         }
 
-        $boxes = array();
+        $boxes = [];
         foreach ($this->m_boxes as $box) {
             $title = $box['title'];
             if ($title == null) {

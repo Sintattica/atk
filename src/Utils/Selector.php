@@ -28,7 +28,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Selector parameters.
      */
-    protected $m_conditions = array();
+    protected $m_conditions = [];
     protected $m_distinct = false;
     protected $m_mode = '';
     protected $m_order = '';
@@ -505,7 +505,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected function _getAttributesByLoadType()
     {
         $isSearching = $this->_isSearching();
-        $result = array(Attribute::PRELOAD => array(), Attribute::ADDTOQUERY => array(), Attribute::POSTLOAD => array());
+        $result = array(Attribute::PRELOAD => [], Attribute::ADDTOQUERY => [], Attribute::POSTLOAD => array());
 
         foreach ($this->_getNode()->getAttributes() as $attr) {
             if (!$this->_isAttributeLoadRequired($attr)) {
@@ -538,7 +538,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     protected function _applyAttributesToQuery(Query $query, array $attrsByLoadType)
     {
-        $record = array();
+        $record = [];
         foreach ($attrsByLoadType[Attribute::PRELOAD] as $attr) {
             $record[$attr->fieldName()] = $attr->load($this->_getDb(), $record, $this->m_mode);
         }
@@ -610,7 +610,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     protected function _getBindParameters()
     {
-        $params = array();
+        $params = [];
 
         foreach ($this->m_conditions as $condition) {
             $params = array_merge($params, $condition['params']);
@@ -633,7 +633,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $query->deAlias($row);
         Tools::atkDataDecode($row);
 
-        $result = array();
+        $result = [];
         foreach ($attrsByLoadType[Attribute::ADDTOQUERY] as $attr) {
             $result[$attr->fieldName()] = $attr->db2value($row);
         }
@@ -744,7 +744,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function getIndices()
     {
         if ($this->_getNode()->m_index == null) {
-            return array();
+            return [];
         } else {
             if ($this->m_indices != null) {
                 return $this->m_indices;

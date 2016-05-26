@@ -2,22 +2,25 @@
 
 namespace Sintattica\Atk\Utils;
 
-    /**
-     * This file is part of the ATK distribution on GitHub.
-     * Detailed copyright and licensing information can be found
-     * in the doc/COPYRIGHT and doc/LICENSE files which should be
-     * included in the distribution.
-     *
-     *
-     * @copyright (c)2005 Ibuildings.nl BV
-     * @license http://www.achievo.org/atk/licensing ATK Open Source License
-     *
-     * @version $Revision: 2955 $
-     * $Id$
-     */
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Core\Config;
 
 /**
- * The atkEventLog is a ready to use atkActionListener for logging events
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ *
+ * @copyright (c)2005 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 2955 $
+ * $Id$
+ */
+
+/**
+ * The EventLog is a ready to use ActionListener for logging events
  * in a table.
  *
  * You can use the atkEventLog by adding an instance to a node using

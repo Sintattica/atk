@@ -66,7 +66,7 @@ abstract class Statement implements IteratorAggregate
      *
      * @var array
      */
-    private $m_latestParams = array();
+    private $m_latestParams = [];
 
     /**
      * @var int
@@ -367,7 +367,7 @@ abstract class Statement implements IteratorAggregate
     {
         $this->rewind();
 
-        $result = array();
+        $result = [];
 
         for ($i = 0; $row = $this->fetch(); ++$i) {
             if ($keyColumn === null) {

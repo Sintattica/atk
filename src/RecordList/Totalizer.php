@@ -39,13 +39,13 @@ class Totalizer
      */
     public function totalize($rowset)
     {
-        $result = array();
-        $lastvalues = array();
+        $result = [];
+        $lastvalues = [];
 
         $totalizers = $this->m_columnConfig->totalizableColumns();
         $subtotalfields = $this->m_columnConfig->subtotalColumns();
 
-        $totals = array();
+        $totals = [];
 
         for ($i = 0, $_i = count($rowset); $i < $_i; ++$i) {
             $record = $rowset[$i]['record'];
@@ -92,10 +92,10 @@ class Totalizer
      */
     public function _subTotalRow($row, &$totals, $fieldforsubtotal, $totalizers)
     {
-        $subtotalcols = array();
+        $subtotalcols = [];
         foreach ($totalizers as $totalfield) {
             $p_attrib = $this->m_node->m_attribList[$totalfield];
-            $subtotalcols[$totalfield] = $p_attrib->display($totals[$totalfield][$fieldforsubtotal]);
+            $subtotalcols[$totalfield] = $p_attrib->display($totals[$totalfield][$fieldforsubtotal], null);
 
             // reset walking total
             $totals[$totalfield][$fieldforsubtotal] = '';

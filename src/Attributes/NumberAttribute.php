@@ -94,7 +94,7 @@ class NumberAttribute extends Attribute
      *
      * @return string The ORDER BY statement for this attribute
      */
-    public function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
@@ -660,7 +660,7 @@ class NumberAttribute extends Attribute
                 if (is_numeric($value)) {
                     $processed['from'] = $value;
                 } else {
-                    $processed = array();
+                    $processed = [];
                 }
             }
         } else {

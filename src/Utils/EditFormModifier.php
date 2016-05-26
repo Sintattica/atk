@@ -196,7 +196,7 @@ class EditFormModifier
 
         $offset = count($this->getNode()->getPage()->getLoadScripts());
 
-        $error = array();
+        $error = [];
         $editArray = array('fields' => array());
         $this->m_node->getAttribute($name)->addToEditArray($this->getMode(), $editArray, $this->getRecord(), $error, $this->getFieldPrefix());
 

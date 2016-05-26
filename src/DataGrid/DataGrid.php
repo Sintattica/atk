@@ -145,21 +145,21 @@ class DataGrid
      *
      * @var array
      */
-    private $m_components = array();
+    private $m_components = [];
 
     /**
      * List of datagrid component instances.
      *
      * @var DataGridComponent[]
      */
-    private $m_componentInstances = array();
+    private $m_componentInstances = [];
 
     /**
      * Fields that should be excluded from the list.
      *
      * @var array
      */
-    private $m_excludes = array();
+    private $m_excludes = [];
 
     /**
      * Default record actions.
@@ -218,7 +218,7 @@ class DataGrid
      *
      * @var array
      */
-    private $m_filters = array();
+    private $m_filters = [];
 
     /**
      * Selection mode.
@@ -274,7 +274,7 @@ class DataGrid
      *
      * @var array
      */
-    private $m_listeners = array();
+    private $m_listeners = [];
 
     /**
      * The number of times we "tried" to override the node postvars.
@@ -349,7 +349,7 @@ class DataGrid
         $name = $name == null ? uniqid('atkdatagrid') : $name;
         $class = $class == null ? Config::getGlobal('datagrid_class') : $class;
         $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
-        $sessions[$name] = array('class' => $class, 'custom' => array(), 'system' => array());
+        $sessions[$name] = array('class' => $class, 'custom' => [], 'system' => array());
         if ($useSession) {
             SessionManager::getInstance()->pageVar('atkdgsession', $sessions);
         }
@@ -425,7 +425,7 @@ class DataGrid
 
         $vars = isset($GLOBALS['ATK_VARS']['atkdg'][$name]) ? $GLOBALS['ATK_VARS']['atkdg'][$name] : null;
 
-        $vars = !is_array($vars) ? array() : $vars;
+        $vars = !is_array($vars) ? [] : $vars;
         $this->setPostvars(array_merge($allVars, $vars));
 
         $this->loadSession();
@@ -528,8 +528,8 @@ class DataGrid
             $comp->destroy();
         }
 
-        $this->m_componentInstances = array();
-        $this->m_listeners = array();
+        $this->m_componentInstances = [];
+        $this->m_listeners = [];
         $this->m_records = null;
     }
 
@@ -571,7 +571,7 @@ class DataGrid
 
         $sessions = &$GLOBALS['ATK_VARS']['atkdg'];
         if ($sessions == null) {
-            $sessions = array();
+            $sessions = [];
         }
 
         foreach ($vars as $var) {
@@ -636,7 +636,7 @@ class DataGrid
      */
     protected function storeSession()
     {
-        $this->m_session['system'] = array();
+        $this->m_session['system'] = [];
 
         $vars = array(
             'flags',
@@ -881,7 +881,7 @@ class DataGrid
     public function setPostvars($postvars)
     {
         if ($postvars == null) {
-            $postvars = array();
+            $postvars = [];
         }
 
         $this->m_postvars = $postvars;
@@ -1057,7 +1057,7 @@ class DataGrid
      */
     protected function loadComponentInstances()
     {
-        $this->m_componentInstances = array();
+        $this->m_componentInstances = [];
 
         foreach ($this->getComponents() as $name => $info) {
             $comp = new $info['class']($this, $info['options']);
@@ -1298,7 +1298,7 @@ class DataGrid
      */
     public function removeFilters()
     {
-        $this->m_filters = array();
+        $this->m_filters = [];
     }
 
     /**
@@ -1524,7 +1524,7 @@ class DataGrid
      */
     protected function selectRecords()
     {
-        $excludes = array();
+        $excludes = [];
 
         // Ignore excludes for copy or if we don't now which mode we are in
         $mode = $this->getMode();
@@ -1552,7 +1552,7 @@ class DataGrid
      */
     protected function countRecords()
     {
-        $excludes = $this->getMode() == 'copy' ? array() : $this->getNode()->m_listExcludes;
+        $excludes = $this->getMode() == 'copy' ? [] : $this->getNode()->m_listExcludes;
         $excludes = array_merge($excludes, $this->getExcludes());
 
         $selector = $this->getNode()->select()->excludes($excludes)->mode($this->getMode())->ignoreDefaultFilters();
@@ -1641,7 +1641,7 @@ class DataGrid
      *
      * @return string JavaScript call (might need escaping when used in HTML code)
      */
-    public function getUpdateCall($overrides = array(), $overridesJs = array(), $overridesJsCallback = 'null')
+    public function getUpdateCall($overrides = [], $overridesJs = [], $overridesJsCallback = 'null')
     {
         $overridesJsStr = '';
 

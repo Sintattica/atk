@@ -32,14 +32,14 @@ class AggregatedColumn extends Attribute
      * @var array
      * @access private
      */
-    public $m_searchfields = array();
+    public $m_searchfields = [];
 
     /*
      * The array with displays fileds
      * @var array
      * @access private
      */
-    public $m_displayfields = array();
+    public $m_displayfields = [];
 
     /**
      * Constructor.
@@ -80,7 +80,7 @@ class AggregatedColumn extends Attribute
      */
     public function display($record, $mode)
     {
-        $rec = array();
+        $rec = [];
         foreach ($this->m_displayfields as $field) {
             $p_attrib = $this->m_ownerInstance->getAttribute($field);
 
@@ -109,7 +109,7 @@ class AggregatedColumn extends Attribute
             $arr['heading'][$fieldprefix.$this->fieldName()]['title'] = $this->label();
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
-                $rec = array();
+                $rec = [];
                 foreach ($this->m_displayfields as $field) {
                     $rec[] = $this->m_ownerInstance->m_table.'.'.$field;
                 }
@@ -175,7 +175,7 @@ class AggregatedColumn extends Attribute
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $searchconditions = array();
+        $searchconditions = [];
         // Get search condition for all searchFields
         foreach ($this->m_searchfields as $field) {
             $p_attrib = $this->m_ownerInstance->getAttribute($field);
@@ -192,7 +192,7 @@ class AggregatedColumn extends Attribute
         if ($searchmode == 'substring') {
             $value = $this->escapeSQL(trim($value));
 
-            $data = array();
+            $data = [];
             foreach ($this->m_searchfields as $field) {
                 if (strpos($field, '.') == false) {
                     $data[$field] = $table.'.'.$field;

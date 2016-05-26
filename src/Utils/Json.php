@@ -79,7 +79,7 @@ class Json
             } else {
                 if (is_array($data)) {
                     /* our return object */
-                    $newArray = array();
+                    $newArray = [];
 
                     foreach ($data as $key => $val) {
                         $newArray[$key] = self::_utf8json($val, $depth);

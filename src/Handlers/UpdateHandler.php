@@ -158,11 +158,11 @@ class UpdateHandler extends ActionHandler
         $record,
         $errorHandler = 'handleUpdateError',
         $successHandler = 'handleUpdateSuccess',
-        $extraParams = array()
+        $extraParams = []
     ) {
         // empty the postvars because we don't want to use these
         $postvars = $this->getNode()->m_postvars;
-        $this->getNode()->m_postvars = array();
+        $this->getNode()->m_postvars = [];
         // load original record if needed
         $this->getNode()->trackChangesIfNeeded($record);
         // put the postvars back

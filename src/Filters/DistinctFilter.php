@@ -2,8 +2,6 @@
 
 namespace Sintattica\Atk\Filters;
 
-use Sintattica\Atk\Db\Query;
-
 /**
  * Add a distinct clause to a query.
  *

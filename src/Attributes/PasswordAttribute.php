@@ -43,14 +43,7 @@ class PasswordAttribute extends Attribute
      * @var array
      */
     public $m_restrictions;
-
-    /**
-     * Salt to use when encoding our password.
-     *
-     * @var string
-     */
-    private $m_salt = '';
-
+    
     /**
      * Constructor.
      *
@@ -399,7 +392,7 @@ class PasswordAttribute extends Attribute
      */
     public function getSearchModes()
     {
-        return array();
+        return [];
     }
 
     /**

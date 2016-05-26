@@ -22,7 +22,7 @@ class OpenSSLEncryption extends Encryption
      */
     public function atkOpenSSLEncryption()
     {
-        $this->m_config_default = array();
+        $this->m_config_default = [];
         $this->m_config_nokey = array_merge($this->m_config_default, array('encrypt_key' => false));
     }
 
@@ -129,7 +129,7 @@ class OpenSSLEncryption extends Encryption
 
         //now we store the public key, private key and the certificate in variables
         //private key is encrypted with privkeypass
-        $result = array();
+        $result = [];
         openssl_x509_export($sscert, $result['public']);
         openssl_pkey_export($privkey, $result['private'], $privkeypass, $this->m_config_default);
 

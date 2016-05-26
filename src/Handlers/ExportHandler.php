@@ -124,7 +124,7 @@ class ExportHandler extends ActionHandler
          }
         }');
 
-        $params = array();
+        $params = [];
         $params['title'] = $this->m_node->actionTitle('export');
         $params['content'] = $content;
         $content = $this->getUi()->renderBox($params);
@@ -197,7 +197,7 @@ class ExportHandler extends ActionHandler
         $action = Tools::dispatch_url($this->m_node->m_module.'.'.$this->m_node->m_type, 'export');
         $sm = SessionManager::getInstance();
 
-        $params = array();
+        $params = [];
         $params['formstart'] = '<form name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post">';
         $params['formstart'] .= $sm->formState();
         $params['formstart'] .= '<input type="hidden" name="phase" value="process"/>';
@@ -242,7 +242,7 @@ class ExportHandler extends ActionHandler
     /**
      * Get the options for the export.
      *
-     * @return unknown
+     * @return string html
      */
     public function _getOptions()
     {
@@ -446,14 +446,14 @@ class ExportHandler extends ActionHandler
     {
         $selected = ($value == 'new') ? false : true;
 
-        $criteria = array();
+        $criteria = [];
         if (!in_array($value, array('new', 'none', ''))) {
             $db = Db::getInstance();
             $rows = $db->getRows('SELECT * FROM atk_exportcriteria WHERE id = '.(int)$value);
             $criteria = unserialize($rows[0]['criteria']);
         }
 
-        $atts = array();
+        $atts = [];
         $attriblist = $this->invoke('getExportAttributes');
         foreach ($attriblist as $key => $value) {
             $flags = $value->m_flags;
@@ -469,7 +469,7 @@ class ExportHandler extends ActionHandler
                 $group = $value->m_tabs[0];
             }
             if (in_array($group, $atts)) {
-                $atts[$group] = array();
+                $atts[$group] = [];
             }
             // selected options based on a new selection, or no selection
             if (empty($criteria)) {
@@ -500,7 +500,7 @@ class ExportHandler extends ActionHandler
     {
         $attribs = $this->m_node->getAttributes();
         if (is_null($attribs)) {
-            return array();
+            return [];
         } else {
             return $attribs;
         }
@@ -515,7 +515,7 @@ class ExportHandler extends ActionHandler
         $enclosure = $this->m_postvars['enclosure'];
         $delimiter = $this->m_postvars['delimiter'];
         $source = $this->m_postvars;
-        $list_includes = array();
+        $list_includes = [];
         foreach ($source as $name => $value) {
             $pos = strpos($name, 'export_');
             if (is_integer($pos) and $pos == 0) {
@@ -559,7 +559,7 @@ class ExportHandler extends ActionHandler
         if (method_exists($this->m_node, 'assignExportData')) {
             $this->m_node->assignExportData($list_includes, $recordset);
         }
-        $recordset_new = array();
+        $recordset_new = [];
 
         foreach ($recordset as $row) {
             foreach ($row as $name => $value) {

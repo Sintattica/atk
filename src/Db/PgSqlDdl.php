@@ -110,18 +110,18 @@ class PgSqlDdl extends Ddl
      * Build one or more ALTER TABLE queries and return them as an array of
      * strings.
      *
-     * @return An array of ALTER TABLE queries.
+     * @return array of ALTER TABLE queries.
      */
     public function buildAlter()
     {
-        $result = array();
+        $result = [];
 
         if ($this->m_table != '') {
             // PostgreSQL only supports ALTER TABLE statements which
             // add a single column or constraint.
 
-            $fields = array();
-            $notNullFields = array();
+            $fields = [];
+            $notNullFields = [];
 
             // At this time PostgreSQL does not support NOT NULL constraints
             // as part of the field construct, so a separate ALTER TABLE SET NULL

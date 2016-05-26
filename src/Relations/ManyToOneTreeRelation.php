@@ -42,13 +42,13 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      *                            of any html form element for this attribute.
      * @param string $mode The mode we're in ('add' or 'edit')
      *
-     * @return Piece of html code that can  be used in a form to edit this
+     * @return string Piece of html code that can  be used in a form to edit this
      */
     public function edit($record, $fieldprefix, $mode)
     {
         $this->createDestination();
         $tmp1 = Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
-        $tmp2 = Tools::atk_array_merge($tmp1, array($this->m_destInstance->m_parent));
+        $tmp2 = Tools::atk_array_merge($tmp1, [$this->m_destInstance->m_parent]);
         if ($this->m_destinationFilter != '') {
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));

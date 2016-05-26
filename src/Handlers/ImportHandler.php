@@ -37,7 +37,7 @@ class ImportHandler extends ActionHandler
             }
         }
 
-        $keys = array();
+        $keys = [];
         //need to keep the selected item after an importerror
         if (is_array($ATK_VARS['allFields'])) {
             $keys = array_keys($ATK_VARS['allFields']);
@@ -116,7 +116,7 @@ class ImportHandler extends ActionHandler
         $params['buttons'] = $buttons;
         $output = $ui->renderAction('import', $params);
 
-        $params = array();
+        $params = [];
         $params['title'] = $this->m_node->actionTitle('import');
         $params['content'] = $output;
         $output = $ui->renderBox($params);
@@ -142,7 +142,7 @@ class ImportHandler extends ActionHandler
      */
     public function getImportButtons($phase)
     {
-        $result = array();
+        $result = [];
         $sm = SessionManager::getInstance();
 
         if ($sm->atkLevel() > 0) {
@@ -234,7 +234,7 @@ class ImportHandler extends ActionHandler
 
         $allFields = $sessionMgr->pageVar('allFields');
         if ($allFields == '') {
-            $allFields = array();
+            $allFields = [];
         }
         $skipfirstrow = $this->m_postvars['skipfirstrow'];
         $doupdate = $this->m_postvars['doupdate'];
@@ -460,7 +460,7 @@ class ImportHandler extends ActionHandler
             $atkval = array($attributename => $newval);
         }
 
-        return $attr->display($atkval);
+        return $attr->display($atkval, '');
     }
 
     /**
@@ -470,7 +470,7 @@ class ImportHandler extends ActionHandler
      * @param string $doupdate Wether or not to do an update
      * @param string $updatekey1 The key to update on
      * @param string $onfalseidentifier What to do on a false identifier
-     * @param string $allFields The fields to import
+     * @param array $allFields The fields to import
      * @param bool $novalidatefirst Validate before the import
      *
      * @return string The HTML with the extra options
@@ -487,6 +487,8 @@ class ImportHandler extends ActionHandler
         $content .= '  <tr>';
         $content .= '    <td>';
 
+        $noallfieldvalue = false;
+        
         foreach ($allFields as $allfield) {
             if (!$this->m_postvars[$allfield]) {
                 $noallfieldvalue = true;
@@ -551,7 +553,7 @@ class ImportHandler extends ActionHandler
      */
     public function fgetcsvfromarray($arr, $columncount, $delimiterChar = ',', $enclosureChar = '"')
     {
-        $result = array();
+        $result = [];
         foreach ($arr as $line) {
             $result[] = $this->fgetcsvfromline($line, $columncount, $delimiterChar, $enclosureChar);
         }
@@ -632,7 +634,7 @@ class ImportHandler extends ActionHandler
      */
     public function getSampleRows($file)
     {
-        $result = array();
+        $result = [];
         $fp = fopen($file, 'r');
         for ($i = 0; $i < 5; ++$i) {
             $line = fgets($fp);
@@ -727,7 +729,7 @@ class ImportHandler extends ActionHandler
      */
     public function getUsableAttributes($obligatoryOnly = false)
     {
-        $attrs = array();
+        $attrs = [];
         foreach (array_keys($this->m_importNode->m_attribList) as $attribname) {
             $attrib = $this->m_importNode->getAttribute($attribname);
 
@@ -819,7 +821,7 @@ class ImportHandler extends ActionHandler
      */
     public function getIntegratedAttributes()
     {
-        $attrs = array();
+        $attrs = [];
         foreach (array_keys($this->m_importNode->m_attribList) as $attribname) {
             $attrib = $this->m_importNode->getAttribute($attribname);
 
@@ -995,7 +997,7 @@ class ImportHandler extends ActionHandler
      */
     public function getAttributesTranslation($attributes)
     {
-        $result = array();
+        $result = [];
 
         foreach ($attributes as $attribute) {
             $attr = $this->getUsableAttribute($attribute);
@@ -1016,7 +1018,7 @@ class ImportHandler extends ActionHandler
      */
     public function initColmap($firstRecord, &$matchFound)
     {
-        $result = array();
+        $result = [];
 
         $attributes = $this->getUsableAttributes();
         $translations = $this->getAttributesTranslation($attributes);
@@ -1148,11 +1150,11 @@ class ImportHandler extends ActionHandler
         $allFieldsValues = $this->getAllFieldsValues($col_map);
         $initial_values = $this->m_importNode->initial_values();
 
-        $validatedrecs = array();
-        $validatedrecs['add'] = array();
-        $validatedrecs['update'] = array();
-        $importerrors = array();
-        $importerrors[0] = array();
+        $validatedrecs = [];
+        $validatedrecs['add'] = [];
+        $validatedrecs['update'] = [];
+        $importerrors = [];
+        $importerrors[0] = [];
 
         $importerrors[0] = array_merge($importerrors[0], $this->checkImport($col_map, $initial_values));
         $allfielderror = $this->checkAllFields($allFields, $allFieldsValues);
@@ -1243,7 +1245,7 @@ class ImportHandler extends ActionHandler
             $primaryKeyAttr = $attr->m_destInstance->getAttribute($attr->m_destInstance->primaryKeyField());
             $isNumeric = $attr->hasFlag(Attribute::AF_AUTO_INCREMENT) || is_a($primaryKeyAttr, 'NumberAttribute');
 
-            $relationselect = array();
+            $relationselect = [];
 
             // this check only works if either the primary key column is non-numeric or the given value is numeric
             if (!$isNumeric || is_numeric($value)) {
@@ -1252,7 +1254,7 @@ class ImportHandler extends ActionHandler
             }
 
             if (count($relationselect) == 0 || count($relationselect) > 1) {
-                static $searchresults = array();
+                static $searchresults = [];
                 if (!array_key_exists($attributename, $searchresults) || (array_key_exists($attributename, $searchresults) && !array_key_exists($value,
                             $searchresults[$attributename]))
                 ) {
@@ -1432,7 +1434,7 @@ class ImportHandler extends ActionHandler
      */
     public function checkImport($col_map, $initial_values)
     {
-        $errors = array();
+        $errors = [];
         //get the unused obligatory fields
         $unused = array_values(array_diff($this->getObligatoryAttributes(), $col_map));
 
@@ -1472,7 +1474,7 @@ class ImportHandler extends ActionHandler
      */
     public function _getDuplicateColumns($array)
     {
-        $result = array();
+        $result = [];
         $frequencies = array_count_values($array);
         foreach ($frequencies as $key => $count) {
             if ($count > 1 && $key != '-') {
@@ -1499,10 +1501,10 @@ class ImportHandler extends ActionHandler
                 return;
             }
 
-            $record = array();
+            $record = [];
             $this->addToRecord($record, $field, $values[$field]);
 
-            $result = $attr->display($record);
+            $result = $attr->display($record, '');
 
             if (!$result) {
                 if (in_array($field, $this->getObligatoryAttributes())) {
@@ -1533,7 +1535,7 @@ class ImportHandler extends ActionHandler
         $doupdate = $this->m_postvars['doupdate'];
         $updatekey1 = $this->m_postvars['updatekey1'];
         $onfalseidentifier = $this->m_postvars['onfalseid'];
-        $errors = array();
+        $errors = [];
         if (!$this->validate($rec)) {
             if ($rec['atkerror'][0]) {
                 foreach ($rec['atkerror'] as $atkerror) {

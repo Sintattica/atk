@@ -30,7 +30,7 @@ abstract class Cache implements ArrayAccess
      *
      * @var Cache[]
      */
-    private static $m_instances = array();
+    private static $m_instances = [];
 
     /**
      * Is the cache still active.
@@ -131,23 +131,7 @@ abstract class Cache implements ArrayAccess
             return $default;
         }
     }
-
-    /**
-     * Get Classname.
-     *
-     * @param string $type Cache type
-     *
-     * @return string Classname of the cache type
-     */
-    private function getClassname($type)
-    {
-        if (strpos($type, '.') === false) {
-            return "atk.cache.atkcache_$type";
-        } else {
-            return $type;
-        }
-    }
-
+    
     /**
      * Turn cache on/off.
      *

@@ -98,7 +98,7 @@ class Config
         if (!isset($s_configs[$section])) {
             $config = self::getConfigForSection($section);
             if (!is_array($config)) {
-                $config = array();
+                $config = [];
             }
             $s_configs[$section] = $config;
         }
@@ -106,7 +106,7 @@ class Config
         if (!isset($s_configs[$section])) {
             $config = self::getConfigValues(self::getGlobal('application_config_dir').$section.'.php');
             if (!is_array($config)) {
-                $config = array();
+                $config = [];
             }
             $s_configs[$section] = $config;
         }

@@ -241,8 +241,8 @@ class AddHandler extends ActionHandler
     public function createForceList()
     {
         $node = $this->m_node;
-        $forceList = array();
-        $filterList = (isset($node->m_postvars['atkfilter'])) ? Tools::decodeKeyValueSet($node->m_postvars['atkfilter']) : array();
+        $forceList = [];
+        $filterList = (isset($node->m_postvars['atkfilter'])) ? Tools::decodeKeyValueSet($node->m_postvars['atkfilter']) : [];
         foreach ($filterList as $field => $value) {
             list($table, $column) = explode('.', $field);
             if ($column == null) {

@@ -39,7 +39,7 @@ class DataGridLimit extends DataGridComponent
      */
     protected function getOptions($values)
     {
-        $options = array();
+        $options = [];
 
         $limit = $this->getGrid()->getLimit();
 

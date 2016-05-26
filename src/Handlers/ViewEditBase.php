@@ -239,7 +239,7 @@ class ViewEditBase extends ActionHandler
      */
     public function _getTabTpl($node, $tabs, $mode, $record)
     {
-        $tabTpl = array();
+        $tabTpl = [];
         foreach ($tabs as $t) {
             $tabTpl['section_'.$t] = $node->getTemplate($mode, $record, $t);
         }
@@ -260,8 +260,8 @@ class ViewEditBase extends ActionHandler
     public function _renderTabs($fields, $tabTpl)
     {
         $ui = $this->getUi();
-        $tabs = array();
-        $perTpl = array(); //per template array
+        $tabs = [];
+        $perTpl = []; //per template array
 
         for ($i = 0, $_i = count($fields); $i < $_i; ++$i) {
             $allTabs = explode(' ',

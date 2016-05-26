@@ -126,7 +126,7 @@ class FieldSet extends Attribute
      */
     protected function renderFieldSet($type, $record, $mode, $fieldprefix = '')
     {
-        $replacements = array();
+        $replacements = [];
 
         $fields = array_unique($this->getParser()->getFields());
 

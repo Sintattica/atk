@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The atkParserAttribute can be used to create links or texts that

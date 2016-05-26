@@ -86,7 +86,7 @@ class ConfigAuth extends AuthInterface
         $access = Config::getGlobal('access');
         $rights = $access[$node];
 
-        $result = array();
+        $result = [];
 
         for ($i = 0; $i < count($rights); ++$i) {
             if ($rights[$i][$action] != '') {

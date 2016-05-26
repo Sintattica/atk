@@ -146,7 +146,7 @@ class MessageQueue
             return $instance->_getMessages();
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -158,7 +158,7 @@ class MessageQueue
     {
         $q = &$this->getQueue();
         $queue_copy = $q;
-        $q = array();
+        $q = [];
 
         return $queue_copy;
     }
@@ -173,7 +173,7 @@ class MessageQueue
         $sessionmgr = SessionManager::getInstance();
         $session = &$sessionmgr->getSession();
         if (!isset($session['atkmessagequeue'])) {
-            $session['atkmessagequeue'] = array();
+            $session['atkmessagequeue'] = [];
         }
 
         return $session['atkmessagequeue'];

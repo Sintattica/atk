@@ -15,6 +15,7 @@ namespace Sintattica\Atk\RecordList;
      * @version $Revision: 6323 $
      * $Id$
      */
+use Sintattica\Atk\Core\Node;
 
 /**
  * CVS recordlist renderer.
@@ -42,7 +43,7 @@ class CsvRecordList extends CustomRecordList
         $recordset,
         $compression = '',
         $suppressList = '',
-        $outputparams = array(),
+        $outputparams = [],
         $titlerow = true,
         $decode = false
     ) {

@@ -80,7 +80,7 @@ class MySqliStatement extends Statement
         }
 
         $i = 0;
-        $args = array();
+        $args = [];
         $args[] = str_repeat('s', count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
             Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
@@ -111,7 +111,7 @@ class MySqliStatement extends Statement
             return;
         }
 
-        $this->m_columnNames = array();
+        $this->m_columnNames = [];
         foreach ($metadata->fetch_fields() as $column) {
             $this->m_columnNames[] = $column->name;
         }
@@ -129,8 +129,8 @@ class MySqliStatement extends Statement
             return;
         }
 
-        $this->m_values = array();
-        $refs = array();
+        $this->m_values = [];
+        $refs = [];
 
         for ($i = 0; $i < count($this->m_columnNames); ++$i) {
             $this->m_values[$i] = null;
@@ -178,7 +178,7 @@ class MySqliStatement extends Statement
             return false;
         }
 
-        $values = array();
+        $values = [];
         foreach ($this->m_values as $value) {
             $values[] = $value;
         }

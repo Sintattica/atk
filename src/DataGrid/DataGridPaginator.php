@@ -54,7 +54,7 @@ class DataGridPaginator extends DataGridComponent
     protected function getLinks()
     {
         $grid = $this->getGrid();
-        $links = array();
+        $links = [];
 
         $count = $grid->getCount();
         $limit = $grid->getLimit();

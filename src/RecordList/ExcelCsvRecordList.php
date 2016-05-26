@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\RecordList;
 
+use Sintattica\Atk\Core\Node;
+
 /**
  * CVS for Excel recordlist renderer.
  * Note: End of line characters within values are replaced for excel 2003 compatibility reasons!
@@ -29,7 +31,7 @@ class ExcelCsvRecordList extends CustomRecordList
         $recordset,
         $compression = '',
         $suppressList = '',
-        $outputparams = array(),
+        $outputparams = [],
         $titlerow = true,
         $decode = false
     ) {

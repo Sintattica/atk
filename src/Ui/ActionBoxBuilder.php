@@ -43,7 +43,7 @@ class ActionBoxBuilder
      *
      * @var array
      */
-    protected $m_params = array();
+    protected $m_params = [];
 
     /**
      * Session status.

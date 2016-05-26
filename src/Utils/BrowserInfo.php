@@ -24,6 +24,7 @@ class BrowserInfo
     public $spider = 0;
     public $family = '';
     public $gecko = 0;
+    public $osname = '';
 
     public function __construct($ua = '')
     {
@@ -86,7 +87,7 @@ class BrowserInfo
     public function detectAgent()
     {
         //MSIE
-        $info = array();
+        $info = [];
         if (eregi('MSIE ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info) || eregi('Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
             $this->full_version = $info[1];
             $this->browser = 'MSIE';
@@ -287,9 +288,9 @@ class BrowserInfo
             // if contains Mozilla then it is Netscape or just the Mozilla browser
             if (eregi('Mozilla/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $info)) {
                 // if it also contains Gecko/ then it's a new Mozilla
-                $dummy = array();
+                $dummy = [];
                 if (eregi('Gecko/([0-9].[0-9a-zA-Z]{1,4})', $this->ua, $dummy)) {
-                    $info_1 = array();
+                    $info_1 = [];
                     eregi('rv:([0-9].[0-9a-zA-Z].[0-9]{1,4})', $this->ua, $info_1);
                     $this->full_version = $info_1[1];
                     $this->browser = 'Mozilla';
@@ -364,7 +365,7 @@ class BrowserInfo
 
                         // And check for size
                         $explodedinfo = explode('x', $info);
-                        $size = array();
+                        $size = [];
                         if ($explodedinfo[0] && is_numeric($explodedinfo[0]) && $explodedinfo[1] && is_numeric($explodedinfo[1])) {
                             // We've got browser size
                             $size['width'] = $explodedinfo[0];

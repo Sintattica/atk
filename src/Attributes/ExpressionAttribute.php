@@ -58,7 +58,7 @@ class ExpressionAttribute extends Attribute
      *
      * @return string order by statement
      */
-    public function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;

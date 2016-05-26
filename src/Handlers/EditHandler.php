@@ -103,7 +103,7 @@ class EditHandler extends ViewEditBase
          */
         foreach ($fetchedRecord as $attrName => $value) {
             if ($attr = $this->m_node->getAttribute($attrName)) {
-                if ($attr->needsReload($record)) {
+                if ($attr->needsReload()) {
                     unset($fetchedRecord[$attrName]);
                 }
             }
@@ -196,12 +196,12 @@ class EditHandler extends ViewEditBase
     {
         $node = $this->m_node;
 
-        $forceList = array();
+        $forceList = [];
         if (isset($node->m_postvars['atkfilter'])) {
             $forceList = Tools::decodeKeyValueSet($node->m_postvars['atkfilter']);
         }
 
-        $suppressList = array();
+        $suppressList = [];
         if (isset($node->m_postvars['atksuppress'])) {
             $suppressList = $node->m_postvars['atksuppress'];
         }
@@ -326,7 +326,7 @@ class EditHandler extends ViewEditBase
         // part of the anonymous section of the tab)
         $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
 
-        $tplfield = array();
+        $tplfield = [];
 
         $classes = [];
         if(isset($field['class'])){
@@ -465,11 +465,11 @@ class EditHandler extends ViewEditBase
         /* check for errors and display them */
         $tab = $node->getActiveTab();
         $error_title = '';
-        $pk_err_attrib = array();
+        $pk_err_attrib = [];
         $tabs = $node->getTabs($node->m_action);
 
         // Handle errors
-        $errors = array();
+        $errors = [];
         if (count($data['error']) > 0) {
             $error_title = '<b>'.Tools::atktext('error_formdataerror').'</b>';
 
@@ -494,7 +494,7 @@ class EditHandler extends ViewEditBase
                             if (!is_array($error['attrib_name'])) {
                                 $label = $node->text($error['attrib_name']);
                             } else {
-                                $label = array();
+                                $label = [];
                                 foreach ($error['attrib_name'] as $attrib) {
                                     $label[] = $node->text($attrib);
                                 }
@@ -530,9 +530,9 @@ class EditHandler extends ViewEditBase
         }
 
         /* display the edit fields */
-        $fields = array();
-        $errorFields = array();
-        $attributes = array();
+        $fields = [];
+        $errorFields = [];
+        $attributes = [];
 
         for ($i = 0, $_i = count($data['fields']); $i < $_i; ++$i) {
             $field = &$data['fields'][$i];

@@ -24,10 +24,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      */
     const AF_SHUTTLERELATION_NO_AUTOLOAD = 33554432;
 
-    protected $m_controlsBySection = array();
-    protected $m_selectedFields = array();
-    protected $m_availableFields = array();
-    protected $unfilteredAvailableRecords = array();
+    protected $m_controlsBySection = [];
+    protected $m_selectedFields = [];
+    protected $m_availableFields = [];
+    protected $unfilteredAvailableRecords = [];
     protected $m_limit = null;
     protected $m_descriptor_tooltip_template = null;
 
@@ -52,8 +52,8 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     public function __construct($name, $flags = 0, $link, $destination)
     {
         parent::__construct($name, $flags, $link, $destination);
-        $this->m_controlsBySection[ShuttleControl::AVAILABLE] = array();
-        $this->m_controlsBySection[ShuttleControl::SELECTED] = array();
+        $this->m_controlsBySection[ShuttleControl::AVAILABLE] = [];
+        $this->m_controlsBySection[ShuttleControl::SELECTED] = [];
     }
 
     /**
@@ -231,7 +231,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $this->addOnChangeHandler("shuttle_refresh('$url', '".$this->getHtmlId($fieldprefix).'[cselected][]['.$this->getRemoteKey().']'."', '".$fieldprefix.$this->fieldName()."[section]', el);");
         $this->_renderChangeHandler($fieldprefix);
 
-        $filtersBySection = array();
+        $filtersBySection = [];
         foreach (array(ShuttleControl::AVAILABLE, ShuttleControl::SELECTED) as $section) {
             foreach ($this->m_controlsBySection[$section] as $control) {
                 if (is_a($control, 'ShuttleFilter')) {
@@ -269,7 +269,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         }
 
         // Get available records
-        $left = ($this->hasFlag(self::AF_SHUTTLERELATION_NO_AUTOLOAD)) ? array() : $this->getAvailableFields($record, $mode, $availableFilter);
+        $left = ($this->hasFlag(self::AF_SHUTTLERELATION_NO_AUTOLOAD)) ? [] : $this->getAvailableFields($record, $mode, $availableFilter);
 
         for ($i = 0, $_i = count($left); $i < $_i; ++$i) {
             $available_options[$left[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($left[$i]);
@@ -342,7 +342,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      */
     public function fetchValue($postvars)
     {
-        $ret = array();
+        $ret = [];
         $vals = Json::decode($postvars[$this->fieldName()]['selected'][0][$this->getRemoteKey()], true);
         if (is_array($vals)) {
             foreach ($vals as $val) {
@@ -450,7 +450,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      */
     public function getSelectedFieldsFromRecord($record)
     {
-        $selectedPk = array();
+        $selectedPk = [];
         $this->createLink();
         $this->createDestination();
 
@@ -470,7 +470,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     /**
      * Fetch records that are available for selection in the shuttle relation.
      *
-     * @param array current record
+     * @param array $record current record
      * @param string $mode current mode
      * @param string $availableFilter filter sql clause
      */
@@ -518,7 +518,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     {
         $selectedFields = $this->getSelectedFieldsFromRecord($record);
 
-        $selectables = array();
+        $selectables = [];
         if ($availableFilter != $selectedFilter || empty($this->unfilteredAvailableRecords)) {
             /* fetch it from db * */
             if (count($selectedFields) > 0) {
@@ -536,7 +536,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         }
 
         /* declare the array * */
-        $this->m_selectedFields = array();
+        $this->m_selectedFields = [];
 
         /* populate the selected records from the db records * */
         foreach ($selectables as $rec) {

@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Utils\StringParser;
+use Sintattica\Atk\Db\Db;
 
 /**
  * a simple but flexible value calculator.

@@ -27,8 +27,8 @@ class BootstrapDateTimeAttribute extends Attribute
     public $m_bootstrapdatetime_format_view;
     public $m_db_format; //MomentJS Format
     public $m_type = 'datetime';
-    public $m_pickerparams = array();
-    public $m_disabledDates = array();
+    public $m_pickerparams = [];
+    public $m_disabledDates = [];
     public $m_minDate;
     public $m_maxDate;
     public $m_sideBySide = true;
@@ -99,6 +99,8 @@ class BootstrapDateTimeAttribute extends Attribute
      * Set the format for the boxes in view mode.
      *
      * @param string $format_view The format (see format for momentJs function)
+     *
+     * @return $this
      */
     public function setFormatView($format_view)
     {
@@ -111,6 +113,8 @@ class BootstrapDateTimeAttribute extends Attribute
      * Set the format for the boxes in edit mode.
      *
      * @param string $format_view The format (see format for momentJs function)
+     *
+     * @return $this
      */
     public function setFormatEdit($format_edit)
     {
@@ -140,7 +144,7 @@ class BootstrapDateTimeAttribute extends Attribute
         );
 
         if (count($this->m_disabledDates)) {
-            $dates = array();
+            $dates = [];
             foreach ($this->m_disabledDates as $d) {
                 $dates[] = 'function:moment("'.$d.'")';
             }
@@ -375,7 +379,7 @@ class BootstrapDateTimeAttribute extends Attribute
             $m = new Moment($rec[$this->fieldName()]);
             $format = new MomentJs();
 
-            $result = array();
+            $result = [];
             if ($this->m_type == 'datetime' || $this->m_type == 'date') {
                 $result['year'] = $m->format('YYYY', $format);
                 $result['month'] = $m->format('M', $format);
@@ -451,7 +455,7 @@ class BootstrapDateTimeAttribute extends Attribute
         $outtext = '';
         $opening = '{';
         $closing = '}';
-        $inner = array();
+        $inner = [];
         $numericarray = array_keys($input) === range(0, count($input) - 1);
         if ($numericarray) {
             // This is a numerically sequential array

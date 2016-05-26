@@ -15,7 +15,7 @@ class SessionStore
      *
      * @var array
      */
-    private static $_instances = array();
+    private static $_instances = [];
 
     /**
      * Key to use.
@@ -222,7 +222,7 @@ class SessionStore
 
         $data = $sessionmanager->globalStackVar($this->_key);
         if (!is_array($data)) {
-            $data = array();
+            $data = [];
         }
 
         return $data;

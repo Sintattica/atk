@@ -99,29 +99,30 @@ class Tools
         }
 
         $errortype = array(
-            E_ERROR => 'Error',
-            E_WARNING => 'Warning',
-            E_PARSE => 'Parsing Error',
-            E_NOTICE => 'Notice',
-            E_CORE_ERROR => 'Core Error',
-            E_CORE_WARNING => 'Core Warning',
-            E_COMPILE_ERROR => 'Compile Error',
-            E_COMPILE_WARNING => 'Compile Warning',
-            E_USER_ERROR => 'User Error',
-            E_USER_WARNING => 'User Warning',
-            E_USER_NOTICE => 'User Notice',
-            E_STRICT => 'Strict Notice',
+            E_ERROR => "Error",
+            E_WARNING => "Warning",
+            E_PARSE => "Parsing Error",
+            E_NOTICE => "Notice",
+            E_CORE_ERROR => "Core Error",
+            E_CORE_WARNING => "Core Warning",
+            E_COMPILE_ERROR => "Compile Error",
+            E_COMPILE_WARNING => "Compile Warning",
+            E_USER_ERROR => "User Error",
+            E_USER_WARNING => "User Warning",
+            E_USER_NOTICE => "User Notice",
+            E_STRICT => "Strict Notice",
+            'EXCEPTION' => 'Uncaught exception'
         );
 
         // E_RECOVERABLE_ERROR is available since 5.2.0
         if (defined('E_RECOVERABLE_ERROR')) {
-            $errortype[E_RECOVERABLE_ERROR] = 'Recoverable Error';
+            $errortype[E_RECOVERABLE_ERROR] = "Recoverable Error";
         }
 
         // E_DEPRECATED / E_USER_DEPRECATED are available since 5.3.0
         if (defined('E_DEPRECATED')) {
-            $errortype[E_DEPRECATED] = 'Deprecated';
-            $errortype[E_USER_DEPRECATED] = 'User Deprecated';
+            $errortype[E_DEPRECATED] = "Deprecated";
+            $errortype[E_USER_DEPRECATED] = "User Deprecated";
         }
 
         // Translate the given errortype into a string
@@ -130,35 +131,24 @@ class Tools
         if ($errtype == E_STRICT) {
             // ignore strict notices for now, there is too much stuff that needs to be fixed
             return;
+        } else if ($errtype == E_NOTICE) {
+            // Just show notices
+            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+            return;
+        } else if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
+            // Just show deprecation warnings in the debug log, but don't influence the program flow
+            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+            return;
+        } else if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
+            // This is something we should pay attention to, but we don't need to die.
+            self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
+            return;
         } else {
-            if ($errtype == E_NOTICE) {
-                // Just show notices
-                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
 
-                return;
-            } else {
-                if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
-                    // Just show deprecation warnings in the debug log, but don't influence the program flow
-                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
-
-                    return;
-                } else {
-                    if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
-                        // This is something we should pay attention to, but we don't need to die.
-                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
-
-                        return;
-                    } else {
-                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
-
-                        // we must die. we can't even output anything anymore..
-                        // we can do something with the info though.
-                        self::handleError();
-                        Output::getInstance()->outputFlush();
-                        die;
-                    }
-                }
-            }
+            self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)", ($errtype == 'EXCEPTION'));
+            // we must die. we can't even output anything anymore..
+            // we can do something with the info though.
+            self::atkhalt($errstr, 'critical');
         }
     }
 
@@ -169,9 +159,19 @@ class Tools
      */
     public static function atkExceptionHandler($exception)
     {
-        self::atkdebug($exception->getMessage(), self::DEBUG_ERROR);
-        self::atkdebug('Trace:<br/>'.nl2br($exception->getTraceAsString()), self::DEBUG_ERROR);
-        self::atkhalt('Uncaught exception: '.$exception->getMessage(), 'critical');
+        self::atkErrorHandler('EXCEPTION', $exception->getMessage(), $exception->getFile(), $exception->getLine());
+    }
+
+    /**
+     * Default ATK fatal handler
+     */
+    public static function atkFatalHandler()
+    {
+
+        $error = error_get_last();
+        if ($error) {
+            self::atkErrorHandler(E_ERROR, $error['message'], $error['file'], $error['line']);
+        }
     }
 
     /**
@@ -295,16 +295,15 @@ class Tools
      * send by e-mail.
      *
      * @param string|Exception $error the error self::text or exception to display
+     * @param bool $skipThrow
      *
      * @throws \Exception if throw_exception_on_error
-     *
-     * @return bool
      */
-    public static function atkerror($error)
+    public static function atkerror($error, $skipThrow = false)
     {
-        global $g_error_msg;
+        global $g_error_msg, $g_debug_msg;
 
-        if ($error instanceof Exception) {
+        if ($error instanceof \Exception) {
             $g_error_msg[] = '['.Debugger::elapsed().'] '.$error->getMessage();
             self::atkdebug(nl2br($error->getMessage()."\n".$error->getTraceAsString()), self::DEBUG_ERROR);
         } else {
@@ -316,15 +315,28 @@ class Tools
             self::atkdebug('Trace:'.self::atkGetTrace(), self::DEBUG_ERROR);
         }
 
-        if (Config::getGlobal('throw_exception_on_error') && $error instanceof Exception) {
-            throw $error;
-        } else {
-            if (Config::getGlobal('throw_exception_on_error')) {
+        $default_error_handlers = [];
+        $mailReport = Config::getGlobal('mailreport');
+        if($mailReport){
+            $default_error_handlers['mail'] = array('mailto' => $mailReport);
+        }
+
+        $errorHandlers = Config::getGlobal('error_handlers', $default_error_handlers);
+        foreach ($errorHandlers as $key => $value) {
+            if (is_numeric($key)) {
+                $key = $value;
+            }
+            $errorHandlerObject = ErrorHandlerBase::get($key, $value);
+            $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
+        }
+
+        if (!$skipThrow && Config::getGlobal('throw_exception_on_error')) {
+            if ($error instanceof Exception) {
+                throw $error;
+            } else {
                 throw new Exception($error);
             }
         }
-
-        return;
     }
 
     /**
@@ -379,13 +391,13 @@ class Tools
             $statement .= $traceArr[$i]['function'];
 
             // Initialize the functionParamArr array
-            $functionParamArr = array();
+            $functionParamArr = [];
 
             // Parse any arguments into the array
             if (isset($traceArr[$i]['args'])) {
                 foreach ($traceArr[$i]['args'] as $val) {
                     if (is_array($val)) {
-                        $valArr = array();
+                        $valArr = [];
                         foreach ($val as $name => $value) {
                             if (is_numeric($name)) {
                                 $valArr[] = $name;
@@ -531,7 +543,7 @@ class Tools
     {
         $arrays = func_get_args();
 
-        $result = array();
+        $result = [];
 
         foreach ($arrays as $array) {
             foreach ($array as $key => $value) {
@@ -558,7 +570,7 @@ class Tools
     public static function atk_array_merge_keys()
     {
         $args = func_get_args();
-        $result = array();
+        $result = [];
         foreach ($args as $array) {
             foreach ($array as $key => $value) {
                 $result[$key] = $value;
@@ -660,7 +672,7 @@ class Tools
      */
     public static function decodeKeyValueSet($set)
     {
-        $result = array();
+        $result = [];
         $items = explode(' AND ', $set);
         for ($i = 0; $i < count($items); ++$i) {
             $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
@@ -689,7 +701,7 @@ class Tools
     public static function encodeKeyValueSet($set)
     {
         reset($set);
-        $items = array();
+        $items = [];
         while (list($key, $value) = each($set)) {
             $items[] = $key.'='.$value;
         }
@@ -823,33 +835,6 @@ class Tools
     }
 
     /**
-     * Send a detailed error report to the maintainer.
-     */
-    public static function mailreport()
-    {
-        global $g_error_msg, $g_debug_msg;
-        $errorHandlerObject = ErrorHandlerBase::get('Mail', array('mailto' => Config::getGlobal('mailreport')));
-        $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
-    }
-
-    /**
-     * Handle errors that occurred in ATK, available handlers from /atk/errors/ can be added to
-     * the error_handlers config.
-     */
-    public static function handleError()
-    {
-        global $g_error_msg, $g_debug_msg;
-        $errorHandlers = Config::getGlobal('error_handlers', array('Mail' => array('mailto' => Config::getGlobal('mailreport'))));
-        foreach ($errorHandlers as $key => $value) {
-            if (is_numeric($key)) {
-                $key = $value;
-            }
-            $errorHandlerObject = ErrorHandlerBase::get($key, $value);
-            $errorHandlerObject->handle($g_error_msg, $g_debug_msg);
-        }
-    }
-
-    /**
      * Wrapper for escapeSQL function.
      *
      * @param string $string The string to escape.
@@ -921,8 +906,8 @@ class Tools
     public static function atkTriggerError(&$record, $attrib, $error, $message = '')
     {
         if (is_array($attrib)) {
-            $attribName = array();
-            $label = array();
+            $attribName = [];
+            $label = [];
 
             for ($i = 0; $i < count($attrib); ++$i) {
                 $attribName[$i] = $attrib[$i]->fieldName();
@@ -1118,7 +1103,7 @@ class Tools
      */
     public static function getUniqueId($sequence)
     {
-        static $unique = array();
+        static $unique = [];
         if (!isset($unique[$sequence])) {
             $unique[$sequence] = 0;
         }
@@ -1175,7 +1160,7 @@ class Tools
         if (count($ATK_VARS)) {
             foreach ($ATK_VARS as $key => $val) {
                 if (!in_array($key, $excludes)) {
-                    $inputs = array();
+                    $inputs = [];
                     self::atkMakeHiddenPostVarsRecursion($key, $val, $inputs);
                     $str .= implode('', $inputs);
                 }
@@ -1268,10 +1253,10 @@ class Tools
      *
      * @return string url for the node with the action
      */
-    public static function dispatch_url($nodeUri, $action, $params = array(), $phpfile = '')
+    public static function dispatch_url($nodeUri, $action, $params = [], $phpfile = '')
     {
         $phpfile = ($phpfile != '') ?: Config::getGlobal('dispatcher');
-        $atkParams = array();
+        $atkParams = [];
         if ($nodeUri != '') {
             $atkParams['atknodeuri'] = $nodeUri;
         }
@@ -1302,11 +1287,11 @@ class Tools
         $node,
         $action,
         $partial,
-        $params = array(),
+        $params = [],
         $sessionStatus = SessionManager::SESSION_PARTIAL
     ) {
         if (!is_array($params)) {
-            $params = array();
+            $params = [];
         }
         $params['atkpartial'] = $partial;
         $sm = SessionManager::getInstance();
@@ -1721,7 +1706,7 @@ class Tools
      */
     public static function atkFormatDate($date, $format, $weekday = false)
     {
-        static $langcache = array();
+        static $langcache = [];
 
         if (!is_array($date)) {
             $date = getdate($date);
@@ -1878,12 +1863,7 @@ class Tools
             if (substr($location, -1) == '?') {
                 $location = substr($location, 0, -1);
             }
-
-            global $g_error_msg;
-            if (count($g_error_msg) > 0) {
-                self::mailreport();
-            }
-
+            
             header('Location: '.$location);
             if ($exit) {
                 exit();
@@ -1999,9 +1979,9 @@ class Tools
     /**
      *  Find position of first occurrence of string in a string.
      *
-     * @param object $haystack The string being checked.
-     * @param object $needle The position counted from the beginning of haystack .
-     * @param object $offset [optional] The search offset. If it is not specified, 0 is used.
+     * @param string $haystack The string being checked.
+     * @param string $needle The position counted from the beginning of haystack .
+     * @param int $offset [optional] The search offset. If it is not specified, 0 is used.
      *
      * @return int|bool
      */

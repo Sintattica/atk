@@ -7,6 +7,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\DateAttribute;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 
 /**
  * Smart search handler class.
@@ -26,7 +27,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $criteriaValues = $this->m_postvars['atksearch']['criteria'];
         $criteriaModes = $this->m_postvars['atksearchmode']['criteria'];
 
-        $criteria = array();
+        $criteria = [];
         if (is_array($criteriaFields)) {
             foreach ($criteriaFields as $id => $field) {
                 if (isset($criteriaValues[$id])) {
@@ -205,7 +206,7 @@ class SmartSearchHandler extends AbstractSearchHandler
             'forget_criteria',
             'reset_criteria',
         );
-        $result = array();
+        $result = [];
         foreach ($labels as $label) {
             $result[$label] = htmlentities(Tools::atktext($label, 'atk'));
         }
@@ -219,7 +220,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      *
      * @param string $name template name
      *
-     * @return full template path
+     * @return string full template path
      */
     public function getTemplate($name)
     {
@@ -247,7 +248,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $attrNames = array_diff($attrNames, $excludes);
         sort($attrNames);
 
-        $attrs = array();
+        $attrs = [];
         foreach ($attrNames as $attrName) {
             $attr = $node->getAttribute($attrName);
             if (!$attr->hasFlag(Attribute::AF_HIDE_SEARCH)) {
@@ -338,7 +339,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $path[] = &$entry;
 
         $includeSelf = is_a($attr, 'ManyToOneRelation');
-        $excludes = is_a($attr, 'OneToManyRelation') ? $attr->m_refKey : array();
+        $excludes = is_a($attr, 'OneToManyRelation') ? $attr->m_refKey : [];
 
         if (is_a($attr, 'Relation')) {
             $attr->createDestination();
@@ -359,11 +360,11 @@ class SmartSearchHandler extends AbstractSearchHandler
      */
     public function getNodeAndAttrPath($attrPath)
     {
-        $path = array();
+        $path = [];
 
         $node = $this->m_node;
         $includeSelf = false;
-        $excludes = array();
+        $excludes = [];
 
         $entry = null;
 
@@ -436,7 +437,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      * @param array $value current search value
      * @param array $mode current search mode
      * @param string $type return either 'value' or 'mode' field
-     * @param string criterium value or mode field HTML
+     * @param string string criterium value or mode field HTML
      */
     public function _getCriteriumValueOrMode($id, $path, $value, $mode, $type)
     {
@@ -492,9 +493,9 @@ class SmartSearchHandler extends AbstractSearchHandler
      * @param array $path criterium path
      * @param array $value current search value
      * @param array $mode current search mode
-     * @param string criterium value field HTML
+     * @return string criterium value field HTML
      */
-    public function getCriteriumValue($id, $path, $value = array(), $mode = array())
+    public function getCriteriumValue($id, $path, $value = [], $mode = array())
     {
         return $this->_getCriteriumValueOrMode($id, $path, $value, $mode, 'value');
     }
@@ -506,9 +507,9 @@ class SmartSearchHandler extends AbstractSearchHandler
      * @param array $path criterium path
      * @param array $value current search value
      * @param array $mode current search mode
-     * @param string criterium mode field HTML
+     * @return string criterium mode field HTML
      */
-    public function getCriteriumMode($id, $path, $value = array(), $mode = array())
+    public function getCriteriumMode($id, $path, $value = [], $mode = array())
     {
         return $this->_getCriteriumValueOrMode($id, $path, $value, $mode, 'mode');
     }
@@ -527,7 +528,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $path = $this->getNodeAndAttrPath($data['attrs']);
         $scriptCode[] = "ATK.SmartSearchHandler.registerCriterium($id);";
 
-        $result = array();
+        $result = [];
 
         $result['id'] = $id;
         $result['element'] = array(
@@ -556,7 +557,7 @@ class SmartSearchHandler extends AbstractSearchHandler
     public function renderCriterium($criterium)
     {
         $ui = $this->getUi();
-        $params = array();
+        $params = [];
         $params['label'] = $this->getLabels();
         $params['criterium'] = $criterium;
 
@@ -588,7 +589,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $ui = $this->getUi();
         $sm = SessionManager::getInstance();
 
-        $params = array();
+        $params = [];
 
         $params['label'] = $this->getLabels();
         $params['reset_criteria'] = $this->getResetCriteria();
@@ -598,7 +599,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         // $params['save_criteria']        = $this->getSaveCriteria($name);
         $params['saved_criteria'] = $this->getSavedCriteria($name);
 
-        $params['criteria'] = array();
+        $params['criteria'] = [];
         Tools::atkdebug('criteria smartSearchForm: '.print_r($criteria, true));
         foreach ($criteria as $i => $criterium) {
             $params['criteria'][] = $this->getCriterium($i, $criterium);
@@ -632,7 +633,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         Tools::useattrib('atkdateattribute');
         DateAttribute::registerScriptsAndStyles();
 
-        $params = array();
+        $params = [];
 
         $params['formstart'] = '<form name="entryform" action="'.Config::getGlobal('dispatcher').'" method="post" class="form">'.$sm->formState(SessionManager::SESSION_REPLACE).'<input type="hidden" name="atkaction" value="smartsearch">'.'<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
 

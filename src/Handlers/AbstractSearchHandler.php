@@ -73,14 +73,14 @@ abstract class AbstractSearchHandler extends ActionHandler
     public function listCriteria()
     {
         if (!$this->tableExist()) {
-            return array();
+            return [];
         }
 
         $db = $this->m_node->getDb();
         $query = "SELECT c.name FROM {$this->m_table} c WHERE c.nodetype = '%s' ORDER BY UPPER(c.name) AND handlertype = '%s'";
         $rows = $db->getRows(sprintf($query, $this->m_node->atkNodeUri(), $this->getSearchHandlerType()));
 
-        $result = array();
+        $result = [];
         foreach ($rows as $row) {
             $result[] = $row['name'];
         }
@@ -139,7 +139,7 @@ abstract class AbstractSearchHandler extends ActionHandler
     public function loadCriteria($name)
     {
         if (!$this->tableExist()) {
-            return array();
+            return [];
         }
 
         $db = $this->m_node->getDb();
@@ -233,7 +233,7 @@ abstract class AbstractSearchHandler extends ActionHandler
     {
         // check if table is present
         if (!$this->tableExist()) {
-            return array();
+            return [];
         }
 
         return array(

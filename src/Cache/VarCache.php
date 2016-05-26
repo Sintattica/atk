@@ -9,14 +9,14 @@ class VarCache extends Cache
      *
      * @var array
      */
-    protected $m_expires = array();
+    protected $m_expires = [];
 
     /**
      * Cache entries.
      *
      * @var array
      */
-    protected $m_entry = array();
+    protected $m_entry = [];
 
     /**
      * constructor.
@@ -126,8 +126,8 @@ class VarCache extends Cache
         if (!$this->m_active) {
             return false;
         }
-        $this->m_entry = array();
-        $this->m_expires = array();
+        $this->m_entry = [];
+        $this->m_expires = [];
 
         return true;
     }

@@ -56,7 +56,7 @@ class StatementParser
     private function _parse()
     {
         $query = $this->m_query;
-        $bindPositions = array();
+        $bindPositions = [];
         $anonBindParams = 0;
 
         $quoteChars = array_flip(str_split(self::QUOTE_CHARS));

@@ -122,7 +122,7 @@ class SaveHandler extends ActionHandler
         $this->validate($record);
 
         if (!isset($record['atkerror'])) {
-            $record['atkerror'] = array();
+            $record['atkerror'] = [];
         }
 
         $error = count($record['atkerror']) > 0;
@@ -153,7 +153,7 @@ class SaveHandler extends ActionHandler
      * @param bool $exit
      * @param int $levelskip
      */
-    protected function _handleRedirect($location = '', $recordOrExit = array(), $exit = false, $levelskip = 1)
+    protected function _handleRedirect($location = '', $recordOrExit = [], $exit = false, $levelskip = 1)
     {
         $this->m_node->redirect($location, $recordOrExit, $exit, $levelskip);
     }
@@ -312,7 +312,7 @@ class SaveHandler extends ActionHandler
         $error = (!$this->m_node->validate($record, 'add'));
 
         if (!isset($record['atkerror'])) {
-            $record['atkerror'] = array();
+            $record['atkerror'] = [];
         }
 
         $error = $error || count($record['atkerror']) > 0;

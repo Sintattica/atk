@@ -161,17 +161,17 @@ class ViewHandler extends ViewEditBase
         // get all tabs of current mode
         $tabs = $node->getTabs($mode);
 
-        $fields = array();
-        $attributes = array();
+        $fields = [];
+        $attributes = [];
 
         // For all attributes we use the display() function to display the
         // attributes current value. This may be overridden by supplying
         // an <attributename>_display function in the derived classes.
         for ($i = 0, $_i = count($data['fields']); $i < $_i; ++$i) {
             $field = &$data['fields'][$i];
-            $tplfield = array();
+            $tplfield = [];
 
-            $classes = array();
+            $classes = [];
             if ($field['sections'] == '*') {
                 $classes[] = 'alltabs';
             } else {

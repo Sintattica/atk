@@ -95,7 +95,7 @@ class DataGridList extends DataGridComponent
         /*         * *********** */
         /* HEADER ROW */
         /*         * *********** */
-        $headercols = array();
+        $headercols = [];
 
         if ($hasActionCol && count($list['rows']) == 0) {
             if ($orientation == 'left' || $orientation == 'both') {
@@ -137,11 +137,11 @@ class DataGridList extends DataGridComponent
         /*         * *********** */
         /* SORT   ROW */
         /*         * *********** */
-        $sortcols = array();
+        $sortcols = [];
         $sortstart = '';
         $sortend = '';
         if ($grid->hasFlag(DataGrid::EXTENDED_SORT)) {
-            $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractExtendedSortOverrides'));
+            $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractExtendedSortOverrides'));
             $button = '<input type="button" value="'.Tools::atktext('sort').'" onclick="'.$call.'">';
 
             if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
@@ -167,11 +167,11 @@ class DataGridList extends DataGridComponent
         /* SEARCH ROW */
         /*         * *********** */
 
-        $searchcols = array();
+        $searchcols = [];
         $searchstart = '';
         $searchend = '';
         if ($hasSearch) {
-            $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides'));
+            $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides'));
             $buttonType = $grid->isEmbedded() ? 'button' : 'submit';
             $button = '<input type="'.$buttonType.'" class="btn btn-default btn_search" value="'.Tools::atktext('search').'" onclick="'.$call.' return false;">';
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
@@ -222,7 +222,7 @@ class DataGridList extends DataGridComponent
         /* ROWS */
         /*         * ***** */
 
-        $records = array();
+        $records = [];
         $keys = array_keys($actions);
         $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
         $actionloader = "rl_a['".$listName."'] = {};";
@@ -230,7 +230,7 @@ class DataGridList extends DataGridComponent
         $actionloader .= "\nrl_a['".$listName."']['embed'] = ".($grid->isEmbedded() ? 'true' : 'false').';';
 
         for ($i = 0, $_i = count($list['rows']); $i < $_i; ++$i) {
-            $record = array();
+            $record = [];
 
             /* Special rowColor method makes it possible to change the row color based on the record data.
              * the method can return a simple value (which will be used for the normal row color), or can be
@@ -379,7 +379,7 @@ class DataGridList extends DataGridComponent
         /*************/
         /* TOTAL ROW */
         /*************/
-        $totalcols = array();
+        $totalcols = [];
 
         if (count($list['total']) > 0) {
             if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
@@ -628,23 +628,23 @@ class DataGridList extends DataGridComponent
      *
      * @return array see above
      */
-    private function listArray(&$recordset, $prefix = '', $actions = array(), $suppress = array())
+    private function listArray(&$recordset, $prefix = '', $actions = [], $suppress = array())
     {
         $grid = $this->getGrid();
 
         $flags = $this->convertDataGridFlags();
 
         if (!is_array($suppress)) {
-            $suppress = array();
+            $suppress = [];
         }
         $result = array(
             'name' => $grid->getName(),
-            'heading' => array(),
-            'search' => array(),
-            'rows' => array(),
-            'totalraw' => array(),
-            'total' => array(),
-            'mra' => array(),
+            'heading' => [],
+            'search' => [],
+            'rows' => [],
+            'totalraw' => [],
+            'total' => [],
+            'mra' => [],
         );
 
         $columnConfig = $grid->getNode()->getColumnConfig($grid->getName());
@@ -660,17 +660,17 @@ class DataGridList extends DataGridComponent
             $mra = $actions['mra'];
             $actions = $actions['actions'];
         } else {
-            $mra = $grid->getNode()->hasFlag(Node::NF_NO_DELETE) ? array() : array('delete');
+            $mra = $grid->getNode()->hasFlag(Node::NF_NO_DELETE) ? [] : array('delete');
         }
 
         /* get the rows */
         for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
             $result['rows'][$i] = array(
-                'columns' => array(),
+                'columns' => [],
                 'actions' => $actions,
                 'mra' => $mra,
                 'record' => &$recordset[$i],
-                'data' => array(),
+                'data' => [],
             );
             $result['rows'][$i]['selector'] = $grid->getNode()->primaryKey($recordset[$i]);
             $result['rows'][$i]['type'] = 'data';
@@ -738,7 +738,7 @@ class DataGridList extends DataGridComponent
      */
     protected function _getColumns()
     {
-        $result = array();
+        $result = [];
 
         $columns = $this->getOption('columns');
         if ($columns == null) {

@@ -39,22 +39,22 @@ class ListAttribute extends Attribute
     /*
      * Array with options for Listbox
      */
-    public $m_options = array();
+    public $m_options = [];
 
     /*
      * Array with values for Listbox
      */
-    public $m_values = array();
+    public $m_values = [];
 
     /*
      * Array for fast lookup of what value belongs to what option.
      */
-    public $m_lookup = array();
+    public $m_lookup = [];
 
     /*
      * Array which holds the options,values and lookup array in cache
      */
-    public $m_types = array();
+    public $m_types = [];
 
     /*
      * Attribute that is to be selected
@@ -161,45 +161,42 @@ class ListAttribute extends Attribute
      * Get function to access the member variable for options.
      * For backwards compatibility we also check the old member variable m_options.
      *
-     * @param array $rec The record
      */
-    public function getOptions($rec = null)
+    public function getOptions()
     {
         if (!isset($this->m_types['options']) || count($this->m_types['options']) == 0) {
             return $this->m_options;
         }
 
-        return $this->_get('options', $rec);
+        return $this->_get('options');
     }
 
     /**
      * Get functions to access the member variable for values
      * For backwards compatibility we also check the old member variable m_values.
      *
-     * @param array $rec The record
      */
-    public function getValues($rec = null)
+    public function getValues()
     {
         if (!isset($this->m_types['values']) || count($this->m_types['values']) == 0) {
             return $this->m_values;
         }
 
-        return $this->_get('values', $rec);
+        return $this->_get('values');
     }
 
     /**
      * Get functions to access the member variable for lookup.
      * For backwards compatibility we also check the old member variable m_lookup.
      *
-     * @param array $rec The record
      */
-    public function getLookup($rec = null)
+    public function getLookup()
     {
         if (!isset($this->m_types['lookup']) || count($this->m_types['lookup']) == 0) {
             return $this->m_lookup;
         }
 
-        return $this->_get('lookup', $rec);
+        return $this->_get('lookup');
     }
 
     /**
@@ -209,11 +206,10 @@ class ListAttribute extends Attribute
      * lookup => lookuparray.
      *
      * @param string $type ("options", "values" or "lookup")
-     * @param array $rec The record
      *
      * @return array with options, values or lookup
      */
-    public function _get($type, $rec = null)
+    public function _get($type)
     {
         return $this->m_types[$type];
     }
@@ -259,7 +255,7 @@ class ListAttribute extends Attribute
      */
     public function _translateValue($value, $rec = null)
     {
-        $lookup = $this->getLookup($rec);
+        $lookup = $this->getLookup();
         $res = '';
         if (isset($lookup[$value])) {
             if ($this->hasFlag(self::AF_NO_TRANSLATION)) {
@@ -304,7 +300,7 @@ class ListAttribute extends Attribute
             $result .= '<option value="'.$this->m_emptyvalue.'">'.$nullLabel.'</option>';
         }
 
-        $values = $this->getValues($record);
+        $values = $this->getValues();
         $recvalue = Tools::atkArrayNvl($record, $this->fieldName());
 
         for ($i = 0; $i < count($values); ++$i) {
@@ -361,7 +357,7 @@ class ListAttribute extends Attribute
     public function expandAsButtons($options = null)
     {
         if (!$options || !is_array($options)) {
-            $options = array();
+            $options = [];
         }
         $defaultOptions = array(
             'activeButtonClass' => 'btn-primary atkdefaultbutton active',
@@ -424,7 +420,7 @@ class ListAttribute extends Attribute
      */
     public function search($record = '', $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        $values = $this->getValues($record);
+        $values = $this->getValues();
         $id = $this->getSearchFieldName($fieldprefix);
 
         $isMultiple = $this->isMultipleSearch($extended);
@@ -471,7 +467,7 @@ class ListAttribute extends Attribute
 
         // if we use autosearch, register an onchange event that submits the grid
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-            $onchange = $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides');
+            $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
             $script .= '.on("change", function(){'.$onchange.'})';
         }
 
@@ -559,7 +555,7 @@ class ListAttribute extends Attribute
      */
     public function setAutoHide($attrib, $valuearr)
     {
-        $conditions = array();
+        $conditions = [];
         foreach ($valuearr as $value) {
             $conditions[] = "newvalue=='$value'";
         }

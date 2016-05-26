@@ -11,9 +11,9 @@ use Sintattica\Atk\Session\SessionManager;
  */
 class TreeToolsTree
 {
-    public $m_tree = array();
-    public $m_allnodes = array();
-    public $m_parentless = array(); // Array to keep stuff that can not yet be inserted into the array. 
+    public $m_tree = [];
+    public $m_allnodes = [];
+    public $m_parentless = []; // Array to keep stuff that can not yet be inserted into the array. 
 
     public function addNode($id, $naam, $parent = 0, $img = '')
     {
@@ -74,6 +74,6 @@ class TreeToolsTree
         } else {
             $realTree = $sessionTree; // use the last known tree
         }
-        $ATK_VARS['atktree'] == $realTree; // postvars now should contain the last Knowtree
+        $ATK_VARS['atktree'] = $realTree; // postvars now should contain the last Knowtree
     }
 }

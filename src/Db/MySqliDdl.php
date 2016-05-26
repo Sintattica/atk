@@ -184,7 +184,7 @@ class MySqliDdl extends Ddl
     /**
      * Build a CREATE TABLE query and return it as a string.
      *
-     * @return The CREATE TABLE query.
+     * @return string The CREATE TABLE query.
      */
     public function buildCreate()
     {
@@ -213,7 +213,7 @@ class MySqliDdl extends Ddl
      */
     public function dropSequence($name)
     {
-        $table = $this->m_db->quoteIdentifier($this->db->m_seq_table);
+        $table = $this->m_db->quoteIdentifier($this->m_db->m_seq_table);
 
         return $this->m_db->query("DELETE FROM $table WHERE ".$this->m_db->quoteIdentifier($this->m_db->m_seq_namefield)." = '".$this->escapeSQL($name)."'");
     }
@@ -231,8 +231,7 @@ class MySqliDdl extends Ddl
         $name = $this->m_db->escapeSQL($name);
         $new_name = $this->m_db->escapeSQL($new_name);
 
-        return $this->m_db->query("UPDATE db_sequence SET seq_name='$new_name'
-                WHERE seq_name='$name'");
+        return $this->m_db->query("UPDATE db_sequence SET seq_name='$new_name' WHERE seq_name='$name'");
     }
 
     /**

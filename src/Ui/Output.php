@@ -136,13 +136,7 @@ class Output
             self::header('Content-Type: text/html; charset='.($charset == '' ? Tools::atkGetCharset() : $charset));
 
             $res = $this->m_content;
-
-            if (count($g_error_msg) > 0) {
-                // send an mail report with errormessages..
-                // (even when display of errors is turned off)
-                Tools::mailreport();
-            }
-
+            
             $debugger = Debugger::getInstance();
             $res .= $debugger->renderDebugAndErrorMessages();
         }

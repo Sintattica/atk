@@ -13,7 +13,7 @@ class TreeToolsNode
     public $m_label; // DEPRECATED, use $m_object instead.
     public $m_object;
     public $m_img;
-    public $m_sub = array();
+    public $m_sub = [];
 
     public function __construct($id, $object, $img = '')
     {

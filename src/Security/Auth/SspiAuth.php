@@ -161,9 +161,9 @@ class SspiAuth extends DbAuth
         $user = $_SERVER['PHP_AUTH_USER'];
 
         $recs = $this->selectUser($user);
-        $groups = array();
-        $level = array();
-        $parents = array();
+        $groups = [];
+        $level = [];
+        $parents = [];
 
         // We might have more then one level, so we loop the result.
         if (count($recs) > 0) {
@@ -179,7 +179,7 @@ class SspiAuth extends DbAuth
             $groups = array_merge($groups, $parents);
             while (count($parents) > 0) {
                 $precs = $this->getParentGroups($parents);
-                $parents = array();
+                $parents = [];
                 foreach ($precs as $prec) {
                     if ($prec[$groupparentfield] != '') {
                         $parents[] = $prec[$groupparentfield];

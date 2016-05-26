@@ -20,14 +20,14 @@ class TabbedPane extends Attribute
      * @var array
      * @access private
      */
-    public $m_tabsList = array();
+    public $m_tabsList = [];
 
     /*
      * The list of "attribute"=>"tab
      * @var array
      * @access private
      */
-    public $m_attribsList = array();
+    public $m_attribsList = [];
 
     /**
      * Constructor.
@@ -146,7 +146,7 @@ class TabbedPane extends Attribute
     public function _addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         $node = $this->m_ownerInstance;
-        $fields = array();
+        $fields = [];
 
         //collecting output from attributes
         foreach ($this->m_attribsList as $name => $tab) {
@@ -198,12 +198,12 @@ class TabbedPane extends Attribute
         $reqimg = "<span class='required'></span>";
 
         /* display the edit fields */
-        $fields = array();
+        $fields = [];
         $tab = $this->getDefaultTab();
 
         for ($i = 0, $_i = count($data['fields']); $i < $_i; ++$i) {
             $field = &$data['fields'][$i];
-            $tplfield = array();
+            $tplfield = [];
 
             $tplfield['tab'] = $field['tabs'];
 
@@ -299,7 +299,7 @@ class TabbedPane extends Attribute
     {
         // get active tab
         $active_tab = $this->getDefaultTab();
-        $fields = array();
+        $fields = [];
 
         $node = $this->m_ownerInstance;
         $ui = $node->getUi();
@@ -310,7 +310,7 @@ class TabbedPane extends Attribute
         foreach ($this->m_attribsList as $name => $tab) {
             $p_attrib = $node->getAttribute($name);
             if (is_object($p_attrib)) {
-                $tplfield = array();
+                $tplfield = [];
                 if (!$p_attrib->hasFlag(self::AF_HIDE_VIEW)) {
                     $fieldtab = $this->m_attribsList[$name];
 
@@ -412,13 +412,13 @@ class TabbedPane extends Attribute
     public function buildTabs($action = '', $fieldprefix = '')
     {
         $node = $this->m_ownerInstance;
-        $result = array();
+        $result = [];
 
         // which tab is currently selected
         $active_tab = $this->getDefaultTab();
 
         foreach ($this->m_attribsList as $attrib => $tab) {
-            $newtab = array();
+            $newtab = [];
             $newtab['title'] = Tools::atktext(array("tab_$tab", $tab), $node->m_module, $node->m_type);
             $newtab['attribute'] = $attrib;
             $newtab['selected'] = ($active_tab == $tab);

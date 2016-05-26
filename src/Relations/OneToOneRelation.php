@@ -675,7 +675,7 @@ class OneToOneRelation extends Relation
                     }
                 }
 
-                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName().'_AE_', false, false);
+                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, [], $fieldprefix.$this->fieldName().'_AE_', false, false);
 
                 /* hidden fields */
                 $arr['hide'] = array_merge($arr['hide'], $a['hide']);
@@ -685,7 +685,7 @@ class OneToOneRelation extends Relation
                  * TODO FIXME
                  */
                 if (!is_array($arr['fields'])) {
-                    $arr['fields'] = array();
+                    $arr['fields'] = [];
                 }
                 if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                     /* separator and name */
@@ -768,7 +768,7 @@ class OneToOneRelation extends Relation
              * TODO FIXME
              */
             if (!is_array($arr['fields'])) {
-                $arr['fields'] = array();
+                $arr['fields'] = [];
             }
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                 /* separator and name */
@@ -1103,7 +1103,7 @@ class OneToOneRelation extends Relation
 
                             // we need to left join the destination table into the query
                             // (don't worry ATK won't add it when it's already there)
-                            $query->addJoin($new_table, $new_table, ($this->getJoinCondition()), false);
+                            $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
                         }
                         $p_attrib->searchCondition($query, $new_table, $value, $searchmode);
                     }

@@ -129,7 +129,7 @@ class Ui
      *
      * @return string rendered template
      */
-    public function render($name, $vars = array(), $module = '')
+    public function render($name, $vars = [], $module = '')
     {
         $path = Config::getGlobal('template_dir').$name;
         $result = $this->renderSmarty($path, $vars);

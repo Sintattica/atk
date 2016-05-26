@@ -29,8 +29,8 @@ namespace Sintattica\Atk\Utils;
  */
 class DirectoryTraverser
 {
-    public $m_callbackObjects = array();
-    public $m_excludes = array();
+    public $m_callbackObjects = [];
+    public $m_excludes = [];
 
     /**
      * Constructor.
@@ -67,7 +67,7 @@ class DirectoryTraverser
      */
     public function clearCallbackObjects()
     {
-        $this->m_callbackObjects = array();
+        $this->m_callbackObjects = [];
     }
 
     /**
@@ -116,10 +116,10 @@ class DirectoryTraverser
     public function getDirContents($path)
     {
         if (!is_dir($path)) {
-            return array();
+            return [];
         }
 
-        $result = array();
+        $result = [];
         $dir = @opendir($path);
         while (($file = @readdir($dir)) !== false) {
             if (!$this->isExcluded($file)) {
@@ -163,7 +163,7 @@ class DirectoryTraverser
      */
     public function clearExcludes()
     {
-        $this->m_excludes = array();
+        $this->m_excludes = [];
     }
 
     /**

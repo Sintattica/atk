@@ -6,7 +6,7 @@ use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Db;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 
 /**
@@ -44,7 +44,7 @@ class FuzzySearchAttribute extends Attribute
      * @var array
      * @access private
      */
-    public $m_matches = array();
+    public $m_matches = [];
 
     /*
      * An instance of the node we are searching on
@@ -106,18 +106,7 @@ class FuzzySearchAttribute extends Attribute
         return true;
     }
 
-    /**
-     * Checks if a value is valid.
-     *
-     * Note that obligatory and unique fields are checked by the
-     * atkNodeValidator, and not by the validate() method itself.
-     *
-     * @param array $rec The record that holds the value for this
-     *                     attribute. If an error occurs, the error will
-     *                     be stored in the 'atkerror' field of the record.
-     * @param string $mode The mode for which should be validated ("add" or
-     *                     "update")
-     */
+
     public function validate(&$rec, $mode)
     {
         if (is_array($rec[$this->fieldName()])) {
@@ -198,7 +187,7 @@ class FuzzySearchAttribute extends Attribute
 
             if ($this->m_mode == 'multiselect' && count($this->m_matches) > 1) {
                 // Select multiple records from all matches
-                $checkboxes = array();
+                $checkboxes = [];
 
                 foreach ($this->m_matches as $keyword => $matches) {
                     for ($i = 0, $_i = count($matches); $i < $_i; ++$i) {
@@ -209,13 +198,13 @@ class FuzzySearchAttribute extends Attribute
 
                 $attrib = new MultiSelectAttribute($this->m_name, $optionArray, $valueArray, 1,
                     self::AF_NO_LABEL | MultiSelectAttribute::AF_CHECK_ALL | MultiSelectAttribute::AF_LINKS_BOTTOM);
-                $res .= $attrib->edit();
+                $res .= $attrib->edit($record, $fieldprefix, $mode);
             } else {
                 if ($this->m_mode == 'select' || ($this->m_mode == 'multiselect' && count($this->m_matches) == 1)) {
                     // Select one record from all matches.
                     $res .= '<SELECT NAME="'.$fieldprefix.$this->fieldName().'[]" class="form-control">';
                     $res .= '<OPTION VALUE="">'.Tools::atktext('select_none');
-                    $selects = array();
+                    $selects = [];
                     foreach ($this->m_matches as $keyword => $matches) {
                         for ($i = 0, $_i = count($matches); $i < $_i; ++$i) {
                             $item = '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
@@ -263,7 +252,7 @@ class FuzzySearchAttribute extends Attribute
     public function getMatches($searchstring)
     {
         Tools::atkdebug('Performing search');
-        $result = array();
+        $result = [];
 
         if ($this->createSearchNodeInstance() && $searchstring != '') {
             $this->m_searchnodeInstance->addFilter($this->getDestinationFilter());
@@ -288,13 +277,13 @@ class FuzzySearchAttribute extends Attribute
      */
     public function store($db, $rec, $mode)
     {
-        $resultset = array();
+        $resultset = [];
 
         if (is_array($rec[$this->fieldName()])) {
             // If the value is an array, this means we must have come from a select.
             // The user has selected some options, and we must process those.
             // First, load the records, based on the where clauses.
-            $wheres = array();
+            $wheres = [];
             $matches = $rec[$this->fieldName()];
             for ($i = 0, $_i = count($matches); $i < $_i; ++$i) {
                 if ($matches[$i] != '') {
@@ -399,7 +388,7 @@ class FuzzySearchAttribute extends Attribute
      */
     public function getSearchModes()
     {
-        return array();
+        return [];
     }
 
     /**

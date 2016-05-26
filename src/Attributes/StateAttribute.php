@@ -1,8 +1,6 @@
 <?php
 
 namespace Sintattica\Atk\Attributes;
-
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Language;
 
 /**
@@ -13,8 +11,8 @@ use Sintattica\Atk\Core\Language;
  */
 class StateAttribute extends ListAttribute
 {
-    public $m_state = array();
-    public $m_states = array();
+    public $m_state = [];
+    public $m_states = [];
     public $m_usa_states = array(
         'AL',
         'AK',
@@ -200,7 +198,7 @@ class StateAttribute extends ListAttribute
         if ($switch == 'usa') {
             return $this->m_usa_states;
         } else {
-            $tmp_array = array();
+            $tmp_array = [];
             foreach ($this->m_state as $iso => $value) {
                 $tmp_array[] = $iso;
             }
@@ -218,7 +216,7 @@ class StateAttribute extends ListAttribute
      */
     public function getStateOptionArray($switch)
     {
-        $tmp_array = array();
+        $tmp_array = [];
         if ($switch == 'usa') {
             foreach ($this->m_usa_states as $iso) {
                 $tmp_array[] = $this->getStateOption($iso);

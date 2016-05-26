@@ -53,6 +53,7 @@ class Atk
             set_error_handler('Sintattica\Atk\Core\Tools::atkErrorHandler');
             error_reporting(E_ALL);
             set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
+            register_shutdown_function('Sintattica\Atk\Core\Tools::atkFatalHandler');
         }
 
         // Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
@@ -132,11 +133,11 @@ class Atk
      *              Note that tabs that every user may see need not be
      *              registered.
      */
-    public function registerNode($nodeUri, $class, $actions = null, $tabs = array(), $section = null)
+    public function registerNode($nodeUri, $class, $actions = null, $tabs = [], $section = null)
     {
         if (!is_array($tabs)) {
             $section = $tabs;
-            $tabs = array();
+            $tabs = [];
         }
 
         $module = Tools::getNodeModule($nodeUri);

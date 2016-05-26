@@ -63,7 +63,7 @@ class SelectHandler extends ActionHandler
 
         $sm = SessionManager::getInstance();
 
-        $params = array();
+        $params = [];
         $params['header'] = $node->text('title_select');
         $params['list'] = $grid->render();
         $params['footer'] = '';

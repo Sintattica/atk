@@ -2,8 +2,6 @@
 
 namespace Sintattica\Atk\Filters;
 
-use Sintattica\Atk\Db\Query;
-
 /**
  * Add a group by clausule to a query.
  *

@@ -64,11 +64,11 @@ class ActionHandler
      */
     const ACTION_SUCCESS = 4;
 
-    /*
-     * @var Node
+    /**
+     * @var Node $m_node
      * @access private
      */
-    public $m_node = null;
+    public $m_node;
 
     /* @access private */
     public $m_action = '';
@@ -77,7 +77,7 @@ class ActionHandler
     public $m_partial = null;
 
     /* @access private */
-    public $m_renderBoxVars = array();
+    public $m_renderBoxVars = [];
 
     /* @access private */
     public $m_rejecting = false;
@@ -86,7 +86,6 @@ class ActionHandler
     public $m_returnbehaviour = self::ATK_ACTION_STAY;
 
     public $m_postvars;
-
 
     protected $m_boxTemplate = 'box';
 

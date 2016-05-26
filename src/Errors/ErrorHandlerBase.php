@@ -10,7 +10,7 @@ namespace Sintattica\Atk\Errors;
  */
 abstract class ErrorHandlerBase
 {
-    protected $params = array();
+    protected $params = [];
 
     /**
      * Constructor. Params are used to pass handler specific data to the handlers.

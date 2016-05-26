@@ -16,7 +16,7 @@ use Sintattica\Atk\Db\Db;
  */
 class DbAuth extends AuthInterface
 {
-    public $m_rightscache = array();
+    public $m_rightscache = [];
 
     /**
      * Build the query for selecting the user for authentication.
@@ -226,9 +226,9 @@ class DbAuth extends AuthInterface
         $groupparentfield = Config::getGlobal('auth_groupparentfield');
 
         $recs = $this->selectUser($user);
-        $groups = array();
-        $level = array();
-        $parents = array();
+        $groups = [];
+        $level = [];
+        $parents = [];
 
         // We might have more then one level, so we loop the result.
         if (count($recs) > 0) {
@@ -244,7 +244,7 @@ class DbAuth extends AuthInterface
             $groups = array_merge($groups, $parents);
             while (count($parents) > 0) {
                 $precs = $this->getParentGroups($parents);
-                $parents = array();
+                $parents = [];
                 foreach ($precs as $prec) {
                     if ($prec[$groupparentfield] != '') {
                         $parents[] = $prec[$groupparentfield];
@@ -280,7 +280,7 @@ class DbAuth extends AuthInterface
     {
         // We might have more then one access level, so we loop the result.
         if (count($recs) > 1) {
-            $access = array();
+            $access = [];
             for ($i = 0; $i < count($recs); ++$i) {
                 if ($i == 0) {
                     $access = $recs[$i][Config::getGlobal('auth_accesslevelfield')];
@@ -320,7 +320,7 @@ class DbAuth extends AuthInterface
             $this->m_rightscache[$node] = $db->getRows($query);
         }
 
-        $result = array();
+        $result = [];
 
         $rights = $this->m_rightscache[$node];
 
@@ -357,7 +357,7 @@ class DbAuth extends AuthInterface
 
         $rights = $db->getRows($query);
 
-        $result = array();
+        $result = [];
 
         for ($i = 0; $i < count($rights); ++$i) {
             if ($rights[$i][Config::getGlobal('auth_levelfield')] != '') {
@@ -409,7 +409,7 @@ class DbAuth extends AuthInterface
 
         $recs = $db->getRows($query);
 
-        $userlist = array();
+        $userlist = [];
         $stringparser = new StringParser(Config::getGlobal('auth_userdescriptor'));
         for ($i = 0, $_i = count($recs); $i < $_i; ++$i) {
             $userlist[] = array(

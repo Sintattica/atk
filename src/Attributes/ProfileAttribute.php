@@ -56,7 +56,7 @@ class ProfileAttribute extends Attribute
                 FROM '.Config::getGlobal('auth_accesstable').'
                 WHERE '.$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
-        $result = array();
+        $result = [];
         $rows = $db->getRows($query);
         for ($i = 0; $i < count($rows); ++$i) {
             $result[$rows[$i]['node']][] = $rows[$i]['action'];
@@ -75,7 +75,7 @@ class ProfileAttribute extends Attribute
      */
     public function getChildGroups($db, $id)
     {
-        $result = array();
+        $result = [];
         if (!is_numeric($id)) {
             return $result;
         }
@@ -115,7 +115,7 @@ class ProfileAttribute extends Attribute
         if ($db->query($delquery)) {
             $checked = $record[$this->fieldName()];
 
-            $children = array();
+            $children = [];
             if (!empty($this->m_parentAttrName)) {
                 $children = $this->getChildGroups($db, $record[$this->m_ownerInstance->primaryKeyField()]);
             }
@@ -126,7 +126,7 @@ class ProfileAttribute extends Attribute
                 $nodeModule = Tools::getNodeModule($node);
                 $nodeType = Tools::getNodeType($node);
 
-                $validActions = array();
+                $validActions = [];
 
                 if (is_array($allActions[$nodeModule][$nodeType])) {
                     $validActions = array_intersect($actions, $allActions[$nodeModule][$nodeType]);
@@ -135,7 +135,7 @@ class ProfileAttribute extends Attribute
                 // If you're not an admin, leave out all actions which are not editable (none if no editable actions available)
                 if (!$isAdmin) {
                     $validActions = isset($editableActions[$nodeModule][$nodeType]) ? array_intersect($validActions,
-                        $editableActions[$nodeModule][$nodeType]) : array();
+                        $editableActions[$nodeModule][$nodeType]) : [];
                 }
 
                 foreach ($validActions as $action) {
@@ -202,7 +202,7 @@ class ProfileAttribute extends Attribute
     {
         $atk = Atk::getInstance();
 
-        $result = array();
+        $result = [];
 
         // hierarchic groups, only return actions of parent (if this record has a parent)
         $parentAttr = $this->m_parentAttrName;
@@ -232,11 +232,11 @@ class ProfileAttribute extends Attribute
         }
 
         if (!$splitPerSection) {
-            $temp = array();
+            $temp = [];
             foreach ($result as $section => $modules) {
                 foreach ($modules as $module => $nodes) {
                     if (!is_array($temp[$module])) {
-                        $temp[$module] = array();
+                        $temp[$module] = [];
                     }
 
                     $temp[$module] = array_merge($temp[$module], $nodes);
@@ -271,7 +271,7 @@ class ProfileAttribute extends Attribute
         $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' WHERE '.$this->m_accessField.' IN ('.$levels.')';
         $rows = $db->getRows($query);
 
-        $result = array();
+        $result = [];
         foreach ($rows as $row) {
             $module = Tools::getNodeModule($row['node']);
             $node = Tools::getNodeType($row['node']);
@@ -288,7 +288,7 @@ class ProfileAttribute extends Attribute
      */
     public function initialValue()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -302,7 +302,7 @@ class ProfileAttribute extends Attribute
     {
         $selected = $record[$this->fieldName()];
 
-        $result = array();
+        $result = [];
         foreach ($selected as $node => $actions) {
             $module = Tools::getNodeModule($node);
             $node = Tools::getNodeType($node);
@@ -557,12 +557,12 @@ class ProfileAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $checkboxes = array();
+        $checkboxes = [];
         if (isset($postvars[$this->fieldName()])) {
             $checkboxes = $postvars[$this->fieldName()];
         }
 
-        $actions = array();
+        $actions = [];
         for ($i = 0; $i < count($checkboxes); ++$i) {
             $elems = explode('.', $checkboxes[$i]);
             if (count($elems) == 4) {
@@ -599,7 +599,7 @@ class ProfileAttribute extends Attribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array();
+        return [];
     }
 
     /**

@@ -191,7 +191,7 @@ class MySqliDb extends Db
         if ($this->connect($mode) == self::DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
-                if (is_resource($this->m_query_id)) {
+                if (!empty($this->m_query_id)) {
                     mysqli_free_result($this->m_query_id);
                 }
                 $this->m_query_id = 0;
@@ -262,7 +262,7 @@ class MySqliDb extends Db
     {
         $stmt = $this->_query('SHOW WARNINGS', true);
 
-        $warnings = array();
+        $warnings = [];
         while ($warning = $stmt->fetch_assoc()) {
             $warnings[] = $warning;
         }
@@ -284,7 +284,7 @@ class MySqliDb extends Db
     {
         $error = mysqli_error($this->m_link_id);
 
-        $matches = array();
+        $matches = [];
         preg_match("/\'(.*)\'/U", $error, $matches);
 
         if (is_array($matches) && sizeof($matches) == 2) {
@@ -292,7 +292,7 @@ class MySqliDb extends Db
             $table = $matches[1];
 
             if ($this->m_query_id) {
-                if (is_resource($this->m_query_id)) {
+                if (!empty($this->m_query_id)) {
                     mysqli_free_result($this->m_query_id);
                 }
                 $this->m_query_id = 0;
@@ -633,10 +633,10 @@ class MySqliDb extends Db
             if (!$id) {
                 Tools::atkdebug('Metadata query failed.');
 
-                return array();
+                return [];
             }
             $i = 0;
-            $result = array();
+            $result = [];
 
             while ($finfo = mysqli_fetch_field($id)) {
                 $result[$i]['table'] = $finfo->table;
@@ -691,7 +691,7 @@ class MySqliDb extends Db
             return $result;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -707,7 +707,7 @@ class MySqliDb extends Db
         $this->query('SHOW '.(!$includeViews ? 'FULL' : '').' TABLES');
 
         // get table names
-        $result = array();
+        $result = [];
         for ($i = 0; $info = mysqli_fetch_row($this->m_query_id); ++$i) {
             // ignore views?
             if (!$includeViews && strtoupper($info[1]) == 'VIEW') {

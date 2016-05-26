@@ -230,7 +230,7 @@ class DurationAttribute extends Attribute
         }
 
         if (Config::getGlobal('durationformat', 0) == self::DURATIONFORMAT_DECIMAL) {
-            $decimalvalue = $this->_getHourPart($minutes) + (self::_getMinutePart($minutes) / 60);
+            $decimalvalue = (int)$this->_getHourPart($minutes) + ((int)self::_getMinutePart($minutes) / 60);
 
             return $prefix.sprintf('%02.02f', $decimalvalue);
         } elseif (Config::getGlobal('durationformat', 0) == self::DURATIONFORMAT_TIME) {

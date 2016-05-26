@@ -12,7 +12,7 @@ use Sintattica\Atk\Core\Tools;
 class FormatAttribute extends Attribute
 {
     public $m_format = '';
-    public $m_breakdownCached = array();
+    public $m_breakdownCached = [];
 
     /**
      * Constructor.
@@ -87,8 +87,8 @@ class FormatAttribute extends Attribute
         $elems = $this->_breakDown();
         $values = $this->_valueBreakDown($record[$this->fieldName()]);
 
-        $inputs = array();
-        $hints = array();
+        $inputs = [];
+        $hints = [];
         for ($i = 0, $j = 0, $_i = count($elems); $i < $_i; ++$i) {
             if ($elems[$i]['type'] == '/') { // literal
                 $inputs[] = $elems[$i]['mask'];
@@ -107,7 +107,7 @@ class FormatAttribute extends Attribute
      *
      * @param int $pos The position of the element that is not properly
      *                        formatted.
-     * @param char $specifier The format that the value should've adhered to.
+     * @param string $specifier The format that the value should've adhered to.
      *
      * @return string A translated error string.
      */
@@ -137,7 +137,7 @@ class FormatAttribute extends Attribute
     /**
      * Check if a string matches the format specifier.
      *
-     * @param char $specifier Char indicating the format that the String must
+     * @param string $specifier Char indicating the format that the String must
      *                          adhere to. Can be any of #9A*
      * @param string $string The string to check.
      *
@@ -157,9 +157,9 @@ class FormatAttribute extends Attribute
     /**
      * Check if a char matches the format specifier.
      *
-     * @param char $specifier Char indicating the format that the String must
+     * @param string $specifier Char indicating the format that the String must
      *                        adhere to. Can be any of #9A*
-     * @param char $char The char to check.
+     * @param string $char The char to check.
      *
      * @return bool True if char matches the specifier, false if not.
      */
@@ -193,8 +193,8 @@ class FormatAttribute extends Attribute
     public function _breakDown()
     {
         if (count($this->m_breakdownCached) == 0) {
-            $elems = array();
-            $elem = array();
+            $elems = [];
+            $elem = [];
             $last = '';
 
             for ($i = 0, $_i = strlen($this->m_format); $i < $_i; ++$i) {
@@ -241,7 +241,7 @@ class FormatAttribute extends Attribute
     public function _valueBreakDown($valuestr)
     {
         $elems = $this->_breakDown();
-        $values = array();
+        $values = [];
         $pos = 0;
 
         foreach ($elems as $elem) {
@@ -258,8 +258,8 @@ class FormatAttribute extends Attribute
      * Check if 2 specifiers are logically equal (i.e. they can be grouped
      * into one element).
      *
-     * @param char $charA The first specifier.
-     * @param char $charB The second specifier.
+     * @param string $charA The first specifier.
+     * @param string $charB The second specifier.
      *
      * @return bool True if the specifiers are considered equal, false if
      *              not.
@@ -272,7 +272,7 @@ class FormatAttribute extends Attribute
     /**
      * Check if a character is a formatspecifier or a literal.
      *
-     * @param char $char The character to check.
+     * @param string $char The character to check.
      *
      * @return bool True if $char is a valid formatspecifier, false if it
      *              is a literal.
@@ -313,7 +313,7 @@ class FormatAttribute extends Attribute
      *
      * @todo specifier type is not yet used.
      *
-     * @param char $type The specifier (9#A*)
+     * @param string $type The specifier (9#A*)
      * @param int $size The desired size of the value.
      * @param string $value The value to pad.
      *

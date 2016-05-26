@@ -12,7 +12,7 @@ use ArrayAccess;
  */
 class StringParser
 {
-    public $m_fields = array();
+    public $m_fields = [];
     public $m_string = '';
 
     /**
@@ -147,7 +147,7 @@ class StringParser
      */
     public function getAllFieldsAsArray()
     {
-        $matches = array();
+        $matches = [];
         preg_match_all("/\[[^\]]*\]|[^[]+/", $this->m_string, $matches);
 
         return $matches;
@@ -166,7 +166,7 @@ class StringParser
         $matches = $this->getAllFieldsAsArray();
         Tools::atk_var_dump($matches, 'MATCHES'.($split_tags_and_fields ? ' (split tags and separators)' : ''));
 
-        $fields = array();
+        $fields = [];
         if (is_array($matches)) {
             foreach ($matches[0] as $match) {
                 // Check if need to parse the match
@@ -199,7 +199,7 @@ class StringParser
      */
     public function getAttributes()
     {
-        $attrs = array();
+        $attrs = [];
 
         $fields = $this->getFields();
         foreach ($fields as $field) {

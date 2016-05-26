@@ -86,7 +86,7 @@ class FileAttribute extends Attribute
      *
      * @var array
      */
-    public $m_allowedFileTypes = array();
+    public $m_allowedFileTypes = [];
 
     /**
      * Constructor.
@@ -167,11 +167,11 @@ class FileAttribute extends Attribute
     public function getFiles($dir)
     {
         $dirHandle = dir($this->m_dir);
-        $file_arr = array();
+        $file_arr = [];
         if (!$dirHandle) {
             Tools::atkerror("Unable to open directory {$this->m_dir}");
 
-            return array();
+            return [];
         }
 
         while ($item = $dirHandle->read()) {
@@ -784,7 +784,7 @@ class FileAttribute extends Attribute
      * @param array $rec The record
      * @param string $default The default filename
      *
-     * @return The real filename
+     * @return string The real filename
      */
     public function _filenameMangle($rec, $default)
     {
@@ -802,7 +802,7 @@ class FileAttribute extends Attribute
      * @param array $rec The record
      * @param string $default The default filename
      *
-     * @return The real filename based on the filename template
+     * @return string The real filename based on the filename template
      */
     public function filenameMangle($rec, $default)
     {

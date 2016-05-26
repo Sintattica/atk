@@ -45,11 +45,7 @@ class DummyAttribute extends Attribute
         $this->m_text = $text;
     }
 
-    /**
-     * Add flag.
-     *
-     * @param int $flag flag
-     */
+
     public function addFlag($flag)
     {
         parent::addFlag($flag);
@@ -144,13 +140,7 @@ class DummyAttribute extends Attribute
     {
         return true;
     }
-
-    /**
-     * Convert the database value to an internally used value
-     * Since dummyattrbiutes are not stored in the database this function returns NULL.
-     *
-     * @param array $record The record
-     */
+    
     public function db2value($record)
     {
         return;
@@ -164,7 +154,7 @@ class DummyAttribute extends Attribute
      * Retrieve the list of searchmodes supported by the attribute.
      * Since this attribute does not support searching it returns an empty array.
      *
-     * @return empty array
+     * @return array
      */
     public function getSearchModes()
     {
@@ -173,7 +163,7 @@ class DummyAttribute extends Attribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array();
+        return [];
     }
 
     /**

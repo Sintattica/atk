@@ -178,7 +178,7 @@ class RadioDetailsAttribute extends Attribute
                 continue;
             }
 
-            $result .= '<blockquote>'.$attr->edit(array(), $fieldprefix, $mode).'&nbsp;'.$attr->getLabel(array(), $mode).'</blockquote>';
+            $result .= '<blockquote>'.$attr->edit([], $fieldprefix, $mode).'&nbsp;'.$attr->getLabel([], $mode).'</blockquote>';
         }
 
         return $result;

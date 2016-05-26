@@ -269,7 +269,7 @@ class IndexPage
             $id = '';
 
             if (isset($node->m_postvars['atkselector']) && is_array($node->m_postvars['atkselector'])) {
-                $atkSelectorDecoded = array();
+                $atkSelectorDecoded = [];
 
                 foreach ($node->m_postvars['atkselector'] as $rowIndex => $selector) {
                     list($selector, $pk) = explode('=', $selector);

@@ -37,21 +37,21 @@ class Page
      * @access private
      * @var array
      */
-    public $m_metacode = array();
+    public $m_metacode = [];
 
     /*
      * The list of javascript files to load.
      * @access private
      * @var array
      */
-    public $m_scriptfiles = array();
+    public $m_scriptfiles = [];
 
     /*
      * List of javascript code statements to include in the header.
      * @access private
      * @var array
      */
-    public $m_scriptcode = array('before' => array(), 'after' => array());
+    public $m_scriptcode = array('before' => [], 'after' => array());
 
     /*
      * List of javascript code statements to execute when a form on
@@ -59,7 +59,7 @@ class Page
      * @access private
      * @var array
      */
-    public $m_submitscripts = array();
+    public $m_submitscripts = [];
 
     /*
      * List of javascript code statements to execute when the page
@@ -67,21 +67,21 @@ class Page
      * @access private
      * @var array
      */
-    public $m_loadscripts = array();
+    public $m_loadscripts = [];
 
     /*
      * List of stylesheet files to load.
      * @access private
      * @var array
      */
-    public $m_stylesheets = array();
+    public $m_stylesheets = [];
 
     /*
      * List of style statements to include in the header.
      * @access private
      * @var array
      */
-    public $m_stylecode = array();
+    public $m_stylecode = [];
 
     /*
      * The content to put on the page.
@@ -95,7 +95,7 @@ class Page
      * @access private
      * @var array
      */
-    public $m_hiddenvars = array();
+    public $m_hiddenvars = [];
 
     /**
      * Page title.
@@ -163,7 +163,7 @@ class Page
                 $this->m_scriptfiles[] = $file;
             } else {
                 // lookup the dependency and inject script right before it.
-                $result = array();
+                $result = [];
                 $injected = false;
                 for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; ++$i) {
                     if (stristr($this->m_scriptfiles[$i], $before) !== false) {
@@ -187,7 +187,7 @@ class Page
      */
     public function unregister_all_scripts()
     {
-        $this->m_scriptfiles = array();
+        $this->m_scriptfiles = [];
     }
 
     /**
@@ -628,7 +628,7 @@ class Page
 
         $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
 
-        $layout = array();
+        $layout = [];
         $layout['title'] = $title;
         if (Tools::hasFlag($flags, self::HTML_HEADER)) {
             $layout['head'] = $this->head().$extra_header;

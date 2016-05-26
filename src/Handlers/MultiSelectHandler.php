@@ -107,7 +107,7 @@ class MultiSelectHandler extends AdminHandler
 
         $params['header'] = Tools::atktext('title_multiselect', $this->getNode()->m_module, $this->getNode()->m_type);
 
-        $actions['actions'] = array();
+        $actions['actions'] = [];
         $actions['mra'][] = 'multiselect';
 
         $grid = DataGrid::create($this->getNode(), 'multiselect');

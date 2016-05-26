@@ -130,7 +130,7 @@ class PgSqlDb extends Db
     /**
      * Goto the next record in the result set.
      *
-     * @return result of going to the next record
+     * @return bool result of going to the next record
      */
     public function next_record()
     {
@@ -168,7 +168,7 @@ class PgSqlDb extends Db
      * @param string $table the table name
      * @param string $mode the type of locking
      *
-     * @return result of locking
+     * @return mixed result of locking
      */
     public function lock($table, $mode = 'write')
     {
@@ -192,7 +192,7 @@ class PgSqlDb extends Db
     /**
      * Unlock table(s) in the database.
      *
-     * @return result of unlocking
+     * @return mixed result of unlocking
      */
     public function unlock()
     {
@@ -213,7 +213,7 @@ class PgSqlDb extends Db
      * Evaluate the result; which rows were
      * affected by the query.
      *
-     * @return affected rows
+     * @return int affected rows
      */
     public function affected_rows()
     {
@@ -248,7 +248,7 @@ class PgSqlDb extends Db
      *
      * @param string $sequence the sequence name
      *
-     * @return the next sequence id
+     * @return int the next sequence id
      */
     public function nextid($sequence)
     {
@@ -366,7 +366,7 @@ class PgSqlDb extends Db
         $schema_condition
         ORDER BY a.attnum";
 
-        $meta = array();
+        $meta = [];
         $rows = $this->getRows($sql);
 
         foreach ($rows as $i => $row) {
@@ -425,7 +425,7 @@ class PgSqlDb extends Db
         /* query */
         $this->query("SELECT relname FROM pg_class WHERE relkind = 'r' AND NOT relname LIKE 'pg_%' AND NOT relname LIKE 'sql_%'");
 
-        $result = array();
+        $result = [];
         for ($i = 0; $info = @pg_fetch_row($this->m_query_id, $i); ++$i) {
             $result[$i]['table_name'] = $info[0];
             $result[$i]['tablespace_name'] = $this->m_database;

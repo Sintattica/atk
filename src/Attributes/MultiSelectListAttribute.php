@@ -2,14 +2,14 @@
 
 namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
 class MultiSelectListAttribute extends ListAttribute
 {
 
+    const AF_NO_TOGGLELINKS = 536870912;
+    
     /**
      * Default field separator.
      *
@@ -54,7 +54,7 @@ class MultiSelectListAttribute extends ListAttribute
     {
         $result = '';
         if (is_array($record[$this->fieldName()])) {
-            $values = $this->getValues($record);
+            $values = $this->getValues();
             for ($i = 0; $i < count($values); ++$i) {
                 if (in_array($values[$i], $record[$this->fieldName()])) {
                     $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
@@ -90,7 +90,7 @@ class MultiSelectListAttribute extends ListAttribute
         if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] !== '') {
             return explode($this->m_fieldSeparator, $rec[$this->fieldName()]);
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -122,7 +122,7 @@ class MultiSelectListAttribute extends ListAttribute
     public function display($record, $mode)
     {
         $values = $record[$this->fieldName()];
-        $res = array();
+        $res = [];
         for ($i = 0; $i < count($values); ++$i) {
             $res[] = $this->_translateValue($values[$i], $record);
         }
@@ -156,7 +156,7 @@ class MultiSelectListAttribute extends ListAttribute
 
         $result = '<select multiple id="'.$id.'" name="'.$id.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.'>';
 
-        $values = $this->getValues($record);
+        $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {
             $recordvalue = $this->db2value($record);
         } else {

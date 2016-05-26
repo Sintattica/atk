@@ -21,7 +21,7 @@ class MockSecurityManager extends SecurityManager
      *
      * @var array
      */
-    public $m_resultallowed = array();
+    public $m_resultallowed = [];
 
     /**
      * Set which privileges are allowed.

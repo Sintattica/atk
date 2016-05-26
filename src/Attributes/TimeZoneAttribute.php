@@ -87,7 +87,7 @@ class TimeZoneAttribute extends ListAttribute
      * Returns the UTC offset in seconds for a value of the timezone attribute.
      *
      * @param string $value
-     * @param timestamp $timestamp
+     * @param int $timestamp
      *
      * @return int UTC offset in seconds
      *

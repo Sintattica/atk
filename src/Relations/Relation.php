@@ -6,6 +6,7 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Atk;
+use Sintattica\Atk\Core\TreeNode;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Db\Query;
 
@@ -90,7 +91,7 @@ class Relation extends Attribute
         $result = '';
         $filter_length = strlen($filter);
         $quotes = array("'", '"', '`');
-        $quoteStack = array();
+        $quoteStack = [];
         $lastChar = '';
 
         for ($i = 0; $i < $filter_length; ++$i) {

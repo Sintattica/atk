@@ -23,13 +23,13 @@ class Ddl
     const DDL_UNIQUE = 2;
     const DDL_NOTNULL = 4;
 
-    public $m_table = array();
-    public $m_fields = array();
+    public $m_table = [];
+    public $m_fields = [];
     public $m_remove_field;
-    public $m_indexes = array(); // not yet implemented
-    public $m_primarykey = array();
+    public $m_indexes = []; // not yet implemented
+    public $m_primarykey = [];
 
-    /* @var Db */
+    /** @var Db $m_db */
     public $m_db;
 
     /**
@@ -387,7 +387,7 @@ class Ddl
      */
     public function _buildFieldsArray()
     {
-        $fields = array();
+        $fields = [];
 
         foreach ($this->m_fields as $fieldname => $fieldconfig) {
             if ($fieldname != '' && $fieldconfig['type'] != '' && $this->getType($fieldconfig['type']) != '') {
@@ -422,7 +422,7 @@ class Ddl
      */
     public function _buildConstraintsArray()
     {
-        $constraints = array();
+        $constraints = [];
         $pk = $this->buildPrimaryKey($this->m_primarykey);
         if (!empty($pk)) {
             $constraints[] = $pk;
@@ -616,7 +616,7 @@ class Ddl
      *                          array('fields' => array('user_id' => array('sorting' => 'ascending'
      *                                                                     'length' => 3
      *                                                                      ),
-     *                                                  'lastname' => array()
+     *                                                  'lastname' => []
      *                                                  )
      *                               )
      *
@@ -628,7 +628,7 @@ class Ddl
         $name = $this->m_db->quoteIdentifier($this->getIndexName($name));
 
         $query = "CREATE INDEX $name ON $table";
-        $fields = array();
+        $fields = [];
         foreach ($definition['fields'] as $field => $fieldinfo) {
             if (!empty($fieldinfo['length'])) {
                 $fields[] = $this->m_db->quoteIdentifier($field).'('.$fieldinfo['length'].')';

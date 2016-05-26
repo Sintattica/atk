@@ -17,7 +17,7 @@ use Sintattica\Atk\Attributes\NumberAttribute;
 class DataNode extends Node
 {
     /** @var array data array */
-    private $m_data = array();
+    private $m_data = [];
 
     /**
      * Constructor.
@@ -129,7 +129,7 @@ class DataNode extends Node
         $limit = @$params['limit'] ? $params['limit'] : -1;
         $offset = @$params['offset'] ? $params['offset'] : 0;
         $order = @$params['order'] ? $params['order'] : null;
-        $search = @$params['search'] ? $params['search'] : array();
+        $search = @$params['search'] ? $params['search'] : [];
 
         $selector = $this->getSelector($selector);
         $criteria = $this->getCriteria($selector);
@@ -152,7 +152,7 @@ class DataNode extends Node
      */
     protected function filterColumns($data)
     {
-        $result = array();
+        $result = [];
 
         foreach ($data as $row) {
             foreach (array_keys($row) as $column) {
@@ -243,7 +243,7 @@ class DataNode extends Node
      */
     protected function filterData($data, $criteria, $search)
     {
-        $result = array();
+        $result = [];
 
         foreach ($data as $record) {
             if ($this->isValidRecord($record, $criteria, $search)) {

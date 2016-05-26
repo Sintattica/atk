@@ -6,6 +6,7 @@ use Sintattica\Atk\Utils\TriggerListener;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Core\Node;
 
 /**
  * This file is part of the ATK Framework distribution.
@@ -47,7 +48,7 @@ class RecycleBin extends TriggerListener
     /**
      * The options for the recycle bin.
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * Construct a new atkRecycleBin.

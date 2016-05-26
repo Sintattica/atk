@@ -55,7 +55,7 @@ class DataGridRenderer extends DataGridComponent
      */
     protected function renderGrid()
     {
-        $vars = array();
+        $vars = [];
 
         // $this->getGrid() is an atkdatagrid instance
         foreach ($this->getGrid()->getComponentInstances() as $name => $comp) {

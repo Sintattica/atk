@@ -47,9 +47,9 @@ class Debugger
     {
         $this->m_isconsole = (strpos($_SERVER['SCRIPT_NAME'], 'debugger.php') !== false);
         if (!$this->m_isconsole) {
-            $link = $this->consoleLink('Open console', '', array(), true);
+            $link = $this->consoleLink('Open console', '', [], true);
             $data = $this->getDebuggerData(true);
-            $data = array(); // start clean
+            $data = []; // start clean
             global $g_debug_msg;
             $g_debug_msg[] = Tools::atkGetTimingInfo().'Debugger initialized. ['.$link.']';
         }
@@ -160,7 +160,7 @@ class Debugger
      *
      * @return string HTML code with the console link
      */
-    public function consoleLink($text, $action = '', $params = array(), $popup = false, $stackId = null)
+    public function consoleLink($text, $action = '', $params = [], $popup = false, $stackId = null)
     {
         if ($stackId == null) {
             $sm = SessionManager::getInstance();
@@ -240,7 +240,7 @@ class Debugger
     public function consoleControls()
     {
         return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index',
-            '', array(), false, $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
+            '', [], false, $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
 
     /**
@@ -375,13 +375,13 @@ class Debugger
         if (is_object($sm)) {
             $session = &$sm->getSession();
             if ($clean) {
-                $session['debugger'] = array();
+                $session['debugger'] = [];
             }
             $var = &$session['debugger'][$stackId];
 
             return $var;
         }
-        $data = array();
+        $data = [];
 
         return $data;
     }

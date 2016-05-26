@@ -1393,7 +1393,7 @@ function adodb_strftime($fmt, $ts=false,$is_gmt=false)
         $tstr = strtoupper(gmstrftime('%X',31366800)); // 30 Dec 1970, 1 am
         $hasAM = strrpos($tstr,'M') !== false;
 
-        $ADODB_DATE_LOCALE = array();
+        $ADODB_DATE_LOCALE = [];
         $ADODB_DATE_LOCALE[] =  strncmp($tstr,'30',2) == 0 ? 'd'.$sep.'m'.$sep.'y' : 'm'.$sep.'d'.$sep.'y';
         $ADODB_DATE_LOCALE[]  = ($hasAM) ? 'h:i:s a' : 'H:i:s';
 

@@ -6,7 +6,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
 /**
- * The atkFlagAttribute class offers an way to edit bitmask flags.
+ * The FlagAttribute class offers an way to edit bitmask flags.
  *
  * @author  M. Roest <martin@ibuildings.nl>
  */
@@ -37,7 +37,7 @@ class FlagAttribute extends MultiSelectAttribute
      */
     public function value2db($rec)
     {
-        if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()] >= 1)) {
+        if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]) >= 1) {
             $flags = 0;
             foreach ($rec[$this->fieldName()] as $flag) {
                 $flags |= $flag;
@@ -59,7 +59,7 @@ class FlagAttribute extends MultiSelectAttribute
     public function db2value($rec)
     {
         if ($rec[$this->fieldName()] > 0) {
-            $newrec = array();
+            $newrec = [];
             foreach ($this->m_values as $value) {
                 if (Tools::hasFlag($rec[$this->fieldName()], $value)) {
                     $newrec[] = $value;
@@ -69,7 +69,7 @@ class FlagAttribute extends MultiSelectAttribute
             return $newrec;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -130,7 +130,7 @@ class FlagAttribute extends MultiSelectAttribute
     {
         $vars = Tools::atkArrayNvl($postvars, $this->fieldName());
         if (!is_array($vars)) {
-            $result = array();
+            $result = [];
             foreach ($this->m_values as $value) {
                 if (Tools::hasFlag($vars, $value)) {
                     $result[] = $value;

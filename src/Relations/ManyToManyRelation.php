@@ -41,8 +41,8 @@ class ManyToManyRelation extends Relation
     public $m_localFilter = null;
     protected $m_ownerFields = null;
     protected $m_limit;
-    private $m_selectableRecordsCache = array();
-    private $m_selectableRecordCountCache = array();
+    private $m_selectableRecordsCache = [];
+    private $m_selectableRecordCountCache = [];
 
     /**
      * Constructor.
@@ -79,7 +79,7 @@ class ManyToManyRelation extends Relation
      *
      * @return array
      */
-    public function _getSelectableRecords($record = array(), $mode = '', $force = false)
+    public function _getSelectableRecords($record = [], $mode = '', $force = false)
     {
         $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
@@ -115,7 +115,7 @@ class ManyToManyRelation extends Relation
      *
      * @return int
      */
-    protected function _getSelectableRecordCount($record = array(), $mode = '')
+    protected function _getSelectableRecordCount($record = [], $mode = '')
     {
         $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
@@ -135,7 +135,7 @@ class ManyToManyRelation extends Relation
      *
      * @return int
      */
-    public function getSelectableRecordCount($record = array(), $mode = '', $force = false)
+    public function getSelectableRecordCount($record = [], $mode = '', $force = false)
     {
         if (!$this->createDestination()) {
             return 0;
@@ -161,10 +161,10 @@ class ManyToManyRelation extends Relation
      *
      * @return array selectable records
      */
-    public function getSelectableRecords($record = array(), $mode = '', $force = false)
+    public function getSelectableRecords($record = [], $mode = '', $force = false)
     {
         if (!$this->createDestination()) {
-            return array();
+            return [];
         }
 
         $filter = $this->parseDestinationFilter($record);
@@ -183,8 +183,8 @@ class ManyToManyRelation extends Relation
      */
     public function clearSelectableCache()
     {
-        $this->m_selectableRecordCountCache = array();
-        $this->m_selectableRecordsCache = array();
+        $this->m_selectableRecordCountCache = [];
+        $this->m_selectableRecordsCache = [];
     }
 
     /**
@@ -197,7 +197,7 @@ class ManyToManyRelation extends Relation
      */
     public function getSelectedRecords($record)
     {
-        $keys = array();
+        $keys = [];
 
         if (isset($record[$this->fieldName()])) {
             for ($i = 0; $i < count($record[$this->fieldName()]); ++$i) {
@@ -375,7 +375,7 @@ class ManyToManyRelation extends Relation
     {
         $result = '';
         if ($this->createDestination() && Tools::atk_value_in_array($record[$this->fieldName()])) {
-            $recordset = array();
+            $recordset = [];
             $remotekey = $this->getRemoteKey();
             for ($i = 0; $i < count($record[$this->fieldName()]); ++$i) {
                 $rec = $record[$this->fieldName()][$i][$remotekey];
@@ -443,7 +443,7 @@ class ManyToManyRelation extends Relation
             return $rel->select($where)->getAllRows();
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -455,7 +455,7 @@ class ManyToManyRelation extends Relation
      */
     public function _getLoadWhereClause($record)
     {
-        $whereelems = array();
+        $whereelems = [];
         $localkey = $this->getLocalKey();
         if (!is_array($localkey)) {
             $localkey = array($localkey);
@@ -511,7 +511,7 @@ class ManyToManyRelation extends Relation
     protected function _getExistingRecordsByKey($db, $record, $mode)
     {
         $existingRecords = $this->load($db, $record, $mode);
-        $existingRecordsByKey = array();
+        $existingRecordsByKey = [];
         foreach ($existingRecords as $existingRecord) {
             $existingRecordKey = is_array($existingRecord[$this->getRemoteKey()]) ? $existingRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] : $existingRecord[$this->getRemoteKey()];
 
@@ -531,7 +531,7 @@ class ManyToManyRelation extends Relation
      */
     protected function _extractSelectedRecordsByKey($record)
     {
-        $selectedRecordsByKey = array();
+        $selectedRecordsByKey = [];
 
         if (isset($record[$this->fieldName()])) {
             foreach ($record[$this->fieldName()] as $selectedRecord) {
@@ -832,7 +832,7 @@ class ManyToManyRelation extends Relation
     {
         $value = parent::fetchValue($postvars);
 
-        return $value == null ? array() : $value;
+        return $value == null ? [] : $value;
     }
 
     /**

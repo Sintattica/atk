@@ -76,7 +76,7 @@ class DateTimeAttribute extends Attribute
      */
     public function __construct($name, $flags = 0)
     {
-        $default_steps = array();
+        $default_steps = [];
         for ($i = 0; $i < 60; ++$i) {
             $default_steps[$i] = $i;
         }

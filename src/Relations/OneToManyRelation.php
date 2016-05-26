@@ -59,7 +59,7 @@ class OneToManyRelation extends Relation
      * @access private
      * @var array
      */
-    public $m_refKey = array();
+    public $m_refKey = [];
 
     /*
      * The maximum number of detail records. If the number of detail records
@@ -83,7 +83,7 @@ class OneToManyRelation extends Relation
      * @access private
      * @var array;
      */
-    public $m_ownerFields = array();
+    public $m_ownerFields = [];
 
     /*
      * Use destination filter for autolink add link?
@@ -123,7 +123,7 @@ class OneToManyRelation extends Relation
      * @access private
      * @var array
      */
-    public $m_excludes = array();
+    public $m_excludes = [];
 
     /**
      * Default constructor.
@@ -158,7 +158,7 @@ class OneToManyRelation extends Relation
             $this->m_refKey = $refKey;
         } else {
             if (empty($refKey)) {
-                $this->m_refKey = array();
+                $this->m_refKey = [];
             } else {
                 $this->m_refKey[] = $refKey;
             }
@@ -346,7 +346,7 @@ class OneToManyRelation extends Relation
                 }
             }
 
-            $actions = array();
+            $actions = [];
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
                 $actions['view'] = Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => '[pk]', 'atkfilter' => $this->m_destinationFilter));
             }
@@ -393,7 +393,7 @@ class OneToManyRelation extends Relation
 
         $grid = $this->createGrid($record, 'admin', $mode);
 
-        $params = array();
+        $params = [];
         if ($this->m_useFilterForEditLink && $this->m_destinationFilter != '') {
             $params['atkfilter'] = $this->m_destinationFilter;
         }
@@ -491,7 +491,7 @@ class OneToManyRelation extends Relation
      */
     public function _getAddLink($myrecords, $record, $saveform = true, $mode = '', $fieldprefix = '')
     {
-        $params = array();
+        $params = [];
         if ($mode === 'add') {
             $ownerfields = $this->getOwnerFields();
             foreach ($ownerfields as $ownerfield) {
@@ -598,7 +598,7 @@ class OneToManyRelation extends Relation
      */
     public function _getFilterElements($record)
     {
-        $filterelems = array();
+        $filterelems = [];
 
         $ownerfields = $this->getOwnerFields();
         if ($this->destinationHasRelation()) {
@@ -717,7 +717,7 @@ class OneToManyRelation extends Relation
             return '';
         }
 
-        $whereelems = array();
+        $whereelems = [];
 
         if (count($this->m_refKey) == 0 || $this->m_refKey[0] == '') {
             $this->m_refKey[0] = $this->m_owner;
@@ -1018,7 +1018,7 @@ class OneToManyRelation extends Relation
             $ownerAlias = $this->m_ownerInstance->m_table;
         }
 
-        $conditions = array();
+        $conditions = [];
         $ownerfields = $this->getOwnerFields();
 
         for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
@@ -1110,8 +1110,8 @@ class OneToManyRelation extends Relation
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $usedfields = array();
-        $searchconditions = array();
+        $usedfields = [];
+        $searchconditions = [];
 
         if (!is_array($value)) {
             foreach ($this->m_destInstance->descriptorFields() as $field) {

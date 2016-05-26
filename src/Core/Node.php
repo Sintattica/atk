@@ -225,7 +225,7 @@ class Node
      * @access private
      * @var array
      */
-    public $m_uniqueFieldSets = array();
+    public $m_uniqueFieldSets = [];
 
     /*
      * Nodes must be initialised using the init() function before they can be
@@ -235,21 +235,21 @@ class Node
      */
     public $m_initialised = false;
 
-    /*
+    /**
      * Check to prevent double execution of setAttribSizes on pages with more
      * than one form.
      * @access private
-     * @var boolean
+     * @var boolean $m_attribsizesset
      */
     public $m_attribsizesset = false;
 
-    /*
+    /**
      * The list of attributes of a node. These should be of the class
      * Attribute or one of its derivatives.
      * @access private
-     * @var Attribute[]
+     * @var Attribute[] $m_attribList
      */
-    public $m_attribList = array();
+    public $m_attribList = [];
 
     /*
      * Index list containing the attributes in the order in which they will
@@ -257,7 +257,7 @@ class Node
      * @access private
      * @var array
      */
-    public $m_attribIndexList = array();
+    public $m_attribIndexList = [];
 
     /*
      * Reference to the page on which the node is rendering its output.
@@ -272,7 +272,7 @@ class Node
      * @access private
      * @var array
      */
-    public $m_tabList = array();
+    public $m_tabList = [];
 
     /*
      * List of available sections. Associative array structured like this:
@@ -280,21 +280,21 @@ class Node
      * @access private
      * @var array
      */
-    public $m_sectionList = array();
+    public $m_sectionList = [];
 
     /*
      * Keep track of tabs per attribute.
      * @access private
      * @var array
      */
-    public $m_attributeTabs = array();
+    public $m_attributeTabs = [];
 
     /*
      * Keep track if a tab contains attribs (checkEmptyTabs function)
      * @access private
      * @var array
      */
-    public $m_filledTabs = array();
+    public $m_filledTabs = [];
 
     /*
      * The type of the node.
@@ -336,7 +336,7 @@ class Node
      * @access protected
      * @var array
      */
-    public $m_primaryKey = array();
+    public $m_primaryKey = [];
 
     /*
      * The postvars (or getvars) that are passed to a page will be passed
@@ -345,7 +345,7 @@ class Node
      * @access protected
      * @var array
      */
-    public $m_postvars = array();
+    public $m_postvars = [];
 
     /*
      * The action that the node is currently performing.
@@ -400,21 +400,21 @@ class Node
      * @access private
      * @var String
      */
-    public $m_default_expanded_sections = array();
+    public $m_default_expanded_sections = [];
 
     /*
      * Record filters, in attributename/required value pairs.
      * @access private
      * @var array
      */
-    public $m_filters = array();
+    public $m_filters = [];
 
     /*
      * Record filters, as a list of sql statements.
      * @access private
      * @var array
      */
-    public $m_fuzzyFilters = array();
+    public $m_fuzzyFilters = [];
 
     /*
      * For speed, we keep track of a list of attributes that we don't have to
@@ -422,7 +422,7 @@ class Node
      * @access protected
      * @var array
      */
-    public $m_listExcludes = array();
+    public $m_listExcludes = [];
 
     /*
      * For speed, we keep track of a list of attributes that we don't have to
@@ -431,7 +431,7 @@ class Node
      * @access protected
      * @var array
      */
-    public $m_viewExcludes = array();
+    public $m_viewExcludes = [];
 
     /*
      * For speed, we keep track of a list of attributes that have the cascade
@@ -442,7 +442,7 @@ class Node
      * @access private
      * @var array
      */
-    public $m_cascadingAttribs = array();
+    public $m_cascadingAttribs = [];
 
     /*
      * Actions are mapped to security units.
@@ -515,7 +515,7 @@ class Node
      *       to the recordlist
      * @var array
      */
-    public $m_priority_actions = array();
+    public $m_priority_actions = [];
 
     /*
      * Minimum for the mra priority select
@@ -536,7 +536,7 @@ class Node
      * @access private
      * @var array
      */
-    public $m_feedback = array();
+    public $m_feedback = [];
 
     /*
      * Number to use with numbering
@@ -564,21 +564,21 @@ class Node
      * @access protected
      * @var array
      */
-    public $m_actionListeners = array();
+    public $m_actionListeners = [];
 
     /*
      * List of trigger listeners
      * @access protected
      * @var array
      */
-    public $m_triggerListeners = array();
+    public $m_triggerListeners = [];
 
     /**
      * List of callback functions to manipulate the record actions.
      *
      * @var array
      */
-    protected $m_recordActionsCallbacks = array();
+    protected $m_recordActionsCallbacks = [];
 
     /**
      * List of callback functions to add css class to row.
@@ -586,7 +586,7 @@ class Node
      *
      * @var array
      */
-    protected $m_rowClassCallback = array();
+    protected $m_rowClassCallback = [];
 
     /*
      * Extended search action. The action which is called if the user
@@ -602,7 +602,7 @@ class Node
      * @access private
      * @var array
      */
-    public $m_editableListAttributes = array();
+    public $m_editableListAttributes = [];
 
     /*
      * Multi-record actions, selection mode.
@@ -631,6 +631,11 @@ class Node
      * @var int
      */
     private $m_attribOrder = 0;
+
+    /*
+     * parent Attribute flag (treeview)
+     */
+    public $m_parent;
 
     /**
      * @param string $nodeUri The nodeuri
@@ -679,7 +684,7 @@ class Node
      */
     public function resolveSections($sections)
     {
-        $result = array();
+        $result = [];
 
         foreach ($sections as $section) {
             $result[] = $this->resolveSection($section);
@@ -801,22 +806,22 @@ class Node
             $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
 
             // check for parent fieldname (treeview)
-            if ($attribute->hasFlag(Attribute::AF_PARENT)) {
+            if ($attribute->hasFlag($attribute::AF_PARENT)) {
                 $this->m_parent = $attribute->fieldName();
             }
 
             // check for cascading delete flag
-            if ($attribute->hasFlag(Attribute::AF_CASCADE_DELETE)) {
+            if ($attribute->hasFlag($attribute::AF_CASCADE_DELETE)) {
                 $this->m_cascadingAttribs[] = $attribute->fieldName();
             }
 
-            if ($attribute->hasFlag(Attribute::AF_HIDE_LIST) && !$attribute->hasFlag(Attribute::AF_PRIMARY)) {
+            if ($attribute->hasFlag($attribute::AF_HIDE_LIST) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
                 if (!in_array($attribute->fieldName(), $this->m_listExcludes)) {
                     $this->m_listExcludes[] = $attribute->fieldName();
                 }
             }
 
-            if ($attribute->hasFlag(Attribute::AF_HIDE_VIEW) && !$attribute->hasFlag(Attribute::AF_PRIMARY)) {
+            if ($attribute->hasFlag($attribute::AF_HIDE_VIEW) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
                 if (!in_array($attribute->fieldName(), $this->m_viewExcludes)) {
                     $this->m_viewExcludes[] = $attribute->fieldName();
                 }
@@ -953,7 +958,7 @@ class Node
             return $sections;
         }
 
-        $tabs = array();
+        $tabs = [];
 
         if (!isset($sections)) {
         } elseif (!is_array($sections)) {
@@ -1457,7 +1462,7 @@ class Node
         }
 
         // Attributes can also add tabs to the tablist.
-        $this->m_filledTabs = array();
+        $this->m_filledTabs = [];
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = &$this->m_attribList[$attribname];
             if ($p_attrib->hasFlag(Attribute::AF_HIDE)) {
@@ -1504,7 +1509,7 @@ class Node
      */
     public function getSections($action)
     {
-        $sections = array();
+        $sections = [];
 
         if (is_array($this->m_sectionList[$action])) {
             foreach ($this->m_sectionList[$action] as $element) {
@@ -1552,7 +1557,7 @@ class Node
     public function checkTabRights(&$tablist)
     {
         $atk = Atk::getInstance();
-        $disable = array();
+        $disable = [];
 
         if (empty($this->m_module)) {
             return $disable;
@@ -1580,7 +1585,7 @@ class Node
             // [0]=>tabA,[3]=>tabD
             // we convert this to a 'normal' array:
             // [0]=>tabA,[1]=>tabD;
-            $newarray = array();
+            $newarray = [];
             foreach ($tablist as $tab) {
                 $newarray[] = $tab;
             }
@@ -1599,7 +1604,7 @@ class Node
      */
     public function checkEmptyTabs($list)
     {
-        $tabList = array();
+        $tabList = [];
 
         if (is_array($list)) {
             foreach ($list as $tabEntry) {
@@ -1650,7 +1655,7 @@ class Node
      */
     public function getActiveSections($tab, $mode)
     {
-        $activeSections = array();
+        $activeSections = [];
         if (is_array($this->m_sectionList[$mode])) {
             foreach ($this->m_sectionList[$mode] as $section) {
                 if (substr($section, 0, strlen($tab)) == $tab) {
@@ -1736,7 +1741,7 @@ class Node
      */
     public function getFormButtons($mode, $record = array())
     {
-        $result = array();
+        $result = [];
         $page = $this->getPage();
 
         $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
@@ -1993,7 +1998,7 @@ class Node
      */
     public function getDefaultActionParams($locked = false)
     {
-        $params = array();
+        $params = [];
         $params['formend'] = '</form>';
 
         return $params;
@@ -2099,11 +2104,11 @@ class Node
         if (!empty($record)) {
             $defaults = $record;
         } else {
-            $defaults = array();
+            $defaults = [];
         }
 
-        $result['hide'] = array();
-        $result['fields'] = array();
+        $result['hide'] = [];
+        $result['fields'] = [];
 
         /* edit mode */
         if ($mode == 'edit') {
@@ -2250,7 +2255,7 @@ class Node
         // call preAddToViewArray for the node itself.
         $this->preAddToViewArray($record, $mode);
 
-        $result = array();
+        $result = [];
 
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]['name'];
@@ -2287,8 +2292,8 @@ class Node
     {
         $this->groupFieldsBySection($fields);
 
-        $addedSections = array();
-        $result = array();
+        $addedSections = [];
+        $result = [];
         foreach ($fields as $field) {
             /// we add the section link before the first attribute that is in it
             $fieldSections = $field['sections'];
@@ -2323,8 +2328,8 @@ class Node
      */
     public function groupFieldsBySection(&$fields)
     {
-        $result = array();
-        $sections = array();
+        $result = [];
+        $sections = [];
 
         // first find sectionless fields and collect all sections
         foreach ($fields as $field) {
@@ -2367,7 +2372,7 @@ class Node
      */
     public function initial_values()
     {
-        $record = array();
+        $record = [];
 
         foreach (array_keys($this->m_attribList) as $attrName) {
             $attr = $this->getAttribute($attrName);
@@ -2463,7 +2468,7 @@ class Node
     public function hideForm($mode = 'add', $record = null, $forceList = '', $fieldprefix = '')
     {
         /* suppress all */
-        $suppressList = array();
+        $suppressList = [];
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $suppressList[] = $this->m_attribIndexList[$r]['name'];
         }
@@ -2498,7 +2503,7 @@ class Node
             $action = $this->m_action;
         }
 
-        $result = array();
+        $result = [];
 
         // which tab is currently selected
         $tab = $this->getActiveTab();
@@ -2554,7 +2559,7 @@ class Node
      */
     public function defaultActions($mode, $params = array())
     {
-        $actions = array();
+        $actions = [];
         $postfix = '';
 
         if (count($params) > 0) {
@@ -2611,7 +2616,7 @@ class Node
     public function setPriorityActions($actions)
     {
         if (!is_array($actions)) {
-            $this->m_priority_actions = array();
+            $this->m_priority_actions = [];
         } else {
             $this->m_priority_actions = $actions;
         }
@@ -2901,7 +2906,7 @@ class Node
     public function renderActionPage($action, $blocks = array())
     {
         if (!is_array($blocks)) {
-            $blocks = ($blocks == '' ? array() : array($blocks));
+            $blocks = ($blocks == '' ? [] : array($blocks));
         }
 
         $ui = $this->getUi();
@@ -2989,13 +2994,13 @@ class Node
      * @param bool $exit Exit script after redirect.
      * @param int $levelskip Number of levels to skip
      */
-    public function redirect($location = '', $recordOrExit = array(), $exit = false, $levelskip = 1)
+    public function redirect($location = '', $recordOrExit = [], $exit = false, $levelskip = 1)
     {
         Tools::atkdebug('node::redirect()');
 
         $record = $recordOrExit;
         if (is_bool($recordOrExit)) {
-            $record = array();
+            $record = [];
             $exit = $recordOrExit;
         }
 
@@ -3033,7 +3038,7 @@ class Node
         if ($vars == '') {
             $vars = $this->m_postvars;
         }
-        $record = array();
+        $record = [];
 
         foreach (array_keys($this->m_attribList) as $attribname) {
             if ((!is_array($includes) || in_array($attribname, $includes)) && (!is_array($excludes) || !in_array($attribname, $excludes))) {
@@ -3118,7 +3123,7 @@ class Node
      */
     public function descriptorFields()
     {
-        $fields = array();
+        $fields = [];
 
         // See if node has a custom descriptor definition.
         if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
@@ -3307,7 +3312,7 @@ class Node
             $pk = $record['atkprimkey'];
             $query->addCondition($pk);
 
-            $storelist = array('pre' => array(), 'post' => array(), 'query' => array());
+            $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
             foreach (array_keys($this->m_attribList) as $attribname) {
                 if ((!is_array($excludes) || !in_array($attribname, $excludes)) && (!is_array($includes) || in_array($attribname, $includes))) {
@@ -3549,7 +3554,7 @@ class Node
                         $fieldaliasprefix = $alias.'_AE_';
                     }
 
-                    $dummy = array();
+                    $dummy = [];
                     $p_attrib->addToQuery($query, $alias, $fieldaliasprefix, $dummy, $level, $mode);
                 }
             } else {
@@ -3579,7 +3584,7 @@ class Node
             $usefieldalias = true;
         }
 
-        $searchConditions = array();
+        $searchConditions = [];
 
         $attribs = $this->descriptorFields();
         array_unique($attribs);
@@ -3658,7 +3663,7 @@ class Node
         $db = $this->getDb();
         $query = $db->createQuery();
 
-        $storelist = array('pre' => array(), 'post' => array(), 'query' => array());
+        $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
         $query->addTable($this->m_table);
 
@@ -4349,7 +4354,7 @@ class Node
         usort($this->m_attribIndexList, array('self', 'attrib_cmp'));
 
         // after sorting we need to update the attribute indices
-        $attrs = array();
+        $attrs = [];
         foreach ($this->m_attribIndexList as $index => $info) {
             $attr = $this->getAttribute($info['name']);
             $attr->m_index = $index;
@@ -4428,10 +4433,10 @@ class Node
      *
      * @return string The feedback url.
      */
-    public function feedbackUrl($action, $status, $record = array(), $message = '', $levelskip = null)
+    public function feedbackUrl($action, $status, $record = [], $message = '', $levelskip = null)
     {
         $sm = SessionManager::getInstance();
-        $vars = array();
+        $vars = [];
         $atkNodeUri = '';
         $sessionStatus = SessionManager::SESSION_BACK;
 
@@ -4542,7 +4547,7 @@ class Node
         );
 
         $sqlOperatorsString = implode('|', array_map('preg_quote', $sqloperators));
-        $matches = array();
+        $matches = [];
         preg_match("/^(\w.+?)\s*({$sqlOperatorsString})/", str_replace('`', '', trim($sql)), $matches);
 
         if (count($matches) != 3) {

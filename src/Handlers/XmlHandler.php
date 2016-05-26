@@ -43,7 +43,7 @@ class XmlHandler extends ActionHandler
         $node = $this->m_node;
         $xml = '<'.$node->m_type.' ';
 
-        $attrs = array();
+        $attrs = [];
         foreach (array_keys($node->m_attribList) as $attribname) {
             $p_attrib = $node->m_attribList[$attribname];
             if (!$p_attrib->isEmpty($record)) {

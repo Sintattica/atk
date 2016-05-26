@@ -7,7 +7,7 @@ use Sintattica\Atk\Security\SecurityManager;
 
 class Menu
 {
-    protected $menuItems = array();
+    protected $menuItems = [];
 
     private $format_submenuparent = '
             <li>
@@ -201,7 +201,7 @@ class Menu
      */
     public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '')
     {
-        static $order_value = 100, $s_dupelookup = array();
+        static $order_value = 100, $s_dupelookup = [];
         if ($order == 0) {
             $order = $order_value;
             $order_value += 100;

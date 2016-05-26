@@ -50,7 +50,7 @@ class CustomRecordList extends RecordList
         $type = 0,
         $compression = '',
         $suppressList = '',
-        $outputparams = array(),
+        $outputparams = [],
         $mode = 'list',
         $titlerow = true,
         $decode = false,
@@ -68,7 +68,7 @@ class CustomRecordList extends RecordList
         //$empty  om lege tabelvelden op te vullen;
         // stuff for the totals row..
         $totalisable = false;
-        $totals = array();
+        $totals = [];
         $output = '';
         if ($type == '0') {
             $empty = '&nbsp;';

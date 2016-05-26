@@ -51,7 +51,7 @@ class SearchHandler extends AbstractSearchHandler
         }
 
         $page = $this->getPage();
-        $searcharray = array();
+        $searcharray = [];
 
         // load criteria
         if (isset($this->m_postvars['load_criteria'])) {
@@ -138,7 +138,7 @@ class SearchHandler extends AbstractSearchHandler
         $ui = $this->getUi();
         if (is_object($ui)) {
             $sm = SessionManager::getInstance();
-            $params = array();
+            $params = [];
             $params['formstart'] = '<form name="entryform" action="'.Config::getGlobal('dispatcher').'" method="post">';
 
             $params['formstart'] .= $sm->formState(SessionManager::SESSION_REPLACE);
@@ -187,13 +187,13 @@ class SearchHandler extends AbstractSearchHandler
             $criteria = $this->fetchCriteria();
             $name = $this->handleSavedCriteria($criteria);
 
-            $params = array();
+            $params = [];
             $params['searchmode_title'] = Tools::atktext('search_mode', 'atk');
             $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>'.Tools::atktext('search_and', 'atk');
             $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">'.Tools::atktext('search_or', 'atk');
             $params['saved_criteria'] = $this->getSavedCriteria($name);
 
-            $params['fields'] = array();
+            $params['fields'] = [];
 
             foreach ($node->getAttributeNames() as $attribname) {
                 $p_attrib = $node->m_attribList[$attribname];

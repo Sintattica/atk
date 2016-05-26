@@ -27,11 +27,11 @@ class SecurityManager
     const AUTH_MISSINGUSERNAME = 5;
     const AUTH_ERROR = -1;
 
-    public $m_authentication = array();
+    public $m_authentication = [];
     public $m_authorization = 0;
     public $m_scheme = 'none';
-    public $m_user = array();
-    public $m_listeners = array();
+    public $m_user = [];
+    public $m_listeners = [];
     // If login really fails (no relogin box, but an errormessage), the
     // error message that caused the fatal error is put in this variable.
     public $m_fatalError = '';
@@ -110,7 +110,7 @@ class SecurityManager
     public function _getAuthTypes($authentication_type)
     {
         $authentication = explode(',', trim($authentication_type));
-        $types = array();
+        $types = [];
         if (!is_array($authentication)) {
             array_push($types, $this->_getclassname(trim($authentication)));
         } else {
@@ -156,7 +156,7 @@ class SecurityManager
          *
          */
         if (Config::getGlobal('auth_enablepasswordmailer', false)) {
-            foreach ($this->m_authentication as $auth) {
+            foreach ($this->m_authentication as $class => $auth) {
                 if (in_array($auth->getPasswordPolicy(), array(AuthInterface::PASSWORD_RETRIEVABLE, AuthInterface::PASSWORD_RECREATE))) {
                     $this->m_enablepasswordmailer = true;
                 }
@@ -264,7 +264,7 @@ class SecurityManager
             $currentUser = self::atkGetUser();
 
             // Let the authentication plugin know about logout too.
-            foreach ($this->m_authentication as $auth) {
+            foreach ($this->m_authentication as $class => $auth) {
                 $auth->logout($currentUser);
             }
 
@@ -277,7 +277,7 @@ class SecurityManager
                 }
             }
 
-            $session = array();
+            $session = [];
             $session['relogin'] = 1;
 
             // do we need to login?
@@ -357,18 +357,20 @@ class SecurityManager
 
                                 if ($auth_user != 'administrator' && $auth_user != 'guest') {
 
-                                    if (is_array($this->m_authentication)) {
-                                        // We have a username, which we must now validate against several
-                                        // checks. If all of these fail, we have a status of SecurityManager::AUTH_MISMATCH.
-                                        foreach ($this->m_authentication as $name => $obj) {
-                                            $response = $obj->validateUser($auth_user, $auth_pw);
-                                            if ($response == self::AUTH_SUCCESS) {
-                                                Tools::atkdebug("SecurityManager::authenticate() using $name authentication");
-                                                $authname = $name;
-                                                break;
-                                            }
+                                    // We have a username, which we must now validate against several
+                                    // checks. If all of these fail, we have a status of SecurityManager::AUTH_MISMATCH.
+                                    $error = '';
+                                    foreach ($this->m_authentication as $class => $obj) {
+                                        $response = $obj->validateUser($auth_user, $auth_pw);
+                                        if ($response == self::AUTH_SUCCESS) {
+                                            Tools::atkdebug("SecurityManager::authenticate() using $class authentication");
+                                            $authname = $class;
+                                            break;
+                                        }else{
+                                            $error = $obj->m_fatalError;
                                         }
                                     }
+
                                     if ($response == self::AUTH_SUCCESS) { // succesful login
                                         // We store the username + securitylevel of the logged in user.
                                         $this->storeAuth($auth_user, $authname);
@@ -378,7 +380,7 @@ class SecurityManager
                                         // incorrect (we just try again) or there was an error (we display an error
                                         // message)
                                         if ($response == self::AUTH_ERROR) {
-                                            $this->m_fatalError = $this->m_authentication->m_fatalError;
+                                            $this->m_fatalError = $error;
                                         }
                                     }
 
@@ -527,7 +529,7 @@ class SecurityManager
 
         $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
 
-        $tplvars = array();
+        $tplvars = [];
         $output = '<form action="'.Config::getGlobal('dispatcher').'" method="post">';
         $output .= Tools::makeHiddenPostvars(array('atklogout'));
         $output .= '<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
@@ -599,7 +601,7 @@ class SecurityManager
      */
     public function allowed($node, $privilege)
     {
-        static $_cache = array();
+        static $_cache = [];
 
         if (!isset($_cache[$node][$privilege])) {
             // ask authorization instance
@@ -706,7 +708,7 @@ class SecurityManager
         $sm = SessionManager::getInstance();
         $session = SessionManager::getSession();
         $user = '';
-        $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : array();
+        $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : [];
         if (Config::getGlobal('authentication_session') && Tools::atkArrayNvl($session, 'login',
                 0) == 1 && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])
         ) {
@@ -741,7 +743,8 @@ class SecurityManager
         return $user[$userpk];
     }
 
-    private function rememberMeCookieName() {
+    private function rememberMeCookieName()
+    {
         return Config::getGlobal('identifier').'-'.Config::getGlobal('auth_rememberme_cookiename');
     }
 

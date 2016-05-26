@@ -254,7 +254,9 @@ class UrlAttribute extends Attribute
                 Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url', Tools::atktext('invalid_relative_url'));
             }
         }
-
-        return $result || parent::validate($record, $mode);
+        
+        if(!$result){
+            parent::validate($record, $mode);
+        }
     }
 }

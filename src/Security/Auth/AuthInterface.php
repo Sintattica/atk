@@ -227,7 +227,7 @@ class AuthInterface
      */
     public function getEntity($node, $action)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -243,7 +243,7 @@ class AuthInterface
      */
     public function getAttribEntity($node, $attrib, $mode)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -259,7 +259,7 @@ class AuthInterface
      */
     public function getUserList()
     {
-        return array();
+        return [];
     }
 
     /**

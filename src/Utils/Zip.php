@@ -74,7 +74,7 @@ class Zip
     public function runInfozipCommand($type, $params)
     {
         $command = $this->getInfozipCommand($type, $params);
-        $output = array();
+        $output = [];
         Tools::atkdebug("atkZip->runInfozipCommand: Executing command: $command");
         $returncode = null; //var for catching returncode fro exec.
         exec($command, $output, $returncode);
@@ -94,7 +94,7 @@ class Zip
      */
     public function getInfozipError($type, $errorcode)
     {
-        $codes = array();
+        $codes = [];
         if ($type == self::ATKZIP_UNZIP) {
             $codes = array(
                 0 => "Normal; no errors or warnings detected. (There may still be errors in the archive, but if so, they weren't particularly relevant to UnZip's processing and are presumably quite minor.)",

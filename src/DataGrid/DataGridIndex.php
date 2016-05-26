@@ -26,7 +26,7 @@ class DataGridIndex extends DataGridComponent
     protected function getLinks()
     {
         $grid = $this->getGrid();
-        $links = array();
+        $links = [];
 
         $chars = $this->getAvailableIndices();
         $current = $grid->getIndex();

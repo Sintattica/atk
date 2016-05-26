@@ -64,11 +64,11 @@ class ManyBoolRelation extends ManyToManyRelation
             $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkprofileattribute.js');
 
             if (!$this->hasFlag(self::AF_MANYBOOL_NO_TOOLBAR)) {
-                $result .= '<div align="left"><font size="-2">
+                $result .= '<div align="left">
                       [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('check_all',
                         'atk').'</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('check_none',
                         'atk').'</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('invert_selection',
-                        'atk').'</a>]</font></div>';
+                        'atk').'</a>]</div>';
             }
 
             $result .= '<table border="0"><tr>';

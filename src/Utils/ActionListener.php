@@ -24,7 +24,7 @@ class ActionListener
      * @access private
      * @var array
      */
-    public $m_actionfilter = array();
+    public $m_actionfilter = [];
 
     /*
      * The owning node of the listener.

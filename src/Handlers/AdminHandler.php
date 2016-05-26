@@ -58,7 +58,7 @@ class AdminHandler extends ActionHandler
      */
     public function renderAdminPage()
     {
-        $res = array();
+        $res = [];
         if ($this->m_node->hasFlag(Node::NF_NO_ADD) == false && $this->m_node->allowed('add')) {
             if (!$this->m_node->hasFlag(Node::NF_ADD_LINK)) { // otherwise, in adminPage, an add link will be added.
                 // we could get here because of a reject.
@@ -140,7 +140,7 @@ class AdminHandler extends ActionHandler
             return '';
         }
 
-        $params = array();
+        $params = [];
         $params['header'] = $this->invoke('adminHeader').$this->getHeaderLinks();
         $params['list'] = $grid->render();
         $params['footer'] = $this->invoke('adminFooter');
@@ -348,7 +348,7 @@ class AdminHandler extends ActionHandler
      */
     public function getHeaderLinks()
     {
-        $links = array();
+        $links = [];
         $addlink = $this->getAddLink();
         if ($addlink != '') {
             $links[] = $addlink;

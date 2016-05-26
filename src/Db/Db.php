@@ -104,7 +104,7 @@ class Db
      * @access private
      * @var array
      */
-    public $m_record = array();
+    public $m_record = [];
 
     /*
      * Current row number
@@ -173,21 +173,21 @@ class Db
      * @access private
      * @var array
      */
-    public $m_tableMeta = array();
+    public $m_tableMeta = [];
 
-    /*
+    /**
      * The connection is stored in this variable.
      * @access private
-     * @var mixed
+     * @var mixed $m_link_id
      */
-    public $m_link_id = 0;
+    public $m_link_id;
 
-    /*
+    /**
      * The query statement is stored in this variable.
      * @access private
-     * @var mixed
+     * @var mixed $m_query_id
      */
-    public $m_query_id = 0;
+    public $m_query_id;
 
     /*
      * Auto free result upon next query.
@@ -207,13 +207,13 @@ class Db
      * @access private
      * @var array
      */
-    public $m_user_error = array();
+    public $m_user_error = [];
 
     /*
      * Internal use; error messages from language files are cached here
      * @access private
      */
-    public $m_errorLookup = array();
+    public $m_errorLookup = [];
 
     /**
      * Indentifier Quoting.
@@ -325,7 +325,7 @@ class Db
     /**
      * Get the current connection.
      *
-     * @return object Connection resource id
+     * @return mixed Connection resource id
      */
     public function link_id()
     {
@@ -362,7 +362,7 @@ class Db
      */
     public function getAtkDbErrno()
     {
-        return $this->_translateError();
+        return $this->_translateError(null);
     }
 
     /**
@@ -574,9 +574,12 @@ class Db
      * @param int $port The portnumber to use for connecting
      * @param string $charset The charset to use
      * @abstract
+     *
+     * @return int status
      */
     public function doConnect($host, $user, $password, $database, $port, $charset)
     {
+        return self::DB_SUCCESS;
     }
 
     /**
@@ -725,7 +728,7 @@ class Db
      */
     public function affected_rows()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -772,7 +775,7 @@ class Db
      */
     public function metadata($table, $full = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -784,7 +787,7 @@ class Db
      */
     public function table_names($includeViews = true)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -855,7 +858,7 @@ class Db
      */
     public function getRowsAssoc($query, $keyColumn = 0, $offset = -1, $limit = -1)
     {
-        $result = array();
+        $result = [];
 
         $this->query($query, $offset, $limit);
         for ($i = 0; $this->next_record(); ++$i) {
@@ -1030,7 +1033,7 @@ class Db
     {
         $meta = $this->metadata($table, false);
 
-        $result = array();
+        $result = [];
         for ($i = 0, $_i = count($meta); $i < $_i; ++$i) {
             $meta[$i]['num'] = $i;
             $result[$meta[$i]['name']] = $meta[$i];
@@ -1090,7 +1093,7 @@ class Db
      *
      * @param array $fields
      *
-     * @return unknown
+     * @return string
      */
     public function func_concat($fields)
     {
@@ -1327,7 +1330,7 @@ class Db
     {
         static $s_dbInstances = null;
         if ($s_dbInstances == null) {
-            $s_dbInstances = array();
+            $s_dbInstances = [];
             if (!Config::getGlobal('meta_caching')) {
                 Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
             }

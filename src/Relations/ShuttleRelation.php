@@ -62,7 +62,7 @@ class ShuttleRelation extends ManyToManyRelation
     public function initialValue()
     {
         if (!is_array($this->m_initialValue)) {
-            return array();
+            return [];
         }
 
         return $this->m_initialValue;
@@ -83,7 +83,7 @@ class ShuttleRelation extends ManyToManyRelation
 
         $this->_renderChangeHandler($fieldprefix);
 
-        $selectedPk = array();
+        $selectedPk = [];
         // first the selected records..
         for ($i = 0; $i < count($record[$this->m_name]); ++$i) {
             if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
@@ -98,8 +98,8 @@ class ShuttleRelation extends ManyToManyRelation
 
         $recordset = $this->_getSelectableRecords($record, $mode);
 
-        $left = array();
-        $right = array();
+        $left = [];
+        $right = [];
         $width = 100;
 
         for ($i = 0; $i < count($recordset); ++$i) {

@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Core;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Utils\StringParser;
 
 /**
  * Extension on the Node class. Here you will find all
@@ -32,12 +33,7 @@ class TreeNode extends Node
     const NF_TREE_NO_ROOT_ADD = self::NF_SPECIFIC_3; // No root elements can be added
     const NF_TREE_AUTO_EXPAND = self::NF_SPECIFIC_4; // The tree is initially fully expanded
 
-    public $m_tree = array();
-
-    /*
-     * parent Attribute flag (treeview)
-     */
-    public $m_parent;
+    public $m_tree = [];
 
     /*
      * var for giving the link for expanding/collapsing the tree extra params
@@ -159,7 +155,7 @@ class TreeNode extends Node
      * Recursive funtion whitch fills an array with all the items of the tree.
      * DEPRECATED, use treeToArray instead.
      *
-     * @param tree $tree Tree
+     * @param mixed $tree Tree
      * @param int $level Level
      */
     public function Fill_tree($tree = '', $level = 0)
@@ -172,7 +168,7 @@ class TreeNode extends Node
     /**
      * Recursive funtion whitch fills an array with all the items of the tree.
      *
-     * @param tree $tree Tree
+     * @param mixed $tree Tree
      * @param int $level Level
      */
     public function treeToArray($tree = '', $level = 0)
@@ -251,7 +247,7 @@ class TreeNode extends Node
         $res = '';
         $lastlevel = 0;
         //echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
-        $explevels = array();
+        $explevels = [];
         if ($this->m_tree[0]['expand'] != 1 && $this->m_tree[0]['colapse'] != 1) { // normal operation
             for ($i = 0; $i < count($this->m_tree); ++$i) {
                 if ($this->m_tree[$i]['level'] < 2) {
@@ -527,7 +523,7 @@ class TreeNode extends Node
                 /*                 * ************************************* */
                 if ($showactions) {
                     $res .= '<td nowrap> ';
-                    $actions = array();
+                    $actions = [];
 
                     if (!$this->hasFlag(self::NF_NO_ADD) && !($this->hasFlag(self::NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]['level'] == 0)) {
                         $actions['add'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=add&atkfilter='.$this->m_parent.'.'.$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]['id']."'");

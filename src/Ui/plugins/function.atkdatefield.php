@@ -42,7 +42,7 @@ function smarty_function_atkdatefield($params, $smarty)
 
     $attr = new DateAttribute($name, $format, '', $min, $max,
         ($noweekday ? DateAttribute::AF_DATE_EDIT_NO_DAY : 0) | ($mandatory ? Attribute::AF_OBLIGATORY : 0) | ($calendar ? 0 : DateAttribute::AF_DATE_NO_CALENDAR));
-    $html = $attr->edit(array($name => $date));
+    $html = $attr->edit(array($name => $date), '', '');
 
     return $html;
 }

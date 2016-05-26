@@ -3,9 +3,7 @@
 namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 
 class StatsHandler extends SearchHandler

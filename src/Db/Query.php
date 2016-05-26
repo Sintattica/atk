@@ -108,7 +108,7 @@ class Query
      * @var array
      * @access private
      */
-    public $m_quotedfields = array();
+    public $m_quotedfields = [];
 
     /*
      * Names reserved by the database,
@@ -125,24 +125,24 @@ class Query
      */
     public function __construct()
     {
-        $this->m_fields = array();
-        $this->m_expressions = array();
-        $this->m_tables = array();
-        $this->m_conditions = array();
-        $this->m_searchconditions = array();
-        $this->m_aliases = array();
-        $this->m_values = array();
-        $this->m_fieldaliases = array();
-        $this->m_joinaliases = array();
-        $this->m_joins = array();
-        $this->m_orderbys = array();
-        $this->m_groupbys = array();
+        $this->m_fields = [];
+        $this->m_expressions = [];
+        $this->m_tables = [];
+        $this->m_conditions = [];
+        $this->m_searchconditions = [];
+        $this->m_aliases = [];
+        $this->m_values = [];
+        $this->m_fieldaliases = [];
+        $this->m_joinaliases = [];
+        $this->m_joins = [];
+        $this->m_orderbys = [];
+        $this->m_groupbys = [];
         $this->m_searchmethod = '';
 
         // start at 'a'.
         $this->m_generatedAlias = 'a';
 
-        $this->m_aliasLookup = array();
+        $this->m_aliasLookup = [];
     }
 
     /**
@@ -286,7 +286,7 @@ class Query
      */
     public function clearFields()
     {
-        $this->m_fields = array();
+        $this->m_fields = [];
     }
 
     /**
@@ -294,7 +294,7 @@ class Query
      */
     public function clearExpressions()
     {
-        $this->m_expressions = array();
+        $this->m_expressions = [];
     }
 
     /**
@@ -912,7 +912,7 @@ class Query
      * @param mixed $value2 The second value
      * @param bool $quote Add quotes?
      *
-     * @return unknown
+     * @return string
      */
     public function betweenCondition($field, $value1, $value2, $quote = true)
     {

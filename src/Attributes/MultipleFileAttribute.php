@@ -61,7 +61,7 @@ class MultipleFileAttribute extends FileAttribute
 
     public function edit($record, $fieldprefix, $mode)
     {
-        $file_arr = array();
+        $file_arr = [];
         if (is_dir($this->m_dir)) {
             $d = dir($this->m_dir);
             while ($item = $d->read()) {

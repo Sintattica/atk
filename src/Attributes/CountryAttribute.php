@@ -12,8 +12,8 @@ use Sintattica\Atk\Core\Language;
  */
 class CountryAttribute extends ListAttribute
 {
-    public $m_country = array();
-    public $m_countries = array();
+    public $m_country = [];
+    public $m_countries = [];
     public $m_europe_countries = array(
         'AL',
         'AT',
@@ -304,7 +304,7 @@ class CountryAttribute extends ListAttribute
         'ZM',
         'ZW',
     );
-    public $m_custom_countries = array();
+    public $m_custom_countries = [];
     public $m_defaulttocurrent = true;
 
     /**
@@ -364,7 +364,7 @@ class CountryAttribute extends ListAttribute
      */
     public function setList($countries)
     {
-        $custom_list = array();
+        $custom_list = [];
         foreach ($countries as $countryIso) {
             $countryIso = strtoupper($countryIso);
             if (in_array($countryIso, $this->m_world_countries)) {
@@ -414,7 +414,7 @@ class CountryAttribute extends ListAttribute
      */
     public function getCountryOptionArray($switch)
     {
-        $tmp_array = array();
+        $tmp_array = [];
         if ($switch == 'benelux') {
             foreach ($this->m_benelux_countries as $iso) {
                 $tmp_array[] = $this->getCountryOption($iso);
@@ -464,7 +464,7 @@ class CountryAttribute extends ListAttribute
         } elseif ($switch == 'custom') {
             return $this->m_custom_countries;
         } else {
-            $tmp_array = array();
+            $tmp_array = [];
             foreach ($this->m_country as $iso => $value) {
                 $tmp_array[] = $iso;
             }

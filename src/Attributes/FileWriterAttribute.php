@@ -121,6 +121,6 @@ class FileWriterAttribute extends TextAttribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array();
+        return [];
     }
 }

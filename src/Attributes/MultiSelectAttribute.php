@@ -64,7 +64,7 @@ class MultiSelectAttribute extends ListAttribute
     {
         $result = '';
         if (is_array($record[$this->fieldName()])) {
-            $values = $this->getValues($record);
+            $values = $this->getValues();
             for ($i = 0; $i < count($values); ++$i) {
                 if (in_array($values[$i], $record[$this->fieldName()])) {
                     $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
@@ -100,7 +100,7 @@ class MultiSelectAttribute extends ListAttribute
         if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] !== '') {
             return explode($this->m_fieldSeparator, $rec[$this->fieldName()]);
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -132,7 +132,7 @@ class MultiSelectAttribute extends ListAttribute
     public function display($record, $mode)
     {
         $values = $record[$this->fieldName()];
-        $res = array();
+        $res = [];
         for ($i = 0; $i < count($values); ++$i) {
             $res[] = $this->_translateValue($values[$i], $record);
         }
@@ -166,7 +166,7 @@ class MultiSelectAttribute extends ListAttribute
         $css = $this->getCSSClassAttribute('');
         $result .= '<div '.$css.'>';
 
-        $values = $this->getValues($record);
+        $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {
             $recordvalue = $this->db2value($record);
         } else {

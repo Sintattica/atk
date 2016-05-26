@@ -44,21 +44,21 @@ class Language
      * @access private
      * @var array
      */
-    public $m_cachedlang = array();
+    public $m_cachedlang = [];
 
     /*
      * List of currently loaded language files
      * @access private
      * @var array
      */
-    public $m_cachedlangfiles = array();
+    public $m_cachedlangfiles = [];
 
     /*
      * List of fallback modules
      * @access private
      * @var array
      */
-    public $m_fallbackmodules = array();
+    public $m_fallbackmodules = [];
 
     /*
      * List of override modules
@@ -72,7 +72,7 @@ class Language
      * @access private
      * @var array
      */
-    public $m_customStrings = array();
+    public $m_customStrings = [];
 
     /**
      * Default Constructor.
@@ -129,11 +129,11 @@ class Language
      */
     protected function _getFallbackModules($modulefallback)
     {
-        static $s_fallbackmodules = array();
+        static $s_fallbackmodules = [];
         $key = $modulefallback ? 1 : 0; // we can be called with true or false, cache both results
 
         if (!array_key_exists($key, $s_fallbackmodules)) {
-            $modules = array();
+            $modules = [];
 
             if ($modulefallback || Config::getGlobal('language_modulefallback', false)) {
                 $atk = Atk::getInstance();
@@ -231,7 +231,7 @@ class Language
             return $atklanguage->m_cachedlang[$module][$lng];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -374,7 +374,7 @@ class Language
      */
     protected function _getModules($module, $firstfallback = '', $modulefallback = false)
     {
-        $arr = array();
+        $arr = [];
         if ($module) {
             $arr[] = $module;
         }
@@ -585,7 +585,7 @@ class Language
     public function setText($code, $text, $lng)
     {
         if (!isset($this->m_customStrings[$lng])) {
-            $this->m_customStrings[$lng] = array();
+            $this->m_customStrings[$lng] = [];
         }
         $this->m_customStrings[$lng][$code] = $text;
     }
@@ -598,7 +598,7 @@ class Language
  */
 class GetSupportedLanguagesCollector
 {
-    public $m_languages = array();
+    public $m_languages = [];
 
     public function visitFile($fullpath)
     {

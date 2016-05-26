@@ -50,7 +50,7 @@ class OneToManyRelationSessionGridHandler
         }
 
         // Limit the search results and return the limited results
-        $ret = array();
+        $ret = [];
         $records_keys = array_keys($records);
         for ($i = $offset, $j = 0; $i < $records_count && $j < $limit; $i++, $j++) {
             $ret[] = $records[$records_keys[$i]];

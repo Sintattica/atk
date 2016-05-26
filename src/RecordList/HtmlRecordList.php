@@ -31,8 +31,8 @@ class HtmlRecordList extends CustomRecordList
         &$node,
         $recordset,
         $compression = '',
-        $suppressList = array(),
-        $outputparams = array(),
+        $suppressList = [],
+        $outputparams = [],
         $titlerow = true,
         $decode = false
     ) {

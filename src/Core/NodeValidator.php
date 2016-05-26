@@ -14,29 +14,29 @@ use Sintattica\Atk\Attributes\Attribute;
  */
 class NodeValidator
 {
-    /*
-     * @var Node The node which needs to get validated
+    /**
+     * @var Node $m_nodeObj The node which needs to get validated
      * @access private
      */
     public $m_nodeObj = null;
 
-    /*
-     * @var array the record of the node which will get validated
+    /**
+     * @var array $m_record the record of the node which will get validated
      * @access private
      */
-    public $m_record = array();
+    public $m_record = [];
 
-    /*
-     * @var String the mode in which the validate will get runned
+    /**
+     * @var String $m_mode the mode in which the validate will get runned
      * @access private
      */
     public $m_mode = '';
 
-    /*
-     * @var array the list of fields which will get ignored
+    /**
+     * @var array $m_ignoreList the list of fields which will get ignored
      * @access private
      */
-    public $m_ignoreList = array();
+    public $m_ignoreList = [];
 
     /**
      * constructor.
@@ -205,13 +205,13 @@ class NodeValidator
             $query->addField('*');
             $query->addTable($this->m_nodeObj->m_table);
 
-            $attribs = array();
+            $attribs = [];
             foreach ($uniqueFieldSet as $field) {
                 $attrib = $this->m_nodeObj->m_attribList[$field];
                 if ($attrib) {
                     $attribs[] = $attrib;
 
-                    if (is_a($attrib, 'ManyToOneRelation') && count($attrib->m_refKey) > 1) {
+                    if (method_exists($attrib, 'createDestination') && isset($attrib->m_refKey) && is_array($attrib->m_refKey) && count($attrib->m_refKey) > 1) {
                         $attrib->createDestination();
                         foreach ($attrib->m_refKey as $refkey) {
                             $query->addCondition($query->quoteField($refkey)." = '".$db->escapeSQL($record[$attrib->fieldName()][$refkey])."'");

@@ -57,7 +57,7 @@ class TimeAttribute extends Attribute
      */
     public function intervalToSteps($interval)
     {
-        $steps = array();
+        $steps = [];
         for ($i = 0; $i <= 59; ++$i) {
             if ($i % $interval === 0) {
                 $steps[] = $i;
@@ -130,7 +130,7 @@ class TimeAttribute extends Attribute
             if (count($exploded) <= 1) {
                 return '';
             }
-            $result = array();
+            $result = [];
             $result['hours'] = $exploded[0];
             $result['minutes'] = $exploded[1];
             if ($exploded[2]) {

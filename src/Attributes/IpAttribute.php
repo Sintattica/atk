@@ -49,7 +49,7 @@ class IpAttribute extends Attribute
             return;
         }
 
-        $parts = array();
+        $parts = [];
         for ($i = 0; $i < 4; ++$i) {
             $parts[$i] = $postvars[$this->fieldName()][$i];
         }
@@ -63,7 +63,7 @@ class IpAttribute extends Attribute
             return parent::edit($record, $fieldprefix, $mode);
         }
 
-        $inputs = array();
+        $inputs = [];
         $values = empty($record[$this->fieldName()]) ? null : explode('.', $record[$this->fieldName()]);
 
         for ($i = 0; $i < 4; ++$i) {

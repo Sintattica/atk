@@ -15,7 +15,7 @@ use Sintattica\Atk\Attributes\Attribute;
  */
 class ColumnConfig
 {
-    public $m_colcfg = array();
+    public $m_colcfg = [];
 
     /* @var Node $m_node */
     public $m_node;
@@ -64,7 +64,7 @@ class ColumnConfig
      */
     public static function getConfig($node, $id = null, $forceNew = false)
     {
-        static $s_instances = array();
+        static $s_instances = [];
 
         $sm = SessionManager::getInstance();
 
@@ -147,7 +147,7 @@ class ColumnConfig
     {
         foreach (array_keys($this->m_node->m_attribIndexList) as $i) {
             if (isset($this->m_node->m_attribIndexList[$i]['name']) && ($this->m_node->m_attribIndexList[$i]['name'] != '')) {
-                $this->m_colcfg[$this->m_node->m_attribIndexList[$i]['name']] = array();
+                $this->m_colcfg[$this->m_node->m_attribIndexList[$i]['name']] = [];
             }
         }
 
@@ -265,7 +265,7 @@ class ColumnConfig
      */
     public function getOrderByStatement()
     {
-        $result = array();
+        $result = [];
 
         foreach ($this->m_colcfg as $field => $config) {
             if (Tools::atkArrayNvl($config, 'sortorder', 0) > 0 && is_object($this->m_node->m_attribList[$field])) {
@@ -287,7 +287,7 @@ class ColumnConfig
      */
     public function getOrderFields()
     {
-        $result = array();
+        $result = [];
         foreach ($this->m_colcfg as $field => $config) {
             if (is_object($this->m_node->m_attribList[$field])) {
                 $result[] = $field;
@@ -472,7 +472,7 @@ class ColumnConfig
      */
     public function clearOrder()
     {
-        $this->m_colcfg = array();
+        $this->m_colcfg = [];
     }
 
     /**
@@ -554,7 +554,7 @@ class ColumnConfig
     {
         foreach (array_keys($this->m_node->m_attribList) as $attribname) {
             $p_attrib = $this->m_node->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(AF_TOTAL)) {
+            if ($p_attrib->hasFlag($p_attrib::AF_TOTAL)) {
                 return true;
             }
         }
@@ -569,10 +569,10 @@ class ColumnConfig
      */
     public function totalizableColumns()
     {
-        $result = array();
+        $result = [];
         foreach (array_keys($this->m_node->m_attribList) as $attribname) {
             $p_attrib = $this->m_node->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(AF_TOTAL)) {
+            if ($p_attrib->hasFlag($p_attrib::AF_TOTAL)) {
                 $result[] = $attribname;
             }
         }
@@ -587,7 +587,7 @@ class ColumnConfig
      */
     public function subtotalColumns()
     {
-        $result = array();
+        $result = [];
         foreach (array_keys($this->m_colcfg) as $attribute) {
             if ($this->hasSubTotal($attribute)) {
                 $result[] = $attribute;

@@ -103,7 +103,7 @@ class FileEditor extends Node
     public function count($selector)
     {
         $d = dir($this->m_dir);
-        $arr = array();
+        $arr = [];
         while (false !== ($entry = $d->read())) {
             $this->addFileEntry($entry, $arr);
         }
@@ -152,7 +152,7 @@ class FileEditor extends Node
      *
      * @param string $record Identifier for the record
      * @param array $actions Result array containing the options
-     * @param unknow $mraactions
+     * @param mixed $mraactions
      */
     public function recordActions($record, &$actions, &$mraactions)
     {
@@ -185,7 +185,7 @@ class FileEditor extends Node
      */
     public function select($selector = '', $orderby = '', $limit = '')
     {
-        $res = array();
+        $res = [];
         SessionManager::getInstance()->stackVar('dirname', $this->m_dir);
         if ($selector == '') {
             // no file selected, generate list..
@@ -199,7 +199,7 @@ class FileEditor extends Node
 
             $d = dir($this->m_dir);
             if ($d->handle) {
-                $arr = array();
+                $arr = [];
                 while (false !== ($entry = $d->read())) {
                     if ($this->m_showdirs || !is_dir($d->path.DIRECTORY_SEPARATOR.$entry)) {
                         $this->addFileEntry($entry, $arr);
@@ -215,7 +215,7 @@ class FileEditor extends Node
                     }
                 }
 
-                $res = array();
+                $res = [];
 
                 for ($i = 0; $i < count($arr); ++$i) {
                     if ($i >= $start && ($max == -1 || count($res) < $max)) {

@@ -419,13 +419,13 @@ class Attribute
      * The css classes of the attribute
      * @var array
      */
-    public $m_cssclasses = array();
+    public $m_cssclasses = [];
 
     /*
      * The css classes of the container of the attribute
      * @var array
      */
-    public $m_rowCssClasses = array();
+    public $m_rowCssClasses = [];
 
     /*
      * The label of the attribute.
@@ -480,7 +480,7 @@ class Attribute
      * @access private
      * @var array
      */
-    public $m_onchangecode = array();
+    public $m_onchangecode = [];
 
     /*
      * Variable to store initialisation javascript code
@@ -495,7 +495,7 @@ class Attribute
      *
      * @var array
      */
-    private $m_dependencies = array();
+    private $m_dependencies = [];
 
     /*
      * Attribute to store disabled modes.
@@ -517,7 +517,7 @@ class Attribute
      * @var int
      * @see setStorageType
      */
-    public $m_storageType = array();
+    public $m_storageType = [];
 
     /*
      * Load type.
@@ -525,7 +525,7 @@ class Attribute
      * @var int
      * @see setLoadType
      */
-    public $m_loadType = array();
+    public $m_loadType = [];
 
     /*
      * Initial value.
@@ -548,7 +548,7 @@ class Attribute
      *
      * @var array
      */
-    private $m_jsObservers = array();
+    private $m_jsObservers = [];
 
     /**
      * View callback.
@@ -1215,7 +1215,7 @@ class Attribute
     public function setSections($sections)
     {
         if ($sections == null) {
-            $this->m_sections = array();
+            $this->m_sections = [];
         } else {
             $this->m_sections = $sections;
         }
@@ -2252,7 +2252,7 @@ class Attribute
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    public function getLabel($record = array(), $mode = '')
+    public function getLabel($record = [], $mode = '')
     {
         if ($this->hasFlag(self::AF_NOLABEL)) {
             return '';
@@ -2489,7 +2489,7 @@ class Attribute
      */
     public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
-        $field = array();
+        $field = [];
         $defaults = $record;
 
         // set "widget" value:
@@ -2517,7 +2517,7 @@ class Attribute
 
     public function addToStatsformFields(&$fields, $node, &$record, $fieldprefix = '')
     {
-        $field = array();
+        $field = [];
         $defaults = $record;
         $opts = $this->getStatOptions();
         $extended = $opts['extended'];
@@ -2697,7 +2697,7 @@ class Attribute
      *
      * @return string The ORDER BY statement for this attribute
      */
-    public function getOrderByStatement($extra = array(), $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
     {
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
@@ -2800,7 +2800,7 @@ class Attribute
 
         $arr = array('fields' => array());
         $defaults = &$record;
-        $error = array();
+        $error = [];
 
         $this->addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
 
