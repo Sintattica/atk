@@ -133,11 +133,11 @@ class Tools
             return;
         } else if ($errtype == E_NOTICE) {
             // Just show notices
-            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
             return;
         } else if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
             // Just show deprecation warnings in the debug log, but don't influence the program flow
-            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", DEBUG_NOTICE);
+            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
             return;
         } else if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
             // This is something we should pay attention to, but we don't need to die.
