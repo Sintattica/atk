@@ -77,7 +77,7 @@ class CurrencyAttribute extends NumberAttribute
      */
     public function display($record, $mode)
     {
-        $result = empty($this->m_currencysymbol) ? '' : $this->getCurrencySymbolDisplay();
+        $result = empty($this->m_currencysymbol) ? '' : $this->getCurrencySymbolDisplay().' ';
         $result .= parent::display($record, $mode);
 
         return $result;
@@ -90,6 +90,6 @@ class CurrencyAttribute extends NumberAttribute
      */
     public function getCurrencySymbolDisplay()
     {
-        return '<span class="currencysymbol">'.$this->m_currencysymbol.'</span> ';
+        return $this->m_currencysymbol;
     }
 }

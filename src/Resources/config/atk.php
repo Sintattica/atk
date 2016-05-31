@@ -776,7 +776,7 @@ return [
      * Optionally set the export file parameters
      */
     'export_delimiter' => ',',
-    'export_enclosure' => '&quot,',
+    'export_enclosure' => '&quot;',
     'export_titlerow_checked' => true,
 
     /*
