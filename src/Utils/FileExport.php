@@ -81,9 +81,7 @@ class FileExport
                 }
             } // 3. on screen
             else {
-                if ($type == 'csv') {
-                    echo $data;
-                } else if ($type == 'excel'){
+                if ($type == 'csv' || $type == 'excel') {
                     // in order to output UTF-8 content that Excel both on Windows and OS X will be able to successfully read
                     echo mb_convert_encoding($data, 'Windows-1252', 'UTF-8');
                 }
