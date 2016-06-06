@@ -390,11 +390,13 @@ class DataGridList extends DataGridComponent
                 $totalcols[] = array('content' => '');
             }
 
+
             foreach (array_keys($list['heading']) as $key) {
                 $totalcols[] = array(
                     'content' => (isset($list['total'][$key]) ? $list['total'][$key] : ''),
                 );
             }
+
 
             if (($orientation == 'right' || $orientation == 'both') && ($hasActionCol && count($list['rows']) > 0)) {
                 $totalcols[] = array('content' => '');
@@ -498,6 +500,8 @@ class DataGridList extends DataGridComponent
             'mra' => $mra,
             'editing' => $this->getGrid()->isEditing(),
         );
+
+        // print_r($recordListData);
 
         return $recordListData;
     }
@@ -631,7 +635,6 @@ class DataGridList extends DataGridComponent
     private function listArray(&$recordset, $prefix = '', $actions = [], $suppress = array())
     {
         $grid = $this->getGrid();
-
         $flags = $this->convertDataGridFlags();
 
         if (!is_array($suppress)) {
@@ -679,6 +682,7 @@ class DataGridList extends DataGridComponent
             /* actions / mra */
             $grid->getNode()->collectRecordActions($row['record'], $row['actions'], $row['mra']);
 
+
             // filter actions we are allowed to execute
             foreach ($row['actions'] as $name => $url) {
                 if (!empty($url) && $grid->getNode()->allowed($name, $row['record'])) {
@@ -720,6 +724,12 @@ class DataGridList extends DataGridComponent
             $this->_addListArrayRow($result, $prefix, $suppress, $flags, $i, $editAllowed);
         }
 
+        // override totals
+        $result['totalraw'] = $grid->getNode()->select()->getTotals(array_keys($result['total']));
+        foreach($result['totalraw'] as $attrName => $value) {
+            $result['total'][$attrName] = $grid->getNode()->getAttribute($attrName)->getView('list', $result['totalraw']);
+        }
+        
         if (Tools::hasFlag($flags, RecordList::RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
             $totalizer = new Totalizer($grid->getNode(), $columnConfig);
             $result['rows'] = $totalizer->totalize($result['rows']);
@@ -728,6 +738,7 @@ class DataGridList extends DataGridComponent
         if (Tools::hasFlag($flags, RecordList::RL_MRA)) {
             $result['mra'] = array_values(array_unique($result['mra']));
         }
+
 
         return $result;
     }

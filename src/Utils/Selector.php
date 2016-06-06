@@ -716,6 +716,32 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->m_rows;
     }
 
+
+    public function getTotals($fields = [])
+    {
+        $attrsByLoadType = $this->_getAttributesByLoadType();
+        $query = $this->_buildQuery($attrsByLoadType);
+        $prefix = '__sum__';
+
+        foreach ($fields as $field) {
+            $query->addExpression($field, 'SUM('.$query->getDb()->escapeSQL($field).')', $prefix);
+        }
+
+        $stmt = $this->_getDb()->prepare($query->buildSelect());
+        $stmt->execute($this->_getBindParameters());
+        $row = $stmt->getFirstRow();
+        $stmt->close();
+
+        $query->deAlias($row);
+        $res = [];
+        foreach ($fields as $field) {
+            $res[$field] = $row[$prefix.$field];
+        }
+
+        return $res;
+    }
+
+
     /**
      * Return row count.
      *
