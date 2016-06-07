@@ -100,7 +100,7 @@ class ManyToManyListRelation extends ManyToManyRelation
         }
 
         $id = $this->getHtmlId($fieldprefix);
-        $name = $fieldprefix.$this->fieldName();
+        $name = $this->getHtmlName($fieldprefix);
 
         $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows()) : $this->getRows();
         $result = '<select class="form-control" id="'.$id.'" name="'.$name.'[]['.$this->getRemoteKey().']" multiple="multiple" size="'.$size.'" style="width: '.$this->getWidth().'px">';

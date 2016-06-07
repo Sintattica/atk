@@ -825,7 +825,6 @@ class ManyToOneRelation extends Relation
             return;
         }
 
-
         $recordset = $this->m_selectableRecords;
 
         if ($recordset === null && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && $this->m_autocomplete_minrecords > -1) {
@@ -840,7 +839,10 @@ class ManyToOneRelation extends Relation
         $result = '';
         $options = [];
         $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
+        $htmlAttributes = [];
         $editflag = true;
+        $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2();');
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         $currentPk = ($value != null) ? $this->getDestination()->primaryKey($value) : null;
@@ -908,22 +910,20 @@ class ManyToOneRelation extends Relation
 
                 $selectOptions = [];
                 if ($hasNullOption) {
-                    $selectOptions['allowClear'] = true;
+                    $selectOptions['allow-clear'] = 'true';
                     $selectOptions['placeholder'] = $noneLabel;
 
                 }
-                $selectOptions['dropdownAutoWidth'] = 'true';
+                $selectOptions['dropdown-auto-width'] = 'true';
                 $selectOptions['width'] = 'auto';
                 $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
 
-                $this->registerJavaScriptObservers($id);
-                $select2Js = '';
                 if (count($this->m_onchangecode)) {
-                    $select2Js .= 'select.on("change", function(){'.$id.'_onChange(this);});';
                     $this->_renderChangeHandler($fieldprefix);
+                    $htmlAttributes['onchange'] = $this->getHtmlId($fieldprefix).'_onChange(this)';
                 }
 
-                $result .= $this->drawSelect($id, $options, $selValues, $selectOptions, $select2Js);
+                $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
             }
         }
 
@@ -957,7 +957,7 @@ class ManyToOneRelation extends Relation
         }
         if (!$linkname) {
             $linkname = Tools::atktext('select_a');
-        } // . ' ' . strtolower(Tools::atktext(Module::getNodeType($this->m_destination), Module::getNodeModule($this->m_destination), Module::getNodeType($this->m_destination)));
+        }
         if ($this->m_destinationFilter != '') {
             $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', array('atkfilter' => $filter, 'atktarget' => $atktarget)), $linkname,
                 SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
@@ -1013,8 +1013,8 @@ class ManyToOneRelation extends Relation
             $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
         }
 
-        $result = '<input type="hidden" id="'.$fieldprefix.$this->fieldName().'"
-                name="'.$fieldprefix.$this->fieldName().'"
+        $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'"
+                name="'.$this->getHtmlName($fieldprefix).'"
                 value="'.$currentPk.'">';
 
         return $result;
@@ -1066,12 +1066,20 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    public function drawSelect($id, $options = [], $selected = [], $selectOptions = [], $selectJs = '')
+    public function drawSelect($id, $name, $options = [], $selected = [], $selectOptions = [], $htmlAttributes = [])
     {
         $page = $this->m_ownerInstance->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
 
-        $result = '<select '.$this->getCSSClassAttribute('form-control').' id="'.$id.'" name="'.$id.'">';
+        $htmlAttrs = '';
+        foreach ($selectOptions as $k => $v) {
+            $htmlAttrs .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+        foreach ($htmlAttributes as $k => $v) {
+            $htmlAttrs .= ' '.$k.'="'.htmlspecialchars($v).'"';
+        }
+
+        $result = '<select '.$this->getCSSClassAttribute('form-control').' id="'.$id.'" name="'.$name.'"'.$htmlAttrs.'>';
         foreach ($options as $value => $option) {
             $result .= '<option ';
             $result .= 'value="'.htmlspecialchars($value).'"';
@@ -1082,23 +1090,15 @@ class ManyToOneRelation extends Relation
         }
         $result .= '</select>';
 
-        if (array_key_exists('ajax', $selectOptions)) {
-            $code = 'var select = ATK.ManyToOneRelation.autocomplete("'.$id.'", '.json_encode($selectOptions).');';
-        } else {
-            $code = 'var select = ATK.ManyToOneRelation.select("'.$id.'", '.json_encode($selectOptions).');';
-        }
-        $code .= $selectJs;
-
-        $js = 'jQuery(function(){'.$code.'});';
-        $result .= '<script language="JavaScript">'.$js.'</script>';
-
         return $result;
     }
 
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
-        $id = $this->getSearchFieldName($fieldprefix);
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix);
+        $htmlAttributes = [];
 
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
             //Normal dropdown search
@@ -1132,20 +1132,21 @@ class ManyToOneRelation extends Relation
                 $options[$pk] = $this->m_destInstance->descriptor($option);
             }
 
-            $select2Js = '';
             if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-                $onchange = $grid->getUpdateCall(['atkstartat' => 0], [], 'ATK.DataGrid.extractSearchOverrides');
-                $select2Js = 'select.on("change", function(){'.$onchange.'});';
+                $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+                $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
+
             }
 
-
             $selectOptions = [];
-            $selectOptions['allowClear'] = true;
+            $selectOptions['allow-clear'] = true;
+            $selectOptions['dropdown-auto-width'] = true;
+            $selectOptions['width'] = 'auto';
             $selectOptions['placeholder'] = Tools::atktext('search_all');
-
             $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
+            $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2();');
 
-            return $this->drawSelect($id, $options, $selValues, $selectOptions, $select2Js);
+            return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
 
         } else {
             //Autocomplete search
@@ -1170,20 +1171,19 @@ class ManyToOneRelation extends Relation
 
                 $selectOptions = [];
                 $selectOptions['tags'] = true;
-                $selectOptions['ajax']['url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
-                    'attribute.'.$this->fieldName().'.autocomplete_search');
-                $selectOptions['minimumInputLength'] = $this->m_autocomplete_minchars;
-                $selectOptions['allowClear'] = true;
+                $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action, 'attribute.'.$this->fieldName().'.autocomplete_search');
+                $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
+                $selectOptions['allow-clear'] = true;
+                $selectOptions['width'] = 'auto';
                 $selectOptions['placeholder'] = $noneLabel;
                 $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
+                $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2(ATK.ManyToOneRelation.autocomplete);');
 
-                $select2Js = '';
-
-                return $this->drawSelect($id, $options, $selValues, $selectOptions, $select2Js);
+                return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
 
             } else {
                 //normal input field
-                $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute('form-control').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+                $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
             }
 
             return $result;
@@ -1984,6 +1984,7 @@ class ManyToOneRelation extends Relation
         $page = $this->m_ownerInstance->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
         $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
 
         $result = '';
         $label = '';
@@ -1993,6 +1994,7 @@ class ManyToOneRelation extends Relation
         $currentValue = null;
         $hasNullOption = false;
         $noneLabel = '';
+        $htmlAttributes = [];
 
         // validate is this is a selectable record and if so retrieve the display label and hidden value
         if ($this->_isSelectableRecord($record, $mode)) {
@@ -2015,23 +2017,24 @@ class ManyToOneRelation extends Relation
 
         $selectOptions = [];
         $selectOptions['width'] = 'auto';
-        $selectOptions['dropdownAutoWidth'] = 'false';
-        $selectOptions['ajax']['url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
-        $selectOptions['minimumInputLength'] = $this->m_autocomplete_minchars;
+        $selectOptions['dropdown-Auto-width'] = 'false';
+        $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
+        $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
         if ($hasNullOption) {
-            $selectOptions['allowClear'] = true;
+            $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = $noneLabel;
         }
         $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
 
-        $select2Js = '';
         if (count($this->m_onchangecode)) {
-            $select2Js .= 'select.on("change", function(){'.$id.'_onChange(this);});';
+            $htmlAttributes['onchange'] = $this->getHtmlId($fieldprefix).'_onChange(this)';
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result .= $this->drawSelect($id, $options, $selValues, $selectOptions, $select2Js);
-        $result .= ' '.$this->createSelectAndAutoLinks($id, $record);
+        $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2(ATK.ManyToOneRelation.autocomplete);');
+
+        $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
+        $result .= ' '.$this->createSelectAndAutoLinks($name, $record);
         
         return $result;
     }

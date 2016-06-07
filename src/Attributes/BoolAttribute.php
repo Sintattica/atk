@@ -113,7 +113,7 @@ class BoolAttribute extends Attribute
             $checked = 'checked';
         }
 
-        $result = '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' />';
+        $result = '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' />';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
@@ -154,7 +154,10 @@ class BoolAttribute extends Attribute
      */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        $result = '<select name="'.$this->getSearchFieldName($fieldprefix).'" class="form-control">';
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix);
+
+        $result = '<select id="'.$id.'" name="'.$name.'" class="form-control">';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         $result .= '<option value="0" ';
         if (!empty($record[$this->fieldName()]) && $record[$this->fieldName()] === '0') {
@@ -306,7 +309,7 @@ class BoolAttribute extends Attribute
             $record[$this->fieldName()] = '0';
         }
         if (!is_array($record[$this->fieldName()])) {
-            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
 
             return $result;
         } else {

@@ -707,12 +707,12 @@ class ManyToManyRelation extends Relation
             $ownerFields = $this->getOwnerFields();
             for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; ++$i) {
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey())) {
-                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$i.']['.$this->getLocalKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
+                    $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$i.']['.$this->getLocalKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
                             $ownerFields[0]).'">';
                 }
 
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getRemoteKey())) {
-                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$i.']['.$this->getRemoteKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()],
+                    $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$i.']['.$this->getRemoteKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()],
                             $this->m_destInstance->primaryKeyField()).'">';
                 }
             }
@@ -740,6 +740,9 @@ class ManyToManyRelation extends Relation
     {
         $this->createDestination();
 
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix);
+
         // now select all records
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey))->getAllRows();
@@ -748,7 +751,7 @@ class ManyToManyRelation extends Relation
             $result .= 'multiple="multiple" size="'.min(5, count($recordset) + 1).'"';
         }
 
-        $result .= 'name="'.$this->getSearchFieldName($fieldprefix).'[]">';
+        $result .= 'id="'.$id.'" name="'.$name.'[]">';
 
         $pkfield = $this->m_destInstance->primaryKeyField();
 

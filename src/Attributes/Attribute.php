@@ -12,7 +12,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Utils\EditFormModifier;
-use Exception;
+use \Exception;
 
 /**
  * The Attribute class represents an attribute of an Node.
@@ -410,7 +410,6 @@ class Attribute
 
     /*
      * The id of the attribute in the HTML
-     * @access private
      * @var String
      */
     public $m_htmlid;
@@ -541,14 +540,7 @@ class Attribute
      * @var string
      */
     private $m_column;
-
-    /**
-     * JavaScript observers. Key is the event name
-     * value is an array with event handlers.
-     *
-     * @var array
-     */
-    private $m_jsObservers = [];
+    
 
     /**
      * View callback.
@@ -915,20 +907,6 @@ class Attribute
         return;
     }
     
-    /**
-     * Register JavaScript event handlers.
-     *
-     * @param string $fieldId field identifier
-     */
-    protected function registerJavaScriptObservers($fieldId)
-    {
-        foreach ($this->m_jsObservers as $event => $handlers) {
-            foreach ($handlers as $handler) {
-                $code = '$(\''.$fieldId.'\').observe(\''.$event.'\', function(event) { var fieldId = \''.$fieldId.'\'; '.$handler.' });';
-                $this->getOwnerInstance()->getPage()->register_loadscript($code);
-            }
-        }
-    }
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
@@ -952,8 +930,6 @@ class Attribute
             $onchange = '';
         }
 
-        $this->registerJavaScriptObservers($id);
-
         $size = $this->m_size;
         if ($mode == 'list' && $size > 20) {
             $size = 20;
@@ -961,7 +937,7 @@ class Attribute
 
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
-        $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute(array('form-control')).' value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
+        $result = '<input type="text" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute(array('form-control')).' value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
 
         return $result;
     }
@@ -991,8 +967,6 @@ class Attribute
     public function _renderChangeHandler($fieldprefix, $elementNr = '')
     {
         if (count($this->m_onchangecode)) {
-
-
             $page = Page::getInstance();
             $page->register_scriptcode('
     function '.$this->getHtmlId($fieldprefix).$elementNr."_onChange(el)
@@ -1020,8 +994,7 @@ class Attribute
         // working hide() functionality but at least it will not give error messages.
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         if (!is_array($value)) {
-            $id = $id = $this->getHtmlId($fieldprefix);
-            $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($value).'">';
+            $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($value).'">';
 
             return $result;
         } else {
@@ -1032,34 +1005,34 @@ class Attribute
     }
 
     /**
-     * Return the html identifier (id="") of the attribute. (unique within a
-     * page).
+     * Return the html identifier (id="") of the attribute. (unique within a page).
      *
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
+     * @param string $fieldprefix The fieldprefix to put in front of the id of any html form element for this attribute.
      *
      * @return string the HTML identifier.
      */
     public function getHtmlId($fieldprefix)
     {
-        $this->m_htmlid = $fieldprefix.$this->fieldName();
-
+        if(!isset($this->m_htmlid)) {
+            $uri = '';
+            if($this->getOwnerInstance()) {
+                $uri = str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()).'_';
+            }
+            $this->m_htmlid = $uri.$fieldprefix.$this->fieldName();
+        }
         return $this->m_htmlid;
     }
 
     /**
-     * Returns the html identifier of the attribute without setting it
-     * Created because getHtmlId would always SET the htmlid while getting it.
+     * Return the name identifier (name="") of the attribute.
      *
-     * @return string The HTML id of this attribute
+     * @param string $fieldprefix The fieldprefix to put in front of the name of any html form element for this attribute.
+     *
+     * @return string the HTML identifier.
      */
-    public function getAttributeHtmlId()
+    public function getHtmlName($fieldprefix)
     {
-        if ($this->m_htmlid) {
-            return $this->m_htmlid;
-        } else {
-            return $this->fieldName();
-        }
+        return $fieldprefix.$this->fieldName();
     }
 
     /**
@@ -1151,6 +1124,8 @@ class Attribute
             $entry['class'] = $this->m_rowCssClasses;
 
             $entry['id'] = $this->getHtmlId($fieldprefix);
+
+            $entry['prova'] = 'ciao';
 
             /* label? */
             $entry['label'] = $this->getLabel($defaults, $mode);
@@ -1530,7 +1505,8 @@ class Attribute
      */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        $id = $this->getSearchFieldName($fieldprefix);
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix);
 
         $value = '';
         if (is_array($record) && isset($record[$this->fieldName()])) {
@@ -1538,7 +1514,7 @@ class Attribute
         }
 
         $class = $this->getCSSClassAttribute(['form-control']);
-        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.htmlentities($value).'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
+        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'" value="'.htmlentities($value).'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
 
         return $result;
     }
@@ -2988,23 +2964,7 @@ class Attribute
     {
         return $this->m_initial_hidden;
     }
-
-    /**
-     * Observe the given JavaScript event and execute the given JavaScript
-     * statements when the event occurs.
-     *
-     * Inside the JavaScript body the event is available in the variable
-     * "event" and the field identifier is available in the variable
-     * "fieldId". To cancel an event you can use Prototype's event
-     * mechanism for this.
-     *
-     * @param string $event JavaScript event name (e.g. 'change', 'click', etc.)
-     * @param string $body JavaScript body
-     */
-    public function observeJS($event, $body)
-    {
-        $this->m_jsObservers[$event][] = $body;
-    }
+    
 
     /**
      * String representation for this attribute (PHP5 only).

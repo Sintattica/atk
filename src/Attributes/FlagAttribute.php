@@ -165,8 +165,7 @@ class FlagAttribute extends MultiSelectAttribute
             $values = $record[$name];
         }
 
-        return '<input type="hidden" name="'.$fieldprefix.$name.'"
-                      value="'.$values.'">';
+        return '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$values.'">';
     }
 
     /**

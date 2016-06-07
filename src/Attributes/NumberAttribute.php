@@ -158,8 +158,7 @@ class NumberAttribute extends Attribute
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
         if (!is_array($record[$this->fieldName()])) {
-            $id = $id = $this->getHtmlId($fieldprefix);
-            $result = '<input type="hidden" id="'.$id.'" name="'.$fieldprefix.$this->fieldName().'" value="'.htmlspecialchars($this->formatNumber($record[$this->fieldName()])).'">';
+            $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($this->formatNumber($record[$this->fieldName()])).'">';
 
             return $result;
         } else {
@@ -538,14 +537,14 @@ class NumberAttribute extends Attribute
     public function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
+        
         if (count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {
             $onchange = '';
         }
-
-        $this->registerJavaScriptObservers($id);
 
         $size = $this->m_size;
         $maxsize = $this->m_maxsize;
@@ -562,7 +561,7 @@ class NumberAttribute extends Attribute
 
         $id = $fieldprefix.$this->fieldName();
         $class = $this->getCSSClassAttribute(['form-control']);
-        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
+        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
 
         if (is_array($this->touchspin)) {
             $page = Page::getInstance();
@@ -593,6 +592,8 @@ class NumberAttribute extends Attribute
         }
 
         $class = $this->getCSSClassAttribute(['form-control']);
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix);
 
         if (!$extended) {
             if (is_array($value)) { // values entered in the extended search
@@ -608,10 +609,8 @@ class NumberAttribute extends Attribute
                 }
             }
 
-            $id = $this->getSearchFieldName($fieldprefix);
-            $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
+            $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'" value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
         } else {
-            $id = $this->getSearchFieldName($fieldprefix).'[from]';
 
             if (is_array($value)) {
                 $valueFrom = $value['from'];
@@ -621,10 +620,10 @@ class NumberAttribute extends Attribute
             }
 
             $result = '<div class="form-inline">';
-            $result .= '<input type="text" id="'.$id.'" '.$class.' name="'.$id.'" value="'.htmlentities($valueFrom).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
-            $id = $this->getSearchFieldName($fieldprefix).'[to]';
+            $result .= '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'[from]" value="'.htmlentities($valueFrom).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
 
-            $result .= ' ('.Tools::atktext('until').' <input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$id.'" value="'.htmlentities($valueTo).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>)';
+
+            $result .= ' ('.Tools::atktext('until').' <input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$name.'[to]" value="'.htmlentities($valueTo).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>)';
             $result .= '</div>';
         }
 

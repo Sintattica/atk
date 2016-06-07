@@ -202,7 +202,7 @@ class FuzzySearchAttribute extends Attribute
             } else {
                 if ($this->m_mode == 'select' || ($this->m_mode == 'multiselect' && count($this->m_matches) == 1)) {
                     // Select one record from all matches.
-                    $res .= '<SELECT NAME="'.$fieldprefix.$this->fieldName().'[]" class="form-control">';
+                    $res .= '<SELECT NAME="'.$this->getHtmlName($fieldprefix).'[]" class="form-control">';
                     $res .= '<OPTION VALUE="">'.Tools::atktext('select_none');
                     $selects = [];
                     foreach ($this->m_matches as $keyword => $matches) {
@@ -221,7 +221,7 @@ class FuzzySearchAttribute extends Attribute
                         $res = '<table border="0">';
                         foreach ($this->m_matches as $keyword => $matches) {
                             if (count($matches) > 0) {
-                                $res .= '<tr><td>\''.$keyword.'\': </td><td><SELECT NAME="'.$fieldprefix.$this->fieldName().'[]" class="form-control">';
+                                $res .= '<tr><td>\''.$keyword.'\': </td><td><SELECT NAME="'.$this->getHtmlName($fieldprefix).'[]" class="form-control">';
                                 $res .= '<OPTION VALUE="">'.Tools::atktext('select_none');
                                 for ($i = 0, $_i = count($matches); $i < $_i; ++$i) {
                                     $res .= '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);

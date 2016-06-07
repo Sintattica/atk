@@ -55,7 +55,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         }
         $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->getAllRows();
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
-        $result = '<select class="form-control" name="'.$fieldprefix.$this->fieldName().'">';
+        $result = '<select class="form-control" name="'.$this->getHtmlName($fieldprefix).'">';
 
         if ($this->hasFlag(self::AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..

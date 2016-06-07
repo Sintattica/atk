@@ -590,9 +590,9 @@ class OneToOneRelation extends Relation
                 $mode = 'add';
             }
 
-            $output = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
+            $output = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[mode]" value="'.$mode.'">';
             $forceList = Tools::decodeKeyValueSet($this->getFilter());
-            $output .= $this->m_destInstance->hideForm($mode, $myrecord, $forceList, $fieldprefix.$this->fieldName().'_AE_');
+            $output .= $this->m_destInstance->hideForm($mode, $myrecord, $forceList, $this->getHtmlName($fieldprefix).'_AE_');
 
             return $output;
         }

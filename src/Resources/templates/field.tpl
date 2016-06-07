@@ -3,9 +3,9 @@
     {if isset($field.line) && $field.line!=""}
         {$field.line}
     {else}
+
         {if $field.label!=="AF_NO_LABEL"}
-            <label for="{$field.attribute}"
-                   class="col-sm-2 control-label">
+            <label for="{$field.htmlid}" class="col-sm-2 control-label">
                 {if $field.label!=""}{$field.label}{/if}
             </label>
         {/if}

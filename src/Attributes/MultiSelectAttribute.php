@@ -67,8 +67,7 @@ class MultiSelectAttribute extends ListAttribute
             $values = $this->getValues();
             for ($i = 0; $i < count($values); ++$i) {
                 if (in_array($values[$i], $record[$this->fieldName()])) {
-                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
-                      value="'.$values[$i].'">';
+                    $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[]" value="'.$values[$i].'">';
                 }
             }
         } else {
@@ -153,7 +152,8 @@ class MultiSelectAttribute extends ListAttribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        $id = $fieldprefix.$this->fieldName();
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
 
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkprofileattribute.js');
@@ -175,7 +175,7 @@ class MultiSelectAttribute extends ListAttribute
 
         for ($i = 0; $i < count($values); ++$i) {
             $checkId = $id.'_'.$i;
-            $checkName = $fieldprefix.$this->fieldName().'[]';
+            $checkName = $name.'[]';
 
             if (!$this->hasFlag(self::AF_CHECK_ALL)) {
                 $sel = (Tools::atk_in_array($values[$i], $recordvalue)) ? 'checked' : '';

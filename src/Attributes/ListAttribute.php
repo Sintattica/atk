@@ -80,17 +80,7 @@ class ListAttribute extends Attribute
      * @var bool
      */
     protected $m_autoSearch = false;
-
-
-    /**
-     * Use Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
-     * Comes handy when there are only a few options.
-     * (see expandAsButtons function).
-     *
-     * @var bool|array False (disabled), True (enabled with default options), Array of options
-     */
-    private $m_expandAsButtons = false;
-
+    
     protected $m_multipleSearch = [
         'normal' => false,
         'extended' => true,
@@ -281,22 +271,42 @@ class ListAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
+
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerJavaScriptObservers($id);
+        $name = $this->getHtmlName($fieldprefix);
+        $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2();');
 
         $selectOptions = [];
 
         $onchange = '';
         if (count($this->m_onchangecode)) {
-            $onchange = $id.'_onChange(this);';
+            $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.'>';
-
+        $hasNullOption = $this->hasNullOption();
         $nullLabel = '';
-        if ($hasNullOption = $this->hasNullOption()) {
+        if ($hasNullOption) {
             $nullLabel = $this->getNullLabel();
+            $selectOptions['allow-clear'] = true;
+            $selectOptions['placeholder'] = $nullLabel;
+        }
+
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['minimum-results-for-search'] = 10;
+
+        if($this->m_width){
+            $selectOptions['width'] = $this->m_width;
+        }
+
+        $data = '';
+        foreach ($selectOptions as $k => $v) {
+            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+
+        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.'>';
+
+        if ($hasNullOption) {
             $result .= '<option value="'.$this->m_emptyvalue.'">'.$nullLabel.'</option>';
         }
 
@@ -310,66 +320,15 @@ class ListAttribute extends Attribute
                 $sel = 'selected';
             }
 
-            $result .= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
+            $result .=  '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
         }
 
         $result .= '</select>';
 
-        if ($this->m_expandAsButtons) {
-            // use Quick[select] plugin to expand the selection as a series of buttons
-            $page = $this->m_ownerInstance ? $this->m_ownerInstance->getPage() : Page::getInstance();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/quickselect/jquery.quickselect.min.js');
-            $page->register_style(Config::getGlobal('assets_url').'javascript/quickselect/quickselect.css');
-            $options = json_encode($this->m_expandAsButtons);
-            $result .= "<script>jQuery('#$id').quickselect($options);</script>";
-        } else {
-
-            if ($hasNullOption) {
-                $selectOptions['allowClear'] = true;
-                $selectOptions['placeholder'] = $nullLabel;
-            }
-
-            $selectOptions['dropdownAutoWidth'] = 'true';
-            $selectOptions['minimumResultsForSearch'] = 10;
-
-            if($this->m_width){
-                $selectOptions['width'] = $this->m_width;
-            }else{
-                $selectOptions['width'] = 'auto';
-            }
-
-
-            $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
-            if ($onchange != '') {
-                $script .= '.on("change", function(){'.$onchange.'})';
-            }
-            $result .= '<script>'.$script.';</script>';
-        }
-
         return $result;
     }
 
-    /**
-     * Enable Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
-     *
-     * @param array $options Quick[select] Options (or null for default options)
-     */
-    public function expandAsButtons($options = null)
-    {
-        if (!$options || !is_array($options)) {
-            $options = [];
-        }
-        $defaultOptions = array(
-            'activeButtonClass' => 'btn-primary atkdefaultbutton active',
-            'buttonClass' => 'btn btn-default',
-            'breakOutAll' => true,
-            'wrapperClass' => 'btn-group',
-        );
-
-        $this->m_expandAsButtons = array_merge($defaultOptions, $options);
-    }
-
-
+    
     public function getNullLabel()
     {
         if ($this->hasNullOption()) {
@@ -421,12 +380,13 @@ class ListAttribute extends Attribute
     public function search($record = '', $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $values = $this->getValues();
-        $id = $this->getSearchFieldName($fieldprefix);
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix);
 
         $isMultiple = $this->isMultipleSearch($extended);
 
         $class = $this->getCSSClassAttribute(['form-control']);
-        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$id.'[]">';
+        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]">';
 
 
         $selValues = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
@@ -462,16 +422,13 @@ class ListAttribute extends Attribute
         $selectOptions = [];
         $selectOptions['width'] = '100%';
 
-        $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
-
+        $this->getOwnerInstance()->getPage()->register_loadscript("jQuery('#$id').select2(".json_encode($selectOptions).");");
 
         // if we use autosearch, register an onchange event that submits the grid
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
             $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
-            $script .= '.on("change", function(){'.$onchange.'})';
+            $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(){'.$onchange.'})');
         }
-
-        $result .= '<script>'.$script.';</script>';
 
         return $result;
     }

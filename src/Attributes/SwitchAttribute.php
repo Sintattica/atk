@@ -47,6 +47,7 @@ class SwitchAttribute extends BoolAttribute
         $this->registerScriptsAndStyles($fieldprefix);
 
         $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
         $onchange = '';
         if (count($this->m_onchangecode)) {
             $onchange = 'onClick="'.$id.'_onChange(this);" ';
@@ -57,7 +58,7 @@ class SwitchAttribute extends BoolAttribute
             $checked = 'checked';
         }
 
-        $result = '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' />';
+        $result = '<input type="checkbox" id="'.$id.'" name="'.$name.'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' />';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
