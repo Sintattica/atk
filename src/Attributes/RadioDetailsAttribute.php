@@ -82,7 +82,7 @@ class RadioDetailsAttribute extends Attribute
     {
         $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkradiodetailsattribute.js');
 
-        $name = $fieldprefix.$this->fieldName();
+        $name = $this->getHtmlName($fieldprefix);
 
         $result = '<div class="atkradiodetailsattribute-selection">';
 

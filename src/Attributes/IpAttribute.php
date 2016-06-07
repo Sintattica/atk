@@ -67,7 +67,7 @@ class IpAttribute extends Attribute
         $values = empty($record[$this->fieldName()]) ? null : explode('.', $record[$this->fieldName()]);
 
         for ($i = 0; $i < 4; ++$i) {
-            $name = $fieldprefix.$this->fieldName().'['.$i.']';
+            $name = $this->getHtmlName($fieldprefix).'['.$i.']';
             $value = isset($values[$i]) ? $values[$i] : '';
             $inputs[] = '<input type="text" name="'.$name.'" value="'.$value.'" maxlength="3" size="3" />';
         }

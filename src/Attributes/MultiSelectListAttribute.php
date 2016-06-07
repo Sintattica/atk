@@ -57,8 +57,7 @@ class MultiSelectListAttribute extends ListAttribute
             $values = $this->getValues();
             for ($i = 0; $i < count($values); ++$i) {
                 if (in_array($values[$i], $record[$this->fieldName()])) {
-                    $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
-                      value="'.$values[$i].'">';
+                    $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[]" value="'.$values[$i].'">';
                 }
             }
         } else {
@@ -144,7 +143,7 @@ class MultiSelectListAttribute extends ListAttribute
     public function edit($record, $fieldprefix, $mode)
     {
         $id = $this->getHtmlId($fieldprefix);
-        $this->registerJavaScriptObservers($id);
+        $name = $this->getHtmlName($fieldprefix);
 
         $selectOptions = [];
 
@@ -154,7 +153,7 @@ class MultiSelectListAttribute extends ListAttribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select multiple id="'.$id.'" name="'.$id.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.'>';
+        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.'>';
 
         $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {

@@ -18,8 +18,7 @@ class TimeAttribute extends Attribute
      * Flags for atkTimeAttribute.
      */
     const AF_TIME_SECONDS = 33554432; // Display seconds after hours & minutes
-    const AF_CLEAR_TOUCH_BUTTONS = DateAttribute::AF_CLEAR_TOUCH_BUTTONS; // Display butons to clear and 'touch' date
-    const AF_TIME_DEFAULT_EMPTY = 2147483648; // Always use the empty value on new record
+    const AF_TIME_DEFAULT_EMPTY = 1073741824; // Always use the empty value on new record
 
     public $m_beginTime = 0;
     public $m_endTime = 23;
@@ -165,7 +164,8 @@ class TimeAttribute extends Attribute
     public function edit($record, $fieldprefix, $mode)
     {
 
-        $id = $fieldprefix.$this->fieldName();
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
         $field = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
 
         $onChangeCode = '';
@@ -175,9 +175,9 @@ class TimeAttribute extends Attribute
         }
 
         // set vars for hour / minutes dropdowns
-        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
-        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
-        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$id."[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         // set default values for both boxes
 
         $m_defHour = $m_defMin = $m_defSec = '';
@@ -262,28 +262,7 @@ class TimeAttribute extends Attribute
         //return $m_hourBox . ":" . $m_minBox . $m_secBox;
         $timeedit = $m_hourBox.':'.$m_minBox.$m_secBox;
 
-        if ($this->hasFlag(self::AF_CLEAR_TOUCH_BUTTONS)) {
-            $tmp = $timeedit.'&nbsp;&nbsp;'.' <input type="button" onclick="
-         $(\''.$this->getAttributeHtmlId().'[hours]\').selectedIndex=0;
-         $(\''.$this->getAttributeHtmlId().'[minutes]\').selectedIndex=0;';
-            if ($this->hasFlag(self::AF_TIME_SECONDS)) {
-                $tmp .= '$(\''.$this->getAttributeHtmlId().'[seconds]\').selectedIndex=0;';
-            }
-            $tmp .= '" value="&empty;" class="atkDateAttribute button atkbutton">
-      <input type="button" onclick="
-         var d = new Date();
-         var mi = Math.round(d.getMinutes()/Math.round(60 / '.$size_minbox.'));
-         $(\''.$this->getAttributeHtmlId().'[hours]\').selectedIndex=d.getHours()+1;
-         $(\''.$this->getAttributeHtmlId().'[minutes]\').selectedIndex=mi+1;';
-            if ($this->hasFlag(self::AF_TIME_SECONDS)) {
-                $tmp .= 'var mi = Math.round(d.getSeconds()/Math.round(60 / '.$size_secbox.'));
-            $(\''.$this->getAttributeHtmlId().'[seconds]\').selectedIndex=mi+1;';
-            }
-            $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
-
-            return '<div class="form-inline">'.$tmp.'</div>';
-        }
-
+        
         return '<div class="'.$this->get_class_name().' form-inline">'.$timeedit.'</div>';
     }
 
@@ -425,10 +404,10 @@ class TimeAttribute extends Attribute
         $result = '';
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$key.']" '.'value="'.$value.'">';
+                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$value.'">';
             }
         } else {
-            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.$field.'">';
+            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$field.'">';
         }
 
         return $result;

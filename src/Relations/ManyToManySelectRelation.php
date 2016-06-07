@@ -168,7 +168,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
         }
 
-        $result = '<input type="hidden" name="'.$this->getHtmlId($fieldprefix).'" value="" />'.// Post an empty value if none selected (instead of not posting anything)
+        $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="" />'.// Post an empty value if none selected (instead of not posting anything)
             '<div class="atkmanytomanyselectrelation">';
 
         if (($this->hasFlag(self::AF_MANYTOMANYSELECT_DETAILADD)) && ($this->m_destInstance->allowed('add'))) {

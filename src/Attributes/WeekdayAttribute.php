@@ -79,8 +79,8 @@ class WeekdayAttribute extends NumberAttribute
     public function edit($record, $fieldprefix, $mode)
     {
         $result = '';
-
-        $name = $fieldprefix.$this->fieldName();
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
         $value = (int)$record[$this->fieldName()];
 
         $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;' : '<br>';
@@ -103,7 +103,7 @@ class WeekdayAttribute extends NumberAttribute
 
             $checked = Tools::hasFlag($value, $day) ? ' checked' : '';
 
-            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$name.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute('atkcheckbox').' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max ? $separator : '');
+            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$id.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute('atkcheckbox').' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max ? $separator : '');
         }
 
         return $result;

@@ -414,6 +414,7 @@ class EditHandler extends ViewEditBase
             $editsrc = $field['html'];
 
             $tplfield['id'] = str_replace('.', '_', $this->m_node->atkNodeUri().'_'.$field['id']);
+            $tplfield['htmlid'] = $field['id'];
 
             $tplfield['full'] = $editsrc;
 

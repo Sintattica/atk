@@ -224,23 +224,24 @@ class FileAttribute extends Attribute
             return Tools::atktext('no_valid_directory', 'atk').': '.$this->m_dir;
         }
 
-        $id = $fieldprefix.$this->fieldName();
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
 
         if (isset($record[$this->fieldName()]['orgfilename'])) {
             $result .= '<br />';
-            $result .= '<input type="hidden" name="'.$id.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
+            $result .= '<input type="hidden" name="'.$name.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
         }
 
-        $result .= '<input type="hidden" name="'.$id.'_postfileskey" value="'.$id.'">';
+        $result .= '<input type="hidden" name="'.$name.'_postfileskey" value="'.$id.'">';
 
         $onchange = '';
         if (count($this->m_onchangecode)) {
-            $onchange = ' onchange="'.$id.'_onChange(this);"';
+            $onchange = ' onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
-            $result .= '<input type="file" id="'.$id.'" name="'.$id.'" '.$onchange.'>';
+            $result .= '<input type="file" id="'.$id.'" name="'.$name.'" '.$onchange.'>';
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_SELECT)) {
@@ -248,7 +249,7 @@ class FileAttribute extends Attribute
             if (count($file_arr) > 0) {
                 natcasesort($file_arr);
 
-                $result .= '<select id="'.$id.'_select" name="'.$id.'[select]" '.$onchange.' class="form-control">';
+                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.' class="form-control">';
                 // Add default option with value NULL
                 $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
                 while (list($key, $val) = each($file_arr)) {
@@ -261,12 +262,12 @@ class FileAttribute extends Attribute
             }
         } else {
             if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename'])) {
-                $result .= '<input type="hidden" name="'.$id.'[select]" value="'.$record[$this->fieldName()]['filename'].'">';
+                $result .= '<input type="hidden" name="'.$name.'[select]" value="'.$record[$this->fieldName()]['filename'].'">';
             }
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
-            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="'.$id.'_del" type="checkbox" name="'.$id.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
+            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
                     'atk');
         }
 
@@ -890,10 +891,10 @@ class FileAttribute extends Attribute
         $result = '';
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'['.$key.']" '.'value="'.$value.'">';
+                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$value.'">';
             }
         } else {
-            $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'" value="'.$field.'">';
+            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$field.'">';
         }
 
         return $result;

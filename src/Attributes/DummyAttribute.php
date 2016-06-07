@@ -69,7 +69,7 @@ class DummyAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        return "<div ID=\"$this->m_name\">".$this->m_text.'</div>';
+        return '<div id="'.$this->getHtmlId($fieldprefix).'">'.$this->m_text.'</div>';
     }
 
     /**

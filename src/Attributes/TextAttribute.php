@@ -64,11 +64,13 @@ class TextAttribute extends Attribute
 
     public function edit($record, $fieldprefix, $mode)
     {
+
+        $id = $this->getHtmlId($fieldprefix);
+        $name = $this->getHtmlName($fieldprefix);
+        
         // list mode, show a small textarea, until it get's focus
         // and is inflated to a big textarea
         if ($mode == 'list') {
-            $id = $fieldprefix.$this->fieldName();
-
             $page = $this->m_ownerInstance->getPage();
 
             // NOTE:
@@ -92,7 +94,7 @@ class TextAttribute extends Attribute
           };
         ");
 
-            $html = '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.'<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
+            $html = '<textarea id="'.$id.'" name="'.$name.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.'<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
 
             return $html;
         }
@@ -105,7 +107,6 @@ class TextAttribute extends Attribute
             $cols = $this->maxInputSize();
         }
         $rows = $this->m_rows;
-        $id = $fieldprefix.$this->fieldName();
         if ($rows == '' || $rows == 0) {
             $rows = 10;
         }
@@ -114,9 +115,7 @@ class TextAttribute extends Attribute
             $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
         }
 
-        $this->registerJavaScriptObservers($id);
-
-        $result = sprintf('<textarea id="%s" name="%s" wrap="%s" ', $id, $id, $this->getWrapMode());
+        $result = sprintf('<textarea id="%s" name="%s" wrap="%s" ', $id, $name, $this->getWrapMode());
         if ($rows) {
             $result .= 'rows="'.$rows.'" ';
         }

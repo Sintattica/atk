@@ -81,11 +81,8 @@ class DateTimeAttribute extends Attribute
             $default_steps[$i] = $i;
         }
 
-        if ($this->hasFlag(DateAttribute::AF_CLEAR_TOUCH_BUTTONS)) {
-            $flags .= '|DateAttribute::AF_CLEAR_TOUCH_BUTTONS';
-        }
-        $this->m_time = new TimeAttribute($name, $flags, 0, 23, $default_steps);
         $this->m_date = new DateAttribute($name, $flags);
+        $this->m_time = new TimeAttribute($name, $flags, 0, 23, $default_steps);
 
         parent::__construct($name, $flags); // base class constructor
     }
@@ -171,6 +168,7 @@ class DateTimeAttribute extends Attribute
         $this->m_time->m_ownerInstance = $this->m_ownerInstance;
         $this->m_date->m_ownerInstance = $this->m_ownerInstance;
     }
+
 
     /**
      * Fetch the metadata about this attrib from the table metadata, and
@@ -269,6 +267,7 @@ class DateTimeAttribute extends Attribute
     public function edit($record, $fieldprefix, $mode)
     {
         $dateEdit = $this->m_date->edit($record, $fieldprefix, $mode);
+        $this->m_time->m_htmlid = $this->m_date->m_htmlid;
         $timeEdit = $this->m_time->edit($record, $fieldprefix, $mode);
 
         return '<div class="'.$this->get_class_name().'">'.$dateEdit.'<span> - </span>'.$timeEdit.'</div>';
@@ -396,7 +395,7 @@ class DateTimeAttribute extends Attribute
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->m_date->m_searchsize = 10;
-
+        $this->m_time->m_htmlid = $this->m_date->m_htmlid;
         return $this->m_date->search($record, $extended, $fieldprefix);
     }
 
@@ -433,6 +432,7 @@ class DateTimeAttribute extends Attribute
         // we only need to return the date part, because the dateattribute also
         // hides the other (time) elements that are present in the record (is that
         // a bug of the dateattribute?)
+        $this->m_time->m_htmlid = $this->m_date->m_htmlid;
         return $this->m_date->hide($record, $fieldprefix, $mode);
     }
 

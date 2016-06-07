@@ -130,10 +130,11 @@ class EditFormModifier
      */
     public function showAttribute($name)
     {
+        $attr = $this->getNode()->getAttribute($name);
         if ($this->isInitial()) {
-            $this->getNode()->getAttribute($name)->setInitialHidden(false);
+            $attr->setInitialHidden(false);
         } else {
-            $name = 'ar_'.$this->getFieldPrefix().$name;
+            $name = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
             $this->scriptCode("if (\$('$name')) { \$('$name').removeClassName('atkAttrRowHidden'); }");
         }
     }
@@ -160,10 +161,11 @@ class EditFormModifier
      */
     public function hideAttribute($name)
     {
+        $attr = $this->getNode()->getAttribute($name);
         if ($this->isInitial()) {
-            $this->getNode()->getAttribute($name)->setInitialHidden(true);
+            $attr->setInitialHidden(true);
         } else {
-            $name = 'ar_'.$this->getFieldPrefix().$name;
+            $name = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
             $this->scriptCode("if (\$('$name')) { \$('$name').addClassName('atkAttrRowHidden'); }");
         }
     }
