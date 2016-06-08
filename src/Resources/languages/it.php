@@ -163,7 +163,7 @@ return [
     'help' => 'Aiuto',
     'hours' => 'h',
     // (usato in atkDurationAttribute)
-    'import' => 'Import',
+    'import' => 'Importa',
     'import_allfield' => 'Usare il valore di default per uno degli attributi (es. se la colonna è assente nel file CSV)',
     'import_analyse' => 'Analizzare di nuovo',
     'import_detectedcolumns' => 'Numero di colonne',
