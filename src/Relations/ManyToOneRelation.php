@@ -1139,8 +1139,8 @@ class ManyToOneRelation extends Relation
             }
 
             $selectOptions = [];
-            $selectOptions['allow-clear'] = true;
-            $selectOptions['dropdown-auto-width'] = true;
+            $selectOptions['allow-clear'] = 'true';
+            $selectOptions['dropdown-auto-width'] = 'true';
             $selectOptions['width'] = 'auto';
             $selectOptions['placeholder'] = Tools::atktext('search_all');
             $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
@@ -1170,10 +1170,10 @@ class ManyToOneRelation extends Relation
                 }
 
                 $selectOptions = [];
-                $selectOptions['tags'] = true;
+                $selectOptions['tags'] = 'true';
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action, 'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
-                $selectOptions['allow-clear'] = true;
+                $selectOptions['allow-clear'] = 'true';
                 $selectOptions['width'] = 'auto';
                 $selectOptions['placeholder'] = $noneLabel;
                 $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);

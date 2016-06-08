@@ -9506,6 +9506,11 @@ hr {
   border: 0;
   border-top: 1px solid #eeeeee; }
 
+.select2-container--bootstrap .select2-selection__clear {
+  float: none;
+  margin-left: 0;
+  margin-right: 5px; }
+
 .tabsContent {
   margin-top: 10px; }
 
