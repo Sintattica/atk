@@ -149,11 +149,11 @@ class ImportHandler extends ActionHandler
             $result[] = Tools::atkButton($this->m_node->text('cancel', 'atk'), '', SessionManager::SESSION_BACK, true);
         }
         if ($phase == 'init') {
-            $result[] = '<input class="btn" type="submit" value="'.$this->m_node->text('import_upload').'">';
+            $result[] = '<input class="btn btn-primary" type="submit" value="'.$this->m_node->text('import_upload').'">';
         } else {
             if ($phase == 'analyze') {
-                $result[] = '<input type="submit" class="btn" name="analyse" value="'.$this->m_node->text('import_analyse').'">';
-                $result[] = '<input type="submit" class="btn" name="import" value="'.$this->m_node->text('import_import').'"> ';
+                $result[] = '<input type="submit" class="btn btn-primary" name="analyse" value="'.$this->m_node->text('import_analyse').'">';
+                $result[] = '<input type="submit" class="btn btn-primary" name="import" value="'.$this->m_node->text('import_import').'"> ';
             }
         }
 

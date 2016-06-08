@@ -1325,7 +1325,7 @@ class Tools
         static $cnt = 0;
 
         if ($cssclass == '') {
-            $cssclass = 'btn';
+            $cssclass = 'btn btn-default';
         }
 
         $cssclass = ' class="'.$cssclass.'"';
