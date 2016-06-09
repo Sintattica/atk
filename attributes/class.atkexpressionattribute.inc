@@ -188,6 +188,19 @@ class atkExpressionAttribute extends atkAttribute
         }
     }
 
+    function display($record = "", $mode = '')
+    {
+        if ($this->getSearchType() == "number") {
+            $attr = new atkNumberAttribute($this->fieldName());
+            return $attr->display($record, $mode);
+        } else if ($this->getSearchType() == "date") {
+            $attr = new atkDateAttribute($this->fieldName());
+            $record[$this->fieldName()] = $attr->db2value($record);
+            return $attr->display($record, $mode);
+        }
+        return parent::display($record, $mode);
+    }
+
     /**
      * Creates a search condition for this attribute.
      * 
