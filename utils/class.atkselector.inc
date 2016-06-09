@@ -713,7 +713,13 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
         $prefix = '__sum__';
 
         foreach ($fields as $field) {
-            $query->addExpression($field, 'SUM('.$query->getDb()->escapeSQL($field).')', $prefix);
+            $i = array_search($field, array_column($query->m_expressions, 'name'));
+            if ($i) {
+                $expr = $query->m_expressions[$i]['expression'];
+            } else {
+                $expr = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()) . '.' . $this->_getDb()->quoteIdentifier($field);
+            }
+            $query->addExpression($field, 'SUM('.$expr.')', $prefix);
         }
 
         $stmt = $this->_getDb()->prepare($query->buildSelect());
@@ -724,7 +730,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
         $query->deAlias($row);
         $res = [];
         foreach ($fields as $field) {
-            $res[$field] = $row[$prefix.$field];
+            $res[$field] = $row[$prefix.$field] ?: 0;
         }
 
         return $res;

@@ -781,9 +781,11 @@ class atkDGList extends atkDGComponent
         }
 
         // override totals
-        $result['totalraw'] = $grid->getNode()->select()->getTotals(array_keys($result['total']));
-        foreach($result['totalraw'] as $attrName => $value) {
-            $result['total'][$attrName] = $grid->getNode()->getAttribute($attrName)->getView('list', $result['totalraw']);
+        if ($result['total']) {
+            $result['totalraw'] = $grid->getNode()->select()->getTotals(array_keys($result['total']));
+            foreach ($result['totalraw'] as $attrName => $value) {
+                $result['total'][$attrName] = $grid->getNode()->getAttribute($attrName)->getView('list', $result['totalraw']);
+            }
         }
 
         if (hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals()) {
