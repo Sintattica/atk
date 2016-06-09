@@ -195,15 +195,15 @@ class atkBoolAttribute extends atkAttribute
     /**
      * Returns a displayable string for this value.
      * @param array $record Array with boolean field
+     * @param String $mode
      * @return yes or no
      */
-    function display($record)
+    function display($record, $mode = '')
     {
-        if ($this->hasFlag(AF_BOOL_DISPLAY_CHECKBOX)) {
+        if ($this->hasFlag(AF_BOOL_DISPLAY_CHECKBOX) && $mode == 'list') {
             return '
-    		  <div align="center">
-    		    <input type="checkbox" disabled="disabled" ' . ($record[$this->fieldName()]
-                        ? 'checked="checked"' : '') . ' />
+    		  <div style="text-align: center">
+    		    <input type="checkbox" disabled="disabled" ' . ($record[$this->fieldName()] ? 'checked="checked"' : '') . ' />
     		  </div>
     		';
         } else {
