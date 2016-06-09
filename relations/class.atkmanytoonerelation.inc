@@ -2310,22 +2310,24 @@ class atkManyToOneRelation extends atkRelation
         if (count($attribs) > 1) {
             $fields = array();
             foreach ($attribs as $attribname) {
-                $post = '';
                 if (strstr($attribname, '.')) {
-                    if ($fieldaliasprefix != '')
+                    if ($fieldaliasprefix != '') {
                         $table = $fieldaliasprefix . '_AE_';
-                    else
+                    } else {
                         $table = '';
-                    $post = substr($attribname, strpos($attribname, '.'));
-                    $attribname = substr($attribname, 0, strpos($attribname, '.'));
+                    }
+                    list($attribname, $post) = explode('.', $attribname);
+                    $p_attrib = $this->m_destInstance->m_attribList[$attribname];
+                    $fields[$p_attrib->fieldName()][$post] = $table . $p_attrib->fieldName() . '.' . $post;
+                } else {
+                    if ($fieldaliasprefix != '') {
+                        $table = $fieldaliasprefix . ".";
+                    } else {
+                        $table = $this->m_destInstance->m_table . ".";
+                    }
+                    $p_attrib = $this->m_destInstance->m_attribList[$attribname];
+                    $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName();
                 }
-                elseif ($fieldaliasprefix != '')
-                    $table = $fieldaliasprefix . ".";
-                else
-                    $table = $this->m_destInstance->m_table . ".";
-
-                $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-                $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName() . $post;
             }
 
             if (is_array($searchValue)) {
