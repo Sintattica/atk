@@ -11,6 +11,7 @@
 
 WIP Changes
 -----------
+* Removed total row in export [luca]
 * AF_TOTAL on the entire recordset [michele,luca]
 * Better errors handling [luca,michele]
 + Added records per page override in atkNode [luca]
