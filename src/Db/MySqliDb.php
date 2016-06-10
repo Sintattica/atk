@@ -191,7 +191,7 @@ class MySqliDb extends Db
         if ($this->connect($mode) == self::DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
-                if (!empty($this->m_query_id)) {
+                if (is_object($this->m_query_id)) {
                     mysqli_free_result($this->m_query_id);
                 }
                 $this->m_query_id = 0;
