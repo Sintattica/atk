@@ -56,7 +56,7 @@ class PasswordAttribute extends Attribute
     {
         $flags = $flags | self::AF_HIDE_SEARCH;
         $this->m_generate = $generate;
-        
+
         parent::__construct($name, $flags);
         $this->setRestrictions($restrictions);
     }
@@ -324,7 +324,7 @@ class PasswordAttribute extends Attribute
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 
-        if ($value['new'] != $value['again']) {
+        if ($mode == 'update' && $value['new'] != $value['again']) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
         }
