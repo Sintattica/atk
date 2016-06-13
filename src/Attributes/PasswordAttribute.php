@@ -55,6 +55,8 @@ class PasswordAttribute extends Attribute
     public function __construct($name, $flags = 0, $generate = false, $restrictions = [])
     {
         $flags = $flags | self::AF_HIDE_SEARCH;
+        $this->m_generate = $generate;
+        
         parent::__construct($name, $flags);
         $this->setRestrictions($restrictions);
     }
