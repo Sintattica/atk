@@ -155,7 +155,8 @@ class PasswordAttribute extends Attribute
                         'atk').':<br>'.'<input autocomplete="off" '.$cssClass.' type="password" id="'.$id.'[again]" name="'.$name.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
             } else {
                 $password = $this->generatePassword(8, true);
-                $result = '<input type="hidden" id="'.$id.'[again]" name="'.$name.'[again]"'.' value ="'.$password.'" '.$cssClass.'>'.'<input type="text" '.$cssClass.' id="'.$id.'[new]" name="'.$id.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
+                $result = '<input type="hidden" id="'.$id.'[again]" name="'.$name.'[again]"'.' value ="'.$password.'" '.$cssClass.'>';
+                $result .= '<input type="text" '.$cssClass.' id="'.$id.'[new]" name="'.$name.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
             }
         } else {
             /* edit */
@@ -324,7 +325,7 @@ class PasswordAttribute extends Attribute
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 
-        if ($mode == 'update' && $value['new'] != $value['again']) {
+        if ($value['new'] != $value['again']) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
         }
