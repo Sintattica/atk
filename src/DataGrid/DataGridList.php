@@ -726,7 +726,11 @@ class DataGridList extends DataGridComponent
 
         // override totals
         if (is_array($result['total']) && count($result['total']) > 0) {
-            $result['totalraw'] = $grid->getNode()->select()->getTotals(array_keys($result['total']));
+            $selector = $grid->getNode()->select()->ignoreDefaultFilters();
+            foreach ($grid->getFilters() as $filter) {
+                $selector->where($filter['filter'], $filter['params']);
+            }
+            $result['totalraw'] = $selector->getTotals(array_keys($result['total']));
             foreach ($result['totalraw'] as $attrName => $value) {
                 $result['total'][$attrName] = $grid->getNode()->getAttribute($attrName)->getView('list', $result['totalraw']);
             }

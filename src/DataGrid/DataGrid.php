@@ -1286,7 +1286,7 @@ class DataGrid
     /**
      * Returns the current node filters.
      *
-     * @return string filters
+     * @return array filters
      */
     public function getFilters()
     {
