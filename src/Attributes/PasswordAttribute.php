@@ -325,7 +325,7 @@ class PasswordAttribute extends Attribute
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 
-        if ($value['new'] != $value['again']) {
+        if (Tools::atk_strlen($value['new']) > 0 && Tools::atk_strlen($value['again']) > 0 && $value['new'] != $value['again']) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
         }
@@ -337,13 +337,13 @@ class PasswordAttribute extends Attribute
 
         // Check if the password meets the restrictions. If not, set error to true and
         // triger an error with the human readable form of the restrictions as message.
-        if (isset($value['new']) && !$this->validateRestrictions($value['new'])) {
+        if (isset($value['new']) && Tools::atk_strlen($value['new']) > 0 && !$this->validateRestrictions($value['new'])) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), $this->getRestrictionsText());
         }
 
         // new password?
-        if (!$error && isset($value['new'])) {
+        if (!$error && isset($value['new']) && Tools::atk_strlen($value['new']) > 0) {
             $record[$this->fieldName()]['hash'] = $this->encode($record[$this->fieldName()]['new']);
         }
     }
