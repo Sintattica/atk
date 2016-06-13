@@ -67,15 +67,15 @@ class CustomRecordList extends RecordList
         // $fsep    = ''             or  ';'
         //$empty  om lege tabelvelden op te vullen;
         // stuff for the totals row..
-        $totalisable = false;
-        $totals = [];
+
         $output = '';
+
+        $empty = '';
+
         if ($type == '0') {
             $empty = '&nbsp;';
         }
-        if ($type == '1') {
-            $empty = '';
-        }
+
 
         if ($titlerow) {
             $output .= $sol;
@@ -88,11 +88,6 @@ class CustomRecordList extends RecordList
                 $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     $output .= $sof.$this->eolreplace($p_attrib->label(), $rfeplace).$eof.$fsep;
-
-                    // the totalisable check..
-                    if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
-                        $totalisable = true;
-                    }
                 }
             }
 
@@ -127,11 +122,6 @@ class CustomRecordList extends RecordList
                         $value = Tools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
                     }
                     $output .= $sof.($value == '' ? $empty : $value).$eof.$fsep;
-
-                    // Calculate totals..
-                    if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
-                        $totals[$attribname] = $p_attrib->sum($totals[$attribname], $recordset[$i]);
-                    }
                 }
             }
 
@@ -143,33 +133,6 @@ class CustomRecordList extends RecordList
             $output .= $eol;
         }
 
-        // totalrow..
-        if ($totalisable) {
-            $totalRow = $sol;
-
-            // Third loop.. this time for the totals row.
-            foreach (array_keys($this->m_node->m_attribList) as $attribname) {
-                $p_attrib = $this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
-                if (!$this->isHidden($p_attrib) && !$musthide) {
-                    if ($p_attrib->hasFlag(Attribute::AF_TOTAL)) {
-                        $value = $this->eolreplace($p_attrib->display($totals[$attribname], $this->m_mode), $rfeplace);
-                        $totalRow .= $sof.($value == '' ? $empty : $value).$eof.$fsep;
-                    } else {
-                        $totalRow .= $sof.$empty.$eof.$fsep;
-                    }
-                }
-            }
-
-            if ($fsep) {
-                // remove separator at the end of line
-                $totalRow = substr($totalRow, 0, -strlen($fsep));
-            }
-
-            $totalRow .= $eol;
-
-            $output .= $totalRow;
-        }
 
         // html requires table tags
         if ($type == '0') {

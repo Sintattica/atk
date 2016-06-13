@@ -145,6 +145,19 @@ class ExpressionAttribute extends Attribute
         }
     }
 
+    function display($record = "", $mode = '')
+    {
+        if ($this->getSearchType() == "number") {
+            $attr = new NumberAttribute($this->fieldName());
+            return $attr->display($record, $mode);
+        } else if ($this->getSearchType() == "date") {
+            $attr = new DateAttribute($this->fieldName());
+            $record[$this->fieldName()] = $attr->db2value($record);
+            return $attr->display($record, $mode);
+        }
+        return parent::display($record, $mode);
+    }
+
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // If we are accidentally mistaken for a relation and passed an array
