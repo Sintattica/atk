@@ -22,7 +22,7 @@ class Atk
     public $g_nodeHandlers = [];
     public $g_nodeListeners = [];
 
-    /** @var $s_instance Atk */
+    /** @var $s_instance self */
     public static $s_instance = null;
 
     public function __construct($environment, $basedir)
@@ -30,11 +30,11 @@ class Atk
         global $g_startTime;
         $g_startTime = microtime(true);
 
-        if (static::$s_instance) {
+        if (self::$s_instance) {
             throw new \RuntimeException('Only one Atk app can be created');
         }
 
-        static::$s_instance = $this;
+        self::$s_instance = $this;
 
         //load .env variables only in development environment
         if (file_exists($basedir.'.env') && (!$environment || in_array(strtolower($environment), ['dev', 'develop', 'development']))) {
@@ -80,7 +80,7 @@ class Atk
         $modules = Config::getGlobal('modules');
         if (is_array($modules)) {
             foreach ($modules as $module) {
-                static::$s_instance->registerModule($module);
+                self::$s_instance->registerModule($module);
             }
         }
     }
@@ -88,15 +88,15 @@ class Atk
     /**
      * Get new Atk object.
      *
-     * @return Atk class object
+     * @return self class object
      */
     public static function getInstance()
     {
-        if (!is_object(static::$s_instance)) {
+        if (!is_object(self::$s_instance)) {
             throw new \RuntimeException('Atk instance not available');
         }
 
-        return static::$s_instance;
+        return self::$s_instance;
     }
 
     public function run()
@@ -128,10 +128,11 @@ class Atk
      *
      * @param string $nodeUri uri of the node
      * @param string $class class of the node
-     * @param $actions array with actions that can be performed on the node
-     * @param $tabs array of tabnames for which security should be handled.
+     * @param array $actions actions that can be performed on the node
+     * @param array $tabs tabnames for which security should be handled.
      *              Note that tabs that every user may see need not be
      *              registered.
+     * @param string $section
      */
     public function registerNode($nodeUri, $class, $actions = null, $tabs = [], $section = null)
     {
@@ -193,13 +194,13 @@ class Atk
      */
     public function atkGetModule($moduleName)
     {
-        if (!static::isModule($moduleName)) {
+        if (!self::isModule($moduleName)) {
             Tools::atkdebug("Constructing a new module - $moduleName");
             $modClass = $this->g_modules[$moduleName];
 
             /* @var Module $module */
             $menu = Menu::getInstance();
-            $module = new $modClass(static::$s_instance, $menu);
+            $module = new $modClass(self::$s_instance, $menu);
             $this->g_moduleRepository[$moduleName] = $module;
             $module->boot();
         }
