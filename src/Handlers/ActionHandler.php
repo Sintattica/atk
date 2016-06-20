@@ -433,13 +433,13 @@ class ActionHandler
         $ui = $this->m_node->getUi();
         $content = '<br><br>'.Tools::atktext('error_node_action_access_denied', '', $this->m_node->getType()).'<br><br><br>';
         $blocks = [
-            $ui->renderBox(array(
+            $ui->renderBox([
                 'title' => Tools::atktext('access_denied'),
                 'content' => $content,
-            ), 'dispatch'),
+            ]),
         ];
 
-        return $ui->render('action.tpl', array('blocks' => $blocks, 'title' => Tools::atktext('access_denied')));
+        return $ui->render('actionpage.tpl', ['blocks' => $blocks, 'title' => Tools::atktext('access_denied')]);
     }
 
     /**
