@@ -714,7 +714,7 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
 
         foreach ($fields as $field) {
             $i = array_search($field, array_column($query->m_expressions, 'name'));
-            if ($i) {
+            if ($i !== false) {
                 $expr = $query->m_expressions[$i]['expression'];
             } else {
                 $expr = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()) . '.' . $this->_getDb()->quoteIdentifier($field);
