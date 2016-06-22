@@ -559,7 +559,6 @@ class NumberAttribute extends Attribute
             $value = $this->formatNumber($record[$this->fieldName()], '', '', $mode);
         }
 
-        $id = $fieldprefix.$this->fieldName();
         $class = $this->getCSSClassAttribute(['form-control']);
         $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
 
