@@ -176,7 +176,6 @@ class Atk
      */
     public function atkGetNode($nodeUri, $init = true, $cache_id = 'default', $reset = false)
     {
-        $nodeUri = strtolower($nodeUri);
         if (!isset($this->g_nodeRepository[$cache_id][$nodeUri]) || !is_object($this->g_nodeRepository[$cache_id][$nodeUri]) || $reset) {
             Tools::atkdebug("Constructing a new node $nodeUri ($cache_id)");
             $this->g_nodeRepository[$cache_id][$nodeUri] = $this->newAtkNode($nodeUri, $init);
@@ -306,7 +305,7 @@ class Atk
     public function registerModule($moduleClass)
     {
         $reflection = new \ReflectionClass($moduleClass);
-        $name = strtolower($reflection->getStaticPropertyValue('module'));
+        $name = $reflection->getStaticPropertyValue('module');
         $this->g_modules[$name] = $moduleClass;
 
         return $this->atkGetModule($name);
