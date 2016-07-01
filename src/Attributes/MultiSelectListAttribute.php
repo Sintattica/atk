@@ -9,7 +9,7 @@ class MultiSelectListAttribute extends ListAttribute
 {
 
     const AF_NO_TOGGLELINKS = 536870912;
-    
+
     /**
      * Default field separator.
      *
@@ -144,16 +144,28 @@ class MultiSelectListAttribute extends ListAttribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
+        $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2();');
 
         $selectOptions = [];
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['minimum-results-for-search'] = 10;
+        $selectOptions['tags'] = true;
+        if ($this->m_width) {
+            $selectOptions['width'] = $this->m_width;
+        }
+
+        $data = '';
+        foreach ($selectOptions as $k => $v) {
+            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
 
         $onchange = '';
         if (count($this->m_onchangecode)) {
-            $onchange = $id.'_onChange(this);';
+            $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.'>';
+        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$data.'>';
 
         $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {
@@ -171,15 +183,6 @@ class MultiSelectListAttribute extends ListAttribute
 
         $result .= '</select>';
 
-        $selectOptions['tags'] = true;
-        $selectOptions['width'] = '100%';
-
-        $script = "jQuery('#$id').select2(".json_encode($selectOptions).")";
-        if ($onchange != '') {
-            $script .= '.on("change", function(){'.$onchange.'})';
-        }
-        $result .= '<script>'.$script.';</script>';
-        
         return $result;
     }
 

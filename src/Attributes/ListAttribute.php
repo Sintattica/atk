@@ -277,7 +277,6 @@ class ListAttribute extends Attribute
         $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2();');
 
         $selectOptions = [];
-
         $onchange = '';
         if (count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
