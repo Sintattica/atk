@@ -376,14 +376,19 @@ function atkGetTrace($format = "html")
                 if (is_array($val)) {
                     $valArr = array();
                     foreach ($val as $name => $value) {
-                        if (is_numeric($name))
+                        if (is_object($value)) {
+                            $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
+                        } else {
+                            $valArr[] = $name . '=' . $value;
+                        }
+                        /*if (is_numeric($name))
                             $valArr[] = $name;
                         else {
                             if (is_object($value))
                                 $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
                             else
                                 $valArr[] = $name . "=" . @json_encode($value);
-                        }
+                        }*/
                     }
                     $stringval = "array(" . implode(", ", $valArr) . ")";
                 } else if (is_null($val))
