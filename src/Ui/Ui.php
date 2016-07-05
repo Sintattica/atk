@@ -131,11 +131,10 @@ class Ui
      */
     public function render($name, $vars = [], $module = '')
     {
-        $path = Config::getGlobal('template_dir').$name;
-        $result = $this->renderSmarty($path, $vars);
+        $result = $this->renderSmarty($name, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
-            $result = "\n<!-- START [{$path}] -->\n".$result."\n<!-- END [{$path}] -->\n";
+            $result = "\n<!-- START [{$name}] -->\n".$result."\n<!-- END [{$name}] -->\n";
         }
 
         return $result;
