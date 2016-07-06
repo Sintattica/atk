@@ -14,6 +14,9 @@
  * @version $Revision: $
  * $Id$
  */
+
+include_once($GLOBALS['config_atkroot']. 'atk/errors/class.atkerrorhandlerbase.inc');
+
 set_error_handler('atkErrorHandler');
 error_reporting(E_ALL);
 

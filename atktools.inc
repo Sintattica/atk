@@ -276,8 +276,6 @@ function atkGetTimingInfo()
  */
 function atkerror($error, $skipThrow = false)
 {
-    include_once(atkConfig::getGlobal('atkroot') . 'atk/errors/class.atkerrorhandlerbase.inc');
-
     global $g_error_msg, $g_debug_msg;
 
     if ($error instanceof Exception) {
