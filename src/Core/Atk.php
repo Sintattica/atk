@@ -266,17 +266,24 @@ class Atk
      * @param string $nodeUri the uri of the node
      * @param string $action the node action
      *
-     * @return ActionHandler functionname or object (is_subclass_of ActionHandler) or
-     *                       NULL if no handler exists for the specified action
+     * @return ActionHandler full class or object instance (subclass of ActionHandler) or NULL if no handler exists for the specified action
      */
     public function atkGetNodeHandler($nodeUri, $action)
     {
         if (isset($this->g_nodeHandlers[$nodeUri][$action])) {
             $handler = $this->g_nodeHandlers[$nodeUri][$action];
+            if(!is_object($handler)){
+                $handler = new $handler();
+                $this->g_nodeHandlers[$nodeUri][$action] = $handler;
+            }
         } elseif (isset($this->g_nodeHandlers['*'][$action])) {
             $handler = $this->g_nodeHandlers['*'][$action];
+            if(!is_object($handler)){
+                $handler = new $handler();
+                $this->g_nodeHandlers['*'][$action] = $handler;
+            }
         } else {
-            $handler = null;
+            return null;
         }
 
         return $handler;

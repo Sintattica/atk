@@ -2491,40 +2491,6 @@ class Attribute
         return $this;
     }
 
-    public function addToStatsformFields(&$fields, $node, &$record, $fieldprefix = '')
-    {
-        $field = [];
-        $defaults = $record;
-        $opts = $this->getStatOptions();
-        $extended = $opts['extended'];
-        //$this->m_isStatsMode = true;
-
-        // set "widget" value:
-        $funcname = $this->m_name.'_search';
-
-        if (method_exists($node, $funcname)) {
-            $field['widget'] = $node->$funcname($defaults, $extended, $fieldprefix);
-        } else {
-            $field['widget'] = $this->stats($defaults, $extended, $fieldprefix); // second param indicates extended search.
-        }
-
-        $field['id'] = $this->getSearchFieldName($fieldprefix);
-        $field['rowid'] = 'ar_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
-
-        // pre-emptive set "full" value:
-        $field['full'] = $field['widget']; // lateron, we might add more to full
-        // set "searchmode" value:
-        $field['searchmode'] = $opts['showSearchMode'] ? $this->searchMode($extended, $fieldprefix) : '';
-
-        // set "label" value:
-        $field['label'] = $this->label();
-
-        // add $field to fields array
-        $fields[] = $field;
-
-        return $this;
-    }
-
     /**
      * Retrieve the fieldname of the attribute in an atksearch form.
      *

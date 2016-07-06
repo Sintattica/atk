@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Smarty;
 
 /**
  * Wrapper class for the Smarty template engine.
@@ -28,7 +29,7 @@ class SmartyProvider
             }
             $tplcompiledir = realpath($tplcompiledir);
 
-            $s_smarty = new \Smarty();
+            $s_smarty = new Smarty();
             $s_smarty->setTemplateDir(Config::getGlobal('template_dir')); // name of directory for templates
             $s_smarty->autoload_filters = [];    // indicates which filters will be auto-loaded
             $s_smarty->setCompileDir($tplcompiledir); // name of directory for compiled templates

@@ -1795,8 +1795,6 @@ class Node
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
             $result[] = $this->getButton('cancel');
-        } elseif ($mode == 'stats') {
-            $result[] = $this->getButton('search', true);
         }
 
         return $result;
@@ -2444,8 +2442,6 @@ class Node
                 return 'smartsearchform.tpl';
             case 'admin':
                 return 'recordlist.tpl';
-            case 'stats':
-                return 'statsform.tpl';
         }
     }
 
