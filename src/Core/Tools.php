@@ -111,7 +111,7 @@ class Tools
             E_USER_WARNING => "User Warning",
             E_USER_NOTICE => "User Notice",
             E_STRICT => "Strict Notice",
-            'EXCEPTION' => 'Uncaught exception'
+            'EXCEPTION' => 'Uncaught exception',
         );
 
         // E_RECOVERABLE_ERROR is available since 5.2.0
@@ -131,24 +131,33 @@ class Tools
         if ($errtype == E_STRICT) {
             // ignore strict notices for now, there is too much stuff that needs to be fixed
             return;
-        } else if ($errtype == E_NOTICE) {
-            // Just show notices
-            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
-            return;
-        } else if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
-            // Just show deprecation warnings in the debug log, but don't influence the program flow
-            self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
-            return;
-        } else if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
-            // This is something we should pay attention to, but we don't need to die.
-            self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
-            return;
         } else {
+            if ($errtype == E_NOTICE) {
+                // Just show notices
+                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
 
-            self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)", ($errtype == 'EXCEPTION'));
-            // we must die. we can't even output anything anymore..
-            // we can do something with the info though.
-            self::atkhalt($errstr, 'critical');
+                return;
+            } else {
+                if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
+                    // Just show deprecation warnings in the debug log, but don't influence the program flow
+                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
+
+                    return;
+                } else {
+                    if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
+                        // This is something we should pay attention to, but we don't need to die.
+                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
+
+                        return;
+                    } else {
+
+                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)", ($errtype == 'EXCEPTION'));
+                        // we must die. we can't even output anything anymore..
+                        // we can do something with the info though.
+                        self::atkhalt($errstr, 'critical');
+                    }
+                }
+            }
         }
     }
 
@@ -317,7 +326,7 @@ class Tools
 
         $default_error_handlers = [];
         $mailReport = Config::getGlobal('mailreport');
-        if($mailReport){
+        if ($mailReport) {
             $default_error_handlers['mail'] = array('mailto' => $mailReport);
         }
 
@@ -399,14 +408,10 @@ class Tools
                     if (is_array($val)) {
                         $valArr = [];
                         foreach ($val as $name => $value) {
-                            if (is_numeric($name)) {
-                                $valArr[] = $name;
+                            if (is_object($value)) {
+                                $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
                             } else {
-                                if (is_object($value)) {
-                                    $valArr[] = sprintf('%s=Object(%s)', $name, get_class($value));
-                                } else {
-                                    $valArr[] = $name.'='.@json_encode($value);
-                                }
+                                $valArr[] = $name.'='.$value;
                             }
                         }
                         $stringval = 'array('.implode(', ', $valArr).')';
@@ -1863,7 +1868,7 @@ class Tools
             if (substr($location, -1) == '?') {
                 $location = substr($location, 0, -1);
             }
-            
+
             header('Location: '.$location);
             if ($exit) {
                 exit();
