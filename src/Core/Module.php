@@ -38,10 +38,12 @@ abstract class Module
         $this->atk->registerNode(static::$module.'.'.$nodeName, $nodeClass, $actions);
     }
 
-    public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main')
+    public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main', $enable = null, $order = 0)
     {
-        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, [static::$module.'.'.$nodeName, $action], 0,
-            static::$module);
+        if($enable === null) {
+            $enable = [static::$module.'.'.$nodeName, $action];
+        }
+        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, $enable, $order, static::$module);
     }
 
     public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1)
