@@ -29,15 +29,13 @@ class ShuttleRelation extends ManyToManyRelation
      * @param string field for remoteKey
      */
 
-     public function __construct($name, $flags = 0, $link, $destination, $local_key=null, $remote_keynull)
+     public function __construct($name, $flags = 0, $link, $destination, $local_key=null, $remote_key=null)
     {
             parent::__construct($name, $flags, $link, $destination);
-            if ($local_key != null)
-            {
+            if ($local_key != null) {
               $this->setLocalKey($local_key);
             }
-            if($remote_key != null)
-            {
+            if($remote_key != null) {
               $this->setRemoteKey($remote_key);
             }
     }
