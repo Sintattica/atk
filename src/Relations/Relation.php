@@ -53,7 +53,7 @@ class Relation extends Attribute
     public function __construct($name, $flags = 0, $destination)
     {
         parent::__construct($name, $flags);
-        $this->m_destination = strtolower($destination);
+        $this->m_destination = $destination;
     }
 
     /**
