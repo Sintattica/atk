@@ -20,6 +20,28 @@ class ShuttleRelation extends ManyToManyRelation
     public $m_filterBox = false;
 
     /**
+     * Constructor.
+     *
+     * @param string $name The name of the relation.
+     * @param int $flags Flags for the relation
+     * @param string $destination The destination node (in module.name notation)
+     * @param string field for localKey
+     * @param string field for remoteKey
+     */
+
+     public function __construct($name, $flags = 0, $link, $destination, $local_key=null, $remote_key=null)
+    {
+            parent::__construct($name, $flags, $link, $destination);
+            if ($local_key != null) {
+              $this->setLocalKey($local_key);
+            }
+            if($remote_key != null) {
+              $this->setRemoteKey($remote_key);
+            }
+    }
+
+
+    /**
      * Renders the onchange code on the page.
      *
      * @param string $fieldprefix The prefix to the field
