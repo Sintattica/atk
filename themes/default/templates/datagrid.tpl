@@ -15,12 +15,10 @@
 {elseif !empty($paginator) || !empty($limit) || !empty($summary)}
     <tr>
         <td align="left" valign="middle">
-        {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
-    </td>
-    <td align="right" valign="middle">
-        {if !empty($limit)}{$limit}{/if} {if !empty($summary)}{$summary}{/if}
-    </td>
-</tr>
+            {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
+            {if !empty($limit)}{$limit}{/if} {if !empty($summary)}{$summary}{/if}
+        </td>
+    </tr>
 {/if}
 {if !empty($list)}
     <tr>
@@ -39,12 +37,10 @@
 {if !empty($paginator) || !empty($summary)}
     <tr>
         <td align="left" valign="middle">
-        {if !empty($paginator)}{$paginator}{/if}
-    </td>
-    <td align="right" valign="middle">
-    {if !empty($summary)}{$summary}{/if}
-</td>
-</tr>
+            {if !empty($paginator)}{$paginator}{/if}
+            {if !empty($summary)}{$summary}{/if}
+        </td>
+    </tr>
 {/if}
 {if !empty($bottom)}
     <tr>
