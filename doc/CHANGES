@@ -11,6 +11,7 @@
 
 WIP Changes
 -----------
++ Added Hide method in atkFieldset [luca]
 * Removed total row in export [luca]
 * AF_TOTAL on the entire recordset [michele,luca]
 * Better errors handling [luca,michele]
