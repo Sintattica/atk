@@ -79,17 +79,15 @@ class SecurityManager
     }
 
     /**
-     * returns the full classname for use with Tools::atkimport(.
-     *
-     * @param string $type
+     * @param string $type auth type (db, imap, config, ...) or full classname
      *
      * @return string full classname
      */
     public function _getclassname($type)
     {
-        // assume that when a type includes a dot, the fullclassname is used.
-        if (!stristr($type, '.')) {
-            $cls = __NAMESPACE__.'\\Auth\\'.ucfirst($type).'Auth';
+        // assume that when a type includes a backslash, the fullclassname is used.
+        if (!stristr($type, '\\')) {
+            $cls = __NAMESPACE__.'\\Auth\\'.ucfirst(strtolower($type)).'Auth';
         } else {
             $cls = $type;
         }
