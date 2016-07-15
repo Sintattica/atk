@@ -23,15 +23,22 @@ abstract class Module
         $this->menu = $menu;
     }
 
-    protected function getMenu(){
+    protected function getMenu()
+    {
         return $this->menu;
     }
 
-    protected function getAtk(){
+    protected function getAtk()
+    {
         return $this->atk;
     }
 
-    abstract public function boot();
+    abstract public function register();
+
+    public function boot()
+    {
+        //noop
+    }
 
     public function registerNode($nodeName, $nodeClass, $actions = null)
     {
@@ -40,7 +47,7 @@ abstract class Module
 
     public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main', $enable = null, $order = 0)
     {
-        if($enable === null) {
+        if ($enable === null) {
             $enable = [static::$module.'.'.$nodeName, $action];
         }
         $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, $enable, $order, static::$module);

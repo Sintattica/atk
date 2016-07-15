@@ -65,7 +65,7 @@ class Atk
         if ($locale) {
             setlocale(LC_TIME, $locale);
         }
-        
+
         $debug = 'Created a new Atk ('.self::VERSION.') instance.';
         $debug .= ' Environment: '.$environment.'.';
 
@@ -111,6 +111,11 @@ class Atk
         $securityManager = SecurityManager::getInstance();
         if ($securityManager->authenticate()) {
 
+            foreach($this->g_moduleRepository as $module) {
+                $module->boot();
+            }
+
+
             $indexPageClass = Config::getGlobal('indexPage');
 
             /** @var IndexPage $indexPage */
@@ -118,7 +123,7 @@ class Atk
             $indexPage->generate();
         }
     }
-    
+
 
     /**
      * Tells ATK that a node exists, and what actions are available to
@@ -193,17 +198,6 @@ class Atk
      */
     public function atkGetModule($moduleName)
     {
-        if (!self::isModule($moduleName)) {
-            Tools::atkdebug("Constructing a new module - $moduleName");
-            $modClass = $this->g_modules[$moduleName];
-
-            /* @var Module $module */
-            $menu = Menu::getInstance();
-            $module = new $modClass(self::$s_instance, $menu);
-            $this->g_moduleRepository[$moduleName] = $module;
-            $module->boot();
-        }
-
         return $this->g_moduleRepository[$moduleName];
     }
 
@@ -315,6 +309,15 @@ class Atk
         $name = $reflection->getStaticPropertyValue('module');
         $this->g_modules[$name] = $moduleClass;
 
-        return $this->atkGetModule($name);
+        if (!self::isModule($name)) {
+            Tools::atkdebug("Constructing a new module - $name");
+            $modClass = $this->g_modules[$name];
+
+            /* @var Module $module */
+            $menu = Menu::getInstance();
+            $module = new $modClass(self::$s_instance, $menu);
+            $this->g_moduleRepository[$name] = $module;
+            $module->register();
+        }
     }
 }
