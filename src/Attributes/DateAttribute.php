@@ -2,11 +2,11 @@
 
 namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Utils\Json;
 
@@ -343,6 +343,7 @@ class DateAttribute extends Attribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
+
         return $this->draw($record, $id, $name, $fieldprefix, '', $mode, $this->hasFlag(self::AF_OBLIGATORY));
     }
 
@@ -709,8 +710,7 @@ class DateAttribute extends Attribute
      */
     public function getValidCurrentDate($current, $minimum, $maximum, $mode)
     {
-        if ($current === null && (!$this->hasFlag(self::AF_OBLIGATORY) || in_array($mode,
-                    array('add', 'search')) || $this->hasFlag(self::AF_DATE_DEFAULT_EMPTY))
+        if ($current === null && (!$this->hasFlag(self::AF_OBLIGATORY) || $mode == 'search' || $this->hasFlag(self::AF_DATE_DEFAULT_EMPTY))
         ) {
         } elseif (!empty($current) && !empty($minimum) && $current < $minimum) {
             $current = $minimum;

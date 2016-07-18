@@ -15,8 +15,8 @@ use Sintattica\Atk\Core\Config;
  */
 class DateTimeAttribute extends Attribute
 {
-    public $m_time = '';
-    public $m_date = '';
+    public $m_time;
+    public $m_date;
     public $m_utcOffset = null;
     public $m_timezoneAttribute = null;
 

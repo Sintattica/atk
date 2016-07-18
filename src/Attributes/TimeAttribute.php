@@ -23,6 +23,7 @@ class TimeAttribute extends Attribute
     public $m_beginTime = 0;
     public $m_endTime = 23;
     public $m_steps = array('0', '30');
+    public $m_default = '';
 
     /**
      * @param string $name Name of the attribute
@@ -37,7 +38,7 @@ class TimeAttribute extends Attribute
     public function __construct($name, $flags = 0, $beginTime = 0, $endTime = 23, $steps = ['00', '15', '30', '45'])
     {
         parent::__construct($name, $flags);
-        
+
         $this->m_beginTime = $beginTime;
         $this->m_endTime = $endTime;
         if (is_array($steps)) {
@@ -164,9 +165,17 @@ class TimeAttribute extends Attribute
     public function edit($record, $fieldprefix, $mode)
     {
 
+        if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
+            ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
+        ) {
+            $this->m_default = date("H:i:s");
+        }
+
+        $default = explode(":", $this->m_default);
+
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
-        $field = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
+        $field = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
 
         $onChangeCode = '';
         if (count($this->m_onchangecode)) {
@@ -174,17 +183,18 @@ class TimeAttribute extends Attribute
             $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
 
-        // set vars for hour / minutes dropdowns
         $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
         $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
-        // set default values for both boxes
 
-        $m_defHour = $m_defMin = $m_defSec = '';
         if (is_array($field)) {
             $m_defHour = $field['hours'];
             $m_defMin = $field['minutes'];
             $m_defSec = $field['seconds'];
+        } else {
+            $m_defHour = $default[0];
+            $m_defMin = $default[1];
+            $m_defSec = $default[2];
         }
 
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
@@ -262,7 +272,7 @@ class TimeAttribute extends Attribute
         //return $m_hourBox . ":" . $m_minBox . $m_secBox;
         $timeedit = $m_hourBox.':'.$m_minBox.$m_secBox;
 
-        
+
         return '<div class="'.$this->get_class_name().' form-inline">'.$timeedit.'</div>';
     }
 
