@@ -16,7 +16,7 @@
     <tr>
         <td align="left" valign="middle">
             {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($paginator)}{$paginator}{/if}
-            {if !empty($limit)}{$limit}{/if} {if !empty($summary)}{$summary}{/if}
+            {if !empty($summary)}{$summary}{/if} {if !empty($limit)}{$limit}{/if}
         </td>
     </tr>
 {/if}

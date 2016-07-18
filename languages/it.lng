@@ -266,6 +266,7 @@ $it = array(
     "password_incorrect" => "La password inserita non è corretta!",
     "password_invalid" => "La password inserita non è in un formato valido.",
     "password_new" => "Nuova",
+    "per_page" => 'Per pagina',
     "permission_denied" => "Non hai i diritti necessari per eseguire questa operazione",
     "previous" => "Precedente",
     "recordlistsummary" => "Record [start]-[end] di [count]",
