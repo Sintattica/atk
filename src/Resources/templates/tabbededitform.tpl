@@ -1,27 +1,26 @@
-<table id="{$panename}_editform" border="0">
+<div id="{$panename}_editform" style="width:100%;">
     {if (count($errors)>0)}
-        <tr>
-            <td colspan="2" class="error">
-                {$errortitle}
-                {foreach from=$errors item=error}
-                    <br>
-                    {$error.label}: {$error.message} {if isset($error.tablink)} ({atktext id="error_tab"} {$error.tablink}){/if}
-                {/foreach}
-            </td>
-        </tr>
+        <div class="error">
+            {$errortitle}
+            {foreach from=$errors item=error}
+                <br>
+                {$error.label}: {$error.message} {if isset($error.tablink)} ({atktext id="error_tab"} {$error.tablink}){/if}
+            {/foreach}
+        </div>
     {/if}
+
     {foreach from=$fields item=field}
-        <tr{if $field.rowid != ""} id="{$field.rowid}"{/if}{if !$field.initial_on_tab} style="display: none"{/if}
-                class="{$field.class}">
-            {if isset($field.line) && $field.line!=""}
-                <td colspan="2" valign="top" nowrap>{$field.line}</td>
-            {else}
-                {if $field.label!=="AF_NO_LABEL"}
-                    <td valign="top"
-                        class="{if isset($field.error)}errorlabel{else}fieldlabel{/if}">{if $field.label!=""}{$field.label}:  {if isset($field.obligatory)}{$field.obligatory}{/if}{/if}</td>{/if}
-                <td valign="top" id="{$field.id}" {if $field.label==="AF_NO_LABEL"}colspan="2"{/if}
-                    class="field">{$field.full}</td>
+        <div {if $field.rowid != ""} id="{$field.rowid}"{/if}{if !$field.initial_on_tab} style="display: none"{/if} class="row {$field.class}">
+            {if $field.label!=="AF_NO_LABEL"}
+                <label for="{$field.htmlid}" class="col-sm-3 col-md-2 control-label{if isset($field.error)} errorlabel{/if}">
+                    {if $field.label!=""}
+                        {$field.label} {if isset($field.obligatory)}{$field.obligatory}{/if}
+                    {/if}
+                </label>
             {/if}
-        </tr>
+            <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-9 col-md-10{else}col-md-12{/if}" id="{$field.id}">
+                {if $field.readonly}<span class="form-control-static">{$field.full}</span>{else}{$field.full}{/if}
+            </div>
+        </div>
     {/foreach}
-</table>
+</div>

@@ -166,6 +166,7 @@ class TabbedPane extends Attribute
                     );
                     $entry['id'] = $p_attrib->getHtmlId($fieldprefix);
 
+
                     /* label? */
                     $entry['label'] = $p_attrib->getLabel($defaults, $mode);
                     /* error? */
@@ -245,13 +246,14 @@ class TabbedPane extends Attribute
 
                 /* obligatory indicator */
                 if ($field['obligatory']) {
-                    $tplfield['label'];
                     $tplfield['obligatory'] = $reqimg;
                 }
 
                 /* html source */
                 $tplfield['widget'] = $field['html'];
                 $editsrc = $field['html'];
+
+                $tplfield['htmlid'] = $field['id'];
 
                 if (is_object($node->m_attribList[$field['name']])) {
                     $module = $node->m_attribList[$field['name']]->getModule();
