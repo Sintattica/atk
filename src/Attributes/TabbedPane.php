@@ -230,7 +230,7 @@ class TabbedPane extends Attribute
                 }
 
                 /* does the field have a label? */
-                if ((isset($field['label']) && $field['label'] !== '') && !$this->isAttributeSingleOnTab($field['name']) || !isset($field['label'])) {
+                if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') && !$this->isAttributeSingleOnTab($field['name']) || !isset($field['label'])) {
                     if ($field['label'] == '') {
                         $tplfield['label'] = '';
                     } else {
@@ -240,7 +240,7 @@ class TabbedPane extends Attribute
                         }
                     }
                 } else {
-                    $tplfield['label'] = '';
+                    $tplfield['label'] = 'AF_NO_LABEL';
                 }
 
                 /* obligatory indicator */

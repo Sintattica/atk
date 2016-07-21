@@ -387,7 +387,7 @@ class EditHandler extends ViewEditBase
             }
 
             /* does the field have a label? */
-            if ((isset($field['label']) && $field['label'] !== '') || !isset($field['label'])) {
+            if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') || !isset($field['label'])) {
                 if (!isset($field['label']) || empty($field['label'])) {
                     $tplfield['label'] = '';
                 } else {
@@ -397,7 +397,7 @@ class EditHandler extends ViewEditBase
                     }
                 }
             } else {
-                $tplfield['label'] = '';
+                $tplfield['label'] = 'AF_NO_LABEL';
             }
 
             /* obligatory indicator */

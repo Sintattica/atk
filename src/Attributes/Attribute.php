@@ -2231,7 +2231,7 @@ class Attribute
     public function getLabel($record = [], $mode = '')
     {
         if ($this->hasFlag(self::AF_NOLABEL)) {
-            return '';
+            return 'AF_NO_LABEL';
         } else {
             if ($this->hasFlag(self::AF_BLANKLABEL)) {
                 return;

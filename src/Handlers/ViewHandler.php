@@ -222,14 +222,14 @@ class ViewHandler extends ViewEditBase
                 }
 
                 /* does the field have a label? */
-                if ((isset($field['label']) && $field['label'] !== 'Attribute::AF_NO_LABEL') || !isset($field['label'])) {
+                if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') || !isset($field['label'])) {
                     if ($field['label'] == '') {
                         $tplfield['label'] = '';
                     } else {
                         $tplfield['label'] = $field['label'];
                     }
                 } else {
-                    $tplfield['label'] = 'Attribute::AF_NO_LABEL';
+                    $tplfield['label'] = 'AF_NO_LABEL';
                 }
 
                 // Make the attribute and node names available in the template.
