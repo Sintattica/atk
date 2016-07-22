@@ -2,9 +2,8 @@
 
 namespace Sintattica\Atk\Core;
 
-use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Utils\DirectoryTraverser;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Class that handles user interface internationalization.
@@ -245,12 +244,9 @@ class Language
     {
         global $ATK_VARS;
 
-        if (isset($ATK_VARS['atklng']) && (in_array($ATK_VARS['atklng'], self::getSupportedLanguages()) || in_array($ATK_VARS['atklng'],
-                    Config::getGlobal('supported_languages')))
-        ) {
+        if (isset($ATK_VARS['atklng']) && in_array($ATK_VARS['atklng'], self::getSupportedLanguages())) {
             $lng = $ATK_VARS['atklng'];
-        } // we first check for an atklng variable
-        else {
+        } else {
             $lng = self::getUserLanguage();
         }
 
@@ -286,12 +282,10 @@ class Language
         $supported = self::getSupportedLanguages();
         $sessionmanager = SessionManager::getInstance();
         if (!empty($sessionmanager)) {
-            if (function_exists('getUser')) {
-                $userinfo = SecurityManager::atkGetUser();
-                $fieldname = Config::getGlobal('auth_languagefield');
-                if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname], $supported)) {
-                    return $userinfo[$fieldname];
-                }
+            $userinfo = SecurityManager::atkGetUser();
+            $fieldname = Config::getGlobal('auth_languagefield');
+            if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname], $supported)) {
+                return $userinfo[$fieldname];
             }
         }
 
@@ -341,23 +335,15 @@ class Language
     /**
      * Get the languages supported by the application.
      *
-     * @static
-     *
      * @return array An array with the languages supported by the application.
      */
     public static function getSupportedLanguages()
     {
-        $supportedlanguagesmodule = Config::getGlobal('supported_languages_module');
-        if (self::$s_supportedLanguages == null && $supportedlanguagesmodule) {
-            $supportedlanguagesdir = self::getInstance()->getLanguageDirForModule($supportedlanguagesmodule);
-            $supportedlanguagescollector = new GetSupportedLanguagesCollector();
-            $traverser = new DirectoryTraverser();
-            $traverser->addCallbackObject($supportedlanguagescollector);
-            $traverser->traverse($supportedlanguagesdir);
-            self::$s_supportedLanguages = $supportedlanguagescollector->getLanguages();
+        if (self::$s_supportedLanguages === null) {
+            self::$s_supportedLanguages = Config::getGlobal('supported_languages');
         }
 
-        return (array)self::$s_supportedLanguages;
+        return self::$s_supportedLanguages;
     }
 
     /**
@@ -588,29 +574,5 @@ class Language
             $this->m_customStrings[$lng] = [];
         }
         $this->m_customStrings[$lng][$code] = $text;
-    }
-}
-
-/**
- * A collector for supported languages.
- *
- * @author Boy Baukema <boy@ibuildings.nl>
- */
-class GetSupportedLanguagesCollector
-{
-    public $m_languages = [];
-
-    public function visitFile($fullpath)
-    {
-        if (substr($fullpath, strlen($fullpath) - 8) === '.php') {
-            $exploded = explode('/', $fullpath);
-            $lng = array_pop($exploded);
-            $this->m_languages[] = substr($lng, 0, 2);
-        }
-    }
-
-    public function getLanguages()
-    {
-        return $this->m_languages;
     }
 }
