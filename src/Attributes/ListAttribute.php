@@ -279,9 +279,9 @@ class ListAttribute extends Attribute
         if($this->m_width){
             $selectOptions['width'] = $this->m_width;
         }else {
-            $w = '2';
+            $w = '4';
             if(!$this->hasFlag(self::AF_OBLIGATORY)){
-                $w = '14';
+                $w = '16';
             }
             $loadscript = 'jQuery("#'.$id.'").width(jQuery("#'.$id.'").width()+'.$w.').select2();';
             $selectOptions['width'] = 'element';
