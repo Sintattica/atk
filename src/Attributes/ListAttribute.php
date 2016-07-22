@@ -274,9 +274,17 @@ class ListAttribute extends Attribute
 
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
-        $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2();');
-
         $selectOptions = [];
+        $loadscript = 'jQuery("#'.$id.'").select2();';
+        if($this->m_width){
+            $selectOptions['width'] = $this->m_width;
+        }else {
+            $loadscript = 'jQuery("#'.$id.'").width(jQuery("#'.$id.'").width()+2).select2();';
+            $selectOptions['width'] = 'element';
+        }
+
+        $this->getOwnerInstance()->getPage()->register_loadscript($loadscript);
+
         $onchange = '';
         if (count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
@@ -294,9 +302,7 @@ class ListAttribute extends Attribute
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
 
-        if($this->m_width){
-            $selectOptions['width'] = $this->m_width;
-        }
+
 
         $data = '';
         foreach ($selectOptions as $k => $v) {
