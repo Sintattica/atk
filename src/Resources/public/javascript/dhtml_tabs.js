@@ -83,6 +83,7 @@ function showTab(tab) {
 
         if (visible) {
             Element.show(tr);
+            jQuery(tr).find('select.select2-hidden-accessible').select2();
         }
         else {
             Element.hide(tr);

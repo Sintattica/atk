@@ -9506,6 +9506,9 @@ hr {
   margin-left: 0;
   margin-right: 5px; }
 
+.select2-selection__rendered {
+  margin-right: -2px; }
+
 .tabsContent {
   margin-top: 10px; }
 
