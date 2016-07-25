@@ -327,7 +327,7 @@ class Tools
         $default_error_handlers = [];
         $mailReport = Config::getGlobal('mailreport');
         if ($mailReport) {
-            $default_error_handlers['mail'] = array('mailto' => $mailReport);
+            $default_error_handlers['Mail'] = array('mailto' => $mailReport);
         }
 
         $errorHandlers = Config::getGlobal('error_handlers', $default_error_handlers);
