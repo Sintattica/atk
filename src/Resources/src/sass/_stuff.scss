@@ -174,24 +174,9 @@ td.fieldlabel {
   font-weight: bold;
 }
 
-select.ManyToOneRelation, select.MultiSelectAttribute {
-  //hack to avoid flashing standard select while select2 is not initialized (especially on ajax datagrid search form)
-  display: none;
-}
-
 hr {
   margin-top:    5px;
   margin-bottom: 5px;
   border: 0;
   border-top: 1px solid $hr-border;
-}
-
-.select2-container--bootstrap .select2-selection__clear {
-  float: none;
-  margin-left: 0;
-  margin-right: 5px;
-}
-
-.select2-selection__rendered {
-  margin-right: -2px;
 }

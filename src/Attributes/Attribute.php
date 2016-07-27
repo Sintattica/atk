@@ -556,6 +556,12 @@ class Attribute
      */
     private $m_editCallback = null;
 
+
+    /*
+     * The width of the widget (eg: 200px)
+     */
+    public $m_width;
+
     /**
      * Constructor.
      *
@@ -2091,6 +2097,26 @@ class Attribute
         }
 
         return $this;
+    }
+
+    /**
+     * Set the css width
+     *
+     * @param string $width The width
+     */
+    public function setWidth($width)
+    {
+        $this->m_width = $width;
+    }
+
+    /**
+     * Gets the css width
+     *
+     * @return string The width
+     */
+    public function getWidth()
+    {
+        return $this->m_width;
     }
 
     /**

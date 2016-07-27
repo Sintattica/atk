@@ -18,6 +18,7 @@ ATK.TabbedPane = {
 
             if (attr.hasClassName(tabName)) {
                 attr.show();
+                ATK.enableSelect2(jQuery(attr));
             } else {
                 attr.hide();
             }

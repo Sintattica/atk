@@ -519,7 +519,7 @@ class Page
 
             if (!$partial) {
                 $res .= "}\n";
-                $res .= "document.observe('dom:loaded', globalLoad);\n";
+                $res .= "jQuery(function ($) {globalLoad();});\n";
             }
         }
 

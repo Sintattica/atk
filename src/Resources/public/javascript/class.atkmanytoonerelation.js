@@ -12,7 +12,6 @@ if (!window.ATK) {
 
 ATK.ManyToOneRelation = {
     autocomplete: {
-        width: '100%',
         ajax: {
             cache: true,
             delay: 300,

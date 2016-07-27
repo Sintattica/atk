@@ -58,26 +58,6 @@ class ManyToManyListRelation extends ManyToManyRelation
     }
 
     /**
-     * Get width (in pixels).
-     *
-     * @return int width in pixels
-     */
-    public function getWidth()
-    {
-        return $this->m_width;
-    }
-
-    /**
-     * Set (pixel) width.
-     *
-     * @param int $width width in pixels
-     */
-    public function setWidth($width)
-    {
-        $this->m_width = $width;
-    }
-
-    /**
      * Return a piece of html code to edit the attribute.
      *
      * @param array $record The record that holds the value for this attribute.
@@ -103,7 +83,7 @@ class ManyToManyListRelation extends ManyToManyRelation
         $name = $this->getHtmlName($fieldprefix);
 
         $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows()) : $this->getRows();
-        $result = '<select class="form-control" id="'.$id.'" name="'.$name.'[]['.$this->getRemoteKey().']" multiple="multiple" size="'.$size.'" style="width: '.$this->getWidth().'px">';
+        $result = '<select class="form-control" id="'.$id.'" name="'.$name.'[]['.$this->getRemoteKey().']" multiple="multiple" size="'.$size.'" style="width: '.$this->getWidth().'">';
 
         foreach ($selectable as $row) {
             $key = $this->m_destInstance->primaryKey($row);

@@ -392,6 +392,7 @@ class DateAttribute extends Attribute
             }
 
             $result .= '</select>';
+
             $this->m_yeardropdown = true;
         } /* normal input box */ else {
             $result .= '<input type="text" id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current['year']) ? $current['year'] : '').'">';
@@ -886,9 +887,9 @@ class DateAttribute extends Attribute
         $name = $this->getSearchFieldName($fieldprefix);
 
         $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from']) : $record;
-        $res = $this->draw($rec, $id, $name, 'atksearch_AE_'.$fieldprefix, '_AE_from', 'search');
+        $res = $this->draw($rec, $id.'_from', $name, 'atksearch_AE_'.$fieldprefix, '_AE_from', 'search');
         $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to']) : $record;
-        $res .= '&nbsp;'.Tools::atktext('until').': '.$this->draw($rec, $id, $name, 'atksearch_AE_'.$fieldprefix, '_AE_to', 'search');
+        $res .= '&nbsp;'.Tools::atktext('until').': '.$this->draw($rec, $id.'_to', $name, 'atksearch_AE_'.$fieldprefix, '_AE_to', 'search');
 
         return $res;
     }

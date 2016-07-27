@@ -2,11 +2,11 @@
 
 namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * The ListAttribute class represents an attribute of a node
@@ -64,13 +64,8 @@ class ListAttribute extends Attribute
     /*
      * Value that is used when list is empty, normally empty
      */
-    public $m_emptyvalue;
+    public $m_emptyvalue = '';
 
-    /*
-     * The width of the dropdown list in pixels
-     * @var int
-     */
-    public $m_width;
     public $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
     /**
@@ -80,7 +75,7 @@ class ListAttribute extends Attribute
      * @var bool
      */
     protected $m_autoSearch = false;
-    
+
     protected $m_multipleSearch = [
         'normal' => false,
         'extended' => true,
@@ -274,34 +269,29 @@ class ListAttribute extends Attribute
 
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
+        $hasNullOption = $this->hasNullOption();
+
         $selectOptions = [];
-        $loadscript = 'jQuery("#'.$id.'").select2();';
-        if($this->m_width){
-            $selectOptions['width'] = $this->m_width;
-        }else {
-            $selectOptions['width'] = 'resolve';
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['minimum-results-for-search'] = 10;
+
+        $nullLabel = '';
+        if ($hasNullOption) {
+            $nullLabel = $this->getNullLabel();
+            $selectOptions['with-empty-value'] = $this->getEmptyValue();
         }
 
-        $this->getOwnerInstance()->getPage()->register_loadscript($loadscript);
+        if (!empty($this->getWidth())) {
+            $selectOptions['width'] = $this->getWidth();
+        } else {
+            $selectOptions['width'] = 'resolve';
+        }
 
         $onchange = '';
         if (count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
             $this->_renderChangeHandler($fieldprefix);
         }
-
-        $hasNullOption = $this->hasNullOption();
-        $nullLabel = '';
-        if ($hasNullOption) {
-            $nullLabel = $this->getNullLabel();
-            $selectOptions['allow-clear'] = true;
-            $selectOptions['placeholder'] = $nullLabel;
-        }
-
-        $selectOptions['dropdown-auto-width'] = true;
-        $selectOptions['minimum-results-for-search'] = 10;
-
-
 
         $data = '';
         foreach ($selectOptions as $k => $v) {
@@ -311,7 +301,7 @@ class ListAttribute extends Attribute
         $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.'>';
 
         if ($hasNullOption) {
-            $result .= '<option value="'.$this->m_emptyvalue.'">'.$nullLabel.'</option>';
+            $result .= '<option value="'.$this->getEmptyValue().'">'.$nullLabel.'</option>';
         }
 
         $values = $this->getValues();
@@ -324,15 +314,16 @@ class ListAttribute extends Attribute
                 $sel = 'selected';
             }
 
-            $result .=  '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
+            $result .= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
         }
 
         $result .= '</select>';
+        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
 
-    
+
     public function getNullLabel()
     {
         if ($this->hasNullOption()) {
@@ -388,12 +379,19 @@ class ListAttribute extends Attribute
         $name = $this->getSearchFieldName($fieldprefix);
 
         $isMultiple = $this->isMultipleSearch($extended);
-
         $class = $this->getCSSClassAttribute(['form-control']);
-        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]">';
+        $selectOptions = [];
 
+        //width always auto
+        $selectOptions['width'] = 'auto';
 
-        $selValues = isset($record[$this->fieldName()])?$record[$this->fieldName()]:null;
+        $data = '';
+        foreach ($selectOptions as $k => $v) {
+            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]"'.$data.'>';
+
+        $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         if (!is_array($selValues)) {
             $selValues = [$selValues];
         }
@@ -422,11 +420,7 @@ class ListAttribute extends Attribute
         }
 
         $result .= '</select>';
-
-        $selectOptions = [];
-        $selectOptions['width'] = '100%';
-
-        $this->getOwnerInstance()->getPage()->register_loadscript("jQuery('#$id').select2(".json_encode($selectOptions).");");
+        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
 
         // if we use autosearch, register an onchange event that submits the grid
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
@@ -589,26 +583,6 @@ class ListAttribute extends Attribute
         }
 
         return $values[0];
-    }
-
-    /**
-     * Set the css width of the dropdown list
-     *
-     * @param string $width The width of the dropdown list in pixels
-     */
-    public function setWidth($width)
-    {
-        $this->m_width = $width;
-    }
-
-    /**
-     * Gets the css width of the dropdown list in pixels.
-     *
-     * @return string The width of the dropdown list in pixels
-     */
-    public function getWidth()
-    {
-        return $this->m_width;
     }
 
     /**

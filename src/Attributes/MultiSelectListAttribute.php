@@ -144,14 +144,15 @@ class MultiSelectListAttribute extends ListAttribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
-        $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").select2();');
 
         $selectOptions = [];
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['tags'] = true;
-        if ($this->m_width) {
-            $selectOptions['width'] = $this->m_width;
+        if (!empty($this->getWidth())) {
+            $selectOptions['width'] = $this->getWidth();
+        } else {
+            $selectOptions['width'] = 'auto';
         }
 
         $data = '';
@@ -182,6 +183,7 @@ class MultiSelectListAttribute extends ListAttribute
         }
 
         $result .= '</select>';
+        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
