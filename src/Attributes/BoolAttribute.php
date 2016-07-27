@@ -157,7 +157,7 @@ class BoolAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
 
-        $result = '<select id="'.$id.'" name="'.$name.'" class="form-control">';
+        $result = '<select id="'.$id.'" name="'.$name.'" class="form-control select-standard">';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         $result .= '<option value="0" ';
         if (!empty($record[$this->fieldName()]) && $record[$this->fieldName()] === '0') {

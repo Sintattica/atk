@@ -262,7 +262,7 @@ class DataGridList extends DataGridComponent
 
             /* multi-record-priority-actions -> priority selection */
             if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-                $select = '<select name="'.$listName.'_atkselector[]">'.'<option value="'.htmlentities($list['rows'][$i]['selector']).'"></option>';
+                $select = '<select name="'.$listName.'_atkselector[]" class="form-control select-standard">'.'<option value="'.htmlentities($list['rows'][$i]['selector']).'"></option>';
                 for ($j = $grid->getNode()->m_priority_min; $j <= $grid->getNode()->m_priority_max; ++$j) {
                     $select .= '<option value="'.$j.'">'.$j.'</option>';
                 }
@@ -412,7 +412,7 @@ class DataGridList extends DataGridComponent
 
             /* multiple actions -> dropdown */
             if (count($grid->getNode()->m_priority_actions) > 1) {
-                $mra = '<select name="'.$listName.'_atkaction">'.'<option value="">'.Tools::atktext('with_selected').':</option>';
+                $mra = '<select name="'.$listName.'_atkaction" class="form-control select-standard">'.'<option value="">'.Tools::atktext('with_selected').':</option>';
 
                 foreach ($grid->getNode()->m_priority_actions as $name) {
                     $mra .= '<option value="'.$name.'">'.Tools::atktext($name).'</option>';
@@ -440,7 +440,7 @@ class DataGridList extends DataGridComponent
             /* multiple actions -> dropdown */
             if (count($list['mra']) > 1) {
                 $default = $this->getGrid()->getMRADefaultAction();
-                $mra .= '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\', this.form)">'.'<option value="">'.Tools::atktext('with_selected').'</option>';
+                $mra .= '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\', this.form)" class="form-control select-standard">'.'<option value="">'.Tools::atktext('with_selected').'</option>';
 
                 foreach ($list['mra'] as $name) {
                     if ($grid->getNode()->allowed($name)) {

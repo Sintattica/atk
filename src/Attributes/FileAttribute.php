@@ -249,7 +249,7 @@ class FileAttribute extends Attribute
             if (count($file_arr) > 0) {
                 natcasesort($file_arr);
 
-                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.' class="form-control">';
+                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.' class="form-control select-standard">';
                 // Add default option with value NULL
                 $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
                 while (list($key, $val) = each($file_arr)) {

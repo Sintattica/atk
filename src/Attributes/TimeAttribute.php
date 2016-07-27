@@ -183,9 +183,9 @@ class TimeAttribute extends Attribute
             $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
 
-        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
-        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
-        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control\"{$onChangeCode}>\n";
+        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>\n";
+        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>\n";
+        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>\n";
 
         if (is_array($field)) {
             $m_defHour = $field['hours'];

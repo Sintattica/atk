@@ -1551,7 +1551,7 @@ class Attribute
         }
 
         if ($extended && count($searchModes) > 1) {
-            $field = '<select class="form-control" name="'.$this->getSearchModeFieldname($fieldprefix).'">';
+            $field = '<select class="form-control select-standard" name="'.$this->getSearchModeFieldname($fieldprefix).'">';
 
             foreach ($searchModes as $value) {
                 $selected = $searchMode == $value ? ' selected="selected"' : '';
@@ -2618,7 +2618,7 @@ class Attribute
             }
         }
 
-        $res .= '<select class="form-control" name="atkcolcmd[][setorder]['.$fieldprefix.$fieldname.']">';
+        $res .= '<select class="form-control select-standard" name="atkcolcmd[][setorder]['.$fieldprefix.$fieldname.']">';
         $res .= '<option value="">';
         for ($i = 1; $i < 6; ++$i) {
             $selected = ($currentOrder == $i ? 'selected' : '');

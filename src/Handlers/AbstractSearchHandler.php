@@ -181,7 +181,7 @@ abstract class AbstractSearchHandler extends ActionHandler
         }
 
         $result = '
-      <select name="load_criteria" onchange="this.form.submit();" class="form-control">
+      <select name="load_criteria" onchange="this.form.submit();" class="form-control select-standard">
         <option value=""></option>';
 
         foreach ($criteria as $name) {

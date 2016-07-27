@@ -9532,7 +9532,7 @@ hr {
   .min-width_500 {
     min-width: 500px; } }
 
-select:not(.MultiSelectAttribute), select:not(.MultiSelectAttribute), select:not(.ListAttribute) {
+select.select-standard {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

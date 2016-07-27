@@ -365,7 +365,7 @@ class DateAttribute extends Attribute
         $emptyfield = null;
         /* date must be within specified (default: 25) years */
         if (!empty($current['y_max']) && !empty($current['y_min']) && $current['y_max'] - $current['y_min'] <= $this->m_maxyears) {
-            $result .= '<select id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
+            $result .= '<select id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
             if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
                 $result .= '<option value="0"'.($current === null ? ' selected' : '').'></option>';
             }
@@ -415,7 +415,7 @@ class DateAttribute extends Attribute
      */
     protected function renderMonth($fieldid, $fieldname, $str_script, $current, $format, $obligatory)
     {
-        $result = '<select id="'.$fieldid.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
+        $result = '<select id="'.$fieldid.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
@@ -456,7 +456,7 @@ class DateAttribute extends Attribute
         $c_dmax = isset($current['d_max']) ? $current['d_max'] : null;
         $c_mday = isset($current['mday']) ? $current['mday'] : null;
 
-        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute form-control" onChange="'.$str_script.'">';
+        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
@@ -617,7 +617,7 @@ class DateAttribute extends Attribute
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
             }
 
-            $result = '<select id="'.$id.'" name="'.$fieldname.'" onChange="'.$str_script.'" class="form-control">';
+            $result = '<select id="'.$id.'" name="'.$fieldname.'" onChange="'.$str_script.'" class="form-control select-standard">';
             for ($i = $str_min; $i <= $str_max; ++$i) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="'.$i.'"'.($current !== null && $tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date,

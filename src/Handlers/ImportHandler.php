@@ -930,9 +930,9 @@ class ImportHandler extends ActionHandler
     public function getAttributeSelector($index = 0, $value = '', $othername = '', $emptycol = 2)
     {
         if (!$othername) {
-            $res = '<select name="col_map['.$index.']">';
+            $res = '<select name="col_map['.$index.']" class="form-control select-standard">';
         } else {
-            $res = '<select name="'.$othername.'" onchange="entryform.submit()">';
+            $res = '<select name="'.$othername.'" onchange="entryform.submit()" class="form-control select-standard">';
         }
 
         $j = 0;

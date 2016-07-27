@@ -274,7 +274,7 @@ class SmartSearchHandler extends AbstractSearchHandler
             return $label.'<input type="hidden" name="'.$entry['name'].'" value="'.$attr->fieldName().'">';
         }
 
-        $result = '<select id="'.$entry['name'].'" name="'.$entry['name'].'">'.'<option value=""></option>';
+        $result = '<select id="'.$entry['name'].'" name="'.$entry['name'].'" class="form-control select-standard">'.'<option value=""></option>';
 
         if ($entry['includeSelf']) {
             $result .= '<option value="."'.($entry['selectSelf'] ? ' selected="selected"' : '').'>'.$this->m_node->text('self').'</option>'.'<option value=""></option>';

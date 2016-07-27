@@ -96,7 +96,7 @@ class DurationAttribute extends Attribute
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
                 $curminutes = $this->_getMinutePart($fieldvalue);
-                $result .= '<select id="'.$id.'_hours" name="'.$this->getHtmlName($fieldprefix).'[hours]" class="form-control">';
+                $result .= '<select id="'.$id.'_hours" name="'.$this->getHtmlName($fieldprefix).'[hours]" class="form-control select-standard">';
                 for ($h = 0; $h <= $this->m_maxtime_min / 60;) {
                     $result .= '<option value="'.$h.'" ';
                     if ($curhours == $h) {
@@ -112,7 +112,7 @@ class DurationAttribute extends Attribute
                 $result .= '</select>';
             }
             if ($this->m_maxtime_min >= 1 && $this->m_resolution_min < 60) {
-                $result .= '&nbsp;<select id="'.$id.'_minutes" name="'.$this->getHtmlName($fieldprefix).'[minutes]" class="form-control">';
+                $result .= '&nbsp;<select id="'.$id.'_minutes" name="'.$this->getHtmlName($fieldprefix).'[minutes]" class="form-control select-standard">';
                 for ($m = 0; $m < 60 || ($this->m_maxtime_min < 60 && $m < $this->m_maxtime_min);) {
                     $result .= '<option value="'.$m.'" ';
                     if ($curminutes == $m) {
