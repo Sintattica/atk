@@ -639,11 +639,11 @@ class atkFileAttribute extends atkAttribute
     }
 
     /**
-     * Deletes file from HD
+     * Deletes file from HD (after the query execution)
      * @param array $record Array with fields
      * @return boolean False if the delete went wrong
      */
-    function delete($record)
+    function postDelete($record)
     {
         if ($this->hasFlag(AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldname()]["orgfilename"] != "")) {
             if (file_exists($this->m_dir . $record[$this->fieldName()]["orgfilename"]) && !@unlink($this->m_dir . $record[$this->fieldName()]["orgfilename"])) {
