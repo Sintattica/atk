@@ -163,8 +163,8 @@ class DeleteHandler extends ActionHandler
                 $db = $this->m_node->getDb();
                 $db->rollback();
                 $location = $this->m_node->feedbackUrl('delete', self::ACTION_FAILED, null,
-                    sprintf(Tools::atktext('attrib_delete_not_allowed'), Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type),
-                        $attrib->fieldName()));
+                    sprintf(Tools::atktext('attrib_delete_not_allowed'), Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type))
+                );
                 $this->m_node->redirect($location);
 
                 return false;

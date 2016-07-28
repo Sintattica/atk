@@ -21,7 +21,7 @@ return [
     'apr' => 'Apr',
     'april' => 'April',
     'attributeedit' => 'Update value',
-    'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted. (%s)'",
+    'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted.",
     'aug' => 'Aug',
     'august' => 'August',
     'auth_account_locked' => 'This account has been locked. Try a different account, or contact your system administrator.',

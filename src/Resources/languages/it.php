@@ -21,7 +21,7 @@ return [
     'apr' => 'Apr',
     'april' => 'Aprile',
     'attributeedit' => 'Aggiorna valore',
-    'attrib_delete_not_allowed' => "Il campo '%s' non permette l'eliminazione del record. (%s)'",
+    'attrib_delete_not_allowed' => "Il campo '%s' non permette l'eliminazione del record.",
     'aug' => 'Ago',
     'august' => 'Agosto',
     'auth_account_locked' => "Questo account è stato bloccato. Usa un account diverso, oppure contatta l'amministratore.",

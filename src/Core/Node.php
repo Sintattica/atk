@@ -3805,6 +3805,7 @@ class Node
             }
         }
 
+        // delete on "cascading" attributes (like relations, file attribute) BEFORE the query execution
         if (count($this->m_cascadingAttribs) > 0) {
             for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
                 for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; ++$j) {
@@ -3823,6 +3824,22 @@ class Node
         $query->addTable($this->m_table);
         $query->addCondition($selector);
         if ($query->executeDelete()) {
+
+            // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
+            if (count($this->m_cascadingAttribs) > 0) {
+                for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
+                    for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; ++$j) {
+                        $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
+                        if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
+                            if (!$p_attrib->postDelete($recordset[$i])) {
+                                // error
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
             if ($exectrigger) {
                 for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
                     $return = ($this->executeTrigger('postDel', $recordset[$i]) && $this->executeTrigger('postDelete', $recordset[$i]));

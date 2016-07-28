@@ -670,7 +670,7 @@ class FileAttribute extends Attribute
      *
      * @return bool False if the delete went wrong
      */
-    public function delete($record)
+    public function postDelete($record)
     {
         if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldName()]['orgfilename'] != '')) {
             if (file_exists($this->m_dir.$record[$this->fieldName()]['orgfilename']) && !@unlink($this->m_dir.$record[$this->fieldName()]['orgfilename'])) {

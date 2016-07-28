@@ -1802,7 +1802,7 @@ class Attribute
 
     /**
      * The delete method is called by the framework to inform the attribute
-     * that a record is deleted.
+     * that a record is deleted (BEFORE the query execution).
      *
      * The regular Attribute has no implementation for this method, but
      * derived attributes may override this, to take care of cleanups, cascade
@@ -1815,6 +1815,24 @@ class Attribute
     public function delete($record)
     {
         // delete is only of interest for special attributes like relations, or file attributes.
+        return true;
+    }
+
+    /**
+     * The postDelete method is called by the framework to inform the attribute
+     * that a record is deleted (AFTER the query execution).
+     *
+     * The regular Attribute has no implementation for this method, but
+     * derived attributes may override this, to take care of cleanups, cascade
+     * deletes etc.
+     * Note, that the framework only calls this method if the attribute has
+     * the self::AF_CASCADE_DELETE flag.
+     *
+     * @return bool true if cleanup was successful, false otherwise.
+     */
+    public function postDelete($record)
+    {
+        // postDelete is only of interest for special attributes like relations, or file attributes.
         return true;
     }
 
