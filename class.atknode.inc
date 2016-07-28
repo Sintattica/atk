@@ -3814,7 +3814,7 @@ class atkNode
             }
         }
 
-        // delete on "cascading" attibutes (like relations, file attribute) BEFORE the query execution
+        // delete on "cascading" attributes (like relations, file attribute) BEFORE the query execution
         if (count($this->m_cascadingAttribs) > 0) {
             for ($i = 0, $_i = count($recordset); $i < $_i; $i ++) {
                 for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j ++) {
@@ -3834,7 +3834,7 @@ class atkNode
         $query->addCondition($selector);
         if ($query->executeDelete()) {
 
-            // postDelete on "cascading" attibutes (like relations, file attribute) AFTER the query execution
+            // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
             if (count($this->m_cascadingAttribs) > 0) {
                 for ($i = 0, $_i = count($recordset); $i < $_i; $i ++) {
                     for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j ++) {

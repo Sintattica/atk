@@ -1874,7 +1874,7 @@ class atkAttribute
     }
 
     /**
-     * The delete method is called by the framework to inform the attribute
+     * The postDelete method is called by the framework to inform the attribute
      * that a record is deleted (AFTER the query execution).
      *
      * The regular atkAttribute has no implementation for this method, but
