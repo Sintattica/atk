@@ -205,7 +205,7 @@ return [
     'language_it' => 'Italiano',
     'language_nl' => 'Olandese',
     'language_pl' => 'Polacco',
-    'language_sp' => 'Spagnolo',
+    'language_es' => 'Spagnolo',
     'link_add' => 'Aggiungi',
     'list_null_value' => 'Nessuno',
     'list_null_value_obligatory' => '(Seleziona...)',
