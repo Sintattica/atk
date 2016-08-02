@@ -146,6 +146,7 @@ class MultiSelectListAttribute extends ListAttribute
         $name = $this->getHtmlName($fieldprefix);
 
         $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['tags'] = true;

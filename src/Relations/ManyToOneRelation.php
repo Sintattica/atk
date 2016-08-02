@@ -905,6 +905,7 @@ class ManyToOneRelation extends Relation
                 }
 
                 $selectOptions = [];
+                $selectOptions['enable-select2'] = true;
                 $selectOptions['minimum-results-for-search'] = 10;
                 $selectOptions['dropdown-auto-width'] = true;
                 if ($hasNullOption) {
@@ -1140,6 +1141,7 @@ class ManyToOneRelation extends Relation
             }
 
             $selectOptions = [];
+            $selectOptions['enable-select2'] = true;
             $selectOptions['allow-clear'] = true;
             $selectOptions['dropdown-auto-width'] = true;
             $selectOptions['placeholder'] = Tools::atktext('search_all');
@@ -1172,6 +1174,7 @@ class ManyToOneRelation extends Relation
                 }
 
                 $selectOptions = [];
+                $selectOptions['enable-select2'] = true;
                 $selectOptions['enable-manytoonereleation-autocomplete'] = true;
                 $selectOptions['tags'] = true;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
@@ -2023,6 +2026,7 @@ class ManyToOneRelation extends Relation
         }
 
         $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
         $selectOptions['enable-manytoonereleation-autocomplete'] = true;
         $selectOptions['dropdown-auto-width'] = false;
         $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');

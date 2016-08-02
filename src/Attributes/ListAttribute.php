@@ -272,6 +272,7 @@ class ListAttribute extends Attribute
         $hasNullOption = $this->hasNullOption();
 
         $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
 
@@ -381,6 +382,7 @@ class ListAttribute extends Attribute
         $isMultiple = $this->isMultipleSearch($extended);
         $class = $this->getCSSClassAttribute(['form-control']);
         $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
 
         //width always auto
         $selectOptions['width'] = 'auto';
