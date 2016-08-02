@@ -9556,4 +9556,24 @@ select.select-standard {
 .select-empty-value {
   color: #999999; }
 
+@media print {
+  body {
+    padding: 0;
+    margin: 0;
+    color: black; }
+  .navbar {
+    display: none !important; }
+  .panel-body .list-header, .panel-body .list-navbar, .panel-body .list-footer {
+    display: none !important; }
+  .panel-body .datagrid-paginator-limit, .panel-body .datagrid-paginator-summary {
+    display: none !important; }
+  .panel-body .recordListThFirst, .panel-body .recordListTdFirst {
+    display: none !important; }
+  .panel-body .recordList {
+    margin: 0; }
+  .panel-body .recordListTh a {
+    text-decoration: none; }
+  .panel-body #action-buttons {
+    display: none !important; } }
+
 /*# sourceMappingURL=style.css.map */
