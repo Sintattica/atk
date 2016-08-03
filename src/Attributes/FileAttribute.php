@@ -2,9 +2,9 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\StringParser;
 
 /**
@@ -99,8 +99,10 @@ class FileAttribute extends Attribute
     {
         $flags = $flags | self::AF_CASCADE_DELETE;
         parent::__construct($name, $flags);
-        
+
         $this->setDir($dir);
+        $this->setStorageType(self::POSTSTORE | self::ADDTOQUERY, 'update');
+        $this->setStorageType(self::POSTSTORE | self::ADDTOQUERY, 'add');
     }
 
     /**
@@ -166,10 +168,10 @@ class FileAttribute extends Attribute
      */
     public function getFiles($dir)
     {
-        $dirHandle = dir($this->m_dir);
+        $dirHandle = dir($dir);
         $file_arr = [];
         if (!$dirHandle) {
-            Tools::atkerror("Unable to open directory {$this->m_dir}");
+            Tools::atkerror("Unable to open directory {$dir}");
 
             return [];
         }
@@ -209,7 +211,8 @@ class FileAttribute extends Attribute
         $result = '';
 
         // When in add mode or we have errors, don't show the filename above the input.
-        if (!($mode == 'add' || empty($record[$this->fieldName()]['error']))) {
+        $hasErrors = isset($record[$this->fieldName()]['error']) && $record[$this->fieldName()]['error'] != 0;
+        if ($mode != 'add' && !$hasErrors) {
             if (method_exists($this->getOwnerInstance(), $this->fieldName().'_display')) {
                 $method = $this->fieldName().'_display';
                 $result = $this->m_ownerInstance->$method($record, 'view');
@@ -232,8 +235,6 @@ class FileAttribute extends Attribute
             $result .= '<input type="hidden" name="'.$name.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
         }
 
-        $result .= '<input type="hidden" name="'.$name.'_postfileskey" value="'.$id.'">';
-
         $onchange = '';
         if (count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$id.'_onChange(this);"';
@@ -252,7 +253,7 @@ class FileAttribute extends Attribute
                 $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.' class="form-control select-standard">';
                 // Add default option with value NULL
                 $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
-                while (list($key, $val) = each($file_arr)) {
+                while (list(, $val) = each($file_arr)) {
                     (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val) ? $selected = 'selected' : $selected = '';
                     if (is_file($this->m_dir.$val)) {
                         $result .= '<option value="'.$val."\" $selected>".$val;
@@ -283,64 +284,17 @@ class FileAttribute extends Attribute
      */
     public function value2db($rec)
     {
-        $del = (isset($rec[$this->fieldName()]['postdel'])) ? $rec[$this->fieldName()]['postdel'] : null;
+        $del = isset($rec[$this->fieldName()]['postdel']) ? $rec[$this->fieldName()]['postdel'] : null;
 
-        if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && (!isset($del) || $del != $rec[$this->fieldName()]['filename'])) {
+        if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && ($del != null || $del != $rec[$this->fieldName()]['filename'])) {
             return $this->escapeSQL($rec[$this->fieldName()]['filename']);
         }
-        if ($this->hasFlag(self::AF_FILE_NO_DELETE)) {
-            unset($del);
-        }  // Make sure if flag is set $del unset!
 
-        if (isset($del)) {
-            if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)) {
-                $file = '';
-                if (isset($rec[$this->fieldName()]['postdel']) && $rec[$this->fieldName()]['postdel'] != '') {
-                    Tools::atkdebug('postdel set');
-                    $file = $rec[$this->fieldName()]['postdel'];
-                } else {
-                    if (isset($rec[$this->fieldName()]['orgfilename'])) {
-                        Tools::atkdebug('postdel not set');
-                        $file = $rec[$this->fieldName()]['orgfilename'];
-                    }
-                }
-                Tools::atkdebug('file is now '.$file);
-                if ($file != '' && file_exists($this->m_dir.$file)) {
-                    unlink($this->m_dir.$file);
-                } else {
-                    Tools::atkdebug("File doesn't exist anymore.");
-                }
-            }
-
-//        echo ':::::return leeg::::';
+        if ($del != null) {
             return '';
-        } else {
-            $filename = $rec[$this->fieldName()]['filename'];
-            // why copy if the files are the same?
-
-            if ($this->m_dir.$filename != $rec[$this->fieldName()]['tmpfile']) {
-                if ($filename != '') {
-                    $dirname = dirname($this->m_dir.$filename);
-                    if (!$this->mkdir($dirname)) {
-                        Tools::atkerror("File could not be saved, unable to make directory '{$dirname}'");
-
-                        return '';
-                    }
-
-                    if (@copy($rec[$this->fieldName()]['tmpfile'], $this->m_dir.$filename)) {
-                        $this->processFile($this->m_dir, $filename);
-
-                        return $this->escapeSQL($filename);
-                    } else {
-                        Tools::atkerror("File could not be saved, unable to copy file '{$rec[$this->fieldName()]['tmpfile']}' to destination '{$this->m_dir}{$filename}'");
-
-                        return '';
-                    }
-                }
-            }
-
-            return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
         }
+
+        return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
     }
 
     /**
@@ -579,9 +533,7 @@ class FileAttribute extends Attribute
      */
     public function fetchValue($rec)
     {
-        $del = (isset($rec[$this->fieldName()]['del'])) ? $rec[$this->fieldName()]['del'] : null;
-
-        $postfiles_basename = $rec[$this->fieldName().'_postfileskey'];
+        $del = isset($rec[$this->fieldName()]['del']) ? $rec[$this->fieldName()]['del'] : null;
 
         $basename = $this->fieldName();
 
@@ -589,13 +541,13 @@ class FileAttribute extends Attribute
             // if an error occured during the upload process
             // and the error is not 'no file' while the field isn't obligatory or a file was already selected
             $fileselected = isset($rec[$this->fieldName()]['select']) && $rec[$this->fieldName()]['select'] != '';
-            if (isset($_FILES[$postfiles_basename]) && $_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE)) {
+            if (isset($_FILES[$basename]) && $_FILES[$basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $_FILES[$basename]['error'] == UPLOAD_ERR_NO_FILE)) {
                 return array(
                     'filename' => $_FILES[$this->fieldName()]['name'],
                     'error' => $_FILES[$this->fieldName()]['error'],
                 );
             } // if no new file has been uploaded..
-            elseif (count($_FILES) == 0 || $_FILES[$postfiles_basename]['tmp_name'] == 'none' || $_FILES[$postfiles_basename]['tmp_name'] == '') {
+            elseif (count($_FILES) == 0 || $_FILES[$basename]['tmp_name'] == 'none' || $_FILES[$basename]['tmp_name'] == '') {
                 // No file to upload, then check if the select box is filled
                 if ($fileselected) {
                     Tools::atkdebug('file selected!');
@@ -620,7 +572,7 @@ class FileAttribute extends Attribute
                 } else {
                     $filename = (isset($rec[$basename.'_orgfilename'])) ? $rec[$basename.'_orgfilename'] : '';
 
-                    if (isset($del) && $del == 'on') {
+                    if ($del == 'on') {
                         $filename = '';
                     }
 
@@ -628,21 +580,21 @@ class FileAttribute extends Attribute
                     $result = array(
                         'tmpfile' => $filename == '' ? '' : $this->m_dir.$filename,
                         'filename' => $filename,
-                        'filesize' => (is_file($this->m_dir.$filename) ? filesize($this->m_dir.$filename) : 0),
+                        'filesize' => is_file($this->m_dir.$filename) ? filesize($this->m_dir.$filename) : 0,
                         'orgfilename' => $filename,
                     );
                 }
             } else {
-                $realname = $this->_filenameMangle($rec, $_FILES[$postfiles_basename]['name']);
+                $realname = $this->_filenameMangle($rec, $_FILES[$basename]['name']);
 
                 if ($this->m_autonumbering) {
                     $realname = $this->_filenameUnique($rec, $realname);
                 }
 
                 $result = array(
-                    'tmpfile' => $_FILES[$postfiles_basename]['tmp_name'],
+                    'tmpfile' => $_FILES[$basename]['tmp_name'],
                     'filename' => $realname,
-                    'filesize' => $_FILES[$postfiles_basename]['size'],
+                    'filesize' => $_FILES[$basename]['size'],
                     'orgfilename' => $realname,
                 );
             }
@@ -664,6 +616,19 @@ class FileAttribute extends Attribute
     }
 
     /**
+     * @param $file
+     * @return bool
+     */
+    protected function deleteFile($file)
+    {
+        if (is_file($file) && !@unlink($file)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Deletes file from HD.
      *
      * @param array $record Array with fields
@@ -672,10 +637,10 @@ class FileAttribute extends Attribute
      */
     public function postDelete($record)
     {
-        if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldName()]['orgfilename'] != '')) {
-            if (file_exists($this->m_dir.$record[$this->fieldName()]['orgfilename']) && !@unlink($this->m_dir.$record[$this->fieldName()]['orgfilename'])) {
-                return false;
-            }
+        if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && $record[$this->fieldName()]['orgfilename'] != '') {
+            $file = $this->m_dir.$record[$this->fieldName()]['orgfilename'];
+
+            return $this->deleteFile($file);
         }
 
         return true;
@@ -911,10 +876,44 @@ class FileAttribute extends Attribute
         return 'string';
     }
 
+    public function store($db, $record, $mode)
+    {
+        if ($mode == 'update' && !empty($record[$this->fieldName()]['postdel'])) {
+            $file = $this->m_dir.$record[$this->fieldName()]['postdel'];
+
+            return $this->deleteFile($file);
+        }
+
+        $filename = $record[$this->fieldName()]['filename'];
+
+        if ($record[$this->fieldName()]['tmpfile'] && $this->m_dir.$filename != $record[$this->fieldName()]['tmpfile']) {
+            if ($filename != '') {
+                $dirname = dirname($this->m_dir.$filename);
+                if (!$this->mkdir($dirname)) {
+                    Tools::atkerror("File could not be saved, unable to make directory '{$dirname}'");
+
+                    return false;
+                }
+
+                if (@copy($record[$this->fieldName()]['tmpfile'], $this->m_dir.$filename)) {
+                    $this->processFile($this->m_dir, $filename);
+
+                    return $this->escapeSQL($filename);
+                } else {
+                    Tools::atkerror("File could not be saved, unable to copy file '{$record[$this->fieldName()]['tmpfile']}' to destination '{$this->m_dir}{$filename}'");
+
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
-            if (@empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
+            if (empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
                 $query->addField($this->fieldName(), 'NULL', '', '', false, true);
             } else {
                 $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
