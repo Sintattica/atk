@@ -310,7 +310,7 @@ class PgSqlDb extends Db
      */
     public function metadata($table, $full = false)
     {
-        $ddl = Ddl::create('pgsql');
+        $ddl = Ddl::create('PgSql');
 
         if (strpos($table, '.') != false) {
             // there is a period in the table, so we split out the schema name.

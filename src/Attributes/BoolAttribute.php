@@ -82,7 +82,7 @@ class BoolAttribute extends Attribute
         $empty = parent::isEmpty($record);
 
         // if bool_obligatory flag is set the value must be true else we treat this record as empty
-        if ($this->hasFlag(self::AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()]) {
+        if ($this->hasFlag(self::AF_BOOL_OBLIGATORY) && !$this->getValue($record)) {
             $empty = true;
         }
 
@@ -108,10 +108,7 @@ class BoolAttribute extends Attribute
             $onchange = 'onClick="'.$id.'_onChange(this);" ';
             $this->_renderChangeHandler($fieldprefix);
         }
-        $checked = '';
-        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] > 0) {
-            $checked = 'checked';
-        }
+        $checked = $this->getValue($record) ? 'checked' : '';
 
         $result = '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' />';
 
@@ -160,12 +157,12 @@ class BoolAttribute extends Attribute
         $result = '<select id="'.$id.'" name="'.$name.'" class="form-control select-standard">';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         $result .= '<option value="0" ';
-        if (!empty($record[$this->fieldName()]) && $record[$this->fieldName()] === '0') {
+        if (is_array($record) && $record[$this->fieldName()] === '0') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('no', 'atk').'</option>';
         $result .= '<option value="1" ';
-        if (!empty($record[$this->fieldName()]) && $record[$this->fieldName()] === '1') {
+        if (is_array($record) && $record[$this->fieldName()] === '1') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('yes', 'atk').'</option>';
@@ -196,11 +193,11 @@ class BoolAttribute extends Attribute
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
     		  <div align="center">
-    		    <input type="checkbox" disabled="disabled" '.($record[$this->fieldName()] ? 'checked="checked"' : '').' />
+    		    <input type="checkbox" disabled="disabled" '.($this->getValue($record) ? 'checked="checked"' : '').' />
     		  </div>
     		';
         } else {
-            return $this->text($record[$this->fieldName()] ? 'yes' : 'no');
+            return $this->text($this->getValue($record) ? 'yes' : 'no');
         }
     }
 
@@ -283,7 +280,7 @@ class BoolAttribute extends Attribute
      */
     public function parseStringValue($stringvalue)
     {
-        if (in_array(strtolower($stringvalue), array('y', 'j', 'yes', 'on', 'true', '1', '*'))) {
+        if (in_array(strtolower($stringvalue), array('y', 'j', 'yes', 'on', 'true', 't', '1', '*'))) {
             return 1;
         }
 
@@ -302,18 +299,16 @@ class BoolAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        // the next if-statement is a workaround for derived attributes which do
-        // not override the hide() method properly. This will not give them a
-        // working hide() functionality but at least it will not give error messages.
-        if ($record[$this->fieldName()] == '') {
-            $record[$this->fieldName()] = '0';
-        }
         if (!is_array($record[$this->fieldName()])) {
-            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
-
+            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.($this->getValue($record) ? '1' : '0').'">';
             return $result;
         } else {
             Tools::atkdebug('Warning attribute '.$this->m_name.' has no proper hide method!');
         }
+    }
+
+    private function getValue($record)
+    {
+        return isset($record[$this->fieldName()]) && ($record[$this->fieldName()] == 1 || $record[$this->fieldName()] == 't');
     }
 }

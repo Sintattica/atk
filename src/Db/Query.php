@@ -793,9 +793,9 @@ class Query
         }
 
         if ($value[0] == '!') {
-            return 'UPPER('.$field.")!=UPPER('".substr($value, 1, Tools::atk_strlen($value))."')";
+            return $field."!='".substr($value, 1, Tools::atk_strlen($value))."'";
         } else {
-            return 'UPPER('.$field.")=UPPER('".$value."')";
+            return $field."='".$value."'";
         }
     }
 
@@ -823,9 +823,9 @@ class Query
     public function substringCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return 'UPPER('.$field.") NOT LIKE UPPER('%".substr($value, 1, Tools::atk_strlen($value))."%')";
+            return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
         } else {
-            return 'UPPER('.$field.") LIKE UPPER('%".$value."%')";
+            return $field." LIKE '%".$value."%'";
         }
     }
 
@@ -838,9 +838,9 @@ class Query
     public function wildcardCondition($field, $value)
     {
         if ($value[0] == '!') {
-            return 'UPPER('.$field.") NOT LIKE UPPER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
+            return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
         } else {
-            return 'UPPER('.$field.") LIKE UPPER('".str_replace('*', '%', $value)."')";
+            return $field." LIKE '".str_replace('*', '%', $value)."'";
         }
     }
 
