@@ -3,12 +3,12 @@
 namespace Sintattica\Atk\Core;
 
 use App\Modules\App\Module;
-use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
+use Dotenv\Dotenv;
+use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\IndexPage;
-use Sintattica\Atk\Handlers\ActionHandler;
-use Dotenv\Dotenv;
 
 class Atk
 {
@@ -21,6 +21,7 @@ class Atk
     public $g_moduleRepository = [];
     public $g_nodeHandlers = [];
     public $g_nodeListeners = [];
+    private $environment;
 
     /** @var $s_instance self */
     public static $s_instance = null;
@@ -36,8 +37,10 @@ class Atk
 
         self::$s_instance = $this;
 
+        $this->environment = $environment;
+
         //load .env variables only in development environment
-        if (file_exists($basedir.'.env') && (!$environment || in_array(strtolower($environment), ['dev', 'develop', 'development']))) {
+        if (file_exists($basedir.'.env') && in_array(strtolower($environment), ['dev', 'develop', 'development'])) {
             $dotEnv = new Dotenv($basedir);
             $dotEnv->load();
         }
@@ -69,7 +72,7 @@ class Atk
         $debug = 'Created a new Atk ('.self::VERSION.') instance.';
         $debug .= ' Environment: '.$environment.'.';
 
-        if(isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
+        if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
             $debug .= ' Server info: '.$_SERVER['SERVER_NAME'].' ('.$_SERVER['SERVER_ADDR'].')';
         }
 
@@ -104,14 +107,14 @@ class Atk
         $sessionManager = SessionManager::getInstance();
         $sessionManager->start();
 
-        if(Config::getGlobal('session_autorefresh') && array_key_exists(Config::getGlobal('session_autorefresh_key'), $_GET)){
+        if (Config::getGlobal('session_autorefresh') && array_key_exists(Config::getGlobal('session_autorefresh_key'), $_GET)) {
             die(session_id());
         }
 
         $securityManager = SecurityManager::getInstance();
         if ($securityManager->authenticate()) {
 
-            foreach($this->g_moduleRepository as $module) {
+            foreach ($this->g_moduleRepository as $module) {
                 $module->boot();
             }
 
@@ -266,13 +269,13 @@ class Atk
     {
         if (isset($this->g_nodeHandlers[$nodeUri][$action])) {
             $handler = $this->g_nodeHandlers[$nodeUri][$action];
-            if(!is_object($handler)){
+            if (!is_object($handler)) {
                 $handler = new $handler();
                 $this->g_nodeHandlers[$nodeUri][$action] = $handler;
             }
         } elseif (isset($this->g_nodeHandlers['*'][$action])) {
             $handler = $this->g_nodeHandlers['*'][$action];
-            if(!is_object($handler)){
+            if (!is_object($handler)) {
                 $handler = new $handler();
                 $this->g_nodeHandlers['*'][$action] = $handler;
             }
@@ -319,5 +322,10 @@ class Atk
             $this->g_moduleRepository[$name] = $module;
             $module->register();
         }
+    }
+
+    public function getEnvironment()
+    {
+        return $this->environment;
     }
 }
