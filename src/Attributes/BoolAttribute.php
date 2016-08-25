@@ -309,6 +309,6 @@ class BoolAttribute extends Attribute
 
     private function getValue($record)
     {
-        return isset($record[$this->fieldName()]) && ($record[$this->fieldName()] == 1 || $record[$this->fieldName()] == 't');
+        return isset($record[$this->fieldName()]) && ($record[$this->fieldName()] == 1 || $record[$this->fieldName()] === 't');
     }
 }
