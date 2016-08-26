@@ -179,6 +179,8 @@ class BoolAttribute extends Attribute
         if (isset($value)) {
             return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value));
         }
+
+        return '';
     }
 
     /**

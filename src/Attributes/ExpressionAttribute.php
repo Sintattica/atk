@@ -184,7 +184,7 @@ class ExpressionAttribute extends Attribute
                 if (isset($value['to']) && $value['to'] != '') {
                     $value = $value['to'];
                 } else {
-                    return false;
+                    return '';
                 }
             }
         }
@@ -194,6 +194,6 @@ class ExpressionAttribute extends Attribute
             return $query->$func($expression, $this->escapeSQL($value));
         }
 
-        return false;
+        return '';
     }
 }

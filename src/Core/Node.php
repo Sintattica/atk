@@ -639,7 +639,6 @@ class Node
 
     /**
      * @param string $nodeUri The nodeuri
-     * @param Atk $atk
      * @param int $flags Bitmask of node flags (self::NF_*).
      */
     public function __construct($nodeUri, $flags = 0)

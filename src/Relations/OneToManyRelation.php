@@ -819,9 +819,10 @@ class OneToManyRelation extends Relation
         $atk = Atk::getInstance();
         $classname = $this->m_destination;
         $cache_id = $this->m_owner.'.'.$this->m_name;
-        $rel = $atk->atkGetNode($classname, $cache_id);
+        $rel = $atk->atkGetNode($classname, true, $cache_id);
         $ownerfields = $this->getOwnerFields();
 
+        $whereelems = [];
         for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
             $whereelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";

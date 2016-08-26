@@ -28,7 +28,7 @@ class DateTimeAttribute extends Attribute
      *
      * @return int Timestamp
      */
-    public function arrayToDateTime($dateArray)
+    public static function arrayToDateTime($dateArray)
     {
         $hour = 0;
         $min = 0;

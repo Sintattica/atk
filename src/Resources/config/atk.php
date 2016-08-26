@@ -804,5 +804,15 @@ return [
 
     /****************** CLASSES ********************/
 
-    'indexPage' => Sintattica\Atk\Ui\IndexPage::class
+    'indexPage' => Sintattica\Atk\Ui\IndexPage::class,
+
+
+    /* ----------- CACHING CONFIGURATION ------------
+     * For the configuration of atkCache
+     * See: http://www.atk-framework.com/wiki/ATK_Cache
+     */
+    // Cache method
+    'cache_method' => 'var',
+    // Cache namespace, change this when you are hosting your application on a shared hosting.
+    'cache_namespace' => 'default'
 ];

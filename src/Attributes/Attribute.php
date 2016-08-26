@@ -578,10 +578,6 @@ class Attribute
      *                      for most attributes, corresponds to a field in
      *                      the database.
      * @param int $flags Flags for the attribute.
-     * @param mixed $size The size(s) of the attribute. See the $size
-     *                      parameter of the setAttribSize() method for more
-     *                      information on the possible values of this
-     *                      parameter.
      */
     public function __construct($name, $flags = 0)
     {
@@ -1667,7 +1663,7 @@ class Attribute
             Tools::atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().', ignoring condition.');
         }
 
-        return false;
+        return '';
     }
 
     /**

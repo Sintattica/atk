@@ -678,14 +678,14 @@ class NumberAttribute extends Attribute
             } elseif ($value['to'] != '') {
                 $value = $value['to'];
             } else {
-                return false;
+                return '';
             }
 
             return parent::getSearchCondition($query, $table, $value, $searchmode);
-        } else {
-            $fieldname = $table.'.'.$this->fieldName();
-
-            return $this->getBetweenCondition($query, $fieldname, $value);
         }
+
+        $fieldname = $table.'.'.$this->fieldName();
+
+        return $this->getBetweenCondition($query, $fieldname, $value);
     }
 }

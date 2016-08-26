@@ -192,7 +192,7 @@ class MultiSelectListAttribute extends ListAttribute
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         // Multiselect attribute has only 1 searchmode, and that is substring.
-        $searchcondition = null;
+        $searchcondition = '';
         if (is_array($value) && $value[0] != '' && count($value) > 0) {
             $searchcondition = [];
             foreach ($value as $str) {
