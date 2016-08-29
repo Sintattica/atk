@@ -57,7 +57,7 @@ class EditHandler extends ViewEditBase
         $record = $this->mergeWithPostvars($record);
 
         $this->notify('edit', $record);
-        $res = $this->invoke('editPage', $record, false);
+        $res = $this->invoke('editPage', $record);
 
         $page = $this->getPage();
         $page->addContent($node->renderActionPage('edit', $res));

@@ -1297,7 +1297,7 @@ class Db
      * @param string $mode
      * @return Db
      */
-    public static function newInstance($conn, $mode = 'rw')
+    public static function newInstance($conn = 'default', $mode = 'rw')
     {
         // Resolve any potential aliases
         $conn = self::getTranslatedDatabaseName($conn);

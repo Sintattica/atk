@@ -1903,13 +1903,13 @@ class Node
      *
      * @return string The full title of the action.
      */
-    public function actionTitle($action, $record = '')
+    public function actionTitle($action, $record = [])
     {
         $sm = SessionManager::getInstance();
         $ui = $this->getUi();
         $res = '';
 
-        if ($record != '') {
+        if ($record) {
             $descr = $this->descriptor($record);
             $sm->pageVar('descriptor', $descr);
         }

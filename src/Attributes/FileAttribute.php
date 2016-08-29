@@ -335,7 +335,7 @@ class FileAttribute extends Attribute
      *
      * @static
      */
-    public function rmdir($dir)
+    public static function rmdir($dir)
     {
         if (!($handle = @opendir($dir))) {
             return false;
