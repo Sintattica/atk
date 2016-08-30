@@ -387,6 +387,8 @@ class ListAttribute extends Attribute
         $class = $this->getCSSClassAttribute(['form-control']);
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['minimum-results-for-search'] = 10;
 
         //width always auto
         $selectOptions['width'] = 'auto';
