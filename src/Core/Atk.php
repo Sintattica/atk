@@ -102,6 +102,13 @@ class Atk
         return self::$s_instance;
     }
 
+    public function bootModules()
+    {
+        foreach ($this->g_moduleRepository as $module) {
+            $module->boot();
+        }
+    }
+
     public function run()
     {
         $sessionManager = SessionManager::getInstance();
@@ -114,10 +121,7 @@ class Atk
         $securityManager = SecurityManager::getInstance();
         if ($securityManager->authenticate()) {
 
-            foreach ($this->g_moduleRepository as $module) {
-                $module->boot();
-            }
-
+            $this->bootModules();
 
             $indexPageClass = Config::getGlobal('indexPage');
 
@@ -127,6 +131,15 @@ class Atk
         }
     }
 
+    public function runCli()
+    {
+        Config::setGlobal('authentication', 'none');
+        Config::setGlobal('authorization', 'none');
+        $securityManager = SecurityManager::getInstance();
+        if ($securityManager->authenticate()) {
+            $this->bootModules();
+        }
+    }
 
     /**
      * Tells ATK that a node exists, and what actions are available to
