@@ -156,6 +156,8 @@ class MultiSelectListAttribute extends ListAttribute
             $selectOptions['width'] = 'auto';
         }
 
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
+
         $data = '';
         foreach ($selectOptions as $k => $v) {
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';

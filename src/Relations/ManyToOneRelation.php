@@ -227,10 +227,9 @@ class ManyToOneRelation extends Relation
 
     public $m_onchangehandler_init = "var newvalue = el.value;\n";
 
-
-    public $m_select_options = [];
-
     public $m_search_by_pk = false;
+
+    protected $m_select2Options = ['edit' => [], 'search' => []];
 
     /**
      * Constructor.
@@ -401,16 +400,6 @@ class ManyToOneRelation extends Relation
     public function setConcatDescriptorFunction($function)
     {
         $this->m_concatDescriptorFunction = $function;
-    }
-
-    /**
-     * Set select2 Options
-     *
-     * @param Array
-     */
-    public function setSelectOptions($options)
-    {
-        $this->m_select_options = $options;
     }
 
     /**
@@ -917,7 +906,7 @@ class ManyToOneRelation extends Relation
                 }else {
                     $selectOptions['width'] = 'resolve';
                 }
-                $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
+                $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
                 if (count($this->m_onchangecode)) {
                     $this->_renderChangeHandler($fieldprefix);
@@ -1145,7 +1134,7 @@ class ManyToOneRelation extends Relation
             $selectOptions['allow-clear'] = true;
             $selectOptions['dropdown-auto-width'] = true;
             $selectOptions['placeholder'] = Tools::atktext('search_all');
-            $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
+            $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
             // width always auto
             $selectOptions['width'] = 'auto';
@@ -1183,7 +1172,7 @@ class ManyToOneRelation extends Relation
                 $selectOptions['allow-clear'] = true;
                 $selectOptions['dropdown-auto-width'] = true;
                 $selectOptions['placeholder'] = $noneLabel;
-                $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
+                $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
                 //width always auto
                 $selectOptions['width'] = 'auto';
@@ -2042,7 +2031,7 @@ class ManyToOneRelation extends Relation
         }else {
             $selectOptions['width'] = 'auto';
         }
-        $selectOptions = Tools::atk_array_merge_recursive($selectOptions, $this->m_select_options);
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         if (count($this->m_onchangecode)) {
             $htmlAttributes['onchange'] = $this->getHtmlId($fieldprefix).'_onChange(this)';
@@ -2308,5 +2297,26 @@ class ManyToOneRelation extends Relation
         }
 
         return false;
+    }
+
+    /**
+     * @param $options
+     * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
+     * @return $this
+     */
+    public function setSelect2Options($options, $types = null) {
+        if($types == null) {
+            $types = array_keys($this->m_select2Options);
+        }
+
+        if(!is_array($types)){
+            $types = [$types];
+        }
+
+        foreach($types as $type) {
+            $this->m_select2Options[$type] = $options;
+        }
+
+        return $this;
     }
 }

@@ -81,6 +81,8 @@ class ListAttribute extends Attribute
         'extended' => true,
     ];
 
+    protected $m_select2Options = ['edit' => [], 'search' => []];
+
     /**
      * Constructor.
      *
@@ -288,6 +290,8 @@ class ListAttribute extends Attribute
             $selectOptions['width'] = 'resolve';
         }
 
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
+
         $onchange = '';
         if (count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
@@ -387,6 +391,7 @@ class ListAttribute extends Attribute
         //width always auto
         $selectOptions['width'] = 'auto';
 
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
         $data = '';
         foreach ($selectOptions as $k => $v) {
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
@@ -703,5 +708,27 @@ class ListAttribute extends Attribute
         $ms = $this->getMultipleSearch();
 
         return $ms[$extended ? 'extended' : 'normal'];
+    }
+
+
+    /**
+     * @param $options
+     * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
+     * @return $this
+     */
+    public function setSelect2Options($options, $types = null) {
+        if($types == null) {
+            $types = array_keys($this->m_select2Options);
+        }
+
+        if(!is_array($types)){
+            $types = [$types];
+        }
+
+        foreach($types as $type) {
+            $this->m_select2Options[$type] = $options;
+        }
+
+        return $this;
     }
 }
