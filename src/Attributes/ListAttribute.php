@@ -389,6 +389,9 @@ class ListAttribute extends Attribute
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
+        if ($isMultiple) {
+            $selectOptions['placeholder'] = Tools::atktext('search_all');
+        }
 
         //width always auto
         $selectOptions['width'] = 'auto';
@@ -409,8 +412,7 @@ class ListAttribute extends Attribute
             $selValues = [''];
         }
 
-        $notSelectFirst = false;
-        $selected = (!$notSelectFirst && $selValues[0] == '') ? ' selected' : '';
+        $selected = (!$isMultiple && $selValues[0] == '') ? ' selected' : '';
         $option = Tools::atktext('search_all');
         $result .= sprintf('<option value=""%s>%s</option>', $selected, $option);
 
