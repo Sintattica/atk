@@ -715,10 +715,8 @@ class ManyToOneRelation extends Relation
     public function createSelectAndAutoLinks($id, $record)
     {
         $links = [];
-
-        $newsel = $id;
         $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        $links[] = $this->_getSelectLink($newsel, $filter);
+        $links[] = $this->_getSelectLink($id, $filter);
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $sm = SessionManager::getInstance();
 
@@ -730,6 +728,7 @@ class ManyToOneRelation extends Relation
             }
 
             if ($this->m_destInstance->allowed('edit') && !$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $record[$this->fieldName()] != null) {
+
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
                 $editUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
@@ -862,7 +861,7 @@ class ManyToOneRelation extends Relation
             }
 
             $result .= $this->hide($record, $fieldprefix, $mode);
-            $result .= $this->_getSelectLink($id, $this->parseFilter($this->m_destinationFilter, $record));
+            $result .= $this->_getSelectLink($name, $this->parseFilter($this->m_destinationFilter, $record));
         } else {
             //normal dropdown
             if ($recordset == null) {
@@ -917,7 +916,7 @@ class ManyToOneRelation extends Relation
             }
         }
 
-        $autolink = $this->getRelationAutolink($id, $this->parseFilter($this->m_destinationFilter, $record));
+        $autolink = $this->getRelationAutolink($id, $name, $this->parseFilter($this->m_destinationFilter, $record));
         $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : '';
         $result .= isset($autolink['add']) ? $autolink['add'] : '';
 
@@ -962,14 +961,16 @@ class ManyToOneRelation extends Relation
     /**
      * Creates and returns the auto edit/view links.
      *
-     * @param string $id The field id
+     * @param string $id The field html id
+     * @param string $name The field html name
      * @param string $filter Filter that we want to apply on the destination node
      *
      * @return array The HTML code for the autolink links
      */
-    public function getRelationAutolink($id, $filter)
+    public function getRelationAutolink($id, $name, $filter)
     {
         $autolink = [];
+
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $page = Page::getInstance();
             $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
@@ -982,7 +983,7 @@ class ManyToOneRelation extends Relation
             }
             if ($this->m_destInstance->allowed('add')) {
                 $autolink['add'] = '&nbsp;'.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
-                        'atkpkret' => $id,
+                        'atkpkret' => $name,
                         'atkfilter' => ($this->m_useFilterForAddLink && $filter != '' ? $filter : ''),
                     )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
