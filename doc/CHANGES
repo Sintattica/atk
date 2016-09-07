@@ -11,6 +11,7 @@
 
 WIP Changes
 -----------
+* Upgrade Smarty 2.6.30 [luca]
 + Added postDelete on attribute [luca]
 + Added Hide method in atkFieldset [luca]
 * Removed total row in export [luca]

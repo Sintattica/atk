@@ -11,8 +11,8 @@
         <form action="{$formurl}" method="post">
             {$atksessionformvars}
 
-            <div id="atkuserid"><span class="atklabel">{atktext username}: </span>{$userfield}</div>
-            <div id="atkpassword"><span class="atklabel">{atktext password}: </span>{$passwordfield}</div>
+            <div id="atkuserid"><span class="atklabel">{atktext id='username'}: </span>{$userfield}</div>
+            <div id="atkpassword"><span class="atklabel">{atktext id='password'}: </span>{$passwordfield}</div>
             <span class="atkbuttons">
                 {$submitbutton} {if $forgotpasswordbutton!=""}{$forgotpasswordbutton}{/if}
             </span>

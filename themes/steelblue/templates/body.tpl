@@ -6,7 +6,7 @@
                     </frameset>
                     <noframes>
                         <body bgcolor="#000000" text="#000000">
-                            <p>Your browser doesnt support frames, but this is required to run {atktext app_title}</p>
+                            <p>Your browser doesnt support frames, but this is required to run {atktext id='app_title'}</p>
                         </body>
                     </noframes>
                     </frameset>
