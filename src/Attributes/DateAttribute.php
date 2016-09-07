@@ -1423,7 +1423,7 @@ class DateAttribute extends Attribute
                 $marge = strlen($regexpr) - strlen($format);
             }
 
-            $regexpr = "^$regexpr$";
+            //$regexpr = "^$regexpr$";
 
             $valueSeparators = array('-', '/', "\.", '\\\\', 'a');
 
@@ -1431,7 +1431,7 @@ class DateAttribute extends Attribute
             //also try to replace - by "/","." or "\""
             foreach ($valueSeparators as $valueSeparator) {
                 $expr = str_replace(' ', $valueSeparator, $regexpr);
-                if (ereg($expr, $stringvalue)) {
+                if (preg_match('/'.addcslashes($expr, '/').'/', $stringvalue)) {
                     $day = substr($stringvalue, $dayBegin, $dayLength);
                     $month = substr($stringvalue, $monthBegin, $monthLength);
                     $year = substr($stringvalue, $yearBegin, $yearLength);

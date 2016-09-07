@@ -157,7 +157,7 @@ if (!function_exists('checkdnsrr')) {
             // check each line to find the one that starts with the host
             // name. If it exists then the function succeeded.
             foreach ($result as $line) {
-                if (eregi("^$hostName", $line)) {
+                if (preg_match("/^$hostName/i", $line)) {
                     return true;
                 }
             }
