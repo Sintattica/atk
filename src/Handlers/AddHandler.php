@@ -196,7 +196,7 @@ class AddHandler extends ActionHandler
         $sm = SessionManager::getInstance();
         $node = $this->m_node;
 
-        $formstart = '<form id="entryform" " name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off">';
+        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.' method="post" onsubmit="return globalSubmit(this,false)" autocomplete="off" class="form-horizontal">';
 
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
         $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getSaveAction().'" />';
