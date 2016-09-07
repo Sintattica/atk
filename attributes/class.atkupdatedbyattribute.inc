@@ -54,7 +54,8 @@ class atkUpdatedByAttribute extends atkManyToOneRelation
     function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
     {
         if ($mode == 'add' || $mode == 'update') {
-            atkAttribute::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+            // atkAttribute::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+            $query->addField($this->fieldName(), $this->value2db($rec), '', '', !$this->hasFlag(AF_NO_QUOTES), true);
         } else {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
         }

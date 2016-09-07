@@ -344,7 +344,7 @@ class atkFileAttribute extends atkAttribute
      *
      * @static
      */
-    function mkdir($path)
+    static function mkdir($path)
     {
         $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
         $dirs = explode("/", $path);
@@ -369,7 +369,7 @@ class atkFileAttribute extends atkAttribute
      *
      * @static
      */
-    function rmdir($dir)
+    static function rmdir($dir)
     {
         if (!($handle = @opendir($dir)))
             return false;

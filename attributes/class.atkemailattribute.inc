@@ -106,7 +106,7 @@ class atkEmailAttribute extends atkAttribute
      * @return boolean e-mailaddress syntactically valid or not.
      * @static
      */
-    function validateAddressSyntax($email)
+    static function validateAddressSyntax($email)
     {
         $email = strtolower($email); // to allow uppercase
         if (preg_match("/^[-_a-zA-Z0-9+]+(\.[-_a-zA-Z0-9+]+)*@([0-9a-z-]+\.)*([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,}$/", $email)) {
@@ -126,7 +126,7 @@ class atkEmailAttribute extends atkAttribute
      * @return boolean $result
      * @static
      */
-    function validateAddressDomain($domain, $strict = false)
+    static function validateAddressDomain($domain, $strict = false)
     {
         if ($strict) {
             $rr = 'MX';
@@ -170,7 +170,7 @@ if (!function_exists("checkdnsrr")) {
             // check each line to find the one that starts with the host
             // name. If it exists then the function succeeded.
             foreach ($result as $line) {
-                if (eregi("^$hostName", $line)) {
+                if (preg_match("/^$hostName/i", $line)) {
                     return true;
                 }
             }

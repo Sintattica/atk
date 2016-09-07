@@ -58,7 +58,7 @@ define("DEBUG_ERROR", 8);
 function atkErrorHandler($errtype, $errstr, $errfile, $errline)
 {
     // probably suppressed error using the @ operator, simply ignore
-    if (error_reporting() == 0) {
+    if (error_reporting() == 0 && !($errtype & E_ERROR) && $errtype != 'EXCEPTION') {
         return;
     }
 
@@ -120,7 +120,7 @@ function atkErrorHandler($errtype, $errstr, $errfile, $errline)
  *
  * @param Exception $exception uncaught exception
  */
-function atkExceptionHandler(Exception $exception)
+function atkExceptionHandler($exception)
 {
     atkErrorHandler('EXCEPTION', $exception->getMessage(), $exception->getFile(), $exception->getLine());
 }
@@ -132,7 +132,7 @@ function atkFatalHandler()
 {
     $error = error_get_last();
     if ($error) {
-        atkErrorHandler(E_ERROR, $error['message'], $error['file'], $error['line']);
+        atkErrorHandler($error['type'], $error['message'], $error['file'], $error['line']);
     }
 }
 

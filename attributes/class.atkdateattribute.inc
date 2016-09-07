@@ -163,7 +163,7 @@ class atkDateAttribute extends atkAttribute
      * @param array $dateArray Date Array
      * @return int Timestamp
      */
-    function _arrayToTime($dateArray)
+    static function _arrayToTime($dateArray)
     {
         $hour = 0;
         $min = 0;
@@ -1311,7 +1311,7 @@ class atkDateAttribute extends atkAttribute
                 $marge = strlen($regexpr) - strlen($format);
             }
 
-            $regexpr = "^$regexpr$";
+            //$regexpr = "^$regexpr$";
 
             $valueSeparators = array("-", "/", "\.", "\\\\", "a");
 
@@ -1319,7 +1319,7 @@ class atkDateAttribute extends atkAttribute
             //also try to replace - by "/","." or "\""
             foreach ($valueSeparators as $valueSeparator) {
                 $expr = str_replace(" ", $valueSeparator, $regexpr);
-                if (ereg($expr, $stringvalue)) {
+                if (preg_match('/'.addcslashes($expr, '/').'/', $stringvalue)) {
                     $day = substr($stringvalue, $dayBegin, $dayLength);
                     $month = substr($stringvalue, $monthBegin, $monthLength);
                     $year = substr($stringvalue, $yearBegin, $yearLength);
