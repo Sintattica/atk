@@ -46,7 +46,7 @@ class IndexPage
 
     /**
      * Constructor
-     * $atk Atk.
+     * @param $atk Atk
      *
      * @return IndexPage
      */

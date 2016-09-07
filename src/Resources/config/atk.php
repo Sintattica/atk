@@ -734,6 +734,11 @@ return [
     'manytoone_autocomplete_pagination_limit' => 50,
 
     /*
+     * OneToMany add link position (top or bottom)
+     */
+    'onetomany_addlink_position' => 'top',
+
+    /*
      * Warn the user if he/she has changed something in a form
      * and leaves the page without pressing save or cancel.
      *

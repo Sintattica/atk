@@ -9560,6 +9560,9 @@ select.select-standard {
 .select-empty-value {
   color: #999999; }
 
+.select2-results__options[aria-multiselectable=true] .select2-results__option[aria-selected=true] {
+  display: none; }
+
 @media print {
   body {
     padding: 0;
@@ -9579,5 +9582,17 @@ select.select-standard {
     text-decoration: none; }
   .panel-body #action-buttons {
     display: none !important; } }
+
+.ExportHandler .attributes-group {
+  border: 1px solid #d8d8d8;
+  margin-bottom: 10px; }
+  .ExportHandler .attributes-group .attributes-group-title {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 5px 15px; }
+  .ExportHandler .attributes-group .attributes-checkbox-container {
+    margin-top: 5px; }
 
 /*# sourceMappingURL=style.css.map */

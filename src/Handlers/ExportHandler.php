@@ -198,7 +198,7 @@ class ExportHandler extends ActionHandler
         $sm = SessionManager::getInstance();
 
         $params = [];
-        $params['formstart'] = '<form name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post">';
+        $params['formstart'] = '<form name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post" class="form-horizontal">';
         $params['formstart'] .= $sm->formState();
         $params['formstart'] .= '<input type="hidden" name="phase" value="process"/>';
         $params['buttons'][] = Tools::atkButton(Tools::atktext('cancel', 'atk'), '', SessionManager::SESSION_BACK, true);
@@ -239,6 +239,23 @@ class ExportHandler extends ActionHandler
         }
     }
 
+    private function _getOptionsFormRow($rowAttributes, $label, $field) {
+        $content = '';
+
+        $content .= '<div class="row form-group"';
+        if($rowAttributes) {
+            foreach($rowAttributes as $k => $v) {
+                $content .= ' '.$k.'="'.$v.'"';
+            }
+        }
+        $content .= '>';
+
+        $content .= '  <label class="col-sm-2 control-label">'.$label.'</label>';
+        $content .= '  <div class="col-sm-10">'.$field.'</div>';
+        $content .= '</div>';
+        return $content;
+    }
+
     /**
      * Get the options for the export.
      *
@@ -246,29 +263,48 @@ class ExportHandler extends ActionHandler
      */
     public function _getOptions()
     {
-        $content = '<table border="0" width="100%">';
+
+        $content = '';
 
         // enable extended export options
         if (true === Config::getGlobal('enable_export_save_selection')) {
-            $content .= '<tr><td>'.Tools::atktext('export_selections',
-                    'atk').': </td><td align="left">'.$this->getExportSelectionDropdown().'&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">'.Tools::atktext('new',
-                    'atk').'</a></td></tr>';
-            $content .= '<tr><td>&nbsp;</td><td align="left"><div id="selection_interact"></div></td></tr>';
-            $content .= '<tr id="export_name" style="display:none;"><td>'.Tools::atktext('export_selections_name',
-                    'atk').': </td><td align="left"><input type="text" size="40" id="export_selection_name" name="export_selection_name" value=""></td></tr>';
+            $content .= $this->_getOptionsFormRow(
+                null,
+                Tools::atktext('export_selections', 'atk'),
+                $this->getExportSelectionDropdown().'&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">'.Tools::atktext('new', 'atk'));
+
+            $content .= $this->_getOptionsFormRow(null, '', '<div id="selection_interact"></div>');
+
+            $content .= $this->_getOptionsFormRow(
+                ['id' => 'export_name', 'style'=>"display:none;"],
+                Tools::atktext('export_selections_name', 'atk'),
+                '<input type="text" size="40" id="export_selection_name" name="export_selection_name" value="" class="form-control">'
+            );
         }
 
-        $content .= '<tr><td>'.Tools::atktext('delimiter',
-                'atk').': </td><td><input type="text" size="2" name="delimiter" value='.Config::getGlobal('export_delimiter', ';').'></td></tr>';
-        $content .= '<tr><td>'.Tools::atktext('enclosure',
-                'atk').': </td><td><input type="text" size="2" name="enclosure" value='.Config::getGlobal('export_enclosure', '&quot;').'></td></tr>';
-        $content .= '<tr><td valign="top">'.Tools::atktext('export_selectcolumns',
-                'atk').': </td><td><div id="export_attributes">'.$this->getAttributeSelect().'</div></td></tr>';
-        $content .= '<tr><td>';
-        $content .= Tools::atktext('export_generatetitlerow').': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 '.(Config::getGlobal('export_titlerow_checked',
-                true) ? 'checked' : '').'>';
-        $content .= '</td></tr>';
-        $content .= '</table><br /><br />';
+        $content .= $this->_getOptionsFormRow(
+            null,
+            Tools::atktext('delimiter', 'atk'),
+            '<input type="text" class="form-control" size="2" name="delimiter" value='.Config::getGlobal('export_delimiter', ';').'>'
+        );
+
+        $content .= $this->_getOptionsFormRow(
+            null,
+            Tools::atktext('enclosure', 'atk'),
+            '<input type="text" size="2" class="form-control" name="enclosure" value='.Config::getGlobal('export_enclosure', '&quot;').'>'
+        );
+
+        $content .= $this->_getOptionsFormRow(
+            null,
+            Tools::atktext('export_selectcolumns', 'atk'),
+            '<div id="export_attributes">'.$this->getAttributeSelect().'</div>'
+        );
+
+        $content .= $this->_getOptionsFormRow(
+            null,
+            Tools::atktext('export_generatetitlerow'),
+            '<input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 '.(Config::getGlobal('export_titlerow_checked', true) ? 'checked' : '').'>'
+        );
 
         return $content;
     }
@@ -399,40 +435,29 @@ class ExportHandler extends ActionHandler
      */
     public function getAttributeSelect()
     {
-        $cols = 5;
-
         $atts = $this->getUsableAttributes();
-        $content = '';
+        $content = '<div class="container-fluid ExportHandler">';
 
         foreach ($atts as $tab => $group) {
-            $content .= '<TABLE style="border: 1px solid #d8d8d8; width: 90%">';
+            $content .= '<div class="row attributes-group">';
+
             if ($tab != 'default') {
-                $content .= '<TR><TD colspan="'.$cols.'"><div style="background-color: #ccc; color: #00366E; font-weight: bold">'.Tools::atktext(array(
-                        "tab_$tab",
-                        $tab,
-                    ), $this->m_node->m_module, $this->m_node->m_type).'</div></TD></TR><TR>';
+                $content .= '<div class="col-sm-12 attributes-group-title">';
+                $content .= Tools::atktext(["tab_$tab", $tab], $this->m_node->m_module, $this->m_node->m_type);
+                $content .= '</div>';
             }
-            $idx = 0;
+
             foreach ($group as $item) {
-                if ($item['checked']) {
-                    $checked = 'CHECKED';
-                } else {
-                    $checked = '';
-                }
-
-                $content .= '<TD align="left" width="'.(90 / $cols).'%"><LABEL><INPUT type="checkbox" name="export_'.$item['name'].'" class="atkcheckbox" value="export_'.$item['name'].'" '.$checked.'>'.$item['text'].'</LABEL></TD>';
-
-                ++$idx;
-                if ($idx % $cols == 0) {
-                    $content .= '</TR><TR>';
-                }
+                $checked = $item['checked']?'CHECKED':'';
+                $content .= '<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2 attributes-checkbox-container">';
+                $content .= '<label><input type="checkbox" name="export_'.$item['name'].'" class="atkcheckbox" value="export_'.$item['name'].'" '.$checked.'> '.$item['text'].'</label>';
+                $content .= '</div>';
             }
-            while ($idx % $cols != 0) {
-                $content .= '<TD width="'.(90 / $cols).'%">&nbsp;</TD>';
-                ++$idx;
-            }
-            $content .= '</TR></TABLE><BR/>';
+
+            $content .= '</div>';
         }
+
+        $content .= '</div>';
 
         return $content;
     }
@@ -540,7 +565,7 @@ class ExportHandler extends ActionHandler
                 $att->addFlag(Attribute::AF_HIDE_LIST);
             }
         }
-        
+
         $rl = new CustomRecordList();
         $flags = ($node_bk->hasFlag(Node::NF_MRA) ? RecordList::RL_MRA : 0) | ($node_bk->hasFlag(Node::NF_MRPA) ? RecordList::RL_MRPA : 0);
         $node_bk->m_postvars = $session_back;
