@@ -1311,7 +1311,7 @@ class atkDateAttribute extends atkAttribute
                 $marge = strlen($regexpr) - strlen($format);
             }
 
-            //$regexpr = "^$regexpr$";
+            $regexpr = "^$regexpr$";
 
             $valueSeparators = array("-", "/", "\.", "\\\\", "a");
 
