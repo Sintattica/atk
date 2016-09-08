@@ -1423,7 +1423,7 @@ class DateAttribute extends Attribute
                 $marge = strlen($regexpr) - strlen($format);
             }
 
-            //$regexpr = "^$regexpr$";
+            $regexpr = "^$regexpr$";
 
             $valueSeparators = array('-', '/', "\.", '\\\\', 'a');
 
