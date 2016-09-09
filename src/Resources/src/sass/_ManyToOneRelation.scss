@@ -1,0 +1,12 @@
+a.atkmanytoonerelation-link {
+
+  @extend .btn;
+  @extend .btn-default;
+  @include button-size(3px, 3px, $font-size-base, $font-size-base, $btn-border-radius-base);
+  color: $link-color;
+}
+
+span.atkmanytoonerelation-large-container {
+  position: relative;
+  top: 4px;
+}

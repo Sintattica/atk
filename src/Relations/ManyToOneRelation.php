@@ -656,9 +656,15 @@ class ManyToOneRelation extends Relation
                 if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && (!in_array($mode, array('csv', 'plain')))) { // create link to edit/view screen
                     if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
                         $saveForm = $mode == 'add' || $mode == 'edit';
-                        $result = Tools::href(Tools::dispatch_url($this->m_destination, 'view',
-                            array('atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SessionManager::SESSION_NESTED,
-                            $saveForm);
+                        $url = Tools::dispatch_url($this->m_destination, 'view',
+                            ['atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
+
+                        if ($mode != 'list') {
+                            $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm, 'class="atkmanytoonerelation-link"');
+                        } else {
+                            $result = Tools::href($url, $result, SessionManager::SESSION_NESTED, $saveForm);
+                        }
+
                     }
                 }
             } else {
@@ -733,11 +739,11 @@ class ManyToOneRelation extends Relation
                 //de app crasht als er geen waarde is ingevuld.
                 $editUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
-                $links[] = '<span id="'.$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation\">".Tools::atktext('edit').'</a></span>';
+                $links[] = '<span id="'.$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('edit').'</a></span>';
             }
         }
 
-        return implode('&nbsp;', $links);
+        return implode(' ', $links);
     }
 
     /**
@@ -840,24 +846,25 @@ class ManyToOneRelation extends Relation
             $editflag = false;
             $result = '';
 
+            $result .= '<span class="atkmanytoonerelation-large-container">';
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
-                $result = '<span id="'.$id.'_current" >';
+                $result .= '<span id="'.$id.'_current">';
 
                 if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
-                    $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'view',
-                        array('atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()]))), $this->m_destInstance->descriptor($destrecord),
-                        SessionManager::SESSION_NESTED, true);
+                    $url = Tools::dispatch_url($this->m_destination, 'view', ['atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
+                    $descriptor = $this->m_destInstance->descriptor($destrecord);
+                    $result .= $descriptor.' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation-link"');
                 } else {
                     $result .= $this->m_destInstance->descriptor($destrecord);
                 }
 
-                $result .= '&nbsp;';
+                $result .= ' ';
 
                 if (!$this->hasFlag(self::AF_OBLIGATORY)) {
-                    $result .= '<a href="#" onClick="jQuery(\'#'.$id.'\').val(\'\');jQuery(\'#'.$id.'_current\').hide();" class="atkmanytoonerelation">'.Tools::atktext('unselect').'</a>&nbsp;';
+                    $result .= '<a href="#" onClick="jQuery(\'#'.$id.'\').val(\'\');jQuery(\'#'.$id.'_current\').hide();" class="atkmanytoonerelation atkmanytoonerelation-link">'.Tools::atktext('unselect').'</a> ';
                 }
-                $result .= '&nbsp;</span>';
+                $result .= '</span>';
             }
 
             $result .= $this->hide($record, $fieldprefix, $mode);
@@ -900,9 +907,9 @@ class ManyToOneRelation extends Relation
                     $selectOptions['with-empty-value'] = $emptyValue;
 
                 }
-                if(!empty($this->getWidth())){
+                if (!empty($this->getWidth())) {
                     $selectOptions['width'] = $this->getWidth();
-                }else {
+                } else {
                     $selectOptions['width'] = 'resolve';
                 }
                 $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
@@ -919,6 +926,10 @@ class ManyToOneRelation extends Relation
         $autolink = $this->getRelationAutolink($id, $name, $this->parseFilter($this->m_destinationFilter, $record));
         $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : '';
         $result .= isset($autolink['add']) ? $autolink['add'] : '';
+
+        if ($this->hasFlag(self::AF_LARGE)) {
+            $result .= '</span>'; // atkmanytoonerelation-large-container
+        }
 
         return $result;
     }
@@ -949,10 +960,10 @@ class ManyToOneRelation extends Relation
         }
         if ($this->m_destinationFilter != '') {
             $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', array('atkfilter' => $filter, 'atktarget' => $atktarget)), $linkname,
-                SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
+                SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
         } else {
             $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', array('atktarget' => $atktarget)), $linkname,
-                SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
+                SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
         }
 
         return $result;
@@ -979,13 +990,13 @@ class ManyToOneRelation extends Relation
             if ($this->m_destInstance->allowed('edit')) {
                 $editlink = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
-                $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editlink).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation'>".Tools::atktext('edit').'</a>';
+                $autolink['edit'] = "<a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editlink).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('edit').'</a>';
             }
             if ($this->m_destInstance->allowed('add')) {
-                $autolink['add'] = '&nbsp;'.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
+                $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
                         'atkpkret' => $name,
                         'atkfilter' => ($this->m_useFilterForAddLink && $filter != '' ? $filter : ''),
-                    )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation"');
+                    )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
             }
         }
 
@@ -2027,9 +2038,9 @@ class ManyToOneRelation extends Relation
             $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = $noneLabel;
         }
-        if(!empty($this->getWidth())){
+        if (!empty($this->getWidth())) {
             $selectOptions['width'] = $this->getWidth();
-        }else {
+        } else {
             $selectOptions['width'] = 'auto';
         }
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
@@ -2305,16 +2316,17 @@ class ManyToOneRelation extends Relation
      * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
      * @return $this
      */
-    public function setSelect2Options($options, $types = null) {
-        if($types == null) {
+    public function setSelect2Options($options, $types = null)
+    {
+        if ($types == null) {
             $types = array_keys($this->m_select2Options);
         }
 
-        if(!is_array($types)){
+        if (!is_array($types)) {
             $types = [$types];
         }
 
-        foreach($types as $type) {
+        foreach ($types as $type) {
             $this->m_select2Options[$type] = $options;
         }
 
