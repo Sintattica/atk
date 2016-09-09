@@ -1,4 +1,4 @@
-{atkconfig var="theme_logo" smartyvar="theme_logo"}
+{atkconfig var="brand_logo" smartyvar="brand_logo"}
 {atkconfig var="dispatcher" smartyvar="dispatcher"}
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -9,13 +9,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            {if empty($theme_logo)}
+            {if empty($brand_logo)}
                 <a class="navbar-brand" href="./">
                     {$app_title}
                 </a>
             {else}
-                <a class="navbar-brand has-logo" href="./">
-                    <img border="0" src="{$theme_logo}" alt="Logo"/>
+                <a class="navbar-brand has-logo" href="{$dispatcher}">
+                    <img border="0" src="{$brand_logo}" alt="{$app_title}"/>
                 </a>
             {/if}
         </div>

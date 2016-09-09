@@ -785,6 +785,7 @@ return [
      * logo
      */
     'login_logo' => $_configAssetsUrl.'images/login_logo.jpg',
+    'brand_logo' =>  '',
 
     /*
      * icons
