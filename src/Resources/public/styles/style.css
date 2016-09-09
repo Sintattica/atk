@@ -9595,4 +9595,8 @@ select.select-standard {
   .ExportHandler .attributes-group .attributes-checkbox-container {
     margin-top: 5px; }
 
+.form-signin {
+  max-width: 330px;
+  margin: 0 auto; }
+
 /*# sourceMappingURL=style.css.map */
