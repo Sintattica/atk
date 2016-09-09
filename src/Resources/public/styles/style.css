@@ -9363,22 +9363,29 @@ table.recordList {
       table.recordList tr td .actions .btn:last-child, table.recordList tr td .actions a.atkmanytoonerelation-link:last-child {
         margin-right: 0; }
 
+.table {
+  margin-bottom: 0; }
+
 .recordListContainer {
   width: 100%;
   overflow: auto; }
 
-.table {
-  margin-bottom: 9.5px; }
+.datagrid-paginator-navigation > div {
+  margin: 0 0 0 10px;
+  padding: 0;
+  display: inline-block;
+  vertical-align: top; }
+  .datagrid-paginator-navigation > div:first-child {
+    margin: 0; }
 
-ul.pagination {
-  margin-top: 0;
-  margin-bottom: 9.5px;
-  float: left; }
+.datagrid-paginator-navigation .pagination {
+  margin: 0; }
 
-.dglimit, .dgridsummary {
-  margin-bottom: 9.5px;
-  float: right;
-  display: block; }
+.datagrid-paginator-navigation.bottom {
+  margin-top: 8px; }
+
+.list-header {
+  min-height: 30px; }
 
 A.atksection {
   display: block;
@@ -9630,7 +9637,7 @@ select.select-standard {
     display: none !important; }
   .panel-body .list-header, .panel-body .list-navbar, .panel-body .list-footer {
     display: none !important; }
-  .panel-body .datagrid-paginator-limit, .panel-body .datagrid-paginator-summary {
+  .panel-body .datagrid-paginator-navigation {
     display: none !important; }
   .panel-body .recordListThFirst, .panel-body .recordListTdFirst {
     display: none !important; }

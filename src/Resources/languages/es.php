@@ -90,6 +90,7 @@ return [
     'datagrid_norecordsfound_general' => 'No se ha encontrado ningún resultado.',
     'datagrid_norecordsfound_search' => 'No se ha encontrado resultados para esa búsqueda.',
     'datagrid_summary' => '(Registros [start] - [end] de [count])',
+    'datagrid_dglimit' => '',
     'date_format_edit' => 'j F Y',
     'date_format_view' => 'j F Y',
     'db_access_denied_database' => "El usuario '%s' no tiene derechos en la base de datos '%s'",

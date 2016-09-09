@@ -75,6 +75,7 @@ return [
     'datagrid_norecordsfound_general' => 'No records found.',
     'datagrid_norecordsfound_search' => 'No results found.',
     'datagrid_summary' => '([start]-[end] of [count])',
+    'datagrid_dglimit' => '',
     'date_monday_first' => false,
     'date_format_edit' => 'j F Y',
     'date_format_view' => 'd/m/Y',

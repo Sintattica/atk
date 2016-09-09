@@ -93,6 +93,7 @@ return [
     'datagrid_norecordsfound_search' => 'No results found for the current search query.',
     // Missing string!!!
     'datagrid_summary' => '(Records [start] - [end] of [count])',
+    'datagrid_dglimit' => '',
     // Missing string!!!
     'date_format_edit' => 'j F Y',
     'date_format_view' => 'j F Y',

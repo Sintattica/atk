@@ -51,6 +51,6 @@ class DataGridSummary extends DataGridComponent
         $parser = new StringParser($string);
         $result = $parser->parse($params);
 
-        return '<span class="dgridsummary">'.$result.'</span>';
+        return '<div class="dgridsummary">'.$result.'</div>';
     }
 }

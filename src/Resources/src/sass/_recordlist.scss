@@ -75,9 +75,12 @@ table.recordList {
           }
         }
       }
-
     }
   }
+}
+
+.table {
+  margin-bottom: 0;
 }
 
 .recordListContainer {
@@ -85,18 +88,28 @@ table.recordList {
   overflow: auto;
 }
 
-.table {
-  margin-bottom: $line-height-computed/2;
+.datagrid-paginator-navigation {
+
+  > div {
+    margin: 0 0 0 10px;
+    padding: 0;
+    display: inline-block;
+    vertical-align: top;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+
+  .pagination {
+    margin: 0;
+  }
+
+  &.bottom {
+   margin-top: 8px;
+  }
 }
 
-ul.pagination {
-  margin-top: 0;
-  margin-bottom: $line-height-computed/2;
-  float: left;
-}
-
-.dglimit, .dgridsummary {
-  margin-bottom: $line-height-computed/2;
-  float: right;
-  display: block;
+.list-header {
+  min-height: 30px;
 }
