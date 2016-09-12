@@ -97,13 +97,13 @@ table.recordList {
 
   > div {
     line-height: 28px;
-    margin: 0 0 0 10px;
+    margin: 0 10px 0 0;
     padding: 0;
     display: inline-block;
     vertical-align: top;
 
-    &:first-child {
-      margin: 0;
+    &:last-child {
+      margin: 0 0 0 0;
     }
   }
 

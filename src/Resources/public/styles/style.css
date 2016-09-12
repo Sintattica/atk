@@ -9318,12 +9318,12 @@ table.recordList {
   position: relative; }
   .datagrid-paginator-navigation > div {
     line-height: 28px;
-    margin: 0 0 0 10px;
+    margin: 0 10px 0 0;
     padding: 0;
     display: inline-block;
     vertical-align: top; }
-    .datagrid-paginator-navigation > div:first-child {
-      margin: 0; }
+    .datagrid-paginator-navigation > div:last-child {
+      margin: 0 0 0 0; }
   .datagrid-paginator-navigation .pagination {
     margin: 0; }
   .datagrid-paginator-navigation.bottom {
