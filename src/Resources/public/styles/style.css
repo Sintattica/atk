@@ -9519,6 +9519,10 @@ ul {
 #top-logout {
   margin-right: 5px; }
 
+.row.section-item > label, .row.section-item > .fieldlabel {
+  padding-right: 0;
+  font-weight: bold; }
+
 .tabsContent {
   margin-top: 10px; }
 
