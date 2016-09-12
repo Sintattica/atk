@@ -42,6 +42,9 @@ table.recordList {
       .search-buttons {
         display: block;
         // white-space: nowrap;
+        a {
+          text-decoration: none;
+        }
       }
 
     }
@@ -90,7 +93,10 @@ table.recordList {
 
 .datagrid-paginator-navigation {
 
+  position: relative;
+
   > div {
+    line-height: 28px;
     margin: 0 0 0 10px;
     padding: 0;
     display: inline-block;
@@ -105,9 +111,18 @@ table.recordList {
     margin: 0;
   }
 
+  &.top {
+  }
+
   &.bottom {
    margin-top: 8px;
   }
+
+  .dglimit label {
+    line-height: 28px;
+    font-weight: normal;
+  }
+
 }
 
 .list-header {
