@@ -149,6 +149,7 @@ div.panel-heading {
 .navbar-brand {
   img {
     max-height: 50px;
+    margin-left: 15px;
   }
   &.has-logo {
     padding: 0;
@@ -184,4 +185,8 @@ hr {
 ul {
   list-style-position: outside;
   padding-left: 20px;
+}
+
+#top-logout {
+  margin-right: 5px;
 }

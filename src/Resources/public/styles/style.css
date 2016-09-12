@@ -9539,7 +9539,8 @@ div.panel-heading {
   color: #808080; }
 
 .navbar-brand img {
-  max-height: 50px; }
+  max-height: 50px;
+  margin-left: 15px; }
 
 .navbar-brand.has-logo {
   padding: 0; }
@@ -9566,6 +9567,9 @@ hr {
 ul {
   list-style-position: outside;
   padding-left: 20px; }
+
+#top-logout {
+  margin-right: 5px; }
 
 .tabsContent {
   margin-top: 10px; }
