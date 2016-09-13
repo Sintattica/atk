@@ -229,8 +229,6 @@ class ManyToOneRelation extends Relation
 
     public $m_search_by_pk = false;
 
-    protected $m_select2Options = ['edit' => [], 'search' => []];
-
     /**
      * Constructor.
      *
@@ -2309,27 +2307,5 @@ class ManyToOneRelation extends Relation
         }
 
         return false;
-    }
-
-    /**
-     * @param $options
-     * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
-     * @return $this
-     */
-    public function setSelect2Options($options, $types = null)
-    {
-        if ($types == null) {
-            $types = array_keys($this->m_select2Options);
-        }
-
-        if (!is_array($types)) {
-            $types = [$types];
-        }
-
-        foreach ($types as $type) {
-            $this->m_select2Options[$type] = $options;
-        }
-
-        return $this;
     }
 }

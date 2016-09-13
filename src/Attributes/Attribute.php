@@ -562,6 +562,8 @@ class Attribute
      */
     public $m_width;
 
+    protected $m_select2Options = ['edit' => [], 'search' => []];
+
     /**
      * Constructor.
      *
@@ -2980,5 +2982,26 @@ class Attribute
     public function __toString()
     {
         return $this->m_ownerInstance->atkNodeUri().'::'.$this->fieldName();
+    }
+
+    /**
+     * @param $options
+     * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
+     * @return $this
+     */
+    public function setSelect2Options($options, $types = null) {
+        if($types == null) {
+            $types = array_keys($this->m_select2Options);
+        }
+
+        if(!is_array($types)){
+            $types = [$types];
+        }
+
+        foreach($types as $type) {
+            $this->m_select2Options[$type] = $options;
+        }
+
+        return $this;
     }
 }

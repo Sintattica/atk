@@ -9324,8 +9324,11 @@ table.recordList {
     vertical-align: top; }
     .datagrid-paginator-navigation > div:last-child {
       margin: 0 0 0 0; }
-  .datagrid-paginator-navigation .pagination {
+  .datagrid-paginator-navigation ul.pagination {
+    display: block;
     margin: 0; }
+  .datagrid-paginator-navigation.top {
+    margin-bottom: 8px; }
   .datagrid-paginator-navigation.bottom {
     margin-top: 8px; }
   .datagrid-paginator-navigation .dglimit label {

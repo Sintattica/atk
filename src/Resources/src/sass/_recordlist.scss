@@ -107,11 +107,13 @@ table.recordList {
     }
   }
 
-  .pagination {
+  ul.pagination {
+    display: block;
     margin: 0;
   }
 
   &.top {
+    margin-bottom: 8px;
   }
 
   &.bottom {

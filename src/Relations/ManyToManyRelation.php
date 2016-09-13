@@ -743,10 +743,28 @@ class ManyToManyRelation extends Relation
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
 
+        $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['minimum-results-for-search'] = 10;
+        if ($extended) {
+            $selectOptions['placeholder'] = Tools::atktext('search_all');
+        }
+
+        //width always auto
+        $selectOptions['width'] = 'auto';
+
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
+        $data = '';
+        foreach ($selectOptions as $k => $v) {
+            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+
+
         // now select all records
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey))->getAllRows();
-        $result = '<select class="form-control"';
+        $result = '<select class="form-control"'.$data;
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, count($recordset) + 1).'"';
         }
@@ -769,6 +787,7 @@ class ManyToManyRelation extends Relation
             $result .= '<option value="'.$pk.'"'.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]).'</option>';
         }
         $result .= '</select>';
+        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
