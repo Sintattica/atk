@@ -9,23 +9,23 @@ class Menu
 {
     protected $menuItems = [];
 
-    private $format_submenuparent = '
+    protected $format_submenuparent = '
             <li>
                 <a href="#">%s <span class="caret"></span></a>
                 <ul class="dropdown-menu">%s</ul>
             <li>
         ';
 
-    private $format_submenuchild = '
+    protected $format_submenuchild = '
             <li>
                 <a href="#">%s <span class="caret"></span></a>
                 <ul class="dropdown-menu">%s</ul>
             <li>
         ';
 
-    private $format_menu = '<ul class="nav navbar-nav">%s</ul>';
+    protected $format_menu = '<ul class="nav navbar-nav">%s</ul>';
 
-    private $format_single = '<li><a href="%s">%s</a></li>';
+    protected $format_single = '<li><a href="%s">%s</a></li>';
 
     /**
      * Get new menu object.
@@ -98,7 +98,7 @@ class Menu
         return sprintf($this->format_menu, $html_menu);
     }
 
-    private function processMenu($menu, $child = false)
+    protected function processMenu($menu, $child = false)
     {
         $html = '';
 
@@ -223,7 +223,7 @@ class Menu
         }
     }
 
-    private function parseItems(&$items)
+    protected function parseItems(&$items)
     {
         foreach ($items as &$item) {
             $this->parseItem($item);
@@ -232,7 +232,7 @@ class Menu
         return $items;
     }
 
-    private function parseItem(&$item)
+    protected function parseItem(&$item)
     {
         if ($item['enable'] && array_key_exists($item['name'], $this->menuItems)) {
             $item['submenu'] = $this->parseItems($this->menuItems[$item['name']]);
