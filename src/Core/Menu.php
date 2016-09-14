@@ -37,7 +37,7 @@ class Menu
         static $s_instance = null;
         if ($s_instance == null) {
             Tools::atkdebug('Creating a new menu instance');
-            $s_instance = new self();
+            $s_instance = new static();
         }
 
         return $s_instance;
