@@ -108,24 +108,6 @@ class IndexPage
     }
 
     /**
-     * Generate the menu.
-     */
-    public function atkGenerateMenu()
-    {
-        /* general menu stuff */
-        /* load menu layout */
-        /** @var Menu $menuClass */
-        $menuClass = Config::getGlobal('menu');
-        $menu = $menuClass::getInstance();
-
-        if (is_object($menu)) {
-            $this->m_page->addContent($menu->getMenu());
-        } else {
-            Tools::atkerror('no menu object created!');
-        }
-    }
-
-    /**
      * Set the title of the page.
      *
      * @param string $title
