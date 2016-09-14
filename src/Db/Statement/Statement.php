@@ -73,6 +73,13 @@ abstract class Statement implements IteratorAggregate
      */
     private $m_affectedRowCount = 0;
 
+
+    public $errno;
+
+    public $error;
+
+    public $m_db;
+
     /**
      * Constructs a new statement for the given query.
      *
@@ -176,7 +183,7 @@ abstract class Statement implements IteratorAggregate
     /**
      * Fetches the next row from the result set.
      *
-     * @return array next row from the result set (false if no other rows exist)
+     * @return array|false next row from the result set (false if no other rows exist)
      */
     abstract protected function _fetch();
 
@@ -323,9 +330,9 @@ abstract class Statement implements IteratorAggregate
 
         if ($row = $this->fetch()) {
             return $row;
-        } else {
-            return;
         }
+
+        return null;
     }
 
     /**

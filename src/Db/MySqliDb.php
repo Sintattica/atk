@@ -103,6 +103,8 @@ class MySqliDb extends Db
     /**
      * Translates known database errors to developer-friendly messages.
      *
+     * @param int $errno
+     *
      * @return int Flag of the error
      */
     public function _translateError($errno = null)
@@ -158,10 +160,12 @@ class MySqliDb extends Db
      *
      * @param string $string
      * @param bool $wildcard
+     *
+     * @return string
      */
     public function escapeSQL($string, $wildcard = false)
     {
-        if ($this->connect('r') === self::DB_SUCCESS) {
+        if ($this->connect() === self::DB_SUCCESS) {
             if ($wildcard == true) {
                 $string = str_replace('%', '\%', $string);
             }
@@ -169,7 +173,7 @@ class MySqliDb extends Db
             return mysqli_real_escape_string($this->m_link_id, $string);
         }
 
-        return;
+        return '';
     }
 
     /**
@@ -178,6 +182,8 @@ class MySqliDb extends Db
      * @param string $query the query
      * @param int $offset offset in record list
      * @param int $limit maximum number of records
+     *
+     * @return bool
      */
     public function query($query, $offset = -1, $limit = -1)
     {
@@ -188,7 +194,7 @@ class MySqliDb extends Db
 
         /* connect to database */
         $mode = $this->getQueryMode($query);
-        if ($this->connect($mode) == self::DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* free old results */
             if ($this->m_query_id) {
                 if (is_object($this->m_query_id)) {
@@ -244,6 +250,8 @@ class MySqliDb extends Db
      *
      * @param string $query query
      * @param bool $isSystemQuery is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     *
+     * @return mixed
      */
     protected function _query($query, $isSystemQuery)
     {
@@ -359,7 +367,7 @@ class MySqliDb extends Db
     public function lock($table, $mode = 'write')
     {
         /* connect first */
-        if ($this->connect('w') == self::DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* lock */
             $query = "LOCK TABLES $table $mode";
 
@@ -388,7 +396,7 @@ class MySqliDb extends Db
     public function unlock()
     {
         /* connect first */
-        if ($this->connect('w') == self::DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* unlock */
             Tools::atkdebug('unlock tables');
             $result = $this->_query('UNLOCK TABLES', true);
@@ -448,7 +456,7 @@ class MySqliDb extends Db
     public function nextid($sequence)
     {
         /* first connect */
-        if ($this->connect('w') == self::DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             /* lock sequence table */
             if ($this->lock($this->m_seq_table)) {
                 /* get sequence number (locked) and increment */
@@ -460,7 +468,7 @@ class MySqliDb extends Db
                 /* no current value, make one */
                 if (!is_array($result)) {
                     $query = 'INSERT INTO '.$this->m_seq_table." VALUES('$sequence', 1)";
-                    $id = $this->_query($query, true);
+                    $this->_query($query, true);
                     $this->unlock();
 
                     return 1;
@@ -468,7 +476,7 @@ class MySqliDb extends Db
                     $nextid = $result[$this->m_seq_field] + 1;
                     $query = 'UPDATE '.$this->m_seq_table.' SET '.$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
 
-                    $id = $this->_query($query, true);
+                    $this->_query($query, true);
                     $this->unlock();
 
                     return $nextid;
@@ -502,7 +510,7 @@ class MySqliDb extends Db
      */
     public function tableExists($table)
     {
-        $this->connect('r');
+        $this->connect();
         if (strpos($table, '.') !== false) {
             list($dbname, $tablename) = explode('.', $table);
             $id = $this->_query('SHOW TABLES FROM `'.$dbname."` LIKE '".$tablename."'", true);
@@ -590,7 +598,7 @@ class MySqliDb extends Db
      */
     public function _getTableType($table)
     {
-        $this->connect('r');
+        $this->connect();
         $id = $this->_query("SHOW TABLE STATUS LIKE '".$table."'", true);
         $status = @mysqli_fetch_array($id, MYSQLI_ASSOC);
         $result = $status != null && isset($status['Engine']) ? $status['Engine'] : null;
@@ -610,7 +618,7 @@ class MySqliDb extends Db
     public function metadata($table, $full = false)
     {
         /* first connect */
-        if ($this->connect('r') == self::DB_SUCCESS) {
+        if ($this->connect() == self::DB_SUCCESS) {
             $ddl = Ddl::create('MySqli');
 
             /* list fields */
@@ -753,6 +761,8 @@ class MySqliDb extends Db
      * Rollback the the current transaction.
      *
      * @param string $savepoint The savepoint to rollback to
+     *
+     * @return bool
      */
     public function rollback($savepoint = '')
     {

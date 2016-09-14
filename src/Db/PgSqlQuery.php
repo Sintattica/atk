@@ -19,7 +19,7 @@ class PgSqlQuery extends Query
      *
      * @return Query The query object (for fluent usage)
      */
-    public function addJoin($table, $alias, $condition, $outer)
+    public function addJoin($table, $alias, $condition, $outer = false)
     {
         if ($outer) {
             $join = 'LEFT JOIN ';

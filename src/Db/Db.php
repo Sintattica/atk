@@ -285,7 +285,7 @@ class Db
      * no mapping is set the given name will be returned.
      *
      * @param string $name database name
-     * @static
+     * @return string
      */
     public static function getTranslatedDatabaseName($name)
     {
@@ -297,7 +297,7 @@ class Db
     /**
      * Get or set the database mapping.
      *
-     * @param array $mapping database mapping
+     * @param string $mapping database mapping
      *
      * @return mixed current database mapping (null if inactive)
      * @static
@@ -494,6 +494,7 @@ class Db
         if ($this->m_haltonerror) {
             if ($this->getErrorType() === 'system') {
                 Tools::atkdebug(__CLASS__.'::halt() on system error');
+                $level = 'warning';
                 if (!in_array($this->m_errno, $this->m_user_error)) {
                     $level = 'critical';
                 }
@@ -548,12 +549,10 @@ class Db
     /**
      * Connect to the database.
      *
-     * @param string $mode The mode to connect
-     *
      * @return int Connection status
      * @abstract
      */
-    public function connect($mode = 'rw')
+    public function connect()
     {
         if ($this->m_link_id == null) {
             Tools::atkdebug("db::connect -> Don't switch use current db");
@@ -593,7 +592,7 @@ class Db
      *
      * @return int ATK error code
      */
-    public function _translateError($errno)
+    public function _translateError($errno = null)
     {
         return self::DB_UNKNOWNERROR;
     }
@@ -728,7 +727,7 @@ class Db
      */
     public function affected_rows()
     {
-        return [];
+        return 0;
     }
 
     /**
@@ -1012,6 +1011,7 @@ class Db
     {
         $tmpfile = new TmpFile('tablemeta/'.$this->m_connection.'/'.$table.'.php');
 
+        $tablemeta = [];
         if ($tmpfile->exists()) {
             include $tmpfile->getPath();
         } else {
@@ -1058,6 +1058,7 @@ class Db
      * @param string $fieldname The database fieldname
      * @param int $startat The position to start from
      * @param int $length The number of characters
+     * @return string
      */
     public function func_substring($fieldname, $startat = 0, $length = 0)
     {
@@ -1430,7 +1431,7 @@ class Db
     /**
      * Check if current db is present and acceptable for current user.
      *
-     * @return self::DB_SUCCESS if
+     * @return mixed
      */
     public function getDbStatus()
     {
@@ -1475,6 +1476,6 @@ class Db
      */
     public function getInsertId()
     {
-        return;
+        return null;
     }
 }
