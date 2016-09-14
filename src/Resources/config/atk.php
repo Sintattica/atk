@@ -814,6 +814,7 @@ return [
     /****************** CLASSES ********************/
 
     'indexPage' => Sintattica\Atk\Ui\IndexPage::class,
+    'menu' => Sintattica\Atk\Core\Menu::class,
 
 
     /* ----------- CACHING CONFIGURATION ------------

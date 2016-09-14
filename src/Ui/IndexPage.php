@@ -79,7 +79,9 @@ class IndexPage
     public function generate()
     {
         if (!$this->hasFlag(Page::HTML_PARTIAL)) {
-            $menuObj = Menu::getInstance();
+            /** @var Menu $menuClass */
+            $menuClass = Config::getGlobal('menu');
+            $menuObj = $menuClass::getInstance();
 
             $top = $this->m_ui->renderBox(array(
                 'logintext' => Tools::atktext('logged_in_as'),
@@ -112,7 +114,9 @@ class IndexPage
     {
         /* general menu stuff */
         /* load menu layout */
-        $menu = Menu::getInstance();
+        /** @var Menu $menuClass */
+        $menuClass = Config::getGlobal('menu');
+        $menu = $menuClass::getInstance();
 
         if (is_object($menu)) {
             $this->m_page->addContent($menu->getMenu());

@@ -2,7 +2,6 @@
 
 namespace Sintattica\Atk\Core;
 
-use App\Modules\App\Module;
 use Dotenv\Dotenv;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
@@ -329,8 +328,11 @@ class Atk
             Tools::atkdebug("Constructing a new module - $name");
             $modClass = $this->g_modules[$name];
 
-            /* @var Module $module */
-            $menu = Menu::getInstance();
+            /** @var Menu $menuClass */
+            $menuClass = Config::getGlobal('menu');
+            $menu = $menuClass::getInstance();
+
+            /* @var \Sintattica\Atk\Core\Module $module */
             $module = new $modClass(self::$s_instance, $menu);
             $this->g_moduleRepository[$name] = $module;
             $module->register();
