@@ -795,7 +795,7 @@ return [
     'icon_canceled' => 'fa fa-times',
     'icon_copy' => 'fa fa-files-o',
     'icon_default' => 'fa fa-file-o',
-    'icon_delete' => 'fa fa-trash text-danger',
+    'icon_delete' => 'fa fa-trash-o text-danger',
     'icon_document' => 'fa fa-file-o',
     'icon_done' => 'fa fa-check',
     'icon_edit' => 'fa fa-pencil',
