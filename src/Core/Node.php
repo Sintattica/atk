@@ -208,12 +208,12 @@ class Node
 
     /*
      * reference to the class which is used to validate atknodes
-     * the validator is overridable by changing this variabele
+     * the validator is overridable by changing this variable
      *
      * @access private
      * @var String
      */
-    public $m_validate_class = 'Sintattica\Atk\Core\NodeValidator';
+    public $m_validate_class = NodeValidator::class;
 
     /*
      * Unique field sets of a certain node.
@@ -1091,7 +1091,7 @@ class Node
         if (isset($this->m_attribList)) {
             return $this->m_attribList;
         } else {
-            return;
+            return null;
         }
     }
 
@@ -2658,6 +2658,7 @@ class Node
      *                               confirmDelete() and call that method
      *                               instead.
      * @param bool $mergeSelectors Merge all selectors to one selector string (if more then one)?
+     * @param string $csrfToken
      *
      * @return string Complete html fragment containing a box with the
      *                confirmation page, or the output of the custom
@@ -2714,6 +2715,7 @@ class Node
         }
 
         $content = '';
+        $record = null;
         $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
         if (count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
@@ -2724,7 +2726,6 @@ class Node
             // show a list of affected records, at least if we can find a
             // descriptor_def method
             if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
-                $record = '';
                 $content .= '<ul>';
                 for ($i = 0, $_i = count($recs); $i < $_i; ++$i) {
                     $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
@@ -3215,6 +3216,7 @@ class Node
      */
     public function validate(&$record, $mode, $ignoreList = array())
     {
+        /** @var NodeValidator $validateObj */
         $validateObj = new $this->m_validate_class();
         $validateObj->setNode($this);
         $validateObj->setRecord($record);
@@ -3545,6 +3547,7 @@ class Node
                 $loadmode = $p_attrib->loadType('');
 
                 if ($loadmode && Tools::hasFlag($loadmode, Attribute::ADDTOQUERY)) {
+                    $fieldaliasprefix = '';
                     if ($usefieldalias) {
                         $fieldaliasprefix = $alias.'_AE_';
                     }
@@ -3589,6 +3592,7 @@ class Node
             if (!is_object($p_attrib)) {
                 continue;
             }
+            $fieldaliasprefix = '';
 
             if ($usefieldalias) {
                 $fieldaliasprefix = $alias.'_AE_';
@@ -3604,10 +3608,7 @@ class Node
             } else {
                 // checking for the getSearchCondition for backwards compatibility
                 if (method_exists($p_attrib, 'getSearchCondition')) {
-                    $attribsearchmode = $searchmode;
-                    if (is_array($searchmode)) {
-                        $attribsearchmode = $attribsearchmode[$p_attrib->m_name];
-                    }
+
                     Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
                     $searchCondition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
                     if ($searchCondition != '') {

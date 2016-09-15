@@ -21,6 +21,8 @@ class Atk
     public $g_nodeHandlers = [];
     public $g_nodeListeners = [];
     private $environment;
+
+    /** @var static $s_instance */
     public static $s_instance;
 
     public function __construct($environment, $basedir)

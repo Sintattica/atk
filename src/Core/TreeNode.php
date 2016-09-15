@@ -359,14 +359,14 @@ class TreeNode extends Node
                 $currentlevel = (isset($this->m_tree[$cnt]['level']) ? $this->m_tree[$cnt]['level'] : 0);
                 $nextlevel = (isset($this->m_tree[$cnt + 1]['level']) ? $this->m_tree[$cnt + 1]['level'] : 0);
 
-                /*                 * ************************************* */
+                /****************************************/
                 /* start new row                        */
-                /*                 * ************************************* */
+                /****************************************/
                 $res .= '<tr>';
 
-                /*                 * ************************************* */
+                /****************************************/
                 /* vertical lines from higher levels    */
-                /*                 * ************************************* */
+                /****************************************/
                 $i = 0;
                 while ($i < $this->m_tree[$cnt]['level'] - 1) {
                     if ($levels[$i] == 1) {
@@ -377,9 +377,9 @@ class TreeNode extends Node
                     ++$i;
                 }
 
-                /*                 * ************************************* */
-                /* corner at end of subtree or t-split  */
-                /*                 * ************************************* */
+                /***************************************/
+                /* corner at end of subtree or t-split */
+                /***************************************/
                 if ($this->m_tree[$cnt]['isleaf'] == 1 && $nextlevel < $currentlevel) {
                     if ($cnt != 0) {
                         $res .= '<td><img src="'.$img_end."\" border=0></td>\n";
