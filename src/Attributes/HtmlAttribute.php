@@ -38,6 +38,7 @@ class HtmlAttribute extends TextAttribute
      * Returns a displayable string for this value.
      *
      * @param array $record Array wit fields
+     * @param string $mode
      *
      * @return string Formatted string
      */

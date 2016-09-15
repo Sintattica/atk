@@ -132,6 +132,7 @@ class FieldSet extends Attribute
 
         foreach ($fields as $attrName) {
             $attr = $this->getOwnerInstance()->getAttribute($attrName);
+            $field = '';
 
             // render the field
             if ($type == 'edit') {

@@ -3,8 +3,8 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
@@ -46,12 +46,9 @@ class FuzzySearchAttribute extends Attribute
      */
     public $m_matches = [];
 
-    /*
-     * An instance of the node we are searching on
-     * @var Node
-     * @access private
-     */
-    public $m_searchnodeInstance = null;
+
+    /** @var Node $m_searchnodeInstance An instance of the node we are searching on */
+    public $m_searchnodeInstance;
 
     /*
      * @var String Filter for destination records.
@@ -168,6 +165,7 @@ class FuzzySearchAttribute extends Attribute
 
         if ($select && $this->createSearchNodeInstance()) {
             $res = '';
+            $notempty = false;
 
             // First lets get the results, which were lost during the redirect
             $this->m_matches = $this->getMatches($record[$this->fieldName()]);
@@ -186,8 +184,7 @@ class FuzzySearchAttribute extends Attribute
             }
 
             if ($this->m_mode == 'multiselect' && count($this->m_matches) > 1) {
-                // Select multiple records from all matches
-                $checkboxes = [];
+                $optionArray = $valueArray = [];
 
                 foreach ($this->m_matches as $keyword => $matches) {
                     for ($i = 0, $_i = count($matches); $i < $_i; ++$i) {
@@ -391,39 +388,29 @@ class FuzzySearchAttribute extends Attribute
         return [];
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
     public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
+        //Dummy method to prevent loading/storing of data.
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
+        //Dummy method to prevent loading/storing of data.
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
     public function fetchMeta($metadata)
     {
+        //Dummy method to prevent loading/storing of data.
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
     public function dbFieldSize()
     {
+        // Dummy method to prevent loading/storing of data.
     }
 
-    /**
-     * Dummy method to prevent loading/storing of data.
-     */
     public function dbFieldType()
     {
+        //Dummy method to prevent loading/storing of data.
     }
 
     /**

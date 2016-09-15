@@ -331,6 +331,7 @@ class TimeAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string piece of html code with a checkbox
      */
@@ -433,6 +434,7 @@ class TimeAttribute extends Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldname
      *
      * @return string The searchcondition to use.
      */

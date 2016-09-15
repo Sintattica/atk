@@ -86,6 +86,7 @@ class DummyAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string A piece of html-code
      */
@@ -99,6 +100,7 @@ class DummyAttribute extends Attribute
      * Here it will only return the text.
      *
      * @param array $record Array with fields
+     * @param string $mode
      *
      * @return string Text
      */

@@ -168,6 +168,9 @@ class DateAttribute extends Attribute
         $min = 0;
         $sec = 0;
         $dateValid = true;
+        $month = false;
+        $day = false;
+        $year = false;
 
         if (!empty($dateArray['hour'])) {
             $hour = $dateArray['hour'];
@@ -196,9 +199,9 @@ class DateAttribute extends Attribute
 
         if ($dateValid) {
             return adodb_mktime($hour, $min, $sec, $month, $day, $year);
-        } else {
-            return adodb_mktime(0, 0, 0);
         }
+
+        return adodb_mktime(0, 0, 0);
     }
 
     /**
@@ -438,7 +441,7 @@ class DateAttribute extends Attribute
     /**
      * Renders the day dropdown.
      *
-     * @param string fieldid
+     * @param string $fieldid
      * @param string $fieldname current fieldname
      * @param string $str_script onchange script
      * @param array $current current array
@@ -490,7 +493,7 @@ class DateAttribute extends Attribute
      *
      * @param array $record Array with 3 fields (year, month, day)
      * @param string $id html id
-     * @parame string $name html name
+     * @param string $name html name
      * @param string $fieldprefix The fieldprefix
      * @param string $postfix
      * @param string $mode The mode ('add' or 'edit')
@@ -612,6 +615,7 @@ class DateAttribute extends Attribute
 
         /* small date selections, never possible is field isn't obligatory (no min/max date) */
         if (!empty($maximum) && !empty($minimum) && $str_max - $str_min < 25) {
+            $str_script = '';
             if (count($this->m_onchangecode)) {
                 $this->_renderChangeHandler($fieldprefix);
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
@@ -858,6 +862,7 @@ class DateAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string piece of HTML code
      */
@@ -1024,6 +1029,7 @@ class DateAttribute extends Attribute
         $db = $this->getDb();
         $fromvalue = $this->_MakeDateForCondition($value['from']);
         $tovalue = $this->_MakeDateForCondition($value['to']);
+        $datearraysearchcondition = '';
 
         if ($fromvalue != '') {
             $field = $db->func_datetochar($table.'.'.$this->fieldName(), $this->_SetDateFormat($value['from']));
@@ -1118,12 +1124,12 @@ class DateAttribute extends Attribute
      *
      * @param array $rec database record with date field
      *
-     * @return array with 3 fields (year, month, day)
+     * @return array|null array with 3 fields (year, month, day) or null
      */
     public function db2value($rec)
     {
         if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) {
-            return;
+            return null;
         }
 
         return array(
@@ -1138,12 +1144,12 @@ class DateAttribute extends Attribute
      *
      * @param array $postvars the HTTP post vars
      *
-     * @return array with 3 fields (year, month, day)
+     * @return array|null with 3 fields (year, month, day) or null
      */
     public function fetchValue($postvars)
     {
         if (!is_array($postvars) || !isset($postvars[$this->fieldName()])) {
-            return;
+            return null;
         }
 
         $value = $postvars[$this->fieldName()];
@@ -1156,7 +1162,7 @@ class DateAttribute extends Attribute
         // array with year / month / day
         if (is_array($value)) {
             if (empty($value['year']) || empty($value['month']) || empty($value['day'])) {
-                return;
+                return null;
             } else {
                 return $value;
             }
@@ -1184,7 +1190,7 @@ class DateAttribute extends Attribute
             }
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -1194,11 +1200,12 @@ class DateAttribute extends Attribute
      *                       Errors are saved in this record
      * @param string $mode can be either "add" or "update"
      *
-     * @return array $record
+     * @return array|null $record or null
      */
     public function validate(&$record, $mode)
     {
         $value = &$record[$this->fieldName()];
+        $current = 0;
 
         /* array or no array */
         if (!is_array($value)) {
@@ -1207,7 +1214,7 @@ class DateAttribute extends Attribute
 
         /* if not obligatory and one of the fields is null then the date will be saved as null */
         if (!$this->hasFlag(self::AF_OBLIGATORY) && (empty($value['year']) || empty($value['month']) || empty($value['day']))) {
-            return;
+            return null;
         }
 
         // If one of the fields is not filled, we don't check
@@ -1218,18 +1225,18 @@ class DateAttribute extends Attribute
             } else {
                 Tools::triggerError($record, $this->fieldName(), 'error_date_invalid');
 
-                return;
+                return null;
             }
         }
 
         /* allright, if not obligatory, and we have come all this way, we'll bail out */
         if (!$this->hasFlag(self::AF_OBLIGATORY)) {
-            return;
+            return null;
         } else {
             if ($value['year'] == '' || $value['month'] == 0 || $value['day'] == 0) {
                 Tools::triggerError($record, $this->fieldName(), 'error_obligatoryfield');
 
-                return;
+                return null;
             }
         }
 
@@ -1240,8 +1247,6 @@ class DateAttribute extends Attribute
             $date = self::dateArray($str_min);
             if ($this->checkDateArray($date)) {
                 $minimum = adodb_mktime(0, 0, 0, $date['month'], $date['day'], $date['year']);
-            } else {
-                $str_min = 0;
             }
         }
 
@@ -1252,8 +1257,6 @@ class DateAttribute extends Attribute
             $date = self::dateArray($str_max);
             if ($this->checkDateArray($date)) {
                 $maximum = adodb_mktime(0, 0, 0, $date['month'], $date['day'], $date['year']);
-            } else {
-                $str_max = 0;
             }
         }
 
@@ -1262,7 +1265,7 @@ class DateAttribute extends Attribute
             Tools::triggerError($record, $this->fieldName(), 'error_date_minimum',
                 Tools::atktext('error_date_minimum').' '.$this->formatDate(adodb_getdate($minimum), $this->m_date_format_view, 0));
 
-            return;
+            return null;
         }
 
         /* date > maximum */
@@ -1276,6 +1279,7 @@ class DateAttribute extends Attribute
      * Function display's the date.
      *
      * @param array $record array with date
+     * @param string $mode
      *
      * @return string formatted date string
      */

@@ -142,6 +142,8 @@ class TabbedPane extends Attribute
      * @param array $defaults pointer to the default values array
      * @param array $error pointer to the error array
      * @param string $fieldprefix the fieldprefix
+     *
+     * @return array fields
      */
     public function _addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -212,8 +214,11 @@ class TabbedPane extends Attribute
 
             $tplfield['class'] = "tabbedPaneAttr tabbedPaneTab{$field['tabs']}";
 
+            /** @var Attribute $attr */
+            $attr = $field['attribute'];
+
             // Check if there are attributes initially hidden on this tabbedpane
-            if ($field['attribute']->isInitialHidden($record)) {
+            if ($attr->isInitialHidden()) {
                 $tplfield['class'] .= ' atkAttrRowHidden';
             }
 
@@ -254,16 +259,7 @@ class TabbedPane extends Attribute
                 $editsrc = $field['html'];
 
                 $tplfield['htmlid'] = $field['id'];
-
-                if (is_object($node->m_attribList[$field['name']])) {
-                    $module = $node->m_attribList[$field['name']]->getModule();
-                }
-                if (!$module) {
-                    $module = 'atk';
-                }
-
                 $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
-
                 $tplfield['full'] = $editsrc;
             }
             $fields[] = $tplfield; // make field available in numeric array
@@ -302,6 +298,7 @@ class TabbedPane extends Attribute
         // get active tab
         $active_tab = $this->getDefaultTab();
         $fields = [];
+        $tab = '';
 
         $node = $this->m_ownerInstance;
         $ui = $node->getUi();
@@ -332,11 +329,6 @@ class TabbedPane extends Attribute
                         $editsrc = $p_attrib->display($record, 'view');
                     }
 
-                    /* tooltip */
-                    $module = $p_attrib->getModule();
-                    if (!$module) {
-                        $module = 'atk';
-                    }
                     $tplfield['full'] = $editsrc;
                     $tplfield['widget'] = $editsrc; // in view mode, widget and full are equal
                     // The Label of the attribute (can be suppressed with self::AF_NOLABEL or self::AF_BLANKLABEL)
@@ -434,10 +426,12 @@ class TabbedPane extends Attribute
      * No function, but is neccesary.
      *
      * @param array $record
+     *
+     * @return null
      */
     public function db2value($record)
     {
-        return;
+        return null;
     }
 
     /**

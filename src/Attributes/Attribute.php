@@ -1504,6 +1504,7 @@ class Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string A piece of html-code
      */
@@ -1615,6 +1616,8 @@ class Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     *
+     * @param string $fieldaliasprefix
      */
     public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
@@ -1808,6 +1811,8 @@ class Attribute
      * Note, that the framework only calls this method if the attribute has
      * the self::AF_CASCADE_DELETE flag.
      *
+     * @param array $record
+     *
      * @return bool true if cleanup was successful, false otherwise.
      */
     public function delete($record)
@@ -1825,6 +1830,8 @@ class Attribute
      * deletes etc.
      * Note, that the framework only calls this method if the attribute has
      * the self::AF_CASCADE_DELETE flag.
+     *
+     * @param array $record
      *
      * @return bool true if cleanup was successful, false otherwise.
      */
@@ -2706,6 +2713,7 @@ class Attribute
      * Translate using the owner instance's module and type.
      *
      * @param string $string The string to be translated
+     * @param bool $fallback
      *
      * @return string The translated string.
      */

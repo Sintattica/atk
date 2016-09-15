@@ -868,8 +868,7 @@ class FileAttribute extends Attribute
     /**
      * Return the database field type of the attribute.
      *
-     * @return "string" which is the 'generic' type of the database field for
-     *                  this attribute.
+     * @return string "string" which is the 'generic' type of the database field for this attribute.
      */
     public function dbFieldType()
     {

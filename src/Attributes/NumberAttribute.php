@@ -646,7 +646,7 @@ class NumberAttribute extends Attribute
      * @param string $fieldname The name of the field in the database
      * @param array $value The processed search value
      *
-     * @return query where clause for searching
+     * @return string query where clause for searching
      */
     public function getBetweenCondition($query, $fieldname, $value)
     {
@@ -665,7 +665,7 @@ class NumberAttribute extends Attribute
             return $query->lessthanequalCondition($fieldname, $value['to']);
         }
 
-        return false;
+        return '';
     }
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')

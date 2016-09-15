@@ -37,7 +37,6 @@ class BoolAttribute extends Attribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param int $size Size for this attribute
      */
     public function __construct($name, $flags = 0)
     {
@@ -146,6 +145,7 @@ class BoolAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string piece of html code with a checkbox
      */
@@ -187,6 +187,7 @@ class BoolAttribute extends Attribute
      * Returns a displayable string for this value.
      *
      * @param array $record Array with boolean field
+     * @param string $mode
      *
      * @return string yes or no
      */

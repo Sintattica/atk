@@ -78,7 +78,7 @@ class EmailAttribute extends Attribute
         } else {
             if ($this->m_dnsSearch) {
                 //now check if domain exists, searches DNS for MX records
-                list($username, $domain) = explode('@', $email, 2);
+                list(, $domain) = explode('@', $email, 2);
                 if (!(self::validateAddressDomain($domain, false))) {
                     Tools::triggerError($record, $this->fieldName(), 'error_unkown_domain', Tools::atktext('error_unkown_domain').' '.$domain);
                 }
@@ -147,6 +147,11 @@ if (!function_exists('checkdnsrr')) {
      *
      * This is only used on Windows as on Linux environments this function
      * is native in PHP.
+     *
+     * @param string $hostName
+     * @param string $recType
+     *
+     * @return bool
      */
     function checkdnsrr($hostName, $recType = 'MX')
     {

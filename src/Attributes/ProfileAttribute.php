@@ -195,6 +195,7 @@ class ProfileAttribute extends Attribute
      * Retrieve all possible module/node actions.
      *
      * @param array $record The record
+     * @param bool $splitPerSection
      *
      * @return array Array with actions
      */
@@ -259,7 +260,6 @@ class ProfileAttribute extends Attribute
     public function getEditableActions($record)
     {
         $user = SecurityManager::atkGetUser();
-        $levels = '';
         if (!is_array($user['level'])) {
             $levels = "'".$user['level']."'";
         } else {
@@ -564,6 +564,7 @@ class ProfileAttribute extends Attribute
 
         $actions = [];
         for ($i = 0; $i < count($checkboxes); ++$i) {
+            $node = $action = null;
             $elems = explode('.', $checkboxes[$i]);
             if (count($elems) == 4) {
                 $node = $elems[1].'.'.$elems[2];
@@ -577,7 +578,9 @@ class ProfileAttribute extends Attribute
                     Tools::atkdebug('profileattribute encountered incomplete combination');
                 }
             }
-            $actions[$node][] = $action;
+            if($node && $action) {
+                $actions[$node][] = $action;
+            }
         }
 
         return $actions;

@@ -95,6 +95,7 @@ class FlagAttribute extends MultiSelectAttribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldname
      *
      * @return string The searchcondition to use.
      */
