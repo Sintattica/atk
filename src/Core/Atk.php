@@ -21,20 +21,18 @@ class Atk
     public $g_nodeHandlers = [];
     public $g_nodeListeners = [];
     private $environment;
-
-    /** @var $s_instance self */
-    public static $s_instance = null;
+    public static $s_instance;
 
     public function __construct($environment, $basedir)
     {
         global $g_startTime;
         $g_startTime = microtime(true);
 
-        if (self::$s_instance) {
+        if (static::$s_instance) {
             throw new \RuntimeException('Only one Atk app can be created');
         }
 
-        self::$s_instance = $this;
+        static::$s_instance = $this;
 
         $this->environment = $environment;
 
@@ -82,7 +80,7 @@ class Atk
         $modules = Config::getGlobal('modules');
         if (is_array($modules)) {
             foreach ($modules as $module) {
-                self::$s_instance->registerModule($module);
+                static::$s_instance->registerModule($module);
             }
         }
     }
@@ -90,15 +88,15 @@ class Atk
     /**
      * Get new Atk object.
      *
-     * @return self class object
+     * @return static class object
      */
     public static function getInstance()
     {
-        if (!is_object(self::$s_instance)) {
+        if (!is_object(static::$s_instance)) {
             throw new \RuntimeException('Atk instance not available');
         }
 
-        return self::$s_instance;
+        return static::$s_instance;
     }
 
     public function bootModules()
@@ -333,7 +331,7 @@ class Atk
             $menu = $menuClass::getInstance();
 
             /* @var \Sintattica\Atk\Core\Module $module */
-            $module = new $modClass(self::$s_instance, $menu);
+            $module = new $modClass(static::$s_instance, $menu);
             $this->g_moduleRepository[$name] = $module;
             $module->register();
         }
