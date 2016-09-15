@@ -67,13 +67,6 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         return $result;
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to search.
-     *
-     * @param array $record Record
-     *
-     * @return string Piece of html code that can  be used in a form to edit this
-     */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->createDestination();
@@ -120,11 +113,11 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      *
      * @return string The rendered tree
      */
-    public function render($tree = '', $level = 0)
+    public function render($tree = [], $level = 0)
     {
         $res = '';
         $i = 0;
-        while (list($id, $objarr) = each($tree)) {
+        while (list(, $objarr) = each($tree)) {
             ++$i;
             if ($this->m_current != $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") {
                 $this->m_level = $level;

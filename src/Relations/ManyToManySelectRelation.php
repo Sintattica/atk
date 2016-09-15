@@ -151,13 +151,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         $this->createDestination();
-
         $this->createLink();
-
         $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
-
         $id = $this->getHtmlId($fieldprefix);
         $selectId = "{$id}_selection";
+        $addLink = '';
 
         $selectedKeys = $this->getSelectedKeys($record, $id);
 
@@ -190,13 +188,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
             $result .= '</ul>';
         } else {
             if (!$addLink) {
-                $result .= '<i>'.$this->text('none').'</i>';
+                $addLink = '<i>'.$this->text('none').'</i>';
             }
         }
 
-        if ($addLink) {
-            $result .= $addLink;
-        }
+        $result .= $addLink;
 
         $result .= '</div>';
 
@@ -212,8 +208,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @param array $record The record that holds the value for this attribute.
      * @param string $id is the html id of the relation
-     * @param int $uniqueFilter is the type of array_unique filter to use on
-     *                             the results. Use boolean false to dissable
+     * @param mixed $enforceUnique is the type of array_unique filter to use on the results. Use boolean false to disable
      *
      * @return array of selected keys in the order they were submitted
      */
@@ -314,6 +309,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @param array $record selected record
      * @param string $fieldprefix field prefix
+     *
+     * @return string
      */
     protected function renderSelectedRecord($record, $fieldprefix)
     {
@@ -362,6 +359,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         // Call the renderButton action for those actions
         $actionLinks = [];
+        $actionLink = null;
         foreach ($actions as $action) {
             $actionLink = $this->getActionLink($action, $record);
             if ($actionLink != null) {
@@ -462,8 +460,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Render addition field.
      *
+     * @param array $record
      * @param string $fieldprefix field prefix
      * @param string $mode
+     *
+     * @return string
      */
     protected function renderAdditionField($record, $fieldprefix, $mode)
     {
@@ -531,16 +532,6 @@ class ManyToManySelectRelation extends ManyToManyRelation
     }
 
     /**
-     * Set the case-sensitivity for the autocompletion search (true or false).
-     *
-     * @param array $caseSensitive
-     */
-    public function setAutoCompleteCaseSensitive($caseSensitive)
-    {
-        $this->getManyToOneRelation()->setAutoCaseSensitive($caseSensitive);
-    }
-
-    /**
      * Sets the minimum number of characters before auto-completion kicks in.
      *
      * @param int $chars
@@ -554,6 +545,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * Adds a filter value to the destination filter.
      *
      * @param string $filter
+     *
+     * @return ManyToOneRelation
      */
     public function addDestinationFilter($filter)
     {

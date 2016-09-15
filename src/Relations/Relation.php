@@ -6,7 +6,6 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Core\TreeNode;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Db\Query;
 
@@ -121,6 +120,8 @@ class Relation extends Attribute
      * Adds a filter value to the destination filter.
      *
      * @param string $filter Filter to be added to the destination filter.
+     *
+     * @return $this
      */
     public function addDestinationFilter($filter)
     {
@@ -244,13 +245,6 @@ class Relation extends Attribute
         return true;
     }
 
-    /**
-     * Return a displayable string for a record.
-     *
-     * @param array $record The record that contains the information to display.
-     *
-     * @return string a displayable string for this value.
-     */
     public function display($record, $mode)
     {
         return $record[$this->fieldName()];
@@ -357,8 +351,7 @@ class Relation extends Attribute
     /**
      * Returns an instance of the node that the relation points to.
      *
-     * @return Node The node that this relation points to, or
-     *              NULL if the destination is not valid.
+     * @return Node The node that this relation points to, or NULL if the destination is not valid.
      */
     public function getDestination()
     {
@@ -366,7 +359,7 @@ class Relation extends Attribute
             return $this->m_destInstance;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -398,7 +391,7 @@ class Relation extends Attribute
      * @param string $destFilter filter to parse
      * @param array $record the current record
      *
-     * @return $filter string filter.
+     * @return string $filter
      */
     public function parseFilter($destFilter, $record)
     {
@@ -410,6 +403,4 @@ class Relation extends Attribute
 
         return '';
     }
-
-
 }

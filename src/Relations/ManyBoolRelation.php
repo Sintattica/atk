@@ -74,7 +74,6 @@ class ManyBoolRelation extends ManyToManyRelation
             $result .= '<table border="0"><tr>';
             for ($i = 0; $i < $total_records; ++$i) {
                 $detaillink = '&nbsp;';
-                $selector = '';
                 if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk)) {
                     $sel = 'checked';
                     if ($this->getShowDetailsLink() && !$this->m_linkInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_linkInstance->allowed('edit')) {

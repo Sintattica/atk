@@ -2,8 +2,8 @@
 
 namespace Sintattica\Atk\Relations;
 
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Many-to-many relation.
@@ -24,27 +24,28 @@ class ShuttleRelation extends ManyToManyRelation
      *
      * @param string $name The name of the relation.
      * @param int $flags Flags for the relation
+     * @param string $link The node link
      * @param string $destination The destination node (in module.name notation)
-     * @param string field for localKey
-     * @param string field for remoteKey
+     * @param string $local_key field for localKey
+     * @param string $remote_key field for remoteKey
      */
 
-     public function __construct($name, $flags = 0, $link, $destination, $local_key=null, $remote_key=null)
+    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
     {
-            parent::__construct($name, $flags, $link, $destination);
-            if ($local_key != null) {
-              $this->setLocalKey($local_key);
-            }
-            if($remote_key != null) {
-              $this->setRemoteKey($remote_key);
-            }
+        parent::__construct($name, $flags, $link, $destination);
+        if ($local_key != null) {
+            $this->setLocalKey($local_key);
+        }
+        if ($remote_key != null) {
+            $this->setRemoteKey($remote_key);
+        }
     }
-
 
     /**
      * Renders the onchange code on the page.
      *
      * @param string $fieldprefix The prefix to the field
+     * @param string $elementNr
      */
     public function _renderChangeHandler($fieldprefix, $elementNr = '')
     {
@@ -61,10 +62,12 @@ class ShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * AtkShuttleRelation expect or an array whith primary keys of the destionation node
+     * ShuttleRelation expect or an array whith primary keys of the destionation node
      * or a single value that contains the primary key of the destination node.
      *
      * @param mixed $value
+     *
+     * @return $this
      */
     public function setInitialValue($value)
     {
@@ -73,6 +76,8 @@ class ShuttleRelation extends ManyToManyRelation
         }
 
         $this->m_initialValue = $value;
+
+        return $this;
     }
 
     /**
@@ -148,6 +153,7 @@ class ShuttleRelation extends ManyToManyRelation
         $rightname = $fieldname.'[]['.$this->getRemoteKey().']';
         $filterbox_left = false;
         $filterbox_right = false;
+        $rightname_clean = '';
 
         if ($this->m_filterBox) {
             // fix for selecting with jQuery
@@ -187,7 +193,7 @@ class ShuttleRelation extends ManyToManyRelation
         $page = $this->m_ownerInstance->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkshuttlerelation.js');
 
-        if ($this->m_filterBox) {
+        if ($this->m_filterBox && $rightname_clean && $filterbox_right && $filterbox_left && $rightname &&  $leftname) {
             // do the filtering
             $page->register_scriptcode("
                 jQuery(function($){
@@ -230,10 +236,10 @@ class ShuttleRelation extends ManyToManyRelation
      *
      * @return string piece of html code
      */
-    public function _renderSelect($name, $recordset, $width, $opposite, $fieldname, $filterbox = false)
+    public function _renderSelect($name, $recordset, $width, $opposite, $fieldname, $filterbox = '')
     {
         $result = '';
-        if ($filterbox) {
+        if ($filterbox != '') {
             $result .= '<input id="'.$filterbox.'" class="form-control input-sm" placeholder="'.$this->text('filter').'..."
                 style="width: '.($width - 10).'px; margin-bottom: 5px; max-width: 400px !important;"><div style="clear:both"></div>';
         }

@@ -289,7 +289,7 @@ class ManyToManyRelation extends Relation
         $this->createDestination();
 
         if ($this->m_remoteKey == '') {
-            list($module, $nodename) = explode('.', $this->m_destination);
+            list(, $nodename) = explode('.', $this->m_destination);
             $this->m_remoteKey = $this->determineKeyName($nodename);
         }
 
@@ -733,6 +733,7 @@ class ManyToManyRelation extends Relation
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string Piece of html code
      */

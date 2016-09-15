@@ -329,16 +329,6 @@ class ManyToOneRelation extends Relation
     }
 
     /**
-     * Set the case-sensitivity for the autocompletion search (true or false).
-     *
-     * @param array $case_sensitive
-     */
-    public function setAutoCompleteCaseSensitive($case_sensitive)
-    {
-        $this->m_autocomplete_search_case_sensitive = $case_sensitive;
-    }
-
-    /**
      * Sets the minimum number of characters before auto-completion kicks in.
      *
      * @param int $chars
