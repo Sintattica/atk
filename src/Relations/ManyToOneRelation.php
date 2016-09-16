@@ -645,7 +645,7 @@ class ManyToOneRelation extends Relation
                     if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
                         $saveForm = $mode == 'add' || $mode == 'edit';
                         $url = Tools::dispatch_url($this->m_destination, 'view',
-                            ['atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
+                            ['atkfilter' => '', 'atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
 
                         if ($mode != 'list') {
                             $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm, 'class="atkmanytoonerelation-link"');
