@@ -11,6 +11,7 @@
 
 WIP Changes
 -----------
+* Removed validateFilter on node [luca]
 * Various fixing for PHP7 (but error_reporting(0) is necessary) [luca]
 * Upgrade Smarty 2.6.30 [luca]
 + Added postDelete on attribute [luca]
