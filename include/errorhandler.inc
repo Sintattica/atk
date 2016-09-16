@@ -18,8 +18,9 @@
 include_once($GLOBALS['config_atkroot']. 'atk/errors/class.atkerrorhandlerbase.inc');
 
 set_error_handler('atkErrorHandler');
-error_reporting(E_ALL);
+if (error_reporting() > 0) { // only if error_reporting is not turned off in index.php page (PHP7)
+    error_reporting(E_ALL);
+}
 
 set_exception_handler('atkExceptionHandler');
 register_shutdown_function('atkFatalHandler');
-
