@@ -1,6 +1,7 @@
 <?php
 
 namespace Sintattica\Atk\Db;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * SQL query builder for PostgreSQL.
@@ -56,5 +57,49 @@ class PgSqlQuery extends Query
         $query = 'SELECT COUNT(*) AS count FROM ('.$this->buildSelect($distinct).') x';
 
         return $query;
+    }
+
+    /**
+     * Generate a searchcondition that checks whether $field contains $value .
+     *
+     * @param string $field The field
+     * @param string $value The value
+     *
+     * @return string The substring condition
+     */
+    public function substringCondition($field, $value)
+    {
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return $field." NOT ILIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
+            }
+            return $field." ILIKE '%".$value."%'";
+        } else {
+            if ($value[0] == '!') {
+                return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
+            }
+            return $field." LIKE '%".$value."%'";
+        }
+    }
+
+    /**
+     * Generate a searchcondition that accepts '*' as wildcard character.
+     *
+     * @param string $field
+     * @param string $value
+     */
+    public function wildcardCondition($field, $value)
+    {
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return $field." NOT ILIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
+            }
+            return $field." ILIKE '".str_replace('*', '%', $value)."'";
+        } else {
+            if ($value[0] == '!') {
+                return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
+            }
+            return $field." LIKE '".str_replace('*', '%', $value)."'";
+        }
     }
 }

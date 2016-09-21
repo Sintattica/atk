@@ -68,7 +68,11 @@ class ExpressionAttribute extends Attribute
 
         $result = "($expression)";
 
-        $result .= ($direction ? " $direction" : '');
+        if ($this->getSearchType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
+            $result = "LOWER({$result})";
+        }
+
+        $result .= ($direction ? " {$direction}" : '');
 
         return $result;
     }

@@ -824,5 +824,5 @@ return [
     // Cache method
     'cache_method' => 'var',
     // Cache namespace, change this when you are hosting your application on a shared hosting.
-    'cache_namespace' => 'default'
+    'cache_namespace' => 'default',
 ];
