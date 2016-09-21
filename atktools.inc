@@ -376,6 +376,8 @@ function atkGetTrace($format = "html")
                     foreach ($val as $name => $value) {
                         if (is_object($value)) {
                             $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
+                        } else if (is_array($value)) {
+                            $valArr[] = $name.'=Array(...)';
                         } else {
                             $valArr[] = $name . '=' . $value;
                         }
