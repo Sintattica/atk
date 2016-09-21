@@ -101,21 +101,22 @@ class Menu
     protected function processMenu($menu, $child = false)
     {
         $html = '';
-
-        foreach ($menu as $item) {
-            if ($this->isEnabled($item)) {
-                $url = $item['url'] ? $item['url'] : '#';
-                if ($this->_hasSubmenu($item)) {
-                    $a_content = $this->_getMenuTitle($item);
-                    $childHtml = $this->processMenu($item['submenu'], true);
-                    if ($child) {
-                        $html .= sprintf($this->format_submenuchild, $a_content, $childHtml);
+        if(is_array($menu)) {
+            foreach ($menu as $item) {
+                if ($this->isEnabled($item)) {
+                    $url = $item['url'] ? $item['url'] : '#';
+                    if ($this->_hasSubmenu($item)) {
+                        $a_content = $this->_getMenuTitle($item);
+                        $childHtml = $this->processMenu($item['submenu'], true);
+                        if ($child) {
+                            $html .= sprintf($this->format_submenuchild, $a_content, $childHtml);
+                        } else {
+                            $html .= sprintf($this->format_submenuparent, $a_content, $childHtml);
+                        }
                     } else {
-                        $html .= sprintf($this->format_submenuparent, $a_content, $childHtml);
+                        $a_content = $this->_getMenuTitle($item);
+                        $html .= sprintf($this->format_single, $url, $a_content);
                     }
-                } else {
-                    $a_content = $this->_getMenuTitle($item);
-                    $html .= sprintf($this->format_single, $url, $a_content);
                 }
             }
         }
@@ -225,8 +226,10 @@ class Menu
 
     protected function parseItems(&$items)
     {
-        foreach ($items as &$item) {
-            $this->parseItem($item);
+        if(is_array($items)) {
+            foreach ($items as &$item) {
+                $this->parseItem($item);
+            }
         }
 
         return $items;

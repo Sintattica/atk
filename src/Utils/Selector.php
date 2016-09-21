@@ -336,7 +336,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             return;
         }
 
-        $filter = $this->_getNode()->validateFilter($filter);
         $query->addCondition($filter);
     }
 
