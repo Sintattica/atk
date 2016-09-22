@@ -795,9 +795,15 @@ class Query
             return self::exactNumberCondition($field, $value);
         }
 
-        if ($value[0] == '!') {
-            return $field."!='".substr($value, 1, Tools::atk_strlen($value))."'";
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return 'LOWER('.$field.")!=LOWER('".substr($value, 1, Tools::atk_strlen($value))."')";
+            }
+            return 'LOWER('.$field.")=LOWER('".$value."')";
         } else {
+            if ($value[0] == '!') {
+                return $field."!='".substr($value, 1, Tools::atk_strlen($value))."'";
+            }
             return $field."='".$value."'";
         }
     }
@@ -825,9 +831,15 @@ class Query
      */
     public function substringCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return 'LOWER('.$field.") NOT LIKE LOWER('%".substr($value, 1, Tools::atk_strlen($value))."%')";
+            }
+            return 'LOWER('.$field.") LIKE LOWER('%".$value."%')";
         } else {
+            if ($value[0] == '!') {
+                return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
+            }
             return $field." LIKE '%".$value."%'";
         }
     }
@@ -842,9 +854,15 @@ class Query
      */
     public function wildcardCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return 'LOWER('.$field.") NOT LIKE LOWER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
+            }
+            return 'LOWER('.$field.") LIKE LOWER('".str_replace('*', '%', $value)."')";
         } else {
+            if ($value[0] == '!') {
+                return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
+            }
             return $field." LIKE '".str_replace('*', '%', $value)."'";
         }
     }

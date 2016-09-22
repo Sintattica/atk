@@ -2703,8 +2703,15 @@ class Attribute
                 $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier).'.';
             }
 
+            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            }
             return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+
         } else {
+            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            }
             return $this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
         }
     }

@@ -22,6 +22,9 @@ class PgSqlDb extends Db
     public function __construct()
     {
         /* do nothing */
+
+        // force case insensitive searching and ordering
+        $this->m_force_ci = true;
     }
 
     /**

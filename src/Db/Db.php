@@ -86,6 +86,12 @@ class Db
     public $m_collate = '';
 
     /*
+     * Force case insensitive searching and ordering.
+     * @var boolean
+     */
+    protected $m_force_ci = false;
+
+    /*
      * The mode for the connection.
      * @access private
      * @var String
@@ -1387,6 +1393,9 @@ class Db
             if (isset($config[$connectionName]['collate'])) {
                 $this->m_collate = $config[$connectionName]['collate'];
             }
+            if (isset($config[$connectionName]['force_ci'])) {
+                $this->m_force_ci = $config[$connectionName]['force_ci'];
+            }
         }
 
         return $this;
@@ -1477,5 +1486,10 @@ class Db
     public function getInsertId()
     {
         return null;
+    }
+
+    public function getForceCaseInsensitive()
+    {
+        return $this->m_force_ci;
     }
 }
