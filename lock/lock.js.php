@@ -24,6 +24,8 @@ global $ATK_VARS;
 $id = (int) $ATK_VARS["id"];
 $message = atktext("lock_expired");
 $stack = $ATK_VARS["stack"];
+
+header('Content-Type: text/javascript');
 ?>
 var atkLock = new Object();
 

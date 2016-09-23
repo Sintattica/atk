@@ -14,6 +14,8 @@
  * @version $Revision: 6168 $
  * $Id$
  */
+
+header('Content-Type: text/javascript');
 ?>
 
 function profile_getForm()

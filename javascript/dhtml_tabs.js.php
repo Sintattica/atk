@@ -1,4 +1,5 @@
 <?php
+
  /**
  * This file is part of the Achievo ATK distribution.
  * Detailed copyright and licensing information can be found
@@ -14,6 +15,8 @@
  * @version $Revision: 6315 $
  * $Id$
  */
+
+header('Content-Type: text/javascript');
 ?>
 
 var closedSections = [];
