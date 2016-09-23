@@ -9245,8 +9245,12 @@ div.DateTimeAttribute div.TimeAttribute {
   margin-top: 0px;
   margin-bottom: 0px; }
 
-.atkmanytomanyselectrelation-selected {
-  margin-bottom: 3px; }
+li.atkmanytomanyselectrelation-addition {
+  padding-left: 0px; }
+
+li.atkmanytomanyselectrelation-selected {
+  margin-bottom: 3px;
+  margin-left: 20px; }
 
 /*
  *  Customization for the ATK framework

@@ -31,27 +31,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     protected $m_limit = null;
     protected $m_descriptor_tooltip_template = null;
 
-    /**
-     * Constructor.
-     *
-     * @param string $name The name of the relation
-     * @param int $flags Flags for the relation.
-     * @param string $link The full name of the node that is used as
-     *                            intermediairy node. The intermediairy node is
-     *                            assumed to have 2 attributes that are named
-     *                            after the nodes at both ends of the relation.
-     *                            For example, if node 'project' has a M2M relation
-     *                            with 'activity', then the intermediairy node
-     *                            'project_activity' is assumed to have an attribute
-     *                            named 'project' and one that is named 'activity'.
-     *                            You can set your own keys by calling setLocalKey()
-     *                            and setRemoteKey()
-     * @param string $destination The full name of the node that is the other
-     *                            end of the relation.
-     */
-    public function __construct($name, $flags = 0, $link, $destination)
+
+    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
     {
-        parent::__construct($name, $flags, $link, $destination);
+        parent::__construct($name, $flags, $link, $destination, $local_key, $remote_key);
         $this->m_controlsBySection[ShuttleControl::AVAILABLE] = [];
         $this->m_controlsBySection[ShuttleControl::SELECTED] = [];
     }

@@ -61,12 +61,21 @@ class ManyToManyRelation extends Relation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
+     * @param string $local_key field for localKey
+     * @param string $remote_key field for remoteKey
      */
-    public function __construct($name, $flags = 0, $link, $destination)
+    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
     {
         $flags = $flags | self::AF_CASCADE_DELETE | self::AF_NO_SORT;
         $this->m_link = $link;
         parent::__construct($name, $flags, $destination);
+
+        if ($local_key != null) {
+            $this->setLocalKey($local_key);
+        }
+        if ($remote_key != null) {
+            $this->setRemoteKey($remote_key);
+        }
     }
 
     /**
