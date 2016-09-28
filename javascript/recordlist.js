@@ -73,7 +73,7 @@ function rl_doAndReturn(rlId, rownum, action, confirmtext)
     {
         if (typeof (rl_a[rlId][rownum][action]) == 'function')
         {
-            rl_a[rlId][rownum][action]();
+            rl_a[rlId][rownum][action](rlId);
         }
         else if (!rl_a[rlId]['embed'])
         {

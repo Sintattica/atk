@@ -115,8 +115,17 @@ class atkThemeCompiler
             }
 
             if (isset($theme)) {
-                foreach ($theme as $key => $value)
-                    $data["attributes"][$key] = $value;
+                foreach ($theme as $key => $value) {
+                    if ($key == 'cssicons') {
+                        // (overridable array)
+                        if (!$data["attributes"][$key]) {
+                            $data["attributes"][$key] = [];
+                        }
+                        $data["attributes"][$key] = array_replace_recursive($data["attributes"][$key], $value);
+                    } else {
+                        $data["attributes"][$key] = $value;
+                    }
+                }
             }
 
             // Second scan all files in the theme path

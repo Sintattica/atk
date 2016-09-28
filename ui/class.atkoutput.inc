@@ -129,7 +129,6 @@ class atkOutput
      */
     public function outputFlush($nocache = true, $lastmodificationstamp = "", $charset = "")
     {
-        global $g_error_msg;
         $res = "";
         if (strlen($this->m_raw) > 0) {
             $res = $this->m_raw;
@@ -142,12 +141,6 @@ class atkOutput
                         ? atkGetCharset() : $charset));
 
             $res = $this->m_content;
-
-            if (count($g_error_msg) > 0) {
-                // send an mail report with errormessages..
-                // (even when display of errors is turned off)
-                mailreport();
-            }
 
             $debugger = atkinstance('atk.utils.atkdebugger');
             $res .= $debugger->renderDebugAndErrorMessages();

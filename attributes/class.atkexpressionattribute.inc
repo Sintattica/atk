@@ -178,7 +178,8 @@ class atkExpressionAttribute extends atkAttribute
     function search($record = "", $extended = false, $fieldprefix = "")
     {
         if ($this->getSearchType() == "number") {
-            return atkNumberAttribute::search($record, $extended, $fieldprefix);
+            $attr = new atkNumberAttribute($this->fieldName());
+            return $attr->search($record, $extended, $fieldprefix);
         } else if ($this->getSearchType() == "date") {
             $attr = new atkDateAttribute($this->fieldName());
             $attr->m_searchsize = 10;
@@ -186,6 +187,19 @@ class atkExpressionAttribute extends atkAttribute
         } else {
             return parent::search($record, $extended, $fieldprefix);
         }
+    }
+
+    function display($record = "", $mode = '')
+    {
+        if ($this->getSearchType() == "number") {
+            $attr = new atkNumberAttribute($this->fieldName());
+            return $attr->display($record, $mode);
+        } else if ($this->getSearchType() == "date") {
+            $attr = new atkDateAttribute($this->fieldName());
+            $record[$this->fieldName()] = $attr->db2value($record);
+            return $attr->display($record, $mode);
+        }
+        return parent::display($record, $mode);
     }
 
     /**
@@ -204,38 +218,42 @@ class atkExpressionAttribute extends atkAttribute
     {
         // If we are accidentally mistaken for a relation and passed an array
         // we only take our own attribute value from the array
-        if ($this->m_searchmode)
+        if ($this->m_searchmode) {
             $searchmode = $this->m_searchmode;
+        }
 
-        $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
+        $expression = '('.str_replace('[table]', $table, $this->m_expression).')';
 
-        if ($this->getSearchType() == "date") {
+        if ($this->getSearchType() == 'date') {
             $attr = new atkDateAttribute($this->fieldName());
+
             return $attr->getSearchCondition($query, $table, $value, $searchmode, $expression);
         }
 
-        if ($this->getSearchType() == "number") {
-            $value = atkNumberAttribute::processSearchValue($value, $searchmode);
-        }
+        if ($this->getSearchType() == 'number') {
+            $attr = new atkNumberAttribute($this->fieldName());
+            $value = $attr->processSearchValue($value, $searchmode);
 
-        if ($searchmode != "between") {
-            if ($this->getSearchType() == "number") {
-                if ($value['from'] != '') {
-                    $value = $value['from'];
-                } else if ($value['to'] != '') {
+            if ($searchmode == 'between') {
+                return $attr->getBetweenCondition($query, $expression, $value);
+            }
+
+            if (isset($value['from']) && $value['from'] != '') {
+                $value = $value['from'];
+            } else {
+                if (isset($value['to']) && $value['to'] != '') {
                     $value = $value['to'];
                 } else {
-                    return false;
+                    return '';
                 }
             }
-            $func = $searchmode . "Condition";
-            if (method_exists($query, $func) && $value !== "" && $value !== NULL) {
-                return $query->$func($expression, $this->escapeSQL($value));
-            } else {
-                return false;
-            }
-        } else {
-            return atkNumberAttribute::getBetweenCondition($query, $expression, $value);
         }
+
+        $func = $searchmode.'Condition';
+        if (method_exists($query, $func) && $value !== '' && $value !== null) {
+            return $query->$func($expression, $this->escapeSQL($value));
+        }
+
+        return '';
     }
 }

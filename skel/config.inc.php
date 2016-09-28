@@ -166,8 +166,6 @@ $config_authentication = "none";
 // If set to false, the passwords are assumed to be plain text.
 // Note: Not all authentication methods support md5! e.g, if you use
 //       pop3 authentication, set this to false.
-// Note2: If set to false, and authentication_cookie is set to true,
-//        the password in the cookie will be stored plaintext!!!
 $config_authentication_md5 = true;
 
 // This parameter specified whether passwords are stored using the
@@ -198,10 +196,6 @@ $config_securityscheme = "none";
 // for which no access requirements are set. If set to false, access is
 // always granted if no access requirements are set.
 $config_restrictive = true;
-
-// If set to true, a cookie with username/password is written, so
-// users will stay logged in, even if they close their browser.
-$config_authentication_cookie = false;
 
 // If you use "db" as authentication type, you can set the table and fields
 // from which atk should read the username and password information.

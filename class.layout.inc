@@ -631,19 +631,18 @@ class layout
             $field = &$data["fields"][$i];
 
             /* check for separator */
-            if (!is_array($field) && $field == "-" && $i > 0 && $data["fields"][$i - 1] != "-")
+            if (!is_array($field) && $field == "-" && $i > 0 && $data["fields"][$i - 1] != "-") {
                 $form .= '<tr>' . $this->ret_td('<hr>', 'colspan="2" valign="middle"') . '</tr>';
 
-            /* double separator, ignore */
-            elseif (!is_array($field) && $field == "-")
-                ;
+            } elseif (!is_array($field) && $field == "-") {
+                /* double separator, ignore */
 
-            /* only HTML */
-            elseif (!is_array($field))
+            } elseif (!is_array($field)) {
+                /* only HTML */
                 $form .= '<tr>' . $this->ret_td($field, 'colspan="2" valign="middle"') . '</tr>';
 
-            /* edit field */
-            else {
+            } else {
+                /* edit field */
                 $form.='<tr>';
 
                 /* Keep track of the number of td's we have to fill with the edit thingee..

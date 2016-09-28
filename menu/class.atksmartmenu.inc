@@ -63,10 +63,6 @@ class atkSmartMenu extends atkDropdownMenu
         // ovverridable style in atk theme
         $page->register_style($theme->stylePath('atksmartmenu.css'));
 
-        // font awesome
-        $page->register_style(atkconfig('atkroot') . 'atk/themes/bootstrap/lib/font-awesome-4.2.0/css/font-awesome.min.css');
-
-
         /** SCRIPTS */
 
         // SmartMenus core

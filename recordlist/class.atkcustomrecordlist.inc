@@ -48,9 +48,11 @@ class atkCustomRecordList extends atkRecordList
      * @param Boolean $titlerow   Should titlerow be rendered or not
      * @param Boolean $decode     Should data be decoded or not (for exports)
      * @param String $fsep        String to use between fields
-     * @param String $rfeplace   String for replacing line feeds in recordset field values (null = do not replace)
+     * @param String $rfeplace    String for replacing line feeds in recordset field values (null = do not replace)
+     * @param Boolean $totalrow   Should totalrow be rendered or not (default false)
+     *
      */
-    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type = "0", $compression = "", $suppressList = "", $outputparams = array(), $mode = "list", $titlerow = true, $decode = false, $fsep = "", $rfeplace = null)
+    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type = "0", $compression = "", $suppressList = "", $outputparams = array(), $mode = "list", $titlerow = true, $decode = false, $fsep = "", $rfeplace = null, $totalrow = false)
     {
         $this->setNode($node);
         $this->m_mode = $mode;
@@ -138,8 +140,8 @@ class atkCustomRecordList extends atkRecordList
         }
 
         // totalrow..
-        if ($totalisable) {
-            $totalRow = $sol;
+        if ($totalrow && $totalisable) {
+            $trow = $sol;
 
             // Third loop.. this time for the totals row.
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
@@ -148,21 +150,21 @@ class atkCustomRecordList extends atkRecordList
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     if ($p_attrib->hasFlag(AF_TOTAL)) {
                         $value = $this->eolreplace($p_attrib->display($totals[$attribname], $this->m_mode), $rfeplace);
-                        $totalRow.=$sof . ($value == "" ? $empty : $value) . $eof . $fsep;
+                        $trow.=$sof . ($value == "" ? $empty : $value) . $eof . $fsep;
                     } else {
-                        $totalRow.= $sof . $empty . $eof . $fsep;
+                        $trow.= $sof . $empty . $eof . $fsep;
                     }
                 }
             }
 
             if ($fsep) {
                 // remove separator at the end of line
-                $totalRow = substr($totalRow, 0, -strlen($fsep));
+                $trow = substr($trow, 0, -strlen($fsep));
             }
 
-            $totalRow .= $eol;
+            $trow .= $eol;
 
-            $output .= $totalRow;
+            $output .= $trow;
         }
 
         // html requires table tags

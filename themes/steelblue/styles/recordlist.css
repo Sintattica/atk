@@ -133,13 +133,6 @@ table.recordList .row2
     font-weight: bold;
 }
 
-.actions
-{
-    display: block;
-    margin-top: -2px;
-    white-space: nowrap;
-}
-
 table.recordlist tbody.groupheader th.firstcol
 {
     background-image: url(../../../images/plus.gif);;
@@ -214,4 +207,23 @@ td.mra a {
 
 .recordList th.recordListSearch a {
     color: #777777 !important;
+}
+
+.recordList .actions {
+    display: block;
+    margin-top: -2px;
+    white-space: nowrap;
+}
+
+/* default style for the font-awesome icons */
+.recordList .actions .fa {
+    color: #555;
+    background-color: white;
+    padding: 2px 3px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+}
+.recordList .actions .fa-trash-o {
+    color: #BF4B4B;
 }

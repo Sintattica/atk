@@ -356,15 +356,14 @@ class atkListAttribute extends atkAttribute
     {
         $ret = '';
 
-        // use a different (more descriptive) text for obligatory items
-        $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
-
         if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM)) {
             if (!$this->hasFlag(AF_OBLIGATORY) || (
                     $this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM) ||
                     (atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))
                 )
             ) {
+                // use a different (more descriptive) text for obligatory items
+                $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
                 $ret = '<option value="' . $this->m_emptyvalue . '">' . atk_htmlentities($this->text(array(
                             $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
             }
@@ -408,9 +407,9 @@ class atkListAttribute extends atkAttribute
         $values = $this->getValues($record);
         $result = '<select class="form-control"';
         if ($extended || $this->getMultipleInSimpleSearch()) {
-            if (count($values) > 2) {
-                $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
-                $result .= ' multiple size="' . min(5, $cnt) . '"';
+            $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 1 : 0);
+            if ($cnt > 2) {
+                $result .= ' multiple size="' . min(5, $cnt + 1) . '"';
             }
         }
 
@@ -446,9 +445,12 @@ class atkListAttribute extends atkAttribute
 
         // "none" option
         if (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) {
+            $label = atktext($this->fieldName() . '_' . 'search_none', $this->getModule(), $this->m_owner, "", "", true);
+            if ($label == "") {
+                $label = atktext('search_none', $this->getModule(), $this->m_owner);
+            }
             $result .= sprintf('<option value="__NONE__"%s>%s</option>',
-                atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
-                atktext('search_none'));
+                atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '', $label);
         }
 
         // normal options
@@ -493,7 +495,7 @@ class atkListAttribute extends atkAttribute
                 }
             }
 
-            if (count($value) == 1 && $value[0]) { // exactly one value
+            if (count($value) == 1 && $value[0] != '') { // exactly one value
                 if ($value[0] == "__NONE__") {
                     return $query->nullCondition($table . "." . $this->fieldName(), true);
                 } else {

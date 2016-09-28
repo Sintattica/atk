@@ -5,7 +5,7 @@
                 {$errortitle}
                 {foreach from=$errors item=error}
                     <br>
-                    {$error.label}: {$error.message} {if isset($error.tablink)} ({atktext "error_tab"} {$error.tablink}){/if}
+                    {$error.label}: {$error.message} {if isset($error.tablink)} ({atktext id="error_tab"} {$error.tablink}){/if}
                 {/foreach}
             </td>
         </tr>

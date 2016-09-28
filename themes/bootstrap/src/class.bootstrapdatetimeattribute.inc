@@ -288,9 +288,9 @@ class bootstrapDateTimeAttribute extends atkAttribute
         }
 
 
-        if ($fromval == NULL && $toval == NULL)
-            ; // do nothing
-        else if ($fromval != NULL && $toval != NULL) {
+        if ($fromval == NULL && $toval == NULL) {
+            // do nothing
+        } else if ($fromval != NULL && $toval != NULL) {
             if ($fromval > $toval) {
                 // User entered dates in wrong order. Let's put them in the right order.
                 $tmp = $fromval;

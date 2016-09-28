@@ -145,7 +145,7 @@ class atkManyToOneRelation extends atkRelation
      * @access private
      * @var int
      */
-    var $m_autocomplete_minchars = 2;
+    var $m_autocomplete_minchars;
 
     /**
      * An array with the fieldnames of the destination node in which the autocompletion must search
@@ -162,14 +162,14 @@ class atkManyToOneRelation extends atkRelation
      * @access private
      * @var String
      */
-    var $m_autocomplete_searchmode = "contains";
+    var $m_autocomplete_searchmode;
 
     /**
      * Value determines wether the search of the autocompletion is case-sensitive.
      *
      * @var boolean
      */
-    var $m_autocomplete_search_case_sensitive = false;
+    var $m_autocomplete_search_case_sensitive;
 
     /**
      * Value determines if select link for autocomplete should use atkSubmit or not (for use in admin screen for example)
@@ -179,13 +179,13 @@ class atkManyToOneRelation extends atkRelation
     var $m_autocomplete_saveform = true;
 
     /**
-     * Set the minimal number of records for showing the automcomplete. If there are less records
+     * Set the minimal number of records for showing the autocomplete. If there are less records
      * the normal dropdown is shown
      *
      * @access private
      * @var integer
      */
-    var $m_autocomplete_minrecords = -1;
+    var $m_autocomplete_minrecords;
 
     /**
      * Set the size attribute of the autocompletion input element
@@ -193,7 +193,7 @@ class atkManyToOneRelation extends atkRelation
      * @access protected
      * @var integer
      */
-    protected $m_autocomplete_size = 50;
+    protected $m_autocomplete_size;
 
     /**
      * Destination node for auto links (edit, new)
@@ -262,6 +262,7 @@ class atkManyToOneRelation extends atkRelation
         $this->m_autocomplete_searchmode = atkconfig("manytoone_autocomplete_searchmode", "contains");
         $this->m_autocomplete_search_case_sensitive = atkconfig("manytoone_autocomplete_search_case_sensitive", false);
         $this->m_autocomplete_size = atkconfig("manytoone_autocomplete_size", 50);
+        $this->m_autocomplete_minrecords = atkconfig("manytoone_autocomplete_minrecords", -1);
 
         if (is_array($name)) {
             $this->m_refKey = $name;
@@ -663,7 +664,7 @@ class atkManyToOneRelation extends atkRelation
                 if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain")))) { // create link to edit/view screen
                     if (($this->m_destInstance->allowed("view")) && !$this->m_destInstance->hasFlag(NF_NO_VIEW) && $result != "") {
                         $saveForm = $mode == 'add' || $mode == 'edit';
-                        $result = href(dispatch_url($this->m_destination, "view", array("atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED, $saveForm);
+                        $result = href(dispatch_url($this->m_destination, "view", array('atkfilter' => '', "atkselector" => $this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED, $saveForm);
                     }
                 }
             } else {
@@ -2320,22 +2321,24 @@ class atkManyToOneRelation extends atkRelation
         if (count($attribs) > 1) {
             $fields = array();
             foreach ($attribs as $attribname) {
-                $post = '';
                 if (strstr($attribname, '.')) {
-                    if ($fieldaliasprefix != '')
+                    if ($fieldaliasprefix != '') {
                         $table = $fieldaliasprefix . '_AE_';
-                    else
+                    } else {
                         $table = '';
-                    $post = substr($attribname, strpos($attribname, '.'));
-                    $attribname = substr($attribname, 0, strpos($attribname, '.'));
+                    }
+                    list($attribname, $post) = explode('.', $attribname);
+                    $p_attrib = $this->m_destInstance->m_attribList[$attribname];
+                    $fields[$p_attrib->fieldName()][$post] = $table . $p_attrib->fieldName() . '.' . $post;
+                } else {
+                    if ($fieldaliasprefix != '') {
+                        $table = $fieldaliasprefix . ".";
+                    } else {
+                        $table = $this->m_destInstance->m_table . ".";
+                    }
+                    $p_attrib = $this->m_destInstance->m_attribList[$attribname];
+                    $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName();
                 }
-                elseif ($fieldaliasprefix != '')
-                    $table = $fieldaliasprefix . ".";
-                else
-                    $table = $this->m_destInstance->m_table . ".";
-
-                $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-                $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName() . $post;
             }
 
             if (is_array($searchValue)) {

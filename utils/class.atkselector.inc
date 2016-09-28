@@ -321,7 +321,6 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
             return;
         }
 
-        $filter = $this->_getNode()->validateFilter($filter);
         $query->addCondition($filter);
     }
 
@@ -699,6 +698,41 @@ class atkSelector implements ArrayAccess, Countable, IteratorAggregate
         }
 
         return $this->m_rows;
+    }
+
+    /**
+     * Return field totals
+     * @param array $fields
+     * @return array totals
+     */
+    public function getTotals($fields = [])
+    {
+        $attrsByLoadType = $this->_getAttributesByLoadType();
+        $query = $this->_buildQuery($attrsByLoadType);
+        $prefix = '__sum__';
+
+        foreach ($fields as $field) {
+            $i = array_search($field, array_column($query->m_expressions, 'name'));
+            if ($i !== false) {
+                $expr = $query->m_expressions[$i]['expression'];
+            } else {
+                $expr = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()) . '.' . $this->_getDb()->quoteIdentifier($field);
+            }
+            $query->addExpression($field, 'SUM('.$expr.')', $prefix);
+        }
+
+        $stmt = $this->_getDb()->prepare($query->buildSelect());
+        $stmt->execute($this->_getBindParameters());
+        $row = $stmt->getFirstRow();
+        $stmt->close();
+
+        $query->deAlias($row);
+        $res = [];
+        foreach ($fields as $field) {
+            $res[$field] = $row[$prefix.$field] ?: 0;
+        }
+
+        return $res;
     }
 
     /**

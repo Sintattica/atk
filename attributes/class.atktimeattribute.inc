@@ -491,7 +491,7 @@ class atkTimeAttribute extends atkAttribute
      * @param string $stringvalue The time to parse
      * @return array array with hours, minutes and seconds
      */
-    function parseTime($stringvalue)
+    static function parseTime($stringvalue)
     {
         //Assuming hh:mm:ss
         $retval = array("hours" => substr($stringvalue, 0, 2),
@@ -511,7 +511,4 @@ class atkTimeAttribute extends atkAttribute
             $retval["seconds"] = "0" . $retval["seconds"];
         return $retval;
     }
-
 }
-
-?>

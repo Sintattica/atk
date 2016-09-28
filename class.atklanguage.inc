@@ -304,7 +304,7 @@ class atkLanguage
     public static function getLanguageFromHeaders()
     {
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $langs = split('[,;]', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            $langs = preg_split('/[,;]/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
             if ($langs[0] != "") {
                 $elems = explode("-", $langs[0]); // lng might contain a subset after the dash.
                 $autolng = $elems[0];

@@ -1,3 +1,4 @@
+@import '../../../ext/font-awesome/css/font-awesome.min.css';
 
 body
 {
@@ -171,9 +172,10 @@ ul, ol, li
     /*list-style-position: inside;*/
 }
 
-ul
+ul, ol
 {
     padding-left: 15px;
+    padding-bottom: 10px;
 }
 
 /* BOX */

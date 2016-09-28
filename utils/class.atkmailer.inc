@@ -17,7 +17,7 @@
 /**
  * @internal includes
  */
-include_once(atkconfig("atkroot") . 'atk/ext/phpmailer/class.phpmailer.php');
+include_once(__DIR__.'/../ext/phpmailer/PHPMailerAutoload.php');
 
 /**
  * ATK mailer class

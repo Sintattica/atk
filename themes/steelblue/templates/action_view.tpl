@@ -25,7 +25,7 @@
         {/foreach}
     </div>
     {if $buttons}
-        <div class="spinner"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div>
+        <div class="spinner"><img src="{atkthemeimg id='spinner.gif'}" alt="Busy"/></div>
     {/if}
 </div>
 {$formend}

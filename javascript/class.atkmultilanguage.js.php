@@ -58,6 +58,8 @@
  *
  * $Id$
  */
+
+header('Content-Type: text/javascript');
 ?>
 
 /**

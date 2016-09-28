@@ -336,6 +336,7 @@ class atkFileAttribute extends atkAttribute
 
     /**
      * Recursive mkdir.
+	 * PATCHED BY AGX FOR open_basedir restrictions
      *
      * @see http://nl2.php.net/mkdir
      *
@@ -344,8 +345,7 @@ class atkFileAttribute extends atkAttribute
      *
      * @static
      */
-	 /* PATCHED BY AGX FOR open_basedir restrictions */
-    function mkdir($path)
+    static function mkdir($path)
     {
         $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
 	    // AGX
@@ -376,7 +376,7 @@ class atkFileAttribute extends atkAttribute
      *
      * @static
      */
-    function rmdir($dir)
+    static function rmdir($dir)
     {
         if (!($handle = @opendir($dir)))
             return false;
@@ -646,11 +646,11 @@ class atkFileAttribute extends atkAttribute
     }
 
     /**
-     * Deletes file from HD
+     * Deletes file from HD (after the query execution)
      * @param array $record Array with fields
      * @return boolean False if the delete went wrong
      */
-    function delete($record)
+    function postDelete($record)
     {
         if ($this->hasFlag(AF_FILE_PHYSICAL_DELETE) && ($record[$this->fieldname()]["orgfilename"] != "")) {
             if (file_exists($this->m_dir . $record[$this->fieldName()]["orgfilename"]) && !@unlink($this->m_dir . $record[$this->fieldName()]["orgfilename"])) {

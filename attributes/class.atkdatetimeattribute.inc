@@ -399,14 +399,14 @@ class atkDateTimeAttribute extends atkAttribute
                     $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES));
                 else {
                     $value = $this->value2db($rec);
-                    $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");
+                    $query->addField($this->fieldName(), $value, "", "", !$this->hasFlag(AF_NO_QUOTES), true);
                 }
             }
         } else {
             if (atkconfig('database') != 'oci9')
                 $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES));
             else {
-                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");
+                $query->addField($this->fieldName(), "", $tablename, $fieldaliasprefix, !$this->hasFlag(AF_NO_QUOTES), true);
             }
         }
     }

@@ -35,14 +35,6 @@ class atkDirectoryTraverser
     public $m_excludes = array();
 
     /**
-     * Constructor
-     */
-    function atkDirectoryTraverser()
-    {
-        
-    }
-
-    /**
      * Add a callback object.
      *
      * The object can be any object. If the object implements a method with

@@ -760,6 +760,14 @@ class atkNode
      */
     private $m_attribOrder = 0;
 
+
+    /**
+     * Default datagrid limit, to override config. variable "recordsperpage"
+     * 
+     * @var int
+     */
+    private $m_recordsPerPage;
+
     /**
      * Constructor.
      *
@@ -3010,11 +3018,6 @@ class atkNode
                 $location = substr($location, 0, -1);
             }
 
-            global $g_error_msg;
-            if (count($g_error_msg) > 0) {
-                mailreport();
-            }
-
             header('Location: ' . $location);
             if ($exit) {
                 exit();
@@ -3149,6 +3152,9 @@ class atkNode
             $keys = array_keys($this->m_attribList);
             $fields[0] = $keys[0];
         }
+
+        $fields = array_unique($fields);
+
         return $fields;
     }
 
@@ -3808,6 +3814,7 @@ class atkNode
             }
         }
 
+        // delete on "cascading" attributes (like relations, file attribute) BEFORE the query execution
         if (count($this->m_cascadingAttribs) > 0) {
             for ($i = 0, $_i = count($recordset); $i < $_i; $i ++) {
                 for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j ++) {
@@ -3826,6 +3833,22 @@ class atkNode
         $query->addTable($this->m_table);
         $query->addCondition($selector);
         if ($query->executeDelete()) {
+
+            // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
+            if (count($this->m_cascadingAttribs) > 0) {
+                for ($i = 0, $_i = count($recordset); $i < $_i; $i ++) {
+                    for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j ++) {
+                        $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
+                        if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
+                            if (!$p_attrib->postDelete($recordset[$i])) {
+                                // error
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
             if ($exectrigger) {
                 for ($i = 0, $_i = count($recordset); $i < $_i; $i ++) {
                     $return = ($this->executeTrigger("postDel", $recordset[$i]) && $this->executeTrigger("postDelete", $recordset[$i]));
@@ -4513,84 +4536,6 @@ class atkNode
     }
 
     /**
-     * Validates if a filter is valid for this node.
-     *
-     * A filter is considered valid if it doesn't contain any fields that are
-     * not part of the node.
-     *
-     * Why isn't this used more often???
-     *
-     * @param String $filter The filter expression to validate
-     * @returns String Returns $filter if the filter is valid or a empty string if not.
-     *
-     * @todo Fails with brackets in filter (check regex in getFirstTargetFieldFromFilterSql function)
-     * @todo For multiple conditions (in AND/OR), it validates only the first one
-     */
-    public function validateFilter($filter)
-    {
-        // If the filter is blank
-        // Or we can't find the target field
-        if ($filter === '') {
-            return $filter;
-        }
-
-        $targetField = $this->getFirstTargetFieldFromFilterSql($filter);
-        if (!$targetField) {
-            atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because it has no target field");
-            // Don't allow the filter
-            return '';
-        }
-
-        // Separate the table name from the column name
-        $targetDetails = explode('.', $targetField);
-
-        $targetTable = $this->m_table;
-        $targetColumn = array_pop($targetDetails);
-
-        // If no table is specified then it is implied that it is the current table
-        if (count($targetDetails) == 1) {
-            $targetTable = array_pop($targetDetails);
-        }
-
-        // If the table isn't $this one
-        if (strtolower(trim($targetTable)) !== strtolower($this->m_table) &&
-            !($this->getAttribute($targetTable) instanceof atkManyToOneRelation)) {
-            atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because " . strtolower(trim($targetTable)) . " !== " . strtolower($this->m_table) . ' and not a valid many-to-one relation.');
-            return '';
-        }
-
-        // Or the column doesn't belong to $this
-        if (!($this->getAttribute($targetTable) instanceof atkManyToOneRelation) &&
-            !in_array($targetColumn, array_keys($this->m_attribList))) {
-            atkwarning($this->atkNodeType() . '->' . __FUNCTION__ . "($filter): Disallowed because target column $targetColumn isn't in node");
-            return "";
-        }
-        return $filter;
-    }
-
-    /**
-     * Get the targeted field and table from a snippet of filter string sql
-     *
-     * @param string $sql is the filter string sql
-     * @return string the target table and field or an empty string
-     */
-    function getFirstTargetFieldFromFilterSql($sql)
-    {
-        // All standard SQL operators
-        $sqloperators = array('=', '<>', '>', '<', '>=', '<=', 'BETWEEN', 'LIKE',
-            'IN', 'IS', 'NOT IN', '&');
-
-        $sqlOperatorsString = implode('|', array_map('preg_quote', $sqloperators));
-        $matches = array();
-        preg_match("/^(\w.+?)\s*({$sqlOperatorsString})/", str_replace('`', '', trim($sql)), $matches);
-
-        if (count($matches) != 3)
-            return '';
-
-        return $matches[1];
-    }
-
-    /**
      * Add a stylesheet to the page.
      *
      * The theme engine is used to determine the path, and load the correct
@@ -4942,5 +4887,19 @@ class atkNode
                 $attr->removeFlag($flag);
             }
         }
+    }
+
+    public function getRecordsPerPage()
+    {
+        if ($this->m_recordsPerPage) {
+            return $this->m_recordsPerPage;
+        } else {
+            return atkConfig::getGlobal('recordsperpage');
+        }
+    }
+
+    public function setRecordsPerPage($value)
+    {
+        $this->m_recordsPerPage = $value;
     }
 }

@@ -163,7 +163,7 @@ class atkDateAttribute extends atkAttribute
      * @param array $dateArray Date Array
      * @return int Timestamp
      */
-    function _arrayToTime($dateArray)
+    static function _arrayToTime($dateArray)
     {
         $hour = 0;
         $min = 0;
@@ -898,9 +898,9 @@ class atkDateAttribute extends atkAttribute
 
         $fieldname = $db->func_datetochar($fieldname ? $fieldname : ($table . "." . $this->fieldName()));
 
-        if ($fromval == NULL && $toval == NULL)
-            ; // do nothing
-        else if ($fromval != NULL && $toval != NULL) {
+        if ($fromval == NULL && $toval == NULL) {
+            // do nothing
+        } else if ($fromval != NULL && $toval != NULL) {
             if ($fromval > $toval) {
                 // User entered dates in wrong order. Let's put them in the right order.
                 $tmp = $fromval;
@@ -1319,7 +1319,7 @@ class atkDateAttribute extends atkAttribute
             //also try to replace - by "/","." or "\""
             foreach ($valueSeparators as $valueSeparator) {
                 $expr = str_replace(" ", $valueSeparator, $regexpr);
-                if (ereg($expr, $stringvalue)) {
+                if (preg_match('/'.addcslashes($expr, '/').'/', $stringvalue)) {
                     $day = substr($stringvalue, $dayBegin, $dayLength);
                     $month = substr($stringvalue, $monthBegin, $monthLength);
                     $year = substr($stringvalue, $yearBegin, $yearLength);

@@ -654,14 +654,14 @@ class atkNumberAttribute extends atkAttribute
             $value = trim($value);
             if (strpos($value, '/') !== false) { // from/to searches
                 list($from, $to) = explode('/', $value);
-                $from = self::removeSeparators(trim($from));
-                $to = self::removeSeparators(trim($to));
+                $from = $this->removeSeparators(trim($from));
+                $to = $this->removeSeparators(trim($to));
                 $from = is_numeric($from) ? $from : '';
                 $to = is_numeric($to) ? $to : '';
                 $processed = array('from' => $from, 'to' => $to);
                 $searchmode = 'between';
             } else { // single value
-                $value = self::removeSeparators($value);
+                $value = $this->removeSeparators($value);
                 if (is_numeric($value)) {
                     $processed['from'] = $value;
                 } else {
@@ -671,7 +671,7 @@ class atkNumberAttribute extends atkAttribute
         } else {
             // assumes array('from'=><intval>, 'to'=><intval>)
             foreach ($value as $key => $search) {
-                $v = self::removeSeparators($search);
+                $v = $this->removeSeparators($search);
                 $processed[$key] = is_numeric($v) ? $v : '';
             }
         }

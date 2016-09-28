@@ -348,7 +348,7 @@ class atkDGList extends atkDGComponent
             foreach ($list["rows"][$i]["actions"] as $name => $url) {
                 if (substr($url, 0, 11) == 'javascript:') {
                     $call = substr($url, 11);
-                    $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";
+                    $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = function(rlId) { $call; };";
                 } else {
                     $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
                 }
@@ -778,6 +778,18 @@ class atkDGList extends atkDGComponent
             $editAllowed = $grid->getPostvar('atkgridedit', false) && $grid->getNode()->allowed('edit', $result["rows"][$i]["record"]);
             $result["rows"][$i]["edit"] = $editAllowed;
             $this->_addListArrayRow($result, $prefix, $suppress, $flags, $i, $editAllowed);
+        }
+
+        // override totals
+        if ($result['total']) {
+            $selector = $grid->getNode()->select()->ignoreDefaultFilters();
+            foreach ($grid->getFilters() as $filter) {
+                $selector->where($filter['filter'], $filter['params']);
+            }
+            $result['totalraw'] = $selector->getTotals(array_keys($result['total']));
+            foreach ($result['totalraw'] as $attrName => $value) {
+                $result['total'][$attrName] = $grid->getNode()->getAttribute($attrName)->getView('list', $result['totalraw']);
+            }
         }
 
         if (hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals()) {

@@ -14,7 +14,7 @@
     </tr>
     <tr>
         <td>
-            {atktext available}:<br/>
+            {atktext id='available'}:<br/>
 
             <div id="{$htmlid}_available">
                 <select class="shuttle_select" id="{$leftname}" name="{$leftname}" multiple size="10"
@@ -38,7 +38,7 @@
                    {$htmlid}_onChange('available');">
         </td>
         <td>
-            {atktext selected}:<br/>
+            {atktext id='selected'}:<br/>
 
             <div id="{$htmlid}_selected">
                 <select class="shuttle_select" id="{$rightname}" name="{$rightname}" multiple size="10"

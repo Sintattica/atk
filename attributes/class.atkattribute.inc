@@ -1856,7 +1856,7 @@ class atkAttribute
 
     /**
      * The delete method is called by the framework to inform the attribute
-     * that a record is deleted.
+     * that a record is deleted (BEFORE the query execution).
      *
      * The regular atkAttribute has no implementation for this method, but
      * derived attributes may override this, to take care of cleanups, cascade
@@ -1870,6 +1870,25 @@ class atkAttribute
     function delete($record)
     {
         // delete is only of interest for special attributes like relations, or file attributes.
+        return true;
+    }
+
+    /**
+     * The postDelete method is called by the framework to inform the attribute
+     * that a record is deleted (AFTER the query execution).
+     *
+     * The regular atkAttribute has no implementation for this method, but
+     * derived attributes may override this, to take care of cleanups, cascade
+     * deletes etc.
+     * Note, that the framework only calls this method if the attribute has
+     * the AF_CASCADE_DELETE flag.
+     *
+     * @param array $record The record that is deleted.
+     * @return boolean true if cleanup was successful, false otherwise.
+     */
+    function postDelete($record)
+    {
+        // postDelete is only of interest for special attributes like relations, or file attributes.
         return true;
     }
 
