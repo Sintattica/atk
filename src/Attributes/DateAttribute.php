@@ -531,7 +531,7 @@ class DateAttribute extends Attribute
             }
 
             $fieldname = $fieldname.'[date]';
-            $result = '<input type="text" id="'.$id.'" class="atkdateattribute form-control" name="'.$fieldname.'" value="'.$value.'" size="10">';
+            $result = '<input type="text" id="'.$id.'" class="atkdateattribute form-control" name="'.$fieldname.'" value="'.$value.'">';
 
             if (!$this->hasFlag(self::AF_DATE_NO_CALENDAR) && $mode != 'list') {
                 $format = str_replace(array('y', 'Y', 'm', 'n', 'j', 'd'), array('yy', 'y', 'mm', 'm', 'd', 'dd'), $this->m_date_format_edit);
@@ -539,13 +539,13 @@ class DateAttribute extends Attribute
                 if (is_bool(Tools::atktext('date_monday_first'))) {
                     $mondayFirst = Tools::atktext('date_monday_first') === true ? 'true' : $mondayFirst;
                 }
-                $result .= ' <input '.$this->getCSSClassAttribute(array(
+                $result .= ' <input '.$this->getCSSClassAttribute([
                         'btn',
                         'btn-default',
                         'button',
                         'atkbutton',
                         'form-control',
-                    )).' type="button" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \''.$format.'\', false, '.$mondayFirst.');">';
+                    ]).' type="button" value="..." onclick="return showCalendar(\''.$id.'\', \''.$id.'\', \''.$format.'\', false, '.$mondayFirst.');">';
             }
 
             return $result;
