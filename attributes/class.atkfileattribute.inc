@@ -514,7 +514,9 @@ class atkFileAttribute extends atkAttribute
     {
         parent::validate($record, $mode);
 
-        $this->isAllowedFileType($record);
+        if (!$record[$this->fieldName()]['error']) {
+            $this->isAllowedFileType($record);
+        }
 
         $error = $record[$this->fieldName()]['error'];
         if ($error > 0) {
