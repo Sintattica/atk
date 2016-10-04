@@ -2,18 +2,17 @@
 
 namespace Sintattica\Atk\RecordList;
 
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\DirectoryTraverser;
-use Sintattica\Atk\Core\Node;
 
 /**
- * RecordlistCaching class
+ * RecordListCache class
  * This class should take care of all the caching of recordlists.
- * Using this you should be able to dramatically improve the performance of
- * your application.
+ * Using this you should be able to dramatically improve the performance of your application.
  *
  * It works by storing the HTML output of recordlist in an 'rlcache' directory
  * in the atktempdir.
@@ -48,11 +47,7 @@ class RecordListCache
      */
     public $m_postvars;
 
-    /*
-     * The node of the recordlist
-     * @var Object
-     * @access private
-     */
+    /** @var Node $m_node The node of the recordlist */
     public $m_node;
 
     /*
@@ -67,10 +62,10 @@ class RecordListCache
      * The constructor
      * This is a singleton, so please use the getInstance method.
      *
-     * @param object $node The node of the recordlist
-     * @param string $postvars The postvars of the recordlist
+     * @param Node $node The node of the recordlist
+     * @param array $postvars The postvars of the recordlist
      */
-    public function atkRecordlistCache($node = '', $postvars = '')
+    public function __construct($node, $postvars = [])
     {
         $this->m_node = $node;
         $this->m_postvars = $postvars;
@@ -121,7 +116,7 @@ class RecordListCache
 
             $stackID = $sm->atkStackID();
             $page->register_loadscript(str_replace('*|REPLACESTACKID|*', $stackID, file_get_contents($this->m_cacheid.'_actionloader')));
-            $output = str_replace('*|REPLACESTACKID|*', $stackID, file_get_contents(Config::getGlobal('atkroot').$this->m_cacheid));
+            $output = str_replace('*|REPLACESTACKID|*', $stackID, file_get_contents($this->m_cacheid));
         }
 
         return $output;

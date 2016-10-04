@@ -26,8 +26,6 @@ return [
 
     'application_config' => $_configAppRoot.$_configDirName.'/atk.php',
 
-    'atkroot' => '/',
-
     'assets_url' => $_configAssetsUrl,
 
     'template_dir' => __DIR__.'/../templates/',

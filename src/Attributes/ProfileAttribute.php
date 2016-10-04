@@ -328,6 +328,10 @@ class ProfileAttribute extends Attribute
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkprofileattribute.js');
         $this->_restoreDivStates($page);
 
+        $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal('icon_plussquare')."';";
+        $icons .= "var ATK_PROFILE_ICON_CLOSE = '".Config::getGlobal('icon_minussquare')."';";
+        $page->register_scriptcode($icons);
+
         $result = '';
         $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
 
@@ -392,15 +396,13 @@ class ProfileAttribute extends Attribute
                     if ($firstModule) {
                         $firstModule = false;
                     } else {
-                        $result .= '</div><br>';
+                        $result .= '</div>';
                     }
 
-                    $result .= sprintf("<b><a href=\"javascript:void(0)\" onclick=\"%s\"><i class=\"%s\" id=\"img_div_$module\"></i></a></b>%s<br>",
-                        "profile_swapProfileDiv('div_$module', '".Config::getGlobal('atkroot')."'); return false;", Config::getGlobal('icon_plussquare'),
-                        Tools::atktext(array("title_$module", $module), $module));
-                    $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;\">";
+                    $result .= sprintf("<span onclick=\"%s\" style=\"cursor: pointer; font-size: 110%%; font-weight: bold;display:block;\"><i class=\"%s\" id=\"img_div_$module\"></i> %s</span>",
+                        "profile_swapProfileDiv('div_$module'); return false;", Config::getGlobal('icon_plussquare'), Tools::atktext(array("title_$module", $module), $module));
+                    $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;padding-left: 15px;\">";
                     $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
-                    $result .= '<br>';
                     $result .= $module_result;
                 }
             }
@@ -665,7 +667,7 @@ class ProfileAttribute extends Attribute
         foreach ($divstate as $key => $value) {
             $key = substr($key, 2, -2);
             if ($value == 'opened') {
-                $onLoadScript .= "profile_swapProfileDiv('$key','".Config::getGlobal('atkroot')."');";
+                $onLoadScript .= "profile_swapProfileDiv('$key');";
             }
         }
         $page->register_loadscript($onLoadScript);

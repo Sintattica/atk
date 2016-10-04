@@ -637,6 +637,9 @@ class Node
      */
     public $m_parent;
 
+
+    public $m_cacheidentifiers;
+
     /**
      * @param string $nodeUri The nodeuri
      * @param int $flags Bitmask of node flags (self::NF_*).
