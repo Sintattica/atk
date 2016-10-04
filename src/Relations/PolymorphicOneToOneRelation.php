@@ -30,21 +30,19 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
     /**
      * Default Constructor.
      *
-     * The atkPolymorphicOneToOneRelation extends OneToOneRelation:
+     * The PolymorphicOneToOneRelation extends OneToOneRelation:
      * <b>Example:</b>
      * <code>
-     *  $this->add(new atkPolymorphicOneToOneRelation("details","fruittype_id","table","poly.orange",
-     *               "poly","fruit_id",self::AF_CASCADE_DELETE ));
+     *  $this->add(new atkPolymorphicOneToOneRelation("details", "fruittype_id", "table", "poly.orange", "poly", "fruit_id", self::AF_CASCADE_DELETE));
      * </code>
      *
      * @param string $name The unique name of the attribute.
      * @param int $flags Attribute flags that influence this attributes' behavior.
-     * @param string $typefk The name of the foreign key field in the master node to the type table .
-     * @param string $discriminatorfield The name of the field in the type table wich stores the type tablename
-     *                                   (a node with the same name must be created).
+     * @param string $typefk The name of the foreign key field in the master node to the type table
+     * @param string $discriminatorfield The name of the field in the type table wich stores the type tablename (a node with the same name must be created).
      * @param string $defaultdest The default destination node (in module.nodename notation)
      * @param string $modulename The module name
-     * @param string $refKey Specifies the foreign key field from the destination node that points to the master record.
+     * @param string $refKey Specifies the foreign key field from the destination node that points to the master record
      *
      */
     public function __construct($name, $flags = 0, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey)
@@ -76,8 +74,10 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      */
     public function load($db, $record, $mode)
     {
-        $this->m_destination = $this->m_modulename.'.'.$record[$this->m_typefk][$this->m_discriminatorfield];
-        $this->m_destInstance = $this->m_modulename.'.'.$record[$this->m_typefk][$this->m_discriminatorfield];
+        if (!empty($record[$this->m_typefk][$this->m_discriminatorfield])) {
+            $this->m_destination = $this->m_modulename.'.'.$record[$this->m_typefk][$this->m_discriminatorfield];
+            $this->m_destInstance = $this->m_modulename.'.'.$record[$this->m_typefk][$this->m_discriminatorfield];
+        }
 
         return parent::load($db, $record, $mode);
     }
