@@ -11,6 +11,10 @@
 
 WIP Changes
 -----------
+
+Changes in ATK 8.2.7 (2016-10-12)
+---------------------------------
+* Upgrade PHPMailer 5.2.16 [luca,michele]
 * Removed validateFilter on node [luca]
 * Various fixing for PHP7 (but error_reporting(0) is necessary) [luca]
 * Upgrade Smarty 2.6.30 [luca]
@@ -22,9 +26,8 @@ WIP Changes
 + Added records per page override in atkNode [luca]
 * Better handling of javascript in recordActions [luca]
 
-
 Changes in ATK 8.2.6 (2016-05-05)
------------
+---------------------------------
 + Session keepalive with ajax calls (see: $config_session_autorefresh) [michele]
 * Minor fixings [luca]
 
