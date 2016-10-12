@@ -648,7 +648,8 @@ class ManyToOneRelation extends Relation
                             ['atkfilter' => '', 'atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
 
                         if ($mode != 'list') {
-                            $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm, 'class="atkmanytoonerelation-link"');
+                            $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm,
+                                    'class="atkmanytoonerelation-link"');
                         } else {
                             $result = Tools::href($url, $result, SessionManager::SESSION_NESTED, $saveForm);
                         }
@@ -842,7 +843,8 @@ class ManyToOneRelation extends Relation
                 if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
                     $url = Tools::dispatch_url($this->m_destination, 'view', ['atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
                     $descriptor = $this->m_destInstance->descriptor($destrecord);
-                    $result .= $descriptor.' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation-link"');
+                    $result .= $descriptor.' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, true,
+                            'class="atkmanytoonerelation-link"');
                 } else {
                     $result .= $this->m_destInstance->descriptor($destrecord);
                 }
@@ -946,13 +948,9 @@ class ManyToOneRelation extends Relation
         if (!$linkname) {
             $linkname = Tools::atktext('select_a');
         }
-        if ($this->m_destinationFilter != '') {
-            $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', array('atkfilter' => $filter, 'atktarget' => $atktarget)), $linkname,
-                SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
-        } else {
-            $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', array('atktarget' => $atktarget)), $linkname,
-                SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
-        }
+
+        $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', ['atkfilter' => $filter, 'atktarget' => $atktarget]),
+            $linkname, SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
 
         return $result;
     }
