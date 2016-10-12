@@ -9503,6 +9503,9 @@ div.panel-heading {
 .navbar-brand.has-logo {
   padding: 0; }
 
+.main-nav.navbar-right {
+  margin-right: -10px; }
+
 br.atkFileAttributeCheckboxSeparator {
   display: none; }
 

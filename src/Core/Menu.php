@@ -2,8 +2,8 @@
 
 namespace Sintattica\Atk\Core;
 
-use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Ui\Page;
 
 class Menu
 {
@@ -23,9 +23,10 @@ class Menu
             <li>
         ';
 
-    protected $format_menu = '<ul class="nav navbar-nav">%s</ul>';
+    protected $format_menu_left = '<ul class="main-nav nav navbar-nav navbar-left">%s</ul>';
+    protected $format_menu_right = '<ul class="main-nav nav navbar-nav navbar-right">%s</ul>';
 
-    protected $format_single = '<li><a href="%s">%s</a></li>';
+    protected $format_single = '<li><a href="%s" %s>%s</a></li>';
 
     /**
      * Get new menu object.
@@ -93,15 +94,32 @@ class Menu
     public function load()
     {
         $html_items = $this->parseItems($this->menuItems['main']);
-        $html_menu = $this->processMenu($html_items);
 
-        return sprintf($this->format_menu, $html_menu);
+        $html_items_left = array_filter($html_items, function ($el) {
+            return $el['navbar'] == 'left';
+        });
+        $left = '';
+        $content = $this->processMenu($html_items_left);
+        if($content) {
+            $left = sprintf($this->format_menu_left, $content);
+        }
+
+        $html_items_right = array_filter($html_items, function ($el) {
+            return $el['navbar'] == 'right';
+        });
+        $right = '';
+        $content = $this->processMenu($html_items_right);
+        if($content){
+            $right = sprintf($this->format_menu_right, $this->processMenu($html_items_right));
+        }
+
+        return $left.$right;
     }
 
     protected function processMenu($menu, $child = false)
     {
         $html = '';
-        if(is_array($menu)) {
+        if (is_array($menu)) {
             foreach ($menu as $item) {
                 if ($this->isEnabled($item)) {
                     $url = $item['url'] ? $item['url'] : '#';
@@ -115,7 +133,13 @@ class Menu
                         }
                     } else {
                         $a_content = $this->_getMenuTitle($item);
-                        $html .= sprintf($this->format_single, $url, $a_content);
+
+                        $attrs = '';
+                        if($item['target']){
+                            $attrs .= ' target="'.$item['target'].'"';
+                        }
+
+                        $html .= sprintf($this->format_single, $url, $attrs, $a_content);
                     }
                 }
             }
@@ -199,8 +223,12 @@ class Menu
      *                       with default ordering and you want to place a new
      *                       menuitem at the third position, pass 250 for $order.
      * @param string $module The module name. Used for translations
+     * @param string $target The link target (_self, _blank, ...)
+     * @param string $navbar The navbar (left or right) where the menu will be put in
+     * @param bool $raw      If true, the $name will be rendered as is
+     *
      */
-    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '')
+    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $navbar = 'left', $raw = false)
     {
         static $order_value = 100, $s_dupelookup = [];
         if ($order == 0) {
@@ -214,6 +242,9 @@ class Menu
             'enable' => $enable,
             'order' => $order,
             'module' => $module,
+            'target' => $target,
+            'navbar' => $navbar,
+            'raw' => $raw,
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -226,7 +257,7 @@ class Menu
 
     protected function parseItems(&$items)
     {
-        if(is_array($items)) {
+        if (is_array($items)) {
             foreach ($items as &$item) {
                 $this->parseItem($item);
             }
@@ -251,6 +282,10 @@ class Menu
 
     public function _getMenuTitle($item, $append = '')
     {
+        if($item['raw'] == true){
+            return $item['name'];
+        }
+
         return (string)$this->getMenuTranslation($item['name'], $item['module']).$append;
     }
 }

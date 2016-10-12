@@ -18,10 +18,11 @@
   ],
   "dependencies": {
     "bootstrap-sass": "3.3.6",
-    "momentjs": "2.13.0",
     "font-awesome-sass": "4.5.0",
-    "smartmenus": "1.0.0",
+    "jquery": "2.2.4",
+    "momentjs": "2.13.0",
+    "select2": "4.0.3",
     "select2-bootstrap-theme": "0.1.0-beta.8",
-    "select2": "4.0.3"
+    "smartmenus": "1.0.0"
   }
 }

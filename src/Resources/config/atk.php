@@ -194,6 +194,7 @@ return [
     'password_minnumbers' => 0,
     'password_minspecialchars' => 0,
 
+
     /************************** AUTHENTICATION *********************************/
 
     /*
@@ -330,6 +331,11 @@ return [
      * @var String
      */
     'auth_accountenableexpression' => '',
+
+    /*
+     * Show a link in the menu to logout
+     */
+    'auth_menu_show_logout_link' => true,
 
     /************************** REMEMBER ME *********************************/
 

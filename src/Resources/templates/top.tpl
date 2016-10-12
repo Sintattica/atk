@@ -10,7 +10,7 @@
                 <span class="icon-bar"></span>
             </button>
             {if empty($brand_logo)}
-                <a class="navbar-brand" href="./">
+                <a class="navbar-brand" href="{$dispatcher}">
                     {$app_title}
                 </a>
             {else}
@@ -21,14 +21,6 @@
         </div>
         <div class="navbar-collapse collapse">
             {$menu}
-            <ul class="nav navbar-nav navbar-right">
-                {if $user}
-                    <li id="top-logout">
-                        <a href="{$dispatcher}?atklogout=1">{$user}&nbsp;&nbsp;<span class="glyphicon glyphicon-log-out"></span></a>
-                    </li>
-                {/if}
-            </ul>
         </div>
-        <!--/.nav-collapse -->
     </div>
 </div>
