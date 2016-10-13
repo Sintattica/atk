@@ -163,7 +163,7 @@ class DbAuth extends AuthInterface
             $qryobj = $db->createQuery();
             $qryobj->addTable($usertable);
             $qryobj->addField("$usertable.*");
-            $qryobj->addField('usergroup.*');
+            $qryobj->addField("usergroup.$levelfield");
             $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
             $qryobj->addCondition("$usertable.$userfield = '$user'");
 
