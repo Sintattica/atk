@@ -68,7 +68,7 @@ class ExpressionAttribute extends Attribute
 
         $result = "($expression)";
 
-        if ($this->getSearchType() == 'string') {
+        if ($this->getSearchType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
             $result = "LOWER({$result})";
         }
 
@@ -188,7 +188,7 @@ class ExpressionAttribute extends Attribute
                 if (isset($value['to']) && $value['to'] != '') {
                     $value = $value['to'];
                 } else {
-                    return false;
+                    return '';
                 }
             }
         }
@@ -198,6 +198,6 @@ class ExpressionAttribute extends Attribute
             return $query->$func($expression, $this->escapeSQL($value));
         }
 
-        return false;
+        return '';
     }
 }

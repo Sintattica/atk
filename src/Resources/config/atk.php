@@ -26,8 +26,6 @@ return [
 
     'application_config' => $_configAppRoot.$_configDirName.'/atk.php',
 
-    'atkroot' => '/',
-
     'assets_url' => $_configAssetsUrl,
 
     'template_dir' => __DIR__.'/../templates/',
@@ -64,6 +62,9 @@ return [
      * Use the given class for creating datagrids.
      */
     'datagrid_class' => '\\Sintattica\\Atk\\DataGrid\\DataGrid',
+
+    'datagrid_display_top_paginator' => true,
+    'datagrid_display_bottom_paginator' => true,
 
     /*
      * The dispatcher, all request (should) lead to this setting.
@@ -192,6 +193,7 @@ return [
     'password_minalphabeticchars' => 0,
     'password_minnumbers' => 0,
     'password_minspecialchars' => 0,
+
 
     /************************** AUTHENTICATION *********************************/
 
@@ -330,6 +332,7 @@ return [
      */
     'auth_accountenableexpression' => '',
 
+
     /************************** REMEMBER ME *********************************/
 
     /*
@@ -412,6 +415,24 @@ return [
      * @var String
      */
     'debug_translations' => false,
+
+    /************************** INDEX *********************************/
+
+    'indexPage' => Sintattica\Atk\Ui\IndexPage::class,
+
+    /************************** MENU *********************************/
+
+    'menu' => Sintattica\Atk\Core\Menu::class,
+
+    /*
+     * Show a link in the menu to logout
+     */
+    'menu_show_logout_link' => true,
+
+    /*
+     * Show the logged-in user on the right side of the menu
+     */
+    'menu_show_user' => true,
 
     /************************************ LAYOUT ****************************** */
 
@@ -734,6 +755,11 @@ return [
     'manytoone_autocomplete_pagination_limit' => 50,
 
     /*
+     * OneToMany add link position (top or bottom)
+     */
+    'onetomany_addlink_position' => 'top',
+
+    /*
      * Warn the user if he/she has changed something in a form
      * and leaves the page without pressing save or cancel.
      *
@@ -777,6 +803,7 @@ return [
      * logo
      */
     'login_logo' => $_configAssetsUrl.'images/login_logo.jpg',
+    'brand_logo' =>  '',
 
     /*
      * icons
@@ -786,7 +813,7 @@ return [
     'icon_canceled' => 'fa fa-times',
     'icon_copy' => 'fa fa-files-o',
     'icon_default' => 'fa fa-file-o',
-    'icon_delete' => 'fa fa-trash',
+    'icon_delete' => 'fa fa-trash-o text-danger',
     'icon_document' => 'fa fa-file-o',
     'icon_done' => 'fa fa-check',
     'icon_edit' => 'fa fa-pencil',
@@ -801,8 +828,10 @@ return [
     'icon_plussquare' => 'fa fa-plus-square-o',
     'icon_minussquare' => 'fa fa-minus-square-o',
 
+    /****************** CACHING ********************/
 
-    /****************** CLASSES ********************/
-
-    'indexPage' => Sintattica\Atk\Ui\IndexPage::class
+    // Cache method
+    'cache_method' => 'var',
+    // Cache namespace, change this when you are hosting your application on a shared hosting.
+    'cache_namespace' => 'default',
 ];

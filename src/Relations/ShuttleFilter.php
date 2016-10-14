@@ -64,7 +64,7 @@ abstract class ShuttleFilter extends ShuttleControl
      */
     public function getLimit()
     {
-        return;
+        return null;
     }
 
     /**

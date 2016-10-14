@@ -13,6 +13,8 @@ use Sintattica\Atk\Core\Config;
  */
 class MySqliDdl extends Ddl
 {
+    private $m_table_type;
+
     public function __construct()
     {
         parent::__construct();
@@ -22,6 +24,8 @@ class MySqliDdl extends Ddl
      * Convert an ATK generic datatype to a database specific type.
      *
      * @param string $generictype The datatype to convert.
+     *
+     * @return string
      */
     public function getType($generictype)
     {
@@ -138,8 +142,9 @@ class MySqliDdl extends Ddl
      *                            generic types supported by ATK).
      * @param int $size The size of the field (if appropriate)
      * @param int $flags The self::DDL_ flags for this field.
-     * @param mixed $default The default value to be used when inserting new
-     *                            rows.
+     * @param mixed $default The default value to be used when inserting new rows.
+     *
+     * @return string
      */
     public function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
@@ -215,7 +220,7 @@ class MySqliDdl extends Ddl
     {
         $table = $this->m_db->quoteIdentifier($this->m_db->m_seq_table);
 
-        return $this->m_db->query("DELETE FROM $table WHERE ".$this->m_db->quoteIdentifier($this->m_db->m_seq_namefield)." = '".$this->escapeSQL($name)."'");
+        return $this->m_db->query("DELETE FROM $table WHERE ".$this->m_db->quoteIdentifier($this->m_db->m_seq_namefield)." = '".$this->m_db->escapeSQL($name)."'");
     }
 
     /**

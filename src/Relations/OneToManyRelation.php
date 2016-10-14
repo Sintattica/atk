@@ -443,6 +443,8 @@ class OneToManyRelation extends Relation
      * @param string $output The HTML output of the edit function
      * @param array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
+     * @param string $mode
+     * @param string $fieldprefix
      */
     public function _addAddToEditOutput(&$output, $myrecords, $record, $mode = '', $fieldprefix = '')
     {
@@ -486,6 +488,8 @@ class OneToManyRelation extends Relation
      * @param array $myrecords The load of all attributes (see comment in edit() code)
      * @param array $record The record that holds the value for this attribute.
      * @param bool $saveform Save the form values?
+     * @param string $mode
+     * @param string $fieldprefix
      *
      * @return string The link to add records to the onetomany
      */
@@ -556,10 +560,12 @@ class OneToManyRelation extends Relation
      * @param array $myrecords The load of all attributes (see comment in edit() code)
      * @param array $record The record that holds the value for this attribute.
      * @param bool $saveform Save the values of the form?
+     * @param string $fieldprefix
+     * @param array $params
      *
      * @return string The link to add records to the onetomany
      */
-    public function _getNestedAddLink($myrecords, $record, $saveform = true, $fieldprefix = '', $params = array())
+    public function _getNestedAddLink($myrecords, $record, $saveform = true, $fieldprefix = '', $params = [])
     {
         $url = '';
         if ((int)$this->m_maxRecords !== 0 && $this->m_maxRecords <= count($myrecords)) {
@@ -819,9 +825,10 @@ class OneToManyRelation extends Relation
         $atk = Atk::getInstance();
         $classname = $this->m_destination;
         $cache_id = $this->m_owner.'.'.$this->m_name;
-        $rel = $atk->atkGetNode($classname, $cache_id);
+        $rel = $atk->atkGetNode($classname, true, $cache_id);
         $ownerfields = $this->getOwnerFields();
 
+        $whereelems = [];
         for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
             $whereelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
@@ -1105,6 +1112,7 @@ class OneToManyRelation extends Relation
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldname
      *
      * @return string The searchcondition to use.
      */
@@ -1256,6 +1264,7 @@ class OneToManyRelation extends Relation
                 // if the operator is in the filter
                 if ($value) {
                     // check if it's on the destination
+                    $destinationkey = '';
                     for ($refkeycount = 0; $refkeycount < count($this->m_refKey); ++$refkeycount) {
                         $destinationkey = $this->m_destInstance->m_table.'.'.$this->m_refKey[$refkeycount];
 

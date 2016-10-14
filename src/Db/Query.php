@@ -383,6 +383,8 @@ class Query
      * Sets this queries search method.
      *
      * @param string $searchMethod search method
+     *
+     * @return Query
      */
     public function setSearchMethod($searchMethod)
     {
@@ -474,7 +476,6 @@ class Query
             $expression = $entry['expression'];
             $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName] : $this->quoteField($fieldName);
             $result .= "($expression) AS $fieldAlias";
-            $first = false;
         }
 
         $this->_addFrom($result);
@@ -488,7 +489,6 @@ class Query
         }
 
         if (count($this->m_searchconditions) > 0) {
-            $prefix = ' ';
             if (count($this->m_conditions) == 0) {
                 $prefix = ' WHERE ';
             } else {
@@ -612,7 +612,6 @@ class Query
         }
 
         if (count($this->m_searchconditions) > 0) {
-            $prefix = ' ';
             if (count($this->m_conditions) == 0) {
                 $prefix = ' WHERE ';
             } else {
@@ -750,6 +749,8 @@ class Query
      *
      * @param string $field
      * @param bool $emptyStringIsNull
+     *
+     * @return string
      */
     public function nullCondition($field, $emptyStringIsNull = false)
     {
@@ -766,6 +767,8 @@ class Query
      *
      * @param string $field
      * @param bool $emptyStringIsNull
+     *
+     * @return string
      */
     public function notNullCondition($field, $emptyStringIsNull = false)
     {
@@ -792,10 +795,16 @@ class Query
             return self::exactNumberCondition($field, $value);
         }
 
-        if ($value[0] == '!') {
-            return 'UPPER('.$field.")!=UPPER('".substr($value, 1, Tools::atk_strlen($value))."')";
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return 'LOWER('.$field.")!=LOWER('".substr($value, 1, Tools::atk_strlen($value))."')";
+            }
+            return 'LOWER('.$field.")=LOWER('".$value."')";
         } else {
-            return 'UPPER('.$field.")=UPPER('".$value."')";
+            if ($value[0] == '!') {
+                return $field."!='".substr($value, 1, Tools::atk_strlen($value))."'";
+            }
+            return $field."='".$value."'";
         }
     }
 
@@ -822,10 +831,16 @@ class Query
      */
     public function substringCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return 'UPPER('.$field.") NOT LIKE UPPER('%".substr($value, 1, Tools::atk_strlen($value))."%')";
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return 'LOWER('.$field.") NOT LIKE LOWER('%".substr($value, 1, Tools::atk_strlen($value))."%')";
+            }
+            return 'LOWER('.$field.") LIKE LOWER('%".$value."%')";
         } else {
-            return 'UPPER('.$field.") LIKE UPPER('%".$value."%')";
+            if ($value[0] == '!') {
+                return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
+            }
+            return $field." LIKE '%".$value."%'";
         }
     }
 
@@ -834,13 +849,21 @@ class Query
      *
      * @param string $field
      * @param string $value
+     *
+     * @return string
      */
     public function wildcardCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return 'UPPER('.$field.") NOT LIKE UPPER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            if ($value[0] == '!') {
+                return 'LOWER('.$field.") NOT LIKE LOWER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
+            }
+            return 'LOWER('.$field.") LIKE LOWER('".str_replace('*', '%', $value)."')";
         } else {
-            return 'UPPER('.$field.") LIKE UPPER('".str_replace('*', '%', $value)."')";
+            if ($value[0] == '!') {
+                return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
+            }
+            return $field." LIKE '".str_replace('*', '%', $value)."'";
         }
     }
 
@@ -849,6 +872,8 @@ class Query
      *
      * @param string $field The database field
      * @param string $value The value
+     *
+     * @return string
      */
     public function greaterthanCondition($field, $value)
     {
@@ -864,6 +889,8 @@ class Query
      *
      * @param string $field The database field
      * @param string $value The value
+     *
+     * @return string
      */
     public function greaterthanequalCondition($field, $value)
     {
@@ -879,6 +906,8 @@ class Query
      *
      * @param string $field The database field
      * @param string $value The value
+     *
+     * @return string
      */
     public function lessthanCondition($field, $value)
     {
@@ -894,6 +923,8 @@ class Query
      *
      * @param string $field The database field
      * @param string $value The value
+     *
+     * @return string
      */
     public function lessthanequalCondition($field, $value)
     {
@@ -924,22 +955,6 @@ class Query
     }
 
     /**
-     * Static factory method. This method returns a new instance of a query
-     * object for the current database.
-     *
-     * @param string $basepath The basepath for the database object (defaults to 'atk.db')
-     *
-     * @return Query A Query object for the appropriate database
-     */
-    public function create($basepath = 'atk.db.')
-    {
-        $dbconfig = Config::getGlobal('db');
-        $class = $dbconfig['default']['driver'].'Query';
-
-        return new $class();
-    }
-
-    /**
      * If we set a m_fieldquote you can pass a field to this function and it will
      * quote all the identifiers (db, table, column, etc...) in the field.
      *
@@ -955,6 +970,7 @@ class Query
         }
 
         $exploded = explode('.', $field);
+        $identifiers = [];
         foreach ($exploded as $identifier) {
             if ($quotefield || in_array($identifier, $this->m_reservedNames)) {
                 $identifiers[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
@@ -978,6 +994,7 @@ class Query
     public function quoteFields($fields)
     {
         if ($this->m_fieldquote) {
+            $quoted = [];
             foreach ($fields as $key => $field) {
                 $quoted[$key] = $this->quoteField($field);
             }

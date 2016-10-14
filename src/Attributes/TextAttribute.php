@@ -35,7 +35,7 @@ class TextAttribute extends Attribute
             $this->m_rows = $options['rows'];
         }
         if (isset($options['cols'])) {
-            $this->m_rows = $options['cols'];
+            $this->m_cols = $options['cols'];
         }
         if (isset($options['autoadjust'])) {
             $this->m_autoadjust = $options['autoadjust'];

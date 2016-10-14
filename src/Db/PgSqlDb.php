@@ -22,6 +22,9 @@ class PgSqlDb extends Db
     public function __construct()
     {
         /* do nothing */
+
+        // force case insensitive searching and ordering
+        $this->m_force_ci = true;
     }
 
     /**
@@ -71,7 +74,7 @@ class PgSqlDb extends Db
      *
      * @return int The ATK error code
      */
-    public function _translateError($error = '')
+    public function _translateError($error = null)
     {
         return self::DB_UNKNOWNERROR;
     }
@@ -90,6 +93,8 @@ class PgSqlDb extends Db
      * @param string $query the query
      * @param int $offset offset in record list
      * @param int $limit maximum number of records
+     *
+     * @return bool
      */
     public function query($query, $offset = -1, $limit = -1)
     {
@@ -276,7 +281,7 @@ class PgSqlDb extends Db
             if (empty($id)) {
                 /* create sequence */
                 $query = 'CREATE SEQUENCE '.$sequencename;
-                $id = @pg_query($this->m_link_id, $query);
+                @pg_query($this->m_link_id, $query);
 
                 /* try again */
                 $query = "SELECT nextval('".$sequencename."') AS nextid";
@@ -310,7 +315,7 @@ class PgSqlDb extends Db
      */
     public function metadata($table, $full = false)
     {
-        $ddl = Ddl::create('pgsql');
+        $ddl = Ddl::create('PgSql');
 
         if (strpos($table, '.') != false) {
             // there is a period in the table, so we split out the schema name.
@@ -418,9 +423,11 @@ class PgSqlDb extends Db
     /**
      * Return the available table names.
      *
+     * @param $includeViews bool
+     *
      * @return array with table names etc.
      */
-    public function table_names()
+    public function table_names($includeViews = true)
     {
         /* query */
         $this->query("SELECT relname FROM pg_class WHERE relkind = 'r' AND NOT relname LIKE 'pg_%' AND NOT relname LIKE 'sql_%'");

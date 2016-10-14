@@ -149,10 +149,15 @@ div.panel-heading {
 .navbar-brand {
   img {
     max-height: 50px;
+    margin: 0 15px 0 15px;
   }
   &.has-logo {
     padding: 0;
   }
+}
+
+.main-nav.navbar-right {
+  margin-right: -10px;
 }
 
 br.atkFileAttributeCheckboxSeparator {
@@ -175,8 +180,22 @@ td.fieldlabel {
 }
 
 hr {
-  margin-top:    5px;
+  margin-top: 5px;
   margin-bottom: 5px;
   border: 0;
   border-top: 1px solid $hr-border;
+}
+
+ul {
+  list-style-position: outside;
+  padding-left: 20px;
+}
+
+#top-logout {
+  margin-right: 5px;
+}
+
+.row.section-item > label, .row.section-item > .fieldlabel {
+  padding-right: 0;
+  font-weight: bold;
 }

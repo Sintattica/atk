@@ -2,30 +2,33 @@
 
 namespace Sintattica\Atk\Core;
 
-use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Ui\Page;
 
 class Menu
 {
     protected $menuItems = [];
 
-    private $format_submenuparent = '
+    protected $format_submenuparent = '
             <li>
                 <a href="#">%s <span class="caret"></span></a>
                 <ul class="dropdown-menu">%s</ul>
             <li>
         ';
 
-    private $format_submenuchild = '
+    protected $format_submenuchild = '
             <li>
                 <a href="#">%s <span class="caret"></span></a>
                 <ul class="dropdown-menu">%s</ul>
             <li>
         ';
 
-    private $format_menu = '<ul class="nav navbar-nav">%s</ul>';
+    protected $format_menu_left = '<ul class="main-nav nav navbar-nav navbar-left">%s</ul>';
+    protected $format_menu_right = '<ul class="main-nav nav navbar-nav navbar-right">%s</ul>';
 
-    private $format_single = '<li><a href="%s">%s</a></li>';
+    protected $format_single = '<li><a href="%s" %s>%s</a></li>';
+
+    protected $format_single_text = '<li><p class="navbar-text">%s</p></li>';
 
     /**
      * Get new menu object.
@@ -37,7 +40,7 @@ class Menu
         static $s_instance = null;
         if ($s_instance == null) {
             Tools::atkdebug('Creating a new menu instance');
-            $s_instance = new self();
+            $s_instance = new static();
         }
 
         return $s_instance;
@@ -93,29 +96,56 @@ class Menu
     public function load()
     {
         $html_items = $this->parseItems($this->menuItems['main']);
-        $html_menu = $this->processMenu($html_items);
 
-        return sprintf($this->format_menu, $html_menu);
+        $html_items_left = array_filter($html_items, function ($el) {
+            return $el['navbar'] == 'left';
+        });
+        $left = '';
+        $content = $this->processMenu($html_items_left);
+        if ($content) {
+            $left = sprintf($this->format_menu_left, $content);
+        }
+
+        $html_items_right = array_filter($html_items, function ($el) {
+            return $el['navbar'] == 'right';
+        });
+        $right = '';
+        $content = $this->processMenu($html_items_right);
+        if ($content) {
+            $right = sprintf($this->format_menu_right, $this->processMenu($html_items_right));
+        }
+
+        return $left.$right;
     }
 
-    private function processMenu($menu, $child = false)
+    protected function processMenu($menu, $child = false)
     {
         $html = '';
-
-        foreach ($menu as $item) {
-            if ($this->isEnabled($item)) {
-                $url = $item['url'] ? $item['url'] : '#';
-                if ($this->_hasSubmenu($item)) {
-                    $a_content = $this->_getMenuTitle($item);
-                    $childHtml = $this->processMenu($item['submenu'], true);
-                    if ($child) {
-                        $html .= sprintf($this->format_submenuchild, $a_content, $childHtml);
+        if (is_array($menu)) {
+            foreach ($menu as $item) {
+                if ($this->isEnabled($item)) {
+                    if ($this->_hasSubmenu($item)) {
+                        $a_content = $this->_getMenuTitle($item);
+                        $childHtml = $this->processMenu($item['submenu'], true);
+                        if ($child) {
+                            $html .= sprintf($this->format_submenuchild, $a_content, $childHtml);
+                        } else {
+                            $html .= sprintf($this->format_submenuparent, $a_content, $childHtml);
+                        }
                     } else {
-                        $html .= sprintf($this->format_submenuparent, $a_content, $childHtml);
+                        $a_content = $this->_getMenuTitle($item);
+
+                        $attrs = '';
+                        if ($item['target']) {
+                            $attrs .= ' target="'.$item['target'].'"';
+                        }
+
+                        if ($item['url']) {
+                            $html .= sprintf($this->format_single, $item['url'], $attrs, $a_content);
+                        } else {
+                            $html .= sprintf($this->format_single_text, $a_content);
+                        }
                     }
-                } else {
-                    $a_content = $this->_getMenuTitle($item);
-                    $html .= sprintf($this->format_single, $url, $a_content);
                 }
             }
         }
@@ -198,8 +228,12 @@ class Menu
      *                       with default ordering and you want to place a new
      *                       menuitem at the third position, pass 250 for $order.
      * @param string $module The module name. Used for translations
+     * @param string $target The link target (_self, _blank, ...)
+     * @param string $navbar The navbar (left or right) where the menu will be put in
+     * @param bool $raw If true, the $name will be rendered as is
+     *
      */
-    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '')
+    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $navbar = 'left', $raw = false)
     {
         static $order_value = 100, $s_dupelookup = [];
         if ($order == 0) {
@@ -213,6 +247,9 @@ class Menu
             'enable' => $enable,
             'order' => $order,
             'module' => $module,
+            'target' => $target,
+            'navbar' => $navbar,
+            'raw' => $raw,
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -223,16 +260,18 @@ class Menu
         }
     }
 
-    private function parseItems(&$items)
+    protected function parseItems(&$items)
     {
-        foreach ($items as &$item) {
-            $this->parseItem($item);
+        if (is_array($items)) {
+            foreach ($items as &$item) {
+                $this->parseItem($item);
+            }
         }
 
         return $items;
     }
 
-    private function parseItem(&$item)
+    protected function parseItem(&$item)
     {
         if ($item['enable'] && array_key_exists($item['name'], $this->menuItems)) {
             $item['submenu'] = $this->parseItems($this->menuItems[$item['name']]);
@@ -248,6 +287,10 @@ class Menu
 
     public function _getMenuTitle($item, $append = '')
     {
+        if ($item['raw'] == true) {
+            return $item['name'];
+        }
+
         return (string)$this->getMenuTranslation($item['name'], $item['module']).$append;
     }
 }

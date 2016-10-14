@@ -61,12 +61,21 @@ class ManyToManyRelation extends Relation
      *                            and setRemoteKey()
      * @param string $destination The full name of the node that is the other
      *                            end of the relation.
+     * @param string $local_key field for localKey
+     * @param string $remote_key field for remoteKey
      */
-    public function __construct($name, $flags = 0, $link, $destination)
+    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
     {
         $flags = $flags | self::AF_CASCADE_DELETE | self::AF_NO_SORT;
         $this->m_link = $link;
         parent::__construct($name, $flags, $destination);
+
+        if ($local_key != null) {
+            $this->setLocalKey($local_key);
+        }
+        if ($remote_key != null) {
+            $this->setRemoteKey($remote_key);
+        }
     }
 
     /**
@@ -289,7 +298,7 @@ class ManyToManyRelation extends Relation
         $this->createDestination();
 
         if ($this->m_remoteKey == '') {
-            list($module, $nodename) = explode('.', $this->m_destination);
+            list(, $nodename) = explode('.', $this->m_destination);
             $this->m_remoteKey = $this->determineKeyName($nodename);
         }
 
@@ -733,6 +742,7 @@ class ManyToManyRelation extends Relation
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string Piece of html code
      */
@@ -743,10 +753,28 @@ class ManyToManyRelation extends Relation
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
 
+        $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['minimum-results-for-search'] = 10;
+        if ($extended) {
+            $selectOptions['placeholder'] = Tools::atktext('search_all');
+        }
+
+        //width always auto
+        $selectOptions['width'] = 'auto';
+
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
+        $data = '';
+        foreach ($selectOptions as $k => $v) {
+            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+
+
         // now select all records
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey))->getAllRows();
-        $result = '<select class="form-control"';
+        $result = '<select class="form-control"'.$data;
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, count($recordset) + 1).'"';
         }
@@ -769,6 +797,7 @@ class ManyToManyRelation extends Relation
             $result .= '<option value="'.$pk.'"'.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]).'</option>';
         }
         $result .= '</select>';
+        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }

@@ -45,14 +45,10 @@ class ParserAttribute extends Attribute
         return $this->display($record, $mode);
     }
 
-    /**
-     * VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
-     *
-     * @param array $record Array with fields
-     */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        return '&nbsp;';
+        // VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
+        return '';
     }
 
     /**
@@ -76,6 +72,8 @@ class ParserAttribute extends Attribute
      * @param Db $db The database object
      * @param array $record The record
      * @param string $mode
+     *
+     * @return bool
      */
     public function store($db, $record, $mode)
     {

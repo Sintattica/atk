@@ -562,6 +562,8 @@ class Attribute
      */
     public $m_width;
 
+    protected $m_select2Options = ['edit' => [], 'search' => []];
+
     /**
      * Constructor.
      *
@@ -578,10 +580,6 @@ class Attribute
      *                      for most attributes, corresponds to a field in
      *                      the database.
      * @param int $flags Flags for the attribute.
-     * @param mixed $size The size(s) of the attribute. See the $size
-     *                      parameter of the setAttribSize() method for more
-     *                      information on the possible values of this
-     *                      parameter.
      */
     public function __construct($name, $flags = 0)
     {
@@ -1506,6 +1504,7 @@ class Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string A piece of html-code
      */
@@ -1617,6 +1616,8 @@ class Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     *
+     * @param string $fieldaliasprefix
      */
     public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
@@ -1667,7 +1668,7 @@ class Attribute
             Tools::atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().', ignoring condition.');
         }
 
-        return false;
+        return '';
     }
 
     /**
@@ -1810,6 +1811,8 @@ class Attribute
      * Note, that the framework only calls this method if the attribute has
      * the self::AF_CASCADE_DELETE flag.
      *
+     * @param array $record
+     *
      * @return bool true if cleanup was successful, false otherwise.
      */
     public function delete($record)
@@ -1827,6 +1830,8 @@ class Attribute
      * deletes etc.
      * Note, that the framework only calls this method if the attribute has
      * the self::AF_CASCADE_DELETE flag.
+     *
+     * @param array $record
      *
      * @return bool true if cleanup was successful, false otherwise.
      */
@@ -2698,9 +2703,16 @@ class Attribute
                 $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier).'.';
             }
 
-            return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            }
+            return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+
         } else {
-            return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            }
+            return $this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
         }
     }
 
@@ -2708,6 +2720,7 @@ class Attribute
      * Translate using the owner instance's module and type.
      *
      * @param string $string The string to be translated
+     * @param bool $fallback
      *
      * @return string The translated string.
      */
@@ -2984,5 +2997,26 @@ class Attribute
     public function __toString()
     {
         return $this->m_ownerInstance->atkNodeUri().'::'.$this->fieldName();
+    }
+
+    /**
+     * @param $options
+     * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
+     * @return $this
+     */
+    public function setSelect2Options($options, $types = null) {
+        if($types == null) {
+            $types = array_keys($this->m_select2Options);
+        }
+
+        if(!is_array($types)){
+            $types = [$types];
+        }
+
+        foreach($types as $type) {
+            $this->m_select2Options[$type] = $options;
+        }
+
+        return $this;
     }
 }

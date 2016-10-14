@@ -31,27 +31,10 @@ class ExtendableShuttleRelation extends ManyToManyRelation
     protected $m_limit = null;
     protected $m_descriptor_tooltip_template = null;
 
-    /**
-     * Constructor.
-     *
-     * @param string $name The name of the relation
-     * @param int $flags Flags for the relation.
-     * @param string $link The full name of the node that is used as
-     *                            intermediairy node. The intermediairy node is
-     *                            assumed to have 2 attributes that are named
-     *                            after the nodes at both ends of the relation.
-     *                            For example, if node 'project' has a M2M relation
-     *                            with 'activity', then the intermediairy node
-     *                            'project_activity' is assumed to have an attribute
-     *                            named 'project' and one that is named 'activity'.
-     *                            You can set your own keys by calling setLocalKey()
-     *                            and setRemoteKey()
-     * @param string $destination The full name of the node that is the other
-     *                            end of the relation.
-     */
-    public function __construct($name, $flags = 0, $link, $destination)
+
+    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
     {
-        parent::__construct($name, $flags, $link, $destination);
+        parent::__construct($name, $flags, $link, $destination, $local_key, $remote_key);
         $this->m_controlsBySection[ShuttleControl::AVAILABLE] = [];
         $this->m_controlsBySection[ShuttleControl::SELECTED] = [];
     }
@@ -92,8 +75,9 @@ class ExtendableShuttleRelation extends ManyToManyRelation
 
         foreach ($this->m_controlsBySection[$record[$this->fieldName()]['section']] as $control) {
             if (is_a($control, 'ShuttleFilter')) {
-                $redraw = true;
+                /** @var ShuttleFilter $control */
 
+                $redraw = true;
                 $filter = $control->getFilter($record);
                 if (!empty($filter)) {
                     // add filter immediately because we are only refreshing a single section
@@ -196,6 +180,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $prefix = $this->getOwnerInstance()->m_postvars['atkfieldprefix'];
 
         $res = '<script language="text/javascript">';
+        /** @var ShuttleControl $control */
         foreach ($this->m_controlsBySection[ShuttleControl::AVAILABLE] as $control) {
             if ($control->needsRefresh('selection', $record)) {
                 $res .= "$('".$control->getFormName($prefix)."').innerHTML = ".Json::encode($control->render($record, $mode, $prefix)).';';
@@ -235,6 +220,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         foreach (array(ShuttleControl::AVAILABLE, ShuttleControl::SELECTED) as $section) {
             foreach ($this->m_controlsBySection[$section] as $control) {
                 if (is_a($control, 'ShuttleFilter')) {
+                    /** @var ShuttleFilter $control */
                     $filter = $control->getFilter($record);
                     if (!empty($filter)) {
                         $filtersBySection[$section][] = $filter;
@@ -259,24 +245,27 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         }
 
         // Get controls for 'available' side
+        $ava_controls = [];
         foreach ($this->m_controlsBySection[ShuttleControl::AVAILABLE] as $control) {
             $ava_controls[] = $control->render($record, $mode, $fieldprefix);
         }
 
         // Get controls for 'selected' side
+        $sel_controls = [];
         foreach ($this->m_controlsBySection[ShuttleControl::SELECTED] as $control) {
             $sel_controls[] = $control->render($record, $mode, $fieldprefix);
         }
 
         // Get available records
         $left = ($this->hasFlag(self::AF_SHUTTLERELATION_NO_AUTOLOAD)) ? [] : $this->getAvailableFields($record, $mode, $availableFilter);
-
+        $available_options = [];
         for ($i = 0, $_i = count($left); $i < $_i; ++$i) {
             $available_options[$left[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($left[$i]);
         }
 
         // Get selected records
         $right = $this->getSelectedFields($record, $mode, $selectedFilter, $availableFilter);
+        $selected_options = [];
         for ($i = 0, $_i = count($right); $i < $_i; ++$i) {
             $selected_options[$right[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($right[$i]);
         }
@@ -286,6 +275,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
         $name = $this->getHtmlId($fieldprefix).'[selected][]['.$this->getRemoteKey().']';
 
         // Build jsonned value for selected fields
+        $vals = [];
         foreach ($right as $fld) {
             $vals[] = $fld[$this->m_destInstance->primaryKeyField()];
         }
@@ -513,6 +503,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      * @param array $record current record
      * @param string $mode current mode
      * @param string $selectedFilter
+     * @param string $availableFilter
      */
     protected function populateSelectedRecords($record, $mode, $selectedFilter = '', $availableFilter = '')
     {
@@ -551,6 +542,8 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      *
      * @param array $record The record with the currently selected fields
      * @param string $mode for which mode we are rendering
+     * @param string $selectedFilter
+     * @param string $availableFilter
      *
      * @return array selected records
      */
@@ -568,6 +561,7 @@ class ExtendableShuttleRelation extends ManyToManyRelation
      *
      * @param array $record The record with the currently selected fields
      * @param string $mode for which mode we are rendering
+     * @param string $availableFilter
      *
      * @return array available records
      */

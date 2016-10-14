@@ -3,12 +3,12 @@
 namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Menu;
-use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Class that generates an index page.
@@ -46,7 +46,7 @@ class IndexPage
 
     /**
      * Constructor
-     * $atk Atk.
+     * @param $atk Atk
      *
      * @return IndexPage
      */
@@ -79,16 +79,25 @@ class IndexPage
     public function generate()
     {
         if (!$this->hasFlag(Page::HTML_PARTIAL)) {
-            $menuObj = Menu::getInstance();
+            /** @var Menu $menuClass */
+            $menuClass = Config::getGlobal('menu');
+            $menuObj = $menuClass::getInstance();
+            $user = $this->m_username ?: $this->m_user['name'];
+
+
+            if (Config::getGlobal('menu_show_user') && $user) {
+                $menuObj->addMenuItem($user,'', 'main', true, 0, '', '', 'right', true);
+            }
+
+            if (Config::getGlobal('menu_show_logout_link') && $user) {
+                $menuObj->addMenuItem('<span class="glyphicon glyphicon-log-out"></span>',
+                    Config::getGlobal('dispatcher').'?atklogout=1', 'main', true, 0, '', '', 'right', true
+                );
+            }
 
             $top = $this->m_ui->renderBox(array(
-                'logintext' => Tools::atktext('logged_in_as'),
-                'logouttext' => Tools::atktext('logout', 'atk'),
-                'logoutlink' => Config::getGlobal('dispatcher').'?atklogout=1',
                 'title' => ($this->m_title != '' ?: Tools::atktext('app_title')),
                 'app_title' => Tools::atktext('app_title'),
-                'user' => ($this->m_username ?: $this->m_user['name']),
-                'fulluser' => $this->m_user,
                 'menu' => $menuObj->getMenu(),
             ), 'top');
             $this->m_page->addContent($top);
@@ -103,22 +112,6 @@ class IndexPage
 
         $this->m_output->output($content);
         $this->m_output->outputFlush();
-    }
-
-    /**
-     * Generate the menu.
-     */
-    public function atkGenerateMenu()
-    {
-        /* general menu stuff */
-        /* load menu layout */
-        $menu = Menu::getInstance();
-
-        if (is_object($menu)) {
-            $this->m_page->addContent($menu->getMenu());
-        } else {
-            Tools::atkerror('no menu object created!');
-        }
     }
 
     /**

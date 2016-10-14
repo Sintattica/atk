@@ -70,6 +70,8 @@ class CalculatorAttribute extends Attribute
     /**
      * Make sure the value is not stored. (always calculated on the fly).
      *
+     * @param string $mode The type of storage ("add" or "update")
+     *
      * @return int
      */
     public function storageType($mode = null)
@@ -79,6 +81,8 @@ class CalculatorAttribute extends Attribute
 
     /**
      * Make sure the value is loaded *after* the main record is loaded.
+     *
+     * @param string $mode The type of load (view,admin,edit etc)
      *
      * @return int
      */
@@ -99,6 +103,7 @@ class CalculatorAttribute extends Attribute
     public function load($db, $record, $mode)
     {
         $parser = new StringParser($this->m_calculation);
+        $result = 0;
         eval('$result = '.$parser->parse($record).';');
 
         return $result;

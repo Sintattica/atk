@@ -95,12 +95,13 @@ class FlagAttribute extends MultiSelectAttribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldname
      *
      * @return string The searchcondition to use.
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $searchcondition = null;
+        $searchcondition = '';
         if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $field = $table.'.'.$this->fieldName();
             if (count($value) == 1) { // exactly one value

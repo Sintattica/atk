@@ -118,15 +118,10 @@ class OneToOneRelation extends Relation
         return $result;
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     *
-     * Because of the self::AF_INTEGRATE feature, the edit() method has a void
-     * implementation. The actual edit code is handled by addToEditArray().
-     */
     public function edit($record, $fieldprefix, $mode)
     {
+        // Because of the self::AF_INTEGRATE feature, the edit() method has a void implementation.
+        // The actual edit code is handled by addToEditArray().
     }
 
     /**
@@ -144,7 +139,7 @@ class OneToOneRelation extends Relation
             return $this->m_destInstance->initial_values();
         }
 
-        return;
+        return null;
     }
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
@@ -316,11 +311,9 @@ class OneToOneRelation extends Relation
         return;
     }
 
-    /**
-     * Initialize this destinations attribute sizes.
-     */
     public function fetchMeta($metadata)
     {
+        // Initialize this destinations attribute sizes.
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE)) {
             $this->createDestination();
             $this->getDestination()->setAttribSizes();
@@ -576,6 +569,7 @@ class OneToOneRelation extends Relation
     {
         Tools::atkdebug('hide called for '.$this->fieldName());
         if ($this->createDestination()) {
+            $myrecord = null;
             if ($record[$this->fieldName()] != null) {
                 $myrecord = $record[$this->fieldName()];
 
@@ -634,6 +628,8 @@ class OneToOneRelation extends Relation
                 if (!$this->createDestination()) {
                     return;
                 }
+
+                $myrecord = null;
 
                 /* readonly */
                 if ($this->m_destInstance->hasFlag(Node::NF_READONLY) || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT)) || ($mode == 'add' && $this->hasFlag(self::AF_READONLY_ADD))) {
@@ -923,20 +919,7 @@ class OneToOneRelation extends Relation
         return parent::showOnTab($tab);
     }
 
-    /**
-     * Adds the attribute / field to the list header. This includes the column name and search field.
-     *
-     * Framework method. It should not be necessary to call this method directly.
-     *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby the current ATK orderby string (if not empty)
-     *
-     * @see Node::listArray
-     */
+
     public function addToListArrayHeader(
         $action,
         &$arr,
@@ -974,19 +957,7 @@ class OneToOneRelation extends Relation
         }
     }
 
-    /**
-     * Adds the attribute / field to the list row. And if the row is totalisable also to the total.
-     *
-     * Framework method. It should not be necessary to call this method directly.
-     *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param int $nr the current row number
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     *
-     * @see Node::listArray
-     */
+
     public function addToListArrayRow(
         $action,
         &$arr,
@@ -1043,6 +1014,7 @@ class OneToOneRelation extends Relation
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldname
      *
      * @return string The searchcondition to use.
      */
@@ -1079,7 +1051,7 @@ class OneToOneRelation extends Relation
                     // are in the relation
                     $p_attrib = $this->m_ownerInstance->m_attribList[$key];
                     if (is_object($p_attrib)) {
-                        $p_attrib->searchCondition($query, $p_attrib->getTable($key), $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
+                        $p_attrib->searchCondition($query, $p_attrib->getOwnerInstance()->getTable(), $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
                     } else {
                         Tools::atkdebug("Field $key was not found in this relation (this is very weird)");
                     }

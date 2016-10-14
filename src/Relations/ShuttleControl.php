@@ -13,7 +13,10 @@ abstract class ShuttleControl
     const SELECTED = 'selected';
 
     protected $m_name;
+
+    /** @var ExtendableShuttleRelation $m_shuttle */
     protected $m_shuttle;
+
     protected $m_section;
 
     /**
@@ -29,7 +32,7 @@ abstract class ShuttleControl
     /**
      * Get the shuttle.
      *
-     * @return ShuttleControl
+     * @return ExtendableShuttleRelation
      */
     public function getShuttle()
     {

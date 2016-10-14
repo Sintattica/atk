@@ -3,10 +3,10 @@
 namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Node;
 
 /**
  * Many-to-many select relation.
@@ -47,27 +47,10 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     private $m_positionAttributeHtmlModifier;
 
-    /**
-     * Constructs a new many-to-many select relation.
-     *
-     * @param string $name The name of the relation
-     * @param int $flags Flags for the relation.
-     * @param string $link The full name of the node that is used as
-     *                            intermediairy node. The intermediairy node is
-     *                            assumed to have 2 attributes that are named
-     *                            after the nodes at both ends of the relation.
-     *                            For example, if node 'project' has a M2M relation
-     *                            with 'activity', then the intermediairy node
-     *                            'project_activity' is assumed to have an attribute
-     *                            named 'project' and one that is named 'activity'.
-     *                            You can set your own keys by calling setLocalKey()
-     *                            and setRemoteKey()
-     * @param string $destination The full name of the node that is the other
-     *                            end of the relation.
-     */
-    public function __construct($name, $flags = 0, $link, $destination)
+
+    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
     {
-        parent::__construct($name, $flags, $link, $destination);
+        parent::__construct($name, $flags, $link, $destination, $local_key, $remote_key);
 
         $relationFlags = ManyToOneRelation::AF_MANYTOONE_AUTOCOMPLETE | self::AF_HIDE;
         $relation = new ManyToOneRelation($this->fieldName().'_m2msr_add', $relationFlags, $this->m_destination);
@@ -151,13 +134,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         $this->createDestination();
-
         $this->createLink();
-
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('atkroot').'atk/javascript/class.'.strtolower(__CLASS__).'.js');
-
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytomanyselectrelation.js');
         $id = $this->getHtmlId($fieldprefix);
         $selectId = "{$id}_selection";
+        $addLink = '';
 
         $selectedKeys = $this->getSelectedKeys($record, $id);
 
@@ -190,13 +171,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
             $result .= '</ul>';
         } else {
             if (!$addLink) {
-                $result .= '<i>'.$this->text('none').'</i>';
+                $addLink = '<i>'.$this->text('none').'</i>';
             }
         }
 
-        if ($addLink) {
-            $result .= $addLink;
-        }
+        $result .= $addLink;
 
         $result .= '</div>';
 
@@ -212,8 +191,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @param array $record The record that holds the value for this attribute.
      * @param string $id is the html id of the relation
-     * @param int $uniqueFilter is the type of array_unique filter to use on
-     *                             the results. Use boolean false to dissable
+     * @param mixed $enforceUnique is the type of array_unique filter to use on the results. Use boolean false to disable
      *
      * @return array of selected keys in the order they were submitted
      */
@@ -314,10 +292,12 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @param array $record selected record
      * @param string $fieldprefix field prefix
+     *
+     * @return string
      */
     protected function renderSelectedRecord($record, $fieldprefix)
     {
-        $name = $this->getHtmlId($fieldprefix).'[]['.$this->getRemoteKey().']';
+        $name = $this->getHtmlName($fieldprefix).'[]['.$this->getRemoteKey().']';
         $key = $record[$this->getDestination()->primaryKeyField()];
 
         // Get the descriptor and ensure it's presentible
@@ -362,6 +342,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         // Call the renderButton action for those actions
         $actionLinks = [];
+        $actionLink = null;
         foreach ($actions as $action) {
             $actionLink = $this->getActionLink($action, $record);
             if ($actionLink != null) {
@@ -462,8 +443,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Render addition field.
      *
+     * @param array $record
      * @param string $fieldprefix field prefix
      * @param string $mode
+     *
+     * @return string
      */
     protected function renderAdditionField($record, $fieldprefix, $mode)
     {
@@ -531,16 +515,6 @@ class ManyToManySelectRelation extends ManyToManyRelation
     }
 
     /**
-     * Set the case-sensitivity for the autocompletion search (true or false).
-     *
-     * @param array $caseSensitive
-     */
-    public function setAutoCompleteCaseSensitive($caseSensitive)
-    {
-        $this->getManyToOneRelation()->setAutoCaseSensitive($caseSensitive);
-    }
-
-    /**
      * Sets the minimum number of characters before auto-completion kicks in.
      *
      * @param int $chars
@@ -554,6 +528,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * Adds a filter value to the destination filter.
      *
      * @param string $filter
+     *
+     * @return ManyToOneRelation
      */
     public function addDestinationFilter($filter)
     {
@@ -596,7 +572,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     }
 
     /**
-     * Check if positon attribute is set.
+     * Check if position attribute is set.
      *
      * @return bool true if the position attribute has been set
      */
@@ -624,7 +600,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $additional = '';
         if ($this->hasPositionAttribute()) {
             if (is_null($this->m_positionAttributeHtmlModifier)) {
-                $additional = ' <img src="'.Config::getGlobal('atkroot').'atk/images/up-down.gif"
+                $additional = ' <img src="'.Config::getGlobal('assets_url').'images/up-down.gif"
           width="10" height="10" 
           alt="Sortable Ordering" 
           title="Sortable Ordering" />';

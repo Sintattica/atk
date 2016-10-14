@@ -6,6 +6,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Relations\ManyToOneRelation;
 
 /**
  * The DateTimeAttribute class can be used for date and time entry.
@@ -28,7 +29,7 @@ class DateTimeAttribute extends Attribute
      *
      * @return int Timestamp
      */
-    public function arrayToDateTime($dateArray)
+    public static function arrayToDateTime($dateArray)
     {
         $hour = 0;
         $min = 0;
@@ -311,7 +312,7 @@ class DateTimeAttribute extends Attribute
      *
      * @param array $rec database record with date field
      *
-     * @return array with 3 fields (hours:minutes:seconds)
+     * @return mixed array with 3 fields (hours:minutes:seconds)
      */
     public function db2value($rec)
     {
@@ -334,7 +335,7 @@ class DateTimeAttribute extends Attribute
             $tmp_rec[$this->fieldName()] = $datetime[0];
             $result_date = $this->m_date->db2value($tmp_rec);
             if ($result_date == null) {
-                return;
+                return null;
             }
 
             $tmp_rec = $rec;
@@ -349,7 +350,7 @@ class DateTimeAttribute extends Attribute
 
             return $value;
         } else {
-            return;
+            return null;
         }
     }
 
@@ -389,7 +390,7 @@ class DateTimeAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     *
+     * @param DataGrid $grid
      * @return string A piece of html-code
      */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
@@ -562,6 +563,7 @@ class DateTimeAttribute extends Attribute
                     // relation, prepare for next iteration
                     if (is_a($attr, 'ManyToOneRelation')) {
                         if (count($parts) > 0 && !isset($record[$part][$parts[0]])) {
+                            /** @var ManyToOneRelation $attr */
                             $attr->populate($record, array($parts[0]));
                         }
 
@@ -570,6 +572,7 @@ class DateTimeAttribute extends Attribute
                     } // timezone attribute, calculate and return offset
                     else {
                         if (is_a($attr, 'TimezoneAttribute')) {
+                            /** @var TimezoneAttribute $attr */
                             return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
                         } // assume the attribute in question already has the offset saved in seconds
                         else {

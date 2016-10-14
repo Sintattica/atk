@@ -92,6 +92,7 @@ class DurationAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $fieldvalue = Tools::atkArrayNvl($record, $this->fieldName(), '');
         if (!$this->hasFlag(self::AF_DURATION_STRING)) {
+            $curminutes = null;
             $result = '<div class="form-inline">';
             if ($this->m_maxtime_min >= 60) {
                 $curhours = $this->_getHourPart($fieldvalue);
@@ -136,16 +137,10 @@ class DurationAttribute extends Attribute
         return $result;
     }
 
-    /**
-     * Returns a piece of html code that can be used in a form to search values.
-     *
-     * @param array $record Array of records, with for each record 2 fields (hours, minutes)
-     *
-     * @return string Piece a of HTML Code
-     */
+
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        return '&nbsp;'; // currently not searchable.
+        return ''; // currently not searchable.
     }
 
     /**

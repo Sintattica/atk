@@ -98,7 +98,7 @@ class CompatStatement extends Statement
     /**
      * Fetches the next row from the result set.
      *
-     * @return array next row from the result set (false if no other rows exist)
+     * @return array|false next row from the result set (false if no other rows exist)
      */
     protected function _fetch()
     {

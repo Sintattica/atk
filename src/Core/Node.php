@@ -208,12 +208,12 @@ class Node
 
     /*
      * reference to the class which is used to validate atknodes
-     * the validator is overridable by changing this variabele
+     * the validator is overridable by changing this variable
      *
      * @access private
      * @var String
      */
-    public $m_validate_class = 'Sintattica\Atk\Core\NodeValidator';
+    public $m_validate_class = NodeValidator::class;
 
     /*
      * Unique field sets of a certain node.
@@ -637,9 +637,11 @@ class Node
      */
     public $m_parent;
 
+
+    public $m_cacheidentifiers;
+
     /**
      * @param string $nodeUri The nodeuri
-     * @param Atk $atk
      * @param int $flags Bitmask of node flags (self::NF_*).
      */
     public function __construct($nodeUri, $flags = 0)
@@ -1092,7 +1094,7 @@ class Node
         if (isset($this->m_attribList)) {
             return $this->m_attribList;
         } else {
-            return;
+            return null;
         }
     }
 
@@ -1904,13 +1906,13 @@ class Node
      *
      * @return string The full title of the action.
      */
-    public function actionTitle($action, $record = '')
+    public function actionTitle($action, $record = [])
     {
         $sm = SessionManager::getInstance();
         $ui = $this->getUi();
         $res = '';
 
-        if ($record != '') {
+        if ($record) {
             $descr = $this->descriptor($record);
             $sm->pageVar('descriptor', $descr);
         }
@@ -2659,6 +2661,7 @@ class Node
      *                               confirmDelete() and call that method
      *                               instead.
      * @param bool $mergeSelectors Merge all selectors to one selector string (if more then one)?
+     * @param string $csrfToken
      *
      * @return string Complete html fragment containing a box with the
      *                confirmation page, or the output of the custom
@@ -2715,6 +2718,7 @@ class Node
         }
 
         $content = '';
+        $record = null;
         $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
         if (count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
@@ -2725,7 +2729,6 @@ class Node
             // show a list of affected records, at least if we can find a
             // descriptor_def method
             if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
-                $record = '';
                 $content .= '<ul>';
                 for ($i = 0, $_i = count($recs); $i < $_i; ++$i) {
                     $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
@@ -3216,6 +3219,7 @@ class Node
      */
     public function validate(&$record, $mode, $ignoreList = array())
     {
+        /** @var NodeValidator $validateObj */
         $validateObj = new $this->m_validate_class();
         $validateObj->setNode($this);
         $validateObj->setRecord($record);
@@ -3546,6 +3550,7 @@ class Node
                 $loadmode = $p_attrib->loadType('');
 
                 if ($loadmode && Tools::hasFlag($loadmode, Attribute::ADDTOQUERY)) {
+                    $fieldaliasprefix = '';
                     if ($usefieldalias) {
                         $fieldaliasprefix = $alias.'_AE_';
                     }
@@ -3590,6 +3595,7 @@ class Node
             if (!is_object($p_attrib)) {
                 continue;
             }
+            $fieldaliasprefix = '';
 
             if ($usefieldalias) {
                 $fieldaliasprefix = $alias.'_AE_';
@@ -3605,10 +3611,7 @@ class Node
             } else {
                 // checking for the getSearchCondition for backwards compatibility
                 if (method_exists($p_attrib, 'getSearchCondition')) {
-                    $attribsearchmode = $searchmode;
-                    if (is_array($searchmode)) {
-                        $attribsearchmode = $attribsearchmode[$p_attrib->m_name];
-                    }
+
                     Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
                     $searchCondition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
                     if ($searchCondition != '') {
@@ -4474,100 +4477,6 @@ class Node
         $dispatch_url = Tools::dispatch_url($atkNodeUri, Tools::atkArrayNvl($vars, 'atkaction', ''), $vars);
 
         return $sm->sessionUrl($dispatch_url, $sessionStatus, $levelskip);
-    }
-
-    /**
-     * Validates if a filter is valid for this node.
-     *
-     * A filter is considered valid if it doesn't contain any fields that are
-     * not part of the node.
-     *
-     * Why isn't this used more often???
-     *
-     * @param string $filter The filter expression to validate
-     * @returns string Returns $filter if the filter is valid or a empty string if not.
-     *
-     * @todo Fails with brackets in filter (check regex in getFirstTargetFieldFromFilterSql function)
-     * @todo For multiple conditions (in AND/OR), it validates only the first one
-     */
-    public function validateFilter($filter)
-    {
-        // If the filter is blank
-        // Or we can't find the target field
-        if ($filter === '') {
-            return $filter;
-        }
-
-        $targetField = $this->getFirstTargetFieldFromFilterSql($filter);
-        if (!$targetField) {
-            Tools::atkwarning($this->atkNodeUri().'->'.__FUNCTION__."($filter): Disallowed because it has no target field");
-
-            // Don't allow the filter
-            return '';
-        }
-
-        // Separate the table name from the column name
-        $targetDetails = explode('.', $targetField);
-
-        $targetTable = $this->m_table;
-        $targetColumn = array_pop($targetDetails);
-
-        // If no table is specified then it is implied that it is the current table
-        if (count($targetDetails) == 1) {
-            $targetTable = array_pop($targetDetails);
-        }
-
-        // If the table isn't $this one
-        if (strtolower(trim($targetTable)) !== strtolower($this->m_table) && !($this->getAttribute($targetTable) instanceof ManyToOneRelation)) {
-            Tools::atkwarning($this->atkNodeUri().'->'.__FUNCTION__."($filter): Disallowed because ".strtolower(trim($targetTable)).' !== '.strtolower($this->m_table).' and not a valid many-to-one relation.');
-
-            return '';
-        }
-
-        // Or the column doesn't belong to $this
-        if (!($this->getAttribute($targetTable) instanceof ManyToOneRelation) && !in_array($targetColumn, array_keys($this->m_attribList))) {
-            Tools::atkwarning($this->atkNodeUri().'->'.__FUNCTION__."($filter): Disallowed because target column $targetColumn isn't in node");
-
-            return '';
-        }
-
-        return $filter;
-    }
-
-    /**
-     * Get the targeted field and table from a snippet of filter string sql.
-     *
-     * @param string $sql is the filter string sql
-     *
-     * @return string the target table and field or an empty string
-     */
-    public function getFirstTargetFieldFromFilterSql($sql)
-    {
-        // All standard SQL operators
-        $sqloperators = array(
-            '=',
-            '<>',
-            '>',
-            '<',
-            '>=',
-            '<=',
-            'BETWEEN',
-            'LIKE',
-            'IN',
-            'IS',
-            'NOT IN',
-            '&',
-        );
-
-        $sqlOperatorsString = implode('|', array_map('preg_quote', $sqloperators));
-        $matches = [];
-        preg_match("/^(\w.+?)\s*({$sqlOperatorsString})/", str_replace('`', '', trim($sql)), $matches);
-
-        if (count($matches) != 3) {
-            return '';
-        }
-
-        return $matches[1];
     }
 
     /**

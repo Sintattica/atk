@@ -83,39 +83,6 @@ class NumberAttribute extends Attribute
     }
 
     /**
-     * Retrieves the ORDER BY statement for this attribute's node.
-     * Derived attributes may override this functionality to implement other
-     * ordering statements using the given parameters.
-     *
-     * @param array $extra A list of attribute names to add to the order by
-     *                          statement
-     * @param string $table The table name (if not given uses the owner node's table name)
-     * @param string $direction Sorting direction (ASC or DESC)
-     *
-     * @return string The ORDER BY statement for this attribute
-     */
-    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
-    {
-        if (empty($table)) {
-            $table = $this->m_ownerInstance->m_table;
-        }
-
-        // check for a schema name in $table
-        if (strpos($table, '.') !== false) {
-            $identifiers = explode('.', $table);
-
-            $tableIdentifier = '';
-            foreach ($identifiers as $identifier) {
-                $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier).'.';
-            }
-
-            return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : '');
-        } else {
-            return $this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " {$direction}" : '');
-        }
-    }
-
-    /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
@@ -679,7 +646,7 @@ class NumberAttribute extends Attribute
      * @param string $fieldname The name of the field in the database
      * @param array $value The processed search value
      *
-     * @return query where clause for searching
+     * @return string query where clause for searching
      */
     public function getBetweenCondition($query, $fieldname, $value)
     {
@@ -698,7 +665,7 @@ class NumberAttribute extends Attribute
             return $query->lessthanequalCondition($fieldname, $value['to']);
         }
 
-        return false;
+        return '';
     }
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
@@ -711,14 +678,14 @@ class NumberAttribute extends Attribute
             } elseif ($value['to'] != '') {
                 $value = $value['to'];
             } else {
-                return false;
+                return '';
             }
 
             return parent::getSearchCondition($query, $table, $value, $searchmode);
-        } else {
-            $fieldname = $table.'.'.$this->fieldName();
-
-            return $this->getBetweenCondition($query, $fieldname, $value);
         }
+
+        $fieldname = $table.'.'.$this->fieldName();
+
+        return $this->getBetweenCondition($query, $fieldname, $value);
     }
 }

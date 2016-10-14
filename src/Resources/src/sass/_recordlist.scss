@@ -42,6 +42,9 @@ table.recordList {
       .search-buttons {
         display: block;
         // white-space: nowrap;
+        a {
+          text-decoration: none;
+        }
       }
 
     }
@@ -66,6 +69,9 @@ table.recordList {
 
         .btn {
           margin: 0 2px;
+          min-width: 24px;
+          height: 24px;
+          padding-top: 1px;
 
           &:first-child {
             margin-left: 0;
@@ -75,9 +81,12 @@ table.recordList {
           }
         }
       }
-
     }
   }
+}
+
+.table {
+  margin-bottom: 0;
 }
 
 .recordListContainer {
@@ -85,18 +94,42 @@ table.recordList {
   overflow: auto;
 }
 
-.table {
-  margin-bottom: $line-height-computed/2;
+.datagrid-paginator-navigation {
+
+  position: relative;
+
+  > div {
+    line-height: 28px;
+    margin: 0 10px 0 0;
+    padding: 0;
+    display: inline-block;
+    vertical-align: top;
+
+    &:last-child {
+      margin: 0 0 0 0;
+    }
+  }
+
+  ul.pagination {
+    display: block;
+    margin: 0;
+  }
+
+  &.top {
+    margin-bottom: 8px;
+  }
+
+  &.bottom {
+   margin-top: 8px;
+  }
+
+  .dglimit label {
+    line-height: 28px;
+    font-weight: normal;
+  }
+
 }
 
-ul.pagination {
-  margin-top: 0;
-  margin-bottom: $line-height-computed/2;
-  float: left;
-}
-
-.dglimit, .dgridsummary {
-  margin-bottom: $line-height-computed/2;
-  float: right;
-  display: block;
+.list-header {
+  min-height: 30px;
 }

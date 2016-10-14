@@ -181,6 +181,8 @@ class Ddl
      *
      * @param string $type The database specific datatype to convert.
      * @abstract
+     *
+     * @return string
      */
     public function getGenericType($type)
     {
@@ -206,6 +208,7 @@ class Ddl
     {
         if ($this->m_table != '') {
             $fields = $this->buildFields();
+            $q = '';
             if ($fields != '') {
                 $q = 'CREATE TABLE '.$this->m_table."\n(";
 
@@ -297,8 +300,9 @@ class Ddl
      *                            generic types supported by ATK).
      * @param int $size The size of the field (if appropriate)
      * @param int $flags The self::DDL_ flags for this field.
-     * @param mixed $default The default value to be used when inserting new
-     *                            rows.
+     * @param mixed $default The default value to be used when inserting new rows.
+     *
+     * @return string
      */
     public function buildField($name, $generictype, $size = 0, $flags = 0, $default = null)
     {
@@ -327,6 +331,8 @@ class Ddl
      * atkDDL.
      *
      * @param array $fieldlist An array of fields that define the primary key.
+     *
+     * @return string
      */
     public function buildPrimaryKey($fieldlist = array())
     {

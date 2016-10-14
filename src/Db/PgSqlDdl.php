@@ -23,6 +23,8 @@ class PgSqlDdl extends Ddl
      * Convert an ATK generic datatype to a database specific type.
      *
      * @param string $generictype The datatype to convert.
+     *
+     * @return string
      */
     public function getType($generictype)
     {
@@ -52,6 +54,8 @@ class PgSqlDdl extends Ddl
      * Convert an database specific type to an ATK generic datatype.
      *
      * @param string $type The database specific datatype to convert.
+     *
+     * @return string
      */
     public function getGenericType($type)
     {

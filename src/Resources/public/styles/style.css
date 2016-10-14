@@ -2403,7 +2403,7 @@ input[type="search"] {
     line-height: 42px; } }
 
 .form-group {
-  margin-bottom: 15px; }
+  margin-bottom: 8px; }
 
 .radio,
 .checkbox {
@@ -2800,7 +2800,7 @@ select[multiple].input-lg,
   padding: 3px 6px;
   font-size: 12px;
   line-height: 1.6666666667;
-  border-radius: 2px;
+  border-radius: 4px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -3388,16 +3388,16 @@ tbody.collapse.in {
   border-radius: 0; }
 
 .btn-group-vertical > .btn:first-child:not(:last-child) {
-  border-top-right-radius: 2px;
-  border-top-left-radius: 2px;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0; }
 
 .btn-group-vertical > .btn:last-child:not(:first-child) {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px; }
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px; }
 
 .btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn {
   border-radius: 0; }
@@ -9245,8 +9245,12 @@ div.DateTimeAttribute div.TimeAttribute {
   margin-top: 0px;
   margin-bottom: 0px; }
 
-.atkmanytomanyselectrelation-selected {
-  margin-bottom: 3px; }
+li.atkmanytomanyselectrelation-addition {
+  padding-left: 0px; }
+
+li.atkmanytomanyselectrelation-selected {
+  margin-bottom: 3px;
+  margin-left: 20px; }
 
 /*
  *  Customization for the ATK framework
@@ -9288,6 +9292,8 @@ table.recordList {
         width: 100%; }
       table.recordList th.recordListSearch .search-buttons {
         display: block; }
+        table.recordList th.recordListSearch .search-buttons a {
+          text-decoration: none; }
   table.recordList tr .row1 {
     background-color: #ffffff; }
   table.recordList tr .row2 {
@@ -9299,28 +9305,45 @@ table.recordList {
     white-space: nowrap;
     float: left; }
     table.recordList tr td .actions .btn {
-      margin: 0 2px; }
+      margin: 0 2px;
+      min-width: 24px;
+      height: 24px;
+      padding-top: 1px; }
       table.recordList tr td .actions .btn:first-child {
         margin-left: 0; }
       table.recordList tr td .actions .btn:last-child {
         margin-right: 0; }
 
+.table {
+  margin-bottom: 0; }
+
 .recordListContainer {
   width: 100%;
   overflow: auto; }
 
-.table {
-  margin-bottom: 9.5px; }
+.datagrid-paginator-navigation {
+  position: relative; }
+  .datagrid-paginator-navigation > div {
+    line-height: 28px;
+    margin: 0 10px 0 0;
+    padding: 0;
+    display: inline-block;
+    vertical-align: top; }
+    .datagrid-paginator-navigation > div:last-child {
+      margin: 0 0 0 0; }
+  .datagrid-paginator-navigation ul.pagination {
+    display: block;
+    margin: 0; }
+  .datagrid-paginator-navigation.top {
+    margin-bottom: 8px; }
+  .datagrid-paginator-navigation.bottom {
+    margin-top: 8px; }
+  .datagrid-paginator-navigation .dglimit label {
+    line-height: 28px;
+    font-weight: normal; }
 
-ul.pagination {
-  margin-top: 0;
-  margin-bottom: 9.5px;
-  float: left; }
-
-.dglimit, .dgridsummary {
-  margin-bottom: 9.5px;
-  float: right;
-  display: block; }
+.list-header {
+  min-height: 30px; }
 
 A.atksection {
   display: block;
@@ -9474,10 +9497,14 @@ div.panel-heading {
   color: #808080; }
 
 .navbar-brand img {
-  max-height: 50px; }
+  max-height: 50px;
+  margin: 0 15px 0 15px; }
 
 .navbar-brand.has-logo {
   padding: 0; }
+
+.main-nav.navbar-right {
+  margin-right: -10px; }
 
 br.atkFileAttributeCheckboxSeparator {
   display: none; }
@@ -9497,6 +9524,17 @@ hr {
   margin-bottom: 5px;
   border: 0;
   border-top: 1px solid #eeeeee; }
+
+ul {
+  list-style-position: outside;
+  padding-left: 20px; }
+
+#top-logout {
+  margin-right: 5px; }
+
+.row.section-item > label, .row.section-item > .fieldlabel {
+  padding-right: 0;
+  font-weight: bold; }
 
 .tabsContent {
   margin-top: 10px; }
@@ -9555,5 +9593,48 @@ select.select-standard {
 
 .select-empty-value {
   color: #999999; }
+
+.select2-results__options[aria-multiselectable=true] .select2-results__option[aria-selected=true] {
+  display: none; }
+
+@media print {
+  body {
+    padding: 0;
+    margin: 0;
+    color: black; }
+  .navbar {
+    display: none !important; }
+  .panel-body .list-header, .panel-body .list-navbar, .panel-body .list-footer {
+    display: none !important; }
+  .panel-body .datagrid-paginator-navigation {
+    display: none !important; }
+  .panel-body .recordListThFirst, .panel-body .recordListTdFirst {
+    display: none !important; }
+  .panel-body .recordList {
+    margin: 0; }
+  .panel-body .recordListTh a {
+    text-decoration: none; }
+  .panel-body #action-buttons {
+    display: none !important; } }
+
+.ExportHandler .attributes-group {
+  border: 1px solid #d8d8d8;
+  margin-bottom: 10px; }
+  .ExportHandler .attributes-group .attributes-group-title {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 5px 15px; }
+  .ExportHandler .attributes-group .attributes-checkbox-container {
+    margin-top: 5px; }
+
+.form-signin {
+  max-width: 330px;
+  margin: 0 auto; }
+
+span.atkmanytoonerelation-large-container {
+  position: relative;
+  top: 4px; }
 
 /*# sourceMappingURL=style.css.map */

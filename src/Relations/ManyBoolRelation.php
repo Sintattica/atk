@@ -2,11 +2,11 @@
 
 namespace Sintattica\Atk\Relations;
 
-use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * Many-to-many relation.
@@ -28,8 +28,6 @@ class ManyBoolRelation extends ManyToManyRelation
      */
     const AF_MANYBOOL_NO_TOOLBAR = 67108864;
 
-    public $m_cols = 3;
-
     /**
      * The flag indicating wether or not we should show the 'details' link.
      *
@@ -49,8 +47,6 @@ class ManyBoolRelation extends ManyToManyRelation
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        $cols = $this->m_cols;
-        $modcols = $cols - 1;
         $this->createDestination();
         $this->createLink();
         $result = '';
@@ -71,64 +67,54 @@ class ManyBoolRelation extends ManyToManyRelation
                         'atk').'</a>]</div>';
             }
 
-            $result .= '<table border="0"><tr>';
+            $result .= '<div>';
             for ($i = 0; $i < $total_records; ++$i) {
-                $detaillink = '&nbsp;';
-                $selector = '';
+                $detailLink = '';
+                $sel = '';
+                $onchange = '';
+                $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
+
                 if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk)) {
                     $sel = 'checked';
                     if ($this->getShowDetailsLink() && !$this->m_linkInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_linkInstance->allowed('edit')) {
                         $localPkAttr = $this->getOwnerInstance()->getAttribute($this->getOwnerInstance()->primaryKeyField());
                         $localValue = $localPkAttr->value2db($record);
-
                         $remotePkAttr = $this->getDestination()->getAttribute($this->getDestination()->primaryKeyField());
                         $remoteValue = $remotePkAttr->value2db($recordset[$i]);
-
                         $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey().'='.$localValue.''.' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".$remoteValue."'";
-                        // Create link to details.
-                        $detaillink = Tools::href(Tools::dispatch_url($this->m_link, 'edit', array('atkselector' => $selector)),
-                            '['.Tools::atktext('details', 'atk').']', SessionManager::SESSION_NESTED, true);
+                        $detailLink = Tools::href(Tools::dispatch_url($this->m_link, 'edit', array('atkselector' => $selector)),
+                            '['.Tools::atktext('edit', 'atk').']', SessionManager::SESSION_NESTED, true);
                     }
-                } else {
-                    $sel = '';
                 }
-
-                $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
 
                 if (count($this->m_onchangecode)) {
                     $onchange = ' onChange="'.$inputId.'_onChange(this);"';
                     $this->_renderChangeHandler($fieldprefix, '_'.$i);
-                } else {
-                    $onchange = '';
                 }
 
-                $result .= '<td class="table"><input type="checkbox" id="'.$inputId.'" name="'.$this->getHtmlName($fieldprefix).'[]['.$this->getRemoteKey().']" value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'" '.$this->getCSSClassAttribute('atkcheckbox').' '.$sel.$onchange.'></td><td class="table">'.'<label for="'.$inputId.'">'.$this->m_destInstance->descriptor($recordset[$i]).'</label>'.'</td><td class="table">'.$detaillink.'</td>';
-                if ($i % $cols == $modcols) {
-                    $result .= "</tr><tr>\n";
+                $value = $recordset[$i][$this->m_destInstance->primaryKeyField()];
+                $css = $this->getCSSClassAttribute('atkcheckbox');
+                $label = $this->m_destInstance->descriptor($recordset[$i]);
+                $result .= '<div>';
+                $result .= '  <input type="checkbox" id="'.$inputId.'" name="'.$this->getHtmlName($fieldprefix).'[]['.$this->getRemoteKey().']" value="'.$value.'" '.$css.' '.$sel.$onchange.' />';
+                $result .= '  <label for="'.$inputId.'">'.$label.'</label>';
+                if ($detailLink != '') {
+                    $result .= ' '.$detailLink;
                 }
+                $result .= '</div>';
             }
-            $result .= "</tr></table>\n";
+            $result .= '</div>';
         } else {
             $nodename = $this->m_destInstance->m_type;
             $modulename = $this->m_destInstance->m_module;
             $result .= Tools::atktext('select_none', $modulename, $nodename).' ';
         }
-        // Add the add link if self::AF_MANYBOOL_AUTOLINK used
+
         if (($this->hasFlag(self::AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed('add'))) {
             $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'add'), $this->getAddLabel(), SessionManager::SESSION_NESTED)."\n";
         }
 
         return $result;
-    }
-
-    /**
-     * Set the number of columns.
-     *
-     * @param int $cols
-     */
-    public function setCols($cols)
-    {
-        $this->m_cols = $cols;
     }
 
     /**

@@ -13,7 +13,6 @@ namespace Sintattica\Atk\Relations;
 class ManyToManyListRelation extends ManyToManyRelation
 {
     private $m_rows = 6;
-    private $m_width = 200;
     private $m_autoCalculateRows = true;
 
     /**

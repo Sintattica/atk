@@ -2,13 +2,12 @@
 
 namespace Sintattica\Atk\Core;
 
-use App\Modules\App\Module;
-use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
+use Dotenv\Dotenv;
+use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\IndexPage;
-use Sintattica\Atk\Handlers\ActionHandler;
-use Dotenv\Dotenv;
 
 class Atk
 {
@@ -21,23 +20,26 @@ class Atk
     public $g_moduleRepository = [];
     public $g_nodeHandlers = [];
     public $g_nodeListeners = [];
+    private $environment;
 
-    /** @var $s_instance self */
-    public static $s_instance = null;
+    /** @var static $s_instance */
+    public static $s_instance;
 
     public function __construct($environment, $basedir)
     {
         global $g_startTime;
         $g_startTime = microtime(true);
 
-        if (self::$s_instance) {
+        if (static::$s_instance) {
             throw new \RuntimeException('Only one Atk app can be created');
         }
 
-        self::$s_instance = $this;
+        static::$s_instance = $this;
+
+        $this->environment = $environment;
 
         //load .env variables only in development environment
-        if (file_exists($basedir.'.env') && (!$environment || in_array(strtolower($environment), ['dev', 'develop', 'development']))) {
+        if (file_exists($basedir.'.env') && in_array(strtolower($environment), ['dev', 'develop', 'development'])) {
             $dotEnv = new Dotenv($basedir);
             $dotEnv->load();
         }
@@ -69,7 +71,7 @@ class Atk
         $debug = 'Created a new Atk ('.self::VERSION.') instance.';
         $debug .= ' Environment: '.$environment.'.';
 
-        if(isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
+        if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
             $debug .= ' Server info: '.$_SERVER['SERVER_NAME'].' ('.$_SERVER['SERVER_ADDR'].')';
         }
 
@@ -80,7 +82,7 @@ class Atk
         $modules = Config::getGlobal('modules');
         if (is_array($modules)) {
             foreach ($modules as $module) {
-                self::$s_instance->registerModule($module);
+                static::$s_instance->registerModule($module);
             }
         }
     }
@@ -88,15 +90,22 @@ class Atk
     /**
      * Get new Atk object.
      *
-     * @return self class object
+     * @return static class object
      */
     public static function getInstance()
     {
-        if (!is_object(self::$s_instance)) {
+        if (!is_object(static::$s_instance)) {
             throw new \RuntimeException('Atk instance not available');
         }
 
-        return self::$s_instance;
+        return static::$s_instance;
+    }
+
+    public function bootModules()
+    {
+        foreach ($this->g_moduleRepository as $module) {
+            $module->boot();
+        }
     }
 
     public function run()
@@ -104,17 +113,14 @@ class Atk
         $sessionManager = SessionManager::getInstance();
         $sessionManager->start();
 
-        if(Config::getGlobal('session_autorefresh') && array_key_exists(Config::getGlobal('session_autorefresh_key'), $_GET)){
+        if (Config::getGlobal('session_autorefresh') && array_key_exists(Config::getGlobal('session_autorefresh_key'), $_GET)) {
             die(session_id());
         }
 
         $securityManager = SecurityManager::getInstance();
         if ($securityManager->authenticate()) {
 
-            foreach($this->g_moduleRepository as $module) {
-                $module->boot();
-            }
-
+            $this->bootModules();
 
             $indexPageClass = Config::getGlobal('indexPage');
 
@@ -124,6 +130,15 @@ class Atk
         }
     }
 
+    public function runCli()
+    {
+        Config::setGlobal('authentication', 'none');
+        Config::setGlobal('authorization', 'none');
+        $securityManager = SecurityManager::getInstance();
+        if ($securityManager->authenticate()) {
+            $this->bootModules();
+        }
+    }
 
     /**
      * Tells ATK that a node exists, and what actions are available to
@@ -266,13 +281,13 @@ class Atk
     {
         if (isset($this->g_nodeHandlers[$nodeUri][$action])) {
             $handler = $this->g_nodeHandlers[$nodeUri][$action];
-            if(!is_object($handler)){
+            if (!is_object($handler)) {
                 $handler = new $handler();
                 $this->g_nodeHandlers[$nodeUri][$action] = $handler;
             }
         } elseif (isset($this->g_nodeHandlers['*'][$action])) {
             $handler = $this->g_nodeHandlers['*'][$action];
-            if(!is_object($handler)){
+            if (!is_object($handler)) {
                 $handler = new $handler();
                 $this->g_nodeHandlers['*'][$action] = $handler;
             }
@@ -313,11 +328,19 @@ class Atk
             Tools::atkdebug("Constructing a new module - $name");
             $modClass = $this->g_modules[$name];
 
-            /* @var Module $module */
-            $menu = Menu::getInstance();
-            $module = new $modClass(self::$s_instance, $menu);
+            /** @var Menu $menuClass */
+            $menuClass = Config::getGlobal('menu');
+            $menu = $menuClass::getInstance();
+
+            /* @var \Sintattica\Atk\Core\Module $module */
+            $module = new $modClass(static::$s_instance, $menu);
             $this->g_moduleRepository[$name] = $module;
             $module->register();
         }
+    }
+
+    public function getEnvironment()
+    {
+        return $this->environment;
     }
 }

@@ -336,7 +336,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             return;
         }
 
-        $filter = $this->_getNode()->validateFilter($filter);
         $query->addCondition($filter);
     }
 
@@ -407,7 +406,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
                 $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
             } else {
                 Tools::atkdebug("Using default search method for $key");
-                $condition = 'LOWER('.$this->_getNode()->getTable().'.'.$key.") LIKE LOWER('%".$this->_getDb()->escapeSQL($value, true)."%')";
+                //$condition = 'LOWER('.$this->_getNode()->getTable().'.'.$key.") LIKE LOWER('%".$this->_getDb()->escapeSQL($value, true)."%')";
+                $condition = $this->_getNode()->getTable().'.'.$key." LIKE '%".$this->_getDb()->escapeSQL($value, true)."%'";
                 $query->addSearchCondition($condition);
             }
         }

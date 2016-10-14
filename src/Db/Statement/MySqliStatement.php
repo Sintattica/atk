@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Db\Statement;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\MySqliDb;
 use Sintattica\Atk\Utils\Debugger;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Db\Db;
@@ -17,7 +18,7 @@ class MySqliStatement extends Statement
     /**
      * MySQLi statement.
      *
-     * @var MySQLiStatement
+     * @var mixed $m_stmt
      */
     private $m_stmt;
 
@@ -34,6 +35,8 @@ class MySqliStatement extends Statement
      * @var array
      */
     private $m_values = null;
+
+    private $m_insertId;
 
     /**
      * Prepares the statement for execution.
@@ -145,6 +148,8 @@ class MySqliStatement extends Statement
      * Executes the statement using the given bind parameters.
      *
      * @param array $params bind parameters
+     *
+     * @throws StatementException
      */
     protected function _execute($params)
     {
@@ -163,14 +168,16 @@ class MySqliStatement extends Statement
         $this->_bindResult();
 
         if ($this->m_columnNames === null) {
-            $this->getDb()->debugWarnings();
+            /** @var MySqliDb $db */
+            $db = $this->getDb();
+            $db->debugWarnings();
         }
     }
 
     /**
      * Fetches the next row from the result set.
      *
-     * @return array next row from the result set (false if no other rows exist)
+     * @return array|false next row from the result set (false if no other rows exist)
      */
     protected function _fetch()
     {

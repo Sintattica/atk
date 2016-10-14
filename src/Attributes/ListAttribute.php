@@ -6,7 +6,6 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
-use Sintattica\Atk\Ui\Page;
 
 /**
  * The ListAttribute class represents an attribute of a node
@@ -80,6 +79,7 @@ class ListAttribute extends Attribute
         'normal' => false,
         'extended' => true,
     ];
+
 
     /**
      * Constructor.
@@ -234,11 +234,11 @@ class ListAttribute extends Attribute
      * Translates the database value.
      *
      * @param string $value
-     * @param array $rec The record
+     * @param array $record The record
      *
      * @return string
      */
-    public function _translateValue($value, $rec = null)
+    public function _translateValue($value, $record = null)
     {
         $lookup = $this->getLookup();
         $res = '';
@@ -287,6 +287,8 @@ class ListAttribute extends Attribute
         } else {
             $selectOptions['width'] = 'resolve';
         }
+
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         $onchange = '';
         if (count($this->m_onchangecode)) {
@@ -368,12 +370,11 @@ class ListAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string A piece of html-code with a checkbox
-     *
-     *
      */
-    public function search($record = '', $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $values = $this->getValues();
         $id = $this->getHtmlId($fieldprefix);
@@ -383,10 +384,16 @@ class ListAttribute extends Attribute
         $class = $this->getCSSClassAttribute(['form-control']);
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['minimum-results-for-search'] = 10;
+        if ($isMultiple) {
+            $selectOptions['placeholder'] = Tools::atktext('search_all');
+        }
 
         //width always auto
         $selectOptions['width'] = 'auto';
 
+        $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
         $data = '';
         foreach ($selectOptions as $k => $v) {
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
@@ -402,8 +409,7 @@ class ListAttribute extends Attribute
             $selValues = [''];
         }
 
-        $notSelectFirst = false;
-        $selected = (!$notSelectFirst && $selValues[0] == '') ? ' selected' : '';
+        $selected = (!$isMultiple && $selValues[0] == '') ? ' selected' : '';
         $option = Tools::atktext('search_all');
         $result .= sprintf('<option value=""%s>%s</option>', $selected, $option);
 
@@ -445,6 +451,7 @@ class ListAttribute extends Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldname
      *
      * @return string The searchcondition to use.
      */
@@ -592,6 +599,8 @@ class ListAttribute extends Attribute
      *
      * @param string $option
      * @param string $value
+     *
+     * @return $this
      */
     public function addOption($option, $value = '')
     {
@@ -615,6 +624,8 @@ class ListAttribute extends Attribute
      * Remove option from dropdown.
      *
      * @param string $option
+     *
+     * @return $this
      */
     public function removeOption($option)
     {
@@ -657,6 +668,8 @@ class ListAttribute extends Attribute
      * Remove value from dropdown.
      *
      * @param string $value
+     *
+     * @return $this
      */
     public function removeValue($value)
     {

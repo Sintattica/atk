@@ -65,7 +65,7 @@ class EditFormModifier
     public function __construct(Node $node, &$record, $fieldPrefix, $mode, $initial)
     {
         $this->m_node = $node;
-        $this->m_record = $record;
+        $this->m_record = &$record;
         $this->m_fieldPrefix = $fieldPrefix;
         $this->m_mode = $mode;
         $this->m_initial = $initial;

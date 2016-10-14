@@ -219,7 +219,11 @@ class AggregatedColumn extends Attribute
             $searchconditions[] = $condition;
         }
 
-        return '('.implode(' OR ', $searchconditions).')';
+        if (count($searchconditions)) {
+            return '('.implode(' OR ', $searchconditions).')';
+        }
+
+        return '';
     }
 
     /**

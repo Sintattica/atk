@@ -79,6 +79,7 @@ class FormatAttribute extends Attribute
      * @param array $record The record that holds the value for this attribute.
      * @param string $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
+     * @param string $mode
      *
      * @return string A piece of htmlcode for editing this attribute
      */

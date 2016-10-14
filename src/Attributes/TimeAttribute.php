@@ -164,7 +164,6 @@ class TimeAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-
         if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
             ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
         ) {
@@ -175,7 +174,10 @@ class TimeAttribute extends Attribute
 
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
-        $field = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+        $field = Tools::atkArrayNvl($record, $this->fieldName());
+        if($field && !is_array($field)){
+           $field = self::parseTime($field);
+        }
 
         $onChangeCode = '';
         if (count($this->m_onchangecode)) {
@@ -236,7 +238,6 @@ class TimeAttribute extends Attribute
 
             $m_minBox .= sprintf("<option value='%02d'%s>%02d</option>\n", $minute_steps[$i], $sel, $minute_steps[$i]);
         }
-        $size_minbox = count($minute_steps);
 
         // generate second dropdown
         if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
@@ -256,7 +257,6 @@ class TimeAttribute extends Attribute
 
             $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n", $this->m_steps[$i], $sel, $this->m_steps[$i]);
         }
-        $size_secbox = count($this->m_steps);
 
         // close dropdown structures
         $m_hourBox .= '</select>';
@@ -269,9 +269,7 @@ class TimeAttribute extends Attribute
         }
 
         // assemble display version
-        //return $m_hourBox . ":" . $m_minBox . $m_secBox;
         $timeedit = $m_hourBox.':'.$m_minBox.$m_secBox;
-
 
         return '<div class="'.$this->get_class_name().' form-inline">'.$timeedit.'</div>';
     }
@@ -333,6 +331,7 @@ class TimeAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
+     * @param DataGrid $grid
      *
      * @return string piece of html code with a checkbox
      */
@@ -435,6 +434,7 @@ class TimeAttribute extends Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
+     * @param string $fieldname
      *
      * @return string The searchcondition to use.
      */
@@ -482,10 +482,11 @@ class TimeAttribute extends Attribute
     public static function parseTime($stringvalue)
     {
         //Assuming hh:mm:ss
+        //Using negative substr because $stringvalue may contains date values (eg: "YYYY-MM-DD hh:mm:ss")
         $retval = array(
-            'hours' => substr($stringvalue, 0, 2),
-            'minutes' => substr($stringvalue, 3, 2),
-            'seconds' => substr($stringvalue, 6, 2),
+            'hours' => substr($stringvalue, -8, 2),
+            'minutes' => substr($stringvalue, -5, 2),
+            'seconds' => substr($stringvalue, -2, 2),
         );
 
         if (!$retval['seconds']) {
