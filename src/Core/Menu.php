@@ -28,6 +28,8 @@ class Menu
 
     protected $format_single = '<li><a href="%s" %s>%s</a></li>';
 
+    protected $format_single_text = '<li><p class="navbar-text">%s</p></li>';
+
     /**
      * Get new menu object.
      *
@@ -100,7 +102,7 @@ class Menu
         });
         $left = '';
         $content = $this->processMenu($html_items_left);
-        if($content) {
+        if ($content) {
             $left = sprintf($this->format_menu_left, $content);
         }
 
@@ -109,7 +111,7 @@ class Menu
         });
         $right = '';
         $content = $this->processMenu($html_items_right);
-        if($content){
+        if ($content) {
             $right = sprintf($this->format_menu_right, $this->processMenu($html_items_right));
         }
 
@@ -122,7 +124,6 @@ class Menu
         if (is_array($menu)) {
             foreach ($menu as $item) {
                 if ($this->isEnabled($item)) {
-                    $url = $item['url'] ? $item['url'] : '#';
                     if ($this->_hasSubmenu($item)) {
                         $a_content = $this->_getMenuTitle($item);
                         $childHtml = $this->processMenu($item['submenu'], true);
@@ -135,11 +136,15 @@ class Menu
                         $a_content = $this->_getMenuTitle($item);
 
                         $attrs = '';
-                        if($item['target']){
+                        if ($item['target']) {
                             $attrs .= ' target="'.$item['target'].'"';
                         }
 
-                        $html .= sprintf($this->format_single, $url, $attrs, $a_content);
+                        if ($item['url']) {
+                            $html .= sprintf($this->format_single, $item['url'], $attrs, $a_content);
+                        } else {
+                            $html .= sprintf($this->format_single_text, $a_content);
+                        }
                     }
                 }
             }
@@ -225,7 +230,7 @@ class Menu
      * @param string $module The module name. Used for translations
      * @param string $target The link target (_self, _blank, ...)
      * @param string $navbar The navbar (left or right) where the menu will be put in
-     * @param bool $raw      If true, the $name will be rendered as is
+     * @param bool $raw If true, the $name will be rendered as is
      *
      */
     public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $navbar = 'left', $raw = false)
@@ -282,7 +287,7 @@ class Menu
 
     public function _getMenuTitle($item, $append = '')
     {
-        if($item['raw'] == true){
+        if ($item['raw'] == true) {
             return $item['name'];
         }
 

@@ -337,6 +337,11 @@ return [
      */
     'auth_menu_show_logout_link' => true,
 
+    /*
+     * Show the logged-in user on the right side of the menu
+     */
+    'auth_menu_show_user' => true,
+
     /************************** REMEMBER ME *********************************/
 
     /*
