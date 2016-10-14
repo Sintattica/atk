@@ -332,15 +332,6 @@ return [
      */
     'auth_accountenableexpression' => '',
 
-    /*
-     * Show a link in the menu to logout
-     */
-    'auth_menu_show_logout_link' => true,
-
-    /*
-     * Show the logged-in user on the right side of the menu
-     */
-    'auth_menu_show_user' => true,
 
     /************************** REMEMBER ME *********************************/
 
@@ -424,6 +415,24 @@ return [
      * @var String
      */
     'debug_translations' => false,
+
+    /************************** INDEX *********************************/
+
+    'indexPage' => Sintattica\Atk\Ui\IndexPage::class,
+
+    /************************** MENU *********************************/
+
+    'menu' => Sintattica\Atk\Core\Menu::class,
+
+    /*
+     * Show a link in the menu to logout
+     */
+    'menu_show_logout_link' => true,
+
+    /*
+     * Show the logged-in user on the right side of the menu
+     */
+    'menu_show_user' => true,
 
     /************************************ LAYOUT ****************************** */
 
@@ -819,17 +828,8 @@ return [
     'icon_plussquare' => 'fa fa-plus-square-o',
     'icon_minussquare' => 'fa fa-minus-square-o',
 
+    /****************** CACHING ********************/
 
-    /****************** CLASSES ********************/
-
-    'indexPage' => Sintattica\Atk\Ui\IndexPage::class,
-    'menu' => Sintattica\Atk\Core\Menu::class,
-
-
-    /* ----------- CACHING CONFIGURATION ------------
-     * For the configuration of atkCache
-     * See: http://www.atk-framework.com/wiki/ATK_Cache
-     */
     // Cache method
     'cache_method' => 'var',
     // Cache namespace, change this when you are hosting your application on a shared hosting.

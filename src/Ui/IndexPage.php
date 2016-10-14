@@ -85,11 +85,11 @@ class IndexPage
             $user = $this->m_username ?: $this->m_user['name'];
 
 
-            if (Config::getGlobal('auth_menu_show_user') && $user) {
+            if (Config::getGlobal('menu_show_user') && $user) {
                 $menuObj->addMenuItem($user,'', 'main', true, 0, '', '', 'right', true);
             }
 
-            if (Config::getGlobal('auth_menu_show_logout_link') && $user) {
+            if (Config::getGlobal('menu_show_logout_link') && $user) {
                 $menuObj->addMenuItem('<span class="glyphicon glyphicon-log-out"></span>',
                     Config::getGlobal('dispatcher').'?atklogout=1', 'main', true, 0, '', '', 'right', true
                 );
