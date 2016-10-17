@@ -2,8 +2,8 @@
 
 namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 
 /**
@@ -17,25 +17,18 @@ class CkAttribute extends TextAttribute
      */
     protected $ckOptions = [
         // the toolbar groups arrangement
-        'toolbarGroups' => [
-            ['name' => 'clipboard', 'groups' => ['clipboard', 'undo', 'document']],
-            ['name' => 'editing', 'groups' => ['find', 'selection', 'spellchecker']],
-            ['name' => 'links'],
-            ['name' => 'insert'],
+        'toolbar' => [
+            ['name' => 'clipboard', 'items' => ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo', '-', 'Print']],
+            ['name' => 'editing', 'items' => ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']],
+            ['name' => 'links', 'items' => ['Link', 'Unlink']],
+            ['name' => 'insert', 'items' => ['Image', 'Table', 'HorizontalRule', 'SpecialChar']],
             '/',
-            ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup']],
-            ['name' => 'paragraph', 'groups' => ['list', 'indent', 'align']],
-            ['name' => 'styles'],
-            ['name' => 'colors'],
+            ['name' => 'basicstyles', 'items' => ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']],
+            ['name' => 'paragraph', 'items' => ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']],
+            ['name' => 'styles', 'items' => ['Format', 'FontSize']],
+            ['name' => 'colors', 'items' => ['TextColor', 'BGColor']],
         ],
-        // remove some buttons
-        'removeButtons' => 'Save,NewPage,Preview,Anchor,Flash,Smiley,PageBreak,Iframe,Subscript,Superscript,Font,Styles',
-        // remove display of html tags on bottom bar
-        'removePlugins' => 'elementspath',
-        // simplify the windows
-        'removeDialogTabs' => 'image:advanced;link:advanced',
-        // set the size
-        'height' => 250,
+        'height' => 300
     ];
 
     /**
@@ -65,6 +58,7 @@ class CkAttribute extends TextAttribute
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);
+
         $page->register_loadscript("CKEDITOR.replace('$id', $options);");
 
         return parent::edit($record, $fieldprefix, $mode);
@@ -107,7 +101,6 @@ class CkAttribute extends TextAttribute
     {
         switch ($atkLang) {
             case 'da';
-
                 return 'da_DK'; // Danish
             case 'de':
                 return 'de_DE'; // German
