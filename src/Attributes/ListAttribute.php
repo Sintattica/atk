@@ -386,6 +386,7 @@ class ListAttribute extends Attribute
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
+        $selectOptions['with-empty-value'] = '';
         if ($isMultiple) {
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }

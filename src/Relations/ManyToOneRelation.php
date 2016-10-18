@@ -895,7 +895,6 @@ class ManyToOneRelation extends Relation
                 $selectOptions['dropdown-auto-width'] = true;
                 if ($hasNullOption) {
                     $selectOptions['with-empty-value'] = $emptyValue;
-
                 }
                 if (!empty($this->getWidth())) {
                     $selectOptions['width'] = $this->getWidth();
@@ -1111,6 +1110,7 @@ class ManyToOneRelation extends Relation
                 $selValues = [''];
             }
 
+
             $options = [];
             $options[''] = Tools::atktext('search_all');
             $options['__NONE__'] = $this->getNoneLabel('search');
@@ -1124,14 +1124,12 @@ class ManyToOneRelation extends Relation
             if (!is_null($grid) && !$extended && $this->m_autoSearch) {
                 $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
                 $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
-
             }
 
             $selectOptions = [];
             $selectOptions['enable-select2'] = true;
-            $selectOptions['allow-clear'] = true;
             $selectOptions['dropdown-auto-width'] = true;
-            $selectOptions['placeholder'] = Tools::atktext('search_all');
+            $selectOptions['with-empty-value'] = '';
             $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
             // width always auto
@@ -1147,7 +1145,7 @@ class ManyToOneRelation extends Relation
             $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
 
             if ($useautocompletion) {
-                $noneLabel = $this->getNoneLabel('search');
+                $noneLabel = Tools::atktext('search_all');
 
                 $options = [];
                 $options[''] = $noneLabel;
@@ -1268,6 +1266,7 @@ class ManyToOneRelation extends Relation
                     // ask the destination node for it's search condition
                     $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $value,
                         $this->getChildSearchMode($searchmode, $this->fieldName()));
+
                 }
 
                 return $searchcondition;
