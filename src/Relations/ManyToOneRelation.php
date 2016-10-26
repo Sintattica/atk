@@ -972,12 +972,12 @@ class ManyToOneRelation extends Relation
             $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
             $sm = SessionManager::getInstance();
 
-            if ($this->m_destInstance->allowed('edit')) {
+            if (!$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_destInstance->allowed('edit')) {
                 $editlink = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
                 $autolink['edit'] = "<a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editlink).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('edit').'</a>';
             }
-            if ($this->m_destInstance->allowed('add')) {
+            if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
                 $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
                         'atkpkret' => $name,
                         'atkfilter' => ($this->m_useFilterForAddLink && $filter != '' ? $filter : ''),
