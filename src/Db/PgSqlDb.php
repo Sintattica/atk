@@ -257,9 +257,10 @@ class PgSqlDb extends Db
      */
     public function nextid($sequence)
     {
+
         /* connect first */
         if ($this->connect() == self::DB_SUCCESS) {
-            $sequencename = Config::getGlobal('database_sequenceprefix').$sequence;
+            $sequencename = Config::getGlobal('database_sequenceprefix').$sequence.Config::getGlobal('database_sequencesuffix');
             /* get sequence number and increment */
             $query = "SELECT nextval('$sequencename') AS nextid";
 

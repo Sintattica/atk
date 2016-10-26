@@ -654,7 +654,13 @@ return [
      * Default sequence prefix.
      * @var String
      */
-    'database_sequenceprefix' => 'seq_',
+    'database_sequenceprefix' => '',
+
+    /*
+     * Default sequence suffix.
+     * @var String
+     */
+    'database_sequencesuffix' => '_seq',
 
     /*
      * Make the recordlist use a javascript
