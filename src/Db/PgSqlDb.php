@@ -339,9 +339,13 @@ class PgSqlDb extends Db
           t.typname AS type,
           (CASE
             WHEN LOWER(t.typname) = 'varchar' AND a.attlen = -1 THEN a.atttypmod - 4
-            WHEN LOWER(T .typname) = 'int2' THEN 5
-            WHEN LOWER(T .typname) = 'int4' THEN 10
-            WHEN LOWER(T .typname) = 'int8' THEN 19
+            WHEN a.atttypid = 21 /*int2*/ THEN 5
+            WHEN a.atttypid = 23 /*int4*/ THEN 10
+            WHEN a.atttypid = 20 /*int8*/ THEN 19
+            WHEN a.atttypid = 1700 /*numeric*/ THEN
+              CASE WHEN a.atttypmod = -1 THEN null
+              ELSE ((atttypmod - 4) >> 16) & 65535
+              END
            ELSE a.attlen END
           ) AS length,
           (CASE WHEN a.attnotnull THEN 1 ELSE 0 END) AS is_not_null,
