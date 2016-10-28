@@ -235,13 +235,13 @@ class atkDurationAttribute extends atkAttribute
             $ret = $prefix;
             if ($extended) {
                 if (self::_getHourPart($minutes)) {
-                    $ret .= sprintf("%dh", self::_getHourPart($minutes));
+                    $ret .= self::_getHourPart($minutes) . 'h';
                 }
                 if (self::_getMinutePart($minutes)) {
-                    $ret .= sprintf("%02dm", self::_getMinutePart($minutes));
+                    $ret .= self::_getMinutePart($minutes) . 'm';
                 }
             } else {
-                $ret .= sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
+                $ret .= sprintf("%02d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
             }
             return $ret;
         }
