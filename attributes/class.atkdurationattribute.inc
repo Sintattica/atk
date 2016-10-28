@@ -167,7 +167,7 @@ class atkDurationAttribute extends atkAttribute
      */
     function display($rec, $mode = "")
     {
-        return $this->_minutes2string($rec[$this->fieldName()]);
+        return $this->_minutes2string($rec[$this->fieldName()], true);
     }
 
     /**
@@ -217,9 +217,10 @@ class atkDurationAttribute extends atkAttribute
      * Convert minutes to string
      *
      * @param mixed $minutes
+     * @param bool $extended
      * @return string with minutes
      */
-    function _minutes2string($minutes)
+    function _minutes2string($minutes, $extended = false)
     {
         $prefix = "";
         if ($minutes < 0) {
@@ -231,7 +232,18 @@ class atkDurationAttribute extends atkAttribute
             $decimalvalue = $this->_getHourPart($minutes) + (self::_getMinutePart($minutes) / 60);
             return $prefix . sprintf("%02.02f", $decimalvalue);
         } elseif (atkconfig("durationformat", 0) == DURATIONFORMAT_TIME) {
-            return $prefix . sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
+            $ret = $prefix;
+            if ($extended) {
+                if (self::_getHourPart($minutes)) {
+                    $ret .= sprintf("%dh", self::_getHourPart($minutes));
+                }
+                if (self::_getMinutePart($minutes)) {
+                    $ret .= sprintf("%02dm", self::_getMinutePart($minutes));
+                }
+            } else {
+                $ret .= sprintf("%d:%02d", self::_getHourPart($minutes), self::_getMinutePart($minutes));
+            }
+            return $ret;
         }
     }
 
