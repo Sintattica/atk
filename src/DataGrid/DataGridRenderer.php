@@ -59,8 +59,11 @@ class DataGridRenderer extends DataGridComponent
 
         // $this->getGrid() is an atkdatagrid instance
         foreach ($this->getGrid()->getComponentInstances() as $name => $comp) {
-            $vars[$name] = $comp->render(); // when $name == "list", $comp->render() results in a call to DGList::render()
+            $vars[$name] = $comp->render(); // when $name == "list", $comp->render() results in a call to DataGridList::render()
         }
+
+        $vars['displayTopInfo'] = $this->getGrid()->getDisplayTopInfo();
+        $vars['displayBottomInfo'] = $this->getGrid()->getDisplayBottomInfo();
 
         return $this->getUi()->render($this->getGrid()->getTemplate(), $vars);
     }

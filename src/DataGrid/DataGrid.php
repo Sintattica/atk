@@ -2,13 +2,13 @@
 
 namespace Sintattica\Atk\DataGrid;
 
-use Sintattica\Atk\Utils\Json;
-use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Utils\StringParser;
 use Exception;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Utils\Json;
+use Sintattica\Atk\Utils\StringParser;
 
 /**
  * The data grid is a component based record list container.
@@ -332,6 +332,10 @@ class DataGrid
      */
     private $m_mraDefaultAction = null;
 
+
+    private $m_displayTopInfo;
+    private $m_displayBottomInfo;
+
     /**
      * Create a new DataGrid instance.
      *
@@ -452,6 +456,9 @@ class DataGrid
         $this->setActionSessionStatus(SessionManager::SESSION_NESTED);
         $this->setMode('admin');
         $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());
+
+        $this->setDisplayTopInfo(Config::getGlobal('datagrid_display_top_info'));
+        $this->setDisplayBottomInfo(Config::getGlobal('datagrid_display_bottom_info'));
 
         if (!$this->getNode()->hasFlag(Node::NF_NO_FILTER)) {
             foreach ($this->getNode()->m_filters as $key => $value) {
@@ -1534,7 +1541,7 @@ class DataGrid
         }
 
         $selector = $this->getNode()->select()->excludes($excludes)->orderBy($this->getOrderBy())->limit($this->getLimit(),
-                $this->getOffset())->mode($this->getMode())->ignoreDefaultFilters();
+            $this->getOffset())->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
             $selector->where($filter['filter'], $filter['params']);
@@ -1846,5 +1853,26 @@ class DataGrid
     public static function registerModifier($nodeType, $callback)
     {
         self::$s_modifiers[$nodeType == null ? '*' : $nodeType][] = $callback;
+    }
+
+
+    public function setDisplayTopInfo($displayTopInfo = true)
+    {
+        $this->m_displayTopInfo = $displayTopInfo;
+    }
+
+    public function getDisplayTopInfo()
+    {
+        return $this->m_displayTopInfo;
+    }
+
+    public function setDisplayBottomInfo($displayBottomInfo = true)
+    {
+        $this->m_displayBottomInfo = $displayBottomInfo;
+    }
+
+    public function getDisplayBottomInfo()
+    {
+        return $this->m_displayBottomInfo;
     }
 }
