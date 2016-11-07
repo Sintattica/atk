@@ -365,7 +365,7 @@ class OneToManyRelation extends Relation
         }
 
         if ($mode == 'list') { // list mode
-            $result = '<ul>';
+            $result = '<ul '.$this->getCSSClassAttribute().'>';
 
             foreach ($records as $current) {
                 $result .= sprintf('<li>%s</li>', $this->m_destInstance->descriptor($current));

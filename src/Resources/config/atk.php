@@ -63,8 +63,8 @@ return [
      */
     'datagrid_class' => '\\Sintattica\\Atk\\DataGrid\\DataGrid',
 
-    'datagrid_display_top_paginator' => true,
-    'datagrid_display_bottom_paginator' => true,
+    'datagrid_display_top_info' => true,
+    'datagrid_display_bottom_info' => true,
 
     /*
      * The dispatcher, all request (should) lead to this setting.
