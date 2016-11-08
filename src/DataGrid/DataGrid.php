@@ -2,7 +2,6 @@
 
 namespace Sintattica\Atk\DataGrid;
 
-use Exception;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -171,7 +170,7 @@ class DataGrid
     /**
      * Default limit.
      *
-     * @var array
+     * @var int
      */
     private $m_defaultLimit;
 
@@ -373,20 +372,20 @@ class DataGrid
      * manager does not exist, this method will fail!
      *
      * @param Node $node datagrid node
-     *
+     * @throws \Exception
      * @return DataGrid datagrid instance
      */
     public static function resume(Node $node)
     {
         // Cannot resume from session.
         if (!isset($GLOBALS['ATK_VARS']['atkdatagrid'])) {
-            throw new Exception('No last known datagrid!');
+            throw new \Exception('No last known datagrid!');
         }
 
         $name = $GLOBALS['ATK_VARS']['atkdatagrid'];
 
         if (!isset($GLOBALS['ATK_VARS']['atkdgsession'][$name])) {
-            throw new Exception('No session data for grid: '.$name);
+            throw new \Exception('No session data for grid: '.$name);
         }
         $session = $GLOBALS['ATK_VARS']['atkdgsession'][$name];
 
@@ -663,6 +662,8 @@ class DataGrid
             'countHandler',
             'selectHandler',
             'masterRecord',
+            'displayTopInfo',
+            'displayBottomInfo',
         );
 
         foreach ($vars as $var) {
@@ -731,6 +732,8 @@ class DataGrid
      * Converts node flags to datagrid flags.
      *
      * @param int $nodeFlags The nodeflags to convert
+     *
+     * @return int flags
      */
     protected function convertNodeFlags($nodeFlags)
     {
@@ -1312,6 +1315,7 @@ class DataGrid
      * Remove filter.
      *
      * @param string $filter
+     * @param array $params
      */
     public function removeFilter($filter, $params = array())
     {
@@ -1644,7 +1648,7 @@ class DataGrid
      *
      * @param array $overrides key/value overrides
      * @param array $overridesJs key/value run-time overrides
-     * @param array $overridesJsCallback JavaScript function which returns an overrides Hash
+     * @param string $overridesJsCallback JavaScript function which returns an overrides Hash
      *
      * @return string JavaScript call (might need escaping when used in HTML code)
      */
@@ -1733,6 +1737,7 @@ class DataGrid
     {
         $event = new DataGridEvent($this, $event);
 
+        /** @var DataGridListener $listener */
         foreach ($this->getListeners() as $listener) {
             $listener->notify($event);
         }
