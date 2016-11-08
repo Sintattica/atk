@@ -9539,6 +9539,9 @@ ul {
   padding-right: 0;
   font-weight: bold; }
 
+.input-group-addon {
+  min-width: 25px; }
+
 .tabsContent {
   margin-top: 10px; }
 
