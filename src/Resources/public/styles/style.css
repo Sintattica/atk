@@ -9512,6 +9512,9 @@ br.atkFileAttributeCheckboxSeparator {
 .checkbox label {
   margin-right: 15px; }
 
+.checkbox > span.checkbox-wrapper {
+  margin-left: 20px; }
+
 .login-form .form-control {
   display: block;
   width: 100%; }

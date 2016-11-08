@@ -9,8 +9,6 @@
                 {if $field.label!=""}{$field.label}{/if}
             </label>
         {/if}
-        <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-10{else}col-sm-12{/if}" id="{$field.id}">
-            {if $field.readonly}<span class="form-control-static">{$field.full}</span>{else}{$field.full}{/if}
-        </div>
+        <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-10{else}col-sm-12{/if}" id="{$field.id}">{$field.full}</div>
     {/if}
 </div>

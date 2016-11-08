@@ -1288,8 +1288,11 @@ class Attribute
                 $ret .= '&nbsp;'.$this->m_postfixlabel;
             }
         }
+        if(in_array($mode, ['csv', 'plain'])){
+            return $ret;
+        }
 
-        return $ret;
+        return '<span class="form-control-static">'.$ret.'</span>';
     }
 
     /**

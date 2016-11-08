@@ -109,7 +109,7 @@ class BoolAttribute extends Attribute
         }
         $checked = $this->getValue($record) ? 'checked' : '';
 
-        $result = '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' />';
+        $result = '<div class="checkbox"><span class="checkbox-wrapper"><input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' /></span></div>';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
