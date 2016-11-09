@@ -43,6 +43,7 @@ class CurrencyAttribute extends NumberAttribute
         $this->m_thousandsseparator = ($thousandsseparator != '' ? $thousandsseparator : ',');
 
         $this->setUseThousandsSeparator(true);
+        $this->setTrailingZeros(true);
     }
 
     /**
