@@ -58,6 +58,10 @@ table.recordList {
       background-color: #F9F9F9;
     }
 
+    &.recordList-search-row {
+      border-color: #ddd;
+    }
+
     td {
       ul {
         margin: 0;

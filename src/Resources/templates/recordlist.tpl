@@ -15,7 +15,7 @@
 
         {if count($sort)}
             <!-- sort row -->
-            <tr>
+            <tr class="recordList-sort-row">
                 {$sortstart}
                 {foreach from=$sort item=col}
                     <th {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
@@ -28,7 +28,7 @@
 
         {if count($search)}
             <!-- search row -->
-            <tr>
+            <tr class="recordList-search-row">
                 {$searchstart}
                 {foreach from=$search item=col}
                     <th class="recordListSearch" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
@@ -65,7 +65,7 @@
 
         {if count($total)}
             <!-- totals row -->
-            <tr>
+            <tr class="recordList-totals-row">
                 {foreach from=$total item=col}
                     <th {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
                         {if $col.content != ""}{$col.content}{else}&nbsp;{/if}

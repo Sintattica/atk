@@ -9298,6 +9298,8 @@ table.recordList {
     background-color: #ffffff; }
   table.recordList tr .row2 {
     background-color: #F9F9F9; }
+  table.recordList tr.recordList-search-row {
+    border-color: #ddd; }
   table.recordList tr td ul {
     margin: 0; }
   table.recordList tr td .actions {
