@@ -177,7 +177,7 @@ class BoolAttribute extends Attribute
             $value = $value[$this->fieldName()];
         }
         if (isset($value)) {
-            return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value));
+            return $query->exactBoolCondition($table.'.'.$this->fieldName(), $value);
         }
 
         return '';
@@ -312,6 +312,6 @@ class BoolAttribute extends Attribute
 
     private function getValue($record)
     {
-        return isset($record[$this->fieldName()]) && ($record[$this->fieldName()] == 1 || $record[$this->fieldName()] === 't');
+        return isset($record[$this->fieldName()]) && $this->parseStringValue($record[$this->fieldName()]);
     }
 }

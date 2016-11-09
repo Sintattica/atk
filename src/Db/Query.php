@@ -825,6 +825,14 @@ class Query
         return "$field = $value";
     }
 
+
+    public function exactBoolCondition($field, $value)
+    {
+        $value = $value ? '1' : '0';
+
+        return "$field = $value";
+    }
+
     /**
      * Generate a searchcondition that checks whether $field contains $value .
      *

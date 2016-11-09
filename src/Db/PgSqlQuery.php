@@ -102,4 +102,11 @@ class PgSqlQuery extends Query
             return $field." LIKE '".str_replace('*', '%', $value)."'";
         }
     }
+
+    public function exactBoolCondition($field, $value)
+    {
+        $value = $value ? 'true' : 'false';
+
+        return "$field = $value";
+    }
 }
