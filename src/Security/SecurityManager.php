@@ -258,8 +258,9 @@ class SecurityManager
 
         // first check if we want to logout
         if (isset($ATK_VARS['atklogout']) && (!isset($session['relogin']) || $session['relogin'] != 1)) {
-            $this->notifyListeners('preLogout', isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
             $currentUser = self::atkGetUser();
+            $this->notifyListeners('preLogout', isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
+
 
             // Let the authentication plugin know about logout too.
             foreach ($this->m_authentication as $class => $auth) {
