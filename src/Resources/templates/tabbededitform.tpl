@@ -18,9 +18,7 @@
                     {/if}
                 </label>
             {/if}
-            <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-9 col-md-10{else}col-md-12{/if}" id="{$field.id}">
-                {if $field.readonly}<span class="form-control-static">{$field.full}</span>{else}{$field.full}{/if}
-            </div>
+            <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-9 col-md-10{else}col-md-12{/if}" id="{$field.id}">{$field.full}</div>
         </div>
     {/foreach}
 </div>

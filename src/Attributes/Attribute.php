@@ -1288,6 +1288,7 @@ class Attribute
                 $ret .= '&nbsp;'.$this->m_postfixlabel;
             }
         }
+
         if(in_array($mode, ['csv', 'plain'])){
             return $ret;
         }
