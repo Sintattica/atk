@@ -828,7 +828,7 @@ class ManyToManyRelation extends Relation
             $query->setDistinct(true);
 
             if (count($value) == 1) { // exactly one value
-                $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(), $this->escapeSQL($value[0])));
+                $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(), $this->escapeSQL($value[0]), $this->dbFieldType()));
             } else { // search for more values using IN()
                 $query->addSearchCondition($this->fieldName().'.'.$this->getRemoteKey()." IN ('".implode("','", $value)."')");
             }

@@ -468,7 +468,7 @@ class ListAttribute extends Attribute
                 if ($value[0] == '__NONE__') {
                     return $query->nullCondition($table.'.'.$this->fieldName(), true);
                 } else {
-                    return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]));
+                    return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
                 }
             } elseif (count($value) > 1) { // search for more values
                 if (in_array('__NONE__', $value)) {

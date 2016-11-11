@@ -1251,7 +1251,7 @@ class ManyToOneRelation extends Relation
                     if ($value[0] == '__NONE__') {
                         return $query->nullCondition($table.'.'.$this->fieldName(), true);
                     } elseif ($value[0] != '') {
-                        return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]));
+                        return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
                     }
                 } else { // search for more values using IN()
                     return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
@@ -1266,7 +1266,6 @@ class ManyToOneRelation extends Relation
                     // ask the destination node for it's search condition
                     $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $value,
                         $this->getChildSearchMode($searchmode, $this->fieldName()));
-
                 }
 
                 return $searchcondition;
