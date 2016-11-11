@@ -52,6 +52,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
                     : ",");
 
         $this->setUseThousandsSeparator(true);
+        $this->setTrailingZeros(true);
     }
 
     /**

@@ -141,7 +141,7 @@ class atkDateAttribute extends atkAttribute
      * @param array $dateArray Date Array
      * @return int Timestamp
      */
-    function arrayToTime($dateArray)
+    static function arrayToTime($dateArray)
     {
         return atkDateAttribute::_arrayToTime($dateArray);
     }

@@ -957,11 +957,11 @@ class atkManyToOneRelation extends atkRelation
             $page = &atkPage::getInstance();
             $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
 
-            if ($this->m_destInstance->allowed("edit")) {
+            if (!$this->m_destInstance->hasFlag(NF_NO_EDIT) && $this->m_destInstance->allowed("edit")) {
                 $editlink = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
                 $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editlink) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . atktext('edit') . "</a>";
             }
-            if ($this->m_destInstance->allowed("add")) {
+            if (!$this->m_destInstance->hasFlag(NF_NO_ADD) && $this->m_destInstance->allowed("add")) {
                 $autolink['add'] = "&nbsp;" . href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
                                 ? $filter : ""))), atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
