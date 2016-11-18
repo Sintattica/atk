@@ -454,8 +454,6 @@ class OneToManyRelation extends Relation
             $add_link = $this->_getAddLink($myrecords, $record, true, $mode, $fieldprefix);
         }
 
-        $add_link .= '<br />';
-
         if (Config::getGlobal('onetomany_addlink_position', 'bottom') == 'top') {
             $output = $add_link.$output;
         } else {

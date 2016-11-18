@@ -1289,7 +1289,7 @@ class Attribute
             }
         }
 
-        if(in_array($mode, ['csv', 'plain'])){
+        if(in_array($mode, ['csv', 'plain', 'list'])){
             return $ret;
         }
 
