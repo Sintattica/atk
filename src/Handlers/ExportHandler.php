@@ -418,7 +418,7 @@ class ExportHandler extends ActionHandler
         $where = ' nodetype = "'.$this->m_postvars['atknodeuri'].'"';
         if ('none' !== strtolower(Config::getGlobal('authentication'))) {
             $user = SecurityManager::atkGetUser();
-            if ('administrator' !== strtolower($user['name'])) {
+            if (!SecurityManager::isUserAdmin($user)) {
                 $where .= ' AND user_id IN( 0, '.(int)$user[Config::getGlobal('auth_userpk')].' )';
             }
         }

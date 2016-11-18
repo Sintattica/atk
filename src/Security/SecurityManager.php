@@ -28,7 +28,7 @@ class SecurityManager
     const AUTH_ERROR = -1;
 
     public $m_authentication = [];
-    public $m_authorization = 0;
+    public $m_authorization;
     public $m_scheme = 'none';
     public $m_user = [];
     public $m_listeners = [];
@@ -359,6 +359,7 @@ class SecurityManager
                                     // We have a username, which we must now validate against several
                                     // checks. If all of these fail, we have a status of SecurityManager::AUTH_MISMATCH.
                                     $error = '';
+                                    $authname = null;
                                     foreach ($this->m_authentication as $class => $obj) {
                                         $response = $obj->validateUser($auth_user, $auth_pw);
                                         if ($response == self::AUTH_SUCCESS) {
@@ -740,6 +741,28 @@ class SecurityManager
         }
 
         return $user[$userpk];
+    }
+
+    public static function isUserAdmin($user = null){
+        if($user === null){
+            $user = self::atkGetUser();
+        }
+
+        if ($user['name'] == 'administrator' && is_null($user['id'])) {
+            return true;
+        }
+
+        $auth_administratorfield = Config::getGlobal('auth_administratorfield');
+        if ($auth_administratorfield && in_array(strtolower($user[$auth_administratorfield]), ['y', 'j', 'yes', 'on', 'true', 't', '1', 1, true])) {
+            return true;
+        }
+
+        $auth_administratorusers = Config::getGlobal('auth_administratorusers');
+        if (is_array($auth_administratorusers) && in_array($user['name'], $auth_administratorusers)) {
+            return true;
+        }
+
+        return false;
     }
 
     private function rememberMeCookieName()

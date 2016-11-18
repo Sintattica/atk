@@ -104,8 +104,7 @@ class ProfileAttribute extends Attribute
     {
 
         // Read the current actions available/editable and user rights before changing them
-        $user = SecurityManager::atkGetUser();
-        $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
+        $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
 
@@ -261,15 +260,18 @@ class ProfileAttribute extends Attribute
     {
         $user = SecurityManager::atkGetUser();
         if (!is_array($user['level'])) {
-            $levels = "'".$user['level']."'";
+            $levels = $user['level'];
         } else {
-            $levels = "'".implode("','", $user['level'])."'";
+            $levels = implode("','", $user['level']);
         }
 
         // retrieve editable actions by user's levels
-        $db = $this->getDb();
-        $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' WHERE '.$this->m_accessField.' IN ('.$levels.')';
-        $rows = $db->getRows($query);
+        $rows = [];
+        if($levels) {
+            $db = $this->getDb();
+            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' WHERE '.$this->m_accessField.' IN ('.$levels.')';
+            $rows = $db->getRows($query);
+        }
 
         $result = [];
         foreach ($rows as $row) {
@@ -323,7 +325,6 @@ class ProfileAttribute extends Attribute
      */
     public function display($record, $mode)
     {
-        $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkprofileattribute.js');
         $this->_restoreDivStates($page);
@@ -333,7 +334,7 @@ class ProfileAttribute extends Attribute
         $page->register_scriptcode($icons);
 
         $result = '';
-        $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
+        $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
 
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
@@ -424,7 +425,6 @@ class ProfileAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
 
         $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal('icon_plussquare')."';";
@@ -437,7 +437,7 @@ class ProfileAttribute extends Attribute
         $result = '<div align="right">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
 
-        $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
+        $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
         $editableActions = $this->getEditableActions($record);
         $selectedActions = $this->getSelectedActions($record);

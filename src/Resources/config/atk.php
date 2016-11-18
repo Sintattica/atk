@@ -332,6 +332,16 @@ return [
      */
     'auth_accountenableexpression' => '',
 
+    /*
+     *  The boolean or numeric 1/0 field that enable the user to be an administrator
+     */
+    'auth_administratorfield' => '',
+
+    /*
+     * An array of usernames that enable the users to be administrators (be careful!)
+     */
+    'auth_administratorusers' => [],
+
 
     /************************** REMEMBER ME *********************************/
 

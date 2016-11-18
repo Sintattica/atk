@@ -122,7 +122,7 @@ class AuthInterface
     public function allowed($securityMgr, $node, $privilege)
     {
         // security disabled or user is superuser? (may do anything)
-        if (($securityMgr->m_scheme == 'none') || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user['name']) == 'administrator')) {
+        if (($securityMgr->m_scheme == 'none') || ($securityMgr->hasLevel(-1)) || $securityMgr::isUserAdmin()) {
             $allowed = true;
         } // user is guest? (guests may do nothing)
         else {
@@ -178,7 +178,7 @@ class AuthInterface
         $attribute = $attr->fieldName();
 
         // security disabled or user is superuser? (may do anything)
-        if (($securityMgr->m_scheme == 'none') || (!Config::getGlobal('security_attributes')) || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user['name']) == 'administrator')) {
+        if (($securityMgr->m_scheme == 'none') || (!Config::getGlobal('security_attributes')) || ($securityMgr->hasLevel(-1)) || $securityMgr::isUserAdmin()) {
             $allowed = true;
         } // user is guest? (guests may do nothing)
         else {
