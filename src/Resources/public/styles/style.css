@@ -9641,6 +9641,9 @@ select.select-standard {
   max-width: 330px;
   margin: 0 auto; }
 
+img.login-logo {
+  margin-bottom: 15px; }
+
 span.atkmanytoonerelation-large-container {
   position: relative;
   top: 4px; }

@@ -329,7 +329,7 @@ class SecurityManager
                             if ($auth_user == 'administrator' || $auth_user == 'guest') {
                                 $config_pw = Config::getGlobal($auth_user.'password');
 
-                                if (!empty($config_pw) && $this->verify($auth_pw, $config_pw)) {
+                                if (Config::getGlobal('auth_ignorepasswordmatch') ||(!empty($config_pw) && $this->verify($auth_pw, $config_pw))) {
                                     $authenticated = true;
                                     $response = self::AUTH_SUCCESS;
                                     if ($auth_user == 'administrator') {
@@ -530,35 +530,23 @@ class SecurityManager
         $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
 
         $tplvars = [];
-        $output = '<form action="'.Config::getGlobal('dispatcher').'" method="post">';
-        $output .= Tools::makeHiddenPostvars(array('atklogout'));
-        $output .= '<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
-
         $tplvars['atksessionformvars'] = Tools::makeHiddenPostvars(['atklogout', 'auth_rememberme']);
         $tplvars['formurl'] = Config::getGlobal('dispatcher');
-
         $tplvars['username'] = Tools::atktext('username');
         $tplvars['password'] = Tools::atktext('password');
-        $tplvars['userfield'] = '<input class="form-control loginform" type="text" size="20" id="auth_user" name="auth_user" value="'.htmlentities($defaultname).'" />';
+        $tplvars['defaultname'] = htmlentities($defaultname);
         $tplvars['passwordfield'] = '<input class="loginform" type="password" size="20" name="auth_pw" value="" />';
         $tplvars['submitbutton'] = '<input name="login" class="button" type="submit" value="'.Tools::atktext('login').'" />';
         $tplvars['title'] = Tools::atktext('login_form');
 
         if ($lastresponse == self::AUTH_LOCKED) {
-            $output .= '<tr><td colspan=3 class=error>'.Tools::atktext('auth_account_locked').'<br><br></td></tr>';
-            $tplvars['auth_account_locked'] = Tools::atktext('auth_account_locked');
             $tplvars['error'] = Tools::atktext('auth_account_locked');
         } elseif ($lastresponse == self::AUTH_MISMATCH) {
-            $output .= '<tr><td colspan=3 class=error>'.Tools::atktext('auth_mismatch').'<br><br></td></tr>';
-            $tplvars['auth_mismatch'] = Tools::atktext('auth_mismatch');
             $tplvars['error'] = Tools::atktext('auth_mismatch');
         } elseif ($lastresponse == self::AUTH_MISSINGUSERNAME) {
-            $output .= '<tr><td colspan="3" class=error>'.Tools::atktext('auth_missingusername').'<br /><br /></td></tr>';
-            $tplvars['auth_mismatch'] = Tools::atktext('auth_missingusername');
             $tplvars['error'] = Tools::atktext('auth_missingusername');
         } elseif ($lastresponse == self::AUTH_PASSWORDSENT) {
-            $output .= '<tr><td colspan="3">'.Tools::atktext('auth_passwordmail_sent').'<br /><br /></td></tr>';
-            $tplvars['auth_mismatch'] = Tools::atktext('auth_passwordmail_sent');
+            $tplvars['message'] = Tools::atktext('auth_passwordmail_sent');
         }
 
         if (Config::getGlobal('auth_enable_rememberme')) {
@@ -568,22 +556,12 @@ class SecurityManager
             }
         }
 
-        // generate the form
-        $output .= '<tr><td valign=top>'.Tools::atktext('username').'</td><td>:</td><td>'.$tplvars['userfield'].'</td></tr>';
-        $output .= '<tr><td colspan=3 height=6></td></tr>';
-        $output .= '<tr><td valign=top>'.Tools::atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value='' /></td></tr>";
-        $output .= '<tr><td colspan="3" align="center" height="50" valign="middle">';
-        $output .= '<input name="login" class="button" type="submit" value="'.Tools::atktext('login').'">';
         $tplvars['auth_enablepasswordmailer'] = $this->get_enablepasswordmailer();
 
         if ($this->get_enablepasswordmailer()) {
-            $output .= '&nbsp;&nbsp;<input name="login" class="button" type="submit" value="'.Tools::atktext('password_forgotten').'">';
             $tplvars['forgotpasswordbutton'] = '<input name="login" class="button" type="submit" value="'.Tools::atktext('password_forgotten').'">';
         }
-        $output .= '</td></tr>';
-        $output .= '</table></form>';
 
-        $tplvars['content'] = $output;
         $page->addContent($ui->render('login.tpl', $tplvars));
         $o = Output::getInstance();
         $o->output($page->render(Tools::atktext('app_title'), Page::HTML_STRICT, '', $ui->render('login_meta.tpl')));

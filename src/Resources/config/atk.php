@@ -342,6 +342,11 @@ return [
      */
     'auth_administratorusers' => [],
 
+    /*
+     * if true, no password is needed to authenticate (be careful!)
+     */
+    'auth_ignorepasswordmatch' => false,
+
 
     /************************** REMEMBER ME *********************************/
 

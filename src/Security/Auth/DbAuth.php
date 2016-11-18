@@ -122,7 +122,10 @@ class DbAuth extends AuthInterface
      */
     public function matchPasswords($dbpasswd, $userpasswd)
     {
-        // crypt password method, like in bugzilla
+        if (Config::getGlobal('auth_ignorepasswordmatch')) {
+            return true;
+        }
+
         if (Config::getGlobal('auth_usecryptedpassword', false)) {
             return password_verify($userpasswd, $dbpasswd);
         } else {
