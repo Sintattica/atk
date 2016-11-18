@@ -309,7 +309,6 @@ class SecurityManager
                     }
                 }
 
-
                 if (!$authenticated) {
                     // Check if a username was entered
                     if ((Tools::atkArrayNvl($ATK_VARS, 'login', '') != '') && empty($auth_user) && !strstr(Config::getGlobal('authentication'), 'none')) {
@@ -328,12 +327,10 @@ class SecurityManager
                             // check administrator and guest user
                             if ($auth_user == 'administrator' || $auth_user == 'guest') {
                                 $config_pw = Config::getGlobal($auth_user.'password');
-
-                                if (Config::getGlobal('auth_ignorepasswordmatch') ||(!empty($config_pw) && $this->verify($auth_pw, $config_pw))) {
-                                    $authenticated = true;
+                                $authenticated = !empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || $this->verify($auth_pw, $config_pw));
+                                if ($authenticated) {
                                     $response = self::AUTH_SUCCESS;
                                     if ($auth_user == 'administrator') {
-
                                         $this->m_user = array(
                                             'name' => 'administrator',
                                             'level' => -1,
@@ -352,8 +349,6 @@ class SecurityManager
                             // these accounts have been validated above. If we don't check this, an account could be
                             // created in the database that provides administrator access.
                             else {
-
-
                                 if ($auth_user != 'administrator' && $auth_user != 'guest') {
 
                                     // We have a username, which we must now validate against several
@@ -392,7 +387,6 @@ class SecurityManager
                                     ) {
                                         $session['remembermeTokenId'] = $this->rememberMeStore($auth_user);
                                     }
-
                                 }
                             }
                         }
@@ -403,8 +397,6 @@ class SecurityManager
                 if ($authenticated) {
                     $session['login'] = 1;
                 }
-
-
             } else {
                 // using session for authentication, because "login" was registered.
                 // but we double check with some more data from the session to see
@@ -417,7 +409,6 @@ class SecurityManager
                 }
             }
         }
-
 
         // if there was an error, drop out.
         if ($this->m_fatalError != '') {
@@ -726,12 +717,14 @@ class SecurityManager
             $user = self::atkGetUser();
         }
 
-        if ($user['name'] == 'administrator' && is_null($user['id'])) {
+        // user with name "administrator" can't have the id field, because he is an internal atk user.
+        if ($user['name'] === 'administrator' && (!isset($user['id']) || is_null($user['id']))) {
+
             return true;
         }
 
         $auth_administratorfield = Config::getGlobal('auth_administratorfield');
-        if ($auth_administratorfield && in_array(strtolower($user[$auth_administratorfield]), ['y', 'j', 'yes', 'on', 'true', 't', '1', 1, true])) {
+        if ($auth_administratorfield && in_array(strtolower($user[$auth_administratorfield]), ['y', 'j', 'yes', 'on', 'true', 't', '1'])) {
             return true;
         }
 
