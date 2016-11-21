@@ -2,21 +2,8 @@
 
 namespace Sintattica\Atk\Cache;
 
-use Sintattica\Atk\Core\Config;
-
-class ApcCache extends Cache
+class ApcuCache extends ApcCache
 {
-    /**
-     * constructor.
-     */
-    public function __construct()
-    {
-        // make sure we have apc available
-        if (!ini_get('apc.enabled')) {
-            die('The APC extension is not loaded or disabled');
-        }
-        $this->m_namespace = Config::getGlobal('cache_namespace', 'default');
-    }
 
     /**
      * Inserts cache entry data, but only if the entry does not already exist.
@@ -37,7 +24,7 @@ class ApcCache extends Cache
             $lifetime = $this->m_lifetime;
         }
 
-        return apc_add($this->getRealKey($key), serialize($data), $lifetime);
+        return apcu_add($this->getRealKey($key), serialize($data), $lifetime);
     }
 
     /**
@@ -59,13 +46,11 @@ class ApcCache extends Cache
             $lifetime = $this->m_lifetime;
         }
 
-        return apc_store($this->getRealKey($key), serialize($data), $lifetime);
+        return apcu_store($this->getRealKey($key), serialize($data), $lifetime);
     }
 
     /**
      * Gets cache entry data.
-     * Note: cache can be older then the lifetime that is set. It seems this is a bug
-     * in the APC cache that is ignoring the lifetime param from the add / store function.
      *
      * @param string $key The entry ID.
      *
@@ -77,7 +62,7 @@ class ApcCache extends Cache
             return false;
         }
 
-        $rawCacheValue = apc_fetch($this->getRealKey($key));
+        $rawCacheValue = apcu_fetch($this->getRealKey($key));
         $cacheValue = is_string($rawCacheValue) ? unserialize($rawCacheValue) : $rawCacheValue;
 
         return $cacheValue;
@@ -96,7 +81,7 @@ class ApcCache extends Cache
             return false;
         }
 
-        return apc_delete($this->getRealKey($key));
+        return apcu_delete($this->getRealKey($key));
     }
 
     /**
@@ -110,7 +95,7 @@ class ApcCache extends Cache
             return false;
         }
 
-        apc_clear_cache('user');
+        apcu_clear_cache();
 
         return true;
     }
@@ -122,6 +107,6 @@ class ApcCache extends Cache
      */
     public function getType()
     {
-        return 'apc';
+        return 'apcu';
     }
 }
