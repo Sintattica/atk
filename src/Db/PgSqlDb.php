@@ -47,8 +47,13 @@ class PgSqlDb extends Db
                 $connection_str .= ' password='.$this->m_password;
             }
 
+            if(!empty($this->m_charset)){
+                $connection_str .= " options='--client_encoding={$this->m_charset}'";
+            }
+
             /* establish connection */
             $this->m_link_id = pg_connect($connection_str);
+
             if ($this->m_link_id === false) {
                 $this->halt('connect using '.$this->m_database.', '.$this->m_host.', '.$this->m_user.', ***** failed.');
 
