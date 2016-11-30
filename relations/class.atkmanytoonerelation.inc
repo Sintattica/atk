@@ -662,7 +662,12 @@ class atkManyToOneRelation extends atkRelation
                     }
                 }
             } else {
-                $result = !in_array($mode, array("csv", "plain", "list")) ? $this->getNoneLabel($mode) : ''; // no record
+                // no record
+                $label = $this->getNoneLabel($mode);
+                if ($label == atktext('none')) {
+                    $label = '';
+                }
+                $result = !in_array($mode, array("csv", "plain")) ? $label : '';
             }
             return $result;
         } else {
