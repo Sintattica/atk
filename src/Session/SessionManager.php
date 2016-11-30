@@ -2,11 +2,10 @@
 
 namespace Sintattica\Atk\Session;
 
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Atk;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\Ui;
 
 /**
  * The atk session manager.
@@ -121,6 +120,16 @@ class SessionManager
         Tools::atkDataDecode($_REQUEST);
         $ATK_VARS = array_merge($_GET, $_POST);
         Tools::atkDataDecode($ATK_VARS);
+
+        // inject $_FILES
+        $atkfiles = $_FILES;
+        Tools::atkDataDecode($atkfiles);
+        $ATK_VARS['atkfiles'] = $_FILES;
+        foreach ($atkfiles as $k => $v) {
+            $ATK_VARS[$k]['atkfiles'] = $v;
+        }
+
+
         if (array_key_exists('atkfieldprefix', $ATK_VARS) && $ATK_VARS['atkfieldprefix'] != '') {
             $ATK_VARS = $ATK_VARS[$ATK_VARS['atkfieldprefix']];
         }
@@ -1134,6 +1143,9 @@ class SessionManager
 
     /**
      * Used by the session manager to retrieve a unique id for the current atk stack.
+     * @param bool $new
+     *
+     * @return string atkstackid
      */
     public function atkStackID($new = false)
     {
