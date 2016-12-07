@@ -876,10 +876,14 @@ class atkManyToOneRelation extends atkRelation
                 $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation" ' . $onchange . '>';
 
                 // relation may be empty, so we must provide an empty selectable..
-                if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
-                    (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
-                    (atkconfig("list_obligatory_null_item") && !is_array($value))) {
-                    $result.= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
+                if (!$this->hasFlag(AF_MANYTOONE_NO_NULL_ITEM)) {
+                    if (!$this->hasFlag(AF_OBLIGATORY) || (
+                            $this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
+                            (atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))
+                        )
+                    ) {
+                        $result.= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
+                    }
                 }
 
                 foreach ($recordset as $selectable) {
