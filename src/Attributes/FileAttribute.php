@@ -268,8 +268,8 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
-            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
-                    'atk');
+            $result .= '<br class="atkFileAttributeCheckboxSeparator"><label for="'.$id.'_del"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
+                    'atk').'</label>';
         }
 
         return $result;
@@ -620,6 +620,11 @@ class FileAttribute extends Attribute
      */
     protected function deleteFile($file)
     {
+        // return true even if the file is not physically deleted
+        if($this->hasFlag(self::AF_FILE_NO_DELETE) || !$this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)){
+            return true;
+        }
+
         if (is_file($file) && !@unlink($file)) {
             return false;
         }
@@ -636,7 +641,7 @@ class FileAttribute extends Attribute
      */
     public function postDelete($record)
     {
-        if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && $record[$this->fieldName()]['orgfilename'] != '') {
+        if ($record[$this->fieldName()]['orgfilename'] != '') {
             $file = $this->m_dir.$record[$this->fieldName()]['orgfilename'];
 
             return $this->deleteFile($file);
@@ -692,7 +697,7 @@ class FileAttribute extends Attribute
 
                 return '<img src="'.$this->m_url.$filename.'?b='.$randval.'" alt="'.$filename.'">';
             } else {
-                return $filename.'(<font color="#ff0000">'.Tools::atktext('file_not_exist', 'atk').'</font>)';
+                return $filename.' (<font color="#ff0000">'.Tools::atktext('file_not_exist', 'atk').'</font>)';
             }
         }
     }
