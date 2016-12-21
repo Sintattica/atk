@@ -418,24 +418,21 @@ class FileAttribute extends Attribute
         $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ? $rec[$this->fieldName()]['tmpfile'] : $this->m_dir.$rec[$this->fieldName()]['filename'];
 
         if (@empty($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir) {
-            $valid = false;
 
             if (function_exists('getimagesize')) {
                 $size = @getimagesize($filename);
                 if (in_array($size['mime'], $this->m_allowedFileTypes)) {
-                    $valid = true;
+                    return true;
                 }
             }
 
-            $orgFilename = @$rec[$this->fieldName()]['orgfilename'];
-            if ($orgFilename != null) {
+            $orgFilename = isset($rec[$this->fieldName()]['orgfilename'])?$rec[$this->fieldName()]['orgfilename']:null;
+            if ($orgFilename) {
                 $extension = $this->getFileExtension($orgFilename);
                 if (in_array($extension, $this->m_allowedFileTypes)) {
-                    $valid = true;
+                    return true;
                 }
-            }
 
-            if (!$valid) {
                 $rec[$this->fieldName()]['error'] = UPLOAD_ERR_EXTENSION;
 
                 return false;
@@ -598,6 +595,7 @@ class FileAttribute extends Attribute
                     'orgfilename' => $realname,
                 );
             }
+
             return $result;
         }
     }
@@ -621,7 +619,7 @@ class FileAttribute extends Attribute
     protected function deleteFile($file)
     {
         // return true even if the file is not physically deleted
-        if($this->hasFlag(self::AF_FILE_NO_DELETE) || !$this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)){
+        if ($this->hasFlag(self::AF_FILE_NO_DELETE) || !$this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)) {
             return true;
         }
 
