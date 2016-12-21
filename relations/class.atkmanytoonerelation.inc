@@ -729,11 +729,11 @@ class atkManyToOneRelation extends atkRelation
                             ? $filter : ""))), atktext("new"), SESSION_NESTED, true);
             }
 
-            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(NF_NO_EDIT) && $record[$this->fieldName()] != NULL) {
+            if ($this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $editUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
-                $links[] = "<span id=\"" . $id . "_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . atktext('edit') . "</a></span>";
+                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME")), SESSION_NESTED);
+                $links[] = "<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($viewUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . atktext('view') . "</a>";
             }
         }
 
@@ -839,7 +839,7 @@ class atkManyToOneRelation extends atkRelation
         }
 
         $id = $fieldprefix . $this->fieldName();
-        $editflag = true;
+        $linkview = false;
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()]
                 : null;
@@ -850,10 +850,6 @@ class atkManyToOneRelation extends atkRelation
             // load records for bwc
             if ($recordset == null) {
                 $recordset = $this->_getSelectableRecords($record, $mode);
-            }
-
-            if (count($recordset) == 0) {
-                $editflag = false;
             }
 
             $onchange = '';
@@ -870,6 +866,7 @@ class atkManyToOneRelation extends atkRelation
             if (count($recordset) == 0) {
                 $result = $this->getNoneLabel();
             } else {
+                $linkview = true;
                 $this->registerKeyListener($id, KB_CTRLCURSOR | KB_LEFTRIGHT);
                 $this->registerJavaScriptObservers($id);
 
@@ -896,9 +893,6 @@ class atkManyToOneRelation extends atkRelation
                 $result .= $this->getSpinner();
             }
         } else {
-            // TODO configurable?
-            $editflag = false;
-
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
                 $result = '<span id="'.$id.'_current" >';
@@ -924,8 +918,8 @@ class atkManyToOneRelation extends atkRelation
         }
 
         $autolink = $this->getRelationAutolink($id, $this->parseFilter($this->m_destinationFilter, $record));
-        $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : "";
-        $result .= isset($autolink['add']) ? $autolink['add'] : "";
+        $result .= $linkview && isset($autolink['view']) ? (' ' . $autolink['view']) : '';
+        $result .= isset($autolink['add']) ? (' ' . $autolink['add']) : '';
 
         return $result;
     }
@@ -966,12 +960,12 @@ class atkManyToOneRelation extends atkRelation
             $page = &atkPage::getInstance();
             $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
 
-            if (!$this->m_destInstance->hasFlag(NF_NO_EDIT) && $this->m_destInstance->allowed("edit")) {
-                $editlink = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
-                $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editlink) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . atktext('edit') . "</a>";
+            if (!$this->m_destInstance->hasFlag(NF_NO_VIEW) && $this->m_destInstance->allowed("view")) {
+                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME")), SESSION_NESTED);
+                $autolink['view'] = "<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($viewUrl) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . atktext('view') . "</a>";
             }
             if (!$this->m_destInstance->hasFlag(NF_NO_ADD) && $this->m_destInstance->allowed("add")) {
-                $autolink['add'] = "&nbsp;" . href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
+                $autolink['add'] = href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
                                 ? $filter : ""))), atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
         }
