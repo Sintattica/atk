@@ -11,6 +11,7 @@
 
 WIP Changes
 -----------
++ Added property in ManyToOne to render a multiple select also in simple search [luca]
 * Refactoring autolink in ManyToOne [luca]
 
 Changes in ATK 8.2.7 (2016-10-12)

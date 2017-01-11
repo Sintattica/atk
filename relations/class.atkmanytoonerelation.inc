@@ -232,6 +232,13 @@ class atkManyToOneRelation extends atkRelation
     protected $m_selectableRecords = null;
 
     /**
+     * Render a multiple select also in simple search (grid)
+     *
+     * @var bool
+     */
+    private $m_multipleInSimpleSearch = false;
+
+    /**
      * Constructor.
      * @param String $name The name of the attribute. This is the name of the
      *                     field that is the referential key to the
@@ -416,6 +423,16 @@ class atkManyToOneRelation extends atkRelation
     function getConcatDescriptorFunction()
     {
         return $this->m_concatDescriptorFunction;
+    }
+
+    function getMultipleInSimpleSearch()
+    {
+        return $this->m_multipleInSimpleSearch;
+    }
+
+    function setMultipleInSimpleSearch($value)
+    {
+        $this->m_multipleInSimpleSearch = $value;
     }
 
     /**
@@ -1114,7 +1131,7 @@ class atkManyToOneRelation extends atkRelation
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
                 $result = '<select class="form-control ' . get_class($this) . '"';
-                if ($extended) {
+                if ($extended || $this->getMultipleInSimpleSearch()) {
                     $result .= ' multiple size="' . min(5, count($recordset) + 1) . '"';
                     if (isset($record[$this->fieldName()][$this->fieldName()]))
                         $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
@@ -1138,6 +1155,11 @@ class atkManyToOneRelation extends atkRelation
                 $selValues = $record[$this->fieldName()];
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
+                }
+
+                if ($this->getMultipleInSimpleSearch() && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
+                    // in case of multiple select in simple search, we have the selected values into a single string (csv)
+                    $selValues = explode(',', $selValues[0]);
                 }
 
                 // "search all" option
@@ -1285,11 +1307,21 @@ class atkManyToOneRelation extends atkRelation
             // We only support 'exact' matches.
             // But you can select more than one value, which we search using the IN() statement,
             // which should work in any ansi compatible database.
+
             if (!is_array($value)) {
                 $value = array($value);
             }
 
-            if (count($value) == 1 && $value[0]) { // exactly one value
+            if ($this->getMultipleInSimpleSearch() && count($value) == 1 && strpos($value[0], ',') !== false) {
+                // in case of multiple select in simple search, we have the selected values into a single string (csv)
+                $value = explode(',', $value[0]);
+                // "search all" option has precedence (when another options are selected together)
+                if ($value[0] == "") {
+                    return;
+                }
+            }
+
+            if (count($value) == 1 && $value[0] != '') { // exactly one value
                 if ($value[0] == "__NONE__") {
                     return $query->nullCondition($table . "." . $this->fieldName(), true);
                 } else {
