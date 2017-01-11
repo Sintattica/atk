@@ -93,7 +93,7 @@ class FileAttribute extends Attribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
+     * @param array|string $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      */
     public function __construct($name, $flags = 0, $dir)
     {
