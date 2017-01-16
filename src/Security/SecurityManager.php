@@ -459,12 +459,14 @@ class SecurityManager
                 }
             }
         }
-        // return
-        // g_user always lowercase
-        // $this->m_user["name"] = $this->m_user["name"];
+
+        //TODO: move this header thing to another place
         //Send the username with the header
         //This way we can always retrieve the user from apache logs
-        header('user: '.$this->m_user['name']);
+        if(php_sapi_name() != "cli") {
+            header('user: '.$this->m_user['name']);
+        }
+
         $GLOBALS['g_user'] = &$this->m_user;
         $sm = SessionManager::getInstance();
         $sm->globalVar('authentication', array('authenticated' => 1, 'user' => $this->m_user), true);
