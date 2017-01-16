@@ -396,6 +396,9 @@ class atkSecurityManager
         }
         // still not logged in?!
         if (!isset($session["login"]) || $session["login"] != 1) {
+
+            $this->notifyListeners("errLogin", isset($currentUser['name']) ? $currentUser['name'] : $auth_user);
+
             $location = atkconfig('auth_loginpage', '');
             if ($location) {
                 $location.= (strpos($location, '?') === false) ? '?' : '&';
