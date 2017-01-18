@@ -149,7 +149,7 @@ class MultiSelectListAttribute extends ListAttribute
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
-        $selectOptions['tags'] = true;
+        $selectOptions['multiple'] = true;
         if (!empty($this->getWidth())) {
             $selectOptions['width'] = $this->getWidth();
         } else {
