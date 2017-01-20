@@ -118,10 +118,10 @@ class Atk
         }
 
         $securityManager = SecurityManager::getInstance();
-        if ($securityManager->authenticate()) {
+        $securityManager->run();
 
+        if($securityManager->isAuthenticated()) {
             $this->bootModules();
-
             $indexPageClass = Config::getGlobal('indexPage');
 
             /** @var IndexPage $indexPage */
@@ -135,9 +135,8 @@ class Atk
         Config::setGlobal('authentication', 'none');
         Config::setGlobal('authorization', 'none');
         $securityManager = SecurityManager::getInstance();
-        if ($securityManager->authenticate()) {
-            $this->bootModules();
-        }
+        $securityManager->run();
+        $this->bootModules();
     }
 
     /**

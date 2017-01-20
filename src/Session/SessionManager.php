@@ -155,6 +155,17 @@ class SessionManager
         return true;
     }
 
+    public function destroy()
+    {
+        unset($_SESSION[Config::getGlobal('identifier')]);
+        session_destroy();
+
+        $cookie_params = session_get_cookie_params();
+        $cookiepath = Config::getGlobal('cookie_path');
+        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : null;
+        session_set_cookie_params($cookie_params['lifetime'], $cookiepath, $cookiedomain);
+    }
+
     /**
      * Get direct access to the php session.
      *

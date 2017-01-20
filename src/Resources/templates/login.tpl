@@ -41,8 +41,6 @@
                         {/if}
                         <button type="submit" name="login" class="btn btn-primary center-block"
                                 value="{atktext id="login"}">{atktext id="login"}</button>
-                        {if $auth_enablepasswordmailer}<input name="login" class="btn btn-default" type="submit"
-                                                              value="{atktext id="password_forgotten"}">{/if}
                     </form>
                 {/if}
             </div>

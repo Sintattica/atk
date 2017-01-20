@@ -66,20 +66,13 @@ class AuthInterface
     }
 
     /**
-     * Logout handling. The default implementation does simple session destruction
-     * and recreates a new session.
+     * Logout handling.
      *
      * @param array $user The user data (as returned by atkGetUser()
      */
     public function logout($user)
     {
-        session_destroy();
 
-        $cookie_params = session_get_cookie_params();
-        $cookiepath = Config::getGlobal('cookie_path');
-        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : null;
-        session_set_cookie_params($cookie_params['lifetime'], $cookiepath, $cookiedomain);
-        @session_start();
     }
 
 
