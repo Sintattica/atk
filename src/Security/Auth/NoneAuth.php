@@ -39,4 +39,9 @@ class NoneAuth extends AuthInterface
             return SecurityManager::AUTH_MISMATCH;
         }
     }
+
+    public function isValidUser($user)
+    {
+        return $user == '' ? true : false;
+    }
 }

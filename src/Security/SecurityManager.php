@@ -62,6 +62,8 @@ class SecurityManager
 
         /* security scheme */
         $this->m_scheme = $securityscheme;
+
+        $this->auth_response = self::AUTH_UNVERIFIED;
     }
 
     public static function getInstance()
@@ -87,7 +89,6 @@ class SecurityManager
 
         $session = &SessionManager::getSession();
         $isCli = php_sapi_name() === 'cli';
-        $notifyPostLogin = false;
 
         if (Config::getGlobal('auth_loginform') == true) { // form login
             $auth_user = isset($ATK_VARS['auth_user']) ? $ATK_VARS['auth_user'] : '';
@@ -103,10 +104,20 @@ class SecurityManager
                 header('Location: '.Config::getGlobal('dispatcher'));
             }
             exit;
-        } elseif (isset($session['login']) && $session['login'] == 1) {
+        }
+
+        // try a session login
+        if (isset($session['login']) && $session['login'] == 1) {
             $this->sessionLogin();
-        } else {
-            $notifyPostLogin = true;
+        }
+
+        // try a rememberme login
+        if ($this->auth_response === self::AUTH_UNVERIFIED && Config::getGlobal('auth_enable_rememberme')) {
+            $this->rememberMeLogin();
+        }
+
+        // try a standard login with user / password
+        if ($this->auth_response === self::AUTH_UNVERIFIED) {
             $this->login($auth_user, $auth_pw);
         }
 
@@ -117,7 +128,7 @@ class SecurityManager
 
         // not logged in: redirect to login page or set Unauthorized header and exit
         if (!$this->m_user) {
-            if(!$isCli) {
+            if (!$isCli) {
                 $location = Config::getGlobal('auth_loginpage', '');
                 if ($location) {
                     $location .= (strpos($location, '?') === false) ? '?' : '&';
@@ -152,15 +163,26 @@ class SecurityManager
 
         // successfully logged in!
 
+        //store remember me cookie?
+        if (
+            Config::getGlobal('auth_enable_rememberme')
+            && !in_array($this->m_user['name'], ['administrator', 'guest'])
+            && isset($ATK_VARS['auth_rememberme']) && $ATK_VARS['auth_rememberme'] == '1'
+        ) {
+            $session['remembermeTokenId'] = $this->rememberMeStore($this->m_user['name']);
+        }
+
+
+        // post login
+        $GLOBALS['g_user'] = &$this->m_user;
+        $sm = SessionManager::getInstance();
+        $sm->globalVar('authentication', array('authenticated' => 1, 'user' => $this->m_user), true);
         if (!$isCli) {
             header('user: '.$this->m_user['name']);
         }
 
-        $GLOBALS['g_user'] = &$this->m_user;
-        $sm = SessionManager::getInstance();
-        $sm->globalVar('authentication', array('authenticated' => 1, 'user' => &$this->m_user), true);
-
-        if ($notifyPostLogin) {
+        if(empty($session['login'])){
+            $session['login'] = 1;
             $this->notifyListeners('postLogin', $this->m_user['name']);
         }
     }
@@ -242,6 +264,10 @@ class SecurityManager
      */
     static public function verify($password, $hash)
     {
+        if (Config::getGlobal('auth_ignorepasswordmatch')) {
+            return true;
+        }
+
         if (!Config::getGlobal('auth_usecryptedpassword')) {
             return $password == $hash;
         }
@@ -252,7 +278,6 @@ class SecurityManager
     public function logout()
     {
         $currentUser = self::atkGetUser();
-        $session = &SessionManager::getSession();
 
         if ($currentUser) {
             $this->notifyListeners('preLogout', $currentUser['name']);
@@ -264,12 +289,7 @@ class SecurityManager
             $this->notifyListeners('postLogout', $currentUser['name']);
         }
 
-        if (Config::getGlobal('auth_enable_rememberme')) {
-            $this->rememberMeClearCookie();
-            if (isset($session['remembermeTokenId'])) {
-                $this->rememberMeDeleteToken($session['remembermeTokenId']);
-            }
-        }
+        $this->rememberMeDestroy();
 
         $this->m_user = null;
         SessionManager::getInstance()->destroy();
@@ -282,23 +302,12 @@ class SecurityManager
         if (Config::getGlobal('authentication_session') && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])) {
             $this->m_user = &$session_auth['user'];
             Tools::atkdebug('Using session for authentication / user = '.$this->m_user['name']);
+            $this->auth_response = self::AUTH_SUCCESS;
         }
     }
 
     protected function login($auth_user, $auth_pw)
     {
-        $session = &SessionManager::getSession();
-
-
-        if (Config::getGlobal('auth_enable_rememberme')) {
-            $remember_user = $this->rememberMeVerifyCookie();
-            if ($remember_user) {
-                $this->notifyListeners('preLogin', $remember_user);
-                $session['remembermeTokenId'] = $this->rememberMeStore($remember_user);
-                $this->storeAuth($remember_user, 'rememberme');
-            }
-        }
-
         $this->notifyListeners('preLogin', $auth_user);
 
         // check administrator and guest user
@@ -309,7 +318,6 @@ class SecurityManager
                 $this->auth_response = self::AUTH_MISMATCH;
             } else {
                 $this->auth_response = self::AUTH_SUCCESS;
-                $session['login'] = 1;
                 switch ($auth_user) {
                     case 'administrator':
                         $this->m_user = ['name' => 'administrator', 'level' => -1, 'access_level' => 9999999];
@@ -340,13 +348,6 @@ class SecurityManager
                 // We store the username + securitylevel of the logged in user.
                 case self::AUTH_SUCCESS:
                     $this->storeAuth($auth_user, $authname);
-                    $session['login'] = 1;
-
-                    //store remember me cookie?
-                    if (Config::getGlobal('auth_enable_rememberme') && isset($_REQUEST['auth_rememberme']) && $_REQUEST['auth_rememberme'] == '1') {
-                        $session['remembermeTokenId'] = $this->rememberMeStore($auth_user);
-                    }
-
                     break;
 
                 // login was incorrect. Either the supplied username/password combination is
@@ -538,7 +539,7 @@ class SecurityManager
     public static function atkGetUser($key = '')
     {
         $sm = SessionManager::getInstance();
-        $session = SessionManager::getSession();
+        $session = &SessionManager::getSession();
         $user = '';
         $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : [];
         if (Config::getGlobal('authentication_session') && Tools::atkArrayNvl($session, 'login',
@@ -598,6 +599,23 @@ class SecurityManager
         }
 
         return false;
+    }
+
+    private function rememberMeLogin()
+    {
+        $remember_user = $this->rememberMeVerifyCookie();
+
+        if ($remember_user) {
+            $session = &SessionManager::getSession();
+            $this->notifyListeners('preLogin', $remember_user);
+            $session['remembermeTokenId'] = $this->rememberMeStore($remember_user);
+            $isValid = $this->m_authorization->isValidUser($remember_user);
+            if ($isValid) {
+                $this->storeAuth($remember_user, 'rememberme');
+                $this->auth_response = self::AUTH_SUCCESS;
+                Tools::atkdebug('Using rememberme for authentication / user = '.$remember_user);
+            }
+        }
     }
 
     private function rememberMeCookieName()
@@ -702,5 +720,16 @@ class SecurityManager
         $stmt = $db->prepare($sql);
         $stmt->execute([$id]);
         $db->commit();
+    }
+
+    private function rememberMeDestroy()
+    {
+        if (Config::getGlobal('auth_enable_rememberme')) {
+            $this->rememberMeClearCookie();
+            $session = &SessionManager::getSession();
+            if (isset($session['remembermeTokenId'])) {
+                $this->rememberMeDeleteToken($session['remembermeTokenId']);
+            }
+        }
     }
 }

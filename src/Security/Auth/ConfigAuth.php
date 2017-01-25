@@ -61,11 +61,16 @@ class ConfigAuth extends AuthInterface
      *
      * @param string $user The login of the user to retrieve.
      *
-     * @return array Information about a user.
+     * @return array|null Information about a user.
      */
     public function getUser($user)
     {
         $configUser = Config::getGlobal('user');
+
+        // user not found
+        if(!array_key_exists($user, $configUser)){
+            return null;
+        }
 
         return array('name' => $user, 'level' => $configUser[$user]['level']);
     }

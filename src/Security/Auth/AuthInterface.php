@@ -276,4 +276,8 @@ class AuthInterface
     {
         return false;
     }
+
+    public function isValidUser($user) {
+        return false;
+    }
 }

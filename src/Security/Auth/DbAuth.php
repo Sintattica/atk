@@ -2,12 +2,12 @@
 
 namespace Sintattica\Atk\Security\Auth;
 
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Utils\StringParser;
 
 /**
  * Driver for authentication and authorization using tables in the database.
@@ -83,9 +83,33 @@ class DbAuth extends AuthInterface
             return SecurityManager::AUTH_LOCKED;
         }
 
-        $matchPassword = $this->matchPasswords($this->getPassword(isset($recs[0])?$recs[0]:null), $passwd);
+        $matchPassword = $this->matchPasswords($this->getPassword(isset($recs[0]) ? $recs[0] : null), $passwd);
 
         return (count($recs) > 0 && $user != '' && $matchPassword) ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
+    }
+
+    public function isValidUser($user)
+    {
+        $db = Db::getInstance(Config::getGlobal('auth_database'));
+        $usertable = Config::getGlobal('auth_usertable');
+        $userfield = Config::getGlobal('auth_userfield');
+        $disablefield = Config::getGlobal('auth_accountdisablefield');
+        $enableexpression = Config::getGlobal('auth_accountenableexpression');
+        $sql = "SELECT COUNT(*) AS cnt FROM `$usertable` WHERE `$userfield` = '".$db->escapeSQL($user)."'";
+
+
+        if ($disablefield) {
+            $sql .= " AND `$disablefield` != 1";
+        }
+        if ($enableexpression) {
+            $sql .= " AND $enableexpression";
+        }
+
+        if ($db->getValue($sql)) {
+            return true;
+        };
+
+        return false;
     }
 
     /**
@@ -222,7 +246,7 @@ class DbAuth extends AuthInterface
      *
      * @param string $user The login of the user to retrieve.
      *
-     * @return array Information about a user.
+     * @return array|null Information about a user.
      */
     public function getUser($user)
     {
@@ -232,6 +256,11 @@ class DbAuth extends AuthInterface
         $groups = [];
         $level = [];
         $parents = [];
+
+        // user not found
+        if (count($recs) == 0) {
+            return null;
+        }
 
         // We might have more then one level, so we loop the result.
         if (count($recs) > 0) {
