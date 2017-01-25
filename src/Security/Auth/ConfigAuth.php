@@ -43,7 +43,7 @@ class ConfigAuth extends AuthInterface
 
         $configUser = Config::getGlobal('user');
 
-        if ($user != '' && $passwd != '' && $configUser[$user]['password'] == $passwd) {
+        if ($user != '' && $passwd != '' && SecurityManager::verify($passwd, $configUser[$user]['password'])) {
             return SecurityManager::AUTH_SUCCESS;
         } else {
             return SecurityManager::AUTH_MISMATCH;

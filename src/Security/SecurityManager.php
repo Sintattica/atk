@@ -6,10 +6,12 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Security\Auth\AuthInterface;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Utils\Debugger;
 
 /**
  * The security manager for ATK applications.
@@ -24,7 +26,10 @@ class SecurityManager
     const AUTH_ERROR = -1;
 
     public $m_authentication = [];
+
+    /** @var  AuthInterface $m_authorization */
     public $m_authorization;
+
     public $m_scheme = 'none';
     public $m_user = [];
     public $m_listeners = [];
@@ -84,6 +89,14 @@ class SecurityManager
         $isCli = php_sapi_name() === 'cli';
         $notifyPostLogin = false;
 
+        if (Config::getGlobal('auth_loginform') == true) { // form login
+            $auth_user = isset($ATK_VARS['auth_user']) ? $ATK_VARS['auth_user'] : '';
+            $auth_pw = isset($ATK_VARS['auth_pw']) ? $ATK_VARS['auth_pw'] : '';
+        } else { // HTTP login
+            $auth_user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
+            $auth_pw = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+        }
+
         if (isset($ATK_VARS['atklogout'])) {
             $this->logout();
             if (!$isCli) {
@@ -94,7 +107,7 @@ class SecurityManager
             $this->sessionLogin();
         } else {
             $notifyPostLogin = true;
-            $this->login();
+            $this->login($auth_user, $auth_pw);
         }
 
         // if there was an error, drop out.
@@ -136,7 +149,6 @@ class SecurityManager
 
             exit;
         }
-
 
         // successfully logged in!
 
@@ -228,7 +240,7 @@ class SecurityManager
      * @param $hash string
      * @return bool
      */
-    public function verify($password, $hash)
+    static public function verify($password, $hash)
     {
         if (!Config::getGlobal('auth_usecryptedpassword')) {
             return $password == $hash;
@@ -273,18 +285,10 @@ class SecurityManager
         }
     }
 
-    protected function login()
+    protected function login($auth_user, $auth_pw)
     {
-        global $ATK_VARS;
         $session = &SessionManager::getSession();
 
-        if (Config::getGlobal('auth_loginform') == true) { // form login
-            $auth_user = isset($ATK_VARS['auth_user']) ? $ATK_VARS['auth_user'] : '';
-            $auth_pw = isset($ATK_VARS['auth_pw']) ? $ATK_VARS['auth_pw'] : '';
-        } else { // HTTP login
-            $auth_user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
-            $auth_pw = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
-        }
 
         if (Config::getGlobal('auth_enable_rememberme')) {
             $remember_user = $this->rememberMeVerifyCookie();
@@ -300,7 +304,7 @@ class SecurityManager
         // check administrator and guest user
         if (in_array($auth_user, ['administrator', 'guest'])) {
             $config_pw = Config::getGlobal($auth_user.'password');
-            $match = !empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || $this->verify($auth_pw, $config_pw));
+            $match = !empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || self::verify($auth_pw, $config_pw));
             if (!$match) {
                 $this->auth_response = self::AUTH_MISMATCH;
             } else {
