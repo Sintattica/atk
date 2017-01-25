@@ -181,7 +181,7 @@ class SecurityManager
             header('user: '.$this->m_user['name']);
         }
 
-        if(empty($session['login'])){
+        if (empty($session['login'])) {
             $session['login'] = 1;
             $this->notifyListeners('postLogin', $this->m_user['name']);
         }
@@ -278,16 +278,15 @@ class SecurityManager
     public function logout()
     {
         $currentUser = self::atkGetUser();
+        $username = isset($currentUser['name']) ? $currentUser['name'] : '';
 
-        if ($currentUser) {
-            $this->notifyListeners('preLogout', $currentUser['name']);
+        $this->notifyListeners('preLogout', $username);
 
-            foreach ($this->m_authentication as $class => $auth) {
-                $auth->logout($currentUser);
-            }
-
-            $this->notifyListeners('postLogout', $currentUser['name']);
+        foreach ($this->m_authentication as $class => $auth) {
+            $auth->logout($currentUser);
         }
+
+        $this->notifyListeners('postLogout', $username);
 
         $this->rememberMeDestroy();
 
