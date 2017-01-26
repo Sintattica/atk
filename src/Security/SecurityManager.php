@@ -288,7 +288,9 @@ class SecurityManager
 
         $this->notifyListeners('postLogout', $username);
 
-        $this->rememberMeDestroy();
+        if (Config::getGlobal('auth_enable_rememberme')) {
+            $this->rememberMeDestroy();
+        }
 
         $this->m_user = null;
         SessionManager::getInstance()->destroy();
@@ -723,12 +725,10 @@ class SecurityManager
 
     private function rememberMeDestroy()
     {
-        if (Config::getGlobal('auth_enable_rememberme')) {
-            $this->rememberMeClearCookie();
-            $session = &SessionManager::getSession();
-            if (isset($session['remembermeTokenId'])) {
-                $this->rememberMeDeleteToken($session['remembermeTokenId']);
-            }
+        $this->rememberMeClearCookie();
+        $session = &SessionManager::getSession();
+        if (isset($session['remembermeTokenId'])) {
+            $this->rememberMeDeleteToken($session['remembermeTokenId']);
         }
     }
 }
