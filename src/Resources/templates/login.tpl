@@ -5,7 +5,7 @@
     <div class="form-signin">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">{atktext id="login_form"}</h3>
+                <h3 class="panel-title">{atktext id="login_form_title"}</h3>
             </div>
             <div class="panel-body">
                 <img src="{$login_logo}" class="center-block img-responsive login-logo">

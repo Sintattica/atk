@@ -369,7 +369,17 @@ return [
     /*
      * The table where to store remember me tokens
      */
-    'auth_rememberme_dbtable' => 'auth_tokens',
+    'auth_rememberme_dbtable' => 'auth_rememberMe',
+
+
+    /************************** U2F *********************************/
+
+    'auth_enable_u2f' => false,
+
+    'auth_u2f_dbtable' => 'auth_u2f',
+
+    'auth_u2f_enabledfield' => '',
+
 
     /***************************** LDAP settings *******************************/
     /*
