@@ -259,7 +259,7 @@ class atkManyToManyRelation extends atkRelation
     /**
      * Get the name of the attribute of the intermediairy node that points
      * to the master node.
-     * @return String The name of the attribute.
+     * @return String|array The name of the attribute.
      */
     function getLocalKey()
     {
@@ -272,7 +272,7 @@ class atkManyToManyRelation extends atkRelation
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the master node.
-     * @param String $attributename The name of the attribute.
+     * @param String|array $attributename The name of the attribute.
      */
     function setLocalKey($attributename)
     {
@@ -345,7 +345,7 @@ class atkManyToManyRelation extends atkRelation
     }
 
     /**
-     * Change the name of the attribute of the intermediairy node that points
+     * Change the name of the attribute of the intermediary node that points
      * to the node on the other side of the relation.
      * @param String $attributename The name of the attribute.
      */
