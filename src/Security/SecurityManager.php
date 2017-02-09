@@ -31,10 +31,10 @@ class SecurityManager
     public $m_authorization;
 
     public $m_scheme = 'none';
-    public $m_user = [];
+    public $m_user;
     public $m_listeners = [];
     public $m_fatalError;
-    protected $auth_response;
+    public $auth_response;
 
     /**
      * @var array $system_users are special system users.
@@ -175,18 +175,7 @@ class SecurityManager
                         header('Location: '.$location);
                     }
                 } elseif (Config::getGlobal('auth_loginform')) {
-                    $error = '';
-                    switch ($this->auth_response) {
-                        case self::AUTH_LOCKED:
-                            $error = Tools::atktext('auth_account_locked');
-                            break;
-                        case self::AUTH_MISMATCH:
-                            $error = Tools::atktext('auth_mismatch');
-                            break;
-                        case self::AUTH_MISSINGUSERNAME:
-                            $error = Tools::atktext('auth_missingusername');
-                            break;
-                    }
+                    $error =  $this->getAuthResponseTranslation($this->auth_response);
                     $this->loginForm($auth_user, $error);
                 } else {
                     header('WWW-Authenticate: Basic realm="'.Tools::atktext('app_title').(Config::getGlobal('auth_changerealm', true) ? ' - '.strftime('%c',
@@ -209,19 +198,28 @@ class SecurityManager
             $session['remembermeTokenId'] = $this->rememberMeStore($this->m_user['name']);
         }
 
-
-        // Post login, store some stuff
-        $GLOBALS['g_user'] = &$this->m_user;
-        $sm = SessionManager::getInstance();
-        $sm->globalVar('authentication', array('authenticated' => 1, 'user' => $this->m_user), true);
-        if (!$isCli) {
-            header('user: '.$this->m_user['name']);
-        }
+        $this->postLogin($this->m_user);
 
         if (empty($session['login'])) {
             $session['login'] = 1;
             $this->notifyListeners('postLogin', $this->m_user['name']);
         }
+    }
+
+    public function getAuthResponseTranslation($auth_response){
+        $error = '';
+        switch ($auth_response) {
+            case self::AUTH_LOCKED:
+                $error = Tools::atktext('auth_account_locked');
+                break;
+            case self::AUTH_MISMATCH:
+                $error = Tools::atktext('auth_mismatch');
+                break;
+            case self::AUTH_MISSINGUSERNAME:
+                $error = Tools::atktext('auth_missingusername');
+                break;
+        }
+        return $error;
     }
 
     public function isAuthenticated()
@@ -344,7 +342,7 @@ class SecurityManager
         }
     }
 
-    protected function login($auth_user, $auth_pw)
+    public function login($auth_user, $auth_pw)
     {
         $this->notifyListeners('preLogin', $auth_user);
 
@@ -376,6 +374,7 @@ class SecurityManager
             switch ($this->auth_response) {
                 // We store the username + securitylevel of the logged in user.
                 case self::AUTH_SUCCESS:
+
                     $this->storeAuth($auth_user, $auth_name);
                     break;
 
@@ -385,6 +384,22 @@ class SecurityManager
                     $this->m_fatalError = $error;
                     break;
             }
+        }
+        return $this->m_user;
+    }
+
+    /**
+     * @param array $user
+     */
+    public function postLogin(&$user) {
+        $isCli = php_sapi_name() === 'cli';
+
+        $this->m_user = $user;
+        $GLOBALS['g_user'] = &$user;
+        $sm = SessionManager::getInstance();
+        $sm->globalVar('authentication', ['authenticated' => 1, 'user' => $user], true);
+        if (!$isCli) {
+            header('user: '.$user['name']);
         }
     }
 
@@ -574,16 +589,14 @@ class SecurityManager
      *
      * @param $key string
      *
-     * @return array Array with userinfo, or "" if no user is logged in.
+     * @return array Array with userinfo, or null if no user is logged in.
      */
     public static function atkGetUser($key = '')
     {
+        $user = null;
         $sm = SessionManager::getInstance();
-        $session = &SessionManager::getSession();
-        $user = '';
         $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : [];
-        if (Config::getGlobal('authentication_session') && Tools::atkArrayNvl($session, 'login',
-                0) == 1 && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])
+        if (Config::getGlobal('authentication_session') && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])
         ) {
             $user = $session_auth['user'];
             if (!isset($user['access_level']) || empty($user['access_level'])) {
