@@ -743,13 +743,13 @@ class atkManyToOneRelation extends atkRelation
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
             if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(NF_NO_ADD)) {
                 $links[] = href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($filter != ""
-                            ? $filter : ""))), atktext("new"), SESSION_NESTED, true);
+                            ? $filter : ""))), atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
 
             if ($this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME")), SESSION_NESTED);
+                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME", 'atkfilter' => '')), SESSION_NESTED);
                 $links[] = "<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($viewUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . atktext('view') . "</a>";
             }
         }
@@ -978,7 +978,7 @@ class atkManyToOneRelation extends atkRelation
             $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
 
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW) && $this->m_destInstance->allowed("view")) {
-                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME")), SESSION_NESTED);
+                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME", 'atkfilter' => '')), SESSION_NESTED);
                 $autolink['view'] = "<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($viewUrl) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . atktext('view') . "</a>";
             }
             if (!$this->m_destInstance->hasFlag(NF_NO_ADD) && $this->m_destInstance->allowed("add")) {
