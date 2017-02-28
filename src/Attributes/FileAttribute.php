@@ -809,23 +809,31 @@ class FileAttribute extends Attribute
             $ext = '';
         }
 
-        $selector = '('.$this->fieldName()."='$filename' OR ".$this->fieldName()." LIKE '$name-%$ext')";
-        if ($rec[$this->m_ownerInstance->primaryKeyField()] != '') {
-            $selector .= ' AND NOT ('.$this->m_ownerInstance->primaryKey($rec).')';
+        $owner = $this->m_ownerInstance;
+        $db = $owner->getDb();
+        $tableSql = $db->escapeSQL($this->m_ownerInstance->getTable());
+        $fieldnameSql = $db->escapeSQL($this->fieldName());
+        $filenameSql = $db->escapeSQL($filename);
+        $nameSql = $db->escapeSQL($name);
+        $extSql = $db->escapeSQL($ext);
+
+        $sql = "SELECT `$fieldnameSql` AS filename FROM `$tableSql` WHERE `$fieldnameSql` = '$filenameSql' OR `$fieldnameSql` LIKE '$nameSql-%$extSql'";
+        if ($rec[$owner->primaryKeyField()] != '') {
+            $sql .= " AND NOT (".$owner->primaryKey($rec).")";
         }
 
-        $records = $this->m_ownerInstance->select("($selector)")->includes(array($this->fieldName()))->getAllRows();
+        $records = $db->getRows($sql);
 
         if (count($records) > 0) {
             // Check for the highest number
             $max_count = 0;
             foreach ($records as $record) {
-                $dotPos = strrpos($record[$this->fieldName()]['filename'], '.');
-                $dashPos = strrpos($record[$this->fieldName()]['filename'], '-');
+                $dotPos = strrpos($record['filename'], '.');
+                $dashPos = strrpos($record['filename'], '-');
                 if ($dotPos !== false && $dashPos !== false) {
-                    $number = substr($record[$this->fieldName()]['filename'], ($dashPos + 1), ($dotPos - $dashPos) - 1);
+                    $number = substr($record['filename'], ($dashPos + 1), ($dotPos - $dashPos) - 1);
                 } elseif ($dotPos === false && $ext == '' && $dashPos !== false) {
-                    $number = substr($record[$this->fieldName()]['filename'], ($dashPos + 1));
+                    $number = substr($record['filename'], ($dashPos + 1));
                 } else {
                     continue;
                 }
