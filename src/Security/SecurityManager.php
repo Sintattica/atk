@@ -476,7 +476,7 @@ class SecurityManager
         exit;
     }
 
-    protected function getSystemUser($username)
+    public function getSystemUser($username)
     {
         foreach ($this->system_users as $user) {
             if ($user['name'] === $username) {
@@ -641,7 +641,7 @@ class SecurityManager
         }
 
         $auth_administratorfield = Config::getGlobal('auth_administratorfield');
-        if ($auth_administratorfield && in_array(strtolower($user[$auth_administratorfield]), ['y', 'j', 'yes', 'on', 'true', 't', '1'])) {
+        if ($auth_administratorfield && isset($user[$auth_administratorfield]) && in_array(strtolower($user[$auth_administratorfield]), ['y', 'j', 'yes', 'on', 'true', 't', '1'])) {
             return true;
         }
 
