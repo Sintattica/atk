@@ -9,6 +9,9 @@
                 {if $field.label!=""}{$field.label}{/if}
             </label>
         {/if}
-        <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-10{else}col-sm-12{/if}" id="{$field.id}">{$field.full}</div>
+        <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-10{else}col-sm-12{/if}" id="{$field.id}">
+            {$field.full}
+            {if $field.help!=""}<p class="help-block">{$field.help}</p>{/if}
+        </div>
     {/if}
 </div>

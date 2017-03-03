@@ -565,6 +565,12 @@ class Attribute
     protected $m_select2Options = ['edit' => [], 'search' => []];
 
     /**
+     * Help text
+     * @var string
+     */
+    protected $m_help = '';
+
+    /**
      * Constructor.
      *
      * <b>Example:</b>
@@ -1128,8 +1134,6 @@ class Attribute
             $entry['class'] = $this->m_rowCssClasses;
 
             $entry['id'] = $this->getHtmlId($fieldprefix);
-
-            $entry['prova'] = 'ciao';
 
             /* label? */
             $entry['label'] = $this->getLabel($defaults, $mode);
@@ -2243,6 +2247,39 @@ class Attribute
     public function setPostFixLabel($label)
     {
         $this->m_postfixlabel = $label;
+
+        return $this;
+    }
+
+    /**
+     * Return the label of the attribute.
+     *
+     * The regular Attribute does not make use of the $record parameter;
+     * The label is based on the attribute name, but is automatically
+     * translated. Derived attributes may override this behavior.
+     *
+     * @return string HTML compatible label for this attribute
+     */
+    public function getHelp()
+    {
+
+        if($this->m_help != ''){
+            return $this->text($this->m_help);
+        }
+
+        return '';
+    }
+
+    /**
+     * Set the help of the attribute.
+     *
+     * @param string $help
+     *
+     * @return Attribute The instance of this Attribute
+     */
+    public function setHelp($help)
+    {
+        $this->m_help = $help;
 
         return $this;
     }
