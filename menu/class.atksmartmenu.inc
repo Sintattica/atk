@@ -98,7 +98,12 @@ class atkSmartMenu extends atkDropdownMenu
             } else {
                 jQuery('#topSpacer').css('height', 45);
             }
-        }).resize();");
+        }).resize();
+        
+        setTimeout(function() {
+            jQuery(window).resize();
+        }, 0);
+        ");
 
         // enable SmartMenus
         $page->register_loadscript("jQuery('#sm-menu').smartmenus($smOptions);");
