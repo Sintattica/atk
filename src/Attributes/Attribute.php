@@ -2,17 +2,17 @@
 
 namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\RecordList\ColumnConfig;
-use Sintattica\Atk\Db\Query;
-use Sintattica\Atk\Db\Db;
-use Sintattica\Atk\Ui\Page;
+use Exception;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Utils\Json;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\RecordList\ColumnConfig;
+use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\EditFormModifier;
-use \Exception;
+use Sintattica\Atk\Utils\Json;
 
 /**
  * The Attribute class represents an attribute of an Node.
@@ -540,7 +540,7 @@ class Attribute
      * @var string
      */
     private $m_column;
-    
+
 
     /**
      * View callback.
@@ -569,6 +569,12 @@ class Attribute
      * @var string
      */
     protected $m_help = '';
+
+    /**
+     * Placeholder text
+     * @var string
+     */
+    protected $m_placeholder = '';
 
     /**
      * Constructor.
@@ -916,7 +922,7 @@ class Attribute
 
         return;
     }
-    
+
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
@@ -947,7 +953,24 @@ class Attribute
 
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
-        $result = '<input type="text" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute(array('form-control')).' value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
+        $result = '';
+        $result .= '<input type="text" id="'.$id.'"';
+        $result .= ' name="'.$this->getHtmlName($fieldprefix).'"';
+        $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
+        $result .= ' value="'.$value.'"';
+        if($size > 0){
+            $result .= ' size="'.$size.'"';
+        }
+        if($this->m_maxsize > 0){
+            $result .= ' maxlength="'.$this->m_maxsize.'"';
+        }
+        if($onchange){
+            $result .= ' '.$onchange;
+        }
+        if($placeholder = $this->getPlaceholder()){
+            $result .= ' placeholder="'.htmlspecialchars($placeholder).'"';
+        }
+        $result .= ' />';
 
         return $result;
     }
@@ -1023,13 +1046,14 @@ class Attribute
      */
     public function getHtmlId($fieldprefix)
     {
-        if(!isset($this->m_htmlid)) {
+        if (!isset($this->m_htmlid)) {
             $uri = '';
-            if($this->getOwnerInstance()) {
+            if ($this->getOwnerInstance()) {
                 $uri = str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()).'_';
             }
             $this->m_htmlid = $uri.$fieldprefix.$this->fieldName();
         }
+
         return $this->m_htmlid;
     }
 
@@ -1293,7 +1317,7 @@ class Attribute
             }
         }
 
-        if(in_array($mode, ['csv', 'plain', 'list'])){
+        if (in_array($mode, ['csv', 'plain', 'list'])) {
             return $ret;
         }
 
@@ -2252,18 +2276,14 @@ class Attribute
     }
 
     /**
-     * Return the label of the attribute.
+     * Return the help text of the attribute.
      *
-     * The regular Attribute does not make use of the $record parameter;
-     * The label is based on the attribute name, but is automatically
-     * translated. Derived attributes may override this behavior.
      *
-     * @return string HTML compatible label for this attribute
+     * @return string HTML compatible help text for this attribute
      */
     public function getHelp()
     {
-
-        if($this->m_help != ''){
+        if ($this->m_help != '') {
             return $this->text($this->m_help);
         }
 
@@ -2280,6 +2300,34 @@ class Attribute
     public function setHelp($help)
     {
         $this->m_help = $help;
+
+        return $this;
+    }
+
+    /**
+     * Return the placeholder text of the attribute.
+     *
+     * @return string HTML compatible label for this attribute
+     */
+    public function getPlaceholder()
+    {
+        if ($this->m_placeholder != '') {
+            return $this->text($this->m_placeholder);
+        }
+
+        return '';
+    }
+
+    /**
+     * Set the placeholder text of the attribute.
+     *
+     * @param string $placeholder
+     *
+     * @return Attribute The instance of this Attribute
+     */
+    public function setPlaceholder($placeholder)
+    {
+        $this->m_placeholder = $placeholder;
 
         return $this;
     }
@@ -2483,9 +2531,9 @@ class Attribute
      * Attributes can add new tabs to tabbed screens. This method will be
      * called to retrieve the tabs. The regular Attribute has no
      * implementation for this method. Derived attributes may override this.
-     * 
+     *
      * @param string $action The action for which additional tabs should be loaded.
-     * 
+     *
      * @return array The list of tabs to add to the screen.
      */
     public function getAdditionalTabs($action = null)
@@ -2642,7 +2690,7 @@ class Attribute
             $cmd = ($columnConfig->hasSubTotal($this->fieldName()) ? 'unsubtotal' : 'subtotal');
             if ($grid == null) {
                 return Tools::href(Config::getGlobal('dispatcher').'?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd),
-                    Tools::atktext('column_'.$cmd)).' ';
+                        Tools::atktext('column_'.$cmd)).' ';
             } else {
                 $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
 
@@ -2747,12 +2795,14 @@ class Attribute
             if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
                 return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
             }
+
             return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
 
         } else {
             if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
                 return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
             }
+
             return $this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
         }
     }
@@ -3028,7 +3078,7 @@ class Attribute
     {
         return $this->m_initial_hidden;
     }
-    
+
 
     /**
      * String representation for this attribute (PHP5 only).
@@ -3045,16 +3095,17 @@ class Attribute
      * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
      * @return $this
      */
-    public function setSelect2Options($options, $types = null) {
-        if($types == null) {
+    public function setSelect2Options($options, $types = null)
+    {
+        if ($types == null) {
             $types = array_keys($this->m_select2Options);
         }
 
-        if(!is_array($types)){
+        if (!is_array($types)) {
             $types = [$types];
         }
 
-        foreach($types as $type) {
+        foreach ($types as $type) {
             $this->m_select2Options[$type] = $options;
         }
 

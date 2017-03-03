@@ -526,8 +526,24 @@ class NumberAttribute extends Attribute
             $value = $this->formatNumber($record[$this->fieldName()], '', '', $mode);
         }
 
-        $class = $this->getCSSClassAttribute(['form-control']);
-        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'" value="'.$value.'"'.($size > 0 ? ' size="'.$size.'"' : '').($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
+        $result = '';
+        $result .= '<input type="text" id="'.$id.'"';
+        $result .= ' name="'.$this->getHtmlName($fieldprefix).'"';
+        $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
+        $result .= ' value="'.$value.'"';
+        if($size > 0){
+            $result .= ' size="'.$size.'"';
+        }
+        if($this->m_maxsize > 0){
+            $result .= ' maxlength="'.$this->m_maxsize.'"';
+        }
+        if($onchange){
+            $result .= ' '.$onchange;
+        }
+        if($placeholder = $this->getPlaceholder()){
+            $result .= ' placeholder="'.htmlspecialchars($placeholder).'"';
+        }
+        $result .= ' />';
 
         if (is_array($this->touchspin)) {
             $page = Page::getInstance();
