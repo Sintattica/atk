@@ -106,6 +106,11 @@ class MultiSelectListAttribute extends ListAttribute
         $this->m_fieldSeparator = $separator;
     }
 
+    public function getFieldSeparator()
+    {
+        return $this->m_fieldSeparator;
+    }
+
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
