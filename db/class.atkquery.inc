@@ -201,9 +201,13 @@ class atkQuery
             $fieldname = $table . "." . $name;
         else
             $fieldname = $name;
-        $this->m_fields[] = $fieldname;
-        if ($quotefield)
+
+        if (!in_array($fieldname, $this->m_fields)) {
+            $this->m_fields[] = $fieldname;
+        }
+        if ($quotefield && !in_array($fieldname, $this->m_quotedfields)) {
             $this->m_quotedfields[] = $fieldname;
+        }
 
         if ($quote && !is_null($value))
             $value = "'" . $value . "'";

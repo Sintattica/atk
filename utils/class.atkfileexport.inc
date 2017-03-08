@@ -55,7 +55,9 @@ class atkFileExport
             $ext = "gz";
         } elseif ($type == "csv") {
             $mime_type = 'text/x-csv';
-            $ext = "csv";
+            if (!$ext) {
+                $ext = "csv";
+            }
         } elseif ($type == "excel") {
             $mime_type = 'application/octet-stream';
             $ext = "xls";

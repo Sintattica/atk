@@ -110,8 +110,9 @@ class atkOneToOneRelation extends atkRelation
      */
     function atkOneToOneRelation($name, $destination, $refKey = "", $flags = 0)
     {
-        if ($flags & AF_ONETOONE_ADD != AF_ONETOONE_ADD)
-            $flags |= AF_NO_ADD;
+        if (($flags & AF_ONETOONE_ADD) != AF_ONETOONE_ADD) {
+            $flags |= AF_HIDE_ADD;
+        }
         $this->atkRelation($name, $destination, $flags | AF_ONETOONE_LAZY);
         $this->m_refKey = $refKey;
     }

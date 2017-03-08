@@ -25,23 +25,19 @@ class atkCKAttribute extends atkTextAttribute
      */
     protected $ckOptions = [
         // the toolbar groups arrangement
-        'toolbarGroups' => [
-		    ['name' => 'clipboard', 'groups' => [ 'clipboard', 'undo', 'document']],
-            ['name' => 'editing', 'groups' => ['find', 'selection', 'spellchecker']],
-            ['name' => 'links'],
-            ['name' => 'insert'],
+        'toolbar' => [
+            ['name' => 'clipboard', 'items' => ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo', '-', 'Print']],
+            ['name' => 'editing', 'items' => ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']],
+            ['name' => 'links', 'items' => ['Link', 'Unlink']],
+            ['name' => 'insert', 'items' => ['Image', 'Table', 'HorizontalRule', 'SpecialChar']],
             '/',
-		    ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup']],
-		    ['name' => 'paragraph', 'groups' => ['list', 'indent', 'align']],
-		    ['name' => 'styles'],
-		    ['name' => 'colors']
+            ['name' => 'basicstyles', 'items' => ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']],
+            ['name' => 'paragraph', 'items' => ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']],
+            ['name' => 'styles', 'items' => ['Format', 'FontSize']],
+            ['name' => 'colors', 'items' => ['TextColor', 'BGColor']],
         ],
-        // remove some buttons
-        'removeButtons' => 'Save,NewPage,Preview,Anchor,Flash,Smiley,PageBreak,Iframe,Subscript,Superscript,Font,Styles',
         // remove display of html tags on bottom bar
         'removePlugins' => 'elementspath',
-        // simplify the dialog windows
-	    'removeDialogTabs' => 'image:advanced;link:advanced',
         // set the size
         'width' => 800, 'height' => 250
 	];

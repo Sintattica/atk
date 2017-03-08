@@ -238,6 +238,13 @@ class atkManyToOneRelation extends atkRelation
     protected $m_selectableRecords = null;
 
     /**
+     * Render a multiple select also in simple search (grid)
+     *
+     * @var bool
+     */
+    private $m_multipleInSimpleSearch = false;
+
+    /**
      * Constructor.
      * @param String $name The name of the attribute. This is the name of the
      *                     field that is the referential key to the
@@ -422,6 +429,16 @@ class atkManyToOneRelation extends atkRelation
     function getConcatDescriptorFunction()
     {
         return $this->m_concatDescriptorFunction;
+    }
+
+    function getMultipleInSimpleSearch()
+    {
+        return $this->m_multipleInSimpleSearch;
+    }
+
+    function setMultipleInSimpleSearch($value)
+    {
+        $this->m_multipleInSimpleSearch = $value;
     }
 
     /**
@@ -668,7 +685,12 @@ class atkManyToOneRelation extends atkRelation
                     }
                 }
             } else {
-                $result = !in_array($mode, array("csv", "plain", "list")) ? $this->getNoneLabel($mode) : ''; // no record
+                // no record
+                $label = $this->getNoneLabel($mode);
+                if ($label == atktext('none')) {
+                    $label = '';
+                }
+                $result = !in_array($mode, array("csv", "plain")) ? $label : '';
             }
             return $result;
         } else {
@@ -727,14 +749,14 @@ class atkManyToOneRelation extends atkRelation
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) { // auto edit/view link
             if ($this->m_destInstance->allowed("add") && !$this->m_destInstance->hasFlag(NF_NO_ADD)) {
                 $links[] = href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($filter != ""
-                            ? $filter : ""))), atktext("new"), SESSION_NESTED, true);
+                            ? $filter : ""))), atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
 
-            if ($this->m_destInstance->allowed("edit") && !$this->m_destInstance->hasFlag(NF_NO_EDIT) && $record[$this->fieldName()] != NULL) {
+            if ($this->m_destInstance->allowed("view") && !$this->m_destInstance->hasFlag(NF_NO_VIEW)) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $editUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
-                $links[] = "<span id=\"" . $id . "_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . atktext('edit') . "</a></span>";
+                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME", 'atkfilter' => '')), SESSION_NESTED);
+                $links[] = "<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($viewUrl) . "\", document.entryform." . $id . ".value), true)' class=\"atkmanytoonerelation\">" . atktext('view') . "</a>";
             }
         }
 
@@ -840,7 +862,7 @@ class atkManyToOneRelation extends atkRelation
         }
 
         $id = $fieldprefix . $this->fieldName();
-        $editflag = true;
+        $linkview = false;
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()]
                 : null;
@@ -851,10 +873,6 @@ class atkManyToOneRelation extends atkRelation
             // load records for bwc
             if ($recordset == null) {
                 $recordset = $this->_getSelectableRecords($record, $mode);
-            }
-
-            if (count($recordset) == 0) {
-                $editflag = false;
             }
 
             $onchange = '';
@@ -871,16 +889,21 @@ class atkManyToOneRelation extends atkRelation
             if (count($recordset) == 0) {
                 $result = $this->getNoneLabel();
             } else {
+                $linkview = true;
                 $this->registerKeyListener($id, KB_CTRLCURSOR | KB_LEFTRIGHT);
                 $this->registerJavaScriptObservers($id);
 
                 $result = '<select id="' . $id . '" name="' . $id . '" class="form-control atkmanytoonerelation" ' . $onchange . '>';
 
                 // relation may be empty, so we must provide an empty selectable..
-                if ($this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
-                    (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) ||
-                    (atkconfig("list_obligatory_null_item") && !is_array($value))) {
-                    $result.= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
+                if (!$this->hasFlag(AF_MANYTOONE_NO_NULL_ITEM)) {
+                    if (!$this->hasFlag(AF_OBLIGATORY) || (
+                            $this->hasFlag(AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
+                            (atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))
+                        )
+                    ) {
+                        $result.= '<option value="">' . $this->getNoneLabel($mode) . '</option>';
+                    }
                 }
 
                 foreach ($recordset as $selectable) {
@@ -893,9 +916,6 @@ class atkManyToOneRelation extends atkRelation
                 $result .= $this->getSpinner();
             }
         } else {
-            // TODO configurable?
-            $editflag = false;
-
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
                 $result = '<span id="'.$id.'_current" >';
@@ -921,8 +941,8 @@ class atkManyToOneRelation extends atkRelation
         }
 
         $autolink = $this->getRelationAutolink($id, $this->parseFilter($this->m_destinationFilter, $record));
-        $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : "";
-        $result .= isset($autolink['add']) ? $autolink['add'] : "";
+        $result .= $linkview && isset($autolink['view']) ? (' ' . $autolink['view']) : '';
+        $result .= isset($autolink['add']) ? (' ' . $autolink['add']) : '';
 
         return $result;
     }
@@ -945,11 +965,8 @@ class atkManyToOneRelation extends atkRelation
             $linkname = atktext("link_select_" . getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination), '', '', true);
         if (!$linkname)
             $linkname = atktext("select_a"); // . ' ' . strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination), getNodeType($this->m_destination)));
-        if ($this->m_destinationFilter != "") {
-            $result.= href(dispatch_url($this->m_destination, "select", array("atkfilter" => $filter, "atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
-        } else {
-            $result.= href(dispatch_url($this->m_destination, "select", array("atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
-        }
+        $result.= href(dispatch_url($this->m_destination, "select", array("atkfilter" => $filter, "atktarget" => $atktarget)), $linkname, SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation"');
+
         return $result;
     }
 
@@ -966,12 +983,12 @@ class atkManyToOneRelation extends atkRelation
             $page = &atkPage::getInstance();
             $page->register_script(atkconfig("atkroot") . "atk/javascript/class.atkmanytoonerelation.js");
 
-            if ($this->m_destInstance->allowed("edit")) {
-                $editlink = session_url(dispatch_url($this->getAutoLinkDestination(), "edit", array("atkselector" => "REPLACEME")), SESSION_NESTED);
-                $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($editlink) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . atktext('edit') . "</a>";
+            if (!$this->m_destInstance->hasFlag(NF_NO_VIEW) && $this->m_destInstance->allowed("view")) {
+                $viewUrl = session_url(dispatch_url($this->getAutoLinkDestination(), "view", array("atkselector" => "REPLACEME", 'atkfilter' => '')), SESSION_NESTED);
+                $autolink['view'] = "<a href='javascript:atkSubmit(mto_parse(\"" . atkurlencode($viewUrl) . "\", document.entryform." . $id . ".value),true)' class='atkmanytoonerelation'>" . atktext('view') . "</a>";
             }
-            if ($this->m_destInstance->allowed("add")) {
-                $autolink['add'] = "&nbsp;" . href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
+            if (!$this->m_destInstance->hasFlag(NF_NO_ADD) && $this->m_destInstance->allowed("add")) {
+                $autolink['add'] = href(dispatch_url($this->getAutoLinkDestination(), "add", array("atkpkret" => $id, "atkfilter" => ($this->m_useFilterForAddLink && $filter != ""
                                 ? $filter : ""))), atktext("new"), SESSION_NESTED, true, 'class="atkmanytoonerelation"');
             }
         }
@@ -1120,7 +1137,7 @@ class atkManyToOneRelation extends atkRelation
                 $recordset = $this->_getSelectableRecords($record, 'search');
 
                 $result = '<select class="form-control ' . get_class($this) . '"';
-                if ($extended) {
+                if ($extended || $this->getMultipleInSimpleSearch()) {
                     $result .= ' multiple size="' . min(5, count($recordset) + 1) . '"';
                     if (isset($record[$this->fieldName()][$this->fieldName()]))
                         $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
@@ -1144,6 +1161,11 @@ class atkManyToOneRelation extends atkRelation
                 $selValues = $record[$this->fieldName()];
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
+                }
+
+                if ($this->getMultipleInSimpleSearch() && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
+                    // in case of multiple select in simple search, we have the selected values into a single string (csv)
+                    $selValues = explode(',', $selValues[0]);
                 }
 
                 // "search all" option
@@ -1291,11 +1313,21 @@ class atkManyToOneRelation extends atkRelation
             // We only support 'exact' matches.
             // But you can select more than one value, which we search using the IN() statement,
             // which should work in any ansi compatible database.
+
             if (!is_array($value)) {
                 $value = array($value);
             }
 
-            if (count($value) == 1 && $value[0]) { // exactly one value
+            if ($this->getMultipleInSimpleSearch() && count($value) == 1 && strpos($value[0], ',') !== false) {
+                // in case of multiple select in simple search, we have the selected values into a single string (csv)
+                $value = explode(',', $value[0]);
+                // "search all" option has precedence (when another options are selected together)
+                if ($value[0] == "") {
+                    return;
+                }
+            }
+
+            if (count($value) == 1 && $value[0] != '') { // exactly one value
                 if ($value[0] == "__NONE__") {
                     return $query->nullCondition($table . "." . $this->fieldName(), true);
                 } else {
