@@ -1022,6 +1022,11 @@ class Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
+        $method = $this->fieldName().'_hide';
+        if(method_exists($this->m_ownerInstance, $method)){
+            return $this->m_ownerInstance->$method($record, $fieldprefix, $mode);
+        }
+
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
