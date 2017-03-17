@@ -134,6 +134,10 @@ table.recordList {
 
 }
 
-.list-header {
-  min-height: 30px;
+.row.list-header {
+  a {
+    @extend .btn;
+    @extend .btn-default;
+  }
+  margin-bottom: 10px;
 }
