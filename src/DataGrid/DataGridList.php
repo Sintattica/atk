@@ -725,7 +725,7 @@ class DataGridList extends DataGridComponent
         }
 
         // override totals
-        if (is_array($result['total']) && count($result['total']) > 0) {
+        if (!Config::getGlobal('datagrid_total_paginate') && is_array($result['total']) && count($result['total']) > 0) {
             $selector = $grid->getNode()->select()->ignoreDefaultFilters();
             foreach ($grid->getFilters() as $filter) {
                 $selector->where($filter['filter'], $filter['params']);

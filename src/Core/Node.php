@@ -3215,6 +3215,7 @@ class Node
      * @param string $mode The mode for which validation is performed ('add' or 'update')
      * @param array $ignoreList The list of attributes that should not be
      *                           validated
+     * @return bool
      */
     public function validate(&$record, $mode, $ignoreList = array())
     {

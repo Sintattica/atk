@@ -131,13 +131,8 @@ table.recordList {
     line-height: 28px;
     font-weight: normal;
   }
-
 }
 
-.row.list-header {
-  a {
-    @extend .btn;
-    @extend .btn-default;
-  }
-  margin-bottom: 10px;
+a.admin_link {
+ margin-bottom: 5px;
 }

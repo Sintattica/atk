@@ -222,9 +222,8 @@ th {
     page-break-after: avoid; }
   .navbar {
     display: none; }
-  .btn > .caret, .row.list-header a > .caret,
-  .dropup > .btn > .caret, .row.list-header
-  .dropup > a > .caret {
+  .btn > .caret,
+  .dropup > .btn > .caret {
     border-top-color: #000 !important; }
   .label {
     border: 1px solid #000; }
@@ -2476,18 +2475,15 @@ fieldset[disabled]
   min-height: 31px; }
   .form-control-static.input-lg, .input-group-lg > .form-control-static.form-control,
   .input-group-lg > .form-control-static.input-group-addon,
-  .input-group-lg > .input-group-btn > .form-control-static.btn, .row.list-header
-  .input-group-lg > .input-group-btn > a.form-control-static, .form-control-static.input-sm, .input-group-sm > .form-control-static.form-control,
+  .input-group-lg > .input-group-btn > .form-control-static.btn, .form-control-static.input-sm, .input-group-sm > .form-control-static.form-control,
   .input-group-sm > .form-control-static.input-group-addon,
-  .input-group-sm > .input-group-btn > .form-control-static.btn, .row.list-header
-  .input-group-sm > .input-group-btn > a.form-control-static {
+  .input-group-sm > .input-group-btn > .form-control-static.btn {
     padding-left: 0;
     padding-right: 0; }
 
 .input-sm, .input-group-sm > .form-control,
 .input-group-sm > .input-group-addon,
-.input-group-sm > .input-group-btn > .btn, .row.list-header
-.input-group-sm > .input-group-btn > a {
+.input-group-sm > .input-group-btn > .btn {
   height: 28px;
   padding: 5px 10px;
   font-size: 11px;
@@ -2533,8 +2529,7 @@ select[multiple].input-sm,
 
 .input-lg, .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
-.input-group-lg > .input-group-btn > .btn, .row.list-header
-.input-group-lg > .input-group-btn > a {
+.input-group-lg > .input-group-btn > .btn {
   height: 42px;
   padding: 10px 16px;
   font-size: 15px;
@@ -2597,8 +2592,7 @@ select[multiple].input-lg,
 
 .input-lg + .form-control-feedback, .input-group-lg > .form-control + .form-control-feedback,
 .input-group-lg > .input-group-addon + .form-control-feedback,
-.input-group-lg > .input-group-btn > .btn + .form-control-feedback, .row.list-header
-.input-group-lg > .input-group-btn > a + .form-control-feedback,
+.input-group-lg > .input-group-btn > .btn + .form-control-feedback,
 .input-group-lg + .form-control-feedback,
 .form-group-lg .form-control + .form-control-feedback {
   width: 42px;
@@ -2607,8 +2601,7 @@ select[multiple].input-lg,
 
 .input-sm + .form-control-feedback, .input-group-sm > .form-control + .form-control-feedback,
 .input-group-sm > .input-group-addon + .form-control-feedback,
-.input-group-sm > .input-group-btn > .btn + .form-control-feedback, .row.list-header
-.input-group-sm > .input-group-btn > a + .form-control-feedback,
+.input-group-sm > .input-group-btn > .btn + .form-control-feedback,
 .input-group-sm + .form-control-feedback,
 .form-group-sm .form-control + .form-control-feedback {
   width: 28px;
@@ -2793,7 +2786,7 @@ select[multiple].input-lg,
     padding-top: 6px;
     font-size: 11px; } }
 
-.btn, .row.list-header a {
+.btn {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -2812,79 +2805,64 @@ select[multiple].input-lg,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
-  .btn:focus, .row.list-header a:focus, .btn.focus, .row.list-header a.focus, .btn:active:focus, .row.list-header a:active:focus, .btn:active.focus, .row.list-header a:active.focus, .btn.active:focus, .row.list-header a.active:focus, .btn.active.focus, .row.list-header a.active.focus {
+  .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
     outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
-  .btn:hover, .row.list-header a:hover, .btn:focus, .row.list-header a:focus, .btn.focus, .row.list-header a.focus {
+  .btn:hover, .btn:focus, .btn.focus {
     color: #333;
     text-decoration: none; }
-  .btn:active, .row.list-header a:active, .btn.active, .row.list-header a.active {
+  .btn:active, .btn.active {
     outline: 0;
     background-image: none;
     -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); }
-  .btn.disabled, .row.list-header a.disabled, .btn[disabled], .row.list-header a[disabled],
-  fieldset[disabled] .btn,
-  fieldset[disabled] .row.list-header a, .row.list-header
-  fieldset[disabled] a {
+  .btn.disabled, .btn[disabled],
+  fieldset[disabled] .btn {
     cursor: not-allowed;
     opacity: 0.65;
     filter: alpha(opacity=65);
     -webkit-box-shadow: none;
     box-shadow: none; }
 
-a.btn.disabled, .row.list-header a.disabled,
-fieldset[disabled] a.btn,
-fieldset[disabled] .row.list-header a, .row.list-header
-fieldset[disabled] a {
+a.btn.disabled,
+fieldset[disabled] a.btn {
   pointer-events: none; }
 
-.btn-default, .row.list-header a {
+.btn-default {
   color: #333;
   background-color: #fff;
   border-color: #ccc; }
-  .btn-default:focus, .row.list-header a:focus, .btn-default.focus, .row.list-header a.focus {
+  .btn-default:focus, .btn-default.focus {
     color: #333;
     background-color: #e6e6e6;
     border-color: #8c8c8c; }
-  .btn-default:hover, .row.list-header a:hover {
+  .btn-default:hover {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad; }
-  .btn-default:active, .row.list-header a:active, .btn-default.active, .row.list-header a.active,
-  .open > .btn-default.dropdown-toggle, .row.list-header
-  .open > a.dropdown-toggle {
+  .btn-default:active, .btn-default.active,
+  .open > .btn-default.dropdown-toggle {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad; }
-    .btn-default:active:hover, .row.list-header a:active:hover, .btn-default:active:focus, .row.list-header a:active:focus, .btn-default:active.focus, .row.list-header a:active.focus, .btn-default.active:hover, .row.list-header a.active:hover, .btn-default.active:focus, .row.list-header a.active:focus, .btn-default.active.focus, .row.list-header a.active.focus,
-    .open > .btn-default.dropdown-toggle:hover, .row.list-header
-    .open > a.dropdown-toggle:hover,
-    .open > .btn-default.dropdown-toggle:focus, .row.list-header
-    .open > a.dropdown-toggle:focus,
-    .open > .btn-default.dropdown-toggle.focus, .row.list-header
-    .open > a.dropdown-toggle.focus {
+    .btn-default:active:hover, .btn-default:active:focus, .btn-default:active.focus, .btn-default.active:hover, .btn-default.active:focus, .btn-default.active.focus,
+    .open > .btn-default.dropdown-toggle:hover,
+    .open > .btn-default.dropdown-toggle:focus,
+    .open > .btn-default.dropdown-toggle.focus {
       color: #333;
       background-color: #d4d4d4;
       border-color: #8c8c8c; }
-  .btn-default:active, .row.list-header a:active, .btn-default.active, .row.list-header a.active,
-  .open > .btn-default.dropdown-toggle, .row.list-header
-  .open > a.dropdown-toggle {
+  .btn-default:active, .btn-default.active,
+  .open > .btn-default.dropdown-toggle {
     background-image: none; }
-  .btn-default.disabled:hover, .row.list-header a.disabled:hover, .btn-default.disabled:focus, .row.list-header a.disabled:focus, .btn-default.disabled.focus, .row.list-header a.disabled.focus, .btn-default[disabled]:hover, .row.list-header a[disabled]:hover, .btn-default[disabled]:focus, .row.list-header a[disabled]:focus, .btn-default[disabled].focus, .row.list-header a[disabled].focus,
+  .btn-default.disabled:hover, .btn-default.disabled:focus, .btn-default.disabled.focus, .btn-default[disabled]:hover, .btn-default[disabled]:focus, .btn-default[disabled].focus,
   fieldset[disabled] .btn-default:hover,
-  fieldset[disabled] .row.list-header a:hover, .row.list-header
-  fieldset[disabled] a:hover,
   fieldset[disabled] .btn-default:focus,
-  fieldset[disabled] .row.list-header a:focus, .row.list-header
-  fieldset[disabled] a:focus,
-  fieldset[disabled] .btn-default.focus,
-  fieldset[disabled] .row.list-header a.focus, .row.list-header
-  fieldset[disabled] a.focus {
+  fieldset[disabled] .btn-default.focus {
     background-color: #fff;
     border-color: #ccc; }
-  .btn-default .badge, .row.list-header a .badge {
+  .btn-default .badge {
     color: #fff;
     background-color: #333; }
 
@@ -3094,19 +3072,19 @@ fieldset[disabled] a {
     color: #777777;
     text-decoration: none; }
 
-.btn-lg, .btn-group-lg > .btn, .row.list-header .btn-group-lg > a {
+.btn-lg, .btn-group-lg > .btn {
   padding: 10px 16px;
   font-size: 15px;
   line-height: 1.3333333;
   border-radius: 2px; }
 
-.btn-sm, .btn-group-sm > .btn, .row.list-header .btn-group-sm > a {
+.btn-sm, .btn-group-sm > .btn {
   padding: 5px 10px;
   font-size: 11px;
   line-height: 1.5;
   border-radius: 2px; }
 
-.btn-xs, .btn-group-xs > .btn, .row.list-header .btn-group-xs > a {
+.btn-xs, .btn-group-xs > .btn {
   padding: 1px 5px;
   font-size: 11px;
   line-height: 1.5;
@@ -3290,29 +3268,20 @@ tbody.collapse.in {
   position: relative;
   display: inline-block;
   vertical-align: middle; }
-  .btn-group > .btn, .row.list-header .btn-group > a,
-  .btn-group-vertical > .btn, .row.list-header
-  .btn-group-vertical > a {
+  .btn-group > .btn,
+  .btn-group-vertical > .btn {
     position: relative;
     float: left; }
-    .btn-group > .btn:hover, .row.list-header .btn-group > a:hover, .btn-group > .btn:focus, .row.list-header .btn-group > a:focus, .btn-group > .btn:active, .row.list-header .btn-group > a:active, .btn-group > .btn.active, .row.list-header .btn-group > a.active,
-    .btn-group-vertical > .btn:hover, .row.list-header
-    .btn-group-vertical > a:hover,
-    .btn-group-vertical > .btn:focus, .row.list-header
-    .btn-group-vertical > a:focus,
-    .btn-group-vertical > .btn:active, .row.list-header
-    .btn-group-vertical > a:active,
-    .btn-group-vertical > .btn.active, .row.list-header
-    .btn-group-vertical > a.active {
+    .btn-group > .btn:hover, .btn-group > .btn:focus, .btn-group > .btn:active, .btn-group > .btn.active,
+    .btn-group-vertical > .btn:hover,
+    .btn-group-vertical > .btn:focus,
+    .btn-group-vertical > .btn:active,
+    .btn-group-vertical > .btn.active {
       z-index: 2; }
 
-.btn-group .btn + .btn, .btn-group .row.list-header a + .btn, .row.list-header .btn-group a + .btn, .btn-group .row.list-header .btn + a, .row.list-header .btn-group .btn + a, .btn-group .row.list-header a + a, .row.list-header .btn-group a + a,
+.btn-group .btn + .btn,
 .btn-group .btn + .btn-group,
-.btn-group .row.list-header a + .btn-group, .row.list-header
-.btn-group a + .btn-group,
 .btn-group .btn-group + .btn,
-.btn-group .row.list-header .btn-group + a, .row.list-header
-.btn-group .btn-group + a,
 .btn-group .btn-group + .btn-group {
   margin-left: -1px; }
 
@@ -3323,25 +3292,25 @@ tbody.collapse.in {
     display: table; }
   .btn-toolbar:after {
     clear: both; }
-  .btn-toolbar .btn, .btn-toolbar .row.list-header a, .row.list-header .btn-toolbar a,
+  .btn-toolbar .btn,
   .btn-toolbar .btn-group,
   .btn-toolbar .input-group {
     float: left; }
-  .btn-toolbar > .btn, .row.list-header .btn-toolbar > a,
+  .btn-toolbar > .btn,
   .btn-toolbar > .btn-group,
   .btn-toolbar > .input-group {
     margin-left: 5px; }
 
-.btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle), .row.list-header .btn-group > a:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+.btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
   border-radius: 0; }
 
-.btn-group > .btn:first-child, .row.list-header .btn-group > a:first-child {
+.btn-group > .btn:first-child {
   margin-left: 0; }
-  .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle), .row.list-header .btn-group > a:first-child:not(:last-child):not(.dropdown-toggle) {
+  .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0; }
 
-.btn-group > .btn:last-child:not(:first-child), .row.list-header .btn-group > a:last-child:not(:first-child),
+.btn-group > .btn:last-child:not(:first-child),
 .btn-group > .dropdown-toggle:not(:first-child) {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0; }
@@ -3349,15 +3318,15 @@ tbody.collapse.in {
 .btn-group > .btn-group {
   float: left; }
 
-.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn, .row.list-header .btn-group > .btn-group:not(:first-child):not(:last-child) > a {
+.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn {
   border-radius: 0; }
 
-.btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child, .row.list-header .btn-group > .btn-group:first-child:not(:last-child) > a:last-child,
+.btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child,
 .btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0; }
 
-.btn-group > .btn-group:last-child:not(:first-child) > .btn:first-child, .row.list-header .btn-group > .btn-group:last-child:not(:first-child) > a:first-child {
+.btn-group > .btn-group:last-child:not(:first-child) > .btn:first-child {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0; }
 
@@ -3365,11 +3334,11 @@ tbody.collapse.in {
 .btn-group.open .dropdown-toggle {
   outline: 0; }
 
-.btn-group > .btn + .dropdown-toggle, .row.list-header .btn-group > a + .dropdown-toggle {
+.btn-group > .btn + .dropdown-toggle {
   padding-left: 8px;
   padding-right: 8px; }
 
-.btn-group > .btn-lg + .dropdown-toggle, .btn-group-lg.btn-group > .btn + .dropdown-toggle, .row.list-header .btn-group-lg.btn-group > a + .dropdown-toggle {
+.btn-group > .btn-lg + .dropdown-toggle, .btn-group-lg.btn-group > .btn + .dropdown-toggle {
   padding-left: 12px;
   padding-right: 12px; }
 
@@ -3380,20 +3349,19 @@ tbody.collapse.in {
     -webkit-box-shadow: none;
     box-shadow: none; }
 
-.btn .caret, .row.list-header a .caret {
+.btn .caret {
   margin-left: 0; }
 
-.btn-lg .caret, .btn-group-lg > .btn .caret, .row.list-header .btn-group-lg > a .caret {
+.btn-lg .caret, .btn-group-lg > .btn .caret {
   border-width: 5px 5px 0;
   border-bottom-width: 0; }
 
-.dropup .btn-lg .caret, .dropup .btn-group-lg > .btn .caret, .dropup .row.list-header .btn-group-lg > a .caret, .row.list-header .dropup .btn-group-lg > a .caret {
+.dropup .btn-lg .caret, .dropup .btn-group-lg > .btn .caret {
   border-width: 0 5px 5px; }
 
-.btn-group-vertical > .btn, .row.list-header .btn-group-vertical > a,
+.btn-group-vertical > .btn,
 .btn-group-vertical > .btn-group,
-.btn-group-vertical > .btn-group > .btn, .row.list-header
-.btn-group-vertical > .btn-group > a {
+.btn-group-vertical > .btn-group > .btn {
   display: block;
   float: none;
   width: 100%;
@@ -3406,42 +3374,40 @@ tbody.collapse.in {
 .btn-group-vertical > .btn-group:after {
   clear: both; }
 
-.btn-group-vertical > .btn-group > .btn, .row.list-header .btn-group-vertical > .btn-group > a {
+.btn-group-vertical > .btn-group > .btn {
   float: none; }
 
-.btn-group-vertical > .btn + .btn, .row.list-header .btn-group-vertical > a + .btn, .row.list-header .btn-group-vertical > .btn + a, .row.list-header .btn-group-vertical > a + a,
-.btn-group-vertical > .btn + .btn-group, .row.list-header
-.btn-group-vertical > a + .btn-group,
-.btn-group-vertical > .btn-group + .btn, .row.list-header
-.btn-group-vertical > .btn-group + a,
+.btn-group-vertical > .btn + .btn,
+.btn-group-vertical > .btn + .btn-group,
+.btn-group-vertical > .btn-group + .btn,
 .btn-group-vertical > .btn-group + .btn-group {
   margin-top: -1px;
   margin-left: 0; }
 
-.btn-group-vertical > .btn:not(:first-child):not(:last-child), .row.list-header .btn-group-vertical > a:not(:first-child):not(:last-child) {
+.btn-group-vertical > .btn:not(:first-child):not(:last-child) {
   border-radius: 0; }
 
-.btn-group-vertical > .btn:first-child:not(:last-child), .row.list-header .btn-group-vertical > a:first-child:not(:last-child) {
+.btn-group-vertical > .btn:first-child:not(:last-child) {
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0; }
 
-.btn-group-vertical > .btn:last-child:not(:first-child), .row.list-header .btn-group-vertical > a:last-child:not(:first-child) {
+.btn-group-vertical > .btn:last-child:not(:first-child) {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px; }
 
-.btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn, .row.list-header .btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > a {
+.btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn {
   border-radius: 0; }
 
-.btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child, .row.list-header .btn-group-vertical > .btn-group:first-child:not(:last-child) > a:last-child,
+.btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child,
 .btn-group-vertical > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0; }
 
-.btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child, .row.list-header .btn-group-vertical > .btn-group:last-child:not(:first-child) > a:first-child {
+.btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child {
   border-top-right-radius: 0;
   border-top-left-radius: 0; }
 
@@ -3450,23 +3416,20 @@ tbody.collapse.in {
   width: 100%;
   table-layout: fixed;
   border-collapse: separate; }
-  .btn-group-justified > .btn, .row.list-header .btn-group-justified > a,
+  .btn-group-justified > .btn,
   .btn-group-justified > .btn-group {
     float: none;
     display: table-cell;
     width: 1%; }
-  .btn-group-justified > .btn-group .btn, .btn-group-justified > .btn-group .row.list-header a, .row.list-header .btn-group-justified > .btn-group a {
+  .btn-group-justified > .btn-group .btn {
     width: 100%; }
   .btn-group-justified > .btn-group .dropdown-menu {
     left: auto; }
 
-[data-toggle="buttons"] > .btn input[type="radio"], .row.list-header [data-toggle="buttons"] > a input[type="radio"],
-[data-toggle="buttons"] > .btn input[type="checkbox"], .row.list-header
-[data-toggle="buttons"] > a input[type="checkbox"],
-[data-toggle="buttons"] > .btn-group > .btn input[type="radio"], .row.list-header
-[data-toggle="buttons"] > .btn-group > a input[type="radio"],
-[data-toggle="buttons"] > .btn-group > .btn input[type="checkbox"], .row.list-header
-[data-toggle="buttons"] > .btn-group > a input[type="checkbox"] {
+[data-toggle="buttons"] > .btn input[type="radio"],
+[data-toggle="buttons"] > .btn input[type="checkbox"],
+[data-toggle="buttons"] > .btn-group > .btn input[type="radio"],
+[data-toggle="buttons"] > .btn-group > .btn input[type="checkbox"] {
   position: absolute;
   clip: rect(0, 0, 0, 0);
   pointer-events: none; }
@@ -3515,15 +3478,13 @@ tbody.collapse.in {
   border-radius: 2px; }
   .input-group-addon.input-sm,
   .input-group-sm > .input-group-addon,
-  .input-group-sm > .input-group-btn > .input-group-addon.btn, .row.list-header
-  .input-group-sm > .input-group-btn > a.input-group-addon {
+  .input-group-sm > .input-group-btn > .input-group-addon.btn {
     padding: 5px 10px;
     font-size: 11px;
     border-radius: 2px; }
   .input-group-addon.input-lg,
   .input-group-lg > .input-group-addon,
-  .input-group-lg > .input-group-btn > .input-group-addon.btn, .row.list-header
-  .input-group-lg > .input-group-btn > a.input-group-addon {
+  .input-group-lg > .input-group-btn > .input-group-addon.btn {
     padding: 10px 16px;
     font-size: 15px;
     border-radius: 2px; }
@@ -3533,15 +3494,11 @@ tbody.collapse.in {
 
 .input-group .form-control:first-child,
 .input-group-addon:first-child,
-.input-group-btn:first-child > .btn, .row.list-header
-.input-group-btn:first-child > a,
-.input-group-btn:first-child > .btn-group > .btn, .row.list-header
-.input-group-btn:first-child > .btn-group > a,
+.input-group-btn:first-child > .btn,
+.input-group-btn:first-child > .btn-group > .btn,
 .input-group-btn:first-child > .dropdown-toggle,
-.input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle), .row.list-header
-.input-group-btn:last-child > a:not(:last-child):not(.dropdown-toggle),
-.input-group-btn:last-child > .btn-group:not(:last-child) > .btn, .row.list-header
-.input-group-btn:last-child > .btn-group:not(:last-child) > a {
+.input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+.input-group-btn:last-child > .btn-group:not(:last-child) > .btn {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0; }
 
@@ -3550,15 +3507,11 @@ tbody.collapse.in {
 
 .input-group .form-control:last-child,
 .input-group-addon:last-child,
-.input-group-btn:last-child > .btn, .row.list-header
-.input-group-btn:last-child > a,
-.input-group-btn:last-child > .btn-group > .btn, .row.list-header
-.input-group-btn:last-child > .btn-group > a,
+.input-group-btn:last-child > .btn,
+.input-group-btn:last-child > .btn-group > .btn,
 .input-group-btn:last-child > .dropdown-toggle,
-.input-group-btn:first-child > .btn:not(:first-child), .row.list-header
-.input-group-btn:first-child > a:not(:first-child),
-.input-group-btn:first-child > .btn-group:not(:first-child) > .btn, .row.list-header
-.input-group-btn:first-child > .btn-group:not(:first-child) > a {
+.input-group-btn:first-child > .btn:not(:first-child),
+.input-group-btn:first-child > .btn-group:not(:first-child) > .btn {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0; }
 
@@ -3569,16 +3522,16 @@ tbody.collapse.in {
   position: relative;
   font-size: 0;
   white-space: nowrap; }
-  .input-group-btn > .btn, .row.list-header .input-group-btn > a {
+  .input-group-btn > .btn {
     position: relative; }
-    .input-group-btn > .btn + .btn, .row.list-header .input-group-btn > a + .btn, .row.list-header .input-group-btn > .btn + a, .row.list-header .input-group-btn > a + a {
+    .input-group-btn > .btn + .btn {
       margin-left: -1px; }
-    .input-group-btn > .btn:hover, .row.list-header .input-group-btn > a:hover, .input-group-btn > .btn:focus, .row.list-header .input-group-btn > a:focus, .input-group-btn > .btn:active, .row.list-header .input-group-btn > a:active {
+    .input-group-btn > .btn:hover, .input-group-btn > .btn:focus, .input-group-btn > .btn:active {
       z-index: 2; }
-  .input-group-btn:first-child > .btn, .row.list-header .input-group-btn:first-child > a,
+  .input-group-btn:first-child > .btn,
   .input-group-btn:first-child > .btn-group {
     margin-right: -1px; }
-  .input-group-btn:last-child > .btn, .row.list-header .input-group-btn:last-child > a,
+  .input-group-btn:last-child > .btn,
   .input-group-btn:last-child > .btn-group {
     z-index: 2;
     margin-left: -1px; }
@@ -3957,10 +3910,10 @@ tbody.collapse.in {
 .navbar-btn {
   margin-top: 11.5px;
   margin-bottom: 11.5px; }
-  .navbar-btn.btn-sm, .btn-group-sm > .navbar-btn.btn, .row.list-header .btn-group-sm > a.navbar-btn {
+  .navbar-btn.btn-sm, .btn-group-sm > .navbar-btn.btn {
     margin-top: 11px;
     margin-bottom: 11px; }
-  .navbar-btn.btn-xs, .btn-group-xs > .navbar-btn.btn, .row.list-header .btn-group-xs > a.navbar-btn {
+  .navbar-btn.btn-xs, .btn-group-xs > .navbar-btn.btn {
     margin-top: 14px;
     margin-bottom: 14px; }
 
@@ -4253,7 +4206,7 @@ tbody.collapse.in {
   border-radius: .25em; }
   .label:empty {
     display: none; }
-  .btn .label, .row.list-header a .label {
+  .btn .label {
     position: relative;
     top: -1px; }
 
@@ -4307,12 +4260,11 @@ a.label:hover, a.label:focus {
   border-radius: 10px; }
   .badge:empty {
     display: none; }
-  .btn .badge, .row.list-header a .badge {
+  .btn .badge {
     position: relative;
     top: -1px; }
-  .btn-xs .badge, .btn-group-xs > .btn .badge, .row.list-header .btn-group-xs > a .badge,
-  .btn-group-xs > .btn .badge, .row.list-header
-  .btn-group-xs > a .badge {
+  .btn-xs .badge, .btn-group-xs > .btn .badge,
+  .btn-group-xs > .btn .badge {
     top: 0;
     padding: 1px 5px; }
   .list-group-item.active > .badge,
@@ -5202,10 +5154,10 @@ button.close {
     display: table; }
   .modal-footer:after {
     clear: both; }
-  .modal-footer .btn + .btn, .modal-footer .row.list-header a + .btn, .row.list-header .modal-footer a + .btn, .modal-footer .row.list-header .btn + a, .row.list-header .modal-footer .btn + a, .modal-footer .row.list-header a + a, .row.list-header .modal-footer a + a {
+  .modal-footer .btn + .btn {
     margin-left: 5px;
     margin-bottom: 0; }
-  .modal-footer .btn-group .btn + .btn, .modal-footer .btn-group .row.list-header a + .btn, .row.list-header .modal-footer .btn-group a + .btn, .modal-footer .btn-group .row.list-header .btn + a, .row.list-header .modal-footer .btn-group .btn + a, .modal-footer .btn-group .row.list-header a + a, .row.list-header .modal-footer .btn-group a + a {
+  .modal-footer .btn-group .btn + .btn {
     margin-left: -1px; }
   .modal-footer .btn-block + .btn-block {
     margin-left: 0; }
@@ -5627,7 +5579,7 @@ button.close {
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
-  .carousel-caption .btn, .carousel-caption .row.list-header a, .row.list-header .carousel-caption a {
+  .carousel-caption .btn {
     text-shadow: none; }
 
 @media screen and (min-width: 768px) {
@@ -8830,9 +8782,7 @@ button.close {
       margin-top: 3px; }
   .select2-container--bootstrap .select2-selection--single.input-sm, .select2-container--bootstrap .input-group-sm > .select2-selection--single.form-control, .select2-container--bootstrap
   .input-group-sm > .select2-selection--single.input-group-addon, .select2-container--bootstrap
-  .input-group-sm > .input-group-btn > .select2-selection--single.btn, .select2-container--bootstrap .row.list-header
-  .input-group-sm > .input-group-btn > a.select2-selection--single, .row.list-header .select2-container--bootstrap
-  .input-group-sm > .input-group-btn > a.select2-selection--single,
+  .input-group-sm > .input-group-btn > .select2-selection--single.btn,
   .input-group-sm .select2-container--bootstrap .select2-selection--single,
   .form-group-sm .select2-container--bootstrap .select2-selection--single {
     border-radius: 2px;
@@ -8843,26 +8793,20 @@ button.close {
     /* 2 */ }
     .select2-container--bootstrap .select2-selection--single.input-sm .select2-selection__arrow b, .select2-container--bootstrap .input-group-sm > .select2-selection--single.form-control .select2-selection__arrow b, .select2-container--bootstrap
     .input-group-sm > .select2-selection--single.input-group-addon .select2-selection__arrow b, .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > .select2-selection--single.btn .select2-selection__arrow b, .select2-container--bootstrap .row.list-header
-    .input-group-sm > .input-group-btn > a.select2-selection--single .select2-selection__arrow b, .row.list-header .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > a.select2-selection--single .select2-selection__arrow b,
+    .input-group-sm > .input-group-btn > .select2-selection--single.btn .select2-selection__arrow b,
     .input-group-sm .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b,
     .form-group-sm .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b {
       margin-left: -5px; }
   .select2-container--bootstrap .select2-selection--multiple.input-sm, .select2-container--bootstrap .input-group-sm > .select2-selection--multiple.form-control, .select2-container--bootstrap
   .input-group-sm > .select2-selection--multiple.input-group-addon, .select2-container--bootstrap
-  .input-group-sm > .input-group-btn > .select2-selection--multiple.btn, .select2-container--bootstrap .row.list-header
-  .input-group-sm > .input-group-btn > a.select2-selection--multiple, .row.list-header .select2-container--bootstrap
-  .input-group-sm > .input-group-btn > a.select2-selection--multiple,
+  .input-group-sm > .input-group-btn > .select2-selection--multiple.btn,
   .input-group-sm .select2-container--bootstrap .select2-selection--multiple,
   .form-group-sm .select2-container--bootstrap .select2-selection--multiple {
     min-height: 28px;
     border-radius: 2px; }
     .select2-container--bootstrap .select2-selection--multiple.input-sm .select2-selection__choice, .select2-container--bootstrap .input-group-sm > .select2-selection--multiple.form-control .select2-selection__choice, .select2-container--bootstrap
     .input-group-sm > .select2-selection--multiple.input-group-addon .select2-selection__choice, .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > .select2-selection--multiple.btn .select2-selection__choice, .select2-container--bootstrap .row.list-header
-    .input-group-sm > .input-group-btn > a.select2-selection--multiple .select2-selection__choice, .row.list-header .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > a.select2-selection--multiple .select2-selection__choice,
+    .input-group-sm > .input-group-btn > .select2-selection--multiple.btn .select2-selection__choice,
     .input-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-selection__choice,
     .form-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-selection__choice {
       font-size: 11px;
@@ -8871,9 +8815,7 @@ button.close {
       padding: 0 5px; }
     .select2-container--bootstrap .select2-selection--multiple.input-sm .select2-search--inline .select2-search__field, .select2-container--bootstrap .input-group-sm > .select2-selection--multiple.form-control .select2-search--inline .select2-search__field, .select2-container--bootstrap
     .input-group-sm > .select2-selection--multiple.input-group-addon .select2-search--inline .select2-search__field, .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > .select2-selection--multiple.btn .select2-search--inline .select2-search__field, .select2-container--bootstrap .row.list-header
-    .input-group-sm > .input-group-btn > a.select2-selection--multiple .select2-search--inline .select2-search__field, .row.list-header .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > a.select2-selection--multiple .select2-search--inline .select2-search__field,
+    .input-group-sm > .input-group-btn > .select2-selection--multiple.btn .select2-search--inline .select2-search__field,
     .input-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field,
     .form-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
       padding: 0 10px;
@@ -8882,17 +8824,13 @@ button.close {
       line-height: 1.5; }
     .select2-container--bootstrap .select2-selection--multiple.input-sm .select2-selection__clear, .select2-container--bootstrap .input-group-sm > .select2-selection--multiple.form-control .select2-selection__clear, .select2-container--bootstrap
     .input-group-sm > .select2-selection--multiple.input-group-addon .select2-selection__clear, .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > .select2-selection--multiple.btn .select2-selection__clear, .select2-container--bootstrap .row.list-header
-    .input-group-sm > .input-group-btn > a.select2-selection--multiple .select2-selection__clear, .row.list-header .select2-container--bootstrap
-    .input-group-sm > .input-group-btn > a.select2-selection--multiple .select2-selection__clear,
+    .input-group-sm > .input-group-btn > .select2-selection--multiple.btn .select2-selection__clear,
     .input-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-selection__clear,
     .form-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-selection__clear {
       margin-top: 5px; }
   .select2-container--bootstrap .select2-selection--single.input-lg, .select2-container--bootstrap .input-group-lg > .select2-selection--single.form-control, .select2-container--bootstrap
   .input-group-lg > .select2-selection--single.input-group-addon, .select2-container--bootstrap
-  .input-group-lg > .input-group-btn > .select2-selection--single.btn, .select2-container--bootstrap .row.list-header
-  .input-group-lg > .input-group-btn > a.select2-selection--single, .row.list-header .select2-container--bootstrap
-  .input-group-lg > .input-group-btn > a.select2-selection--single,
+  .input-group-lg > .input-group-btn > .select2-selection--single.btn,
   .input-group-lg .select2-container--bootstrap .select2-selection--single,
   .form-group-lg .select2-container--bootstrap .select2-selection--single {
     border-radius: 2px;
@@ -8903,17 +8841,13 @@ button.close {
     /* 1 */ }
     .select2-container--bootstrap .select2-selection--single.input-lg .select2-selection__arrow, .select2-container--bootstrap .input-group-lg > .select2-selection--single.form-control .select2-selection__arrow, .select2-container--bootstrap
     .input-group-lg > .select2-selection--single.input-group-addon .select2-selection__arrow, .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > .select2-selection--single.btn .select2-selection__arrow, .select2-container--bootstrap .row.list-header
-    .input-group-lg > .input-group-btn > a.select2-selection--single .select2-selection__arrow, .row.list-header .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > a.select2-selection--single .select2-selection__arrow,
+    .input-group-lg > .input-group-btn > .select2-selection--single.btn .select2-selection__arrow,
     .input-group-lg .select2-container--bootstrap .select2-selection--single .select2-selection__arrow,
     .form-group-lg .select2-container--bootstrap .select2-selection--single .select2-selection__arrow {
       width: 5px; }
       .select2-container--bootstrap .select2-selection--single.input-lg .select2-selection__arrow b, .select2-container--bootstrap .input-group-lg > .select2-selection--single.form-control .select2-selection__arrow b, .select2-container--bootstrap
       .input-group-lg > .select2-selection--single.input-group-addon .select2-selection__arrow b, .select2-container--bootstrap
-      .input-group-lg > .input-group-btn > .select2-selection--single.btn .select2-selection__arrow b, .select2-container--bootstrap .row.list-header
-      .input-group-lg > .input-group-btn > a.select2-selection--single .select2-selection__arrow b, .row.list-header .select2-container--bootstrap
-      .input-group-lg > .input-group-btn > a.select2-selection--single .select2-selection__arrow b,
+      .input-group-lg > .input-group-btn > .select2-selection--single.btn .select2-selection__arrow b,
       .input-group-lg .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b,
       .form-group-lg .select2-container--bootstrap .select2-selection--single .select2-selection__arrow b {
         border-width: 5px 5px 0 5px;
@@ -8922,18 +8856,14 @@ button.close {
         margin-top: -2.5px; }
   .select2-container--bootstrap .select2-selection--multiple.input-lg, .select2-container--bootstrap .input-group-lg > .select2-selection--multiple.form-control, .select2-container--bootstrap
   .input-group-lg > .select2-selection--multiple.input-group-addon, .select2-container--bootstrap
-  .input-group-lg > .input-group-btn > .select2-selection--multiple.btn, .select2-container--bootstrap .row.list-header
-  .input-group-lg > .input-group-btn > a.select2-selection--multiple, .row.list-header .select2-container--bootstrap
-  .input-group-lg > .input-group-btn > a.select2-selection--multiple,
+  .input-group-lg > .input-group-btn > .select2-selection--multiple.btn,
   .input-group-lg .select2-container--bootstrap .select2-selection--multiple,
   .form-group-lg .select2-container--bootstrap .select2-selection--multiple {
     min-height: 42px;
     border-radius: 2px; }
     .select2-container--bootstrap .select2-selection--multiple.input-lg .select2-selection__choice, .select2-container--bootstrap .input-group-lg > .select2-selection--multiple.form-control .select2-selection__choice, .select2-container--bootstrap
     .input-group-lg > .select2-selection--multiple.input-group-addon .select2-selection__choice, .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > .select2-selection--multiple.btn .select2-selection__choice, .select2-container--bootstrap .row.list-header
-    .input-group-lg > .input-group-btn > a.select2-selection--multiple .select2-selection__choice, .row.list-header .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > a.select2-selection--multiple .select2-selection__choice,
+    .input-group-lg > .input-group-btn > .select2-selection--multiple.btn .select2-selection__choice,
     .input-group-lg .select2-container--bootstrap .select2-selection--multiple .select2-selection__choice,
     .form-group-lg .select2-container--bootstrap .select2-selection--multiple .select2-selection__choice {
       font-size: 15px;
@@ -8943,9 +8873,7 @@ button.close {
       padding: 0 10px; }
     .select2-container--bootstrap .select2-selection--multiple.input-lg .select2-search--inline .select2-search__field, .select2-container--bootstrap .input-group-lg > .select2-selection--multiple.form-control .select2-search--inline .select2-search__field, .select2-container--bootstrap
     .input-group-lg > .select2-selection--multiple.input-group-addon .select2-search--inline .select2-search__field, .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > .select2-selection--multiple.btn .select2-search--inline .select2-search__field, .select2-container--bootstrap .row.list-header
-    .input-group-lg > .input-group-btn > a.select2-selection--multiple .select2-search--inline .select2-search__field, .row.list-header .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > a.select2-selection--multiple .select2-search--inline .select2-search__field,
+    .input-group-lg > .input-group-btn > .select2-selection--multiple.btn .select2-search--inline .select2-search__field,
     .input-group-lg .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field,
     .form-group-lg .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
       padding: 0 16px;
@@ -8954,25 +8882,19 @@ button.close {
       line-height: 1.3333333; }
     .select2-container--bootstrap .select2-selection--multiple.input-lg .select2-selection__clear, .select2-container--bootstrap .input-group-lg > .select2-selection--multiple.form-control .select2-selection__clear, .select2-container--bootstrap
     .input-group-lg > .select2-selection--multiple.input-group-addon .select2-selection__clear, .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > .select2-selection--multiple.btn .select2-selection__clear, .select2-container--bootstrap .row.list-header
-    .input-group-lg > .input-group-btn > a.select2-selection--multiple .select2-selection__clear, .row.list-header .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > a.select2-selection--multiple .select2-selection__clear,
+    .input-group-lg > .input-group-btn > .select2-selection--multiple.btn .select2-selection__clear,
     .input-group-lg .select2-container--bootstrap .select2-selection--multiple .select2-selection__clear,
     .form-group-lg .select2-container--bootstrap .select2-selection--multiple .select2-selection__clear {
       margin-top: 10px; }
   .select2-container--bootstrap .select2-selection.input-lg.select2-container--open .select2-selection--single, .select2-container--bootstrap .input-group-lg > .select2-selection.select2-container--open.form-control .select2-selection--single, .select2-container--bootstrap
   .input-group-lg > .select2-selection.select2-container--open.input-group-addon .select2-selection--single, .select2-container--bootstrap
-  .input-group-lg > .input-group-btn > .select2-selection.select2-container--open.btn .select2-selection--single, .select2-container--bootstrap .row.list-header
-  .input-group-lg > .input-group-btn > a.select2-selection.select2-container--open .select2-selection--single, .row.list-header .select2-container--bootstrap
-  .input-group-lg > .input-group-btn > a.select2-selection.select2-container--open .select2-selection--single {
+  .input-group-lg > .input-group-btn > .select2-selection.select2-container--open.btn .select2-selection--single {
     /**
          * Make the dropdown arrow point up while the dropdown is visible.
          */ }
     .select2-container--bootstrap .select2-selection.input-lg.select2-container--open .select2-selection--single .select2-selection__arrow b, .select2-container--bootstrap .input-group-lg > .select2-selection.select2-container--open.form-control .select2-selection--single .select2-selection__arrow b, .select2-container--bootstrap
     .input-group-lg > .select2-selection.select2-container--open.input-group-addon .select2-selection--single .select2-selection__arrow b, .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > .select2-selection.select2-container--open.btn .select2-selection--single .select2-selection__arrow b, .select2-container--bootstrap .row.list-header
-    .input-group-lg > .input-group-btn > a.select2-selection.select2-container--open .select2-selection--single .select2-selection__arrow b, .row.list-header .select2-container--bootstrap
-    .input-group-lg > .input-group-btn > a.select2-selection.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    .input-group-lg > .input-group-btn > .select2-selection.select2-container--open.btn .select2-selection--single .select2-selection__arrow b {
       border-color: transparent transparent #999 transparent;
       border-width: 0 5px 5px 5px; }
   .input-group-lg .select2-container--bootstrap .select2-selection.select2-container--open .select2-selection--single {
@@ -9125,13 +9047,9 @@ button.close {
 .select2-bootstrap-append .select2-container--bootstrap,
 .select2-bootstrap-append .input-group-btn,
 .select2-bootstrap-append .input-group-btn .btn,
-.select2-bootstrap-append .input-group-btn .row.list-header a, .row.list-header
-.select2-bootstrap-append .input-group-btn a,
 .select2-bootstrap-prepend .select2-container--bootstrap,
 .select2-bootstrap-prepend .input-group-btn,
-.select2-bootstrap-prepend .input-group-btn .btn,
-.select2-bootstrap-prepend .input-group-btn .row.list-header a, .row.list-header
-.select2-bootstrap-prepend .input-group-btn a {
+.select2-bootstrap-prepend .input-group-btn .btn {
   vertical-align: top; }
 
 /**
@@ -9343,7 +9261,7 @@ li.atkmanytomanyselectrelation-selected {
 .bootstrap-touchspin-down, .bootstrap-touchspin-up {
   padding: 2.5px 9px; }
 
-.bootstrap-touchspin .input-group-btn-vertical > .btn, .bootstrap-touchspin .row.list-header .input-group-btn-vertical > a, .row.list-header .bootstrap-touchspin .input-group-btn-vertical > a {
+.bootstrap-touchspin .input-group-btn-vertical > .btn {
   margin-top: 0;
   padding: 5.8px 9px; }
 
@@ -9388,14 +9306,14 @@ table.recordList {
     display: block;
     white-space: nowrap;
     float: left; }
-    table.recordList tr td .actions .btn, table.recordList tr td .actions .row.list-header a, .row.list-header table.recordList tr td .actions a {
+    table.recordList tr td .actions .btn {
       margin: 0 2px;
       min-width: 24px;
       height: 24px;
       padding-top: 1px; }
-      table.recordList tr td .actions .btn:first-child, table.recordList tr td .actions .row.list-header a:first-child, .row.list-header table.recordList tr td .actions a:first-child {
+      table.recordList tr td .actions .btn:first-child {
         margin-left: 0; }
-      table.recordList tr td .actions .btn:last-child, table.recordList tr td .actions .row.list-header a:last-child, .row.list-header table.recordList tr td .actions a:last-child {
+      table.recordList tr td .actions .btn:last-child {
         margin-right: 0; }
 
 .table {
@@ -9426,8 +9344,8 @@ table.recordList {
     line-height: 28px;
     font-weight: normal; }
 
-.row.list-header {
-  margin-bottom: 10px; }
+a.admin_link {
+  margin-bottom: 5px; }
 
 A.atksection {
   display: block;

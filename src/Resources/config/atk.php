@@ -67,6 +67,12 @@ return [
     'datagrid_display_bottom_info' => true,
 
     /*
+     * if true, the total of a field is relative to the current paginated page
+     * (like legacy atk)
+     */
+    'datagrid_total_paginate' => false,
+
+    /*
      * The dispatcher, all request (should) lead to this setting.
      */
     'dispatcher' => 'index.php',
@@ -539,6 +545,8 @@ return [
      * @var string
      */
     'mra_position' => 'bottom',
+
+    'style_url' => $_configAssetsUrl.'styles/style.css',
 
     /*********************************** OUTPUT ********************************/
 
