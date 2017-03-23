@@ -3887,10 +3887,12 @@ class Node
      * be saved.
      *
      * @param array $record The record that will be saved to the database.
+     * @param string $mode The 'mode' indicates whether the added record was a
+     *                       completely new record ("add") or a copy ("copy").
      *
      * @return bool
      */
-    public function preAdd(&$record)
+    public function preAdd(&$record, $mode = 'add')
     {
         // Do nothing
         return true;
