@@ -560,6 +560,16 @@ class atkNumberAttribute extends atkAttribute
             ($size > 0 ? ' size="' . $size . '"' : '') .
             ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';
 
+        // replace wrong typed decimal separator
+        $result .= "<script>
+            jQuery('#$id').keypress(function(event) {
+                if (String.fromCharCode(event.keyCode) == '{$this->m_thousandsseparator}') {
+                    event.preventDefault();
+                    this.value += '{$this->m_decimalseparator}';
+                }
+            })
+        </script>";
+
         return $result;
     }
 
