@@ -321,14 +321,14 @@ class SecurityManager
             $auth->logout($currentUser);
         }
 
-        $this->notifyListeners('postLogout', $username);
-
         if (Config::getGlobal('auth_enable_rememberme')) {
             $this->rememberMeDestroy();
         }
 
         $this->m_user = null;
         SessionManager::getInstance()->destroy();
+
+        $this->notifyListeners('postLogout', $username);
     }
 
     protected function sessionLogin()
