@@ -422,6 +422,8 @@ class EditHandler extends ViewEditBase
             $tplfield['column'] = $column;
 
             $tplfield['readonly'] = $field['attribute']->isReadonlyEdit($mode);
+
+            $tplfield['help'] = $field['attribute']->getHelp();
         }
 
         // allow passing of extra arbitrary data, for example if a user overloads the editArray method

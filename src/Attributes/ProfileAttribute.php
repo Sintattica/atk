@@ -3,11 +3,11 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Db\Db;
 
 /**
  * The ProfileAttribute is an attribute to edit a security profile.
@@ -33,7 +33,7 @@ class ProfileAttribute extends Attribute
     {
         $flags = $flags | self::AF_HIDE_SEARCH | self::AF_HIDE_LIST;
         parent::__construct($name, $flags);
-        
+
         $this->m_parentAttrName = $parentAttrName;
         $this->m_accessField = Config::getGlobal('auth_accessfield');
         if (empty($this->m_accessField)) {
@@ -66,32 +66,6 @@ class ProfileAttribute extends Attribute
     }
 
     /**
-     * Get child groups.
-     *
-     * @param Db $db The database object
-     * @param int $id The id to search for
-     *
-     * @return array
-     */
-    public function getChildGroups($db, $id)
-    {
-        $result = [];
-        if (!is_numeric($id)) {
-            return $result;
-        }
-
-        $query = 'SELECT '.$this->m_ownerInstance->primaryKeyField().' '.'FROM '.$this->m_ownerInstance->m_table.' '.'WHERE '.$this->m_parentAttrName." = $id";
-
-        $rows = $db->getRows($query);
-        foreach ($rows as $row) {
-            $id = $row[$this->m_ownerInstance->primaryKeyField()];
-            $result = array_merge($result, array($id), $this->getChildGroups($db, $id));
-        }
-
-        return $result;
-    }
-
-    /**
      * Store the value of this attribute in the database.
      *
      * @param Db $db The database object
@@ -104,8 +78,7 @@ class ProfileAttribute extends Attribute
     {
 
         // Read the current actions available/editable and user rights before changing them
-        $user = SecurityManager::atkGetUser();
-        $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
+        $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
 
@@ -164,31 +137,25 @@ class ProfileAttribute extends Attribute
     }
 
     /**
-     * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its value. (<input type="hidden">).
+     * Checks whether the current user has the 'grantall' privilege (if such a
+     * privilege exists; this is determined by the application by setting
+     * $config_auth_grantall_privilege.
      *
-     * @param array $record
-     * @param string $fieldprefix
-     * @param string $mode
-     *
-     * @return string html
+     * @return bool
      */
-    public function hide($record, $fieldprefix, $mode)
+    public function canGrantAll()
     {
-        // get checks
-        $checked = $record[$this->fieldName()];
+        $privilege_setting = Config::getGlobal('auth_grantall_privilege');
 
-        // rebuild hidden fields from checked boxes
-        $rights = '';
+        if ($privilege_setting != '') {
+            $securityManager = SecurityManager::getInstance();
 
-        foreach ($checked as $key => $val) {
-            for ($i = 0; $i <= count($val) - 1; ++$i) {
-                $value = $key.'.'.$val[$i];
-                $rights .= '<input type="hidden" name="rights[]" value="'.$value.'">';
-            }
+            list($mod, $node, $priv) = explode('.', $privilege_setting);
+
+            return $securityManager->allowed($mod.'.'.$node, $priv);
         }
 
-        return $rights;
+        return false;
     }
 
     /**
@@ -259,17 +226,27 @@ class ProfileAttribute extends Attribute
      */
     public function getEditableActions($record)
     {
+        $db = $this->getDb();
         $user = SecurityManager::atkGetUser();
-        if (!is_array($user['level'])) {
-            $levels = "'".$user['level']."'";
-        } else {
-            $levels = "'".implode("','", $user['level'])."'";
+        $levels = $user['level'];
+
+        if (!is_array($levels)) {
+            $levels = [$levels];
         }
 
+        $escapedLevels = [];
+        foreach ($levels as $currLevel) {
+            $escapedLevels[] = "'".$db->escapeSQL($currLevel)."'";
+        }
+        $levels = implode(',', $escapedLevels);
+
         // retrieve editable actions by user's levels
-        $db = $this->getDb();
-        $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' WHERE '.$this->m_accessField.' IN ('.$levels.')';
-        $rows = $db->getRows($query);
+        $rows = [];
+        if ($levels) {
+            $db = $this->getDb();
+            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' WHERE '.$this->m_accessField.' IN ('.$levels.')';
+            $rows = $db->getRows($query);
+        }
 
         $result = [];
         foreach ($rows as $row) {
@@ -279,6 +256,60 @@ class ProfileAttribute extends Attribute
         }
 
         return $result;
+    }
+
+    /**
+     * Get child groups.
+     *
+     * @param Db $db The database object
+     * @param int $id The id to search for
+     *
+     * @return array
+     */
+    public function getChildGroups($db, $id)
+    {
+        $result = [];
+        if (!is_numeric($id)) {
+            return $result;
+        }
+
+        $query = 'SELECT '.$this->m_ownerInstance->primaryKeyField().' '.'FROM '.$this->m_ownerInstance->m_table.' '.'WHERE '.$this->m_parentAttrName." = $id";
+
+        $rows = $db->getRows($query);
+        foreach ($rows as $row) {
+            $id = $row[$this->m_ownerInstance->primaryKeyField()];
+            $result = array_merge($result, array($id), $this->getChildGroups($db, $id));
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">).
+     *
+     * @param array $record
+     * @param string $fieldprefix
+     * @param string $mode
+     *
+     * @return string html
+     */
+    public function hide($record, $fieldprefix, $mode)
+    {
+        // get checks
+        $checked = $record[$this->fieldName()];
+
+        // rebuild hidden fields from checked boxes
+        $rights = '';
+
+        foreach ($checked as $key => $val) {
+            for ($i = 0; $i <= count($val) - 1; ++$i) {
+                $value = $key.'.'.$val[$i];
+                $rights .= '<input type="hidden" name="rights[]" value="'.$value.'">';
+            }
+        }
+
+        return $rights;
     }
 
     /**
@@ -292,27 +323,6 @@ class ProfileAttribute extends Attribute
     }
 
     /**
-     * Returns the currently selected actions.
-     *
-     * @param array $record The record
-     *
-     * @return array array with selected actions
-     */
-    public function getSelectedActions($record)
-    {
-        $selected = $record[$this->fieldName()];
-
-        $result = [];
-        foreach ($selected as $node => $actions) {
-            $module = Tools::getNodeModule($node);
-            $node = Tools::getNodeType($node);
-            $result[$module][$node] = $actions;
-        }
-
-        return $result;
-    }
-
-    /**
      * Display rights.
      * It will only display the rights & nodes that are selected for the user.
      *
@@ -323,7 +333,6 @@ class ProfileAttribute extends Attribute
      */
     public function display($record, $mode)
     {
-        $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkprofileattribute.js');
         $this->_restoreDivStates($page);
@@ -333,7 +342,7 @@ class ProfileAttribute extends Attribute
         $page->register_scriptcode($icons);
 
         $result = '';
-        $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
+        $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
 
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
@@ -400,7 +409,8 @@ class ProfileAttribute extends Attribute
                     }
 
                     $result .= sprintf("<span onclick=\"%s\" style=\"cursor: pointer; font-size: 110%%; font-weight: bold;display:block;\"><i class=\"%s\" id=\"img_div_$module\"></i> %s</span>",
-                        "profile_swapProfileDiv('div_$module'); return false;", Config::getGlobal('icon_plussquare'), Tools::atktext(array("title_$module", $module), $module));
+                        "profile_swapProfileDiv('div_$module'); return false;", Config::getGlobal('icon_plussquare'),
+                        Tools::atktext(array("title_$module", $module), $module));
                     $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;padding-left: 15px;\">";
                     $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
                     $result .= $module_result;
@@ -409,6 +419,78 @@ class ProfileAttribute extends Attribute
         }
 
         return $result;
+    }
+
+    /**
+     * Restore divs states.
+     *
+     * @param Page $page
+     */
+    public function _restoreDivStates($page)
+    {
+        $postvars = $this->m_ownerInstance->m_postvars;
+        if (!isset($postvars['divstate']) || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0) {
+            return;
+        }
+
+        $divstate = $postvars['divstate'];
+        $onLoadScript = '';
+
+        foreach ($divstate as $key => $value) {
+            $key = substr($key, 2, -2);
+            if ($value == 'opened') {
+                $onLoadScript .= "profile_swapProfileDiv('$key');";
+            }
+        }
+        $page->register_loadscript($onLoadScript);
+    }
+
+    /**
+     * Returns the currently selected actions.
+     *
+     * @param array $record The record
+     *
+     * @return array array with selected actions
+     */
+    public function getSelectedActions($record)
+    {
+        $selected = $record[$this->fieldName()];
+
+        $result = [];
+        foreach ($selected as $node => $actions) {
+            $module = Tools::getNodeModule($node);
+            $node = Tools::getNodeType($node);
+            $result[$module][$node] = $actions;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return the translated name of a permission.
+     *
+     * @param string $action The name of the action
+     * @param string $nodename The name of the node
+     * @param string $modulename The name of the module
+     *
+     * @return string The translated permission name
+     */
+    public function permissionName($action, $nodename = '', $modulename = '')
+    {
+        $keys = array(
+            'permission_'.$modulename.'_'.$nodename.'_'.$action,
+            'action_'.$modulename.'_'.$nodename.'_'.$action,
+            'permission_'.$nodename.'_'.$action,
+            'action_'.$nodename.'_'.$action,
+            'permission_'.$action,
+            'action_'.$action,
+            $action,
+        );
+
+        // don't use text() function of attribute, because of auto module detection
+        $label = Tools::atktext($keys, $modulename, $nodename);
+
+        return $label;
     }
 
     /**
@@ -424,7 +506,6 @@ class ProfileAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        $user = SecurityManager::atkGetUser();
         $page = Page::getInstance();
 
         $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal('icon_plussquare')."';";
@@ -437,7 +518,7 @@ class ProfileAttribute extends Attribute
         $result = '<div align="right">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
 
-        $isAdmin = ($user['name'] == 'administrator' || $this->canGrantAll());
+        $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
         $editableActions = $this->getEditableActions($record);
         $selectedActions = $this->getSelectedActions($record);
@@ -519,33 +600,6 @@ class ProfileAttribute extends Attribute
     }
 
     /**
-     * Return the translated name of a permission.
-     *
-     * @param string $action The name of the action
-     * @param string $nodename The name of the node
-     * @param string $modulename The name of the module
-     *
-     * @return string The translated permission name
-     */
-    public function permissionName($action, $nodename = '', $modulename = '')
-    {
-        $keys = array(
-            'permission_'.$modulename.'_'.$nodename.'_'.$action,
-            'action_'.$modulename.'_'.$nodename.'_'.$action,
-            'permission_'.$nodename.'_'.$action,
-            'action_'.$nodename.'_'.$action,
-            'permission_'.$action,
-            'action_'.$action,
-            $action,
-        );
-
-        // don't use text() function of attribute, because of auto module detection
-        $label = Tools::atktext($keys, $modulename, $nodename);
-
-        return $label;
-    }
-
-    /**
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
      *
@@ -580,7 +634,7 @@ class ProfileAttribute extends Attribute
                     Tools::atkdebug('profileattribute encountered incomplete combination');
                 }
             }
-            if($node && $action) {
+            if ($node && $action) {
                 $actions[$node][] = $action;
             }
         }
@@ -625,51 +679,5 @@ class ProfileAttribute extends Attribute
     public function dbFieldType()
     {
         return '';
-    }
-
-    /**
-     * Checks whether the current user has the 'grantall' privilege (if such a
-     * privilege exists; this is determined by the application by setting
-     * $config_auth_grantall_privilege.
-     *
-     * @return bool
-     */
-    public function canGrantAll()
-    {
-        $privilege_setting = Config::getGlobal('auth_grantall_privilege');
-
-        if ($privilege_setting != '') {
-            $securityManager = SecurityManager::getInstance();
-
-            list($mod, $node, $priv) = explode('.', $privilege_setting);
-
-            return $securityManager->allowed($mod.'.'.$node, $priv);
-        }
-
-        return false;
-    }
-
-    /**
-     * Restore divs states.
-     *
-     * @param Page $page
-     */
-    public function _restoreDivStates($page)
-    {
-        $postvars = $this->m_ownerInstance->m_postvars;
-        if (!isset($postvars['divstate']) || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0) {
-            return;
-        }
-
-        $divstate = $postvars['divstate'];
-        $onLoadScript = '';
-
-        foreach ($divstate as $key => $value) {
-            $key = substr($key, 2, -2);
-            if ($value == 'opened') {
-                $onLoadScript .= "profile_swapProfileDiv('$key');";
-            }
-        }
-        $page->register_loadscript($onLoadScript);
     }
 }

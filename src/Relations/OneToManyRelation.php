@@ -365,7 +365,7 @@ class OneToManyRelation extends Relation
         }
 
         if ($mode == 'list') { // list mode
-            $result = '<ul>';
+            $result = '<ul '.$this->getCSSClassAttribute().'>';
 
             foreach ($records as $current) {
                 $result .= sprintf('<li>%s</li>', $this->m_destInstance->descriptor($current));
@@ -453,8 +453,6 @@ class OneToManyRelation extends Relation
         if (!$this->getDestination()->hasFlag(Node::NF_NO_ADD)) {
             $add_link = $this->_getAddLink($myrecords, $record, true, $mode, $fieldprefix);
         }
-
-        $add_link .= '<br />';
 
         if (Config::getGlobal('onetomany_addlink_position', 'bottom') == 'top') {
             $output = $add_link.$output;
@@ -592,7 +590,7 @@ class OneToManyRelation extends Relation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform, $onchange.' class="atkonetomanyrelation"');
+        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform, $onchange.' class="atkonetomanyrelation btn btn-default"');
     }
 
     /**

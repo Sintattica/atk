@@ -2,8 +2,9 @@
 
 namespace Sintattica\Atk\Db;
 
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\Debugger;
 
 /**
  * Database driver for PostgreSQL.
@@ -27,44 +28,56 @@ class PgSqlDb extends Db
         $this->m_force_ci = true;
     }
 
-    /**
-     * Connect to the database.
-     *
-     * @return int connection identifier
-     */
-    public function connect()
+    public function doConnect($host, $user, $password, $database, $port, $charset)
     {
         if (empty($this->m_link_id)) {
-            /* connection string */
-            $connection_str = 'dbname='.$this->m_database;
-            if (!empty($this->m_host)) {
-                $connection_str .= ' host='.$this->m_host;
+            $conn = [];
+
+            if (!empty($host)) {
+                $conn[] = 'host='.$host;
             }
-            if (!empty($this->m_user)) {
-                $connection_str .= ' user='.$this->m_user;
+
+            if (!empty($user)) {
+                $conn[] = 'user='.$user;
             }
-            if (!empty($this->m_password)) {
-                $connection_str .= ' password='.$this->m_password;
+            if (!empty($password)) {
+                $conn[] = 'password='.$password;
             }
+
+            if (!empty($database)) {
+                $conn[] = 'dbname='.$database;
+            }
+
+            if (!empty($port)) {
+                $conn[] = 'port='.$port;
+            }
+
+            if (!empty($charset)) {
+                Tools::atkdebug("Set database character set to: {$charset}");
+                $conn[] = "options='--client_encoding=$charset'";
+            }
+
+            $connection_str = implode(' ', $conn);
 
             /* establish connection */
             $this->m_link_id = pg_connect($connection_str);
+
             if ($this->m_link_id === false) {
-                $this->halt('connect using '.$this->m_database.', '.$this->m_host.', '.$this->m_user.', ***** failed.');
+                $this->halt("connect using ** $connection_str ** failed");
 
                 // We can't use pg_result_error, since we need a resource
                 // for that function, and if pg_connect fails, we don't even have
                 // a resource yet.
-                if (function_exists('pg_last_error')) { // only available since PHP 4.2.0.
-                    return $this->_translateError(@pg_last_error());
-                } else {
-                    return self::DB_UNKNOWNERROR;
-                }
+                return $this->_translateError(@pg_last_error());
             }
+
+            /* set autoCommit to off */
+            $this->_query("BEGIN", true);
         }
 
         return self::DB_SUCCESS;
     }
+
 
     /**
      * TODO FIXME: I don't know what errormessges postgresql gives,
@@ -80,56 +93,28 @@ class PgSqlDb extends Db
     }
 
     /**
+     * Execute and log query.
+     *
+     * @param string $query query
+     * @param bool $isSystemQuery is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     *
+     * @return mixed
+     */
+    protected function _query($query, $isSystemQuery)
+    {
+        if (Config::getGlobal('debug') >= 0) {
+            Debugger::addQuery($query, $isSystemQuery);
+        }
+
+        return @pg_query($this->m_link_id, $query);
+    }
+
+    /**
      * Disconnect from database, we use a persistent
      * link, so this won't be necessary!
      */
     public function disconnect()
     {
-    }
-
-    /**
-     * Performs a query.
-     *
-     * @param string $query the query
-     * @param int $offset offset in record list
-     * @param int $limit maximum number of records
-     *
-     * @return bool
-     */
-    public function query($query, $offset = -1, $limit = -1)
-    {
-        /* limit? */
-        if ($offset >= 0 && $limit >= 0) {
-            $query .= " LIMIT $limit OFFSET $offset";
-        }
-        Tools::atkdebug('atkpgsqldb.query(): '.$query);
-
-        /* connect to database */
-        if ($this->connect() == self::DB_SUCCESS) {
-            /* free old results */
-            if (!empty($this->m_query_id)) {
-                @pg_free_result($this->m_query_id);
-                $this->m_query_id = 0;
-            }
-
-            /* query database */
-            $error = false;
-            $this->m_query_id = @pg_query($this->m_link_id, $query) or $error = true;
-
-            $this->m_row = 0;
-
-            $this->m_error = pg_last_error();
-            if ($error) {
-                $this->halt("Invalid SQL query: $query");
-            }
-
-            if ($this->m_query_id) {
-                /* return query id */
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -181,7 +166,7 @@ class PgSqlDb extends Db
         if ($this->connect() == self::DB_SUCCESS) {
             /* lock */
             if ($mode == 'write') {
-                $result = @pg_query($this->m_link_id, "lock table $table") or $this->halt("cannot lock table $table");
+                $result = @pg_query($this->m_link_id, "LOCK TABLE $table") or $this->halt("cannot lock table $table");
             } else {
                 $result = 1;
             }
@@ -204,7 +189,7 @@ class PgSqlDb extends Db
         /* connect first */
         if ($this->connect() == self::DB_SUCCESS) {
             /* unlock */
-            $result = @pg_query($this->m_link_id, 'commit') or $this->halt('cannot unlock tables');
+            $result = @pg_query($this->m_link_id, 'COMMIT') or $this->halt('cannot unlock tables');
 
             /* return result */
 
@@ -257,9 +242,10 @@ class PgSqlDb extends Db
      */
     public function nextid($sequence)
     {
+
         /* connect first */
         if ($this->connect() == self::DB_SUCCESS) {
-            $sequencename = Config::getGlobal('database_sequenceprefix').$sequence;
+            $sequencename = Config::getGlobal('database_sequenceprefix').$sequence.Config::getGlobal('database_sequencesuffix');
             /* get sequence number and increment */
             $query = "SELECT nextval('$sequencename') AS nextid";
 
@@ -336,7 +322,17 @@ class PgSqlDb extends Db
           a.attnum AS i,
           a.attname AS name,
           t.typname AS type,
-          (CASE WHEN LOWER(t.typname) = 'varchar' AND a.attlen = -1 THEN a.atttypmod - 4 ELSE a.attlen END) AS length,
+          (CASE
+            WHEN LOWER(t.typname) = 'varchar' AND a.attlen = -1 THEN a.atttypmod - 4
+            WHEN a.atttypid = 21 /*int2*/ THEN 5
+            WHEN a.atttypid = 23 /*int4*/ THEN 10
+            WHEN a.atttypid = 20 /*int8*/ THEN 19
+            WHEN a.atttypid = 1700 /*numeric*/ THEN
+              CASE WHEN a.atttypmod = -1 THEN null
+              ELSE ((atttypmod - 4) >> 16) & 65535
+              END
+           ELSE a.attlen END
+          ) AS length,
           (CASE WHEN a.attnotnull THEN 1 ELSE 0 END) AS is_not_null,
           (
             SELECT COUNT(1)
@@ -445,6 +441,51 @@ class PgSqlDb extends Db
     }
 
     /**
+     * Performs a query.
+     *
+     * @param string $query the query
+     * @param int $offset offset in record list
+     * @param int $limit maximum number of records
+     *
+     * @return bool
+     */
+    public function query($query, $offset = -1, $limit = -1)
+    {
+        /* limit? */
+        if ($offset >= 0 && $limit >= 0) {
+            $query .= " LIMIT $limit OFFSET $offset";
+        }
+        Tools::atkdebug('atkpgsqldb.query(): '.$query);
+
+        /* connect to database */
+        if ($this->connect() == self::DB_SUCCESS) {
+            /* free old results */
+            if (!empty($this->m_query_id)) {
+                @pg_free_result($this->m_query_id);
+                $this->m_query_id = 0;
+            }
+
+            /* query database */
+            $error = false;
+            $this->m_query_id = @pg_query($this->m_link_id, $query) or $error = true;
+
+            $this->m_row = 0;
+
+            $this->m_error = pg_last_error();
+            if ($error) {
+                $this->halt("Invalid SQL query: $query");
+            }
+
+            if ($this->m_query_id) {
+                /* return query id */
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check if table exists.
      *
      * @param string $table the table to find
@@ -457,6 +498,33 @@ class PgSqlDb extends Db
 
         return count($res) == 0 ? false : true;
     }
+
+    public function commit()
+    {
+        if ($this->m_link_id) {
+            Tools::atkdebug('Commit');
+            $this->_query('COMMIT', true);
+        }
+    }
+
+    public function savepoint($name)
+    {
+        Tools::atkdebug(get_class($this)."::savepoint $name");
+        $this->_query('SAVEPOINT '.$name, true);
+    }
+
+    public function rollback($savepoint = '')
+    {
+        if ($this->m_link_id) {
+            if (!empty($savepoint)) {
+                Tools::atkdebug(get_class($this)."::rollback (rollback to savepoint $savepoint)");
+                $this->_query('ROLLBACK TO SAVEPOINT '.$savepoint, true);
+            } else {
+                $this->_query('ROLLBACK', true);
+            }
+        }
+    }
+
 
     /**
      * This function indicates what searchmodes the database supports.

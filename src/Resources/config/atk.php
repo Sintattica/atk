@@ -63,8 +63,14 @@ return [
      */
     'datagrid_class' => '\\Sintattica\\Atk\\DataGrid\\DataGrid',
 
-    'datagrid_display_top_paginator' => true,
-    'datagrid_display_bottom_paginator' => true,
+    'datagrid_display_top_info' => true,
+    'datagrid_display_bottom_info' => true,
+
+    /*
+     * if true, the total of a field is relative to the current paginated page
+     * (like legacy atk)
+     */
+    'datagrid_total_paginate' => false,
 
     /*
      * The dispatcher, all request (should) lead to this setting.
@@ -332,6 +338,21 @@ return [
      */
     'auth_accountenableexpression' => '',
 
+    /*
+     *  The boolean or numeric 1/0 field that enable the user to be an administrator
+     */
+    'auth_administratorfield' => '',
+
+    /*
+     * An array of usernames that enable the users to be administrators (be careful!)
+     */
+    'auth_administratorusers' => [],
+
+    /*
+     * if true, no password is needed to authenticate (be careful!)
+     */
+    'auth_ignorepasswordmatch' => false,
+
 
     /************************** REMEMBER ME *********************************/
 
@@ -354,7 +375,17 @@ return [
     /*
      * The table where to store remember me tokens
      */
-    'auth_rememberme_dbtable' => 'auth_tokens',
+    'auth_rememberme_dbtable' => 'auth_rememberMe',
+
+
+    /************************** U2F *********************************/
+
+    'auth_enable_u2f' => false,
+
+    'auth_u2f_dbtable' => 'auth_u2f',
+
+    'auth_u2f_enabledfield' => '',
+
 
     /***************************** LDAP settings *******************************/
     /*
@@ -515,6 +546,8 @@ return [
      */
     'mra_position' => 'bottom',
 
+    'style_url' => $_configAssetsUrl.'styles/style.css',
+
     /*********************************** OUTPUT ********************************/
 
     /*
@@ -654,7 +687,13 @@ return [
      * Default sequence prefix.
      * @var String
      */
-    'database_sequenceprefix' => 'seq_',
+    'database_sequenceprefix' => '',
+
+    /*
+     * Default sequence suffix.
+     * @var String
+     */
+    'database_sequencesuffix' => '_seq',
 
     /*
      * Make the recordlist use a javascript

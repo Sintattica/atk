@@ -74,7 +74,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @return ManyToOneRelation
      */
-    protected function getManyToOneRelation()
+    public function getManyToOneRelation()
     {
         return $this->m_manyToOneRelation;
     }

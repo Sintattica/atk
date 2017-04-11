@@ -268,16 +268,16 @@ class DurationAttribute extends Attribute
     /**
      * Fetch values.
      *
-     * @param array $rec Array with values
+     * @param array $postvars Array with values
      *
      * @return string without slashes
      */
-    public function fetchValue($rec)
+    public function fetchValue($postvars)
     {
-        if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($rec[$this->fieldName()])) {
-            return $this->_string2minutes($rec[$this->fieldName()]);
+        if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($postvars[$this->fieldName()])) {
+            return $this->_string2minutes($postvars[$this->fieldName()]);
         } else {
-            return $rec[$this->fieldName()]['hours'] * 60 + $rec[$this->fieldName()]['minutes'];
+            return $postvars[$this->fieldName()]['hours'] * 60 + $postvars[$this->fieldName()]['minutes'];
         }
     }
 

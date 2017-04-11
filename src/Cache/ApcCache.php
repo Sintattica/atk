@@ -3,7 +3,6 @@
 namespace Sintattica\Atk\Cache;
 
 use Sintattica\Atk\Core\Config;
-use Exception;
 
 class ApcCache extends Cache
 {
@@ -13,8 +12,8 @@ class ApcCache extends Cache
     public function __construct()
     {
         // make sure we have apc available
-        if (!(extension_loaded('apc') && ini_get('apc.enabled'))) {
-            throw new Exception('The APC extension is not loaded or disabled');
+        if (!ini_get('apc.enabled')) {
+            die('The APC extension is not loaded or disabled');
         }
         $this->m_namespace = Config::getGlobal('cache_namespace', 'default');
     }

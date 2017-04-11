@@ -2,13 +2,12 @@
 
 namespace Sintattica\Atk\DataGrid;
 
-use Sintattica\Atk\Utils\Json;
-use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Utils\StringParser;
-use Exception;
 
 /**
  * The data grid is a component based record list container.
@@ -171,7 +170,7 @@ class DataGrid
     /**
      * Default limit.
      *
-     * @var array
+     * @var int
      */
     private $m_defaultLimit;
 
@@ -332,6 +331,10 @@ class DataGrid
      */
     private $m_mraDefaultAction = null;
 
+
+    private $m_displayTopInfo;
+    private $m_displayBottomInfo;
+
     /**
      * Create a new DataGrid instance.
      *
@@ -369,20 +372,20 @@ class DataGrid
      * manager does not exist, this method will fail!
      *
      * @param Node $node datagrid node
-     *
+     * @throws \Exception
      * @return DataGrid datagrid instance
      */
     public static function resume(Node $node)
     {
         // Cannot resume from session.
         if (!isset($GLOBALS['ATK_VARS']['atkdatagrid'])) {
-            throw new Exception('No last known datagrid!');
+            throw new \Exception('No last known datagrid!');
         }
 
         $name = $GLOBALS['ATK_VARS']['atkdatagrid'];
 
         if (!isset($GLOBALS['ATK_VARS']['atkdgsession'][$name])) {
-            throw new Exception('No session data for grid: '.$name);
+            throw new \Exception('No session data for grid: '.$name);
         }
         $session = $GLOBALS['ATK_VARS']['atkdgsession'][$name];
 
@@ -452,6 +455,9 @@ class DataGrid
         $this->setActionSessionStatus(SessionManager::SESSION_NESTED);
         $this->setMode('admin');
         $this->setMRASelectionMode($this->getNode()->getMRASelectionMode());
+
+        $this->setDisplayTopInfo(Config::getGlobal('datagrid_display_top_info'));
+        $this->setDisplayBottomInfo(Config::getGlobal('datagrid_display_bottom_info'));
 
         if (!$this->getNode()->hasFlag(Node::NF_NO_FILTER)) {
             foreach ($this->getNode()->m_filters as $key => $value) {
@@ -656,6 +662,8 @@ class DataGrid
             'countHandler',
             'selectHandler',
             'masterRecord',
+            'displayTopInfo',
+            'displayBottomInfo',
         );
 
         foreach ($vars as $var) {
@@ -724,6 +732,8 @@ class DataGrid
      * Converts node flags to datagrid flags.
      *
      * @param int $nodeFlags The nodeflags to convert
+     *
+     * @return int flags
      */
     protected function convertNodeFlags($nodeFlags)
     {
@@ -1305,6 +1315,7 @@ class DataGrid
      * Remove filter.
      *
      * @param string $filter
+     * @param array $params
      */
     public function removeFilter($filter, $params = array())
     {
@@ -1534,7 +1545,7 @@ class DataGrid
         }
 
         $selector = $this->getNode()->select()->excludes($excludes)->orderBy($this->getOrderBy())->limit($this->getLimit(),
-                $this->getOffset())->mode($this->getMode())->ignoreDefaultFilters();
+            $this->getOffset())->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
             $selector->where($filter['filter'], $filter['params']);
@@ -1637,7 +1648,7 @@ class DataGrid
      *
      * @param array $overrides key/value overrides
      * @param array $overridesJs key/value run-time overrides
-     * @param array $overridesJsCallback JavaScript function which returns an overrides Hash
+     * @param string $overridesJsCallback JavaScript function which returns an overrides Hash
      *
      * @return string JavaScript call (might need escaping when used in HTML code)
      */
@@ -1726,6 +1737,7 @@ class DataGrid
     {
         $event = new DataGridEvent($this, $event);
 
+        /** @var DataGridListener $listener */
         foreach ($this->getListeners() as $listener) {
             $listener->notify($event);
         }
@@ -1846,5 +1858,26 @@ class DataGrid
     public static function registerModifier($nodeType, $callback)
     {
         self::$s_modifiers[$nodeType == null ? '*' : $nodeType][] = $callback;
+    }
+
+
+    public function setDisplayTopInfo($displayTopInfo = true)
+    {
+        $this->m_displayTopInfo = $displayTopInfo;
+    }
+
+    public function getDisplayTopInfo()
+    {
+        return $this->m_displayTopInfo;
+    }
+
+    public function setDisplayBottomInfo($displayBottomInfo = true)
+    {
+        $this->m_displayBottomInfo = $displayBottomInfo;
+    }
+
+    public function getDisplayBottomInfo()
+    {
+        return $this->m_displayBottomInfo;
     }
 }

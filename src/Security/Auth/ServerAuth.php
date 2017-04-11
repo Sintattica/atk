@@ -45,4 +45,9 @@ class ServerAuth extends AuthInterface
             return SecurityManager::AUTH_MISMATCH;
         }
     }
+
+    public function isValidUser($user)
+    {
+        return $_SERVER['PHP_AUTH_USER'] ? true : false;
+    }
 }

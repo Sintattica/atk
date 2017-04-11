@@ -93,7 +93,7 @@ class FileAttribute extends Attribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
+     * @param array|string $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      */
     public function __construct($name, $flags = 0, $dir)
     {
@@ -101,8 +101,7 @@ class FileAttribute extends Attribute
         parent::__construct($name, $flags);
 
         $this->setDir($dir);
-        $this->setStorageType(self::POSTSTORE | self::ADDTOQUERY, 'update');
-        $this->setStorageType(self::POSTSTORE | self::ADDTOQUERY, 'add');
+        $this->setStorageType(self::POSTSTORE | self::ADDTOQUERY);
     }
 
     /**
@@ -126,23 +125,6 @@ class FileAttribute extends Attribute
     }
 
     /**
-     * Turn auto-numbering of filenames on/off.
-     *
-     * When autonumbering is turned on, uploading a file with the same name as
-     * the file of another record, will result in the file getting a unique
-     * sequence number.
-     *
-     * @param bool $autonumbering
-     * @return FileAttribute
-     */
-    public function setAutonumbering($autonumbering = true)
-    {
-        $this->m_autonumbering = $autonumbering;
-
-        return $this;
-    }
-
-    /**
      * returns a string with a / on the end.
      *
      * @param string $dir_url String with the url/dir
@@ -159,41 +141,55 @@ class FileAttribute extends Attribute
     }
 
     /**
-     * Returns an array containing files in specified directory
-     * optionally filtered by settings from setAllowedFileTypes method.
+     * Recursive rmdir.
      *
-     * @param string $dir Directory to read files from
+     * @see http://nl3.php.net/rmdir
      *
-     * @return array Array with files in specified dir
+     * @param string $dir path to remove
+     *
+     * @return bool succes/failure
+     *
+     * @static
      */
-    public function getFiles($dir)
+    public static function rmdir($dir)
     {
-        $dirHandle = dir($dir);
-        $file_arr = [];
-        if (!$dirHandle) {
-            Tools::atkerror("Unable to open directory {$dir}");
-
-            return [];
+        if (!($handle = @opendir($dir))) {
+            return false;
         }
 
-        while ($item = $dirHandle->read()) {
-            if (count($this->m_allowedFileTypes) == 0) {
-                if (is_file($this->m_dir.$item)) {
-                    $file_arr[] = $item;
-                }
-            } else {
-                $extension = $this->getFileExtension($item);
-
-                if (in_array($extension, $this->m_allowedFileTypes)) {
-                    if (is_file($this->m_dir.$item)) {
-                        $file_arr[] = $item;
+        while (false !== ($item = readdir($handle))) {
+            if ($item != '.' && $item != '..') {
+                if (is_dir("$dir/$item")) {
+                    if (!self::rmdir("$dir/$item")) {
+                        return false;
+                    }
+                } else {
+                    if (!@unlink("$dir/$item")) {
+                        return false;
                     }
                 }
             }
         }
-        $dirHandle->close();
+        closedir($handle);
 
-        return $file_arr;
+        return @rmdir($dir);
+    }
+
+    /**
+     * Turn auto-numbering of filenames on/off.
+     *
+     * When autonumbering is turned on, uploading a file with the same name as
+     * the file of another record, will result in the file getting a unique
+     * sequence number.
+     *
+     * @param bool $autonumbering
+     * @return FileAttribute
+     */
+    public function setAutonumbering($autonumbering = true)
+    {
+        $this->m_autonumbering = $autonumbering;
+
+        return $this;
     }
 
     /**
@@ -268,110 +264,117 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
-            $result .= '<br class="atkFileAttributeCheckboxSeparator"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
-                    'atk');
+            $result .= '<br class="atkFileAttributeCheckboxSeparator"><label for="'.$id.'_del"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
+                    'atk').'</label>';
         }
 
         return $result;
     }
 
     /**
-     * Convert value to record for database.
+     * Display values.
      *
-     * @param array $rec Array with Fields
+     * @param array $record Array with fields
+     * @param string $mode
      *
-     * @return string Nothing or Fieldname or Original filename
+     * @return string Filename or Nothing
      */
-    public function value2db($rec)
+    public function display($record, $mode)
     {
-        $del = isset($rec[$this->fieldName()]['postdel']) ? $rec[$this->fieldName()]['postdel'] : null;
+        // Get random number to use as param when displaying images
+        // while updating images was not allways visible due to caching
+        $randval = mt_rand();
 
-        if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && ($del != null || $del != $rec[$this->fieldName()]['filename'])) {
-            return $this->escapeSQL($rec[$this->fieldName()]['filename']);
-        }
+        $filename = isset($record[$this->fieldName()]['filename']) ? $record[$this->fieldName()]['filename'] : null;
+        Tools::atkdebug($this->fieldName()." - File: $filename");
+        $prev_type = array(
+            'jpg',
+            'jpeg',
+            'gif',
+            'tif',
+            'png',
+            'bmp',
+            'htm',
+            'html',
+            'txt',
+        );  // file types for preview
+        $imgtype_prev = array('jpg', 'jpeg', 'gif', 'png');  // types which are supported by GetImageSize
+        if ($filename != '') {
+            if (is_file($this->m_dir.$filename)) {
+                $ext = $this->getFileExtension($filename);
+                if ((in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext, $prev_type))) {
+                    return '<a href="'.$this->m_url."$filename\" target=\"_blank\">$filename</a>";
+                } elseif (in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_POPUP)) {
+                    if (in_array($ext, $imgtype_prev)) {
+                        $imagehw = getimagesize($this->m_dir.$filename);
+                    } else {
+                        $imagehw = array('0' => '640', '1' => '480');
+                    }
+                    $page = Page::getInstance();
+                    $page->register_script(Config::getGlobal('assets_url').'javascript/newwindow.js');
 
-        if ($del != null) {
-            return '';
-        }
+                    return '<a href="'.$this->m_url.$filename.'" alt="'.$filename.'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0] + 50).'\',\''.($imagehw[1] + 50).'\',\'yes\');return false;">'.$filename.'</a>';
+                }
 
-        return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
-    }
-
-    /**
-     * Recursive mkdir.
-     *
-     * @see http://nl2.php.net/mkdir
-     *
-     * @param string $path path to create
-     *
-     * @return bool success/failure
-     *
-     * @static
-     */
-    public static function mkdir($path)
-    {
-        $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
-        $dirs = explode('/', $path);
-
-        $path = '';
-        foreach ($dirs as $element) {
-            $path .= $element.'/';
-            if (!is_dir($path) && !mkdir($path)) {
-                return false;
+                return '<img src="'.$this->m_url.$filename.'?b='.$randval.'" alt="'.$filename.'">';
+            } else {
+                return $filename.' (<font color="#ff0000">'.Tools::atktext('file_not_exist', 'atk').'</font>)';
             }
         }
-
-        return true;
     }
 
     /**
-     * Recursive rmdir.
+     * Get the file extension.
      *
-     * @see http://nl3.php.net/rmdir
+     * @param string $filename Filename
      *
-     * @param string $dir path to remove
-     *
-     * @return bool succes/failure
-     *
-     * @static
+     * @return string The file extension
      */
-    public static function rmdir($dir)
+    public function getFileExtension($filename)
     {
-        if (!($handle = @opendir($dir))) {
-            return false;
+        if ($dotPos = strrpos($filename, '.')) {
+            return strtolower(substr($filename, $dotPos + 1, strlen($filename)));
         }
 
-        while (false !== ($item = readdir($handle))) {
-            if ($item != '.' && $item != '..') {
-                if (is_dir("$dir/$item")) {
-                    if (!self::rmdir("$dir/$item")) {
-                        return false;
-                    }
-                } else {
-                    if (!@unlink("$dir/$item")) {
-                        return false;
+        return '';
+    }
+
+    /**
+     * Returns an array containing files in specified directory
+     * optionally filtered by settings from setAllowedFileTypes method.
+     *
+     * @param string $dir Directory to read files from
+     *
+     * @return array Array with files in specified dir
+     */
+    public function getFiles($dir)
+    {
+        $dirHandle = dir($dir);
+        $file_arr = [];
+        if (!$dirHandle) {
+            Tools::atkerror("Unable to open directory {$dir}");
+
+            return [];
+        }
+
+        while ($item = $dirHandle->read()) {
+            if (count($this->m_allowedFileTypes) == 0) {
+                if (is_file($this->m_dir.$item)) {
+                    $file_arr[] = $item;
+                }
+            } else {
+                $extension = $this->getFileExtension($item);
+
+                if (in_array($extension, $this->m_allowedFileTypes)) {
+                    if (is_file($this->m_dir.$item)) {
+                        $file_arr[] = $item;
                     }
                 }
             }
         }
-        closedir($handle);
+        $dirHandle->close();
 
-        return @rmdir($dir);
-    }
-
-    /**
-     * Perform processing on an image right after it is uploaded.
-     *
-     * If you need any resizing or other postprocessing to be done on a file
-     * after it is uploaded, you can create a derived attribute that
-     * implements the processFile($filepath) method.
-     * The default implementation does not do any processing.
-     *
-     * @param string $filepath The path of the uploaded file.
-     * @param string $filename The name of the uploaded file.
-     */
-    public function processFile($filepath, $filename)
-    {
+        return $file_arr;
     }
 
     /**
@@ -390,57 +393,6 @@ class FileAttribute extends Attribute
             return false;
         }
         $this->m_allowedFileTypes = $types;
-
-        return true;
-    }
-
-    /**
-     * Check whether the filetype is is one of the allowed
-     * file formats. If the FileType array is empty this assumes that
-     * all formats are allowed!
-     *
-     * @todo It turns out that handling mimetypes is not that easy
-     * the mime_content_type has been deprecated and there is no
-     * Os independend alternative! For now we only support a few
-     * image mime types.
-     *
-     * @param array $rec
-     *
-     * @return bool
-     */
-    public function isAllowedFileType(&$rec)
-    {
-        if (count($this->m_allowedFileTypes) == 0) {
-            return true;
-        }
-
-        // detect whether the file is uploaded or is an existing file.
-        $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ? $rec[$this->fieldName()]['tmpfile'] : $this->m_dir.$rec[$this->fieldName()]['filename'];
-
-        if (@empty($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir) {
-            $valid = false;
-
-            if (function_exists('getimagesize')) {
-                $size = @getimagesize($filename);
-                if (in_array($size['mime'], $this->m_allowedFileTypes)) {
-                    $valid = true;
-                }
-            }
-
-            $orgFilename = @$rec[$this->fieldName()]['orgfilename'];
-            if ($orgFilename != null) {
-                $extension = $this->getFileExtension($orgFilename);
-                if (in_array($extension, $this->m_allowedFileTypes)) {
-                    $valid = true;
-                }
-            }
-
-            if (!$valid) {
-                $rec[$this->fieldName()]['error'] = UPLOAD_ERR_EXTENSION;
-
-                return false;
-            }
-        }
 
         return true;
     }
@@ -499,6 +451,54 @@ class FileAttribute extends Attribute
     }
 
     /**
+     * Check whether the filetype is is one of the allowed
+     * file formats. If the FileType array is empty this assumes that
+     * all formats are allowed!
+     *
+     * @todo It turns out that handling mimetypes is not that easy
+     * the mime_content_type has been deprecated and there is no
+     * Os independend alternative! For now we only support a few
+     * image mime types.
+     *
+     * @param array $rec
+     *
+     * @return bool
+     */
+    public function isAllowedFileType(&$rec)
+    {
+        if (count($this->m_allowedFileTypes) == 0) {
+            return true;
+        }
+
+        // detect whether the file is uploaded or is an existing file.
+        $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ? $rec[$this->fieldName()]['tmpfile'] : $this->m_dir.$rec[$this->fieldName()]['filename'];
+
+        if (@empty($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir) {
+
+            if (function_exists('getimagesize')) {
+                $size = @getimagesize($filename);
+                if (in_array($size['mime'], $this->m_allowedFileTypes)) {
+                    return true;
+                }
+            }
+
+            $orgFilename = isset($rec[$this->fieldName()]['orgfilename']) ? $rec[$this->fieldName()]['orgfilename'] : null;
+            if ($orgFilename) {
+                $extension = $this->getFileExtension($orgFilename);
+                if (in_array($extension, $this->m_allowedFileTypes)) {
+                    return true;
+                }
+
+                $rec[$this->fieldName()]['error'] = UPLOAD_ERR_EXTENSION;
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Tests the $_FILE error code and returns the corresponding atk error text token.
      *
      * @param int $error
@@ -527,37 +527,37 @@ class FileAttribute extends Attribute
     /**
      * Get filename out of Array.
      *
-     * @param array $rec Record
+     * @param array $postvars Record
      *
      * @return array Array with tmpfile,filename,filesize,orgfilename
      */
-    public function fetchValue($rec)
+    public function fetchValue($postvars)
     {
-        $del = isset($rec[$this->fieldName()]['del']) ? $rec[$this->fieldName()]['del'] : null;
+        $del = isset($postvars[$this->fieldName()]['del']) ? $postvars[$this->fieldName()]['del'] : null;
 
         $basename = $this->fieldName();
 
-        if (is_array($_FILES) || ($rec[$this->fieldName()]['select'] != '') || ($rec[$this->fieldName()]['filename'] != '')) { // php4
+        if (is_array($postvars['atkfiles']) || ($postvars[$this->fieldName()]['select'] != '') || ($postvars[$this->fieldName()]['filename'] != '')) { // php4
             // if an error occured during the upload process
             // and the error is not 'no file' while the field isn't obligatory or a file was already selected
-            $fileselected = isset($rec[$this->fieldName()]['select']) && $rec[$this->fieldName()]['select'] != '';
-            if (isset($_FILES[$basename]) && $_FILES[$basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $_FILES[$basename]['error'] == UPLOAD_ERR_NO_FILE)) {
+            $fileselected = isset($postvars[$this->fieldName()]['select']) && $postvars[$this->fieldName()]['select'] != '';
+            if (isset($postvars['atkfiles'][$basename]) && $postvars['atkfiles'][$basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $postvars['atkfiles'][$basename]['error'] == UPLOAD_ERR_NO_FILE)) {
                 return array(
-                    'filename' => $_FILES[$this->fieldName()]['name'],
-                    'error' => $_FILES[$this->fieldName()]['error'],
+                    'filename' => $postvars['atkfiles'][$this->fieldName()]['name'],
+                    'error' => $postvars['atkfiles'][$this->fieldName()]['error'],
                 );
             } // if no new file has been uploaded..
-            elseif (count($_FILES) == 0 || $_FILES[$basename]['tmp_name'] == 'none' || $_FILES[$basename]['tmp_name'] == '') {
+            elseif (count($postvars['atkfiles']) == 0 || $postvars['atkfiles'][$basename]['tmp_name'] == 'none' || $postvars['atkfiles'][$basename]['tmp_name'] == '') {
                 // No file to upload, then check if the select box is filled
                 if ($fileselected) {
                     Tools::atkdebug('file selected!');
-                    $filename = $rec[$this->fieldName()]['select'];
+                    $filename = $postvars[$this->fieldName()]['select'];
                     $orgfilename = $filename;
                     $postdel = '';
                     if (isset($del) && $del == 'on') {
                         $filename = '';
                         $orgfilename = '';
-                        $postdel = $rec[$this->fieldName()]['select'];
+                        $postdel = $postvars[$this->fieldName()]['select'];
                     }
                     $result = array(
                         'tmpfile' => '',
@@ -567,10 +567,10 @@ class FileAttribute extends Attribute
                         'postdel' => $postdel,
                     );
                 }  // maybe we atk restored data from session
-                elseif (isset($rec[$this->fieldName()]['filename']) && $rec[$this->fieldName()]['filename'] != '') {
-                    $result = $rec[$this->fieldName()];
+                elseif (isset($postvars[$this->fieldName()]['filename']) && $postvars[$this->fieldName()]['filename'] != '') {
+                    $result = $postvars[$this->fieldName()];
                 } else {
-                    $filename = (isset($rec[$basename.'_orgfilename'])) ? $rec[$basename.'_orgfilename'] : '';
+                    $filename = (isset($postvars[$basename.'_orgfilename'])) ? $postvars[$basename.'_orgfilename'] : '';
 
                     if ($del == 'on') {
                         $filename = '';
@@ -585,158 +585,22 @@ class FileAttribute extends Attribute
                     );
                 }
             } else {
-                $realname = $this->_filenameMangle($rec, $_FILES[$basename]['name']);
+                $realname = $this->_filenameMangle($postvars, $postvars['atkfiles'][$basename]['name']);
 
                 if ($this->m_autonumbering) {
-                    $realname = $this->_filenameUnique($rec, $realname);
+                    $realname = $this->_filenameUnique($postvars, $realname);
                 }
 
                 $result = array(
-                    'tmpfile' => $_FILES[$basename]['tmp_name'],
+                    'tmpfile' => $postvars['atkfiles'][$basename]['tmp_name'],
                     'filename' => $realname,
-                    'filesize' => $_FILES[$basename]['size'],
+                    'filesize' => $postvars['atkfiles'][$basename]['size'],
                     'orgfilename' => $realname,
                 );
             }
 
             return $result;
         }
-    }
-
-    /**
-     * Check if the attribute is empty..
-     *
-     * @param array $record the record
-     *
-     * @return bool true if empty
-     */
-    public function isEmpty($record)
-    {
-        return @empty($record[$this->fieldName()]['filename']);
-    }
-
-    /**
-     * @param $file
-     * @return bool
-     */
-    protected function deleteFile($file)
-    {
-        if (is_file($file) && !@unlink($file)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Deletes file from HD.
-     *
-     * @param array $record Array with fields
-     *
-     * @return bool False if the delete went wrong
-     */
-    public function postDelete($record)
-    {
-        if ($this->hasFlag(self::AF_FILE_PHYSICAL_DELETE) && $record[$this->fieldName()]['orgfilename'] != '') {
-            $file = $this->m_dir.$record[$this->fieldName()]['orgfilename'];
-
-            return $this->deleteFile($file);
-        }
-
-        return true;
-    }
-
-    /**
-     * Display values.
-     *
-     * @param array $record Array with fields
-     * @param string $mode
-     *
-     * @return string Filename or Nothing
-     */
-    public function display($record, $mode)
-    {
-        // Get random number to use as param when displaying images
-        // while updating images was not allways visible due to caching
-        $randval = mt_rand();
-
-        $filename = isset($record[$this->fieldName()]['filename']) ? $record[$this->fieldName()]['filename'] : null;
-        Tools::atkdebug($this->fieldName()." - File: $filename");
-        $prev_type = array(
-            'jpg',
-            'jpeg',
-            'gif',
-            'tif',
-            'png',
-            'bmp',
-            'htm',
-            'html',
-            'txt',
-        );  // file types for preview
-        $imgtype_prev = array('jpg', 'jpeg', 'gif', 'png');  // types which are supported by GetImageSize
-        if ($filename != '') {
-            if (is_file($this->m_dir.$filename)) {
-                $ext = $this->getFileExtension($filename);
-                if ((in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext, $prev_type))) {
-                    return '<a href="'.$this->m_url."$filename\" target=\"_blank\">$filename</a>";
-                } elseif (in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_POPUP)) {
-                    if (in_array($ext, $imgtype_prev)) {
-                        $imagehw = getimagesize($this->m_dir.$filename);
-                    } else {
-                        $imagehw = array('0' => '640', '1' => '480');
-                    }
-                    $page = Page::getInstance();
-                    $page->register_script(Config::getGlobal('assets_url').'javascript/newwindow.js');
-
-                    return '<a href="'.$this->m_url.$filename.'" alt="'.$filename.'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0] + 50).'\',\''.($imagehw[1] + 50).'\',\'yes\');return false;">'.$filename.'</a>';
-                }
-
-                return '<img src="'.$this->m_url.$filename.'?b='.$randval.'" alt="'.$filename.'">';
-            } else {
-                return $filename.'(<font color="#ff0000">'.Tools::atktext('file_not_exist', 'atk').'</font>)';
-            }
-        }
-    }
-
-    /**
-     * Get the file extension.
-     *
-     * @param string $filename Filename
-     *
-     * @return string The file extension
-     */
-    public function getFileExtension($filename)
-    {
-        if ($dotPos = strrpos($filename, '.')) {
-            return strtolower(substr($filename, $dotPos + 1, strlen($filename)));
-        }
-
-        return '';
-    }
-
-    /**
-     * Retrieve the list of searchmodes which are supported.
-     *
-     * @return array List of supported searchmodes
-     */
-    public function getSearchModes()
-    {
-        // exact match and substring search should be supported by any database.
-        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-        // searches can be implemented using LIKE)
-        // Possible values
-        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('substring', 'exact', 'wildcard', 'regexp');
-    }
-
-    /**
-     * Set filename template.
-     *
-     * @param string $template
-     */
-    public function setFilenameTemplate($template)
-    {
-        $this->m_filenameTpl = $template;
     }
 
     /**
@@ -807,23 +671,31 @@ class FileAttribute extends Attribute
             $ext = '';
         }
 
-        $selector = '('.$this->fieldName()."='$filename' OR ".$this->fieldName()." LIKE '$name-%$ext')";
-        if ($rec[$this->m_ownerInstance->primaryKeyField()] != '') {
-            $selector .= ' AND NOT ('.$this->m_ownerInstance->primaryKey($rec).')';
+        $owner = $this->m_ownerInstance;
+        $db = $owner->getDb();
+        $tableSql = $db->escapeSQL($this->m_ownerInstance->getTable());
+        $fieldnameSql = $db->escapeSQL($this->fieldName());
+        $filenameSql = $db->escapeSQL($filename);
+        $nameSql = $db->escapeSQL($name);
+        $extSql = $db->escapeSQL($ext);
+
+        $sql = "SELECT `$fieldnameSql` AS filename FROM `$tableSql` WHERE `$fieldnameSql` = '$filenameSql' OR `$fieldnameSql` LIKE '$nameSql-%$extSql'";
+        if ($rec[$owner->primaryKeyField()] != '') {
+            $sql .= " AND NOT (".$owner->primaryKey($rec).")";
         }
 
-        $records = $this->m_ownerInstance->select("($selector)")->includes(array($this->fieldName()))->getAllRows();
+        $records = $db->getRows($sql);
 
         if (count($records) > 0) {
             // Check for the highest number
             $max_count = 0;
             foreach ($records as $record) {
-                $dotPos = strrpos($record[$this->fieldName()]['filename'], '.');
-                $dashPos = strrpos($record[$this->fieldName()]['filename'], '-');
+                $dotPos = strrpos($record['filename'], '.');
+                $dashPos = strrpos($record['filename'], '-');
                 if ($dotPos !== false && $dashPos !== false) {
-                    $number = substr($record[$this->fieldName()]['filename'], ($dashPos + 1), ($dotPos - $dashPos) - 1);
+                    $number = substr($record['filename'], ($dashPos + 1), ($dotPos - $dashPos) - 1);
                 } elseif ($dotPos === false && $ext == '' && $dashPos !== false) {
-                    $number = substr($record[$this->fieldName()]['filename'], ($dashPos + 1));
+                    $number = substr($record['filename'], ($dashPos + 1));
                 } else {
                     continue;
                 }
@@ -838,6 +710,67 @@ class FileAttribute extends Attribute
         Tools::atkdebug('FileAttribute::_filenameUnique() -> New filename = '.$filename);
 
         return $filename;
+    }
+
+    /**
+     * Deletes file from HD.
+     *
+     * @param array $record Array with fields
+     *
+     * @return bool False if the delete went wrong
+     */
+    public function postDelete($record)
+    {
+        if ($record[$this->fieldName()]['orgfilename'] != '') {
+            $file = $this->m_dir.$record[$this->fieldName()]['orgfilename'];
+
+            return $this->deleteFile($file);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $file
+     * @return bool
+     */
+    protected function deleteFile($file)
+    {
+        // return true even if the file is not physically deleted
+        if ($this->hasFlag(self::AF_FILE_NO_DELETE) || !$this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)) {
+            return true;
+        }
+
+        if (is_file($file) && !@unlink($file)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Retrieve the list of searchmodes which are supported.
+     *
+     * @return array List of supported searchmodes
+     */
+    public function getSearchModes()
+    {
+        // exact match and substring search should be supported by any database.
+        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+        // searches can be implemented using LIKE)
+        // Possible values
+        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+        return array('substring', 'exact', 'wildcard', 'regexp');
+    }
+
+    /**
+     * Set filename template.
+     *
+     * @param string $template
+     */
+    public function setFilenameTemplate($template)
+    {
+        $this->m_filenameTpl = $template;
     }
 
     /**
@@ -909,6 +842,48 @@ class FileAttribute extends Attribute
         return true;
     }
 
+    /**
+     * Recursive mkdir.
+     *
+     * @see http://nl2.php.net/mkdir
+     *
+     * @param string $path path to create
+     *
+     * @return bool success/failure
+     *
+     * @static
+     */
+    public static function mkdir($path)
+    {
+        $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
+        $dirs = explode('/', $path);
+
+        $path = '';
+        foreach ($dirs as $element) {
+            $path .= $element.'/';
+            if (!is_dir($path) && !mkdir($path)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Perform processing on an image right after it is uploaded.
+     *
+     * If you need any resizing or other postprocessing to be done on a file
+     * after it is uploaded, you can create a derived attribute that
+     * implements the processFile($filepath) method.
+     * The default implementation does not do any processing.
+     *
+     * @param string $filepath The path of the uploaded file.
+     * @param string $filename The name of the uploaded file.
+     */
+    public function processFile($filepath, $filename)
+    {
+    }
+
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
@@ -920,5 +895,39 @@ class FileAttribute extends Attribute
         } else {
             $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
         }
+    }
+
+    /**
+     * Check if the attribute is empty..
+     *
+     * @param array $record the record
+     *
+     * @return bool true if empty
+     */
+    public function isEmpty($record)
+    {
+        return @empty($record[$this->fieldName()]['filename']);
+    }
+
+    /**
+     * Convert value to record for database.
+     *
+     * @param array $rec Array with Fields
+     *
+     * @return string Nothing or Fieldname or Original filename
+     */
+    public function value2db($rec)
+    {
+        $del = isset($rec[$this->fieldName()]['postdel']) ? $rec[$this->fieldName()]['postdel'] : null;
+
+        if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && ($del != null || $del != $rec[$this->fieldName()]['filename'])) {
+            return $this->escapeSQL($rec[$this->fieldName()]['filename']);
+        }
+
+        if ($del != null) {
+            return '';
+        }
+
+        return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
     }
 }

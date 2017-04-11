@@ -106,6 +106,11 @@ class MultiSelectListAttribute extends ListAttribute
         $this->m_fieldSeparator = $separator;
     }
 
+    public function getFieldSeparator()
+    {
+        return $this->m_fieldSeparator;
+    }
+
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
@@ -149,7 +154,7 @@ class MultiSelectListAttribute extends ListAttribute
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
-        $selectOptions['tags'] = true;
+        $selectOptions['multiple'] = true;
         if (!empty($this->getWidth())) {
             $selectOptions['width'] = $this->getWidth();
         } else {

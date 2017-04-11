@@ -895,7 +895,6 @@ class ManyToOneRelation extends Relation
                 $selectOptions['dropdown-auto-width'] = true;
                 if ($hasNullOption) {
                     $selectOptions['with-empty-value'] = $emptyValue;
-
                 }
                 if (!empty($this->getWidth())) {
                     $selectOptions['width'] = $this->getWidth();
@@ -973,12 +972,12 @@ class ManyToOneRelation extends Relation
             $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
             $sm = SessionManager::getInstance();
 
-            if ($this->m_destInstance->allowed('edit')) {
+            if (!$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_destInstance->allowed('edit')) {
                 $editlink = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
                 $autolink['edit'] = "<a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editlink).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('edit').'</a>';
             }
-            if ($this->m_destInstance->allowed('add')) {
+            if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
                 $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
                         'atkpkret' => $name,
                         'atkfilter' => ($this->m_useFilterForAddLink && $filter != '' ? $filter : ''),
@@ -1111,6 +1110,7 @@ class ManyToOneRelation extends Relation
                 $selValues = [''];
             }
 
+
             $options = [];
             $options[''] = Tools::atktext('search_all');
             $options['__NONE__'] = $this->getNoneLabel('search');
@@ -1124,14 +1124,12 @@ class ManyToOneRelation extends Relation
             if (!is_null($grid) && !$extended && $this->m_autoSearch) {
                 $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
                 $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
-
             }
 
             $selectOptions = [];
             $selectOptions['enable-select2'] = true;
-            $selectOptions['allow-clear'] = true;
             $selectOptions['dropdown-auto-width'] = true;
-            $selectOptions['placeholder'] = Tools::atktext('search_all');
+            $selectOptions['with-empty-value'] = '';
             $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
             // width always auto
@@ -1147,7 +1145,7 @@ class ManyToOneRelation extends Relation
             $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
 
             if ($useautocompletion) {
-                $noneLabel = $this->getNoneLabel('search');
+                $noneLabel = Tools::atktext('search_all');
 
                 $options = [];
                 $options[''] = $noneLabel;
@@ -1253,7 +1251,7 @@ class ManyToOneRelation extends Relation
                     if ($value[0] == '__NONE__') {
                         return $query->nullCondition($table.'.'.$this->fieldName(), true);
                     } elseif ($value[0] != '') {
-                        return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]));
+                        return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
                     }
                 } else { // search for more values using IN()
                     return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";

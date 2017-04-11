@@ -261,8 +261,9 @@ class AdminHandler extends ActionHandler
     {
         $link = '';
         if ($this->m_node->allowed('add') && !$this->m_node->hasFlag(Node::NF_READONLY) && $this->m_node->hasFlag(Node::NF_IMPORT)) {
+            $cssClass = 'class="btn btn-default admin_link admin_link_import"';
             $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'import'), Tools::atktext('import', 'atk', $this->m_node->m_type),
-                SessionManager::SESSION_NESTED);
+                SessionManager::SESSION_NESTED, false, $cssClass);
         }
 
         return $link;
@@ -282,8 +283,10 @@ class AdminHandler extends ActionHandler
                 $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 
+            $cssClass = 'class="btn btn-default admin_link admin_link_export"';
+
             $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export', array('atkfilter' => $filter)),
-                Tools::atktext('export', 'atk', $this->m_node->m_type), SessionManager::SESSION_NESTED);
+                Tools::atktext('export', 'atk', $this->m_node->m_type), SessionManager::SESSION_NESTED, false, $cssClass);
         }
 
         return $link;
@@ -311,6 +314,7 @@ class AdminHandler extends ActionHandler
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
 
         if (!$node->hasFlag(Node::NF_NO_ADD) && $node->allowed('add')) {
+
             $label = $node->text('link_'.$node->m_type.'_add', null, '', '', true);
             if (empty($label)) {
                 // generic text
@@ -320,7 +324,8 @@ class AdminHandler extends ActionHandler
             if ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
 
-                return Tools::href($addurl, $label, SessionManager::SESSION_NESTED);
+                $cssClass = 'class="btn btn-default admin_link admin_link_add"';
+                return Tools::href($addurl, $label, SessionManager::SESSION_NESTED, false, $cssClass);
             }
         }
 

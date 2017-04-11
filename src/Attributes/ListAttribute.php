@@ -313,7 +313,7 @@ class ListAttribute extends Attribute
         for ($i = 0; $i < count($values); ++$i) {
             $sel = '';
             // If the current value is selected or occurs in the record
-            if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) || (is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== '')) {
+            if ((!is_null($this->m_selected) && $values[$i] === $this->m_selected) || (is_null($this->m_selected) && $values[$i] === $recvalue && $recvalue !== '')) {
                 $sel = 'selected';
             }
 
@@ -386,6 +386,7 @@ class ListAttribute extends Attribute
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
+        $selectOptions['with-empty-value'] = '';
         if ($isMultiple) {
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }
@@ -467,7 +468,7 @@ class ListAttribute extends Attribute
                 if ($value[0] == '__NONE__') {
                     return $query->nullCondition($table.'.'.$this->fieldName(), true);
                 } else {
-                    return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]));
+                    return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
                 }
             } elseif (count($value) > 1) { // search for more values
                 if (in_array('__NONE__', $value)) {

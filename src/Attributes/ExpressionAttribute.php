@@ -145,7 +145,7 @@ class ExpressionAttribute extends Attribute
         }
     }
 
-    function display($record = "", $mode = '')
+    public function display($record, $mode)
     {
         if ($this->getSearchType() == "number") {
             $attr = new NumberAttribute($this->fieldName());

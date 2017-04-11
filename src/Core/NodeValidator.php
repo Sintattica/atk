@@ -123,7 +123,7 @@ class NodeValidator
                     if ($atkorgkey == '' || $atkorgkey != $this->m_nodeObj->primaryKey($record)) {
                         $cnt = $this->m_nodeObj->select($this->m_nodeObj->primaryKey($record))->ignoreDefaultFilters(true)->ignorePostvars(true)->getRowCount();
                         if ($cnt > 0) {
-                            Tools::triggerError($record, $p_attrib, 'error_primarykey_exists');
+                            Tools::atkTriggerError($record, $p_attrib, 'error_primarykey_exists');
                         }
                     }
                 }

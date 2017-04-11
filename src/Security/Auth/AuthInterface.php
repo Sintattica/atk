@@ -66,20 +66,13 @@ class AuthInterface
     }
 
     /**
-     * Logout handling. The default implementation does simple session destruction
-     * and recreates a new session.
+     * Logout handling.
      *
      * @param array $user The user data (as returned by atkGetUser()
      */
     public function logout($user)
     {
-        session_destroy();
 
-        $cookie_params = session_get_cookie_params();
-        $cookiepath = Config::getGlobal('cookie_path');
-        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : null;
-        session_set_cookie_params($cookie_params['lifetime'], $cookiepath, $cookiedomain);
-        @session_start();
     }
 
 
@@ -122,7 +115,7 @@ class AuthInterface
     public function allowed($securityMgr, $node, $privilege)
     {
         // security disabled or user is superuser? (may do anything)
-        if (($securityMgr->m_scheme == 'none') || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user['name']) == 'administrator')) {
+        if (($securityMgr->m_scheme == 'none') || ($securityMgr->hasLevel(-1)) || $securityMgr::isUserAdmin()) {
             $allowed = true;
         } // user is guest? (guests may do nothing)
         else {
@@ -178,7 +171,7 @@ class AuthInterface
         $attribute = $attr->fieldName();
 
         // security disabled or user is superuser? (may do anything)
-        if (($securityMgr->m_scheme == 'none') || (!Config::getGlobal('security_attributes')) || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user['name']) == 'administrator')) {
+        if (($securityMgr->m_scheme == 'none') || (!Config::getGlobal('security_attributes')) || ($securityMgr->hasLevel(-1)) || $securityMgr::isUserAdmin()) {
             $allowed = true;
         } // user is guest? (guests may do nothing)
         else {
@@ -281,6 +274,10 @@ class AuthInterface
      */
     public function getPassword($username)
     {
+        return false;
+    }
+
+    public function isValidUser($user) {
         return false;
     }
 }

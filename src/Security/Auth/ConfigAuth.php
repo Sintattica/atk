@@ -43,7 +43,7 @@ class ConfigAuth extends AuthInterface
 
         $configUser = Config::getGlobal('user');
 
-        if ($user != '' && $passwd != '' && $configUser[$user]['password'] == $passwd) {
+        if ($user != '' && $passwd != '' && SecurityManager::verify($passwd, $configUser[$user]['password'])) {
             return SecurityManager::AUTH_SUCCESS;
         } else {
             return SecurityManager::AUTH_MISMATCH;
@@ -61,11 +61,16 @@ class ConfigAuth extends AuthInterface
      *
      * @param string $user The login of the user to retrieve.
      *
-     * @return array Information about a user.
+     * @return array|null Information about a user.
      */
     public function getUser($user)
     {
         $configUser = Config::getGlobal('user');
+
+        // user not found
+        if(!array_key_exists($user, $configUser)){
+            return null;
+        }
 
         return array('name' => $user, 'level' => $configUser[$user]['level']);
     }

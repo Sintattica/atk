@@ -2,40 +2,33 @@
 
 namespace Sintattica\Atk\Attributes;
 
-use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 
 /**
  * Attribute wrapper for CKEditor (the successor of FCK Editor)
  * See http://ckeditor.com.
  */
-class CkAttribute extends TextAttribute
+class CkAttribute extends HtmlAttribute
 {
     /**
      * @var array CKEditor configuration (default)
      */
     protected $ckOptions = [
-        // the toolbar groups arrangement
-        'toolbarGroups' => [
-            ['name' => 'clipboard', 'groups' => ['clipboard', 'undo', 'document']],
-            ['name' => 'editing', 'groups' => ['find', 'selection', 'spellchecker']],
-            ['name' => 'links'],
-            ['name' => 'insert'],
+        'toolbar' => [
+            ['name' => 'clipboard', 'items' => ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo', '-', 'Print']],
+            ['name' => 'editing', 'items' => ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']],
+            ['name' => 'links', 'items' => ['Link', 'Unlink']],
+            ['name' => 'insert', 'items' => ['Image', 'Table', 'HorizontalRule', 'SpecialChar']],
             '/',
-            ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup']],
-            ['name' => 'paragraph', 'groups' => ['list', 'indent', 'align']],
-            ['name' => 'styles'],
-            ['name' => 'colors'],
+            ['name' => 'basicstyles', 'items' => ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']],
+            ['name' => 'paragraph', 'items' => ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']],
+            ['name' => 'styles', 'items' => ['Format', 'FontSize']],
+            ['name' => 'colors', 'items' => ['TextColor', 'BGColor']],
         ],
-        // remove some buttons
-        'removeButtons' => 'Save,NewPage,Preview,Anchor,Flash,Smiley,PageBreak,Iframe,Subscript,Superscript,Font,Styles',
-        // remove display of html tags on bottom bar
         'removePlugins' => 'elementspath',
-        // simplify the windows
-        'removeDialogTabs' => 'image:advanced;link:advanced',
-        // set the size
-        'height' => 250,
+        'height' => 300
     ];
 
     /**
@@ -57,17 +50,21 @@ class CkAttribute extends TextAttribute
     public function edit($record, $fieldprefix, $mode)
     {
         $page = $this->getOwnerInstance()->getPage();
-
         $id = $this->getHtmlId($fieldprefix);
 
         // register CKEditor main script
         $page->register_script(Config::getGlobal('assets_url').'lib/ckeditor/ckeditor.js');
+        $page->register_script(Config::getGlobal('assets_url').'lib/ckeditor/adapters/jquery.js');
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);
-        $page->register_loadscript("CKEDITOR.replace('$id', $options);");
+        $result = parent::edit($record, $fieldprefix, $mode);
 
-        return parent::edit($record, $fieldprefix, $mode);
+        $result .= '<script>';
+        $result .= "jQuery('#$id').ckeditor($options);";
+        $result .= '</script>';
+
+        return $result;
     }
 
     public function display($record, $mode)
@@ -75,16 +72,6 @@ class CkAttribute extends TextAttribute
         return Tools::atkArrayNvl($record, $this->fieldName(), '');
     }
 
-    public function value2db($rec)
-    {
-        if (is_array($rec) && isset($rec[$this->fieldName()])) {
-            $dbval = $this->escapeSQL(preg_replace("/\&quot;/Ui", '"', $rec[$this->fieldName()]));
-
-            return $dbval;
-        }
-
-        return;
-    }
 
     /**
      * Check if a record has an empty value for this attribute.
@@ -101,38 +88,5 @@ class CkAttribute extends TextAttribute
         $record[$this->fieldName()] = trim(strip_tags($record[$this->fieldName()], '<div>'));
 
         return parent::isEmpty($record);
-    }
-
-    private function getSpellCheckerLang($atkLang)
-    {
-        switch ($atkLang) {
-            case 'da';
-
-                return 'da_DK'; // Danish
-            case 'de':
-                return 'de_DE'; // German
-            case 'el':
-                return 'el_GR'; // Greek
-            case 'en':
-                return 'en_US'; // English
-            case 'es':
-                return 'es_ES'; // Spanish
-            case 'fi':
-                return 'fi_FI'; // Finnish
-            case 'fr':
-                return 'fr_FR'; // French
-            case 'it':
-                return 'it_IT'; // Italian
-            case 'nl':
-                return 'nl_NL'; // Dutch
-            case 'no':
-                return 'nb_NO'; // Norwegian
-            case 'pt':
-                return 'pt_PT'; // Portuguese
-            case 'sv':
-                return 'sv_SE'; // Swedish
-            default:
-                return 'en_US'; // Default: English
-        }
     }
 }

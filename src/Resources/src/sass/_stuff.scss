@@ -168,6 +168,12 @@ br.atkFileAttributeCheckboxSeparator {
   margin-right: 15px;
 }
 
+
+.checkbox > span.checkbox-wrapper {
+  margin-left: 20px;
+}
+
+
 .login-form {
   .form-control {
     display: block;
@@ -198,4 +204,8 @@ ul {
 .row.section-item > label, .row.section-item > .fieldlabel {
   padding-right: 0;
   font-weight: bold;
+}
+
+.input-group-addon {
+  min-width: 25px;
 }

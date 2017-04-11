@@ -53,7 +53,7 @@ ATK.enableSelect2ForSelect = ATK.refreshSelect2ForSelect = function (select) {
 
     if ($el.is('select')) {
         if (typeof $el.data('with-empty-value') !== 'undefined') {
-            options.templateSelection = options.templateResult = function (data) {
+            options.templateSelection = function (data) {
                 if (data.id === $el.data('with-empty-value')) {
                     return jQuery('<span class="select-empty-value">' + data.text + '</span>');
                 }

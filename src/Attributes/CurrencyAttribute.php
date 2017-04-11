@@ -43,6 +43,7 @@ class CurrencyAttribute extends NumberAttribute
         $this->m_thousandsseparator = ($thousandsseparator != '' ? $thousandsseparator : ',');
 
         $this->setUseThousandsSeparator(true);
+        $this->setTrailingZeros(true);
     }
 
     /**
@@ -57,7 +58,23 @@ class CurrencyAttribute extends NumberAttribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        return $this->getCurrencySymbolDisplay().parent::edit($record, $fieldprefix, $mode);
+        $input = parent::edit($record, $fieldprefix, $mode);
+        $currency = trim($this->getCurrencySymbolDisplay());
+        $result = $input;
+
+        $size = $this->m_size;
+        if ($this->getDecimals() > 0) {
+            $size += ($this->getDecimals() + 1);
+        }
+
+        if (strlen($currency)) {
+            $result = '<div class="input-group" style="width:'.$size.'em;">';
+            $result .= $input;
+            $result .= '<div class="input-group-addon">'.$currency.'</div>';
+            $result .= '</div>';
+        }
+
+        return $result;
     }
 
     /**

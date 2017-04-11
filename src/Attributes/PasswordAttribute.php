@@ -476,14 +476,14 @@ class PasswordAttribute extends Attribute
     /**
      * Overwriting the fetchValue to ensure all passwords are hashed.
      *
-     * @param array $rec The array with html posted values ($_POST, for
+     * @param array $postvars The array with html posted values ($_POST, for
      *                   example) that holds this attribute's value.
      *
      * @return string
      */
-    public function fetchValue($rec)
+    public function fetchValue($postvars)
     {
-        return $rec[$this->fieldName()];
+        return $postvars[$this->fieldName()];
     }
 
     /** Due to the new storeType functions

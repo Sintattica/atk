@@ -4,20 +4,19 @@ namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\FieldSet;
-use Sintattica\Atk\Handlers\ActionHandler;
-use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Ui\Page;
-use Sintattica\Atk\Ui\Ui;
-use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Db\Db;
-use Sintattica\Atk\Utils\Selector;
-use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Session\State;
-use Sintattica\Atk\Utils\ActionListener;
-use Sintattica\Atk\RecordList\ColumnConfig;
-use Sintattica\Atk\Relations\ManyToOneRelation;
-use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Handlers\ActionHandler;
+use Sintattica\Atk\RecordList\ColumnConfig;
+use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Session\State;
+use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\PageBuilder;
+use Sintattica\Atk\Ui\Ui;
+use Sintattica\Atk\Utils\ActionListener;
+use Sintattica\Atk\Utils\Selector;
+use Sintattica\Atk\Utils\StringParser;
 
 /**
  * The Node class represents a piece of information that is part of an
@@ -3216,6 +3215,7 @@ class Node
      * @param string $mode The mode for which validation is performed ('add' or 'update')
      * @param array $ignoreList The list of attributes that should not be
      *                           validated
+     * @return bool
      */
     public function validate(&$record, $mode, $ignoreList = array())
     {
@@ -3887,10 +3887,12 @@ class Node
      * be saved.
      *
      * @param array $record The record that will be saved to the database.
+     * @param string $mode The 'mode' indicates whether the added record was a
+     *                       completely new record ("add") or a copy ("copy").
      *
      * @return bool
      */
-    public function preAdd(&$record)
+    public function preAdd(&$record, $mode = 'add')
     {
         // Do nothing
         return true;
@@ -4172,6 +4174,11 @@ class Node
     public function allowed($action, $record = array())
     {
         $secMgr = SecurityManager::getInstance();
+
+        // shortcut, admins can do everything
+        if ($secMgr::isUserAdmin()) {
+            return true;
+        }
 
         $alias = $this->atkNodeUri();
         $this->resolveNodeTypeAndAction($alias, $action);

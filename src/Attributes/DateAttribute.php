@@ -981,7 +981,7 @@ class DateAttribute extends Attribute
                         } else {
                             // plain text search condition
                             $value = $this->_autoCompleteDateString($value);
-                            $searchcondition = $query->exactCondition($fieldname, $value);
+                            $searchcondition = $query->exactCondition($fieldname, $value, $this->dbFieldType());
                         }
                     }
                 }

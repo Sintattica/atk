@@ -3,7 +3,6 @@
 namespace Sintattica\Atk\Db;
 
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
 
 /**
  * Abstract baseclass for SQL query builder drivers.
@@ -190,8 +189,11 @@ class Query
         } else {
             $fieldname = $name;
         }
-        $this->m_fields[] = $fieldname;
-        if ($quotefield) {
+        if (!in_array($fieldname, $this->m_fields)) {
+            $this->m_fields[] = $fieldname;
+        }
+
+        if ($quotefield && !in_array($fieldname, $this->m_quotedfields)) {
             $this->m_quotedfields[] = $fieldname;
         }
 
@@ -799,11 +801,13 @@ class Query
             if ($value[0] == '!') {
                 return 'LOWER('.$field.")!=LOWER('".substr($value, 1, Tools::atk_strlen($value))."')";
             }
+
             return 'LOWER('.$field.")=LOWER('".$value."')";
         } else {
             if ($value[0] == '!') {
                 return $field."!='".substr($value, 1, Tools::atk_strlen($value))."'";
             }
+
             return $field."='".$value."'";
         }
     }
@@ -821,6 +825,14 @@ class Query
         return "$field = $value";
     }
 
+
+    public function exactBoolCondition($field, $value)
+    {
+        $value = $value ? '1' : '0';
+
+        return "$field = $value";
+    }
+
     /**
      * Generate a searchcondition that checks whether $field contains $value .
      *
@@ -835,11 +847,13 @@ class Query
             if ($value[0] == '!') {
                 return 'LOWER('.$field.") NOT LIKE LOWER('%".substr($value, 1, Tools::atk_strlen($value))."%')";
             }
+
             return 'LOWER('.$field.") LIKE LOWER('%".$value."%')";
         } else {
             if ($value[0] == '!') {
                 return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
             }
+
             return $field." LIKE '%".$value."%'";
         }
     }
@@ -858,11 +872,13 @@ class Query
             if ($value[0] == '!') {
                 return 'LOWER('.$field.") NOT LIKE LOWER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
             }
+
             return 'LOWER('.$field.") LIKE LOWER('".str_replace('*', '%', $value)."')";
         } else {
             if ($value[0] == '!') {
                 return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
             }
+
             return $field." LIKE '".str_replace('*', '%', $value)."'";
         }
     }

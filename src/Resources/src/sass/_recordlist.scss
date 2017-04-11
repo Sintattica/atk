@@ -7,7 +7,7 @@ table.recordList {
   }
 
   th {
-    background-color: #428BCA;
+    background-color: $atk-recordlist-header-color;
     color: #fff;
     text-align: left;
 
@@ -17,7 +17,7 @@ table.recordList {
     }
 
     &.recordListSearch {
-      background: #ddd;
+      background: $atk-recordlist-search-bg-color;
       border-left-color: #f2f2f2;
       border-right-color: #f2f2f2;
       font-weight: normal;
@@ -32,7 +32,7 @@ table.recordList {
       }
 
       a {
-        color: #428BCA;
+        color: $atk-recordlist-header-color;
       }
 
       input[type="text"], select {
@@ -56,6 +56,10 @@ table.recordList {
     }
     .row2 {
       background-color: #F9F9F9;
+    }
+
+    &.recordList-search-row {
+      border-color: #ddd;
     }
 
     td {
@@ -127,9 +131,13 @@ table.recordList {
     line-height: 28px;
     font-weight: normal;
   }
-
 }
 
-.list-header {
-  min-height: 30px;
+a.admin_link {
+ margin-bottom: 5px;
+}
+
+.multirecordactions {
+  margin-top: 5px;
+  margin-left: 7px;
 }

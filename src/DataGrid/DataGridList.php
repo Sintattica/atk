@@ -431,8 +431,14 @@ class DataGridList extends DataGridComponent
             $target = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$grid->getNode()->atkNodeUri().'&atktarget='.(!empty($postvars['atktarget']) ? $postvars['atktarget'] : '').'&atktargetvar='.(!empty($postvars['atktargetvar']) ? $postvars['atktargetvar'] : '').'&atktargetvartpl='.(!empty($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl'] : ''),
                 SessionManager::SESSION_NESTED);
 
-            $mra = (count($list['rows']) > 1 && $grid->getMRASelectionMode() == Node::MRA_MULTI_SELECT ? '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'all\')">'.Tools::atktext('select_all').'</a> | '.'<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'none\')">'.Tools::atktext('deselect_all').'</a> | '.'<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'invert\')">'.Tools::atktext('select_invert').'</a> ' //'<div style="height: 8px"></div>'
-                : '');
+            $mra_all = '<div class="btn btn-default" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'all\')">'.Tools::atktext('select_all').'</div>';
+            $mra_none = '<div class="btn btn-default" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'none\')">'.Tools::atktext('deselect_all').'</div>';
+            $mra_invert = '<div class="btn btn-default" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'invert\')">'.Tools::atktext('select_invert').'</div>';
+
+
+            $mra_select = "$mra_all $mra_none $mra_invert ";
+
+            $mra = (count($list['rows']) > 1 && $grid->getMRASelectionMode() == Node::MRA_MULTI_SELECT ? $mra_select : '');
 
             $module = $grid->getNode()->m_module;
             $nodetype = $grid->getNode()->m_type;
@@ -460,7 +466,7 @@ class DataGridList extends DataGridComponent
                 }
 
                 $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
-                $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().'<input type="button" class="btn" value="'.Tools::atktext('submit').'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
+                $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().'<input type="button" class="btn btn-primary" value="'.Tools::atktext('submit').'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
             } /* one action -> only the submit button */ else {
                 if ($grid->getNode()->allowed($list['mra'][0])) {
                     $name = $list['mra'][0];
@@ -473,14 +479,14 @@ class DataGridList extends DataGridComponent
                     );
 
                     $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
-                    $mra .= '<input type="hidden" name="'.$listName.'_atkaction" value="'.$name.'">'.$this->getCustomMraHtml().'<input type="button" class="btn" value="'.Tools::atktext($actionKeys,
+                    $mra .= '<input type="hidden" name="'.$listName.'_atkaction" value="'.$name.'">'.$this->getCustomMraHtml().'<input type="button" class="btn btn-primary" value="'.Tools::atktext($actionKeys,
                             $grid->getNode()->m_module,
                             $grid->getNode()->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
                 }
             }
         } else {
             if ($edit) {
-                $mra = '<input type="button" class="btn" value="'.Tools::atktext('save').'" onclick="'.htmlentities($this->getGrid()->getSaveCall()).'">';
+                $mra = '<input type="button" class="btn btn-primary" value="'.Tools::atktext('save').'" onclick="'.htmlentities($this->getGrid()->getSaveCall()).'">';
             }
         }
 
@@ -725,7 +731,7 @@ class DataGridList extends DataGridComponent
         }
 
         // override totals
-        if (is_array($result['total']) && count($result['total']) > 0) {
+        if (!Config::getGlobal('datagrid_total_paginate') && is_array($result['total']) && count($result['total']) > 0) {
             $selector = $grid->getNode()->select()->ignoreDefaultFilters();
             foreach ($grid->getFilters() as $filter) {
                 $selector->where($filter['filter'], $filter['params']);

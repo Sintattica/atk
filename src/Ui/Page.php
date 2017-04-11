@@ -140,7 +140,10 @@ class Page
         if(Config::getGlobal('session_autorefresh')){
             $this->register_scriptcode(SessionManager::getSessionAutoRefreshJs());
         }
-        $this->register_style($assetsUrl.'styles/style.css');
+        $style_url = Config::getGlobal('style_url');
+        if($style_url){
+            $this->register_style(Config::getGlobal('style_url'));
+        }
     }
 
     /**
