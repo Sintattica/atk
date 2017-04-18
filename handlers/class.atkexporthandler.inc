@@ -256,6 +256,9 @@ class atkExportHandler extends atkActionHandler
         $content.= '<tr><td>';
         $content.= atktext("export_generatetitlerow") . ': </td><td><input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . (atkConfig::getGlobal('export_titlerow_checked', true) ? 'checked' : '') . '>';
         $content.= '</td></tr>';
+        $content.= '<tr><td>';
+        $content.= atktext("export_addtimestamp") . ': </td><td><input type="checkbox" name="addtimestamp" class="atkcheckbox" value=1 ' . (atkConfig::getGlobal('export_timestamp_checked', false) ? 'checked' : '') . '>';
+        $content.= '</td></tr>';
         $content.= '</table><br /><br />';
         return $content;
     }
@@ -559,11 +562,11 @@ class atkExportHandler extends atkActionHandler
         }
 
         $filename = 'export_' . strtolower(str_replace(' ', '_' , $this->getUi()->nodeTitle($node)));
+        if ($source['addtimestamp']) {
+            $filename .= '_' . date('Ymd');
+        }
         $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure, "\r\n", 1, "", "", array('filename' => $filename), "csv", $source['generatetitlerow'], true, $delimiter);
 
         return true;
     }
-
 }
-
-?>

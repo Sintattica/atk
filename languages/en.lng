@@ -139,6 +139,7 @@ $en = array(
     "export" => "Export",
     "export_config_explanation" => "Options for the CSV export",
     "export_generatetitlerow" => "Header row",
+    "export_addtimestamp" => "Timestamp",
     "export_selectcolumns" => "Fields to export",
     "export_selections" => "Standard selections",
     "export_selections_name" => "Standard selections name",

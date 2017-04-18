@@ -11,6 +11,7 @@
 
 WIP Changes
 -----------
++ Added timestamp checkbox in export action [luca]
 + Added errLogin event in atkSecurityManager [luca]
 + Added property in ManyToOne to render a multiple select also in simple search [luca]
 * Refactoring autolink in ManyToOne [luca]
