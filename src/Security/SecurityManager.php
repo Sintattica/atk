@@ -662,8 +662,6 @@ class SecurityManager
             $this->notifyListeners('preLogin', $remember_user);
             $session['remembermeTokenId'] = $this->rememberMeStore($remember_user);
             $isValid = $this->m_authorization->isValidUser($remember_user);
-            $isValid = true;
-
             if ($isValid) {
                 $this->storeAuth($remember_user, 'rememberme');
                 $this->auth_response = self::AUTH_SUCCESS;
