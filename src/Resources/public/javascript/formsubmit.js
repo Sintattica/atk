@@ -29,6 +29,12 @@ function atkSubmit(target, standardSubmit)
         n.value = target;
     });
 
+    if(typeof CKEDITOR === 'object') {
+        for (var instanceName in CKEDITOR.instances) {
+            CKEDITOR.instances[instanceName].updateElement();
+        }
+    }
+
     // call global submit function, which doesn't get called automatically
     // when we call entryform.submit manually.
     globalSubmit(document.entryform, standardSubmit);
