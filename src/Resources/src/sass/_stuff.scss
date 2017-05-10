@@ -116,8 +116,13 @@ span.form-control-static {
   display: none !important;
 }
 
-.atkfieldset div {
+.atkfieldset > div {
   display: inline-block;
+  vertical-align: middle;
+}
+
+.atkfieldset label {
+  font-weight: normal;
 }
 
 div.panel-heading {

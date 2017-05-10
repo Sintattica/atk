@@ -152,16 +152,19 @@ class FieldSet extends Attribute
             }
 
             if ($field) {
+                $fieldId = $attr->getHtmlId($fieldprefix);
+
                 // render the label
                 if (!$attr->hasFlag(self::AF_NO_LABEL)) {
-                    $label = $attr->getLabel($record, $mode).': ';
+                    $label = '<label for="'.$fieldId.'" class="control-label">'.$attr->getLabel($record, $mode).'</label>: ';
                 } else {
                     $label = '';
                 }
 
-                // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. atkEditFormModifier)
-                $html = sprintf('%s<div id="%s_%s_%s">%s</div>', $label, $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(),
-                    $attrName, $field);
+                // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. EditFormModifier)
+                // for reference, see Edithandler::createTplField
+                $containerId = str_replace('.', '_', $attr->getOwnerInstance()->atkNodeUri().'_'.$fieldId);
+                $html = sprintf('%s<div id="%s">%s</div>', $label, $containerId, $field);
 
                 $replacements[$attrName] = $html;
             } else {

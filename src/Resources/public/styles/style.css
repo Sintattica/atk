@@ -9477,8 +9477,12 @@ span.form-control-static {
 .atkAttrRowHidden {
   display: none !important; }
 
-.atkfieldset div {
-  display: inline-block; }
+.atkfieldset > div {
+  display: inline-block;
+  vertical-align: middle; }
+
+.atkfieldset label {
+  font-weight: normal; }
 
 div.panel-heading {
   position: relative; }
