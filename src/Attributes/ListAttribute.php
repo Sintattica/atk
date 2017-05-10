@@ -387,6 +387,7 @@ class ListAttribute extends Attribute
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['with-empty-value'] = '';
+
         if ($isMultiple) {
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }
@@ -431,9 +432,19 @@ class ListAttribute extends Attribute
         $result .= '</select>';
         $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
 
+        $onchange = '';
+
+        // if is multiple, replace null selection with empty string
+        if($isMultiple) {
+            $onchange .= "var s=jQuery(this);if(s.val() === null){s.val('');s.trigger('change.select2');};";
+        }
+
         // if we use autosearch, register an onchange event that submits the grid
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-            $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+            $onchange .= $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+        }
+
+        if($onchange != '') {
             $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(){'.$onchange.'})');
         }
 
