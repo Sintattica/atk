@@ -436,7 +436,17 @@ class ListAttribute extends Attribute
 
         // if is multiple, replace null selection with empty string
         if($isMultiple) {
-            $onchange .= "var s=jQuery(this);if(s.val() === null){s.val('');s.trigger('change.select2');};";
+            $onchange .= <<<EOF
+var s=jQuery(this), v = s.val();
+if (v != null && v.length > 0) {
+    var nv = jQuery.grep(v, function(value) {
+        return value != '';
+    });
+    s.val(nv);s.trigger('change.select2');
+}else if(v === null){
+   s.val('');s.trigger('change.select2');
+};
+EOF;
         }
 
         // if we use autosearch, register an onchange event that submits the grid
