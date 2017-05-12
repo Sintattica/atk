@@ -229,6 +229,8 @@ class ManyToOneRelation extends Relation
 
     public $m_search_by_pk = false;
 
+    protected $m_multipleSearch;
+
     /**
      * Constructor.
      *
@@ -1085,10 +1087,24 @@ class ManyToOneRelation extends Relation
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
         $id = $this->getHtmlId($fieldprefix);
-        $name = $this->getSearchFieldName($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix).'[]';
         $htmlAttributes = [];
+        $isMultiple = $this->isMultipleSearch($extended);
+        $onchange = '';
+        $options = ['' => Tools::atktext('search_all')];
+        $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
+        $selectOptions['width'] = 'auto';
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['placeholder'] = $options[''];
+        $selectOptions['with-empty-value'] = '';
+
+        if ($isMultiple) {
+            $htmlAttributes['multiple'] = 'multiple';
+        }
 
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
+
             //Normal dropdown search
             if (!$this->createDestination()) {
                 return '';
@@ -1100,40 +1116,47 @@ class ManyToOneRelation extends Relation
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
 
-            $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
-
-            if (!is_array($selValues)) {
-                $selValues = [$selValues];
+            // options and values
+            if (!$this->hasFlag(self::AF_OBLIGATORY)) {
+                $options['__NONE__'] = $this->getNoneLabel('search');
             }
-
-            if (in_array('', $selValues)) {
-                $selValues = [''];
-            }
-
-
-            $options = [];
-            $options[''] = Tools::atktext('search_all');
-            $options['__NONE__'] = $this->getNoneLabel('search');
-
             $pkfield = $this->m_destInstance->primaryKeyField();
             foreach ($recordset as $option) {
                 $pk = $option[$pkfield];
                 $options[$pk] = $this->m_destInstance->descriptor($option);
             }
 
+            // selected values
+            $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : [];
+            if($isMultiple && $selValues[0] == ''){
+                unset($selValues[0]);
+            }
+
+            // if is multiple, replace null selection with empty string
+            if($isMultiple) {
+                $onchange .= <<<EOF
+var s=jQuery(this), v = s.val();
+if (v != null && v.length > 0) {
+    var nv = jQuery.grep(v, function(value) {
+        return value != '';
+    });
+    s.val(nv);s.trigger('change.select2');
+}else if(v === null){
+   s.val('');s.trigger('change.select2');
+};
+EOF;
+            }
+
             if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-                $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+                $onchange .= $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+            }
+
+            if($onchange != '') {
                 $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
             }
 
-            $selectOptions = [];
-            $selectOptions['enable-select2'] = true;
-            $selectOptions['dropdown-auto-width'] = true;
-            $selectOptions['with-empty-value'] = '';
-            $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
-            // width always auto
-            $selectOptions['width'] = 'auto';
+            $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
             return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
 
@@ -1145,11 +1168,6 @@ class ManyToOneRelation extends Relation
             $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
 
             if ($useautocompletion) {
-                $noneLabel = Tools::atktext('search_all');
-
-                $options = [];
-                $options[''] = $noneLabel;
-
                 $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
@@ -1158,20 +1176,34 @@ class ManyToOneRelation extends Relation
                     $options[$selValue] = $selValue;
                 }
 
-                $selectOptions = [];
-                $selectOptions['enable-select2'] = true;
                 $selectOptions['enable-manytoonereleation-autocomplete'] = true;
-                $selectOptions['tags'] = true;
+                // $selectOptions['tags'] = true;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
-                $selectOptions['allow-clear'] = true;
-                $selectOptions['dropdown-auto-width'] = true;
-                $selectOptions['placeholder'] = $noneLabel;
+
+                if(!$this->isMultipleSearch($extended)) {
+                    $selectOptions['allow-clear'] = true;
+                }
                 $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
-                //width always auto
-                $selectOptions['width'] = 'auto';
+                if($isMultiple) {
+                    $onchange .= <<<EOF
+var s=jQuery(this), v = s.val();
+if (v != null && v.length > 0) {
+    var nv = jQuery.grep(v, function(value) {
+        return value != '';
+    });
+    s.val(nv);s.trigger('change.select2');
+}else if(v === null){
+   s.val('');s.trigger('change.select2');
+};
+EOF;
+                }
+
+                if($onchange != '') {
+                    $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
+                }
 
                 return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
 
@@ -1236,6 +1268,7 @@ class ManyToOneRelation extends Relation
             }
         }
 
+
         if (empty($value)) {
             return '';
         } else {
@@ -1264,8 +1297,12 @@ class ManyToOneRelation extends Relation
                     $searchcondition = $this->getConcatFilter($value, $alias);
                 } else {
                     // ask the destination node for it's search condition
-                    $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $value,
-                        $this->getChildSearchMode($searchmode, $this->fieldName()));
+                    $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
+                    $conditions = '';
+                    foreach($value as $v) {
+                        $conditions[] = '('.$this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode).')';
+                    }
+                    $searchcondition = implode(' OR ', $conditions);
                 }
 
                 return $searchcondition;
@@ -2293,5 +2330,36 @@ class ManyToOneRelation extends Relation
         }
 
         return false;
+    }
+
+    /**
+     * @param bool $normal
+     * @param bool $extended
+     * @return array $m_multipleSearch
+     */
+    public function setMultipleSearch($normal = true, $extended = true)
+    {
+        $this->m_multipleSearch = [
+            'normal' => $normal,
+            'extended' => $extended,
+        ];
+
+        return $this->m_multipleSearch;
+    }
+
+    public function getMultipleSearch()
+    {
+        return $this->m_multipleSearch;
+    }
+
+    /**
+     * @param bool $extended
+     * @return bool
+     */
+    public function isMultipleSearch($extended)
+    {
+        $ms = $this->getMultipleSearch();
+
+        return $ms[$extended ? 'extended' : 'normal'];
     }
 }
