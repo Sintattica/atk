@@ -47,9 +47,9 @@ ATK.enableSelect2 = function ($container) {
 };
 
 ATK.enableSelect2ForSelect = ATK.refreshSelect2ForSelect = function (select) {
+    // var select2, width;
     var $el = jQuery(select);
     var options = {};
-    var select2, width;
 
     if ($el.is('select')) {
         if (typeof $el.data('with-empty-value') !== 'undefined') {
@@ -67,10 +67,8 @@ ATK.enableSelect2ForSelect = ATK.refreshSelect2ForSelect = function (select) {
 
         $el.select2(options);
 
-        select2 = $el.next('span.select2-container');
-        width = select2[0].style.width;
-        if (width.slice(-2) == 'px' && width.slice(0, -2) != '0') {
-            select2.css({maxWidth: width, width: ''});
-        }
+       // if ($el.data('max-width')){
+       //     $el.next('span.select2-container').css({maxWidth: $el.data('max-width')});
+       // }
     }
 };

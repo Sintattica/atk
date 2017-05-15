@@ -138,6 +138,22 @@ a.admin_link {
 }
 
 .multirecordactions {
-  margin-top: 5px;
   margin-left: 7px;
+
+  > i.fa {
+    vertical-align: middle;
+  }
+
+  &.multirecordactions-top {
+    margin-bottom: 5px;
+  }
+
+  &.multirecordactions-bottom {
+    margin-top: 5px;
+  }
+
+
+  .select2-container--bootstrap {
+    display: inline-block;
+  }
 }
