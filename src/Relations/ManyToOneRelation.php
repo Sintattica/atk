@@ -827,6 +827,13 @@ class ManyToOneRelation extends Relation
         $name = $this->getHtmlName($fieldprefix);
         $htmlAttributes = [];
         $editflag = true;
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $htmlAttributes['style'] = $style;
+        }
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         $currentPk = ($value != null) ? $this->getDestination()->primaryKey($value) : null;
@@ -897,11 +904,6 @@ class ManyToOneRelation extends Relation
                 $selectOptions['dropdown-auto-width'] = true;
                 if ($hasNullOption) {
                     $selectOptions['with-empty-value'] = $emptyValue;
-                }
-                if (!empty($this->getWidth())) {
-                    $selectOptions['width'] = $this->getWidth();
-                } else {
-                    $selectOptions['width'] = 'resolve';
                 }
                 $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
@@ -1094,13 +1096,21 @@ class ManyToOneRelation extends Relation
         $options = ['' => Tools::atktext('search_all')];
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
-        $selectOptions['width'] = 'auto';
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['placeholder'] = $options[''];
         $selectOptions['with-empty-value'] = '';
 
         if ($isMultiple) {
             $htmlAttributes['multiple'] = 'multiple';
+        }
+
+        $style = '';
+        $type = $extended ? 'extended_search' : 'search';
+        foreach($this->getCssStyles($type) as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $htmlAttributes['style'] = $style;
         }
 
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
@@ -1181,6 +1191,10 @@ EOF;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
+
+                if($this->getCssStyle($type, 'width') === null) {
+                    $selectOptions['width'] = 'auto';
+                }
 
                 if(!$this->isMultipleSearch($extended)) {
                     $selectOptions['allow-clear'] = true;
@@ -2059,16 +2073,20 @@ EOF;
             $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = $noneLabel;
         }
-        if (!empty($this->getWidth())) {
-            $selectOptions['width'] = $this->getWidth();
-        } else {
-            $selectOptions['width'] = 'auto';
-        }
+
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         if (count($this->m_onchangecode)) {
             $htmlAttributes['onchange'] = $this->getHtmlId($fieldprefix).'_onChange(this)';
             $this->_renderChangeHandler($fieldprefix);
+        }
+
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $htmlAttributes['style'] = $style;
         }
 
         $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);

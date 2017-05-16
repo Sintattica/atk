@@ -1,7 +1,5 @@
 table.recordList {
 
-  width: 100%;
-
   td:first-child, th:first-child {
     width: 1%;
   }
@@ -33,10 +31,6 @@ table.recordList {
 
       a {
         color: $atk-recordlist-header-color;
-      }
-
-      input[type="text"], select {
-        width: 100%;
       }
 
       .search-buttons {

@@ -172,7 +172,20 @@ class FieldSet extends Attribute
             }
         }
 
-        return '<div class="atkfieldset">'.$this->getParser()->parse($replacements).'</div>';
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+
+        $result = '<div class="atkfieldset"';
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
+        }
+        $result .= '>';
+        $result .= $this->getParser()->parse($replacements);
+        $result .= '</div>';
+
+        return $result;
     }
 
     /**

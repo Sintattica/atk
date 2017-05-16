@@ -556,11 +556,7 @@ class Attribute
      */
     private $m_editCallback = null;
 
-
-    /*
-     * The width of the widget (eg: 200px)
-     */
-    public $m_width;
+    protected $cssStyles = [];
 
     protected $m_select2Options = ['edit' => [], 'search' => []];
 
@@ -946,20 +942,20 @@ class Attribute
             $onchange = '';
         }
 
-        $size = $this->m_size;
-        if ($mode == 'list' && $size > 20) {
-            $size = 20;
-        }
-
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
+
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
 
         $result = '';
         $result .= '<input type="text" id="'.$id.'"';
         $result .= ' name="'.$this->getHtmlName($fieldprefix).'"';
         $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
         $result .= ' value="'.$value.'"';
-        if($size > 0){
-            $result .= ' size="'.$size.'"';
+        if($this->m_size > 0){
+            $result .= ' size="'.$this->m_size.'"';
         }
         if($this->m_maxsize > 0){
             $result .= ' maxlength="'.$this->m_maxsize.'"';
@@ -969,6 +965,9 @@ class Attribute
         }
         if($placeholder = $this->getPlaceholder()){
             $result .= ' placeholder="'.htmlspecialchars($placeholder).'"';
+        }
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
         }
         $result .= ' />';
 
@@ -1555,8 +1554,23 @@ class Attribute
             $value = $record[$this->fieldName()];
         }
 
+        $style = '';
+        $type = $extended ? 'extended_search':'search';
+        foreach($this->getCssStyles($type) as $k => $v) {
+            $style .= "$k:$v;";
+        }
+
         $class = $this->getCSSClassAttribute(['form-control']);
-        $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'" value="'.htmlentities($value).'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
+        $result = '';
+
+        $result .= '<input type="text"';
+        $result .= ' id="'.$id.'"';
+        $result .= ' '.$class;
+        $result .= ' name="'.$name.'"';
+        $result .= ' value="'.htmlentities($value).'"';
+        $result .= $this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '';
+        $result .= $style != '' ? ' style="'.$style.'"': '';
+        $result .= ' />';
 
         return $result;
     }
@@ -1912,7 +1926,7 @@ class Attribute
      */
     public function fetchMeta($metadata)
     {
-        $attribname = strtolower($this->fieldName());
+        $attribname = $this->fieldName();
 
         // maxsize (the maximum size that can be entered)
         if (isset($metadata[$attribname])) {
@@ -2157,26 +2171,6 @@ class Attribute
         }
 
         return $this;
-    }
-
-    /**
-     * Set the css width
-     *
-     * @param string $width The width
-     */
-    public function setWidth($width)
-    {
-        $this->m_width = $width;
-    }
-
-    /**
-     * Gets the css width
-     *
-     * @return string The width
-     */
-    public function getWidth()
-    {
-        return $this->m_width;
     }
 
     /**
@@ -3115,5 +3109,38 @@ class Attribute
         }
 
         return $this;
+    }
+
+    /**
+     * @param string|array $type (edit, search, extended_search)
+     * @param string $style
+     * @param mixed $value
+     */
+    public function setCssStyle($type, $style, $value) {
+        if(is_array($type)){
+            foreach($type as $t){
+                $this->cssStyles[$t][$style] = $value;
+            }
+        }else{
+            $this->cssStyles[$type][$style] = $value;
+        }
+    }
+
+    public function getCssStyle($type, $style)
+    {
+        if(isset($this->cssStyles[$type][$style])){
+            return $this->cssStyles[$type][$style];
+        }
+
+        return null;
+    }
+
+    public function getCssStyles($type = null)
+    {
+        if($type != null && isset($this->cssStyles[$type])){
+            return $this->cssStyles[$type];
+        }
+
+        return $this->cssStyles;
     }
 }

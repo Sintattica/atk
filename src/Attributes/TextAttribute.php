@@ -67,6 +67,11 @@ class TextAttribute extends Attribute
 
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
+
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
         
         // list mode, show a small textarea, until it get's focus
         // and is inflated to a big textarea
@@ -94,9 +99,11 @@ class TextAttribute extends Attribute
           };
         ");
 
-            $html = '<textarea id="'.$id.'" name="'.$name.'" wrap="soft" rows="1" cols="20" style="overflow: hidden">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.'<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
+            $result = '<textarea id="'.$id.'" name="'.$name.'" wrap="soft" rows="1" cols="20" style="overflow:hidden;'.$style.'">'."\n";
+            $result .= htmlspecialchars($record[$this->fieldName()]).'</textarea>';
+            $result .= '<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
 
-            return $html;
+            return $result;
         }
 
         $text = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : '';
@@ -126,6 +133,9 @@ class TextAttribute extends Attribute
             $result .= 'maxlength="'.$this->m_maxsize.'" '; // now supported in HTML5
         }
         $result .= $this->getCSSClassAttribute(array('form-control'));
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
+        }
         $result .= ">\n".htmlspecialchars($text).'</textarea>';
 
         return $result;

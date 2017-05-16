@@ -7,7 +7,7 @@
         <div class="multirecordactions multirecordactions-top"><i class="fa fa-long-arrow-down fa-2x" aria-hidden="true"></i>
             {$mra}</div>
     {/if}
-    <table id="{$listid}" class="table table-bordered table-condensed recordList">
+    <table id="{$listid}" class="table table-bordered table-condensed recordList" style="width: 1%;">
         <!-- header -->
         <tr>
             {section name=headerloop loop=$header}

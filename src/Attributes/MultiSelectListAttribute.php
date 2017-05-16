@@ -155,19 +155,20 @@ class MultiSelectListAttribute extends ListAttribute
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['multiple'] = true;
-        if (!empty($this->getWidth())) {
-            $selectOptions['width'] = $this->getWidth();
-        } else {
-            $selectOptions['width'] = 'auto';
-        }
-
         $selectOptions['placeholder'] = $this->getNullLabel();
-
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         $data = '';
         foreach ($selectOptions as $k => $v) {
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+
+        $style = $styles = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $styles = ' style="'.$style.'"';
         }
 
         $onchange = '';
@@ -176,7 +177,7 @@ class MultiSelectListAttribute extends ListAttribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$data.'>';
+        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$data.$styles.'>';
 
         $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {

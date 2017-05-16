@@ -282,12 +282,6 @@ class ListAttribute extends Attribute
             $selectOptions['with-empty-value'] = $this->getEmptyValue();
         }
 
-        if (!empty($this->getWidth())) {
-            $selectOptions['width'] = $this->getWidth();
-        } else {
-            $selectOptions['width'] = 'resolve';
-        }
-
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         $onchange = '';
@@ -301,7 +295,15 @@ class ListAttribute extends Attribute
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
         }
 
-        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.'>';
+        $style = $styles = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $styles = 'style="'.$style.'"';
+        }
+
+        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.$styles.'>';
 
         if ($hasNullOption) {
             $result .= '<option value="'.$this->getEmptyValue().'">'.$nullLabel.'</option>';
@@ -379,28 +381,31 @@ class ListAttribute extends Attribute
         $values = $this->getValues();
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
-
-
         $isMultiple = $this->isMultipleSearch($extended);
         $class = $this->getCSSClassAttribute(['form-control']);
+
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['with-empty-value'] = '';
-
         if ($isMultiple) {
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }
-
-        $selectOptions['width'] = 'auto';
-
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
-        $data = '';
-        foreach ($selectOptions as $k => $v) {
-            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+
+        $style = '';
+        $type = $extended ? 'extended_search' : 'search';
+        foreach($this->getCssStyles($type) as $k => $v) {
+            $style .= "$k:$v;";
         }
-        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]"'.$data.'>';
+
+        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]"';
+        foreach ($selectOptions as $k => $v) {
+            $result .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+        $result .= $style != '' ? ' style="'.$style.'"': '';
+        $result .= ' >';
 
         $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         if (!is_array($selValues)) {
@@ -409,10 +414,6 @@ class ListAttribute extends Attribute
 
         if (in_array('', $selValues)) {
             $selValues = [''];
-        }
-
-        if($id == 'sap_clienti_tags') {
-         //   var_dump($selectOptions);die;
         }
 
         $selected = (!$isMultiple && $selValues[0] == '') ? ' selected' : '';

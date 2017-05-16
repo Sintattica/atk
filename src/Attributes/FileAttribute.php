@@ -228,6 +228,14 @@ class FileAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $style = ' style="'.$style."'";
+        }
+
         if (isset($record[$this->fieldName()]['orgfilename'])) {
             $result .= '<br />';
             $result .= '<input type="hidden" name="'.$name.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
@@ -240,7 +248,7 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
-            $result .= '<input type="file" id="'.$id.'" name="'.$name.'" '.$onchange.'>';
+            $result .= '<input type="file" id="'.$id.'" name="'.$name.'" '.$onchange.$style.'>';
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_SELECT)) {
@@ -248,7 +256,7 @@ class FileAttribute extends Attribute
             if (count($file_arr) > 0) {
                 natcasesort($file_arr);
 
-                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.' class="form-control select-standard">';
+                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.$style.' class="form-control select-standard">';
                 // Add default option with value NULL
                 $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
                 while (list(, $val) = each($file_arr)) {

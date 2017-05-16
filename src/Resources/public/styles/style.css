@@ -2023,8 +2023,8 @@ table {
   background-color: transparent; }
 
 caption {
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   color: #777777;
   text-align: left; }
 
@@ -2041,7 +2041,7 @@ th {
   .table > tbody > tr > td,
   .table > tfoot > tr > th,
   .table > tfoot > tr > td {
-    padding: 5px;
+    padding: 4px;
     line-height: 1.6666666667;
     vertical-align: top;
     border-top: 1px solid #ddd; }
@@ -2066,7 +2066,7 @@ th {
 .table-condensed > tbody > tr > td,
 .table-condensed > tfoot > tr > th,
 .table-condensed > tfoot > tr > td {
-  padding: 5px; }
+  padding: 4px; }
 
 .table-bordered {
   border: 1px solid #ddd; }
@@ -2403,7 +2403,7 @@ input[type="search"] {
     line-height: 42px; } }
 
 .form-group {
-  margin-bottom: 8px; }
+  margin-bottom: 4px; }
 
 .radio,
 .checkbox {
@@ -9265,56 +9265,58 @@ li.atkmanytomanyselectrelation-selected {
   margin-top: 0;
   padding: 5.8px 9px; }
 
-table.recordList {
-  width: 100%; }
-  table.recordList td:first-child, table.recordList th:first-child {
-    width: 1%; }
-  table.recordList th {
-    background-color: #428BCA;
+table.recordList td:first-child, table.recordList th:first-child {
+  width: 1%; }
+
+table.recordList th {
+  background-color: #428BCA;
+  color: #fff;
+  text-align: left; }
+  table.recordList th a {
     color: #fff;
-    text-align: left; }
-    table.recordList th a {
-      color: #fff;
-      text-decoration: underline; }
-    table.recordList th.recordListSearch {
-      background: #dddddd;
-      border-left-color: #f2f2f2;
-      border-right-color: #f2f2f2;
-      font-weight: normal;
-      position: relative; }
-      table.recordList th.recordListSearch:first-child {
-        border-left-color: inherit; }
-      table.recordList th.recordListSearch:last-child {
-        border-right-color: inherit; }
-      table.recordList th.recordListSearch a {
-        color: #428BCA; }
-      table.recordList th.recordListSearch input[type="text"], table.recordList th.recordListSearch select {
-        width: 100%; }
-      table.recordList th.recordListSearch .search-buttons {
-        display: block; }
-        table.recordList th.recordListSearch .search-buttons a {
-          text-decoration: none; }
-  table.recordList tr .row1 {
-    background-color: #ffffff; }
-  table.recordList tr .row2 {
-    background-color: #F9F9F9; }
-  table.recordList tr.recordList-search-row {
-    border-color: #ddd; }
-  table.recordList tr td ul {
-    margin: 0; }
-  table.recordList tr td .actions {
-    display: block;
-    white-space: nowrap;
-    float: left; }
-    table.recordList tr td .actions .btn {
-      margin: 0 2px;
-      min-width: 24px;
-      height: 24px;
-      padding-top: 1px; }
-      table.recordList tr td .actions .btn:first-child {
-        margin-left: 0; }
-      table.recordList tr td .actions .btn:last-child {
-        margin-right: 0; }
+    text-decoration: underline; }
+  table.recordList th.recordListSearch {
+    background: #dddddd;
+    border-left-color: #f2f2f2;
+    border-right-color: #f2f2f2;
+    font-weight: normal;
+    position: relative; }
+    table.recordList th.recordListSearch:first-child {
+      border-left-color: inherit; }
+    table.recordList th.recordListSearch:last-child {
+      border-right-color: inherit; }
+    table.recordList th.recordListSearch a {
+      color: #428BCA; }
+    table.recordList th.recordListSearch .search-buttons {
+      display: block; }
+      table.recordList th.recordListSearch .search-buttons a {
+        text-decoration: none; }
+
+table.recordList tr .row1 {
+  background-color: #ffffff; }
+
+table.recordList tr .row2 {
+  background-color: #F9F9F9; }
+
+table.recordList tr.recordList-search-row {
+  border-color: #ddd; }
+
+table.recordList tr td ul {
+  margin: 0; }
+
+table.recordList tr td .actions {
+  display: block;
+  white-space: nowrap;
+  float: left; }
+  table.recordList tr td .actions .btn {
+    margin: 0 2px;
+    min-width: 24px;
+    height: 24px;
+    padding-top: 1px; }
+    table.recordList tr td .actions .btn:first-child {
+      margin-left: 0; }
+    table.recordList tr td .actions .btn:last-child {
+      margin-right: 0; }
 
 .table {
   margin-bottom: 0; }
