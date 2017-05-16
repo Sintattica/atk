@@ -380,6 +380,7 @@ class ListAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
 
+
         $isMultiple = $this->isMultipleSearch($extended);
         $class = $this->getCSSClassAttribute(['form-control']);
         $selectOptions = [];
@@ -392,7 +393,6 @@ class ListAttribute extends Attribute
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }
 
-        //width always auto
         $selectOptions['width'] = 'auto';
 
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
@@ -409,6 +409,10 @@ class ListAttribute extends Attribute
 
         if (in_array('', $selValues)) {
             $selValues = [''];
+        }
+
+        if($id == 'sap_clienti_tags') {
+         //   var_dump($selectOptions);die;
         }
 
         $selected = (!$isMultiple && $selValues[0] == '') ? ' selected' : '';

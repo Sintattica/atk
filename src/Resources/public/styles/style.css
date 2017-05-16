@@ -9348,8 +9348,15 @@ a.admin_link {
   margin-bottom: 5px; }
 
 .multirecordactions {
-  margin-top: 5px;
   margin-left: 7px; }
+  .multirecordactions > i.fa {
+    vertical-align: middle; }
+  .multirecordactions.multirecordactions-top {
+    margin-bottom: 5px; }
+  .multirecordactions.multirecordactions-bottom {
+    margin-top: 5px; }
+  .multirecordactions .select2-container--bootstrap {
+    display: inline-block; }
 
 A.atksection {
   display: block;
