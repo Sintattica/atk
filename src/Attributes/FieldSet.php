@@ -156,7 +156,7 @@ class FieldSet extends Attribute
 
                 // render the label
                 if (!$attr->hasFlag(self::AF_NO_LABEL)) {
-                    $label = '<label for="'.$fieldId.'" class="control-label">'.$attr->getLabel($record, $mode).'</label>: ';
+                    $label = '<label for="'.$fieldId.'" class="control-label"> '.$attr->getLabel($record, $mode).'</label>: ';
                 } else {
                     $label = '';
                 }
@@ -164,7 +164,15 @@ class FieldSet extends Attribute
                 // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. EditFormModifier)
                 // for reference, see Edithandler::createTplField
                 $containerId = str_replace('.', '_', $attr->getOwnerInstance()->atkNodeUri().'_'.$fieldId);
-                $html = sprintf('%s<div id="%s">%s</div>', $label, $containerId, $field);
+
+                $requiredClass = '';
+                if($attr->hasFlag(Attribute::AF_OBLIGATORY)){
+                    $requiredClass = ' required';
+                }
+
+                $html = '<div class="fieldset-form-group'.$requiredClass.'">';
+                $html .= $label.'<div id="'.$containerId.'">'.$field.'</div>';
+                $html .= '</div>';
 
                 $replacements[$attrName] = $html;
             } else {
