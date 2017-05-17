@@ -204,11 +204,13 @@ class MultiSelectListAttribute extends ListAttribute
     {
         $searchcondition = '';
         if (is_array($value) && $value[0] != '' && count($value) > 0) {
+            $searchcondition = [];
+
             if (in_array('__NONE__', $value)) {
-                return $query->nullCondition($table.'.'.$this->fieldName(), true);
+                 unset($value[array_search('__NONE__', $value)]);
+                $searchcondition[] = $query->nullCondition($table.'.'.$this->fieldName(), true);
             }
 
-            $searchcondition = [];
             foreach ($value as $str) {
                 $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
             }
