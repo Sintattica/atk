@@ -1174,7 +1174,7 @@ EOF;
             if (isset($record[$this->fieldName()][$this->fieldName()])) {
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
-            $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+
 
             if ($useautocompletion) {
                 $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
@@ -1222,6 +1222,11 @@ EOF;
                 return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
 
             } else {
+                $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+                if(is_array($current)){
+                    $current = implode(' ', $current);
+                }
+
                 //normal input field
                 $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
             }
@@ -1295,6 +1300,7 @@ EOF;
                 }
 
                 if (count($value) == 1) { // exactly one value
+
                     if ($value[0] == '__NONE__') {
                         return $query->nullCondition($table.'.'.$this->fieldName(), true);
                     } elseif ($value[0] != '') {
@@ -1304,6 +1310,12 @@ EOF;
                     return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
                 }
             } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
+
+                if($value[0] == ''){
+                    return '';
+                }
+
+
                 // If we have a descriptor with multiple fields, use CONCAT
                 $attribs = $this->m_destInstance->descriptorFields();
                 $alias = $fieldname.$this->fieldName();
@@ -1314,7 +1326,11 @@ EOF;
                     $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
                     $conditions = '';
                     foreach($value as $v) {
-                        $conditions[] = '('.$this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode).')';
+                        $sc = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode);
+
+                        if($sc != '') {
+                            $conditions[] = '('.$sc.')';
+                        }
                     }
                     $searchcondition = implode(' OR ', $conditions);
                 }
