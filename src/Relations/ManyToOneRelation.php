@@ -1097,7 +1097,6 @@ class ManyToOneRelation extends Relation
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
-        $selectOptions['placeholder'] = $options[''];
         $selectOptions['with-empty-value'] = '';
 
         if ($isMultiple) {
@@ -1191,6 +1190,7 @@ EOF;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
+                $selectOptions['placeholder'] = $options[''];
 
                 if($this->getCssStyle($type, 'width') === null) {
                     $selectOptions['width'] = 'auto';
