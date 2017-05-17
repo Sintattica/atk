@@ -271,7 +271,7 @@ class TimeAttribute extends Attribute
         // assemble display version
         $timeedit = $m_hourBox.':'.$m_minBox.$m_secBox;
 
-        return '<div class="'.$this->get_class_name().' form-inline">'.$timeedit.'</div>';
+        return '<div class="TimeAttribute form-inline">'.$timeedit.'</div>';
     }
 
     /**
