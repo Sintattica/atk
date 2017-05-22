@@ -1126,7 +1126,7 @@ class ManyToOneRelation extends Relation
             }
 
             // options and values
-            if (!$this->hasFlag(self::AF_OBLIGATORY)) {
+            if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) {
                 $options['__NONE__'] = $this->getNoneLabel('search');
             }
             $pkfield = $this->m_destInstance->primaryKeyField();
