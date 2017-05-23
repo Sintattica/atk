@@ -171,7 +171,7 @@ class FieldSet extends Attribute
                 }
 
                 $html = '<div class="fieldset-form-group'.$requiredClass.'">';
-                $html .= $label.'<div id="'.$containerId.'">'.$field.'</div>';
+                $html .= $label.'<div id="'.$containerId.'" class="fieldset-form-group-field">'.$field.'</div>';
                 $html .= '</div>';
 
                 $replacements[$attrName] = $html;

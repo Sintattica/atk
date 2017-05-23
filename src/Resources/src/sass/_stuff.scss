@@ -48,6 +48,10 @@ span.form-control-static {
   font-weight: bold;
 }
 
+.fieldset-form-group-field > div, .fieldset-form-group-field > span {
+  display: inline-block;
+}
+
 .error {
   color: #A94442;
 }
