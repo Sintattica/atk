@@ -231,6 +231,10 @@ class DateAttribute extends Attribute
 
         /* base class constructor */
         parent::__construct($name, $flags);
+
+        if($this->hasFlag(self::AF_OBLIGATORY) && $this->hasFlag(self::AF_DATE_DEFAULT_EMPTY)){
+            $this->addFlag(self::AF_DATE_EMPTYFIELD);
+        }
     }
 
     /**
