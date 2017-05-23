@@ -67,8 +67,22 @@ ATK.enableSelect2ForSelect = ATK.refreshSelect2ForSelect = function (select) {
 
         $el.select2(options);
 
-       // if ($el.data('max-width')){
-       //     $el.next('span.select2-container').css({maxWidth: $el.data('max-width')});
-       // }
+        // if ($el.data('max-width')){
+        //     $el.next('span.select2-container').css({maxWidth: $el.data('max-width')});
+        // }
     }
+};
+
+ATK.showAttribute = function (rowId) {
+    var row = jQuery('#' + rowId);
+    if (row) {
+        row.removeClass('atkAttrRowHidden');
+        row.find('select[data-enable-select2="1"]').each(function () {
+            ATK.enableSelect2ForSelect(this);
+        });
+    }
+};
+
+ATK.hideAttribute = function (rowId) {
+    jQuery('#' + rowId).addClass('atkAttrRowHidden');
 };

@@ -134,8 +134,8 @@ class EditFormModifier
         if ($this->isInitial()) {
             $attr->setInitialHidden(false);
         } else {
-            $name = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
-            $this->scriptCode("if (\$('$name')) { \$('$name').removeClassName('atkAttrRowHidden'); }");
+            $rowId = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
+            $this->scriptCode("ATK.showAttribute('$rowId');");
         }
     }
 
@@ -165,8 +165,8 @@ class EditFormModifier
         if ($this->isInitial()) {
             $attr->setInitialHidden(true);
         } else {
-            $name = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
-            $this->scriptCode("if (\$('$name')) { \$('$name').addClassName('atkAttrRowHidden'); }");
+            $rowId = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
+            $this->scriptCode("ATK.hideAttribute('$rowId');");
         }
     }
 
