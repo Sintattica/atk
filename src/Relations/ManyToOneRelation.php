@@ -2083,6 +2083,7 @@ EOF;
         $selectOptions['dropdown-auto-width'] = false;
         $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
         $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
+        $selectOptions['width'] = 'auto';
 
         // standard select2 with clear button
         if ($hasNullOption) {
