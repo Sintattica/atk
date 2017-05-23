@@ -9616,6 +9616,9 @@ select.select-standard {
   background-position: right 4px center;
   padding-right: 14px !important; }
 
+span.select2-container--bootstrap {
+  display: inline-block; }
+
 .select2-container--bootstrap .select2-selection__clear {
   float: none;
   margin-left: 0;
@@ -9629,6 +9632,14 @@ select.select-standard {
 
 .select2-results__options[aria-multiselectable=true] .select2-results__option[aria-selected=true] {
   display: none; }
+
+span.select-inline > span.select2-container--bootstrap {
+  width: auto;
+  display: inline-block; }
+
+.select2-dropdown-big {
+  width: 500px !important;
+  min-width: 220px; }
 
 @media print {
   body {

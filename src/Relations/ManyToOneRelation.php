@@ -804,6 +804,8 @@ class ManyToOneRelation extends Relation
 
     public function edit($record, $fieldprefix, $mode)
     {
+        $type = 'edit';
+
         if (!$this->createDestination()) {
             Tools::atkerror("Could not create destination for destination: $this -> m_destination!");
 
@@ -818,8 +820,13 @@ class ManyToOneRelation extends Relation
 
         $isAutocomplete = (is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1;
         if ($this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && is_object($this->m_ownerInstance) && $isAutocomplete) {
-            return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
+
+
+            $result = $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
+            return $result;
         }
+
+
 
         $result = '';
         $options = [];
@@ -828,7 +835,13 @@ class ManyToOneRelation extends Relation
         $htmlAttributes = [];
         $editflag = true;
         $style = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+
+
+        if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
+        }
+
+        foreach($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
         if($style != ''){
@@ -1099,17 +1112,15 @@ class ManyToOneRelation extends Relation
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['with-empty-value'] = '';
 
+        $style = '';
+        $type = $extended ? 'extended_search' : 'search';
+
         if ($isMultiple) {
             $htmlAttributes['multiple'] = 'multiple';
         }
 
-        $style = '';
-        $type = $extended ? 'extended_search' : 'search';
-        foreach($this->getCssStyles($type) as $k => $v) {
-            $style .= "$k:$v;";
-        }
-        if($style != ''){
-            $htmlAttributes['style'] = $style;
+        if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
         }
 
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
@@ -1126,7 +1137,7 @@ class ManyToOneRelation extends Relation
             }
 
             // options and values
-            if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) {
+            if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) {
                 $options['__NONE__'] = $this->getNoneLabel('search');
             }
             $pkfield = $this->m_destInstance->primaryKeyField();
@@ -1167,6 +1178,13 @@ EOF;
 
             $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
+            foreach($this->getCssStyles($type) as $k => $v) {
+                $style .= "$k:$v;";
+            }
+            if($style != ''){
+                $htmlAttributes['style'] = $style;
+            }
+
             return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
 
         } else {
@@ -1192,10 +1210,6 @@ EOF;
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
                 $selectOptions['placeholder'] = $options[''];
 
-                if($this->getCssStyle($type, 'width') === null) {
-                    $selectOptions['width'] = 'auto';
-                }
-
                 if(!$this->isMultipleSearch($extended)) {
                     $selectOptions['allow-clear'] = true;
                 }
@@ -1219,7 +1233,18 @@ EOF;
                     $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
                 }
 
-                return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
+                foreach($this->getCssStyles($type) as $k => $v) {
+                    $style .= "$k:$v;";
+                }
+                if($style != ''){
+                    $htmlAttributes['style'] = $style;
+                }
+
+                $result = '<span class="select-inline">';
+                $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
+                $result .= '</span>';
+
+                return $result;
 
             } else {
                 $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
@@ -2031,7 +2056,7 @@ EOF;
 
 
     /**
-     * Draw the auto-complete box.
+     * Draw the auto-complete box for the edit type
      *
      * @param array $record The record
      * @param string $fieldprefix The fieldprefix
@@ -2057,6 +2082,7 @@ EOF;
         $noneLabel = '';
         $emptyValue = '';
         $htmlAttributes = [];
+        $type = 'edit';
 
         // validate is this is a selectable record and if so retrieve the display label and hidden value
         if ($this->_isSelectableRecord($record, $mode)) {
@@ -2077,13 +2103,14 @@ EOF;
             $selValues[] = $value;
         }
 
+
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
         $selectOptions['enable-manytoonereleation-autocomplete'] = true;
         $selectOptions['dropdown-auto-width'] = false;
         $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
         $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
-        $selectOptions['width'] = 'auto';
+        $selectOptions['width'] = '100%';
 
         // standard select2 with clear button
         if ($hasNullOption) {
@@ -2108,6 +2135,9 @@ EOF;
 
         $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
         $result .= ' '.$this->createSelectAndAutoLinks($name, $record);
+
+
+        $result = '<span class="select-inline">'.$result.'</span>';
 
         return $result;
     }

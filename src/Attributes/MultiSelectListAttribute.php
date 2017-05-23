@@ -149,6 +149,7 @@ class MultiSelectListAttribute extends ListAttribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
+        $type = 'edit';
 
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
@@ -161,6 +162,10 @@ class MultiSelectListAttribute extends ListAttribute
         $data = '';
         foreach ($selectOptions as $k => $v) {
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+
+        if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
         }
 
         $style = $styles = '';

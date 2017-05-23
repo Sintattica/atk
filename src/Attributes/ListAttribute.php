@@ -383,6 +383,8 @@ class ListAttribute extends Attribute
         $name = $this->getSearchFieldName($fieldprefix);
         $isMultiple = $this->isMultipleSearch($extended);
         $class = $this->getCSSClassAttribute(['form-control']);
+        $style = '';
+        $type = $extended ? 'extended_search' : 'search';
 
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
@@ -394,8 +396,10 @@ class ListAttribute extends Attribute
         }
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
-        $style = '';
-        $type = $extended ? 'extended_search' : 'search';
+        if($isMultiple && $this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
+        }
+
         foreach($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }

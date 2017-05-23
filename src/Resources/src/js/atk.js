@@ -67,9 +67,9 @@ ATK.enableSelect2ForSelect = ATK.refreshSelect2ForSelect = function (select) {
 
         $el.select2(options);
 
-        // if ($el.data('max-width')){
-        //     $el.next('span.select2-container').css({maxWidth: $el.data('max-width')});
-        // }
+        if ($el.css('min-width') !== '0px') {
+            $el.next('span.select2-container').css({minWidth: $el.css('min-width'), width: ''});
+        }
     }
 };
 
