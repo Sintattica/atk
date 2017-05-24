@@ -59,6 +59,7 @@ class PgSqlDb extends Db
 
             $connection_str = implode(' ', $conn);
 
+
             /* establish connection */
             $this->m_link_id = pg_connect($connection_str);
 
