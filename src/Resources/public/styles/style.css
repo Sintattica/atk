@@ -9265,58 +9265,54 @@ li.atkmanytomanyselectrelation-selected {
   margin-top: 0;
   padding: 5.8px 9px; }
 
-table.recordList td:first-child, table.recordList th:first-child {
-  width: 1%; }
-
-table.recordList th {
-  background-color: #428BCA;
-  color: #fff;
-  text-align: left; }
-  table.recordList th a {
+table.recordList {
+  width: auto; }
+  table.recordList td:first-child, table.recordList th:first-child {
+    width: 1px; }
+  table.recordList th {
+    background-color: #428BCA;
     color: #fff;
-    text-decoration: underline; }
-  table.recordList th.recordListSearch {
-    background: #dddddd;
-    border-left-color: #f2f2f2;
-    border-right-color: #f2f2f2;
-    font-weight: normal;
-    position: relative; }
-    table.recordList th.recordListSearch:first-child {
-      border-left-color: inherit; }
-    table.recordList th.recordListSearch:last-child {
-      border-right-color: inherit; }
-    table.recordList th.recordListSearch a {
-      color: #428BCA; }
-    table.recordList th.recordListSearch .search-buttons {
-      display: block; }
-      table.recordList th.recordListSearch .search-buttons a {
-        text-decoration: none; }
-
-table.recordList tr .row1 {
-  background-color: #ffffff; }
-
-table.recordList tr .row2 {
-  background-color: #F9F9F9; }
-
-table.recordList tr.recordList-search-row {
-  border-color: #ddd; }
-
-table.recordList tr td ul {
-  margin: 0; }
-
-table.recordList tr td .actions {
-  display: block;
-  white-space: nowrap;
-  float: left; }
-  table.recordList tr td .actions .btn {
-    margin: 0 2px;
-    min-width: 24px;
-    height: 24px;
-    padding-top: 1px; }
-    table.recordList tr td .actions .btn:first-child {
-      margin-left: 0; }
-    table.recordList tr td .actions .btn:last-child {
-      margin-right: 0; }
+    text-align: left; }
+    table.recordList th a {
+      color: #fff;
+      text-decoration: underline; }
+    table.recordList th.recordListSearch {
+      background: #dddddd;
+      border-left-color: #f2f2f2;
+      border-right-color: #f2f2f2;
+      font-weight: normal;
+      position: relative; }
+      table.recordList th.recordListSearch:first-child {
+        border-left-color: inherit; }
+      table.recordList th.recordListSearch:last-child {
+        border-right-color: inherit; }
+      table.recordList th.recordListSearch a {
+        color: #428BCA; }
+      table.recordList th.recordListSearch .search-buttons {
+        display: block; }
+        table.recordList th.recordListSearch .search-buttons a {
+          text-decoration: none; }
+  table.recordList tr .row1 {
+    background-color: #ffffff; }
+  table.recordList tr .row2 {
+    background-color: #F9F9F9; }
+  table.recordList tr.recordList-search-row {
+    border-color: #ddd; }
+  table.recordList tr td ul {
+    margin: 0; }
+  table.recordList tr td .actions {
+    display: block;
+    white-space: nowrap;
+    float: left; }
+    table.recordList tr td .actions .btn {
+      margin: 0 2px;
+      min-width: 24px;
+      height: 24px;
+      padding-top: 1px; }
+      table.recordList tr td .actions .btn:first-child {
+        margin-left: 0; }
+      table.recordList tr td .actions .btn:last-child {
+        margin-right: 0; }
 
 .table {
   margin-bottom: 0; }
@@ -9636,10 +9632,6 @@ span.select2-container--bootstrap {
 span.select-inline > span.select2-container--bootstrap {
   width: auto;
   display: inline-block; }
-
-.select2-dropdown-big {
-  width: 500px !important;
-  min-width: 220px; }
 
 @media print {
   body {
