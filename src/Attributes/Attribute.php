@@ -3137,10 +3137,14 @@ class Attribute
 
     public function getCssStyles($type = null)
     {
-        if($type != null && isset($this->cssStyles[$type])){
-            return $this->cssStyles[$type];
+        if($type != null) {
+            if (isset($this->cssStyles[$type])) {
+                return $this->cssStyles[$type];
+            } else {
+                return null;
+            }
+        } else {
+            return $this->cssStyles;
         }
-
-        return $this->cssStyles;
     }
 }
