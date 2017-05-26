@@ -3141,7 +3141,7 @@ class Attribute
             if (isset($this->cssStyles[$type])) {
                 return $this->cssStyles[$type];
             } else {
-                return null;
+                return [];
             }
         } else {
             return $this->cssStyles;
