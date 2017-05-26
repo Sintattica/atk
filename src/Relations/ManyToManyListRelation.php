@@ -82,7 +82,18 @@ class ManyToManyListRelation extends ManyToManyRelation
         $name = $this->getHtmlName($fieldprefix);
 
         $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows()) : $this->getRows();
-        $result = '<select class="form-control" id="'.$id.'" name="'.$name.'[]['.$this->getRemoteKey().']" multiple="multiple" size="'.$size.'" style="width: '.$this->getWidth().'">';
+
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+
+        $result = '<select class="form-control" id="'.$id.'" name="'.$name.'[]['.$this->getRemoteKey().']"';
+        $result .= ' multiple="multiple" size="'.$size.'"';
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
+        }
+        $result .= '>';
 
         foreach ($selectable as $row) {
             $key = $this->m_destInstance->primaryKey($row);

@@ -366,7 +366,7 @@ class AdminHandler extends ActionHandler
         if ($exportlink != '') {
             $links[] = $exportlink;
         }
-        $result = implode(' | ', $links);
+        $result = implode(' ', $links);
 
         if (strlen(trim($result)) > 0) {
             $result .= '<br/>';

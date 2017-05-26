@@ -29,9 +29,11 @@ class FileAttribute extends Attribute
     const AF_FILE_NO_SELECT = 67108864;
 
     /**
-     * Disable deleting of files.
+     * Disable deleting of files with the checkbox
      */
-    const AF_FILE_NO_DELETE = 134217728;
+    const AF_FILE_NO_CHECKBOX_DELETE = 134217728;
+    const AF_FILE_NO_DELETE = 134217728; // for backwards compatibility
+
 
     /**
      * Don't try to detect the file type (shows only filename).
@@ -226,6 +228,14 @@ class FileAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $style = ' style="'.$style."'";
+        }
+
         if (isset($record[$this->fieldName()]['orgfilename'])) {
             $result .= '<br />';
             $result .= '<input type="hidden" name="'.$name.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
@@ -238,7 +248,7 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
-            $result .= '<input type="file" id="'.$id.'" name="'.$name.'" '.$onchange.'>';
+            $result .= '<input type="file" id="'.$id.'" name="'.$name.'" '.$onchange.$style.'>';
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_SELECT)) {
@@ -246,7 +256,7 @@ class FileAttribute extends Attribute
             if (count($file_arr) > 0) {
                 natcasesort($file_arr);
 
-                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.' class="form-control select-standard">';
+                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.$style.' class="form-control select-standard">';
                 // Add default option with value NULL
                 $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
                 while (list(, $val) = each($file_arr)) {
@@ -263,7 +273,7 @@ class FileAttribute extends Attribute
             }
         }
 
-        if (!$this->hasFlag(self::AF_FILE_NO_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
+        if (!$this->hasFlag(self::AF_FILE_NO_CHECKBOX_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
             $result .= '<br class="atkFileAttributeCheckboxSeparator"><label for="'.$id.'_del"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
                     'atk').'</label>';
         }
@@ -737,7 +747,7 @@ class FileAttribute extends Attribute
     protected function deleteFile($file)
     {
         // return true even if the file is not physically deleted
-        if ($this->hasFlag(self::AF_FILE_NO_DELETE) || !$this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)) {
+        if (!$this->hasFlag(self::AF_FILE_PHYSICAL_DELETE)) {
             return true;
         }
 

@@ -2,6 +2,11 @@
 {if isset($formstart)}{$formstart}{/if}
 
 <div class="recordListContainer">
+    {if $mra!="" && $mraposition == 'top'}
+        <!-- multirecord actions -->
+        <div class="multirecordactions multirecordactions-top"><i class="fa fa-long-arrow-down fa-2x" aria-hidden="true"></i>
+            {$mra}</div>
+    {/if}
     <table id="{$listid}" class="table table-bordered table-condensed recordList">
         <!-- header -->
         <tr>
@@ -75,9 +80,9 @@
         {/if}
     </table>
 
-    {if $mra!=""}
+    {if $mra!="" && $mraposition == 'bottom'}
         <!-- multirecord actions -->
-        <div class="multirecordactions"><i class="fa fa-long-arrow-up fa-2x" aria-hidden="true"></i> {$mra}</div>
+        <div class="multirecordactions multirecordactions-bottom"><i class="fa fa-long-arrow-up fa-2x" aria-hidden="true"></i> {$mra}</div>
     {/if}
 </div>
 

@@ -46,7 +46,7 @@ class DataGridList extends DataGridComponent
      * @param array $actions the default actions array
      * @param array $suppressList fields we don't display
      *
-     * @return string The rendered recordlist
+     * @return array The recordlist data
      */
     private function getRecordlistData($recordset, $actions, $suppressList = array())
     {
@@ -61,7 +61,6 @@ class DataGridList extends DataGridComponent
         $listName = $grid->getName();
 
         $defaulthighlight = Config::getGlobal('highlight');
-        $selectcolor = Config::getGlobal('select');
 
         /* retrieve list array */
         $list = $this->listArray($recordset, '', $actions, $suppressList);
@@ -92,9 +91,9 @@ class DataGridList extends DataGridComponent
 
         $orientation = Config::getGlobal('recordlist_orientation');
 
-        /*         * *********** */
+        /**************/
         /* HEADER ROW */
-        /*         * *********** */
+        /**************/
         $headercols = [];
 
         if ($hasActionCol && count($list['rows']) == 0) {
@@ -134,9 +133,9 @@ class DataGridList extends DataGridComponent
             }
         }
 
-        /*         * *********** */
-        /* SORT   ROW */
-        /*         * *********** */
+        /************/
+        /* SORT ROW */
+        /************/
         $sortcols = [];
         $sortstart = '';
         $sortend = '';
@@ -163,10 +162,9 @@ class DataGridList extends DataGridComponent
             }
         }
 
-        /*         * *********** */
+        /**************/
         /* SEARCH ROW */
-        /*         * *********** */
-
+        /**************/
         $searchcols = [];
         $searchstart = '';
         $searchend = '';
@@ -204,9 +202,9 @@ class DataGridList extends DataGridComponent
             }
         }
 
-        /*         * **************************************** */
+        /*********************************************/
         /* MULTI-RECORD-(PRIORITY-)ACTIONS FORM DATA */
-        /*         * **************************************** */
+        /*********************************************/
         $liststart = '';
         $listend = '';
 
@@ -214,14 +212,13 @@ class DataGridList extends DataGridComponent
             $page->register_script(Config::getGlobal('assets_url').'javascript/formselect.js');
 
             if ($hasMRA) {
-                $liststart .= '<script language="javascript" type="text/javascript">var '.$listName.' = new Object();</script>';
+                $liststart .= '<script language="javascript" type="text/javascript">var '.$listName.' = {};</script>';
             }
         }
 
-        /*         * ***** */
+        /********/
         /* ROWS */
-        /*         * ***** */
-
+        /********/
         $records = [];
         $keys = array_keys($actions);
         $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
@@ -268,7 +265,8 @@ class DataGridList extends DataGridComponent
                 }
                 $select .= '</select>';
                 $record['cols'][] = array('content' => $select, 'type' => 'mrpa');
-            } /* multi-record-actions -> checkbox */ elseif (!$edit && $hasMRA) {
+            }  elseif (!$edit && $hasMRA) {
+                /* multi-record-actions -> checkbox */
                 if (count($list['rows'][$i]['mra']) > 0) {
                     switch ($grid->getMRASelectionMode()) {
                         case Node::MRA_SINGLE_SELECT:
@@ -292,11 +290,9 @@ class DataGridList extends DataGridComponent
                 } else {
                     $record['cols'][] = array('content' => '');
                 }
-            } // editable row, add selector
-            else {
-                if ($edit && $list['rows'][$i]['edit']) {
-                    $liststart .= '<input type="hidden" name="atkdatagriddata_AE_'.$i.'_AE_atkprimkey" value="'.htmlentities($list['rows'][$i]['selector']).'">';
-                }
+            } elseif ($edit && $list['rows'][$i]['edit']) {
+                // editable row, add selector
+                $liststart .= '<input type="hidden" name="atkdatagriddata_AE_'.$i.'_AE_atkprimkey" value="'.htmlentities($list['rows'][$i]['selector']).'">';
             }
 
             $str_actions = '<span class="actions">';
@@ -306,7 +302,7 @@ class DataGridList extends DataGridComponent
             foreach ($list['rows'][$i]['actions'] as $name => $url) {
                 if (substr($url, 0, 11) == 'javascript:') {
                     $call = substr($url, 11);
-                    $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";
+                    $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = function(rlId) { $call; };";
                 } else {
                     $actionloader .= "\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
                 }
@@ -321,6 +317,7 @@ class DataGridList extends DataGridComponent
                 );
 
                 $link = htmlentities($this->text($actionKeys));
+
                 if ($icons == true) {
                     $normalizedName = strtolower(str_replace('-', '_', $name));
                     $icon = Config::get($module, 'icon_'.$nodetype.'_'.$normalizedName, false);
@@ -347,10 +344,8 @@ class DataGridList extends DataGridComponent
             if ($orientation == 'left' || $orientation == 'both') {
                 if (!empty($list['rows'][$i]['actions'])) {
                     $record['cols'][] = array('content' => $str_actions, 'type' => 'actions');
-                } else {
-                    if ($hasActionCol) {
-                        $record['cols'][] = array('content' => '');
-                    }
+                } elseif ($hasActionCol) {
+                    $record['cols'][] = array('content' => '');
                 }
             }
 
@@ -363,10 +358,8 @@ class DataGridList extends DataGridComponent
             if ($orientation == 'right' || $orientation == 'both') {
                 if (!empty($list['rows'][$i]['actions'])) {
                     $record['cols'][] = array('content' => $str_actions, 'type' => 'actions');
-                } else {
-                    if ($hasActionCol) {
-                        $record['cols'][] = array('content' => '');
-                    }
+                } elseif ($hasActionCol) {
+                    $record['cols'][] = array('content' => '');
                 }
             }
 
@@ -403,9 +396,9 @@ class DataGridList extends DataGridComponent
             }
         }
 
-        /*         * ********************************************** */
+        /*************************************************/
         /* MULTI-RECORD-PRIORITY-ACTION FORM (CONTINUED) */
-        /*         * ********************************************** */
+        /*************************************************/
         $mra = '';
         if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
             $target = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$grid->getActionNode()->atkNodeUri(), SessionManager::SESSION_NESTED);
@@ -422,10 +415,8 @@ class DataGridList extends DataGridComponent
             } /* one action -> only the submit button */ else {
                 $mra = $this->getCustomMraHtml().'<input type="hidden" name="'.$listName.'_atkaction" value="'.$grid->getNode()->m_priority_actions[0].'">'.'<input type="button" class="btn" value="'.Tools::atktext($grid->getNode()->m_priority_actions[0]).'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
             }
-        }
-
-        /*         * ************************************* */
-        /* MULTI-RECORD-ACTION FORM (CONTINUED) */ /*         * ************************************* */ elseif (!$edit && $hasMRA) {
+        } elseif (!$edit && $hasMRA) {
+            /* MULTI-RECORD-ACTION FORM (CONTINUED) */
             $postvars = $grid->getNode()->m_postvars;
 
             $target = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$grid->getNode()->atkNodeUri().'&atktarget='.(!empty($postvars['atktarget']) ? $postvars['atktarget'] : '').'&atktargetvar='.(!empty($postvars['atktargetvar']) ? $postvars['atktargetvar'] : '').'&atktargetvartpl='.(!empty($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl'] : ''),
@@ -446,7 +437,7 @@ class DataGridList extends DataGridComponent
             /* multiple actions -> dropdown */
             if (count($list['mra']) > 1) {
                 $default = $this->getGrid()->getMRADefaultAction();
-                $mra .= '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\', this.form)" class="form-control select-standard">'.'<option value="">'.Tools::atktext('with_selected').'</option>';
+                $mra .= '<select  data-minimum-results-for-search="Infinity" data-width="element" name="'.$listName.'_atkaction" id="'.$listName.'_atkaction" onchange="updateSelectable(\''.$listName.'\', this.form);" class="form-control">'.'<option value="">'.Tools::atktext('with_selected').'</option>';
 
                 foreach ($list['mra'] as $name) {
                     if ($grid->getNode()->allowed($name)) {
@@ -467,27 +458,25 @@ class DataGridList extends DataGridComponent
 
                 $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
                 $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().'<input type="button" class="btn btn-primary" value="'.Tools::atktext('submit').'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
-            } /* one action -> only the submit button */ else {
-                if ($grid->getNode()->allowed($list['mra'][0])) {
-                    $name = $list['mra'][0];
+                $mra .= "<script>ATK.enableSelect2ForSelect('#".$listName."_atkaction');</script>";
+            } elseif ($grid->getNode()->allowed($list['mra'][0])) {
+                /* one action -> only the submit button */
+                $name = $list['mra'][0];
 
-                    $actionKeys = array(
-                        'action_'.$module.'_'.$nodetype.'_'.$name,
-                        'action_'.$nodetype.'_'.$name,
-                        'action_'.$name,
-                        $name,
-                    );
+                $actionKeys = array(
+                    'action_'.$module.'_'.$nodetype.'_'.$name,
+                    'action_'.$nodetype.'_'.$name,
+                    'action_'.$name,
+                    $name,
+                );
 
-                    $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
-                    $mra .= '<input type="hidden" name="'.$listName.'_atkaction" value="'.$name.'">'.$this->getCustomMraHtml().'<input type="button" class="btn btn-primary" value="'.Tools::atktext($actionKeys,
-                            $grid->getNode()->m_module,
-                            $grid->getNode()->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
-                }
+                $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
+                $mra .= '<input type="hidden" name="'.$listName.'_atkaction" value="'.$name.'">'.$this->getCustomMraHtml().'<input type="button" class="btn btn-primary" value="'.Tools::atktext($actionKeys,
+                        $grid->getNode()->m_module,
+                        $grid->getNode()->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\', '.$embedded.', false)">';
             }
-        } else {
-            if ($edit) {
-                $mra = '<input type="button" class="btn btn-primary" value="'.Tools::atktext('save').'" onclick="'.htmlentities($this->getGrid()->getSaveCall()).'">';
-            }
+        } elseif ($edit) {
+            $mra = '<input type="button" class="btn btn-primary" value="'.Tools::atktext('save').'" onclick="'.htmlentities($this->getGrid()->getSaveCall()).'">';
         }
 
         $recordListData = array(
@@ -504,10 +493,9 @@ class DataGridList extends DataGridComponent
             'listend' => $listend,
             'listid' => $listName,
             'mra' => $mra,
+            'mraposition' => Config::getGlobal('mra_position'),
             'editing' => $this->getGrid()->isEditing(),
         );
-
-        // print_r($recordListData);
 
         return $recordListData;
     }

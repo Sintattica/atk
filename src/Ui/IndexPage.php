@@ -228,7 +228,7 @@ class IndexPage
     /**
      * Set the default destination.
      *
-     * @param string $destination The default destination
+     * @param array $destination The default destination
      */
     public function setDefaultDestination($destination)
     {
@@ -265,7 +265,7 @@ class IndexPage
                 $atkSelectorDecoded = [];
 
                 foreach ($node->m_postvars['atkselector'] as $rowIndex => $selector) {
-                    list($selector, $pk) = explode('=', $selector);
+                    list(, $pk) = explode('=', $selector);
                     $atkSelectorDecoded[] = $pk;
                     $id = implode(',', $atkSelectorDecoded);
                 }

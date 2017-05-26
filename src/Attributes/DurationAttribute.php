@@ -32,7 +32,7 @@ class DurationAttribute extends Attribute
      *
      * @see Attribute
      */
-    public function         __construct($name, $flags = 0, $resolution = '1m', $maxtime = '10h')
+    public function __construct($name, $flags = 0, $resolution = '1m', $maxtime = '10h')
     {
         parent::__construct($name, $flags);
         
@@ -128,6 +128,11 @@ class DurationAttribute extends Attribute
                 }
                 $result .= '</select>';
             }
+
+            if ($this->m_postfixlabel) {
+                $result .= '&nbsp;' . $this->m_postfixlabel;
+            }
+
             $result .= '</div>';
         } else {
             $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';

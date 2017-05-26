@@ -36,10 +36,20 @@ span.form-control-static {
   display: block;
 }
 
-.form-group.required .control-label:before, span.required:before {
+.form-group.required > .control-label:before, span.required:before {
   content: "✲";
   color: #c70000;
   font-weight: bold;
+}
+
+.fieldset-form-group.required > .control-label:before {
+  content: "✲";
+  color: #c70000;
+  font-weight: bold;
+}
+
+.fieldset-form-group-field > div, .fieldset-form-group-field > span {
+  display: inline-block;
 }
 
 .error {
@@ -116,8 +126,13 @@ span.form-control-static {
   display: none !important;
 }
 
-.atkfieldset div {
-  display: inline-block;
+.atkfieldset > .fieldset-form-group, .atkfieldset > .fieldset-form-group > div  {
+  display: inline;
+  vertical-align: middle;
+}
+
+.atkfieldset label {
+  font-weight: normal;
 }
 
 div.panel-heading {

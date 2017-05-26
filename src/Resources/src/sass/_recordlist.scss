@@ -1,9 +1,9 @@
 table.recordList {
 
-  width: 100%;
+  width: auto;
 
   td:first-child, th:first-child {
-    width: 1%;
+    width: 1px;
   }
 
   th {
@@ -33,10 +33,6 @@ table.recordList {
 
       a {
         color: $atk-recordlist-header-color;
-      }
-
-      input[type="text"], select {
-        width: 100%;
       }
 
       .search-buttons {
@@ -138,6 +134,22 @@ a.admin_link {
 }
 
 .multirecordactions {
-  margin-top: 5px;
   margin-left: 7px;
+
+  > i.fa {
+    vertical-align: middle;
+  }
+
+  &.multirecordactions-top {
+    margin-bottom: 5px;
+  }
+
+  &.multirecordactions-bottom {
+    margin-top: 5px;
+  }
+
+
+  .select2-container--bootstrap {
+    display: inline-block;
+  }
 }

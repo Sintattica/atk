@@ -2023,8 +2023,8 @@ table {
   background-color: transparent; }
 
 caption {
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   color: #777777;
   text-align: left; }
 
@@ -2041,7 +2041,7 @@ th {
   .table > tbody > tr > td,
   .table > tfoot > tr > th,
   .table > tfoot > tr > td {
-    padding: 5px;
+    padding: 4px;
     line-height: 1.6666666667;
     vertical-align: top;
     border-top: 1px solid #ddd; }
@@ -2066,7 +2066,7 @@ th {
 .table-condensed > tbody > tr > td,
 .table-condensed > tfoot > tr > th,
 .table-condensed > tfoot > tr > td {
-  padding: 5px; }
+  padding: 4px; }
 
 .table-bordered {
   border: 1px solid #ddd; }
@@ -2403,7 +2403,7 @@ input[type="search"] {
     line-height: 42px; } }
 
 .form-group {
-  margin-bottom: 8px; }
+  margin-bottom: 4px; }
 
 .radio,
 .checkbox {
@@ -9266,9 +9266,9 @@ li.atkmanytomanyselectrelation-selected {
   padding: 5.8px 9px; }
 
 table.recordList {
-  width: 100%; }
+  width: auto; }
   table.recordList td:first-child, table.recordList th:first-child {
-    width: 1%; }
+    width: 1px; }
   table.recordList th {
     background-color: #428BCA;
     color: #fff;
@@ -9288,8 +9288,6 @@ table.recordList {
         border-right-color: inherit; }
       table.recordList th.recordListSearch a {
         color: #428BCA; }
-      table.recordList th.recordListSearch input[type="text"], table.recordList th.recordListSearch select {
-        width: 100%; }
       table.recordList th.recordListSearch .search-buttons {
         display: block; }
         table.recordList th.recordListSearch .search-buttons a {
@@ -9348,8 +9346,15 @@ a.admin_link {
   margin-bottom: 5px; }
 
 .multirecordactions {
-  margin-top: 5px;
   margin-left: 7px; }
+  .multirecordactions > i.fa {
+    vertical-align: middle; }
+  .multirecordactions.multirecordactions-top {
+    margin-bottom: 5px; }
+  .multirecordactions.multirecordactions-bottom {
+    margin-top: 5px; }
+  .multirecordactions .select2-container--bootstrap {
+    display: inline-block; }
 
 A.atksection {
   display: block;
@@ -9412,10 +9417,18 @@ body {
 span.form-control-static {
   display: block; }
 
-.form-group.required .control-label:before, span.required:before {
+.form-group.required > .control-label:before, span.required:before {
   content: "✲";
   color: #c70000;
   font-weight: bold; }
+
+.fieldset-form-group.required > .control-label:before {
+  content: "✲";
+  color: #c70000;
+  font-weight: bold; }
+
+.fieldset-form-group-field > div, .fieldset-form-group-field > span {
+  display: inline-block; }
 
 .error {
   color: #A94442; }
@@ -9477,8 +9490,12 @@ span.form-control-static {
 .atkAttrRowHidden {
   display: none !important; }
 
-.atkfieldset div {
-  display: inline-block; }
+.atkfieldset > .fieldset-form-group, .atkfieldset > .fieldset-form-group > div {
+  display: inline;
+  vertical-align: middle; }
+
+.atkfieldset label {
+  font-weight: normal; }
 
 div.panel-heading {
   position: relative; }
@@ -9595,6 +9612,9 @@ select.select-standard {
   background-position: right 4px center;
   padding-right: 14px !important; }
 
+span.select2-container--bootstrap {
+  display: inline-block; }
+
 .select2-container--bootstrap .select2-selection__clear {
   float: none;
   margin-left: 0;
@@ -9608,6 +9628,10 @@ select.select-standard {
 
 .select2-results__options[aria-multiselectable=true] .select2-results__option[aria-selected=true] {
   display: none; }
+
+span.select-inline > span.select2-container--bootstrap {
+  width: auto;
+  display: inline-block; }
 
 @media print {
   body {
