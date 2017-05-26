@@ -1,7 +1,9 @@
 table.recordList {
 
+  width: auto;
+
   td:first-child, th:first-child {
-    width: 1%;
+    width: 1px;
   }
 
   th {
