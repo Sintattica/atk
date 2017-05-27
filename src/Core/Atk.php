@@ -162,7 +162,7 @@ class Atk
 
         $module = Tools::getNodeModule($nodeUri);
         $type = Tools::getNodeType($nodeUri);
-        $this->g_nodesClasses[$nodeUri] = $class;
+        $this->g_nodesClasses[strtolower($nodeUri)] = $class;
 
         if ($actions) {
             // prefix tabs with tab_
@@ -230,7 +230,7 @@ class Atk
      */
     public function newAtkNode($nodeUri, $init = true)
     {
-        $nodeClass = $this->g_nodesClasses[$nodeUri];
+        $nodeClass = $this->g_nodesClasses[strtolower($nodeUri)];
 
         Tools::atkdebug("Creating a new node: $nodeUri class: $nodeClass");
 
