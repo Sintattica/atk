@@ -160,6 +160,7 @@ class Atk
             $tabs = [];
         }
 
+        $nodeUri = strtolower($nodeUri);
         $module = Tools::getNodeModule($nodeUri);
         $type = Tools::getNodeType($nodeUri);
         $this->g_nodesClasses[$nodeUri] = $class;
