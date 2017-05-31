@@ -6,6 +6,31 @@ BODY {
 	color: #414141;
 }
 
+
+/* Overlib */
+.overlib_txt {
+	font-size: 1em;
+	color: #222;
+	padding: 4px 8px;
+}
+
+.overlib_bg {
+	background-color: #ddd;
+}
+
+.overlib_fg {
+	background-color: #ffffcc;
+}
+
+IMG.tooltip-img {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+
+/* Header */
+
 .navbar-default {
 	background-color: #749ABE;
 	color: #fff;
@@ -18,6 +43,41 @@ BODY {
 }
 
 
+/* Admin / LIST */
+
+.adminHeaderUserView {
+	display: inline;
+	/*float:left;*/
+	background: #ddd;
+	padding: 4px;
+	font-weight:bold;
+	margin-right:16px;
+}
+
+.recordListTd > .browse-cell {
+	display: block;
+	padding: 8px 4px;
+}
+
+.recordListTd > .red-cell {
+	background: #ff9999;
+}
+
+.recordListTd > .future-cell {
+	background: yellow;
+}
+
+.recordListTd > .published-cell {
+	color: green;
+}
+
+
+/* Form / EDIT */
+
+.col-sm-10 .form-inline {
+	display: inline;
+}
+
 .atkfieldset div {
 	vertical-align: bottom;
 }
@@ -27,22 +87,6 @@ BODY {
 	padding: 0 6px;
 }
 
-/*
-.btn_save, .btn_saveandclose {
-	background-color: #0f9d58;
-	border-color: #ccc;
-	color: #ccc;
-}
-.btn_save.atkdefaultbutton, .btn_saveandclose.atkdefaultbutton {
-	color: #fff;
-}
-
-.btn_save:hover, .btn_saveandclose:hover {
-	background-color: #1fad68;
-	border-color: #aaa;
-	color: #fff;
-}
-*/
 
 .btn_save, .btn_saveandclose {
 	background-color: #428BCA;
@@ -93,3 +137,48 @@ a.atkonetomanyrelation:hover {
 	border-color: #aaa;
 }
 
+
+/* Fix checkbox edit form */
+
+td.table {
+	width: auto;
+}
+
+#editform .section-item input[type="checkbox"]
+,input[type="checkbox"].atkManyBoolRelation.atkcheckbox
+,input[type="checkbox"].atkBoolAttribute atkcheckbox
+{
+	height: inherit;
+	display: inline-block;
+	width: auto;
+	min-height: 24px;
+	vertical-align: bottom;
+}
+
+
+/* bluebutton link - used in language files */
+
+.bluebutton {
+	display: inline-block;
+	text-decoration: none;
+	color: #fff;
+	font-weight: normal;
+	background-color: #428BCA;
+	padding: 6px 20px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 4px;
+	margin-bottom: 10px;
+}
+
+.bluebutton:hover {
+	color: #333;
+	background-color: #e6e6e6;
+	border-color: #adadad;
+	text-decoration: none;
+}
+
+A.bluebutton  {
+	color: #fff;
+}
