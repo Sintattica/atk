@@ -27,7 +27,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
 
     function __construct($name, $flags = 0)
     {
-        $this->atkAttribute($name, $flags);
+        atkAttribute::__construct($name, $flags);
     }
 
     function postInit()
