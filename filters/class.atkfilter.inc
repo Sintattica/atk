@@ -36,7 +36,7 @@ class atkFilter extends atkAttribute
      */
     function atkFilter($name, $flags = 0)
     {
-        $this->atkAttribute($name, $flags | AF_HIDE | AF_FORCE_LOAD);
+        atkAttribute::__construct($name, $flags | AF_HIDE | AF_FORCE_LOAD);
     }
 
     /**
