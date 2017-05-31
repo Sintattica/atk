@@ -141,6 +141,7 @@ $it = array(
     "export" => "Export",
     "export_config_explanation" => "Opzioni per l'export CSV",
     "export_generatetitlerow" => "Riga di intestazione",
+    "export_addtimestamp" => "Data in nome file",
     "export_selectcolumns" => "Campi da esportare",
     "export_selections" => "Standard selections", // Missing string!!!
     "export_selections_name" => "Standard selections name", // Missing string!!!

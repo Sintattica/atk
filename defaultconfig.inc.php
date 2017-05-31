@@ -1073,6 +1073,7 @@ $config_lose_changes_warning = false;
 $config_export_delimiter = ";";
 $config_export_enclosure = "&quot;";
 $config_export_titlerow_checked = true;
+$config_export_timestamp_checked = false;
 
 /**
  * Directories that contains modules (needed for testcases)

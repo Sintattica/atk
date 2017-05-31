@@ -505,6 +505,7 @@ class atkOneToOneRelation extends atkRelation
                     $result = true;
                 } else {
                     atkdebug("atkonetoonerelation->store(): Adding new one2one record for mode $mode");
+                    $vars = array_merge($vars, $this->initialValue());
                     $this->m_destInstance->preAdd($vars);
                     $result = $this->m_destInstance->addDb($vars, true, $mode);
                 }
