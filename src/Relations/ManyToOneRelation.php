@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Relations;
 
 use Exception;
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Attributes\ListAttribute;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -724,13 +725,12 @@ class ManyToOneRelation extends Relation
                 )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
             }
 
-            if ($this->m_destInstance->allowed('edit') && !$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $record[$this->fieldName()] != null) {
-
+            if ($this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $editUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
                     SessionManager::SESSION_NESTED);
-                $links[] = '<span id="'.$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('edit').'</a></span>';
+                $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
             }
         }
 
@@ -833,7 +833,7 @@ class ManyToOneRelation extends Relation
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
         $htmlAttributes = [];
-        $editflag = true;
+        $linkview = false;
         $style = '';
 
 
@@ -854,7 +854,6 @@ class ManyToOneRelation extends Relation
 
         if ($this->hasFlag(self::AF_LARGE)) {
             //no select list, but a link for select
-            $editflag = false;
             $result = '';
 
             $result .= '<span class="atkmanytoonerelation-large-container">';
@@ -887,10 +886,6 @@ class ManyToOneRelation extends Relation
                 $recordset = $this->_getSelectableRecords($record, $mode);
             }
 
-            if (count($recordset) == 0) {
-                $editflag = false;
-            }
-
             // autoselect if there is only one record (if obligatory is not set,
             // we don't autoselect, since user may wist to select 'none' instead
             // of the 1 record.
@@ -900,10 +895,18 @@ class ManyToOneRelation extends Relation
                 // relation may be empty, so we must provide an empty selectable..
                 $hasNullOption = false;
                 $emptyValue = '';
-                if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) || (Config::getGlobal('list_obligatory_null_item') && !is_array($value))) {
-                    $hasNullOption = true;
-                    $noneLabel = $this->getNoneLabel($mode);
-                    $options[$emptyValue] = $noneLabel;
+                $linkview = true;
+
+                if (!$this->hasFlag(self::AF_MANYTOONE_NO_NULL_ITEM)) {
+                    if (!$this->hasFlag(self::AF_OBLIGATORY) || (
+                            $this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
+                            (Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(ListAttribute::AF_LIST_NO_OBLIGATORY_NULL_ITEM))
+                        )
+                    ) {
+                        $hasNullOption = true;
+                        $noneLabel = $this->getNoneLabel($mode);
+                        $options[$emptyValue] = $noneLabel;
+                    }
                 }
 
                 foreach ($recordset as $selectable) {
@@ -930,7 +933,7 @@ class ManyToOneRelation extends Relation
         }
 
         $autolink = $this->getRelationAutolink($id, $name, $this->parseFilter($this->m_destinationFilter, $record));
-        $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : '';
+        $result .= $linkview && isset($autolink['view']) ? $autolink['view'] : '';
         $result .= isset($autolink['add']) ? $autolink['add'] : '';
 
         if ($this->hasFlag(self::AF_LARGE)) {
@@ -989,10 +992,10 @@ class ManyToOneRelation extends Relation
             $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
             $sm = SessionManager::getInstance();
 
-            if (!$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_destInstance->allowed('edit')) {
-                $editlink = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
+            if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $this->m_destInstance->allowed('view')) {
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
                     SessionManager::SESSION_NESTED);
-                $autolink['edit'] = "<a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editlink).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('edit').'</a>';
+                $autolink['view'] = " <a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
             }
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
                 $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(

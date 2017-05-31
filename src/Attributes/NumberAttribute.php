@@ -553,10 +553,6 @@ class NumberAttribute extends Attribute
         }
         $result .= ' />';
 
-        if ($this->m_postfixlabel) {
-            $result .= '&nbsp;' . $this->m_postfixlabel;
-        }
-
         if (is_array($this->touchspin)) {
             $page = Page::getInstance();
             $base = Config::getGlobal('assets_url') . 'lib/bootstrap-touchspin/';
