@@ -637,8 +637,8 @@ class ManyToOneRelation extends Relation
     public function display($record, $mode)
     {
         if ($this->createDestination()) {
-            $cnt = isset($record[$this->fieldName()]) ? count(count($record[$this->fieldName()])) : null;
-            if ($cnt == count($this->m_refKey)) {
+            $cnt = isset($record[$this->fieldName()]) ? count($record[$this->fieldName()]) : null;
+            if ($cnt === count($this->m_refKey)) {
                 $this->populate($record);
             }
 
