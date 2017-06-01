@@ -9246,7 +9246,8 @@ div.DateTimeAttribute div.TimeAttribute {
   margin-bottom: 0px; }
 
 li.atkmanytomanyselectrelation-addition {
-  padding-left: 0px; }
+  padding-left: 0px;
+  list-style-type: none; }
 
 li.atkmanytomanyselectrelation-selected {
   margin-bottom: 3px;
