@@ -156,7 +156,7 @@ class atkBoolAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of html code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
         $result.= '<option value="">' . atktext("search_all", "atk") . '</option>';

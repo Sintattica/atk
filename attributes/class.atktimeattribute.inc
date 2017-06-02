@@ -96,7 +96,7 @@ class atkTimeAttribute extends atkAttribute
      * @param array $record
      * @return text string of $record
      */
-    function display($record)
+    function display($record,$mode='')
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value))
@@ -342,7 +342,7 @@ class atkTimeAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of html code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return parent::search($record, $extended, $fieldprefix);
     }

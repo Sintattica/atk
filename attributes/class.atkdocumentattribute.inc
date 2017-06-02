@@ -66,7 +66,7 @@ class atkDocumentAttribute extends atkDummyAttribute
      * @param string $mode Name of the mode in which the attribute should be displayed
      * @return string description
      */
-    function display($record, $mode)
+	function display($record, $mode = "")
     {
         if (($mode != "csv") && ($mode != "plain"))
             return $this->documentSelector($record, $mode);

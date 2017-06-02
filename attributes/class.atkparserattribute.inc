@@ -58,7 +58,7 @@ class atkParserAttribute extends atkAttribute
      * VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
      * @param array $record Array with fields
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -68,7 +68,7 @@ class atkParserAttribute extends atkAttribute
      * @param array $record  Array with fields
      * @return Parsed string
      */
-    function display($record)
+    function display($record,$mode='')
     {
         atkimport("atk.utils.atkstringparser");
         $stringparser = new atkStringParser($this->m_text);

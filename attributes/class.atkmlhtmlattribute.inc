@@ -52,7 +52,7 @@ class atkMlHtmlAttribute extends atkMlTextAttribute
      * @param array $record Array wit fields
      * @return Formatted string
      */
-    function display($record)
+    function display($record,$mode='')
     {
         global $config_language;
         if ($this->nl2br)

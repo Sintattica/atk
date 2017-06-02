@@ -83,7 +83,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
      * @param array $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $this->createDestination();
         if ($this->m_destinationFilter != "") {

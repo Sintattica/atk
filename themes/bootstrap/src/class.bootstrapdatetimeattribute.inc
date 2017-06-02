@@ -171,7 +171,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
         return $dateEdit;
     }
 
-    function display($record, $mode)
+    function display($record, $mode='')
     {
         $value = $this->arrayToValue($record[$this->fieldName()]);
         if (!$value) return null;
@@ -218,7 +218,7 @@ class bootstrapDateTimeAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of HTML code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         if (!$extended) {
             $res = $this->draw($record, "atksearch_AE_" . $fieldprefix, '', 'search');

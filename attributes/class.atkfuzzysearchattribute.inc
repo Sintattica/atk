@@ -388,7 +388,7 @@ class atkFuzzySearchAttribute extends atkAttribute
     /**
      * Dummy method to prevent loading/storing of data.
      */
-    function search()
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         
     }

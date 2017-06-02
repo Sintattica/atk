@@ -333,7 +333,7 @@ class atkProfileAttribute extends atkAttribute
      *
      * @return string Displayable string
      */
-    public function display($record)
+    public function display($record,$mode='')
     {
         $user = getUser();
         $page = &atkPage::getInstance();

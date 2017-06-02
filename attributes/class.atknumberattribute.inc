@@ -591,7 +591,7 @@ class atkNumberAttribute extends atkAttribute
      *
      * @return String A piece of html-code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $value = "";
         if (isset($record[$this->fieldName()])) {

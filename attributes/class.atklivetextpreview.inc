@@ -62,7 +62,7 @@ class atkLiveTextPreview extends atkDummyAttribute
      * @param String $fieldprefix Fieldprefix for embedded forms.
      * @return String Parsed string
      */
-    function edit($record, $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $page = &atkPage::getInstance();
         $id = $fieldprefix . $this->fieldName();

@@ -73,7 +73,7 @@ class atkIpAttribute extends atkAttribute
      *
      * @return string html string
      */
-    function edit($record, $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if ($this->hasFlag(AF_IP_SINGLEFIELD))
             return parent::edit($record, $fieldprefix);

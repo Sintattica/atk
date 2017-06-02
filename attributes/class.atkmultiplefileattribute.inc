@@ -71,7 +71,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
      * @param array $record Array with fields
      * @return piece of html code with a browsebox
      */
-    function edit($record = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if (is_dir($this->m_dir)) {
             $d = dir($this->m_dir);
@@ -142,7 +142,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
      * @param array $record Array with fields
      * @return Filename or Nothing
      */
-    function display($record)
+    function display($record,$mode='')
     {
         $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
         $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview

@@ -67,7 +67,7 @@ class atkMatrixRelation extends atkRelation
      *
      * @param array $record
      */
-    function display($record)
+    function display($record,$mode='')
     {
         
     }

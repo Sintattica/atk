@@ -69,6 +69,7 @@ class bootstrapSwitchAttribute extends atkBoolAttribute
         return $result;
     }
 
+    // AGX: this is broken, 2nd parameter should be $mode
     function display($record, $fieldprefix = "")
     {
         $this->registerScriptsAndStyles($fieldprefix);

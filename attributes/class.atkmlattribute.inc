@@ -164,7 +164,7 @@ class atkMlAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of htmlcode
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $languages = $this->getLanguages();
 
@@ -202,7 +202,7 @@ class atkMlAttribute extends atkAttribute
      * @param array $record array with values
      * @return string ready for displaying
      */
-    function display($record)
+    function display($record,$mode='')
     {
         if ($this->isMlNode()) {
             return nl2br(htmlspecialchars($record[$this->fieldName()]));

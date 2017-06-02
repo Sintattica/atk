@@ -57,7 +57,7 @@ class atkToolbar extends atkDummyAttribute
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         global $config_atkroot;
 

@@ -44,7 +44,7 @@ class atkAddHandler extends atkActionHandler
      */
     function __construct()
     {
-        panret::__construct();
+        parent::__construct();
         $this->setReturnBehaviour(ATK_ACTION_BACK);
     }
 

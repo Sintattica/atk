@@ -104,7 +104,7 @@ class atkWysiwygAttribute extends atkTextAttribute
      * @param string $fieldprefix The prefix for this field
      * @return piece of html code with a textarea
      */
-    function edit($record = "", $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         global $config_atkroot, $config_enable_ie_extensions;
         global $atkwwview;

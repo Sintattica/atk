@@ -128,7 +128,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
      * @param array $record array with fields
      * @return search field
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return $this->getSelector();
     }

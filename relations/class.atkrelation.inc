@@ -237,7 +237,7 @@ class atkRelation extends atkAttribute
      * @param array $record The record that contains the information to display.
      * @return String a displayable string for this value.
      */
-    function display($record)
+    function display($record,$mode='')
     {
         return $record[$this->fieldName()];
     }

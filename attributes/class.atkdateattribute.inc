@@ -812,7 +812,7 @@ class atkDateAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of HTML code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         if (!$extended) {
             // plain text search, check if we didn't come from extended search (then current value is an array)

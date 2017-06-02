@@ -840,7 +840,7 @@ class atkManyToOneRelation extends atkRelation
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String Piece of html code that can be used in a form to edit this
      */
-    function edit($record, $fieldprefix = "", $mode = "edit")
+    function edit($record='', $fieldprefix = "", $mode = "edit")
     {
         if (!$this->createDestination()) {
             return atkerror("Could not create destination for destination: $this -> m_destination!");
@@ -1106,7 +1106,7 @@ class atkManyToOneRelation extends atkRelation
      *
      * @return String A piece of html-code
      */
-    function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
         if (!$this->hasFlag(AF_LARGE) && !$useautocompletion) {
@@ -1379,7 +1379,7 @@ class atkManyToOneRelation extends atkRelation
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level = 0, $mode = "")
     {
         if ($this->hasFlag(AF_MANYTOONE_LAZY)) {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
@@ -1447,7 +1447,7 @@ class atkManyToOneRelation extends atkRelation
      *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
      *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
      */
-    function loadType($mode)
+    function loadType($mode, $searching = false)
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
             return $this->m_loadType[$mode];
@@ -2048,7 +2048,7 @@ class atkManyToOneRelation extends atkRelation
      *                                   into the search fields.
      * @param array   $fieldprefix       search / mode field prefix
      */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode = array())
     {
         $prefix = $fieldprefix . $this->fieldName() . "_AE_";
 

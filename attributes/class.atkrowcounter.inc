@@ -48,7 +48,7 @@ class atkRowCounter extends atkDummyAttribute
      * Returns a number corresponding to the row count per record.
      * @return int Counter, starting at 1
      */
-    function display()
+    function display($record,$mode='')
     {
         static $s_counter = 0;
         $node = &$this->m_ownerInstance;

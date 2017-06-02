@@ -103,7 +103,7 @@ class atkDummyAttribute extends atkAttribute
      *
      * @return String A piece of html-code
      */
-    public function search($record = array(), $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -114,7 +114,7 @@ class atkDummyAttribute extends atkAttribute
      * @param array $record  Array with fields
      * @return Text
      */
-    function display($record)
+	function display($record, $mode = "")
     {
         return $this->m_text;
     }
@@ -184,7 +184,7 @@ class atkDummyAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+	function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         
     }

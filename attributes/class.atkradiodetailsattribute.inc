@@ -98,7 +98,7 @@ class atkRadioDetailsAttribute extends atkAttribute
      * @param string $fieldprefix
      * @param string $mode
      */
-    public function edit($record, $fieldprefix, $mode = 'add')
+    public function edit($record='', $fieldprefix='', $mode = 'add')
     {
         $this->getOwnerInstance()->getPage()->register_script(atkconfig('atkroot') . 'atk/javascript/class.' . strtolower(__CLASS__) . '.js');
 

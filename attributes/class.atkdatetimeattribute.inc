@@ -427,7 +427,7 @@ class atkDateTimeAttribute extends atkAttribute
      *
      * @return String A piece of html-code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $this->m_date->m_searchsize = 10;
         return $this->m_date->search($record, $extended, $fieldprefix);

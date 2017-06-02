@@ -131,7 +131,7 @@ class atkCountryAttribute extends atkListAttribute
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode)
+    function edit($record = "", $fieldprefix = "", $mode='')
     {
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()])
             $record[$this->fieldName()] = strtoupper(atkLanguage::getLanguage());

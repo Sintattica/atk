@@ -244,7 +244,7 @@ class atkListAttribute extends atkAttribute
      * @param array $record
      * @return text string of $record
      */
-    function display($record)
+    function display($record,$mode='')
     {
         return $this->_translateValue($record[$this->fieldName()], $record);
     }

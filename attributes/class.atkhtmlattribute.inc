@@ -56,7 +56,7 @@ class atkHtmlAttribute extends atkTextAttribute
      * @param array $record Array wit fields
      * @return Formatted string
      */
-    function display($record)
+    function display($record,$mode='')
     {
         if ($this->nl2br)
             return nl2br($record[$this->fieldName()]);

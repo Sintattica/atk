@@ -210,7 +210,7 @@ class atkFieldSet extends atkAttribute
      *
      * @return string
      */
-    public function edit($record, $fieldprefix = '', $mode = '')
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         return $this->renderFieldSet('edit', $record, $mode, $fieldprefix);
     }

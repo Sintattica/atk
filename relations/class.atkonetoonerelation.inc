@@ -153,7 +153,7 @@ class atkOneToOneRelation extends atkRelation
      * Because of the AF_INTEGRATE feature, the edit() method has a void
      * implementation. The actual edit code is handled by addToEditArray().
      */
-    function edit()
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         
     }

@@ -502,7 +502,7 @@ class atkTagAttribute extends atkFuzzySearchAttribute
      * Dummy implementation
      *
      */
-    function search()
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         
     }

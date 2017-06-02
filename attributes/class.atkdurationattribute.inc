@@ -146,7 +146,7 @@ class atkDurationAttribute extends atkAttribute
      * @param array $record Array of records, with for each record 2 fields (hours, minutes)
      * @return String Piece a of HTML Code
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return "&nbsp;"; // currently not searchable.
     }

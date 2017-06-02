@@ -159,7 +159,7 @@ class atkManyToManySelectRelation extends atkManyToManyRelation
      *
      * @return string piece of html code
      */
-    public function edit($record, $fieldprefix = "", $mode = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if ($this->hasFlag(AF_MANYTOMANYSELECT_NO_AUTOCOMPLETE)) {
             $this->getManyToOneRelation()->removeFlag(AF_MANYTOONE_AUTOCOMPLETE);
