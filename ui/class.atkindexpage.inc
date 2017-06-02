@@ -71,10 +71,10 @@ class atkIndexPage
     function __construct()
     {
         global $ATK_VARS;
-        $this->m_page = &atkinstance("atk.ui.atkpage");
-        $this->m_ui = &atkinstance("atk.ui.atkui");
-        $this->m_theme = &atkinstance('atk.ui.atktheme');
-        $this->m_output = &atkinstance('atk.ui.atkoutput');
+        $this->m_page = atkinstance("atk.ui.atkpage");
+        $this->m_ui = atkinstance("atk.ui.atkui");
+        $this->m_theme = atkinstance('atk.ui.atktheme');
+        $this->m_output = atkinstance('atk.ui.atkoutput');
         $this->m_user = getUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
                 : HTML_STRICT;

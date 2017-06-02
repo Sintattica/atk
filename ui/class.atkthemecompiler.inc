@@ -118,7 +118,7 @@ class atkThemeCompiler
                 foreach ($theme as $key => $value) {
                     if ($key == 'cssicons') {
                         // (overridable array)
-                        if (!$data["attributes"][$key]) {
+                        if (!array_key_exists($key,$data["attributes"])) {
                             $data["attributes"][$key] = [];
                         }
                         $data["attributes"][$key] = array_replace_recursive($data["attributes"][$key], $value);
@@ -178,7 +178,7 @@ class atkThemeCompiler
      */
     function scanThemePath($path, $abspath, &$data)
     {
-        $traverser = &atknew("atk.utils.atkdirectorytraverser");
+        $traverser = atknew("atk.utils.atkdirectorytraverser");
         $subitems = $traverser->getDirContents($abspath);
         foreach ($subitems as $name) {
             if (in_array($name, array("images", "styles", "templates"))) { // images, styles and templates are compiled the same
@@ -221,7 +221,7 @@ class atkThemeCompiler
     {
         global $g_modules;
 
-        $traverser = &atknew("atk.utils.atkdirectorytraverser");
+        $traverser = atknew("atk.utils.atkdirectorytraverser");
         foreach ($g_modules as $module => $modpath) {
             $abspath = $modpath . "themes/" . $theme . "/";
 
@@ -256,7 +256,7 @@ class atkThemeCompiler
     function _dirContents($path)
     {
         $files = array();
-        $traverser = &atknew("atk.utils.atkdirectorytraverser");
+        $traverser = atknew("atk.utils.atkdirectorytraverser");
         $traverser->addExclude('/^\.(.*)/'); // ignore everything starting with a '.'
         $traverser->addExclude('/^CVS$/');   // ignore CVS directories
         $files = $traverser->getDirContents($path);

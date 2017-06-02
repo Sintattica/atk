@@ -31,7 +31,7 @@ class atkOutlookMenu extends atkmenuinterface
      *
      * @return atkOutlookMenu
      */
-    function atkOutlookMenu()
+    function __construct()
     {
         
     }

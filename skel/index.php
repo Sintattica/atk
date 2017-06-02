@@ -37,7 +37,7 @@ if(atkConfig::getGlobal('session_autorefresh') && array_key_exists(atkConfig::ge
 
 atksecure();
 
-$theme = &atkinstance('atk.ui.atktheme');
+$theme = atkinstance('atk.ui.atktheme');
 if (atkconfig("fullscreen")) {
     // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen.
     atksession();

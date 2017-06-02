@@ -50,7 +50,7 @@ class atkMenu
      * @param string $layout The layout name
      * @return string The classname
      */
-    function layoutToClass($layout)
+    static function layoutToClass($layout)
     {
         // Check if the menu config is one of the default atk menus (deprecated)
         if (in_array($layout, array("plain", "frames", "outlook", "dhtml", "modern", "cook", "dropdown"))) {
@@ -74,14 +74,14 @@ class atkMenu
      *
      * @return string The menu classname
      */
-    function getMenuClass()
+    static function getMenuClass()
     {
         // Get the configured layout class
         $classname = atkMenu::layoutToClass(atkconfig("menu_layout"));
         atkdebug("Configured menu layout class: $classname");
 
         // Check if the class is compatible with the current theme, if not use a compatible menu.
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = atkinstance("atk.ui.atktheme");
         $compatiblemenus = $theme->getAttribute('compatible_menus');
         // If this attribute exists then retreive them
         if (is_array($compatiblemenus)) {
@@ -103,7 +103,7 @@ class atkMenu
      *
      * @return object Menu class object
      */
-    function &getMenu()
+    static function &getMenu()
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
@@ -123,7 +123,7 @@ class atkMenu
             // Set the dispatchfile for this menu based on the theme setting, or to the default if not set.
             // This makes sure that all calls to dispatch_url will generate a url for the main frame and not
             // within the menu itself.
-            $theme = &atkinstance("atk.ui.atktheme");
+            $theme = atkinstance("atk.ui.atktheme");
             $dispatcher = $theme->getAttribute('dispatcher', atkconfig("dispatcher", "dispatch.php")); // do not use atkSelf here!
             $c = &atkinstance("atk.atkcontroller");
             $c->setPhpFile($dispatcher);

@@ -60,7 +60,7 @@ class atkSecurityManager
      *
      * @param atkSecurityListener $listener
      */
-    function addListener(&$listener)
+    function addListener($listener)
     {
         $this->m_listeners[] = $listener;
     }
@@ -124,7 +124,7 @@ class atkSecurityManager
      * @param string $authorization_type The type of authorization (mostly the same as the authentication_type)
      * @param string $securityscheme The security scheme that will be used to determine who is allowed to do what
      */
-    function atkSecurityManager($authentication_type = "none", $authorization_type = "none", $securityscheme = "none")
+    function __construct($authentication_type = "none", $authorization_type = "none", $securityscheme = "none")
     {
         atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
 
@@ -151,7 +151,7 @@ class atkSecurityManager
 
         /* authorization class */
         $clsname = $this->_getclassname($authorization_type);
-        $this->m_authorization = &atknew($clsname);
+        $this->m_authorization = atknew($clsname);
 
         /* security scheme */
         $this->m_scheme = $securityscheme;

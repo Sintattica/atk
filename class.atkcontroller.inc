@@ -128,7 +128,7 @@ class atkController
      *
      * @return atkController
      */
-    function &getInstance()
+    static function &getInstance()
     {
         $object = &atkcontroller::_instance();
         return $object;
