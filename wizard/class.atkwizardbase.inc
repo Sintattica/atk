@@ -35,9 +35,9 @@ class atkWizardBase extends atkController
      *
      * @return atkController object
      */
-    function atkWizardBase()
+    function __construct()
     {
-        $this->atkController();
+        parent::__construct();
     }
 
     /**
@@ -116,5 +116,3 @@ class atkWizardBase extends atkController
     }
 
 }
-
-?>

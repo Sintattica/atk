@@ -37,7 +37,7 @@ class atkDocumentWriter
      *
      * Dont use this, use &atkDocumentWriter::getInstance($format) instead to get a singleton instance for any format used
      */
-    function atkDocumentWriter()
+    function __construct()
     {
         
     }

@@ -780,7 +780,7 @@ class atkNode
      * @param String $type The nodetype (by default equal to the classname)
      * @param int $flags Bitmask of node flags (NF_*).
      */
-    function atkNode($type = "", $flags = 0)
+    function __construct($type = "", $flags = 0)
     {
         if ($type == "")
             $type = strtolower(get_class($this));

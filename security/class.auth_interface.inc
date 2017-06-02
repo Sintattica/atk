@@ -297,5 +297,3 @@ class auth_interface
     }
 
 }
-
-?>

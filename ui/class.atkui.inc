@@ -41,7 +41,7 @@ class atkUI
     /**
      * atkUi constructor, initialises Smarty and atkTheme instance
      */
-    function atkUI()
+    function __construct()
     {
         $this->m_theme = &atkinstance("atk.ui.atktheme");
         $this->m_smarty = &atkinstance("atk.ui.atksmarty");
@@ -384,4 +384,3 @@ class atkUI
 
 }
 
-?>

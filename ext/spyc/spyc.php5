@@ -42,7 +42,7 @@
      * @access public
      * @return void
      */
-     public function YAMLNode() {
+     public function __construct() {
       $this->id = uniqid('');
     }
   }

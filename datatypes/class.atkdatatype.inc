@@ -70,5 +70,3 @@ abstract class atkDataType
     }
 
 }
-
-?>

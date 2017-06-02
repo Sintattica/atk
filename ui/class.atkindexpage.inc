@@ -68,7 +68,7 @@ class atkIndexPage
      *
      * @return atkIndexPage
      */
-    function atkIndexPage()
+    function __construct()
     {
         global $ATK_VARS;
         $this->m_page = &atkinstance("atk.ui.atkpage");
@@ -302,5 +302,3 @@ class atkIndexPage
     }
 
 }
-
-?>

@@ -413,5 +413,3 @@ class atkAdminHandler extends atkActionHandler
     }
 
 }
-
-?>

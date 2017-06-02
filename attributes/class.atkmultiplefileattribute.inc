@@ -7,6 +7,7 @@
  *
  * @package atk
  * @subpackage attributes
+ * @deprecated
  *
  * @copyright (c)2000-2004 Ibuildings.nl BV
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
@@ -39,9 +40,9 @@ class atkMultipleFileAttribute extends atkFileAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Filename size
      */
-    function atkMultipleFileAttribute($name, $dir, $flags = 0, $size = 0)
+    function __construct($name, $dir, $flags = 0, $size = 0)
     {
-        $this->atkFileAttribute($name, $flags | AF_CASCADE_DELETE, $size); // base class constructor
+	    parent::__construct($name, $flags | AF_CASCADE_DELETE, $size); // base class constructor
         if (is_array($dir)) {
             $this->m_dir = $this->AddSlash($dir[0]);
             $this->m_url = $this->AddSlash($dir[1]);
@@ -182,5 +183,3 @@ class atkMultipleFileAttribute extends atkFileAttribute
     }
 
 }
-
-?>

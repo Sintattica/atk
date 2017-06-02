@@ -424,4 +424,3 @@ class atkAddOrCopyHandler extends atkActionHandler
 
 }
 
-?>

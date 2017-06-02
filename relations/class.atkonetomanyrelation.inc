@@ -174,9 +174,9 @@ class atkOneToManyRelation extends atkRelation
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-    function atkOneToManyRelation($name, $destination, $refKey = "", $flags = 0)
+    function __construct($name, $destination, $refKey = "", $flags = 0)
     {
-        $this->atkRelation($name, $destination, $flags | AF_NO_SORT | AF_HIDE_ADD);
+        parent::__construct($name, $destination, $flags | AF_NO_SORT | AF_HIDE_ADD);
 
         if (is_array($refKey)) {
             $this->m_refKey = $refKey;

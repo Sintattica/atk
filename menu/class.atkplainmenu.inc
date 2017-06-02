@@ -176,4 +176,3 @@ class atkPlainMenu extends atkmenuinterface
 
 }
 
-?>

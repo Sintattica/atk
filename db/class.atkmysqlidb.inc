@@ -37,7 +37,7 @@ class atkMysqliDb extends atkMysqlDb
     /**
      * Base constructor
      */
-    function atkmysqlidb()
+    function __construct()
     {
         if (!function_exists('mysqli_connect')) {
             trigger_error('MySQLi not supported by your PHP version', E_USER_ERROR);
@@ -633,5 +633,3 @@ class atkMysqliDb extends atkMysqlDb
     }
 
 }
-
-?>

@@ -32,6 +32,7 @@ useattrib("atktextattribute");
  * @author Ivo Jansch       <ivo@achievo.org>
  * @package atk
  * @subpackage attributes
+ * @deprecated
  *
  */
 class atkFckAttribute extends atkTextAttribute
@@ -50,7 +51,7 @@ class atkFckAttribute extends atkTextAttribute
      * @param int $flags Flags for the attribute
      * @param array $opt Extra fckeditor configuration options.
      */
-    function atkFckAttribute($name, $size = '', $flags = 0, $opt = array())
+    function __construct($name, $size = '', $flags = 0, $opt = array())
     {
         $config_fck = atkconfig('fck');
         if (is_array($config_fck)) {
@@ -62,7 +63,7 @@ class atkFckAttribute extends atkTextAttribute
 
         $this->fck_opt["Language"] = atkconfig("language");
 
-        $this->atkTextAttribute($name, $size, $flags);
+	    parent::__construct($name, $size, $flags);
     }
 
     /**

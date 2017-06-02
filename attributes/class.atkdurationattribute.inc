@@ -42,9 +42,9 @@ class atkDurationAttribute extends atkAttribute
      * @param int $size This attributes size
      * @see atkAttribute
      */
-    function atkDurationAttribute($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
+    function __construct($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
     {
-        $this->atkAttribute($name, $flags, $size); // base class constructor
+	    parent::__construct($name, $flags, $size); // base class constructor
         $hms = substr($resolution, -1);
         $resolution = substr($resolution, 0, -1);
 

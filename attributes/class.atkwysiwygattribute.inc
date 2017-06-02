@@ -61,6 +61,7 @@ define("WW_LIGHT", WW_STYLE | WW_TOOLS | WW_LIST | WW_LINK | WW_ALIGN);
  * @author Lineke Willems <lineke@ibuildings.nl>
  * @package atk
  * @subpackage attributes
+ * @deprecated
  *
  */
 class atkWysiwygAttribute extends atkTextAttribute
@@ -74,10 +75,10 @@ class atkWysiwygAttribute extends atkTextAttribute
      * @param int $editflags These define what buttons the toolbar contains.
      * @param int $flags Flags for this attribute
      */
-    function atkWysiwygAttribute($name, $editflags = WW_ALL, $flags = 0)
+    function __construct($name, $editflags = WW_ALL, $flags = 0)
     {
         $this->m_editflags = $editflags;
-        $this->atkTextAttribute($name, 12, $flags); // base class constructor
+	    parent::__construct($name, 12, $flags); // base class constructor
     }
 
     /**

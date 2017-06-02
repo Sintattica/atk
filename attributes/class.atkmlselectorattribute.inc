@@ -80,11 +80,11 @@ class atkMlSelectorAttribute extends atkMlAttribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function atkMlSelectorAttribute($name = "", $flags = 0)
+    function __construct($name = "", $flags = 0)
     {
         global $config_atkroot;
         /* base class constructor */
-        $this->atkMlAttribute("multilanguage_select", $flags | AF_HIDE_LIST);
+	    parent::__construct("multilanguage_select", $flags | AF_HIDE_LIST);
         $this->m_mlattribute = FALSE; // just a selector and not a real mlattribute
     }
 
@@ -191,5 +191,3 @@ class atkMlSelectorAttribute extends atkMlAttribute
     }
 
 }
-
-?>

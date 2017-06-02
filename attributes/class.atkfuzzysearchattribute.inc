@@ -84,13 +84,13 @@ class atkFuzzySearchAttribute extends atkAttribute
      * @param int    $flags      The flags of the attribute
      * @param int    $size       The size of the search field
      */
-    function atkFuzzySearchAttribute($name, $searchnode, $callback, $mode = "all", $flags = 0, $size = 0)
+    function __construct($name, $searchnode, $callback, $mode = "all", $flags = 0, $size = 0)
     {
         /*if ($size == 0) {
             $size = $this->maxInputSize();
         }*/
 
-        $this->atkAttribute($name, $flags | AF_HIDE_VIEW | AF_HIDE_LIST, $size);
+	    parent::__construct($name, $flags | AF_HIDE_VIEW | AF_HIDE_LIST, $size);
         $this->m_searchnode = $searchnode;
         $this->m_callback = $callback;
         $this->m_mode = strtolower($mode);

@@ -23,6 +23,7 @@
  *
  * @author Przemek Piotrowski <przemek.piotrowski@nic.com.pl>
  * @author Ivo Jansch <ivo@achievo.org>
+ * @deprecated
  *
  * @package atk
  * @subpackage attributes
@@ -38,9 +39,9 @@ class atkRowCounter extends atkDummyAttribute
      * @param String $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function atkRowCounter($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkDummyAttribute($name, '', $flags | AF_HIDE_VIEW | AF_HIDE_EDIT | AF_HIDE_ADD);
+        parent::__construct($name, '', $flags | AF_HIDE_VIEW | AF_HIDE_EDIT | AF_HIDE_ADD);
     }
 
     /**

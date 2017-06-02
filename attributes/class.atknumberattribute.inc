@@ -49,9 +49,9 @@ class atkNumberAttribute extends atkAttribute
      * @param int $decimals The number of decimals to use.
      *
      */
-    function atkNumberAttribute($name, $flags = 0, $size = 0, $decimals = null)
+    function __construct($name, $flags = 0, $size = 0, $decimals = null)
     {
-        $this->atkAttribute($name, $flags | AF_NO_QUOTES, $size); // base class constructor
+	    parent::__construct($name, $flags | AF_NO_QUOTES, $size); // base class constructor
         $this->m_decimals = $decimals;
 
         $this->m_decimalseparator = atktext(self::SEPARATOR_DECIMAL, 'atk');

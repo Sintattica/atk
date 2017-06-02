@@ -50,7 +50,7 @@ class atkMsSqlDb extends atkMysqlDb
     /**
      * Class constructor
      */
-    function atkMsSqlDb()
+    function __construct()
     {
         $this->m_type = "mssql";
         $this->m_vendor = "microsoft";
@@ -467,5 +467,3 @@ class atkMsSqlDb extends atkMysqlDb
     }
 
 }
-
-?>

@@ -68,9 +68,9 @@ class atkFileEditor extends atkNode
      * @param int $flags The node flags. See atkNode for a list of possible
      *                   flags.
      */
-    function atkFileEditor($name, $dir = "", $filter = "", $flags = 0)
+    function __construct($name, $dir = "", $filter = "", $flags = 0)
     {
-        $this->atkNode($name, $flags | NF_ADD_LINK);
+        parent::__construct($name, $flags | NF_ADD_LINK);
         $this->m_dir = $dir;
         $this->m_basedir = $dir;
         if ($dir == "")

@@ -35,7 +35,7 @@ class atkOci9DDL extends atkOci8DDL
      *
      * @return atkOci9DDL
      */
-    function atkOci9DDL()
+    function __construct()
     {
         
     }

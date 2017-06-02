@@ -2036,5 +2036,3 @@ function atkFormatDate($date, $format, $weekday = false)
     /* return string */
     return $str_date;
 }
-
-?>

@@ -37,12 +37,12 @@ class atkDocumentAttribute extends atkDummyAttribute
      * @param string $name description
      * @param integer $flags description
      */
-    function atkDocumentAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         // Call parent constructor with addition of the af_hide_add flag
         // because this attribute should not be used in add operations where
         // the recorddata is not yet present in the database.
-        $this->atkDummyAttribute($name, "", $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
+	    parent::__construct($name, "", $flags | AF_HIDE_ADD | AF_DUMMY_SHOW_LABEL);
     }
 
     /**
@@ -143,5 +143,3 @@ class atkDocumentAttribute extends atkDummyAttribute
     }
 
 }
-
-?>

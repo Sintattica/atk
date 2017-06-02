@@ -50,7 +50,7 @@ class atkUrlVault
      * @access private
      * @return atkUrlVault
      */
-    function atkUrlVault()
+    function __construct()
     {
         atkdebug("Creating url vault");
         $sm = &atkGetSessionManager();

@@ -77,7 +77,7 @@ class atkUrlAttribute extends atkAttribute
      *                     parameter.
      * @return atkUrlAttribute
      */
-    function atkUrlAttribute($name, $flags = 0, $size = 0)
+    function __construct($name, $flags = 0, $size = 0)
     {
         if (AF_POPUP === ($flags & AF_POPUP)) {
             $this->m_newWindow = true;
@@ -94,7 +94,7 @@ class atkUrlAttribute extends atkAttribute
             $flags &= (~ AF_URL_STRIPHTTP);
         }
 
-        $this->atkAttribute($name, $flags, $size);
+	    parent::__construct($name, $flags, $size);
     }
 
     /**
@@ -285,5 +285,3 @@ class atkUrlAttribute extends atkAttribute
     }
 
 }
-
-?>

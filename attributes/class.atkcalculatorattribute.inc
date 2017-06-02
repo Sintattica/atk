@@ -72,9 +72,9 @@ class atkCalculatorAttribute extends atkAttribute
      * @param String $calculation The calculation to perform. Must be a valid php expression.
      * @param int $flags Flags of the attribute.
      */
-    function atkCalculatorAttribute($name, $calculation, $flags = 0)
+    function __construct($name, $calculation, $flags = 0)
     {
-        $this->atkAttribute($name, $flags | AF_NO_SORT | AF_HIDE_SEARCH | AF_READONLY);
+	    parent::__construct($name, $flags | AF_NO_SORT | AF_HIDE_SEARCH | AF_READONLY);
 
         $this->m_calculation = $calculation;
     }
@@ -132,5 +132,3 @@ class atkCalculatorAttribute extends atkAttribute
     }
 
 }
-
-?>

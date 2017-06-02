@@ -141,5 +141,3 @@ class atkMysqlQuery extends atkQuery
     }
 
 }
-
-?>

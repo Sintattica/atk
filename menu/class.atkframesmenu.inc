@@ -114,5 +114,3 @@ class atkFramesMenu extends atkPlainMenu
     }
 
 }
-
-?>

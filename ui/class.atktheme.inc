@@ -50,7 +50,7 @@ class atkTheme
      * Constructor, initializes class and certain values
      * @access private
      */
-    function atkTheme()
+    function __construct()
     {
         global $g_theme;
         atkdebug("Created a new atkTheme instance");

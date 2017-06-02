@@ -257,7 +257,7 @@ class atkManyToOneRelation extends atkRelation
      * @param String $destination The node we have a relationship with.
      * @param int $flags Flags for the relation
      */
-    function atkManyToOneRelation($name, $destination, $flags = 0)
+    function __construct($name, $destination, $flags = 0)
     {
         if (atkconfig("manytoone_autocomplete_default", false))
             $flags |= AF_RELATION_AUTOCOMPLETE;
@@ -279,10 +279,10 @@ class atkManyToOneRelation extends atkRelation
             // keys.
             // Languagefiles, overrides, etc should use this first name to
             // override the relation.
-            $this->atkRelation($name[0], $destination, $flags);
+            parent::__construct($name[0], $destination, $flags);
         } else {
             $this->m_refKey[] = $name;
-            $this->atkRelation($name, $destination, $flags);
+	        parent::__construct($name, $destination, $flags);
         }
 
         if ($this->hasFlag(AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
@@ -2415,5 +2415,3 @@ class atkManyToOneRelation extends atkRelation
     }
 
 }
-
-?>

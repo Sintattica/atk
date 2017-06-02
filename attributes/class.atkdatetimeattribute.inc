@@ -90,7 +90,7 @@ class atkDateTimeAttribute extends atkAttribute
      * @param string $default_time     start time
      * @param int $flags Flags for this attribute
      */
-    function atkDateTimeAttribute($name, $default_date = "", $default_time = "", $flags = 0)
+    function __construct($name, $default_date = "", $default_time = "", $flags = 0)
     {
         $default_steps = array();
         for ($i = 0; $i < 60; $i ++) {
@@ -114,7 +114,7 @@ class atkDateTimeAttribute extends atkAttribute
         $this->m_time = new atkTimeattribute($name, 0, 23, $default_steps, $default_time, $flags);
         $this->m_date = new atkDateattribute($name, '', '', 0, 0, $flags);
 
-        $this->atkAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
     }
 
     /**

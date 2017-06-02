@@ -95,5 +95,3 @@ class atkStringDt extends atkDataType
     }
 
 }
-
-?>

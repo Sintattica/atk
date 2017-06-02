@@ -78,7 +78,7 @@ class atkController
      *
      * @return atkController object
      */
-    function atkController()
+    function __construct()
     {
         global $g_sessionManager;
         if (is_object($g_sessionManager)) {
@@ -847,5 +847,3 @@ class atkController
     }
 
 }
-
-?>

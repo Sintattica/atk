@@ -1,0 +1,182 @@
+@import '../../steelblue/styles/style.css';
+
+/*
+@import "http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700";
+body {
+    font-family: "Open Sans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif !important;
+	text-rendering: optimizelegibility;
+}
+*/
+
+   
+/*.panel,*/ #mainMenu
+{
+  float: left;
+}
+
+.panelTitleRight 
+{
+  Height: 26px;
+}
+
+
+.clearfloat
+{
+  clear: both;
+}
+
+div.stacktrace
+{
+	margin-left: 18px;
+	margin-bottom: 8px;
+}
+
+.actionpageWrapper 
+{
+  width:100%;
+}
+
+/* center */
+.panel {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* google SERP preview */
+
+.google_title {
+	color: #2200C1 !important;
+	font-family: arial,sans-serif !important;
+	font-size: 16px !important;
+	font-weight: 700 !important;
+	margin-bottom: 0 !important;
+	text-decoration: underline !important;
+	line-height: 19.2px !important;
+	margin-top: 0px !important;
+}
+.google_summary {
+	color: #000000 !important;
+	font-family: arial,sans-serif !important;
+	font-size: 13px !important;
+	font-weight: 400 !important;
+	line-height: 15.6px !important;
+	width: 546px !important;
+	height: 46.8px !important;
+}
+.google_link {
+	color: #0E774A !important;
+}
+.google_cache {
+	color: #4272DB !important;
+}
+
+/* agx tree bool relation controller */
+td.checked {
+	background-color: #ffff99;
+}
+
+td.error {
+	border: solid 2px yellow;
+	padding: 10px;
+	font-size: 20px;
+	line-height: 28px;
+}
+
+/*tr#ar_tags.section_tab_tags td#cms_content_tags {
+	width: 800px;
+}*/
+
+/* cloud map */
+/*html body div.actionpageWrapper table.panel tbody tr td.panelContent div.panelContent2 form#entryform div#action-content table tbody tr td table.tabsContent tbody tr td table#editform tbody tr td table tbody tr#ar_clouds.section_tab_tags td#cms_content_clouds.field div#clouds_tags*/
+div#clouds_tags {
+	max-width: 800px;
+}
+
+/* report */
+.superbold {
+	font-weight: bold;
+}
+
+/* NEW */
+
+.bluebutton {
+    display: inline-block;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    background-color: #538fbe;
+    padding: 4px 20px;
+    border: 1px solid #2d6898;
+    background-image: linear-gradient(bottom, rgb(73,132,180) 0%, rgb(97,155,203) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(73,132,180) 0%, rgb(97,155,203) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(73,132,180) 0%, rgb(97,155,203) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(73,132,180) 0%, rgb(97,155,203) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(73,132,180) 0%, rgb(97,155,203) 100%);
+ 
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(73,132,180)),
+        color-stop(1, rgb(97,155,203))
+    );
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    text-shadow: 0px -1px 0px rgba(0,0,0,.5);
+    -webkit-box-shadow: 0px 6px 0px #2b638f, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.3), inset 0px 0px 3px rgba(255,255,255,.5);
+    -moz-box-shadow: 0px 6px 0px #2b638f, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.3), inset 0px 0px 3px rgba(255,255,255,.5);
+    box-shadow: 0px 6px 0px #2b638f, 0px 3px 15px rgba(0,0,0,.4), inset 0px 1px 0px rgba(255,255,255,.3), inset 0px 0px 3px rgba(255,255,255,.5);
+	/* give space */
+	margin-bottom: 10px;
+}
+
+.bluebutton:active {
+    background-image: linear-gradient(bottom, rgb(88,154,204) 0%, rgb(90,150,199) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(88,154,204) 0%, rgb(90,150,199) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(88,154,204) 0%, rgb(90,150,199) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(88,154,204) 0%, rgb(90,150,199) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(88,154,204) 0%, rgb(90,150,199) 100%);
+ 
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(88,154,204)),
+        color-stop(1, rgb(90,150,199))
+    );
+}
+
+A.bluebutton  {
+	color: #fff;
+}
+
+div.gmapbuttonbar {
+	padding-bottom: 16px;
+}
+
+/* message queue */
+
+.atkmessages_success {
+    background-color: #33aa33;
+    color: #eee;
+	padding: 8px;
+	letter-spacing: 2px;
+}
+
+/* dialog */
+div.ui-window atkdialog draggable atkdialog_focused {
+	min-width: 600px;
+}
+
+.atkdialog .content {
+	min-width: 600px;
+}
+
+a span.nolink {
+	text-decoration: none;
+	color: #666;
+	padding-left: 20px;
+	border: none;
+	outline: none;
+}

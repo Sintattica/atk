@@ -35,9 +35,9 @@ class atkMlNumberAttribute extends atkMlAttribute
      * @param integer $flags flags for this attribute
      * @param integer $size The size of this attribute
      */
-    function atkMlNumberAttribute($name, $flags = 0, $size = 0)
+    function __construct($name, $flags = 0, $size = 0)
     {
-        $this->atkMlAttribute($name, $flags, $size); // base class constructor
+	    parent::__construct($name, $flags, $size); // base class constructor
     }
 
     /**
@@ -58,5 +58,3 @@ class atkMlNumberAttribute extends atkMlAttribute
     }
 
 }
-
-?>

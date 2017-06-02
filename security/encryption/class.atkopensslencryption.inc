@@ -33,7 +33,7 @@ class atkOpenSSLEncryption extends atkEncryption
     /**
      * The constructor of this class makes two configurations which are used by other functions
      */
-    function atkOpenSSLEncryption()
+    function __construct()
     {
         $this->m_config_default = array();
         $this->m_config_nokey = array_merge($this->m_config_default, array('encrypt_key' => false));
@@ -235,5 +235,3 @@ class atkOpenSSLEncryption extends atkEncryption
     }
 
 }
-
-?>

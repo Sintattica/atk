@@ -230,4 +230,3 @@ class atkSearchHandler extends atkAbstractSearchHandler
 
 }
 
-?>

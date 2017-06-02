@@ -67,10 +67,10 @@ class atkManyToManyRelation extends atkRelation
      *                            end of the relation.
      * @param int $flags Flags for the relation.
      */
-    function atkManyToManyRelation($name, $link, $destination, $flags = 0)
+    function __construct($name, $link, $destination, $flags = 0)
     {
         $this->m_link = $link;
-        $this->atkRelation($name, $destination, $flags | AF_CASCADE_DELETE | AF_NO_SORT);
+        parent::__construct($name, $destination, $flags | AF_CASCADE_DELETE | AF_NO_SORT);
     }
 
     /**

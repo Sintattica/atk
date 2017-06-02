@@ -1959,5 +1959,3 @@ class Smarty
 }
 
 /* vim: set expandtab: */
-
-?>

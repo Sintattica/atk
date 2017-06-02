@@ -124,7 +124,7 @@ class atkListAttribute extends atkAttribute
      * @param int $flags Flags for this attribute
      * @param int $size  Size of the attribute.
      */
-    function atkListAttribute($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
+    function __construct($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
             if (is_numeric($valueArray))
@@ -149,7 +149,7 @@ class atkListAttribute extends atkAttribute
             }
         }
 
-        $this->atkAttribute($name, $flags, $size); // base class constructor
+	    parent::__construct($name, $flags, $size); // base class constructor
 
         $this->setOptions($optionArray, $valueArray);
     }
@@ -745,5 +745,3 @@ class atkListAttribute extends atkAttribute
     }
 
 }
-
-?>

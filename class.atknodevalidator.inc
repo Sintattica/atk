@@ -48,7 +48,7 @@ class atkNodeValidator
      * constructor
      *
      */
-    function atkNodeValidator()
+    function __construct()
     {
         
     }
@@ -257,5 +257,3 @@ class atkNodeValidator
     }
 
 }
-
-?>

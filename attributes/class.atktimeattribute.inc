@@ -49,9 +49,9 @@ class atkTimeAttribute extends atkAttribute
      * @param string $default Start Time (exp: 20:30)
      * @param int $flags Flags for this attribute
      */
-    function atkTimeAttribute($name, $beginTime = 0, $endTime = 23, $steps = array("00", "15", "30", "45"), $default = "", $flags = 0)
+    function __construct($name, $beginTime = 0, $endTime = 23, $steps = array("00", "15", "30", "45"), $default = "", $flags = 0)
     {
-        $this->atkAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
         $this->m_beginTime = $beginTime;
         $this->m_endTime = $endTime;
         if (is_array($steps))

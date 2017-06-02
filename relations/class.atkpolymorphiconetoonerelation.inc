@@ -47,9 +47,9 @@ class atkPolymorphicOneToOneRelation extends atkOneToOneRelation
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-    function atkPolymorphicOneToOneRelation($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
+    function __construct($name, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey, $flags = 0)
     {
-        $this->atkOneToOneRelation($name, "", $refKey, $flags | AF_HIDE_LIST);
+        parent::__construct($name, "", $refKey, $flags | AF_HIDE_LIST);
         $this->m_typefk = $typefk;
         $this->m_discriminatorfield = $discriminatorfield;
         $this->m_destination = $defaultdest;

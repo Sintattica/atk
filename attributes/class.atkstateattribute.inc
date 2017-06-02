@@ -53,7 +53,7 @@ class atkStateAttribute extends atkListAttribute
      * @param bool $defaulttocurrent Set the default selected state to the 
      *                               current state based on the atk language
      */
-    function atkStateAttribute($name, $switch = "usa", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
+    function __construct($name, $switch = "usa", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
     {
 
         if (is_numeric($switch)) {
@@ -69,7 +69,7 @@ class atkStateAttribute extends atkListAttribute
         $optionsArray = $this->getStateOptionArray($switch);
 
         $this->m_defaulttocurrent = $defaulttocurrent;
-        $this->atkListAttribute($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
+        parent::__construct($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
     }
 
     /**

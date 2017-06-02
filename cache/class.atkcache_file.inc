@@ -304,5 +304,3 @@ class atkCache_file extends atkCache
     }
 
 }
-
-?>

@@ -107,14 +107,14 @@ class atkFileAttribute extends atkAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Filename size
      */
-    function atkFileAttribute($name, $dir, $flags = 0, $size = 0)
+    function __construct($name, $dir, $flags = 0, $size = 0)
     {
         /*if ($size == 0)
             $size = 255;
         */
 
         // Call base class constructor.
-        $this->atkAttribute($name, $flags | AF_CASCADE_DELETE, $size);
+	    parent::__construct($name, $flags | AF_CASCADE_DELETE, $size);
         $this->setDir($dir);
     }
 

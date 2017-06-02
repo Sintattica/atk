@@ -21,6 +21,7 @@
  * @version $Revision: 4845 $
  * $Id$
  */
+
 /**
  * @internal includes
  */
@@ -39,7 +40,6 @@ atksecure();
 $theme = &atkinstance('atk.ui.atktheme');
 if (atkconfig("fullscreen")) {
     // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen.
-
     atksession();
     atksecure();
 
@@ -71,4 +71,3 @@ if (atkconfig("fullscreen")) {
         $indexpage->generate();
     }
 }
-?>

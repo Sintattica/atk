@@ -41,9 +41,9 @@ class atkUpdatedByAttribute extends atkManyToOneRelation
      * @param int $flags Flags for this attribute.
      * @return atkUpdatedByAttribute
      */
-    function atkUpdatedByAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkManyToOneRelation($name, atkconfig("auth_usernode"), $flags | AF_READONLY | AF_HIDE_ADD);
+	    parent::__construct($name, atkconfig("auth_usernode"), $flags | AF_READONLY | AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
     }

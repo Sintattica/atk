@@ -91,7 +91,7 @@ class atkSessionManager
      *                          performance impact, so scripts not using
      *                          the stack should pass false here.
      */
-    public function atkSessionManager($namespace, $usestack = true)
+    public function __construct($namespace, $usestack = true)
     {
         $this->m_namespace = $namespace;
         $this->m_usestack = $usestack;
@@ -1209,4 +1209,3 @@ function &atkGetSessionManager()
     return $g_sessionManager;
 }
 
-?>

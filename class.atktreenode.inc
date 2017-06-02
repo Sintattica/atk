@@ -64,9 +64,9 @@ class atkTreeNode extends atkNode
      * @param String $name Node name
      * @param int $flags Node flags
      */
-    function atkTreeNode($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkNode($name, $flags);
+        parent::__construct($name, $flags);
     }
 
     /**

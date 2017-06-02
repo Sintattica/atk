@@ -62,7 +62,7 @@ class atkCKAttribute extends atkTextAttribute
             $this->ckOptions = array_merge($this->ckOptions, $options);
         }
 
-        parent::atkTextAttribute($name, 0, $flags);
+	    parent::__construct($name, 0, $flags);
     }
 
     function edit($record = "", $fieldprefix = "", $mode = "")

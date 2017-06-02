@@ -54,7 +54,7 @@ class atkMessageQueue
     /**
      * Constructor
      */
-    function atkMessageQueue()
+    function __construct()
     {
         
     }
@@ -177,5 +177,3 @@ class atkMessageQueue
     }
 
 }
-
-?>

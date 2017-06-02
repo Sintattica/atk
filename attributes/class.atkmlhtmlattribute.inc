@@ -41,9 +41,9 @@ class atkMlHtmlAttribute extends atkMlTextAttribute
      * @param int $flags flags of the attribute
      * @param bool $nl2br nl2br boolean
      */
-    function atkMlHtmlAttribute($name, $flags = 0, $nl2br = false)
+    function __construct($name, $flags = 0, $nl2br = false)
     {
-        $this->atkMlTextAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
         $this->nl2br = $nl2br;
     }
 
@@ -62,5 +62,3 @@ class atkMlHtmlAttribute extends atkMlTextAttribute
     }
 
 }
-
-?>

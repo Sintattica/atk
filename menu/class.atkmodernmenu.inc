@@ -33,7 +33,7 @@ class atkModernMenu extends atkPlainMenu
      *
      * @return atkModernMenu
      */
-    function atkModernMenu()
+    function __construct()
     {
         $this->m_height = "130";
     }
@@ -200,5 +200,3 @@ class atkModernMenu extends atkPlainMenu
     }
 
 }
-
-?>

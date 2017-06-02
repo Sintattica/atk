@@ -38,12 +38,12 @@ class atkCaptchaAttribute extends atkAttribute
      * @param int    $flags  The attribute flags
      * @return -
      */
-    function atkCaptchaAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         // A Captcha attribute should not be searchable and sortable
         $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
 
-        $this->atkAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
     }
 
     /**
@@ -106,5 +106,3 @@ class atkCaptchaAttribute extends atkAttribute
     }
 
 }
-
-?>

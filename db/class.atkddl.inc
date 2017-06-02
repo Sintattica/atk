@@ -54,7 +54,7 @@ class atkDDL
     /**
      * Default constructor
      */
-    function atkDDL()
+    function __construct()
     {
         
     }
@@ -690,4 +690,3 @@ class atkDDL
 
 }
 
-?>

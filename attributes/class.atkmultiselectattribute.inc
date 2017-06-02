@@ -53,7 +53,7 @@ class atkMultiSelectAttribute extends atkListAttribute
      * @param int $flags Flags for this attribute
      * @param int $size  Size of the attribute.
      */
-    function atkMultiSelectAttribute($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
+    function __construct($name, $optionArray, $valueArray = "", $cols = "", $flags = 0, $size = "")
     {
         if (!is_array($valueArray) || count($valueArray) == 0) {
             $valueArray = $optionArray;
@@ -65,7 +65,7 @@ class atkMultiSelectAttribute extends atkListAttribute
                 $size+=(atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
             }
         }
-        $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
+	    parent::__construct($name, $optionArray, $valueArray, $flags, $size); // base class constructor
         ($cols < 1) ? $this->m_cols = 3 : $this->m_cols = $cols;
     }
 
@@ -293,5 +293,3 @@ class atkMultiSelectAttribute extends atkListAttribute
     }
 
 }
-
-?>

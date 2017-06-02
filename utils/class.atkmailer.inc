@@ -113,4 +113,3 @@ class atkMailer extends PHPMailer
 
 }
 
-?>

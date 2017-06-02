@@ -60,7 +60,7 @@ class atkWeekdayAttribute extends atkNumberAttribute
      *                           these options will be numbered from 2^7 (128) to 2^x.
      * @param int $flags        Flags for the attribute. Only used if no set in previous param.
      */
-    function atkWeekdayAttribute($name, $extraOrFlags = 0, $flags = 0)
+    function __construct($name, $extraOrFlags = 0, $flags = 0)
     {
 
         if (is_numeric($extraOrFlags))
@@ -68,7 +68,7 @@ class atkWeekdayAttribute extends atkNumberAttribute
         elseif (is_array($extraOrFlags))
             $this->m_extra = $extraOrFlags;
 
-        $this->atkNumberAttribute($name, ($flags | AF_HIDE_SEARCH) ^ AF_SEARCHABLE);
+	    parent::__construct($name, ( $flags | AF_HIDE_SEARCH) ^ AF_SEARCHABLE);
     }
 
     /**

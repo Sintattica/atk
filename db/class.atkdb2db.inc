@@ -35,7 +35,7 @@ class atkdb2db extends atkDb
     /**
      * Base constructor
      */
-    function atkdb2db()
+    function __construct()
     {
         // set the user error's
         $this->m_type = "db2";

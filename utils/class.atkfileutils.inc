@@ -433,5 +433,3 @@ class atkFileUtils
     }
 
 }
-
-?>

@@ -34,7 +34,7 @@ class atkMsSqlDDL extends atkDDL
      *
      * @return atkMsSqlDDL
      */
-    function atkMsSqlDDL()
+    function __construct()
     {
         
     }
@@ -104,5 +104,3 @@ class atkMsSqlDDL extends atkDDL
     }
 
 }
-
-?>

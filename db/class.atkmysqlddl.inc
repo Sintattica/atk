@@ -34,7 +34,7 @@ class atkMysqlDDL extends atkDDL
      *
      * @return atkMysqlDDL
      */
-    function atkMysqlDDL()
+    function __construct()
     {
         
     }
@@ -221,5 +221,3 @@ class atkMysqlDDL extends atkDDL
     }
 
 }
-
-?>

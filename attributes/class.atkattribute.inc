@@ -648,7 +648,7 @@ class atkAttribute
      *                     parameter.
      *
      */
-    function atkAttribute($name, $flags = 0, $size = 0)
+    function __construct($name, $flags = 0, $size = 0)
     {
         $this->m_name = $name;
         $this->setFlags((int) $flags);

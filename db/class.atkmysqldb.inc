@@ -36,7 +36,7 @@ class atkMysqlDb extends atkDb
     /**
      * Base constructor
      */
-    function atkmysqldb()
+    function __construct()
     {
         if (!function_exists('mysql_connect')) {
             atkerror('MySQL not supported by your PHP version');
@@ -686,5 +686,3 @@ class atkMysqlDb extends atkDb
     }
 
 }
-
-?>

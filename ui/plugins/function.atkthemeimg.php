@@ -38,4 +38,3 @@ function smarty_function_atkthemeimg($params, &$smarty)
     return $theme->imgPath($params['id']);
 }
 
-?>

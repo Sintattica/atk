@@ -428,5 +428,3 @@ function module($name, $path = "", $flags = 0)
     if ($flags > 0)
         $g_moduleflags[$name] = $flags;
 }
-
-?>

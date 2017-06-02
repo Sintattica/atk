@@ -33,7 +33,7 @@ class atkStringParser
      *
      * @param string $string The string to parse
      */
-    function atkStringParser($string)
+    function __construct($string)
     {
         $this->m_string = $string;
     }
@@ -210,5 +210,3 @@ class atkStringParser
     }
 
 }
-
-?>

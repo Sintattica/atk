@@ -108,12 +108,12 @@ class atkOneToOneRelation extends atkRelation
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-    function atkOneToOneRelation($name, $destination, $refKey = "", $flags = 0)
+    function __construct($name, $destination, $refKey = "", $flags = 0)
     {
         if (($flags & AF_ONETOONE_ADD) != AF_ONETOONE_ADD) {
             $flags |= AF_HIDE_ADD;
         }
-        $this->atkRelation($name, $destination, $flags | AF_ONETOONE_LAZY);
+        parent::__construct($name, $destination, $flags | AF_ONETOONE_LAZY);
         $this->m_refKey = $refKey;
     }
 
@@ -1254,5 +1254,3 @@ class atkOneToOneRelation extends atkRelation
 	/* END */
 
   }
-
-?>

@@ -44,10 +44,10 @@ class atkMlWrapper extends atkAttribute
      * @param integer $flags
      * @return atkMlWrapper
      */
-    function atkMlWrapper(&$attribute, $flags = 0)
+    function __construct(&$attribute, $flags = 0)
     {
         // first highjack the containing attribute
-        $this->atkAttribute($attribute->m_name, $flags | $attribute->m_flags);
+	    parent::__construct($attribute->m_name, $flags | $attribute->m_flags);
 
         foreach ($this->getLanguages() as $lng) {
             // Clone attrs with new name

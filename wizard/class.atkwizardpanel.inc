@@ -115,7 +115,7 @@ class atkWizardPanel
      * @param integer $finishButton The finish button to use
      * @return atkWizardPanel
      */
-    function atkWizardPanel(&$wizard, $panelName, $nodeName, $defaultAction = "", $finishButton = FINISH_BUTTON_DEFAULT)
+    function __construct(&$wizard, $panelName, $nodeName, $defaultAction = "", $finishButton = FINISH_BUTTON_DEFAULT)
     {
         $this->m_wizard = &$wizard;
         $this->m_panelName = $panelName;
@@ -323,5 +323,3 @@ class atkWizardPanel
     }
 
 }
-
-?>

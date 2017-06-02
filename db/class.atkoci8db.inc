@@ -35,7 +35,7 @@ class atkOci8Db extends atkDb
     /**
      * Default constructor
      */
-    function atkOci8Db()
+    function __construct()
     {
         // set the user error's
         $this->m_user_error = array(1, 1400, 1407, 1438, 2290, 2291, 2292, 2293);
