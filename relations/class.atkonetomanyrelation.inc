@@ -174,9 +174,9 @@ class atkOneToManyRelation extends atkRelation
      * @param int $flags Attribute flags that influence this attributes'
      *                   behavior.
      */
-    function atkOneToManyRelation($name, $destination, $refKey = "", $flags = 0)
+    function __construct($name, $destination, $refKey = "", $flags = 0)
     {
-        $this->atkRelation($name, $destination, $flags | AF_NO_SORT | AF_HIDE_ADD);
+        parent::__construct($name, $destination, $flags | AF_NO_SORT | AF_HIDE_ADD);
 
         if (is_array($refKey)) {
             $this->m_refKey = $refKey;
@@ -621,6 +621,15 @@ class atkOneToManyRelation extends atkRelation
         $dialog->setTitle($title);
         $dialog->setModifierObject($this->m_destInstance);
         $dialog->setSessionStatus(SESSION_PARTIAL);
+		/* AGX: fix dialog width */
+		$width = atkconfig('dialog_width');
+		if ($width == 'auto') {
+			$dialog->setAutoSize();
+		} else
+		if ($width > 0) {
+			$dialog->setWidth($width);
+		}
+		/* END */
         $onClick = $dialog->getCall();
 
         return '<a href="javascript:void(0)" onclick="' . $onClick . '" class="valignMiddle">' . $this->getAddLabel() . '</a>';

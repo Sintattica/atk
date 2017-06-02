@@ -29,4 +29,3 @@ function smarty_modifier_atkjson($data)
     return atkJSON::encode($data);
 }
 
-?>

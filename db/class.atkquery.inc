@@ -137,7 +137,7 @@ class atkQuery
     /**
      * Initialize all variables
      */
-    function atkquery()
+    function __construct()
     {
         $this->m_fields = array();
         $this->m_expressions = array();
@@ -935,5 +935,3 @@ class atkQuery
     }
 
 }
-
-?>

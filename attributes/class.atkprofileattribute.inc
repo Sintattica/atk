@@ -38,14 +38,14 @@ class atkProfileAttribute extends atkAttribute
      * @param int $flags The flags of this attribute
      * @return atkProfileAttribute
      */
-    function atkProfileAttribute($name, $parentAttrName = "", $flags = 0)
+    function __construct($name, $parentAttrName = "", $flags = 0)
     {
         if (is_numeric($parentAttrName)) {
             $flags = $parentAttrName;
             $parentAttrName = "";
         }
 
-        $this->atkAttribute($name, $flags | AF_HIDE_SEARCH | AF_HIDE_LIST);
+	    parent::__construct($name, $flags | AF_HIDE_SEARCH | AF_HIDE_LIST);
         $this->m_parentAttrName = $parentAttrName;
 
         $this->m_accessField = atkconfig('auth_accessfield');
@@ -237,7 +237,7 @@ class atkProfileAttribute extends atkAttribute
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
                 if (!isset($g_moduleflags[$module]) || !hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
-                    $instance = &getModule($module);
+                    $instance = getModule($module);
                     if (method_exists($instance, "getNodes"))
                         $instance->getNodes();
                 }
@@ -251,7 +251,7 @@ class atkProfileAttribute extends atkAttribute
             $temp = array();
             foreach ($result as $section => $modules) {
                 foreach ($modules as $module => $nodes) {
-                    if (!is_array($temp[$module])) {
+                    if (!array_key_exists($module,$temp) || !is_array($temp[$module])) {
                         $temp[$module] = array();
                     }
 
@@ -333,7 +333,7 @@ class atkProfileAttribute extends atkAttribute
      *
      * @return string Displayable string
      */
-    public function display($record)
+    public function display($record,$mode='')
     {
         $user = getUser();
         $page = &atkPage::getInstance();
@@ -665,5 +665,3 @@ class atkProfileAttribute extends atkAttribute
     }
 
 }
-
-?>

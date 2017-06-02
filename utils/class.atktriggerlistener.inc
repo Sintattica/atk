@@ -47,7 +47,7 @@ class atkTriggerListener
      * 
      * @return atkTriggerListener
      */
-    function atkTriggerListener()
+    function __construct()
     {
         
     }

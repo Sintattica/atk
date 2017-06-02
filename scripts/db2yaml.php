@@ -1,4 +1,6 @@
 <?php
+die('DISABLED');
+
 $config_atkroot = "../../";
 include_once $config_atkroot . './atk.inc';
 

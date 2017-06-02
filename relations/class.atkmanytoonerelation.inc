@@ -15,6 +15,13 @@
  * @version $Revision: 6309 $
  * $Id$
  */
+
+/*
+ * AGX: atkListAttribute (SPECIFIC_2) will conflict AF_LIST_NO_OBLIGATORY_NULL_ITEM
+ */
+atkimport("atk.attributes.atklistattribute");
+
+
 /**
  * Create edit/view links for the items in a manytoonerelation dropdown.
  */
@@ -54,6 +61,13 @@ define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);
  * Add a default null option to obligatory relations
  */
 define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5);
+/**
+ * In dropdown search -
+ * TRUE don't split string on spaces do search
+ * NULL or FALSE split and do OR search (default action)
+ */
+define("AF_DONT_SPLIT", AF_SPECIFIC_6);
+
 
 /**
  * @internal include base class
@@ -251,7 +265,7 @@ class atkManyToOneRelation extends atkRelation
      * @param String $destination The node we have a relationship with.
      * @param int $flags Flags for the relation
      */
-    function atkManyToOneRelation($name, $destination, $flags = 0)
+    function __construct($name, $destination, $flags = 0)
     {
         if (atkconfig("manytoone_autocomplete_default", false))
             $flags |= AF_RELATION_AUTOCOMPLETE;
@@ -273,10 +287,10 @@ class atkManyToOneRelation extends atkRelation
             // keys.
             // Languagefiles, overrides, etc should use this first name to
             // override the relation.
-            $this->atkRelation($name[0], $destination, $flags);
+            parent::__construct($name[0], $destination, $flags);
         } else {
             $this->m_refKey[] = $name;
-            $this->atkRelation($name, $destination, $flags);
+	        parent::__construct($name, $destination, $flags);
         }
 
         if ($this->hasFlag(AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
@@ -834,7 +848,7 @@ class atkManyToOneRelation extends atkRelation
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String Piece of html code that can be used in a form to edit this
      */
-    function edit($record, $fieldprefix = "", $mode = "edit")
+    function edit($record='', $fieldprefix = "", $mode = "edit")
     {
         if (!$this->createDestination()) {
             return atkerror("Could not create destination for destination: $this -> m_destination!");
@@ -1100,7 +1114,7 @@ class atkManyToOneRelation extends atkRelation
      *
      * @return String A piece of html-code
      */
-    function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
         if (!$this->hasFlag(AF_LARGE) && !$useautocompletion) {
@@ -1373,7 +1387,7 @@ class atkManyToOneRelation extends atkRelation
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level = 0, $mode = "")
     {
         if ($this->hasFlag(AF_MANYTOONE_LAZY)) {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
@@ -1441,7 +1455,7 @@ class atkManyToOneRelation extends atkRelation
      *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
      *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
      */
-    function loadType($mode)
+    function loadType($mode, $searching = false)
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
             return $this->m_loadType[$mode];
@@ -2042,7 +2056,7 @@ class atkManyToOneRelation extends atkRelation
      *                                   into the search fields.
      * @param array   $fieldprefix       search / mode field prefix
      */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode = array())
     {
         $prefix = $fieldprefix . $this->fieldName() . "_AE_";
 
@@ -2264,7 +2278,12 @@ class atkManyToOneRelation extends atkRelation
         else
             $searchfields = $this->m_autocomplete_searchfields;
 
-        $parts = preg_split('/\s+/', $searchvalue);
+		if ($this->hasFlag(AF_DONT_SPLIT)) {
+			$parts = array($searchvalue);
+		}
+		else {
+			$parts = preg_split('/\s+/', $searchvalue);
+		}
 
         $mainFilter = array();
         foreach ($parts as $part) {
@@ -2404,5 +2423,3 @@ class atkManyToOneRelation extends atkRelation
     }
 
 }
-
-?>

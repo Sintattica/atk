@@ -386,6 +386,8 @@ function atkGetTrace($format = "html")
                         else {
                             if (is_object($value))
                                 $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
+                            else if (is_array($value))
+                                $valArr[] = sprintf("%s=Array(%s)", $name, count($value));
                             else
                                 $valArr[] = $name . "=" . @json_encode($value);
                         }*/
@@ -1011,11 +1013,18 @@ function atkTriggerError(&$record, $attrib, $error, $message = '')
             $message = $attrib[0]->text($error);
         }
     } else {
-        $attribName = $attrib->fieldName();
-        $label = $attrib->label($record);
-        $tab = $attrib->m_tabs[0];
-        if (!$message) {
-            $message = $attrib->text($error);
+        if (is_object($attrib)) {
+            $attribName = $attrib->fieldName();
+            $label = $attrib->label($record);
+            $tab = $attrib->m_tabs[0];
+            if (!$message) {
+                $message = $attrib->text($error);
+            }
+        } else {
+            $attribName = 'unknown';
+            $label = 'unknown';
+            $tab = 'unknown';
+            $message = 'unknown';
         }
     }
 
@@ -1406,7 +1415,7 @@ function buildQueryString($params, $parent = "")
  */
 function dispatch_url($node, $action, $params = array(), $phpfile = '')
 {
-    $c = &atkinstance("atk.atkcontroller");
+    $c = atkinstance("atk.atkcontroller");
     if (!$phpfile)
         $phpfile = $c->getPhpFile();
     $url = $phpfile;
@@ -1428,7 +1437,7 @@ function dispatch_url($node, $action, $params = array(), $phpfile = '')
  */
 function getDispatchFile()
 {
-    $c = &atkinstance("atk.atkcontroller");
+    $c = atkinstance("atk.atkcontroller");
     return $c->getPhpFile();
 }
 
@@ -2027,5 +2036,3 @@ function atkFormatDate($date, $format, $weekday = false)
     /* return string */
     return $str_date;
 }
-
-?>

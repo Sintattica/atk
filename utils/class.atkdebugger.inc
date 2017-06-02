@@ -592,4 +592,3 @@ class atkDebugger
 
 }
 
-?>

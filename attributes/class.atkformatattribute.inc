@@ -54,10 +54,10 @@ class atkFormatAttribute extends atkAttribute
      * @param int $flags Flags for the attribute.
      *
      */
-    function atkFormatAttribute($name, $format, $flags = 0)
+    function __construct($name, $format, $flags = 0)
     {
         $this->m_format = $format;
-        $this->atkAttribute($name, $flags, strlen($format));
+	    parent::__construct($name, $flags, strlen($format));
     }
 
     /**
@@ -93,7 +93,7 @@ class atkFormatAttribute extends atkAttribute
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $elems = $this->_breakDown();
         $values = $this->_valueBreakdown($record[$this->fieldName()]);

@@ -52,7 +52,7 @@ class layout
     /**
      * Constructor
      */
-    function layout()
+    function __construct()
     {
         $this->m_atkoutput = &atkOutput::getInstance();
     }
@@ -579,7 +579,7 @@ class layout
 
         $tab = $node->getActiveTab();
 
-        $form .= $this->ret_table_simple();
+        $form = $this->ret_table_simple();
         foreach ($data["hide"] as $hide)
             $form .= $hide;
 

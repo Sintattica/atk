@@ -223,7 +223,8 @@ $it = array(
     "list_null_value_obligatory" => "(Seleziona...)",
     "load_criteria" => "Carica una ricerca salvata",
     "lock_expired" => "I record non sono più accessibili unicamente da te! Probabilmente non hai salvato per un lungo periodo di tempo. Puoi provare a salvare, ma è possibile che i record siano in modifica da parte da un altro utente.",
-    "lock_info_line" => "[user_id] (ip: [user_ip]) da [lock_date]",
+    /* AGX: privacy IP address */
+    "lock_info_line" => "<b>[user_id]</b> dal [lock_date]",
     "lock_locked" => "I record selezionati non sono accessibili perchè in modifica da parte di un altro utente.",
     "logged_in_as" => "Autenticato come",
     "login" => "Login",

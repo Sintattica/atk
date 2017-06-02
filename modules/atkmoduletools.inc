@@ -484,7 +484,7 @@ function atkHarvestModules($function, $param = "", $associative = false)
     $total = array();
 
     foreach ($modulekeys as $modname) {
-        $module = &getModule($modname);
+        $module = getModule($modname);
         if (is_object($module) && method_exists($module, $function)) {
             $res = $module->$function($param);
             if (!empty($res)) {

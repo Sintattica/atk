@@ -1494,5 +1494,3 @@ class atkImportHandler extends atkActionHandler
     }
 
 }
-
-?>

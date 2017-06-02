@@ -41,10 +41,10 @@ class atkUI
     /**
      * atkUi constructor, initialises Smarty and atkTheme instance
      */
-    function atkUI()
+    function __construct()
     {
-        $this->m_theme = &atkinstance("atk.ui.atktheme");
-        $this->m_smarty = &atkinstance("atk.ui.atksmarty");
+        $this->m_theme = atkinstance("atk.ui.atktheme");
+        $this->m_smarty = atkinstance("atk.ui.atksmarty");
     }
 
     /**
@@ -237,7 +237,7 @@ class atkUI
         $old_caching = $this->m_smarty->caching;
         $this->m_smarty->caching = false;
         $this->m_smarty->template_dir = "./"; // current dir, because tplname already contains full relative path.
-        $res = &$this->m_smarty->fetch($path);
+        $res = $this->m_smarty->fetch($path);
         $this->m_smarty->template_dir = $old;
         $this->m_smarty->caching = $old_caching;
 
@@ -384,4 +384,3 @@ class atkUI
 
 }
 
-?>

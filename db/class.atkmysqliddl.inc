@@ -104,5 +104,3 @@ class atkMysqliDDL extends atkMysqlDDL
     }
 
 }
-
-?>

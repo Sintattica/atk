@@ -32,7 +32,7 @@ class atkPgsqlDb extends atkDb
     /**
      * Base constructor
      */
-    function atkpgsqldb()
+    function __construct()
     {
         /* do nothing */
     }
@@ -440,5 +440,3 @@ class atkPgsqlDb extends atkDb
     }
 
 }
-
-?>

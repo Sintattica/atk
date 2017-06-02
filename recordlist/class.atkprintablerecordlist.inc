@@ -150,5 +150,3 @@ class atkPrintableRecordList extends atkRecordList
     }
 
 }
-
-?>

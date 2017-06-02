@@ -51,7 +51,7 @@ class atkActionListener
      * @param array $actionfilter The list of actions to listen to
      * @return atkActionListener
      */
-    function atkActionListener($actionfilter = array())
+    function __construct($actionfilter = array())
     {
         $this->m_actionfilter = $actionfilter;
     }
@@ -134,5 +134,3 @@ class atkActionListener
     }
 
 }
-
-?>

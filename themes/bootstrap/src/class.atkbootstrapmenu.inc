@@ -117,7 +117,11 @@ class atkBootstrapMenu extends atkPlainMenu
                         $html .= sprintf($this->format_submenuparent, $a_content, $childHtml );
                 } else {
                     $a_content = $this->_getMenuTitle($item);
-                    $html .= sprintf($this->format_single, $url, $a_content);
+					if ($a_content=='-') {
+                    	$html .= '<li role="separator" class="divider"></li>';
+					} else {
+                    	$html .= sprintf($this->format_single, $url, $a_content);
+					}
                 }
             }
         }

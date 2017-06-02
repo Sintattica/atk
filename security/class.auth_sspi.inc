@@ -44,7 +44,7 @@ atkimport("atk.security.auth_db");
 class auth_sspi extends auth_db
 {
 
-    function auth_sspi()
+    function __construct()
     {
         global $ATK_VARS;
 

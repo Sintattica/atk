@@ -46,9 +46,9 @@ class atkUpdateStampAttribute extends atkDateTimeAttribute
      *                     in the database where the stamp is stored.
      * @param int $flags Flags for the attribute.
      */
-    function atkUpdateStampAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags | AF_READONLY | AF_HIDE_ADD);
+	    parent::__construct($name, date("Y-m-d"), date("H:i:s"), $flags | AF_READONLY | AF_HIDE_ADD);
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
         $this->setInitialValue(atkDateTimeAttribute::datetimeArray());

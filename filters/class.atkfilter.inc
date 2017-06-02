@@ -34,9 +34,9 @@ class atkFilter extends atkAttribute
      * @param int $flags The flags of the filter
      * @return atkFilter
      */
-    function atkFilter($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkAttribute($name, $flags | AF_HIDE | AF_FORCE_LOAD);
+        parent::__construct($name, $flags | AF_HIDE | AF_FORCE_LOAD);
     }
 
     /**

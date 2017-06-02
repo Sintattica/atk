@@ -64,7 +64,7 @@ class atkFrameSet extends atkAbstractFrame
      */
     function atkFrameSet($dimension = "*", $orientation = FRAMESET_VERTICAL, $border = 0, $noframes = '')
     {
-        $this->atkAbstractFrame($dimension);
+        atkAbstractFrame::__construct($dimension);
 
         $this->m_orientation = $orientation;
         $this->m_border = $border;
@@ -155,7 +155,7 @@ class atkFrame extends atkAbstractFrame
      */
     function atkFrame($dimension, $name, $src, $scrolling = FRAME_SCROLL_NO, $resize = false, $margin = 0)
     {
-        $this->atkAbstractFrame($dimension);
+        atkAbstractFrame::__construct($dimension);
         $this->m_name = $name;
         $this->m_src = $src;
         $this->m_scrolling = $scrolling;
@@ -221,7 +221,7 @@ class atkAbstractFrame
      * 
      * @param string $dimension
      */
-    function atkAbstractFrame($dimension = "*")
+    function __construct($dimension = "*")
     {
         $this->m_dimension = $dimension;
     }

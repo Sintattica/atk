@@ -228,7 +228,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    public function edit($record, $fieldprefix = "", $mode = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         // Add onchange handler
         $mode == "add" ? "add" : "edit";

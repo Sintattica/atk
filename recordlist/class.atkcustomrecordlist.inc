@@ -233,5 +233,3 @@ class atkCustomRecordList extends atkRecordList
     }
 
 }
-
-?>

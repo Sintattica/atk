@@ -77,7 +77,7 @@ class atkPasswordAttribute extends atkAttribute
      *                     parameter.
      * @param array $restrictions  
      */
-    function atkPasswordAttribute($name, $generate, $flags = 0, $size = 0, $restrictions = "")
+    function __construct($name, $generate, $flags = 0, $size = 0, $restrictions = "")
     {
         // compatiblity with old versions
         if (func_num_args() >= 3) {
@@ -88,7 +88,7 @@ class atkPasswordAttribute extends atkAttribute
         }
 
         // Call the parent constructor
-        $this->atkAttribute($name, $flags | AF_HIDE_SEARCH, $size); // you can't search by password.
+	    parent::__construct($name, $flags | AF_HIDE_SEARCH, $size); // you can't search by password.
         // Set the restrictions
         $this->setRestrictions($restrictions);
     }
@@ -206,7 +206,7 @@ class atkPasswordAttribute extends atkAttribute
      * @param array $record array with fields
      * @return search field
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -390,7 +390,7 @@ class atkPasswordAttribute extends atkAttribute
      * @param array $rec the record with display data
      * @return string with value to display
      */
-    function display($rec)
+    function display($rec,$mode='')
     {
         return atktext("password_hidden", "atk");
     }
@@ -563,5 +563,3 @@ class atkPasswordAttribute extends atkAttribute
     }
 
 }
-
-?>

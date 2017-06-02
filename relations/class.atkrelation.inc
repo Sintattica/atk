@@ -59,9 +59,9 @@ class atkRelation extends atkAttribute
      * @param String $destination The destination node (in module.name notation)
      * @param int $flags Flags for the relation
      */
-    function atkRelation($name, $destination, $flags = 0)
+    function __construct($name, $destination, $flags = 0)
     {
-        $this->atkAttribute($name, $flags);
+        parent::__construct($name, $flags);
         $this->m_destination = $destination;
     }
 
@@ -237,7 +237,7 @@ class atkRelation extends atkAttribute
      * @param array $record The record that contains the information to display.
      * @return String a displayable string for this value.
      */
-    function display($record)
+    function display($record,$mode='')
     {
         return $record[$this->fieldName()];
     }
@@ -382,4 +382,3 @@ class atkRelation extends atkAttribute
 
 }
 
-?>

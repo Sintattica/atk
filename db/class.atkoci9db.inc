@@ -38,9 +38,9 @@ class atkOci9Db extends atkOci8Db
     /**
      * Base constructor
      */
-    function atkOci9Db()
+    function __construct()
     {
-        return $this->atkOci8Db();
+        return parent::__construct();
     }
 
     /**
@@ -197,4 +197,3 @@ class atkOci9Db extends atkOci8Db
 
 }
 
-?>

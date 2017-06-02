@@ -33,6 +33,7 @@ define("AF_LIVETEXT_NL2BR", AF_SPECIFIC_2);
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
  * @subpackage attributes
+ * @deprecated
  *
  */
 class atkLiveTextPreview extends atkDummyAttribute
@@ -48,9 +49,9 @@ class atkLiveTextPreview extends atkDummyAttribute
      *                   Use AF_LIVETEXT_NL2BR if the data should be nl2br'd before 
      *                   display.
      */
-    function atkLiveTextPreview($name, $masterattribute, $flags = 0)
+    function __construct($name, $masterattribute, $flags = 0)
     {
-        $this->atkDummyAttribute($name, '', $flags);
+	    parent::__construct($name, '', $flags);
         $this->m_masterattribute = $masterattribute;
     }
 
@@ -61,7 +62,7 @@ class atkLiveTextPreview extends atkDummyAttribute
      * @param String $fieldprefix Fieldprefix for embedded forms.
      * @return String Parsed string
      */
-    function edit($record, $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $page = &atkPage::getInstance();
         $id = $fieldprefix . $this->fieldName();

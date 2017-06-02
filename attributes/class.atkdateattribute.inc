@@ -209,7 +209,7 @@ class atkDateAttribute extends atkAttribute
      *
      * @see atkAttribute
      */
-    function atkDateAttribute($name, $format_edit = "", $format_view = "", $min = 0, $max = 0, $flags = 0)
+    function __construct($name, $format_edit = "", $format_view = "", $min = 0, $max = 0, $flags = 0)
     {
         /*         * ** API SUPPORT HACK ***
          * Because of backwards compatability and because of the number
@@ -232,7 +232,7 @@ class atkDateAttribute extends atkAttribute
         $this->setDateMax($max);
 
         /* base class constructor */
-        $this->atkAttribute($name, $flags);
+	    parent::__construct($name, $flags);
     }
 
 
@@ -812,7 +812,7 @@ class atkDateAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of HTML code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         if (!$extended) {
             // plain text search, check if we didn't come from extended search (then current value is an array)
@@ -1219,7 +1219,7 @@ class atkDateAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
             if ($this->value2db($rec) == NULL) {

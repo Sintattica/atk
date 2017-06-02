@@ -14,11 +14,14 @@
  * @version $Revision: 6185 $
  * $Id: class.atktimeattribute.inc 6478 2009-08-22 03:49:07Z marc $
  */
+
+atkimport("atk.attributes.atkdateattribute");
+
 /**
  * Flags for atkTimeAttribute
  */
 define("AF_TIME_SECONDS", AF_SPECIFIC_1); // Display seconds after hours & minutes
-define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
+//define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
 define("AF_TIME_DEFAULT_EMPTY", AF_SPECIFIC_7); // Always use the empty value on new record
 
 /**
@@ -49,9 +52,9 @@ class atkTimeAttribute extends atkAttribute
      * @param string $default Start Time (exp: 20:30)
      * @param int $flags Flags for this attribute
      */
-    function atkTimeAttribute($name, $beginTime = 0, $endTime = 23, $steps = array("00", "15", "30", "45"), $default = "", $flags = 0)
+    function __construct($name, $beginTime = 0, $endTime = 23, $steps = array("00", "15", "30", "45"), $default = "", $flags = 0)
     {
-        $this->atkAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
         $this->m_beginTime = $beginTime;
         $this->m_endTime = $endTime;
         if (is_array($steps))
@@ -96,7 +99,7 @@ class atkTimeAttribute extends atkAttribute
      * @param array $record
      * @return text string of $record
      */
-    function display($record)
+    function display($record,$mode='')
     {
         $value = $record[$this->fieldName()];
         if (!is_array($value))
@@ -342,7 +345,7 @@ class atkTimeAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of html code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return parent::search($record, $extended, $fieldprefix);
     }
@@ -401,7 +404,7 @@ class atkTimeAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
             $value = $this->value2db($rec);
@@ -432,7 +435,7 @@ class atkTimeAttribute extends atkAttribute
      *                            of any html form element for this attribute.
      * @return Piece of htmlcode
      */
-    function hide($record = "", $fieldprefix)
+    function hide($record = "", $fieldprefix='')
     {
         $field = $record[$this->fieldName()];
 

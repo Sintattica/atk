@@ -49,10 +49,10 @@ class atkBoolAttribute extends atkAttribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      */
-    function atkBoolAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         // Call base class constructor. Size of boolean value is always 1.
-        $this->atkAttribute($name, $flags, 1);
+	    parent::__construct($name, $flags, 1);
         if ($this->hasFlag(AF_BOOL_OBLIGATORY)) {
             $this->addFlag(AF_OBLIGATORY);
         }
@@ -156,7 +156,7 @@ class atkBoolAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of html code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $result = '<select name="' . $this->getSearchFieldName($fieldprefix) . '" class="form-control">';
         $result.= '<option value="">' . atktext("search_all", "atk") . '</option>';

@@ -35,7 +35,7 @@ class atkSmarty
      * @static
      * @return Smarty The one and only instance.
      */
-    function &getInstance()
+    static function &getInstance()
     {
         static $s_smarty = NULL;
         if ($s_smarty == NULL) {
@@ -131,7 +131,7 @@ class atkSmarty
      * @static
      * @private
      */
-    function getPathForPlugin($moduleOrPath, $name, $type)
+    static function getPathForPlugin($moduleOrPath, $name, $type)
     {
         if (moduleExists($moduleOrPath)) {
             $path = 'module.' . $moduleOrPath . '.plugins';
@@ -155,7 +155,7 @@ class atkSmarty
      * @param bool $cacheable
      * @param string $cache_attrs
      */
-    function addFunction($moduleOrPath, $tag, $name = "", $cacheable = true, $cache_attrs = null)
+    static function addFunction($moduleOrPath, $tag, $name = "", $cacheable = true, $cache_attrs = null)
     {
         $smarty = &atkSmarty::getInstance();
 
@@ -182,7 +182,7 @@ class atkSmarty
      * @param string $tag
      * @param string $cache_attrs
      */
-    function addDynamicFunction($moduleOrPath, $tag, $cache_attrs = null)
+    static function addDynamicFunction($moduleOrPath, $tag, $cache_attrs = null)
     {
         atkSmarty::addFunction($moduleOrPath, $tag, $tag, false, $cache_attrs);
     }

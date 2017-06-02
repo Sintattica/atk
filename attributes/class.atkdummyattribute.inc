@@ -43,7 +43,7 @@ class atkDummyAttribute extends atkAttribute
      * @param String $text The text to display
      * @param int $flags The flags for this attribute
      */
-    function atkDummyAttribute($name, $text = "", $flags = 0)
+    function __construct($name, $text = "", $flags = 0)
     {
         // A Dummy attrikbute should not be searchable and sortable
         $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
@@ -52,7 +52,7 @@ class atkDummyAttribute extends atkAttribute
         if (!hasFlag($flags, AF_DUMMY_SHOW_LABEL))
             $flags |= AF_BLANKLABEL;
 
-        $this->atkAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
         $this->m_text = $text;
     }
 
@@ -103,7 +103,7 @@ class atkDummyAttribute extends atkAttribute
      *
      * @return String A piece of html-code
      */
-    public function search($record = array(), $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -114,7 +114,7 @@ class atkDummyAttribute extends atkAttribute
      * @param array $record  Array with fields
      * @return Text
      */
-    function display($record)
+	function display($record, $mode = "")
     {
         return $this->m_text;
     }
@@ -184,7 +184,7 @@ class atkDummyAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+	function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         
     }
@@ -217,5 +217,3 @@ class atkDummyAttribute extends atkAttribute
     }
 
 }
-
-?>

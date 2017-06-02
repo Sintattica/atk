@@ -90,7 +90,7 @@ class atkDateTimeAttribute extends atkAttribute
      * @param string $default_time     start time
      * @param int $flags Flags for this attribute
      */
-    function atkDateTimeAttribute($name, $default_date = "", $default_time = "", $flags = 0)
+    function __construct($name, $default_date = "", $default_time = "", $flags = 0)
     {
         $default_steps = array();
         for ($i = 0; $i < 60; $i ++) {
@@ -114,7 +114,7 @@ class atkDateTimeAttribute extends atkAttribute
         $this->m_time = new atkTimeattribute($name, 0, 23, $default_steps, $default_time, $flags);
         $this->m_date = new atkDateattribute($name, '', '', 0, 0, $flags);
 
-        $this->atkAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
     }
 
     /**
@@ -388,7 +388,7 @@ class atkDateTimeAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
             if ($this->value2db($rec) == NULL) {
@@ -427,7 +427,7 @@ class atkDateTimeAttribute extends atkAttribute
      *
      * @return String A piece of html-code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $this->m_date->m_searchsize = 10;
         return $this->m_date->search($record, $extended, $fieldprefix);

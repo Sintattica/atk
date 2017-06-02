@@ -20,4 +20,3 @@
   $oPhpCaptcha->SetBackgroundImage($captchaDir . 'img/captcha.jpg'); 
   
   $oPhpCaptcha->Create();
-?>

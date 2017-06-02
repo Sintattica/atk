@@ -39,9 +39,9 @@ class atkIpAttribute extends atkAttribute
      * @param string $name attribute name
      * @param int $flags attribute flags.
      */
-    function atkIpAttribute($name, $flags)
+    function __construct($name, $flags)
     {
-        $this->atkAttribute($name, $flags, 15);
+	    parent::__construct($name, $flags, 15);
     }
 
     /**
@@ -73,7 +73,7 @@ class atkIpAttribute extends atkAttribute
      *
      * @return string html string
      */
-    function edit($record, $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if ($this->hasFlag(AF_IP_SINGLEFIELD))
             return parent::edit($record, $fieldprefix);
@@ -169,5 +169,3 @@ class atkIpAttribute extends atkAttribute
     }
 
 }
-
-?>

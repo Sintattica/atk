@@ -110,5 +110,3 @@ class atkFileExport
     }
 
 }
-
-?>

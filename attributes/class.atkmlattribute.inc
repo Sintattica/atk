@@ -36,11 +36,11 @@ class atkMlAttribute extends atkAttribute
      * @param int $flags flags for the attribute
      * @param int $size The size of the attribute
      */
-    function atkMlAttribute($name, $flags = 0, $size = 0)
+    function __construct($name, $flags = 0, $size = 0)
     {
         global $config_atkroot;
         /* base class constructor */
-        $this->atkAttribute($name, $flags, $size);
+	    parent::__construct($name, $flags, $size);
         $this->m_language = strtoupper(atkconfig("defaultlanguage"));
     }
 
@@ -164,7 +164,7 @@ class atkMlAttribute extends atkAttribute
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
      * @return piece of htmlcode
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $languages = $this->getLanguages();
 
@@ -202,7 +202,7 @@ class atkMlAttribute extends atkAttribute
      * @param array $record array with values
      * @return string ready for displaying
      */
-    function display($record)
+    function display($record,$mode='')
     {
         if ($this->isMlNode()) {
             return nl2br(htmlspecialchars($record[$this->fieldName()]));
@@ -378,5 +378,3 @@ class atkMlAttribute extends atkAttribute
     }
 
 }
-
-?>

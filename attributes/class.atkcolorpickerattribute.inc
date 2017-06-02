@@ -163,12 +163,12 @@ class atkColorPickerAttribute extends atkAttribute
      * @param array $userColors Array with max. 12 user defined colors
      * @param int $flags Flags for the attribute
      */
-    function atkColorPickerAttribute($name, $userColors = "", $flags = 0)
+    function __construct($name, $userColors = "", $flags = 0)
     {
         // Call baseclass constructor. We set 10 as default size. An html
         // colorvalue (#ffffaa) is 7 chars, but with 10 chars, we can also
         // save named colors like 'white' etc.
-        $this->atkAttribute($name, $flags, 10);
+	    parent::__construct($name, $flags, 10);
 
         $this->m_userColors = $userColors;
     }
@@ -457,5 +457,3 @@ class atkColorPickerAttribute extends atkAttribute
     }
 
 }
-
-?>

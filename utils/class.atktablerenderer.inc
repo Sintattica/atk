@@ -66,7 +66,7 @@ class atkTableRenderer
      * @param string $style style class to set for the table
      * @param string $module module to register style with
      */
-    function atkTableRenderer($flags = 0, $style = '', $module = '')
+    function __construct($flags = 0, $style = '', $module = '')
     {
         $this->m_flags = $flags;
 
@@ -688,4 +688,3 @@ class atkTableRenderer
 
 }
 
-?>

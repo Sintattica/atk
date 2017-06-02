@@ -48,7 +48,7 @@ class atkNodeValidator
      * constructor
      *
      */
-    function atkNodeValidator()
+    function __construct()
     {
         
     }
@@ -113,7 +113,7 @@ class atkNodeValidator
         $record = &$this->m_record;
 
         // Check flags and values
-        $db = &$this->m_nodeObj->getDb();
+        $db = $this->m_nodeObj->getDb();
         foreach ($this->m_nodeObj->m_attribIndexList as $attribdata) {
             $attribname = $attribdata['name'];
             if (!atk_in_array($attribname, $this->m_ignoreList)) {
@@ -219,7 +219,7 @@ class atkNodeValidator
      */
     function validateUniqueFieldSets(&$record)
     {
-        $db = &$this->m_nodeObj->getDb();
+        $db = $this->m_nodeObj->getDb();
         atkimport('atk.db.atkquery');
         foreach ($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet) {
             $query = &$db->createQuery();
@@ -257,5 +257,3 @@ class atkNodeValidator
     }
 
 }
-
-?>

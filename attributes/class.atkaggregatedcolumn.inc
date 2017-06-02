@@ -61,9 +61,9 @@ class atkAggregatedColumn extends atkAttribute
      * @param Array  $searchfields Array with fields, in which search will be perform
      *                             If ommited, fields from $template will be used
      */
-    function atkAggregatedColumn($name, $template, $flags = 0, $searchfields = "")
+    function __construct($name, $template, $flags = 0, $searchfields = "")
     {
-        $this->atkAttribute($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
+	    parent::__construct($name, $flags | AF_HIDE_EDIT | AF_HIDE_ADD | AF_HIDE_VIEW); // base class constructor
         $this->m_template = $template;
 
         atkimport("atk.utils.atkstringparser");

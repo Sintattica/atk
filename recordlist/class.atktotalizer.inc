@@ -35,7 +35,7 @@ class atkTotalizer
      * @param atkColumnConfig $columnConfig
      * @return atkTotalizer
      */
-    function atkTotalizer(&$node, &$columnConfig)
+    function __construct(&$node, &$columnConfig)
     {
         $this->m_node = &$node;
         $this->m_columnConfig = &$columnConfig;

@@ -34,7 +34,7 @@ class atkmlsplitter
      * Constructor
      *
      */
-    function atkMlSplitter()
+    function __construct()
     {
         // constructor
     }
@@ -355,4 +355,3 @@ class atkmlsplitter
 
 }
 
-?>

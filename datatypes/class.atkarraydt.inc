@@ -96,5 +96,3 @@ class atkArrayDt extends atkDataType
     }
 
 }
-
-?>

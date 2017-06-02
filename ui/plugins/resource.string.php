@@ -55,5 +55,3 @@ function smarty_resource_string_trusted($tpl_name, &$smarty)
     // not used for templates
     return true;
 }
-
-?>

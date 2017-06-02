@@ -23,7 +23,7 @@ class bootstrapColorPickerAttribute extends atkAttribute
     function bootstrapColorPickerAttribute($name, $colorPickerOptions = array(), $flags = 0, $size = 0)
     {
         $this->colorPickerOptions = $colorPickerOptions;
-        $this->atkAttribute($name, $flags, $size);
+        atkAttribute::__construct($name, $flags, $size);
     }
 
 

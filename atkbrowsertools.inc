@@ -42,7 +42,7 @@ class browserInfo
     var $gecko = 0;
 
     // constructor function
-    function browserInfo($ua = "")
+    function __construct($ua = "")
     {
 
         // set ua
@@ -662,4 +662,3 @@ function ieExtensions()
     return (atkconfig("enable_ie_extensions") && $browser["family"] == "ie5up");
 }
 
-?>

@@ -21,7 +21,7 @@ class bootstrapSwitchAttribute extends atkBoolAttribute
             'onText' => mb_strtoupper($this->text("yes"), 'UTF-8'),
         );
         $this->switchOptions = array_merge($defaultOptions, $switchOptions);
-        $this->atkBoolAttribute($name, $flags);
+        atkBoolAttribute::__construct($name, $flags);
     }
 
     public function registerScriptsAndStyles($fieldprefix)
@@ -69,6 +69,7 @@ class bootstrapSwitchAttribute extends atkBoolAttribute
         return $result;
     }
 
+    // AGX: this is broken, 2nd parameter should be $mode
     function display($record, $fieldprefix = "")
     {
         $this->registerScriptsAndStyles($fieldprefix);

@@ -39,7 +39,7 @@ class atkDbLock extends atkLock
             $atklockList = array();
 
         /* first time (session or stack)! */
-        if (!is_array($atklockList[atkStackID()]) || count($atklockList[atkStackID()]["stack"]) == 0) {
+        if (!array_key_exists(atkStackID(),$atklockList) || !is_array($atklockList[atkStackID()]) || count($atklockList[atkStackID()]["stack"]) == 0) {
             $atklockList[atkStackID()] = array("id" => 0, "stack" => array());
             $atklock = &$atklockList[atkStackID()];
         }

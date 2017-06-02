@@ -38,12 +38,12 @@ class atkExpressionAttribute extends atkAttribute
      *                                   only search types "string", "number" and "date" are supported.
      * @param int    $flags              The flags for this attribute.
      */
-    function atkExpressionAttribute($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
+    function __construct($name, $expression, $searchTypeOrFlags = 0, $flags = 0)
     {
         if (is_numeric($searchTypeOrFlags))
             $flags = $searchTypeOrFlags;
 
-        $this->atkAttribute($name, $flags | AF_HIDE_ADD | AF_READONLY_EDIT);
+	    parent::__construct($name, $flags | AF_HIDE_ADD | AF_READONLY_EDIT);
 
         $this->m_expression = $expression;
 
@@ -175,7 +175,7 @@ class atkExpressionAttribute extends atkAttribute
      *
      * @return String A piece of html-code
      */
-    function search($record = "", $extended = false, $fieldprefix = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         if ($this->getSearchType() == "number") {
             $attr = new atkNumberAttribute($this->fieldName());

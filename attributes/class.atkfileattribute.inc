@@ -107,14 +107,14 @@ class atkFileAttribute extends atkAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Filename size
      */
-    function atkFileAttribute($name, $dir, $flags = 0, $size = 0)
+    function __construct($name, $dir, $flags = 0, $size = 0)
     {
         /*if ($size == 0)
             $size = 255;
         */
 
         // Call base class constructor.
-        $this->atkAttribute($name, $flags | AF_CASCADE_DELETE, $size);
+	    parent::__construct($name, $flags | AF_CASCADE_DELETE, $size);
         $this->setDir($dir);
     }
 
@@ -336,6 +336,7 @@ class atkFileAttribute extends atkAttribute
 
     /**
      * Recursive mkdir.
+	 * PATCHED BY AGX FOR open_basedir restrictions
      *
      * @see http://nl2.php.net/mkdir
      *
@@ -347,15 +348,21 @@ class atkFileAttribute extends atkAttribute
     static function mkdir($path)
     {
         $path = preg_replace('/(\/){2,}|(\\\){1,}/', '/', $path); //only forward-slash
+	    // AGX
+	    $oldpath = $path;
         $dirs = explode("/", $path);
 
         $path = "";
         foreach ($dirs as $element) {
             $path .= $element . "/";
-            if (!is_dir($path) && !mkdir($path))
-                return false;
+			/* AGX */
+        	if(!@is_dir($path)) {
+				@mkdir($path);
+			}
+			/* END */
         }
-
+	    // AGX
+	    if (!is_dir($oldpath)) return false;
         return true;
     }
 

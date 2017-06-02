@@ -35,7 +35,7 @@ class atkTimeZoneAttribute extends atkListAttribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for the attribute
      */
-    function atkTimeZoneAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
         $optionsArray = array(
             'timezone_utc_-1200',
@@ -95,7 +95,7 @@ class atkTimeZoneAttribute extends atkListAttribute
             '+1300',
         );
 
-        $this->atkListAttribute($name, $optionsArray, $valuesArray, $flags, 0);
+	    parent::__construct($name, $optionsArray, $valuesArray, $flags, 0);
     }
 
     /**
@@ -118,5 +118,3 @@ class atkTimeZoneAttribute extends atkListAttribute
     }
 
 }
-
-?>

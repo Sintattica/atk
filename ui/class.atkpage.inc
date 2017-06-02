@@ -624,8 +624,8 @@ class atkPage
             $title = $this->m_title != '' ? $this->m_title : atkText('app_title');
         }
 
-        $ui = &atkinstance('atk.ui.atkui');
-        $theme = &atkinstance('atk.ui.atktheme');
+        $ui = atkinstance('atk.ui.atkui');
+        $theme = atkinstance('atk.ui.atktheme');
 
         if (is_bool($flags) && $flags == true) {
             $flags = HTML_STRICT;
@@ -725,4 +725,3 @@ class atkPage
 
 }
 
-?>

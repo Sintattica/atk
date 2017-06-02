@@ -34,9 +34,9 @@ class atkParserAttribute extends atkAttribute
      * @param string $text text field
      * @param int $flags Flags for this attribute
      */
-    function atkParserAttribute($name, $text, $flags = 0)
+    function __construct($name, $text, $flags = 0)
     {
-        $this->atkAttribute($name, $flags | AF_HIDE_SEARCH | AF_NO_SORT); // base class constructor
+	    parent::__construct($name, $flags | AF_HIDE_SEARCH | AF_NO_SORT); // base class constructor
         $this->m_text = $text;
     }
 
@@ -58,7 +58,7 @@ class atkParserAttribute extends atkAttribute
      * VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
      * @param array $record Array with fields
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return "&nbsp;";
     }
@@ -68,7 +68,7 @@ class atkParserAttribute extends atkAttribute
      * @param array $record  Array with fields
      * @return Parsed string
      */
-    function display($record)
+    function display($record,$mode='')
     {
         atkimport("atk.utils.atkstringparser");
         $stringparser = new atkStringParser($this->m_text);
@@ -122,5 +122,3 @@ class atkParserAttribute extends atkAttribute
     }
 
 }
-
-?>

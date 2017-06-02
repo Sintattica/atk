@@ -100,7 +100,7 @@ class atkShuttleRelation extends atkManyToManyRelation
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String piece of html code
      */
-    function edit($record, $fieldprefix, $mode)
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $this->createDestination();
         $this->createLink();

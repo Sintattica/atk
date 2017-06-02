@@ -31,6 +31,7 @@ include_once($config_atkroot . "atk/attributes/class.atkdummyattribute.inc");
  * @author Ivo Jansch <ivo@achievo.org>
  * @package atk
  * @subpackage attributes
+ * @deprecated
  *   
  */
 class atkToolbar extends atkDummyAttribute
@@ -42,9 +43,9 @@ class atkToolbar extends atkDummyAttribute
      * @param String $name Name of the attribute (unique within a node)
      * @param int $flags Flags for the attribute.
      */
-    function atkToolbar($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkAttribute($name, $flags | AF_HIDE_LIST | AF_BLANKLABEL);
+	    parent::__construct($name, $flags | AF_HIDE_LIST | AF_BLANKLABEL);
     }
 
     /**
@@ -56,7 +57,7 @@ class atkToolbar extends atkDummyAttribute
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         global $config_atkroot;
 

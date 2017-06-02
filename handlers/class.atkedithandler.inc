@@ -440,7 +440,7 @@ class atkEditHandler extends atkViewEditBase
             /* obligatory indicator */
             if ($field["obligatory"]) {
                 // load images
-                $theme = &atkinstance("atk.ui.atktheme");
+                $theme = atkinstance("atk.ui.atktheme");
                 $reqimg = '<img align="top" src="' . $theme->imgPath("required_field.gif") . '" border="0"
                      alt="' . atktext("field_obligatory") . '" title="' . atktext("field_obligatory") . '">';
 
@@ -727,5 +727,3 @@ class atkEditHandler extends atkViewEditBase
     }
 
 }
-
-?>

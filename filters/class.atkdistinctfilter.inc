@@ -34,9 +34,9 @@ class atkDistinctFilter extends atkFilter
     /**
      * constructor
      */
-    function atkDistinctFilter()
+    function __construct()
     {
-        $this->atkFilter("distinctfilter");
+        parent::__construct("distinctfilter");
     }
 
     /**
@@ -51,5 +51,3 @@ class atkDistinctFilter extends atkFilter
     }
 
 }
-
-?>

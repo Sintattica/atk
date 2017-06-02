@@ -7,6 +7,7 @@
  *
  * @package atk
  * @subpackage attributes
+ * @deprecated
  *
  * @copyright (c)2000-2004 Ibuildings.nl BV
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
@@ -39,9 +40,9 @@ class atkMultipleFileAttribute extends atkFileAttribute
      * @param int $flags Flags for this attribute
      * @param int $size Filename size
      */
-    function atkMultipleFileAttribute($name, $dir, $flags = 0, $size = 0)
+    function __construct($name, $dir, $flags = 0, $size = 0)
     {
-        $this->atkFileAttribute($name, $flags | AF_CASCADE_DELETE, $size); // base class constructor
+	    parent::__construct($name, $flags | AF_CASCADE_DELETE, $size); // base class constructor
         if (is_array($dir)) {
             $this->m_dir = $this->AddSlash($dir[0]);
             $this->m_url = $this->AddSlash($dir[1]);
@@ -70,7 +71,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
      * @param array $record Array with fields
      * @return piece of html code with a browsebox
      */
-    function edit($record = "")
+	function edit($record = "", $fieldprefix = "", $mode = "")
     {
         if (is_dir($this->m_dir)) {
             $d = dir($this->m_dir);
@@ -141,7 +142,7 @@ class atkMultipleFileAttribute extends atkFileAttribute
      * @param array $record Array with fields
      * @return Filename or Nothing
      */
-    function display($record)
+    function display($record,$mode='')
     {
         $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
         $prev_type = Array("jpg", "jpeg", "gif", "tif", "png", "bmp", "htm", "html", "txt");  // file types for preview
@@ -182,5 +183,3 @@ class atkMultipleFileAttribute extends atkFileAttribute
     }
 
 }
-
-?>

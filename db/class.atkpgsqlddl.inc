@@ -31,9 +31,9 @@ class atkPgsqlDDL extends atkDDL
      *
      * @return atkPgsqlDDL
      */
-    function atkPgsqlDDL()
+    function __construct()
     {
-        $this->atkDDL();
+        parent::__construct();
     }
 
     /**
@@ -164,5 +164,3 @@ class atkPgsqlDDL extends atkDDL
     }
 
 }
-
-?>

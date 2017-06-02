@@ -37,7 +37,7 @@ class atkcookmenu extends atkModernMenu
      *
      * @return atkcookmenu
      */
-    function atkcookmenu()
+    function __construct()
     {
         $this->m_height = "22";
     }

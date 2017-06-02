@@ -24,6 +24,7 @@ useattrib("atklistattribute");
  * @author Sandy Pleyte <sandy@ibuildings.nl>
  * @package atk
  * @subpackage attributes
+ * @deprecated
  */
 class atkCountryAttribute extends atkListAttribute
 {
@@ -65,7 +66,7 @@ class atkCountryAttribute extends atkListAttribute
      * @param bool $defaulttocurrent Set the default selected country to the 
      *                               current country based on the atk language
      */
-    function atkCountryAttribute($name, $switch = "world", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
+    function __construct($name, $switch = "world", $optionArray = "", $valueArray = "", $flags = 0, $defaulttocurrent = true)
     {
         if (is_numeric($switch)) {
             $flags = $switch;
@@ -89,7 +90,7 @@ class atkCountryAttribute extends atkListAttribute
             $valueArray = $this->getCountryValueArray($switch);
         }
         $this->m_defaulttocurrent = $defaulttocurrent;
-        $this->atkListAttribute($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
+	    parent::__construct($name, $optionsArray, $valueArray, $flags | AF_NO_TRANSLATION, 0);
     }
 
     /**
@@ -130,7 +131,7 @@ class atkCountryAttribute extends atkListAttribute
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record = "", $fieldprefix = "", $mode)
+    function edit($record = "", $fieldprefix = "", $mode='')
     {
         if ($this->m_defaulttocurrent && !$record[$this->fieldName()])
             $record[$this->fieldName()] = strtoupper(atkLanguage::getLanguage());

@@ -68,13 +68,13 @@ class atkIndexPage
      *
      * @return atkIndexPage
      */
-    function atkIndexPage()
+    function __construct()
     {
         global $ATK_VARS;
-        $this->m_page = &atkinstance("atk.ui.atkpage");
-        $this->m_ui = &atkinstance("atk.ui.atkui");
-        $this->m_theme = &atkinstance('atk.ui.atktheme');
-        $this->m_output = &atkinstance('atk.ui.atkoutput');
+        $this->m_page = atkinstance("atk.ui.atkpage");
+        $this->m_ui = atkinstance("atk.ui.atkui");
+        $this->m_theme = atkinstance('atk.ui.atktheme');
+        $this->m_output = atkinstance('atk.ui.atkoutput');
         $this->m_user = getUser();
         $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL
                 : HTML_STRICT;
@@ -260,7 +260,7 @@ class atkIndexPage
                 $obj = &getNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
-                    $controller = &atkinstance("atk.atkcontroller");
+                    $controller = atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $ATK_VARS);
                 } else {
                     atkdebug("No object created!!?!");
@@ -302,5 +302,3 @@ class atkIndexPage
     }
 
 }
-
-?>

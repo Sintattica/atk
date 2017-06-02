@@ -42,9 +42,9 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
      * @param string $destination Destination node for this relation
      * @param int $flags Flags for the relation
      */
-    function atkManyToOneTreeRelation($name, $destination, $flags = 0)
+    function __construct($name, $destination, $flags = 0)
     {
-        $this->atkManyToOneRelation($name, $destination, $flags);
+        parent::__construct($name, $destination, $flags);
     }
 
     /**
@@ -83,7 +83,7 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
      * @param array $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $this->createDestination();
         if ($this->m_destinationFilter != "") {
@@ -149,5 +149,3 @@ class atkManyToOneTreeRelation extends atkManyToOneRelation
     }
 
 }
-
-?>

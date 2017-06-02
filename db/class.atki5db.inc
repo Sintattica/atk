@@ -16,9 +16,9 @@
 class atki5db extends atkdb2db
 {
 
-    function atki5db()
+    function __construct()
     {
-        $this->atkdb2db();
+        atkdb2db::__construct();
         $this->m_type = "i5";
         $this->m_vendor = "i5";
     }

@@ -29,7 +29,7 @@
     var $sFileType;
     var $sCode;
     
-    function PhpCaptcha($aFonts, $iWidth, $iHeight) 
+    function __construct($aFonts, $iWidth, $iHeight)
     {
       // get parameters
       $this->aFonts = $aFonts;
@@ -343,4 +343,3 @@
     }
   }
 
-?>

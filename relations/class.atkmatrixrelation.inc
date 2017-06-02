@@ -50,9 +50,9 @@ class atkMatrixRelation extends atkRelation
      * @param string $fk2             foreignkey in colum table
      * @param int    $flags           AF_MATRIX_ACYCLIC if input must be acyclic
      */
-    function atkMatrixRelation($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags = 0)
+    function __construct($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags = 0)
     {
-        $this->atkRelation($name, $destination1, $flags);
+        parent::__construct($name, $destination1, $flags);
 
         $this->m_name1 = $name1;
         $this->m_destination1 = $destination1;
@@ -67,7 +67,7 @@ class atkMatrixRelation extends atkRelation
      *
      * @param array $record
      */
-    function display($record)
+    function display($record,$mode='')
     {
         
     }
@@ -294,4 +294,3 @@ class atkMatrixRelation extends atkRelation
 
 }
 
-?>

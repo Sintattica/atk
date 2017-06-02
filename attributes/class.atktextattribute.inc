@@ -50,7 +50,7 @@ class atkTextAttribute extends atkAttribute
      *               $flags is mandatory).
      * @param int $flags Flags for this attribute
      */
-    function atkTextAttribute($name, $size = 0, $flags = 0)
+    function __construct($name, $size = 0, $flags = 0)
     {
         // compatiblity with old versions (old apps expect a 2 param call to be $name, $flags)
         if (func_num_args() == 3 || is_array($size)) {
@@ -68,7 +68,7 @@ class atkTextAttribute extends atkAttribute
             $flags = $size;
         }
 
-        $this->atkAttribute($name, $flags); // base class constructor
+	    parent::__construct($name, $flags); // base class constructor
     }
 
     /**
@@ -194,7 +194,7 @@ class atkTextAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
             $query->addField($this->fieldName(), $this->value2db($rec), "", "", !$this->hasFlag(AF_NO_QUOTES), true);
@@ -299,5 +299,3 @@ class atkTextAttribute extends atkAttribute
     }
 
 }
-
-?>

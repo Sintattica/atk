@@ -48,9 +48,9 @@ class atkCreateStampAttribute extends atkUpdateStampAttribute
      *                     in the database where the stamp is stored.
      * @param int $flags Flags for the attribute.
      */
-    function atkCreateStampAttribute($name, $flags = 0)
+    function __construct($name, $flags = 0)
     {
-        $this->atkUpdateStampAttribute($name, $flags);
+	    parent::__construct($name, $flags);
     }
 
     /**
@@ -69,5 +69,3 @@ class atkCreateStampAttribute extends atkUpdateStampAttribute
     }
 
 }
-
-?>

@@ -42,9 +42,9 @@ class atkDurationAttribute extends atkAttribute
      * @param int $size This attributes size
      * @see atkAttribute
      */
-    function atkDurationAttribute($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
+    function __construct($name, $resolution = "1m", $maxtime = "10h", $flags = 0, $size = 0)
     {
-        $this->atkAttribute($name, $flags, $size); // base class constructor
+	    parent::__construct($name, $flags, $size); // base class constructor
         $hms = substr($resolution, -1);
         $resolution = substr($resolution, 0, -1);
 
@@ -146,7 +146,7 @@ class atkDurationAttribute extends atkAttribute
      * @param array $record Array of records, with for each record 2 fields (hours, minutes)
      * @return String Piece a of HTML Code
      */
-    function search($record = "")
+	public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         return "&nbsp;"; // currently not searchable.
     }

@@ -54,7 +54,7 @@ class atkDDL
     /**
      * Default constructor
      */
-    function atkDDL()
+    function __construct()
     {
         
     }
@@ -67,7 +67,7 @@ class atkDDL
      * @param String $database The database driver to use
      * @return atkDDL instance of db specific DDL driver
      */
-    function &create($database = NULL)
+    static function &create($database = NULL)
     {
         $db = atkconfig("db");
         $database = $database === NULL ? $db["default"]["driver"] : $database;
@@ -690,4 +690,3 @@ class atkDDL
 
 }
 
-?>

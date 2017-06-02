@@ -78,7 +78,7 @@ class atkController
      *
      * @return atkController object
      */
-    function atkController()
+    function __construct()
     {
         global $g_sessionManager;
         if (is_object($g_sessionManager)) {
@@ -100,7 +100,7 @@ class atkController
      * @param boolean $replace
      * @return instance of controller
      */
-    function &_instance($class = "", $replace = false)
+    static function &_instance($class = "", $replace = false)
     {
         static $s_object = NULL;
         if (!is_object($s_object) || $replace) {
@@ -128,7 +128,7 @@ class atkController
      *
      * @return atkController
      */
-    function &getInstance()
+    static function &getInstance()
     {
         $object = &atkcontroller::_instance();
         return $object;
@@ -509,21 +509,27 @@ class atkController
 
 
         } elseif ($mode == "add") {
-
+            $defaultButtonSet = false;
             if ($node->hasFlag(NF_EDITAFTERADD) === true){
                 if($node->allowed('edit')){
-                    $result[] = $this->getButton('saveandedit', true);
+                    $result[] = $this->getButton('saveandedit', !$defaultButtonSet);
+                    $defaultButtonSet = true;
                 } else {
                     atkwarning("NF_EDITAFTERADD found but no 'edit' privilege.");
                 }
-            } else {
-                $result[] = $this->getButton('saveandclose', true);
-
-                if ($node->hasFlag(NF_ADDAFTERADD)) {
-                    $result[] = $this->getButton('saveandnext', false);
-                }
             }
 
+            if ($node->hasFlag(NF_ADDAFTERADD)) {
+                $result[] = $this->getButton('saveandnext', !$defaultButtonSet);
+                $defaultButtonSet = true;
+            }
+
+            if (atkLevel() > 0) {
+                $result[] = $this->getButton('saveandclose', !$defaultButtonSet);
+            } else {
+                $result[] = $this->getButton('save', !$defaultButtonSet);
+            }
+            /* end */
 
             if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "save", 0), ACTION_CANCELLED)) {
                 $result[] = $this->getButton('cancel');
@@ -704,7 +710,7 @@ class atkController
      */
     function getPhpFile()
     {
-        $theme = &atkinstance('atk.ui.atktheme');
+        $theme = atkinstance('atk.ui.atktheme');
 
         if ($this->m_php_file != "")
             return $this->m_php_file;
@@ -765,7 +771,7 @@ class atkController
      */
     function &getUi()
     {
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = atkinstance("atk.ui.atkui");
         return $ui;
     }
 
@@ -841,5 +847,3 @@ class atkController
     }
 
 }
-
-?>

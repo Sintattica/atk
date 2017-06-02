@@ -90,5 +90,3 @@ class atkDGLimit extends atkDGComponent
     }
 
 }
-
-?>

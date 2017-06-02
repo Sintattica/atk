@@ -37,7 +37,7 @@ class atkTheme
      * @param bool $reset Always reset and return a new instance
      * @return atkTheme theme instance
      */
-    function &getInstance($reset = false)
+    static function &getInstance($reset = false)
     {
         static $s_instance = NULL;
         if ($s_instance == NULL || $reset) {
@@ -50,7 +50,7 @@ class atkTheme
      * Constructor, initializes class and certain values
      * @access private
      */
-    function atkTheme()
+    function __construct()
     {
         global $g_theme;
         atkdebug("Created a new atkTheme instance");
@@ -74,7 +74,7 @@ class atkTheme
      * @param String $location
      * @return String The absolute path
      */
-    function absPath($relpath, $location = '')
+    static function absPath($relpath, $location = '')
     {
         if ($relpath == "")
             return "";
@@ -102,7 +102,7 @@ class atkTheme
         if (!count($this->m_theme)) {
             $filename = atkconfig("atktempdir") . "themes/" . $this->m_name . ".inc";
             if (!file_exists($filename) || atkconfig("force_theme_recompile")) {
-                $compiler = & atknew("atk.ui.atkthemecompiler");
+                $compiler = atknew("atk.ui.atkthemecompiler");
                 $compiler->compile($this->m_name);
             }
             include($filename);
@@ -340,8 +340,8 @@ class atkTheme
 
         //File Icons
         if ($label) {
-            if (!$attrs['title']) $attrs['title'] = $label;
-            if (!$attrs['alt']) $attrs['alt'] = $label;
+            if (!array_key_exists('title',$attrs)) $attrs['title'] = $label;
+            if (!array_key_exists('alt',$attrs)) $attrs['alt'] = $label;
         }
         $icon = $this->iconPath($icon, $type, $module, $ext, $useDefault);
         if (!$icon) return false;
