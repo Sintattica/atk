@@ -78,7 +78,7 @@ class atkColumnConfig
      * 
      * @return atkColumnConfig An instance of the columnconfig class
      */
-    function &getConfig(&$node, $id = null, $forceNew = false)
+    static function &getConfig(&$node, $id = null, $forceNew = false)
     {
         global $g_sessionManager;
         static $s_instances = array();

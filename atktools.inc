@@ -1415,7 +1415,7 @@ function buildQueryString($params, $parent = "")
  */
 function dispatch_url($node, $action, $params = array(), $phpfile = '')
 {
-    $c = &atkinstance("atk.atkcontroller");
+    $c = atkinstance("atk.atkcontroller");
     if (!$phpfile)
         $phpfile = $c->getPhpFile();
     $url = $phpfile;
@@ -1437,7 +1437,7 @@ function dispatch_url($node, $action, $params = array(), $phpfile = '')
  */
 function getDispatchFile()
 {
-    $c = &atkinstance("atk.atkcontroller");
+    $c = atkinstance("atk.atkcontroller");
     return $c->getPhpFile();
 }
 

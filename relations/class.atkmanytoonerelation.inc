@@ -15,6 +15,13 @@
  * @version $Revision: 6309 $
  * $Id$
  */
+
+/*
+ * AGX: atkListAttribute (SPECIFIC_2) will conflict AF_LIST_NO_OBLIGATORY_NULL_ITEM
+ */
+atkimport("atk.attributes.atklistattribute");
+
+
 /**
  * Create edit/view links for the items in a manytoonerelation dropdown.
  */
@@ -60,6 +67,7 @@ define("AF_MANYTOONE_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_5);
  * NULL or FALSE split and do OR search (default action)
  */
 define("AF_DONT_SPLIT", AF_SPECIFIC_6);
+
 
 /**
  * @internal include base class

@@ -260,7 +260,7 @@ class atkIndexPage
                 $obj = &getNode($ATK_VARS['atknodetype']);
 
                 if (is_object($obj)) {
-                    $controller = &atkinstance("atk.atkcontroller");
+                    $controller = atkinstance("atk.atkcontroller");
                     $controller->invoke("loadDispatchPage", $ATK_VARS);
                 } else {
                     atkdebug("No object created!!?!");

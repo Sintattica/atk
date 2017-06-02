@@ -1047,7 +1047,7 @@ class atkAttribute
                 $spinnerCode = '';
             }
 
-            $page = &atkinstance("atk.ui.atkpage");
+            $page = atkinstance("atk.ui.atkpage");
             $page->register_scriptcode("
     function " . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
     {
@@ -1066,7 +1066,7 @@ class atkAttribute
     function getSpinner()
     {
         if (count($this->getDependencies()) && $this->m_showSpinner) {
-            $theme = & atkinstance("atk.ui.atktheme");
+            $theme = atkinstance("atk.ui.atktheme");
             $ret = sprintf('<div class="atkbusy"><img src="%s" alt="Busy"></div>', $theme->imgPath('spinner.gif'));
             return $ret;
         }
@@ -1098,7 +1098,7 @@ class atkAttribute
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
-        if (!is_array($record[$this->fieldName()])) {
+        if (!is_array($record[$this->fieldName()]) ) {
             $id = $id = $this->getHtmlId($fieldprefix);
             $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($record[$this->fieldName()]) . '">';
             return $result;
@@ -2784,7 +2784,7 @@ class atkAttribute
      */
     function escapeSQL($value, $wildcards = false)
     {
-        $db = &$this->getDb();
+        $db = $this->getDb();
         return $db->escapeSQL($value, $wildcards);
     }
 

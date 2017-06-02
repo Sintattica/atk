@@ -286,7 +286,7 @@ class atkActionHandler
      * @param String $action The action for which an action handler should be
      *                       retrieved.
      */
-    function getDefaultHandler($action)
+    static function getDefaultHandler($action)
     {
         // The next if statement checks for 'known' actions. All unknown actions
         // are handled the backwardscompatible default way (invoking action_$action on the node)

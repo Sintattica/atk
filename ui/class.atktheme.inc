@@ -340,8 +340,8 @@ class atkTheme
 
         //File Icons
         if ($label) {
-            if (!$attrs['title']) $attrs['title'] = $label;
-            if (!$attrs['alt']) $attrs['alt'] = $label;
+            if (!array_key_exists('title',$attrs)) $attrs['title'] = $label;
+            if (!array_key_exists('alt',$attrs)) $attrs['alt'] = $label;
         }
         $icon = $this->iconPath($icon, $type, $module, $ext, $useDefault);
         if (!$icon) return false;

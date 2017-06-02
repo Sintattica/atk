@@ -14,11 +14,14 @@
  * @version $Revision: 6185 $
  * $Id: class.atktimeattribute.inc 6478 2009-08-22 03:49:07Z marc $
  */
+
+atkimport("atk.attributes.atkdateattribute");
+
 /**
  * Flags for atkTimeAttribute
  */
 define("AF_TIME_SECONDS", AF_SPECIFIC_1); // Display seconds after hours & minutes
-define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
+//define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
 define("AF_TIME_DEFAULT_EMPTY", AF_SPECIFIC_7); // Always use the empty value on new record
 
 /**

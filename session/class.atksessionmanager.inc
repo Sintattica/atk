@@ -631,7 +631,7 @@ class atkSessionManager
     {
         global $g_sessionData;
 
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = atkinstance("atk.ui.atkui");
 
         $res = array();
         $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
@@ -693,7 +693,7 @@ class atkSessionManager
                 }
 
                 if (is_object($node)) {
-                    $ui = &atkinstance("atk.ui.atkui");
+                    $ui = atkinstance("atk.ui.atkui");
                     $txt = $ui->title($module, $nodename);
                 } else {
                     $txt = atktext($nodename, $module);
@@ -862,7 +862,7 @@ class atkSessionManager
      * @param string $fieldprefix
      * @return string the HTML formcode with the session info
      */
-    public function formState($sessionstatus = SESSION_DEFAULT, $returnbehaviour = NULL, $fieldprefix = '')
+    static public function formState($sessionstatus = SESSION_DEFAULT, $returnbehaviour = NULL, $fieldprefix = '')
     {
         global $g_stickyurl;
 

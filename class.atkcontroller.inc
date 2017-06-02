@@ -100,7 +100,7 @@ class atkController
      * @param boolean $replace
      * @return instance of controller
      */
-    function &_instance($class = "", $replace = false)
+    static function &_instance($class = "", $replace = false)
     {
         static $s_object = NULL;
         if (!is_object($s_object) || $replace) {
@@ -710,7 +710,7 @@ class atkController
      */
     function getPhpFile()
     {
-        $theme = &atkinstance('atk.ui.atktheme');
+        $theme = atkinstance('atk.ui.atktheme');
 
         if ($this->m_php_file != "")
             return $this->m_php_file;
@@ -771,7 +771,7 @@ class atkController
      */
     function &getUi()
     {
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = atkinstance("atk.ui.atkui");
         return $ui;
     }
 

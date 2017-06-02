@@ -59,8 +59,8 @@ class atkDropdownMenu extends atkPlainMenu
     {
         global $ATK_VARS, $g_menu;
 
-        $page = &atkinstance('atk.ui.atkpage');
-        $theme = &atkinstance("atk.ui.atktheme");
+        $page = atkinstance('atk.ui.atkpage');
+        $theme = atkinstance("atk.ui.atktheme");
         //$page->register_script(atkconfig('atkroot') . 'atk/javascript/dropdown_menu.js');
         $page->register_style($theme->stylePath("atkdropdownmenu.css"));
         //$page->m_loadscripts[] = "new DHTMLListMenu('nav');";

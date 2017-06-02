@@ -125,7 +125,7 @@ class atkMenu
             // within the menu itself.
             $theme = atkinstance("atk.ui.atktheme");
             $dispatcher = $theme->getAttribute('dispatcher', atkconfig("dispatcher", "dispatch.php")); // do not use atkSelf here!
-            $c = &atkinstance("atk.atkcontroller");
+            $c = atkinstance("atk.atkcontroller");
             $c->setPhpFile($dispatcher);
 
             atkHarvestModules("getMenuItems");

@@ -341,7 +341,7 @@ class atkClassLoader
      *                 returns the output of the invoked method. (be
      *                 careful with methods that return false).
      */
-    function invokeFromString($str, $params = array())
+    static function invokeFromString($str, $params = array())
     {
         if (strpos($str, "#") === false)
             return false;
@@ -366,7 +366,7 @@ class atkClassLoader
      * @return string|bool   The classpath (atkimport statement) of the class
      *                       if found, else false
      */
-    function findClass($class)
+    static function findClass($class)
     {
         $class = strtolower($class);
         $classloader = new atkClassLoader();

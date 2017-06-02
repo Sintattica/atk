@@ -726,7 +726,7 @@ class atkSecurityManager
     function logAction($node, $action)
     {
         $this->log(2, "Performing $node.$action");
-        $currentUser = &atkGetUser();
+        $currentUser = atkGetUser();
         $this->notifyListeners("performed", $currentUser['name'], $node . "." . $action);
     }
 

@@ -1840,7 +1840,7 @@ class atkNode
      */
     function getFormButtons($mode, $record)
     {
-        $controller = &atkinstance('atk.atkcontroller');
+        $controller = atkinstance('atk.atkcontroller');
         $controller->setNode($this);
         return $controller->getFormButtons($mode, $record);
     }
@@ -1872,7 +1872,7 @@ class atkNode
      */
     function &getUi()
     {
-        $ui = &atkinstance("atk.ui.atkui");
+        $ui = atkinstance("atk.ui.atkui");
         return $ui;
     }
 
@@ -2181,7 +2181,7 @@ class atkNode
                 }
 
                 /* sometimes a field is hidden although not specified by the field itself */
-                $theme = &atkinstance("atk.ui.atktheme");
+                $theme = atkinstance("atk.ui.atktheme");
                 if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab) {
                     $notOnTab = FALSE;
                 } else {
@@ -2468,7 +2468,7 @@ class atkNode
         $tab = $this->getActiveTab();
 
         // build navigator
-        $list = &$this->getTabs($action);
+        $list = $this->getTabs($action);
 
 
         if (is_array($list)) {
@@ -2832,7 +2832,7 @@ class atkNode
         if ($this->m_attribsizesset)
             return true;
 
-        $db = &$this->getDb();
+        $db = $this->getDb();
         $metainfo = $db->tableMeta($this->m_table);
 
         foreach (array_keys($this->m_attribList) as $attribname) {
@@ -2931,7 +2931,7 @@ class atkNode
      */
     function &getPage()
     {
-        $page = &atkinstance("atk.ui.atkpage");
+        $page = atkinstance("atk.ui.atkpage");
         return $page;
     }
 
@@ -3000,7 +3000,7 @@ class atkNode
 
         // The actual redirect.
         if (atkconfig("debug") >= 2) {
-            $debugger = &atkinstance('atk.utils.atkdebugger');
+            $debugger = atkinstance('atk.utils.atkdebugger');
             $debugger->setRedirectUrl($location);
             atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
             if ($exit) {
@@ -3239,7 +3239,7 @@ class atkNode
      */
     function validate(&$record, $mode, $ignoreList = array())
     {
-        $validateObj = &atknew($this->m_validate_class);
+        $validateObj = atknew($this->m_validate_class);
 
         $validateObj->setNode($this);
         $validateObj->setRecord($record);
@@ -3315,7 +3315,7 @@ class atkNode
      */
     function updateDb(&$record, $exectrigger = true, $excludes = "", $includes = "")
     {
-        $db = &$this->getDb();
+        $db = $this->getDb();
         $query = &$db->createQuery();
 
         $query->addTable($this->m_table);
@@ -4410,7 +4410,7 @@ class atkNode
             $handler->setNode($this);
             $handler->setAction($action);
         } else {
-            $handler = &atkActionHandler::getDefaultHandler($action);
+            $handler = atkActionHandler::getDefaultHandler($action);
             $handler->setNode($this);
             $handler->setPostvars($this->m_postvars);
             $handler->setAction($action);
@@ -4544,7 +4544,7 @@ class atkNode
      */
     function addStyle($style)
     {
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = atkinstance("atk.ui.atktheme");
         $page = &$this->getPage();
         $page->register_style($theme->stylePath($style));
     }

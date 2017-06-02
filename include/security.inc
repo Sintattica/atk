@@ -71,7 +71,9 @@ function atkGetUser($key = '')
         if (!isset($user["access_level"]) || empty($user["access_level"]))
             $user["access_level"] = 0;
     }
-
+	if ($key=='user_id' && $user['name']=='administrator') {
+    	return 0;
+	}
     if ($key)
         return $user[$key];
     return $user;

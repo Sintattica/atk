@@ -237,7 +237,7 @@ class atkProfileAttribute extends atkAttribute
             // get nodes for each module
             foreach (array_keys($g_modules) as $module) {
                 if (!isset($g_moduleflags[$module]) || !hasFlag($g_moduleflags[$module], MF_NORIGHTS)) {
-                    $instance = &getModule($module);
+                    $instance = getModule($module);
                     if (method_exists($instance, "getNodes"))
                         $instance->getNodes();
                 }
@@ -251,7 +251,7 @@ class atkProfileAttribute extends atkAttribute
             $temp = array();
             foreach ($result as $section => $modules) {
                 foreach ($modules as $module => $nodes) {
-                    if (!is_array($temp[$module])) {
+                    if (!array_key_exists($module,$temp) || !is_array($temp[$module])) {
                         $temp[$module] = array();
                     }
 

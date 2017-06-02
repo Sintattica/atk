@@ -39,7 +39,7 @@ class atkMessageQueue
      *
      * @return atkMessageQueue The instance.
      */
-    function &getInstance()
+    static function &getInstance()
     {
         static $s_instance = NULL;
         if ($s_instance == NULL) {
@@ -139,7 +139,7 @@ class atkMessageQueue
      *
      * @return array messages
      */
-    function getMessages()
+    static function getMessages()
     {
         $instance = &atkMessageQueue::getInstance();
         if (is_object($instance)) {

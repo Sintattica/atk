@@ -241,7 +241,7 @@ class atkUpdatehandler extends atkActionHandler
      */
     private function updateRecordInDb(&$record)
     {
-        $db = &$this->m_node->getDb();
+        $db = $this->m_node->getDb();
         if ($this->m_node->updateDb($record)) {
             $db->commit();
             $this->notify("update", $record);
