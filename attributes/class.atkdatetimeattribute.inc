@@ -388,7 +388,7 @@ class atkDateTimeAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
             if ($this->value2db($rec) == NULL) {

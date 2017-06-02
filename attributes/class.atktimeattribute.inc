@@ -401,7 +401,7 @@ class atkTimeAttribute extends atkAttribute
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level, $mode)
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level, $mode)
     {
         if ($mode == "add" || $mode == "update") {
             $value = $this->value2db($rec);
@@ -432,7 +432,7 @@ class atkTimeAttribute extends atkAttribute
      *                            of any html form element for this attribute.
      * @return Piece of htmlcode
      */
-    function hide($record = "", $fieldprefix)
+    function hide($record = "", $fieldprefix='')
     {
         $field = $record[$this->fieldName()];
 

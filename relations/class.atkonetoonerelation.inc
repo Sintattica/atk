@@ -204,7 +204,7 @@ class atkOneToOneRelation extends atkRelation
      *                     actions that store something in the database,
      *                     whereas the rest are probably select queries.
      */
-    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", $rec = "", $level = 0, $mode = "")
+    function addToQuery(&$query, $tablename = "", $fieldaliasprefix = "", &$rec = "", $level = 0, $mode = "")
     {
         if ($this->createDestination()) {
             if ($mode != "update" && $mode != "add") {
@@ -371,7 +371,7 @@ class atkOneToOneRelation extends atkRelation
     /**
      * Initialize this destinations attribute sizes.
      */
-    function fetchMeta()
+    function fetchMeta($metadata)
     {
         if ($this->hasFlag(AF_ONETOONE_INTEGRATE)) {
             $this->createDestination();
@@ -423,7 +423,7 @@ class atkOneToOneRelation extends atkRelation
      *             POSTSTORE  when in master mode.
      *             PRESTORE|ADDTOQUERY when in slave mode.
      */
-    function storageType($mode)
+    function storageType($mode=null)
     {
         // Mode specific storage type.
         if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null)
@@ -464,7 +464,7 @@ class atkOneToOneRelation extends atkRelation
      *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
      *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
      */
-    function loadType($mode)
+    function loadType($mode, $searching = false)
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
             return $this->m_loadType[$mode];

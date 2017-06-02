@@ -1582,7 +1582,7 @@ class atkAttribute
      *
      * @return String A piece of html-code
      */
-    public function search($record = array(), $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
+    public function search($record = '', $extended = false, $fieldprefix = "", atkDataGrid $grid = null)
     {
         $id = $this->getSearchFieldName($fieldprefix);
 

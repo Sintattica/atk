@@ -402,7 +402,7 @@ class atkListAttribute extends atkAttribute
      *
      * @return String A piece of html-code with a checkbox
      */
-    function search($record = "", $extended = false, $fieldprefix = "", $grid = null, $notSelectFirst = false)
+    function search($record = "", $extended = false, $fieldprefix = "", atkDataGrid $grid = null, $notSelectFirst = false)
     {
         $values = $this->getValues($record);
         $result = '<select class="form-control"';
