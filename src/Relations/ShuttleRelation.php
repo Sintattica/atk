@@ -153,13 +153,13 @@ class ShuttleRelation extends ManyToManyRelation
         }
 
         $result .= '<div class="shuttle-controls-single">';
-        $result .= '<button class="btn btn-default" onClick="shuttle_move(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-right"></i></button>';
-        $result .= '<button class="btn btn-default" type="button" value="&lt;" onClick="shuttle_move(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-left"></i></button>';
+        $result .= '<button class="btn btn-default" onClick="ATK.ShuttleRelation.shuttle_move(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-right"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&lt;" onClick="ATK.ShuttleRelation.shuttle_move(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-left"></i></button>';
         $result .= '</div>';
 
         $result .= '<div class="shuttle-controls-multiple">';
-        $result .= '<button class="btn btn-default" type="button" value="&gt;&gt;" onClick="shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-forward"></i></button>';
-        $result .= '<button class="btn btn-default" type="button" value="&lt;&lt;" onClick="shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-backward"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&gt;&gt;" onClick="ATK.ShuttleRelation.shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-forward"></i></button>';
+        $result .= '<button class="btn btn-default" type="button" value="&lt;&lt;" onClick="ATK.ShuttleRelation.shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-backward"></i></button>';
         $result .= '</div>';
 
         $result .= '</td><td>'.Tools::atktext('selected', 'atk').':<br/>';
@@ -169,7 +169,7 @@ class ShuttleRelation extends ManyToManyRelation
         // on submit, we must select all items in the right selector, as unselected items
         // will not be posted.
         $page = $this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkshuttlerelation.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/shuttlerelation.js');
 
         if ($this->m_filterBox && $rightname_clean && $filterbox_right && $filterbox_left && $rightname &&  $leftname) {
             // do the filtering
@@ -195,7 +195,7 @@ class ShuttleRelation extends ManyToManyRelation
                 });
             ");
         }
-        $page->register_submitscript("shuttle_selectAll('".$rightname."');");
+        $page->register_submitscript("ATK.ShuttleRelation.shuttle_selectAll('".$rightname."');");
 
         $result .= '</table>';
 
@@ -221,7 +221,7 @@ class ShuttleRelation extends ManyToManyRelation
             $result .= '<input id="'.$filterbox.'" class="form-control input-sm" placeholder="'.$this->text('filter').'..."
                 style="width: '.($width - 10).'px; margin-bottom: 5px; max-width: 400px !important;"><div style="clear:both"></div>';
         }
-        $result .= '<select class="form-control shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" style="width: '.$width.'px;" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\', \''.$fieldname.'\')">';
+        $result .= '<select class="form-control shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" style="width: '.$width.'px;" onDblClick="ATK.ShuttleRelation.shuttle_move(\''.$name.'\', \''.$opposite.'\', \''.$fieldname.'\')">';
         for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
             $result .= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'">'.$this->m_destInstance->descriptor($recordset[$i]);
         }

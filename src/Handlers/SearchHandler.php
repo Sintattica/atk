@@ -132,10 +132,8 @@ class SearchHandler extends AbstractSearchHandler
     public function searchPage($record = null)
     {
         $node = $this->m_node;
-
-        $page = $this->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
         $ui = $this->getUi();
+
         if (is_object($ui)) {
             $sm = SessionManager::getInstance();
             $params = [];

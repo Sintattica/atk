@@ -135,7 +135,11 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         $this->createDestination();
         $this->createLink();
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytomanyselectrelation.js');
+
+        $page = $this->getOwnerInstance()->getPage();
+        $assetUrl = Config::getGlobal('assets_url');
+        $page->register_script($assetUrl.'lib/jquery-sortable/jquery-sortable-min.js');
+        $page->register_script($assetUrl.'javascript/manytomanyselectrelation.js');
         $id = $this->getHtmlId($fieldprefix);
         $selectId = "{$id}_selection";
         $addLink = '';
@@ -600,10 +604,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $additional = '';
         if ($this->hasPositionAttribute()) {
             if (is_null($this->m_positionAttributeHtmlModifier)) {
-                $additional = ' <img src="'.Config::getGlobal('assets_url').'images/up-down.gif"
-          width="10" height="10" 
-          alt="Sortable Ordering" 
-          title="Sortable Ordering" />';
+                $additional = ' <i class="fa fa-arrows-v"></i>';
             } else {
                 $additional = $this->m_positionAttributeHtmlModifier;
             }

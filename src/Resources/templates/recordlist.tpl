@@ -2,6 +2,11 @@
 {if isset($formstart)}{$formstart}{/if}
 
 <div class="recordListContainer">
+    {if $mra!="" && $mraposition == 'top'}
+        <!-- multirecord actions -->
+        <div class="multirecordactions multirecordactions-top"><i class="fa fa-long-arrow-down fa-2x" aria-hidden="true"></i>
+            {$mra}</div>
+    {/if}
     <table id="{$listid}" class="table table-bordered table-condensed recordList">
         <!-- header -->
         <tr>
@@ -45,16 +50,16 @@
             <tr id="{$row.id}" class="{$row.class}"
                 {if $row.background!=""}style="background-color:{$row.background}" {/if}
                 {if $recordlist_onclick}
-                    onmouseover="highlightrow(this, '{$row.highlight}')"
-                    onmouseout="resetrow(this)"
-                    onclick="selectrow(this, '{$listid}', {$row.rownum})"
+                    onmouseover="ATK.RL.highlightRow(this, '{$row.highlight}')"
+                    onmouseout="ATK.RL.resetRow(this)"
+                    onclick="ATK.RL.selectRow(this, '{$listid}', {$row.rownum})"
                 {/if}
                     >
                 {section name=colloop loop=$row.cols}
                     <{if $row.type == "subtotal"}th{else}td{/if}
                             class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data" && $recordlist_onclick} clickable{/if} row-type-{$row.cols[colloop].type}"
                             {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}
-                            {if $row.cols[colloop].type == "data" && $recordlist_onclick} onclick="rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'
+                            {if $row.cols[colloop].type == "data" && $recordlist_onclick} onclick="ATK.RL.rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'
                     ], false);"{/if}>
                         {if $row.cols[colloop].content != ""}{$row.cols[colloop].content}{else}&nbsp;{/if}
                     </{if $row.type == "subtotal"}th{else}td{/if}>
@@ -75,9 +80,9 @@
         {/if}
     </table>
 
-    {if $mra!=""}
+    {if $mra!="" && $mraposition == 'bottom'}
         <!-- multirecord actions -->
-        <div class="multirecordactions"><i class="fa fa-long-arrow-up fa-2x" aria-hidden="true"></i> {$mra}</div>
+        <div class="multirecordactions multirecordactions-bottom"><i class="fa fa-long-arrow-up fa-2x" aria-hidden="true"></i> {$mra}</div>
     {/if}
 </div>
 

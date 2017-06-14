@@ -494,7 +494,7 @@ class Tools
      * Please note that it is important, for performance reasons,
      * that you pass along the module where the language files can be found.
      *
-     * @param mixed $string string or array of strings containing the name(s) of the string to return
+     * @param string|array $string string or array of strings containing the name(s) of the string to return
      *                               when an array of strings is passed, the second will be the fallback if
      *                               the first one isn't found, and so forth
      * @param string $module module in which the language file should be looked for,
@@ -855,27 +855,6 @@ class Tools
         $db = Db::getInstance();
 
         return $db->escapeSQL($string, $wildcard);
-    }
-
-    /**
-     * Returns a url to open a popup window.
-     *
-     * @param string $target the target of the popup
-     * @param string $params extra params to pass along
-     * @param string $winName the name of the window
-     * @param int $width the width of the popup
-     * @param int $height the height of the popup
-     * @param string $scroll allow scrolling? (no (default)|yes)
-     * @param string $resize allow resizing? (no (default)|yes)
-     *                        return string the url for the popup window
-     */
-    public static function atkPopup($target, $params, $winName, $width, $height, $scroll = 'no', $resize = 'no')
-    {
-        $sm = SessionManager::getInstance();
-        $url = $sm->sessionUrl('include.php?file='.$target.'&'.$params, SessionManager::SESSION_NESTED);
-        $popupurl = "javascript:NewWindow('".$url."','".$winName."',".$height.','.$width.",'".$scroll."','".$resize."')";
-
-        return $popupurl;
     }
 
     /**
@@ -1336,7 +1315,7 @@ class Tools
         }
 
         $cssclass = ' class="'.$cssclass.'"';
-        $script = 'atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'")';
+        $script = 'ATK.FormSubmit.atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'")';
         $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
 
         if (!$embedded) {
@@ -1839,7 +1818,7 @@ class Tools
     ) {
         $sm = SessionManager::getInstance();
         if ($saveform) {
-            $str = 'atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'", true);';
+            $str = 'ATK.FormSubmit.atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'", true);';
 
             return '<a href="javascript:void(0)" onclick="'.htmlentities($str).'" '.$extraprops.'>'.$name.'</a>';
         } else {

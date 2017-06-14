@@ -372,7 +372,7 @@ class TabbedPane extends Attribute
             $node = $this->m_ownerInstance;
 
             $page = $node->getPage();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/class.atktabbedpane.js');
+            $page->register_script(Config::getGlobal('assets_url').'javascript/tabbedpane.js');
             $page->register_loadscript("ATK.TabbedPane.showTab('tabbedPane{$fieldprefix}{$this->m_name}', '$activeTabName');");
 
             $ui = $node->getUi();

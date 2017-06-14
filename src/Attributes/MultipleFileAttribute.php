@@ -164,9 +164,7 @@ class MultipleFileAttribute extends FileAttribute
                         $imagehw = array('0' => '640', '1' => '480');
                     }
 
-                    $page = Page::getInstance();
-                    $page->register_script(Config::getGlobal('assets_url').'javascript/newwindow.js');
-                    $r .= '<a href="'.$this->m_url.$files[$i].'" alt="'.$files[$i].'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0] + 50).'\',\''.($imagehw[1] + 50).'\',\'yes\');return false;">'.$files[$i].'</a><br>';
+                    $r .= '<a href="'.$this->m_url.$files[$i].'" alt="'.$files[$i].'" onclick="ATK.Tools.newWindow(this.href,\'name\',\''.($imagehw[0] + 50).'\',\''.($imagehw[1] + 50).'\',\'yes\');return false;">'.$files[$i].'</a><br>';
                 } else {
                     $r .= '<a href="'.$this->m_url."$files[$i]\" target=\"_new\">$files[$i]</a><br>";
                 }

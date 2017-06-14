@@ -101,15 +101,29 @@ class BoolAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
+        $result = '';
         $id = $this->getHtmlId($fieldprefix);
         $onchange = '';
+
         if (count($this->m_onchangecode)) {
             $onchange = 'onClick="'.$id.'_onChange(this);" ';
             $this->_renderChangeHandler($fieldprefix);
         }
         $checked = $this->getValue($record) ? 'checked' : '';
 
-        $result = '<div class="checkbox"><span class="checkbox-wrapper"><input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' /></span></div>';
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+
+        $result .= '<div class="checkbox"><span class="checkbox-wrapper">';
+        $result .= '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1"';
+        $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute('atkcheckbox');
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
+        }
+        $result .= ' />';
+        $result .= '</span></div>';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
@@ -153,8 +167,18 @@ class BoolAttribute extends Attribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
+        $style = '';
+        $type = $extended ? 'extended_search':'search';
+        foreach($this->getCssStyles($type) as $k => $v) {
+            $style .= "$k:$v;";
+        }
 
-        $result = '<select id="'.$id.'" name="'.$name.'" class="form-control select-standard">';
+        $result = '<select id="'.$id.'" name="'.$name.'"';
+        $result .= ' class="form-control select-standard"';
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
+        }
+        $result .= '>';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         $result .= '<option value="0" ';
         if (is_array($record) && $record[$this->fieldName()] === '0') {

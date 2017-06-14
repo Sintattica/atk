@@ -152,16 +152,27 @@ class FieldSet extends Attribute
             }
 
             if ($field) {
+                $fieldId = $attr->getHtmlId($fieldprefix);
+
                 // render the label
                 if (!$attr->hasFlag(self::AF_NO_LABEL)) {
-                    $label = $attr->getLabel($record, $mode).': ';
+                    $label = '<label for="'.$fieldId.'" class="control-label"> '.$attr->getLabel($record, $mode).'</label>: ';
                 } else {
                     $label = '';
                 }
 
-                // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. atkEditFormModifier)
-                $html = sprintf('%s<div id="%s_%s_%s">%s</div>', $label, $this->getOwnerInstance()->getModule(), $this->getOwnerInstance()->getType(),
-                    $attrName, $field);
+                // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. EditFormModifier)
+                // for reference, see Edithandler::createTplField
+                $containerId = str_replace('.', '_', $attr->getOwnerInstance()->atkNodeUri().'_'.$fieldId);
+
+                $requiredClass = '';
+                if($attr->hasFlag(Attribute::AF_OBLIGATORY)){
+                    $requiredClass = ' required';
+                }
+
+                $html = '<div class="fieldset-form-group'.$requiredClass.'">';
+                $html .= $label.'<div id="'.$containerId.'" class="fieldset-form-group-field">'.$field.'</div>';
+                $html .= '</div>';
 
                 $replacements[$attrName] = $html;
             } else {
@@ -169,7 +180,20 @@ class FieldSet extends Attribute
             }
         }
 
-        return '<div class="atkfieldset">'.$this->getParser()->parse($replacements).'</div>';
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+
+        $result = '<div class="atkfieldset"';
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
+        }
+        $result .= '>';
+        $result .= $this->getParser()->parse($replacements);
+        $result .= '</div>';
+
+        return $result;
     }
 
     /**

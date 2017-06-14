@@ -10,7 +10,7 @@
     {section name=i loop=$tabs}
         <li id="tab_{$tabs[i].tab}"
             class="{if $tabs[i].selected}active activetab{else}passivetab{/if}">
-            <a href="javascript:void(0)" onclick="showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
+            <a href="javascript:void(0)" onclick="ATK.Tabs.showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
         </li>
     {/section}
 </ul>

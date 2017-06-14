@@ -134,8 +134,8 @@ class EditFormModifier
         if ($this->isInitial()) {
             $attr->setInitialHidden(false);
         } else {
-            $name = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
-            $this->scriptCode("if (\$('$name')) { \$('$name').removeClassName('atkAttrRowHidden'); }");
+            $rowId = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
+            $this->scriptCode("ATK.Tools.showAttribute('$rowId');");
         }
     }
 
@@ -165,8 +165,8 @@ class EditFormModifier
         if ($this->isInitial()) {
             $attr->setInitialHidden(true);
         } else {
-            $name = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
-            $this->scriptCode("if (\$('$name')) { \$('$name').addClassName('atkAttrRowHidden'); }");
+            $rowId = 'ar_'.$attr->getHtmlId($this->getFieldPrefix());
+            $this->scriptCode("ATK.Tools.hideAttribute('$rowId');");
         }
     }
 
@@ -204,9 +204,9 @@ class EditFormModifier
 
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
-            $element = str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
-            $value = Json::encode(Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html'])); // Json::encode excepts string in UTF-8
-            $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";
+            $element = '#'.str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
+            $value = str_replace("'", "\'", $field['html']);
+            $scriptCode .= "jQuery('$element').html('$value');";
         }
 
         $this->getNode()->getPage()->register_loadscript($scriptCode, $offset);

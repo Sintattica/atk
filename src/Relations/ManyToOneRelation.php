@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Relations;
 
 use Exception;
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Attributes\ListAttribute;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -228,6 +229,8 @@ class ManyToOneRelation extends Relation
     public $m_onchangehandler_init = "var newvalue = el.value;\n";
 
     public $m_search_by_pk = false;
+
+    protected $m_multipleSearch;
 
     /**
      * Constructor.
@@ -634,8 +637,8 @@ class ManyToOneRelation extends Relation
     public function display($record, $mode)
     {
         if ($this->createDestination()) {
-            $cnt = isset($record[$this->fieldName()]) ? count(count($record[$this->fieldName()])) : null;
-            if ($cnt == count($this->m_refKey)) {
+            $cnt = isset($record[$this->fieldName()]) ? count($record[$this->fieldName()]) : null;
+            if ($cnt === count($this->m_refKey)) {
                 $this->populate($record);
             }
 
@@ -722,13 +725,12 @@ class ManyToOneRelation extends Relation
                 )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
             }
 
-            if ($this->m_destInstance->allowed('edit') && !$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $record[$this->fieldName()] != null) {
-
+            if ($this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $editUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
                     SessionManager::SESSION_NESTED);
-                $links[] = '<span id="'.$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('edit').'</a></span>';
+                $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
             }
         }
 
@@ -802,6 +804,8 @@ class ManyToOneRelation extends Relation
 
     public function edit($record, $fieldprefix, $mode)
     {
+        $type = 'edit';
+
         if (!$this->createDestination()) {
             Tools::atkerror("Could not create destination for destination: $this -> m_destination!");
 
@@ -816,15 +820,33 @@ class ManyToOneRelation extends Relation
 
         $isAutocomplete = (is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1;
         if ($this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && is_object($this->m_ownerInstance) && $isAutocomplete) {
-            return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
+
+
+            $result = $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
+            return $result;
         }
+
+
 
         $result = '';
         $options = [];
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
         $htmlAttributes = [];
-        $editflag = true;
+        $linkview = false;
+        $style = '';
+
+
+        if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
+        }
+
+        foreach($this->getCssStyles($type) as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $htmlAttributes['style'] = $style;
+        }
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         $currentPk = ($value != null) ? $this->getDestination()->primaryKey($value) : null;
@@ -832,7 +854,6 @@ class ManyToOneRelation extends Relation
 
         if ($this->hasFlag(self::AF_LARGE)) {
             //no select list, but a link for select
-            $editflag = false;
             $result = '';
 
             $result .= '<span class="atkmanytoonerelation-large-container">';
@@ -865,10 +886,6 @@ class ManyToOneRelation extends Relation
                 $recordset = $this->_getSelectableRecords($record, $mode);
             }
 
-            if (count($recordset) == 0) {
-                $editflag = false;
-            }
-
             // autoselect if there is only one record (if obligatory is not set,
             // we don't autoselect, since user may wist to select 'none' instead
             // of the 1 record.
@@ -878,10 +895,18 @@ class ManyToOneRelation extends Relation
                 // relation may be empty, so we must provide an empty selectable..
                 $hasNullOption = false;
                 $emptyValue = '';
-                if ($this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) || (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) || (Config::getGlobal('list_obligatory_null_item') && !is_array($value))) {
-                    $hasNullOption = true;
-                    $noneLabel = $this->getNoneLabel($mode);
-                    $options[$emptyValue] = $noneLabel;
+                $linkview = true;
+
+                if (!$this->hasFlag(self::AF_MANYTOONE_NO_NULL_ITEM)) {
+                    if (!$this->hasFlag(self::AF_OBLIGATORY) || (
+                            $this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM) ||
+                            (Config::getGlobal("list_obligatory_null_item") && !$this->hasFlag(ListAttribute::AF_LIST_NO_OBLIGATORY_NULL_ITEM))
+                        )
+                    ) {
+                        $hasNullOption = true;
+                        $noneLabel = $this->getNoneLabel($mode);
+                        $options[$emptyValue] = $noneLabel;
+                    }
                 }
 
                 foreach ($recordset as $selectable) {
@@ -896,11 +921,6 @@ class ManyToOneRelation extends Relation
                 if ($hasNullOption) {
                     $selectOptions['with-empty-value'] = $emptyValue;
                 }
-                if (!empty($this->getWidth())) {
-                    $selectOptions['width'] = $this->getWidth();
-                } else {
-                    $selectOptions['width'] = 'resolve';
-                }
                 $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
                 if (count($this->m_onchangecode)) {
@@ -913,7 +933,7 @@ class ManyToOneRelation extends Relation
         }
 
         $autolink = $this->getRelationAutolink($id, $name, $this->parseFilter($this->m_destinationFilter, $record));
-        $result .= $editflag && isset($autolink['edit']) ? $autolink['edit'] : '';
+        $result .= $linkview && isset($autolink['view']) ? $autolink['view'] : '';
         $result .= isset($autolink['add']) ? $autolink['add'] : '';
 
         if ($this->hasFlag(self::AF_LARGE)) {
@@ -969,13 +989,13 @@ class ManyToOneRelation extends Relation
 
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $page = Page::getInstance();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
+            $page->register_script(Config::getGlobal('assets_url').'javascript/manytoonerelation.js');
             $sm = SessionManager::getInstance();
 
-            if (!$this->m_destInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_destInstance->allowed('edit')) {
-                $editlink = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'edit', array('atkselector' => 'REPLACEME')),
+            if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $this->m_destInstance->allowed('view')) {
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
                     SessionManager::SESSION_NESTED);
-                $autolink['edit'] = "<a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($editlink).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('edit').'</a>';
+                $autolink['view'] = " <a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
             }
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
                 $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
@@ -1056,7 +1076,7 @@ class ManyToOneRelation extends Relation
     public function drawSelect($id, $name, $options = [], $selected = [], $selectOptions = [], $htmlAttributes = [])
     {
         $page = $this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/manytoonerelation.js');
 
         $htmlAttrs = '';
         foreach ($selectOptions as $k => $v) {
@@ -1076,7 +1096,7 @@ class ManyToOneRelation extends Relation
             $result .= '</option>';
         }
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
@@ -1085,10 +1105,29 @@ class ManyToOneRelation extends Relation
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
         $id = $this->getHtmlId($fieldprefix);
-        $name = $this->getSearchFieldName($fieldprefix);
+        $name = $this->getSearchFieldName($fieldprefix).'[]';
         $htmlAttributes = [];
+        $isMultiple = $this->isMultipleSearch($extended);
+        $onchange = '';
+        $options = ['' => Tools::atktext('search_all')];
+        $selectOptions = [];
+        $selectOptions['enable-select2'] = true;
+        $selectOptions['dropdown-auto-width'] = true;
+        $selectOptions['with-empty-value'] = '';
+
+        $style = '';
+        $type = $extended ? 'extended_search' : 'search';
+
+        if ($isMultiple) {
+            $htmlAttributes['multiple'] = 'multiple';
+        }
+
+        if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
+        }
 
         if (!$this->hasFlag(self::AF_LARGE) && !$useautocompletion) {
+
             //Normal dropdown search
             if (!$this->createDestination()) {
                 return '';
@@ -1100,40 +1139,54 @@ class ManyToOneRelation extends Relation
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
 
-            $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
-
-            if (!is_array($selValues)) {
-                $selValues = [$selValues];
+            // options and values
+            if (!$this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)) {
+                $options['__NONE__'] = $this->getNoneLabel('search');
             }
-
-            if (in_array('', $selValues)) {
-                $selValues = [''];
-            }
-
-
-            $options = [];
-            $options[''] = Tools::atktext('search_all');
-            $options['__NONE__'] = $this->getNoneLabel('search');
-
             $pkfield = $this->m_destInstance->primaryKeyField();
             foreach ($recordset as $option) {
                 $pk = $option[$pkfield];
                 $options[$pk] = $this->m_destInstance->descriptor($option);
             }
 
+            // selected values
+            $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : [];
+            if($isMultiple && $selValues[0] == ''){
+                unset($selValues[0]);
+            }
+
+            // if is multiple, replace null selection with empty string
+            if($isMultiple) {
+                $onchange .= <<<EOF
+var s=jQuery(this), v = s.val();
+if (v != null && v.length > 0) {
+    var nv = jQuery.grep(v, function(value) {
+        return value != '';
+    });
+    s.val(nv);s.trigger('change.select2');
+}else if(v === null){
+   s.val('');s.trigger('change.select2');
+};
+EOF;
+            }
+
             if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-                $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+                $onchange .= $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+            }
+
+            if($onchange != '') {
                 $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
             }
 
-            $selectOptions = [];
-            $selectOptions['enable-select2'] = true;
-            $selectOptions['dropdown-auto-width'] = true;
-            $selectOptions['with-empty-value'] = '';
+
             $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
-            // width always auto
-            $selectOptions['width'] = 'auto';
+            foreach($this->getCssStyles($type) as $k => $v) {
+                $style .= "$k:$v;";
+            }
+            if($style != ''){
+                $htmlAttributes['style'] = $style;
+            }
 
             return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
 
@@ -1142,14 +1195,9 @@ class ManyToOneRelation extends Relation
             if (isset($record[$this->fieldName()][$this->fieldName()])) {
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
-            $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+
 
             if ($useautocompletion) {
-                $noneLabel = Tools::atktext('search_all');
-
-                $options = [];
-                $options[''] = $noneLabel;
-
                 $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
@@ -1158,24 +1206,55 @@ class ManyToOneRelation extends Relation
                     $options[$selValue] = $selValue;
                 }
 
-                $selectOptions = [];
-                $selectOptions['enable-select2'] = true;
                 $selectOptions['enable-manytoonereleation-autocomplete'] = true;
-                $selectOptions['tags'] = true;
+                // $selectOptions['tags'] = true;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
-                $selectOptions['allow-clear'] = true;
-                $selectOptions['dropdown-auto-width'] = true;
-                $selectOptions['placeholder'] = $noneLabel;
+                $selectOptions['placeholder'] = $options[''];
+
+                if(!$this->isMultipleSearch($extended)) {
+                    $selectOptions['allow-clear'] = true;
+                }
                 $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
-                //width always auto
-                $selectOptions['width'] = 'auto';
+                if($isMultiple) {
+                    $onchange .= <<<EOF
+var s=jQuery(this), v = s.val();
+if (v != null && v.length > 0) {
+    var nv = jQuery.grep(v, function(value) {
+        return value != '';
+    });
+    s.val(nv);s.trigger('change.select2');
+}else if(v === null){
+   s.val('');s.trigger('change.select2');
+};
+EOF;
+                }
 
-                return $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
+                if($onchange != '') {
+                    $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
+                }
+
+                foreach($this->getCssStyles($type) as $k => $v) {
+                    $style .= "$k:$v;";
+                }
+                if($style != ''){
+                    $htmlAttributes['style'] = $style;
+                }
+
+                $result = '<span class="select-inline">';
+                $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
+                $result .= '</span>';
+
+                return $result;
 
             } else {
+                $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+                if(is_array($current)){
+                    $current = implode(' ', $current);
+                }
+
                 //normal input field
                 $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
             }
@@ -1236,6 +1315,7 @@ class ManyToOneRelation extends Relation
             }
         }
 
+
         if (empty($value)) {
             return '';
         } else {
@@ -1248,6 +1328,7 @@ class ManyToOneRelation extends Relation
                 }
 
                 if (count($value) == 1) { // exactly one value
+
                     if ($value[0] == '__NONE__') {
                         return $query->nullCondition($table.'.'.$this->fieldName(), true);
                     } elseif ($value[0] != '') {
@@ -1257,6 +1338,12 @@ class ManyToOneRelation extends Relation
                     return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
                 }
             } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
+
+                if($value[0] == ''){
+                    return '';
+                }
+
+
                 // If we have a descriptor with multiple fields, use CONCAT
                 $attribs = $this->m_destInstance->descriptorFields();
                 $alias = $fieldname.$this->fieldName();
@@ -1264,8 +1351,16 @@ class ManyToOneRelation extends Relation
                     $searchcondition = $this->getConcatFilter($value, $alias);
                 } else {
                     // ask the destination node for it's search condition
-                    $searchcondition = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $value,
-                        $this->getChildSearchMode($searchmode, $this->fieldName()));
+                    $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
+                    $conditions = '';
+                    foreach($value as $v) {
+                        $sc = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode);
+
+                        if($sc != '') {
+                            $conditions[] = '('.$sc.')';
+                        }
+                    }
+                    $searchcondition = implode(' OR ', $conditions);
                 }
 
                 return $searchcondition;
@@ -1964,7 +2059,7 @@ class ManyToOneRelation extends Relation
 
 
     /**
-     * Draw the auto-complete box.
+     * Draw the auto-complete box for the edit type
      *
      * @param array $record The record
      * @param string $fieldprefix The fieldprefix
@@ -1976,7 +2071,7 @@ class ManyToOneRelation extends Relation
         $this->createDestination();
 
         $page = $this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/manytoonerelation.js');
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 
@@ -1990,6 +2085,7 @@ class ManyToOneRelation extends Relation
         $noneLabel = '';
         $emptyValue = '';
         $htmlAttributes = [];
+        $type = 'edit';
 
         // validate is this is a selectable record and if so retrieve the display label and hidden value
         if ($this->_isSelectableRecord($record, $mode)) {
@@ -2010,23 +2106,21 @@ class ManyToOneRelation extends Relation
             $selValues[] = $value;
         }
 
+
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
         $selectOptions['enable-manytoonereleation-autocomplete'] = true;
         $selectOptions['dropdown-auto-width'] = false;
         $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
         $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
+        $selectOptions['width'] = '100%';
 
         // standard select2 with clear button
         if ($hasNullOption) {
             $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = $noneLabel;
         }
-        if (!empty($this->getWidth())) {
-            $selectOptions['width'] = $this->getWidth();
-        } else {
-            $selectOptions['width'] = 'auto';
-        }
+
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         if (count($this->m_onchangecode)) {
@@ -2034,8 +2128,19 @@ class ManyToOneRelation extends Relation
             $this->_renderChangeHandler($fieldprefix);
         }
 
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $htmlAttributes['style'] = $style;
+        }
+
         $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
         $result .= ' '.$this->createSelectAndAutoLinks($name, $record);
+
+
+        $result = '<span class="select-inline">'.$result.'</span>';
 
         return $result;
     }
@@ -2293,5 +2398,36 @@ class ManyToOneRelation extends Relation
         }
 
         return false;
+    }
+
+    /**
+     * @param bool $normal
+     * @param bool $extended
+     * @return array $m_multipleSearch
+     */
+    public function setMultipleSearch($normal = true, $extended = true)
+    {
+        $this->m_multipleSearch = [
+            'normal' => $normal,
+            'extended' => $extended,
+        ];
+
+        return $this->m_multipleSearch;
+    }
+
+    public function getMultipleSearch()
+    {
+        return $this->m_multipleSearch;
+    }
+
+    /**
+     * @param bool $extended
+     * @return bool
+     */
+    public function isMultipleSearch($extended)
+    {
+        $ms = $this->getMultipleSearch();
+
+        return $ms[$extended ? 'extended' : 'normal'];
     }
 }

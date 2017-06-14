@@ -282,12 +282,6 @@ class ListAttribute extends Attribute
             $selectOptions['with-empty-value'] = $this->getEmptyValue();
         }
 
-        if (!empty($this->getWidth())) {
-            $selectOptions['width'] = $this->getWidth();
-        } else {
-            $selectOptions['width'] = 'resolve';
-        }
-
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         $onchange = '';
@@ -301,7 +295,15 @@ class ListAttribute extends Attribute
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
         }
 
-        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.'>';
+        $style = $styles = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $styles = 'style="'.$style.'"';
+        }
+
+        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.$styles.'>';
 
         if ($hasNullOption) {
             $result .= '<option value="'.$this->getEmptyValue().'">'.$nullLabel.'</option>';
@@ -321,7 +323,7 @@ class ListAttribute extends Attribute
         }
 
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
@@ -379,9 +381,11 @@ class ListAttribute extends Attribute
         $values = $this->getValues();
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
-
         $isMultiple = $this->isMultipleSearch($extended);
         $class = $this->getCSSClassAttribute(['form-control']);
+        $style = '';
+        $type = $extended ? 'extended_search' : 'search';
+
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
@@ -390,16 +394,22 @@ class ListAttribute extends Attribute
         if ($isMultiple) {
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }
-
-        //width always auto
-        $selectOptions['width'] = 'auto';
-
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
-        $data = '';
-        foreach ($selectOptions as $k => $v) {
-            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+
+        if($isMultiple && $this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
         }
-        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]"'.$data.'>';
+
+        foreach($this->getCssStyles($type) as $k => $v) {
+            $style .= "$k:$v;";
+        }
+
+        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]"';
+        foreach ($selectOptions as $k => $v) {
+            $result .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+        $result .= $style != '' ? ' style="'.$style.'"': '';
+        $result .= ' >';
 
         $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         if (!is_array($selValues)) {
@@ -429,11 +439,31 @@ class ListAttribute extends Attribute
         }
 
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
+
+        $onchange = '';
+
+        // if is multiple, replace null selection with empty string
+        if($isMultiple) {
+            $onchange .= <<<EOF
+var s=jQuery(this), v = s.val();
+if (v != null && v.length > 0) {
+    var nv = jQuery.grep(v, function(value) {
+        return value != '';
+    });
+    s.val(nv);s.trigger('change.select2');
+}else if(v === null){
+   s.val('');s.trigger('change.select2');
+};
+EOF;
+        }
 
         // if we use autosearch, register an onchange event that submits the grid
         if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-            $onchange = $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+            $onchange .= $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
+        }
+
+        if($onchange != '') {
             $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(){'.$onchange.'})');
         }
 
@@ -524,7 +554,7 @@ class ListAttribute extends Attribute
         foreach ($valuearr as $value) {
             $conditions[] = "newvalue=='$value'";
         }
-        $this->addOnChangeHandler('if ('.implode('||', $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
+        $this->addOnChangeHandler('if ('.implode('||', $conditions).") ATK.Tools.hideAttrib('$attrib'); else ATK.Tools.showAttrib('$attrib');");
     }
 
     /**

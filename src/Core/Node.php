@@ -1743,9 +1743,6 @@ class Node
     public function getFormButtons($mode, $record = array())
     {
         $result = [];
-        $page = $this->getPage();
-
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
         $sm = SessionManager::getInstance();
 
         // edit mode
@@ -1961,10 +1958,10 @@ class Node
 
         if (count($sections) > 0 || $tabs > 1) {
             $page = $this->getPage();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/dhtml_tabs.js?stateful='.(Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
+            $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js?stateful='.(Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
 
             // Load default tab show script.
-            $page->register_loadscript('if ( window.showTab ) {showTab(\''.(isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '').'\');}');
+            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab(\''.(isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '').'\');}');
 
             $fulltabs = $this->buildTabs($action);
             $tabscript = "var tabs = new Array();\n";
@@ -2518,7 +2515,7 @@ class Node
                 if ($this->m_action == 'view') {
                     $newtab['link'] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
                 } else {
-                    $newtab['link'] = "javascript:atkSubmit('".Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT))."')";
+                    $newtab['link'] = "javascript:ATK.FormSubmit.atkSubmit('".Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT))."')";
                 }
                 $newtab['selected'] = ($t == $tab);
                 $result[] = $newtab;
@@ -4617,7 +4614,7 @@ class Node
     /**
      * Translate using this node's module and type.
      *
-     * @param mixed $string string or array of strings containing the name(s) of the string to return
+     * @param string|array $string string or array of strings containing the name(s) of the string to return
      *                              when an array of strings is passed, the second will be the fallback if
      *                              the first one isn't found, and so forth
      * @param string $module module in which the language file should be looked for,

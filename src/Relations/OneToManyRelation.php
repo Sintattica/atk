@@ -388,8 +388,7 @@ class OneToManyRelation extends Relation
     public function edit($record, $fieldprefix, $mode)
     {
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkonetomanyrelation.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/onetomanyrelation.js');
 
         $grid = $this->createGrid($record, 'admin', $mode);
 
@@ -475,9 +474,11 @@ class OneToManyRelation extends Relation
         $fname = $this->fieldName();
         $output = '<input type="submit" class="btn btn-default otm_add" name="'.$fname.'_save" value="'.Tools::atktext('add').'">';
 
-        return $output.'<input type="button" onClick="toggleAddForm(\''.$fname."_integrated',
-                                                               '".$fname."_integrated_link');\"
-                                       class=\"btn btn-default otm_add\" name=\"".$fname.'_cancel" value="'.Tools::atktext('cancel').'">';
+        return $output.'<input type="button"
+        onClick="ATK.OneToManyRelation.toggleAddForm(\''.$fname."_integrated','".$fname."_integrated_link');\"
+        class=\"btn btn-default otm_add\"
+        name=\"".$fname.'_cancel"
+        value="'.Tools::atktext('cancel').'">';
     }
 
     /**

@@ -231,6 +231,10 @@ class DateAttribute extends Attribute
 
         /* base class constructor */
         parent::__construct($name, $flags);
+
+        if($this->hasFlag(self::AF_OBLIGATORY) && $this->hasFlag(self::AF_DATE_DEFAULT_EMPTY)){
+            $this->addFlag(self::AF_DATE_EMPTYFIELD);
+        }
     }
 
     /**
@@ -651,7 +655,7 @@ class DateAttribute extends Attribute
         );
 
         if (!$this->m_simplemode) {
-            $result .= '<div class="'.$this->get_class_name().' form-inline"><script language="javascript">var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
+            $result .= '<div class="DateAttribute form-inline"><script language="javascript">var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
         }
 
         /* other date selections */
@@ -660,7 +664,7 @@ class DateAttribute extends Attribute
         for ($i = 0; $i < strlen($str_format); ++$i) {
             /* javascript method */
             if (!$this->m_simplemode) {
-                $str_script = "AdjustDate(this, '".$id."');";
+                $str_script = "ATK.DateAttribute.adjustDate(this, '".$id."');";
             }
 
             if (count($this->m_onchangecode)) {
@@ -813,13 +817,13 @@ class DateAttribute extends Attribute
           var m_weekdays_short = Array("'.implode('","', $m_weekdays_short).'");
         ', true);
 
-            $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkdateattribute.js');
+            $page->register_script(Config::getGlobal('assets_url').'javascript/dateattribute.js');
         }
 
         if ($useCalendar) {
-            $page->register_script(Config::getGlobal('assets_url').'javascript/calendar/calendar.js');
-            $page->register_script(Config::getGlobal('assets_url').'javascript/calendar/calendar-runner.js');
-            $page->register_script(Config::getGlobal('assets_url').'javascript/calendar/lang/calendar-'.Config::getGlobal('language').'.js');
+            $page->register_script(Config::getGlobal('assets_url').'lib/calendar/calendar.js');
+            $page->register_script(Config::getGlobal('assets_url').'lib/calendar/calendar-runner.js');
+            $page->register_script(Config::getGlobal('assets_url').'lib/calendar/lang/calendar-'.Config::getGlobal('language').'.js');
         }
     }
 

@@ -149,25 +149,31 @@ class MultiSelectListAttribute extends ListAttribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
+        $type = 'edit';
 
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['multiple'] = true;
-        if (!empty($this->getWidth())) {
-            $selectOptions['width'] = $this->getWidth();
-        } else {
-            $selectOptions['width'] = 'auto';
-        }
-
         $selectOptions['placeholder'] = $this->getNullLabel();
-
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         $data = '';
         foreach ($selectOptions as $k => $v) {
             $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+        }
+
+        if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+            $this->setCssStyle($type, 'min-width', '220px');
+        }
+
+        $style = $styles = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
+        if($style != ''){
+            $styles = ' style="'.$style.'"';
         }
 
         $onchange = '';
@@ -176,7 +182,7 @@ class MultiSelectListAttribute extends ListAttribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$data.'>';
+        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$data.$styles.'>';
 
         $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {
@@ -193,17 +199,23 @@ class MultiSelectListAttribute extends ListAttribute
         }
 
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
 
+
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        // Multiselect attribute has only 1 searchmode, and that is substring.
         $searchcondition = '';
         if (is_array($value) && $value[0] != '' && count($value) > 0) {
             $searchcondition = [];
+
+            if (in_array('__NONE__', $value)) {
+                 unset($value[array_search('__NONE__', $value)]);
+                $searchcondition[] = $query->nullCondition($table.'.'.$this->fieldName(), true);
+            }
+
             foreach ($value as $str) {
                 $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
             }
@@ -250,7 +262,7 @@ class MultiSelectListAttribute extends ListAttribute
     {
         if (count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
             return '<div align="left">
-                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
+                  [<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
         }
 
         return '';

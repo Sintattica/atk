@@ -53,22 +53,21 @@ class ColorPickerAttribute extends Attribute
         } else {
             $onchange = '';
         }
-        
-        $size = $this->m_size;
-        if ($mode == 'list' && $size > 20) {
-            $size = 20;
+
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
         }
 
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
         $result = '<div class="input-group ColorPickerAttribute_group" id="'.$id.'_group">';
-
         $result .= '<input type="text" id="'.$id.'"';
         $result .= ' name="'.$this->getHtmlName($fieldprefix).'"';
         $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
         $result .= ' value="'.$value.'"';
-        if($size > 0){
-            $result .= ' size="'.$size.'"';
+        if($this->m_size > 0){
+            $result .= ' size="'.$this->m_size.'"';
         }
         if($this->m_maxsize > 0){
             $result .= ' maxlength="'.$this->m_maxsize.'"';
@@ -78,6 +77,9 @@ class ColorPickerAttribute extends Attribute
         }
         if($placeholder = $this->getPlaceholder()){
             $result .= ' placeholder="'.htmlspecialchars($placeholder).'"';
+        }
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
         }
         $result .= ' />';
 

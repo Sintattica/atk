@@ -797,7 +797,7 @@ class ManyToManyRelation extends Relation
             $result .= '<option value="'.$pk.'"'.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]).'</option>';
         }
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }

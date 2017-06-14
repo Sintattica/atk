@@ -505,6 +505,11 @@ class NumberAttribute extends Attribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
+
+        $style = '';
+        foreach($this->getCssStyles('edit') as $k => $v) {
+            $style .= "$k:$v;";
+        }
         
         if (count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$id.'_onChange(this);"';
@@ -528,7 +533,7 @@ class NumberAttribute extends Attribute
 
         $result = '';
         $result .= '<input type="text" id="'.$id.'"';
-        $result .= ' name="'.$this->getHtmlName($fieldprefix).'"';
+        $result .= ' name="'.$name.'"';
         $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
         $result .= ' value="'.$value.'"';
         if($size > 0){
@@ -542,6 +547,9 @@ class NumberAttribute extends Attribute
         }
         if($placeholder = $this->getPlaceholder()){
             $result .= ' placeholder="'.htmlspecialchars($placeholder).'"';
+        }
+        if($style != ''){
+            $result .= ' style="'.$style.'"';
         }
         $result .= ' />';
 
@@ -576,6 +584,11 @@ class NumberAttribute extends Attribute
         $class = $this->getCSSClassAttribute(['form-control']);
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
+        $style = '';
+        $type = $extended ? 'extended_search':'search';
+        foreach($this->getCssStyles($type) as $k => $v) {
+            $style .= "$k:$v;";
+        }
 
         if (!$extended) {
             if (is_array($value)) { // values entered in the extended search
@@ -591,7 +604,12 @@ class NumberAttribute extends Attribute
                 }
             }
 
-            $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'" value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
+            $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'"';
+            $result .= ' value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '');
+            if($style != ''){
+                $result .= ' style="'.$style.'"';
+            }
+            $result .= '>';
         } else {
 
             if (is_array($value)) {
@@ -601,7 +619,11 @@ class NumberAttribute extends Attribute
                 $valueFrom = $valueTo = $value;
             }
 
-            $result = '<div class="form-inline">';
+            $result = '<div class="form-inline"';
+            if($style != ''){
+                $result .= ' style="'.$style.'"';
+            }
+            $result .= '>';
             $result .= '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'[from]" value="'.htmlentities($valueFrom).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
 
 
