@@ -51,7 +51,10 @@ ATK.Attribute = {
         // ajax call and execute scripts
         jQuery.post(url, [], function (responseText) {
             jQuery('<div>').html(responseText).find("script").each(function () {
-                eval(jQuery(this).text());
+                var text = jQuery(this).text();
+                if(text) {
+                    jQuery.globalEval(text);
+                }
             });
         });
     },
@@ -89,7 +92,10 @@ ATK.Attribute = {
         // ajax call and execute scripts
         jQuery.post(url, queryComponents.join('&'), function (responseText) {
             jQuery('<div>').html(responseText).find("script").each(function () {
-                eval(jQuery(this).text());
+                var text = jQuery(this).text();
+                if(text) {
+                    jQuery.globalEval(text);
+                }
             });
         });
     }

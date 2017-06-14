@@ -15,7 +15,10 @@ ATK.ManyToManySelectRelation = {
         jQuery.post(url, params, function (responseText) {
             li.before(responseText);
             jQuery('<div>').html(responseText).find("script").each(function () {
-                eval(jQuery(this).text());
+                var text = jQuery(this).text();
+                if(text) {
+                    jQuery.globalEval(text);
+                }
             });
             if (makeSortable) {
                 ATK.ManyToManySelectRelation.makeItemsSortable(li.closest('ul').attr('id'));
