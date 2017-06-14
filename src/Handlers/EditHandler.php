@@ -121,9 +121,7 @@ class EditHandler extends ViewEditBase
      */
     public function registerExternalFiles()
     {
-        $page = $this->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
-        $page->register_script(Config::getGlobal('assets_url').'javascript/dhtml_formtools.js');
+
     }
 
     /**
@@ -271,7 +269,7 @@ class EditHandler extends ViewEditBase
     {
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.' method="post" onsubmit="return globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">'.$sm->formState($this->getUpdateSessionStatus());
+        $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.Config::getGlobal('dispatcher').'"'.' method="post" onsubmit="return ATK.globalSubmit(this,false)" class="form-horizontal" role="form" autocomplete="off">'.$sm->formState($this->getUpdateSessionStatus());
 
         $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkaction" value="'.$this->getUpdateAction().'" />';
         $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkprevaction" value="'.$this->getNode()->m_action.'" />';
@@ -556,20 +554,6 @@ class EditHandler extends ViewEditBase
         // register fields that contain errornous values
         $page->register_scriptcode('var atkErrorFields = '.Json::encode($errorFields).';');
 
-        if (Config::getGlobal('lose_changes_warning', true)) {
-            // If we are in the save or update action the user has added a nested record, has done
-            // a selection using the select handler or generated an error, in either way we assume
-            // the form has been changed, so we always warn the user when leaving the page.
-            $isChanged = 'false';
-            if ((isset($record['atkerror']) && count($record['atkerror']) > 0) || (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper'])) {
-                $isChanged = 'true';
-            }
-
-            $unloadText = addslashes($this->m_node->text('lose_changes_warning'));
-            $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkunloadhelper.js');
-            $page->register_loadscript("new ATK.UnloadHelper('entryform', '{$unloadText}', {$isChanged});");
-        }
-
         $result = '';
 
         foreach ($data['hide'] as $hidden) {
@@ -608,7 +592,7 @@ class EditHandler extends ViewEditBase
             return '';
         }
 
-        return '<a href="javascript:void(0)" onclick="showTab(\''.$error['tab'].'\'); return false;">'.$this->getTabLabel($node, $error['tab']).'</a>';
+        return '<a href="javascript:void(0)" onclick="ATK.Tabs.showTab(\''.$error['tab'].'\'); return false;">'.$this->getTabLabel($node, $error['tab']).'</a>';
     }
 
     /**

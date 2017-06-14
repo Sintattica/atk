@@ -323,7 +323,7 @@ class ListAttribute extends Attribute
         }
 
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
@@ -439,7 +439,7 @@ class ListAttribute extends Attribute
         }
 
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         $onchange = '';
 
@@ -554,7 +554,7 @@ EOF;
         foreach ($valuearr as $value) {
             $conditions[] = "newvalue=='$value'";
         }
-        $this->addOnChangeHandler('if ('.implode('||', $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
+        $this->addOnChangeHandler('if ('.implode('||', $conditions).") ATK.Tools.hideAttrib('$attrib'); else ATK.Tools.showAttrib('$attrib');");
     }
 
     /**

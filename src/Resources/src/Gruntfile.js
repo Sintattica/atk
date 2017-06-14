@@ -45,15 +45,13 @@ module.exports = function (grunt) {
                     preserveComments: 'some'
                 },
                 files: {
-                    '../public/javascript/atk.min.js': [
+                    '../public/javascript/libs.min.js': [
                         'bower_components/jquery/dist/jquery.js',
                         'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
                         'bower_components/smartmenus/src/jquery.smartmenus.js',
                         'bower_components/smartmenus/src/addons/bootstrap/jquery.smartmenus.bootstrap.js',
-                        'bower_components/moment/min/moment-with-locales.js',
                         'bower_components/select2/dist/js/select2.full.js',
-                        'bower_components/select2/dist/js/i18n/*.js',
-                        'js/atk.js'
+                        'bower_components/select2/dist/js/i18n/*.js'
                     ]
                 }
             }

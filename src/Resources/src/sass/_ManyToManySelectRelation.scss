@@ -1,7 +1,31 @@
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+
+
 .atkmanytomanyselectrelation-selection {
+  list-style-position: outside;
   padding-left: 0px;
   margin-top: 0px;
   margin-bottom: 0px;
+
+  li.dragged {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 2000;
+  }
+
+  li.placeholder {
+    position: relative;
+    /** More li styles **/
+  }
+
+  li.placeholder:before {
+    position: absolute;
+    /** Define arrowhead **/
+  }
+
 }
 
 
@@ -14,3 +38,4 @@ li.atkmanytomanyselectrelation-selected {
   margin-bottom: 3px;
   margin-left: 20px;
 }
+

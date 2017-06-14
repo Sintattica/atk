@@ -144,7 +144,7 @@ class ViewEditBase extends ActionHandler
         $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, 'sectionstate', array('atksectionname' => $name));
 
         // create onclick statement.
-        $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
+        $onClick = " onClick=\"javascript:ATK.Tabs.handleSectionToggle(this,null,'{$url}'); return false;\"";
         $initClass = 'openedSection';
 
         //if the section is not active, we close it on load.
@@ -154,7 +154,7 @@ class ViewEditBase extends ActionHandler
         if ($sectionstate == 'closed') {
             $initClass = 'closedSection';
             $page = $this->getPage();
-            $page->register_scriptcode("addClosedSection('$name');");
+            $page->register_scriptcode("ATK.Tabs.addClosedSection('$name');");
         }
 
         // create the clickable link

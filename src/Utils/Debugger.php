@@ -173,10 +173,9 @@ class Debugger
 
         if ($popup) {
             if ($s_first) {
-                $res .= '<script type="text/javascript" language="JavaScript" src="'.Config::getGlobal('assets_url').'javascript/newwindow.js"></script>';
                 $s_first = false;
             }
-            $res .= '<a href="javascript:NewWindow(\''.$url.'\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">'.$text.'</a>';
+            $res .= '<a href="javascript:ATK.Tools.newWindow(\''.$url.'\', \'atkconsole\', 800, 600, \'yes\', \'yes\')">'.$text.'</a>';
         } else {
             $res .= '<a href="'.$url.'">'.$text.'</a>';
         }
@@ -560,8 +559,7 @@ class Debugger
             ATK.Debug.addContent('.Json::encode($block).');
            </script>';
         } else {
-            $ui = Ui::getInstance();
-            $script = Config::getGlobal('assets_url').'javascript/class.atkdebug.js';
+            $script = Config::getGlobal('assets_url').'javascript/debug.js';
 
             $redirect = $this->renderRedirectLink();
 

@@ -730,7 +730,7 @@ class ManyToOneRelation extends Relation
                 //de app crasht als er geen waarde is ingevuld.
                 $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
                     SessionManager::SESSION_NESTED);
-                $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
+                $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
             }
         }
 
@@ -989,13 +989,13 @@ class ManyToOneRelation extends Relation
 
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $page = Page::getInstance();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
+            $page->register_script(Config::getGlobal('assets_url').'javascript/manytoonerelation.js');
             $sm = SessionManager::getInstance();
 
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $this->m_destInstance->allowed('view')) {
                 $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
                     SessionManager::SESSION_NESTED);
-                $autolink['view'] = " <a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
+                $autolink['view'] = " <a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
             }
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
                 $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
@@ -1076,7 +1076,7 @@ class ManyToOneRelation extends Relation
     public function drawSelect($id, $name, $options = [], $selected = [], $selectOptions = [], $htmlAttributes = [])
     {
         $page = $this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/manytoonerelation.js');
 
         $htmlAttrs = '';
         foreach ($selectOptions as $k => $v) {
@@ -1096,7 +1096,7 @@ class ManyToOneRelation extends Relation
             $result .= '</option>';
         }
         $result .= '</select>';
-        $result .= "<script>ATK.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
@@ -2071,7 +2071,7 @@ EOF;
         $this->createDestination();
 
         $page = $this->m_ownerInstance->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/manytoonerelation.js');
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 

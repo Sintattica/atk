@@ -447,8 +447,6 @@ class SecurityManager
         $page = Page::getInstance();
         $ui = Ui::getInstance();
 
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
-
         $tplvars = [];
         $tplvars['atksessionformvars'] = Tools::makeHiddenPostvars(['atklogout', 'auth_rememberme', 'u2f_response']);
         $tplvars['formurl'] = Config::getGlobal('dispatcher');

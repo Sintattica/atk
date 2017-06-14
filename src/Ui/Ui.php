@@ -110,9 +110,6 @@ class Ui
      */
     public function renderTabs($vars, $module = '')
     {
-        $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tools.js');
-
         return $this->render('tabs.tpl', $vars, $module);
     }
 

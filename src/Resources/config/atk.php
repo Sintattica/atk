@@ -799,14 +799,6 @@ return [
     'onetomany_addlink_position' => 'top',
 
     /*
-     * Warn the user if he/she has changed something in a form
-     * and leaves the page without pressing save or cancel.
-     *
-     * @var bool
-     */
-    'lose_changes_warning' => false,
-
-    /*
      * Optionally set the export file parameters
      */
     'export_delimiter' => ',',

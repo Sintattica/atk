@@ -19,7 +19,7 @@ use Sintattica\Atk\Utils\StringParser;
  * The grid has built-in Ajax support for updating the grid contents. Most of
  * the times updates are triggered by one of the grid components (for example
  * a pagination link). However, the grid also supports external update
- * triggers. For more information see atk/scripts/class.atkdatagrid.js.
+ * triggers. For more information see datagrid.js.
  *
  * @author Peter C. Verhage <peter@achievo.org>
  */

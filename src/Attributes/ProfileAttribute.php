@@ -334,7 +334,7 @@ class ProfileAttribute extends Attribute
     public function display($record, $mode)
     {
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkprofileattribute.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/profileattribute.js');
         $this->_restoreDivStates($page);
 
         $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal('icon_plussquare')."';";
@@ -409,7 +409,7 @@ class ProfileAttribute extends Attribute
                     }
 
                     $result .= sprintf("<span onclick=\"%s\" style=\"cursor: pointer; font-size: 110%%; font-weight: bold;display:block;\"><i class=\"%s\" id=\"img_div_$module\"></i> %s</span>",
-                        "profile_swapProfileDiv('div_$module'); return false;", Config::getGlobal('icon_plussquare'),
+                        "ATK.ProfileAttribute.profile_swapProfileDiv('div_$module'); return false;", Config::getGlobal('icon_plussquare'),
                         Tools::atktext(array("title_$module", $module), $module));
                     $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;padding-left: 15px;\">";
                     $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
@@ -439,7 +439,7 @@ class ProfileAttribute extends Attribute
         foreach ($divstate as $key => $value) {
             $key = substr($key, 2, -2);
             if ($value == 'opened') {
-                $onLoadScript .= "profile_swapProfileDiv('$key');";
+                $onLoadScript .= "ATK.ProfileAttribute.profile_swapProfileDiv('$key');";
             }
         }
         $page->register_loadscript($onLoadScript);
@@ -511,12 +511,12 @@ class ProfileAttribute extends Attribute
         $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal('icon_plussquare')."';";
         $icons .= "var ATK_PROFILE_ICON_CLOSE = '".Config::getGlobal('icon_minussquare')."';";
         $page->register_scriptcode($icons);
-        $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkprofileattribute.js');
+        $page->register_script(Config::getGlobal('assets_url').'javascript/profileattribute.js');
 
         $this->_restoreDivStates($page);
 
         $result = '<div align="right">
-                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
+                  [<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
 
         $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
@@ -526,7 +526,7 @@ class ProfileAttribute extends Attribute
         foreach ($allActions as $section => $modules) {
             $result .= '<div class="profileSection">';
 
-            $result .= "<span onclick=\"profile_swapProfileDiv('div_$section');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\">";
+            $result .= "<span onclick=\"ATK.ProfileAttribute.profile_swapProfileDiv('div_$section');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\">";
             $result .= '  <i class="'.Config::getGlobal('icon_plussquare')."\" id=\"img_div_$section\"></i> ".Tools::atktext(array("title_$section", $section),
                     $section);
             $result .= '</span><br/>';
@@ -536,9 +536,9 @@ class ProfileAttribute extends Attribute
             $result .= "  <input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
 
             $result .= '  <div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
-                  [<a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkAllByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_all',
-                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_none',
-                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('invert_selection',
+                  [<a  style="font-size: 100%" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAllByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_all',
+                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_none',
+                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('invert_selection',
                     'atk').'</a>]';
             $result .= '  </div>';
             $result .= '  <br>';

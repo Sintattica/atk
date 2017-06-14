@@ -2895,9 +2895,9 @@ class Attribute
 
         $script = '';
         foreach ($arr['fields'] as $field) {
-            //Json::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
-            $value = Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html']);
-            $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$field['id'])."').update(".Json::encode($value).");\r\n";
+            $element = str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$field['id']);
+            $value = str_replace("'", "\'", $field['html']);
+            $script .= "jQuery('$element').html('$value');";
         }
 
         return '<script type="text/javascript">'.$script.'</script>';
@@ -2956,7 +2956,7 @@ class Attribute
             array('atkdata' => array('fieldPrefix' => $fieldPrefix, 'mode' => $mode)));
         $url = Json::encode($url);
 
-        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/class.atkattribute.js');
+        $this->getOwnerInstance()->getPage()->register_script(Config::getGlobal('assets_url').'javascript/attribute.js');
         $code = "ATK.Attribute.callDependencies({$url}, el);";
         $this->addOnChangeHandler($code);
     }
