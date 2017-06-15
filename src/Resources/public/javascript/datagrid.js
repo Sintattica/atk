@@ -74,7 +74,7 @@ ATK.DataGrid = {
             var key = 'atkdg_AE_' + grid.name + '_AE_' + k;
             var queryComponent;
 
-            if (jQuery.isArray(v)) {
+            if (jQuery.isArray(v) && v.length > 0) {
                 for (var i = 0; i < v.length; i++) {
                     queryComponent = encodeURIComponent(key) + '=' + encodeURIComponent(v[i]);
                     queryComponents.push(queryComponent);
