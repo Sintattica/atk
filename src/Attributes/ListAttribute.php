@@ -392,6 +392,7 @@ class ListAttribute extends Attribute
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['with-empty-value'] = '';
         if ($isMultiple) {
+            $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
@@ -451,10 +452,13 @@ if (v != null && v.length > 0) {
     var nv = jQuery.grep(v, function(value) {
         return value != '';
     });
-    s.val(nv);s.trigger('change.select2');
-}else if(v === null){
-   s.val('');s.trigger('change.select2');
+    s.val(nv);
+}
+if(s.val() === null){
+   s.val('');
 };
+s.trigger('change.select2');
+console.log(s.val());
 EOF;
         }
 
