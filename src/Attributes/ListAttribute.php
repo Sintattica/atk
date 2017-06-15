@@ -458,7 +458,6 @@ if(s.val() === null){
    s.val('');
 };
 s.trigger('change.select2');
-console.log(s.val());
 EOF;
         }
 
