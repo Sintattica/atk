@@ -134,8 +134,10 @@ ATK.DataGrid = {
         ATK.DataGrid.getElements(name).each(function (index, el) {
             var $el = jQuery(el);
             var name = $el.attr('name');
+            var v;
             if (name !== undefined && name.indexOf(needle) >= 0) {
-                overrides[name] = $el.val();
+                v = $el.val() === null ? [] : $el.val();
+                overrides[name] = v;
             }
         });
 
