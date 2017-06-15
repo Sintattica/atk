@@ -26,8 +26,6 @@ ATK.Tabs = {
             expand = ATK.Tabs.closedSections.indexOf(element.id) >= 0;
         }
 
-        console.log(element.id);
-
         $$('tr', 'div.atkSection', 'div.section-item').select(function (tr) {
             return $(tr).hasClassName(element.id);
         }).each(function (tr) {
