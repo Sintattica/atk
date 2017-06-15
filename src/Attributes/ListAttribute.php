@@ -392,6 +392,7 @@ class ListAttribute extends Attribute
         $selectOptions['minimum-results-for-search'] = 10;
         $selectOptions['with-empty-value'] = '';
         if ($isMultiple) {
+            $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = Tools::atktext('search_all');
         }
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);

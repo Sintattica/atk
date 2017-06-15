@@ -9632,8 +9632,9 @@ span.select2-container--bootstrap {
 
 .select2-container--bootstrap .select2-selection__clear {
   float: none;
-  margin-left: 0;
-  margin-right: 5px; }
+  display: block;
+  position: absolute;
+  right: 0; }
 
 .select2-selection__rendered {
   margin-right: -2px; }
