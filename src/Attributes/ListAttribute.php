@@ -452,10 +452,12 @@ if (v != null && v.length > 0) {
     var nv = jQuery.grep(v, function(value) {
         return value != '';
     });
-    s.val(nv);s.trigger('change.select2');
-}else if(v === null){
-   s.val('');s.trigger('change.select2');
+    s.val(nv);
+}
+if(s.val() === null){
+   s.val('');
 };
+s.trigger('change.select2');
 EOF;
         }
 
