@@ -202,6 +202,7 @@ return [
     'language_nl' => 'Dutch',
     'language_pl' => 'Polish',
     'language_es' => 'Spanish',
+    'language_zh' => 'Chinese',
     'link_add' => 'Add',
     'list_null_value' => 'None',
     'list_null_value_obligatory' => '(Select...)',
