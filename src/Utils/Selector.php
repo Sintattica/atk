@@ -255,7 +255,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Include only the following list of attributes.
      *
-     * @param array $includes list of includes
+     * @param array|string $includes list of includes
      *
      * @return Selector
      */
@@ -277,7 +277,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Exclude the following list of attributes.
      *
-     * @param array $excludes list of excludes
+     * @param array|string $excludes list of excludes
      *
      * @return Selector
      */
