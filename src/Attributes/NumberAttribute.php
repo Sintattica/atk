@@ -539,8 +539,8 @@ class NumberAttribute extends Attribute
         if($size > 0){
             $result .= ' size="'.$size.'"';
         }
-        if($this->m_maxsize > 0){
-            $result .= ' maxlength="'.$this->m_maxsize.'"';
+        if($maxsize > 0){
+            $result .= ' maxlength="'.$maxsize.'"';
         }
         if($onchange){
             $result .= ' '.$onchange;
