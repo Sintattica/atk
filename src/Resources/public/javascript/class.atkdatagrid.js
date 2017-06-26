@@ -7,40 +7,43 @@ ATK.DataGrid = {
     /**
      * Registers a data grid.
      */
-    register: function(name, baseUrl, embedded) {
-        this.grids[name] = {name: name, baseUrl: baseUrl, embedded: embedded,
-            locked: false, updateCompletedListeners: []};
+    register: function (name, baseUrl, embedded) {
+        this.grids.set(name, {
+            name: name, baseUrl: baseUrl, embedded: embedded,
+            locked: false, updateCompletedListeners: []
+        });
+        ATK.DataGrid.updateScroller(name);
     },
     /**
      * Add update completed listener.
      */
-    addUpdateCompletedListener: function(name, listener) {
+    addUpdateCompletedListener: function (name, listener) {
         this.get(name).updateCompletedListeners.push(listener);
     },
     /**
      * Returns the information for the grid with the given name.
      */
-    get: function(name) {
-        return this.grids[name];
+    get: function (name) {
+        return this.grids.get(name);
     },
     /**
      * Returns the container for the grid with the given name.
      */
-    getContainer: function(name) {
+    getContainer: function (name) {
         return $(name + '_container');
     },
     /**
-     * Returns the form for the grid with the given name.<b> 
+     * Returns the form for the grid with the given name.<b>
      */
-    getForm: function(name) {
+    getForm: function (name) {
         return this.getContainer(name).up('form');
     },
     /**
      * Returns the grid form elements.
      */
-    getElements: function(name) {
+    getElements: function (name) {
         return $A(this.getContainer(name).getElementsByTagName('*')).inject([],
-            function(elements, child) {
+            function (elements, child) {
                 if (Form.Element.Serializers[child.tagName.toLowerCase()])
                     elements.push(Element.extend(child));
                 return elements;
@@ -48,12 +51,12 @@ ATK.DataGrid = {
         );
     },
     /**
-     * Updates/refreshes the data grid with the given name. 
+     * Updates/refreshes the data grid with the given name.
      *
-     * All current parameter values will be applied, except the ones overriden 
+     * All current parameter values will be applied, except the ones overriden
      * by the overrides.
      */
-    update: function(name, plainOverrides, jsOverrides, jsCallback) {
+    update: function (name, plainOverrides, jsOverrides, jsCallback) {
         var grid = this.get(name);
 
         // prevent multiple updates to the same grid at once
@@ -72,17 +75,17 @@ ATK.DataGrid = {
 
         // convert overrides to query components
         var queryComponents = [];
-        $H(overrides).each(function(item) {
+        $H(overrides).each(function (item) {
 
             var key = 'atkdg_AE_' + grid.name + '_AE_' + item.key;
             var queryComponent;
 
-            if(Object.isArray(item.value)){
+            if (Object.isArray(item.value)) {
                 for (var i = 0; i < item.value.length; i++) {
                     queryComponent = encodeURIComponent(key) + '=' + encodeURIComponent(item.value[i]);
                     queryComponents.push(queryComponent);
                 }
-            }else {
+            } else {
                 queryComponent = encodeURIComponent(key) + '=' + encodeURIComponent(item.value);
                 queryComponents.push(queryComponent);
             }
@@ -104,39 +107,42 @@ ATK.DataGrid = {
         queryComponents.push('atkdatagrid=' + encodeURIComponent(name));
 
 
-
         var params = queryComponents.join('&');
-        var options = {parameters: params, evalScripts: true,
-            onComplete: this.updateCompleted.bind(this, name)};
+        var options = {
+            parameters: params, evalScripts: true,
+            onComplete: this.updateCompleted.bind(this, name)
+        };
         new Ajax.Updater(this.getContainer(name), grid.baseUrl, options);
     },
     /**
      * After update of the grid has successfully completed.
      */
-    updateCompleted: function(name) {
+    updateCompleted: function (name) {
         this.getContainer(name).setOpacity(1.0);
 
-        this.get(name).updateCompletedListeners.each(function(listener) {
+        this.get(name).updateCompletedListeners.each(function (listener) {
             listener.defer(name);
         });
 
         this.get(name).locked = false;
+
+        ATK.DataGrid.updateScroller(name);
     },
     /**
-     * Extracts fields from the datagrid form with the given needle in 
+     * Extracts fields from the datagrid form with the given needle in
      * the name and returns them as overrides for use in the update method.
      *
-     * It would be better to be able to check for a certain prefix, 
+     * It would be better to be able to check for a certain prefix,
      * unfortunately not all atksearch* / atkcolcmd fields necessarily
-     * have the needle at the start of the name. So for backwards 
+     * have the needle at the start of the name. So for backwards
      * compatibility we search the entire string for the needle. Luckily
      * the strings we are searching for are pretty unique within a form.
      */
-    extractOverrides: function(name, needle) {
+    extractOverrides: function (name, needle) {
         var overrides = {};
 
         var elements = this.getElements(name);
-        elements.each(function(el) {
+        elements.each(function (el) {
             if (el.name.indexOf(needle) >= 0) {
                 overrides[el.name] = $F(el);
             }
@@ -148,20 +154,20 @@ ATK.DataGrid = {
      * Extracts the search fields from the datagrid form and returns them
      * as overrides for use in the update method.
      */
-    extractSearchOverrides: function(name) {
+    extractSearchOverrides: function (name) {
         return ATK.DataGrid.extractOverrides(name, 'atksearch');
     },
     /**
      * Extracts the extended sort fields from the datagrid form and returns them
      * as overrides for use in the update method.
      */
-    extractExtendedSortOverrides: function(name) {
+    extractExtendedSortOverrides: function (name) {
         return ATK.DataGrid.extractOverrides(name, 'atkcolcmd');
     },
     /**
      * Save a datagrid which is in edit mode.
      */
-    save: function(name, url) {
+    save: function (name, url) {
         var prefix = 'atkdatagriddata_AE_';
         var elements = ATK.DataGrid.getElements(name);
         var queryComponents = [];
@@ -174,20 +180,53 @@ ATK.DataGrid = {
         }
 
         var params = queryComponents.join('&');
-        var success = function() {
+        var success = function () {
             ATK.DataGrid.update(name, {
-                atkgridedit:
-                    0},
-            {}, null);
+                    atkgridedit: 0
+                },
+                {}, null);
         };
 
         new Ajax.Request(url, {parameters: params, onSuccess: success});
+    },
+    updateScroller: function (name) {
+        var container = jQuery(ATK.DataGrid.getContainer(name));
+        var recordListScroller = container.find('.recordListScroller');
+        if (recordListScroller.length) {
+            var recordListContainer = container.find('.recordListContainer');
+            var scroller = recordListScroller.find('.scroller');
+            var scrollWidth = recordListContainer.get(0).scrollWidth;
+            var clientWidth = recordListContainer.get(0).clientWidth;
+            var datagridList = container.find('.datagrid-list');
+
+            scroller.width(scrollWidth);
+            if (scrollWidth <= clientWidth) {
+                recordListScroller.hide();
+                datagridList.css('margin-top', 0);
+            } else {
+                recordListScroller.show();
+                datagridList.css('margin-top', '-15px');
+
+                recordListScroller.scroll(function () {
+                    recordListContainer.scrollLeft(recordListScroller.scrollLeft());
+                });
+                recordListContainer.scroll(function () {
+                    recordListScroller.scrollLeft(recordListContainer.scrollLeft());
+                });
+            }
+        }
+    },
+    updateAllScrollers: function () {
+        ATK.DataGrid.grids.each(function (pair) {
+            ATK.DataGrid.updateScroller(pair.key);
+        });
     }
 };
 
+window.addEventListener('resize', ATK.DataGrid.updateAllScrollers);
 
-jQuery(function($) {
-    $(document).on('keypress', '.atkdatagrid-container .recordListSearch input[type="text"]', function(e) {
+jQuery(function ($) {
+    $(document).on('keypress', '.atkdatagrid-container .recordListSearch input[type="text"]', function (e) {
         var bt;
         if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
             e.preventDefault();
