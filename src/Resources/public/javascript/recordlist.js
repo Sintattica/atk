@@ -82,7 +82,6 @@ ATK.RL = {
         }
         return false;
     },
-
     highlightRow: function (row, color) {
         if (typeof (row.style) !== 'undefined') {
             row.oldcolor = row.style.backgroundColor;
@@ -97,5 +96,5 @@ ATK.RL = {
         if (table.listener && table.listener.setRow(rownum, row.oldcolor)) {
             row.oldcolor = row.style.backgroundColor;
         }
-    },
+    }
 };
