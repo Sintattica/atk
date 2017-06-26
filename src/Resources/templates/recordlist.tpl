@@ -1,5 +1,13 @@
 {atkconfig var="recordlist_onclick" smartyvar="recordlist_onclick"}
+{atkconfig var="recordlist_top_scroller" smartyvar="recordlist_top_scroller"}
 {if isset($formstart)}{$formstart}{/if}
+
+
+{if $recordlist_top_scroller == true}
+    <div class="recordListScroller" style="height:30px;line-height:0;margin:0;padding:0;display:none;overflow-x:auto;overflow-y:hidden;">
+        <div class="scroller" style="height:30px;line-height:0;margin:0;padding:0;"></div>
+    </div>
+{/if}
 
 <div class="recordListContainer">
     {if $mra!="" && $mraposition == 'top'}

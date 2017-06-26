@@ -12,6 +12,7 @@ ATK.DataGrid = {
             name: name, baseUrl: baseUrl, embedded: embedded,
             locked: false, updateCompletedListeners: []
         };
+        ATK.DataGrid.updateScroller(name);
     },
     /**
      * Add update completed listener.
@@ -117,6 +118,7 @@ ATK.DataGrid = {
         });
 
         ATK.DataGrid.get(name).locked = false;
+        ATK.DataGrid.updateScroller(name);
     },
     /**
      * Extracts fields from the datagrid form with the given needle in
@@ -180,9 +182,42 @@ ATK.DataGrid = {
             data: queryComponents.join('&'),
             success: ATK.DataGrid.update(name, {atkgridedit: 0}, {}, null)
         });
+    },
+    updateScroller: function (name) {
+        var container = jQuery(ATK.DataGrid.getContainer(name));
+        var recordListScroller = container.find('.recordListScroller');
+        if (recordListScroller.length) {
+            var recordListContainer = container.find('.recordListContainer');
+            var scroller = recordListScroller.find('.scroller');
+            var scrollWidth = recordListContainer.get(0).scrollWidth;
+            var clientWidth = recordListContainer.get(0).clientWidth;
+            var datagridList = container.find('.datagrid-list');
+
+            scroller.width(scrollWidth);
+            if (scrollWidth <= clientWidth) {
+                recordListScroller.hide();
+                datagridList.css('margin-top', 0);
+            } else {
+                recordListScroller.show();
+                datagridList.css('margin-top', '-15px');
+
+                recordListScroller.scroll(function () {
+                    recordListContainer.scrollLeft(recordListScroller.scrollLeft());
+                });
+                recordListContainer.scroll(function () {
+                    recordListScroller.scrollLeft(recordListContainer.scrollLeft());
+                });
+            }
+        }
+    },
+    updateAllScrollers: function () {
+        jQuery.each(ATK.DataGrid.grids, function(key){
+            ATK.DataGrid.updateScroller(key);
+        });
     }
 };
 
+window.addEventListener('resize', ATK.DataGrid.updateAllScrollers);
 
 jQuery(function () {
     jQuery(document).on('keypress', '.atkdatagrid-container .recordListSearch input[type="text"]', function (e) {
