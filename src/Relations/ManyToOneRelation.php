@@ -1114,12 +1114,27 @@ class ManyToOneRelation extends Relation
         $selectOptions['enable-select2'] = true;
         $selectOptions['dropdown-auto-width'] = true;
         $selectOptions['with-empty-value'] = '';
+        $selectOptions['placeholder'] = $options[''];
+        $selectOptions['allow-clear'] = true;
 
         $style = '';
         $type = $extended ? 'extended_search' : 'search';
 
         if ($isMultiple) {
             $htmlAttributes['multiple'] = 'multiple';
+            $onchange .= <<<EOF
+var s=jQuery(this), v = s.val();
+if (v != null && v.length > 0) {
+    var nv = jQuery.grep(v, function(value) {
+        return value != '';
+    });
+    s.val(nv);
+}
+if(s.val() === null){
+   s.val('');
+};
+s.trigger('change.select2');
+EOF;
         }
 
         if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
@@ -1155,21 +1170,6 @@ class ManyToOneRelation extends Relation
                 unset($selValues[0]);
             }
 
-            // if is multiple, replace null selection with empty string
-            if($isMultiple) {
-                $onchange .= <<<EOF
-var s=jQuery(this), v = s.val();
-if (v != null && v.length > 0) {
-    var nv = jQuery.grep(v, function(value) {
-        return value != '';
-    });
-    s.val(nv);s.trigger('change.select2');
-}else if(v === null){
-   s.val('');s.trigger('change.select2');
-};
-EOF;
-            }
-
             if (!is_null($grid) && !$extended && $this->m_autoSearch) {
                 $onchange .= $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
             }
@@ -1196,12 +1196,16 @@ EOF;
                 $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
             }
 
-
             if ($useautocompletion) {
                 $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
                 }
+
+                if($isMultiple && $selValues[0] == ''){
+                   unset($selValues[0]);
+                }
+
                 foreach ($selValues as $selValue) {
                     $options[$selValue] = $selValue;
                 }
@@ -1211,26 +1215,7 @@ EOF;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
-                $selectOptions['placeholder'] = $options[''];
-
-                if(!$this->isMultipleSearch($extended)) {
-                    $selectOptions['allow-clear'] = true;
-                }
                 $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
-
-                if($isMultiple) {
-                    $onchange .= <<<EOF
-var s=jQuery(this), v = s.val();
-if (v != null && v.length > 0) {
-    var nv = jQuery.grep(v, function(value) {
-        return value != '';
-    });
-    s.val(nv);s.trigger('change.select2');
-}else if(v === null){
-   s.val('');s.trigger('change.select2');
-};
-EOF;
-                }
 
                 if($onchange != '') {
                     $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(el){'.$onchange.'});');
