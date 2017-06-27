@@ -222,7 +222,6 @@ ATK.DataGrid = {
         }
     },
     updateAllScrollers: function () {
-        console.log(Date.now());
         ATK.DataGrid.grids.each(function (pair) {
             ATK.DataGrid.updateScroller(pair.key);
         });
