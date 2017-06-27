@@ -190,6 +190,7 @@ ATK.DataGrid = {
         new Ajax.Request(url, {parameters: params, onSuccess: success});
     },
     updateScroller: function (name) {
+
         var container = jQuery(ATK.DataGrid.getContainer(name));
         var recordListScroller = container.find('.recordListScroller');
         if (recordListScroller.length) {
@@ -207,23 +208,28 @@ ATK.DataGrid = {
                 recordListScroller.show();
                 datagridList.css('margin-top', '-15px');
 
+                var scrollTimeoutId;
                 recordListScroller.scroll(function () {
-                    recordListContainer.scrollLeft(recordListScroller.scrollLeft());
+                    recordListContainer.scrollLeft(recordListScroller.scrollLeft())
                 });
                 recordListContainer.scroll(function () {
-                    recordListScroller.scrollLeft(recordListContainer.scrollLeft());
+                    clearTimeout(scrollTimeoutId);
+                    scrollTimeoutId = setTimeout(function () {
+                        recordListScroller.scrollLeft(recordListContainer.scrollLeft());
+                    }, 50);
                 });
             }
         }
     },
     updateAllScrollers: function () {
+        console.log(Date.now());
         ATK.DataGrid.grids.each(function (pair) {
             ATK.DataGrid.updateScroller(pair.key);
         });
     }
 };
 
-window.addEventListener('resize', ATK.DataGrid.updateAllScrollers);
+jQuery(window).on('resize', ATK.Tools.debounce(ATK.DataGrid.updateAllScrollers, 100));
 
 jQuery(function ($) {
     $(document).on('keypress', '.atkdatagrid-container .recordListSearch input[type="text"]', function (e) {
