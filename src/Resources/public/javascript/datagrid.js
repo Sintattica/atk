@@ -12,6 +12,7 @@ ATK.DataGrid = {
             name: name, baseUrl: baseUrl, embedded: embedded,
             locked: false, updateCompletedListeners: []
         };
+        ATK.DataGrid.updateScroller(name);
     },
     /**
      * Add update completed listener.
@@ -74,7 +75,7 @@ ATK.DataGrid = {
             var key = 'atkdg_AE_' + grid.name + '_AE_' + k;
             var queryComponent;
 
-            if (jQuery.isArray(v)) {
+            if (jQuery.isArray(v) && v.length > 0) {
                 for (var i = 0; i < v.length; i++) {
                     queryComponent = encodeURIComponent(key) + '=' + encodeURIComponent(v[i]);
                     queryComponents.push(queryComponent);
@@ -117,6 +118,7 @@ ATK.DataGrid = {
         });
 
         ATK.DataGrid.get(name).locked = false;
+        ATK.DataGrid.updateScroller(name);
     },
     /**
      * Extracts fields from the datagrid form with the given needle in
@@ -134,8 +136,10 @@ ATK.DataGrid = {
         ATK.DataGrid.getElements(name).each(function (index, el) {
             var $el = jQuery(el);
             var name = $el.attr('name');
+            var v;
             if (name !== undefined && name.indexOf(needle) >= 0) {
-                overrides[name] = $el.val();
+                v = $el.val() === null ? [] : $el.val();
+                overrides[name] = v;
             }
         });
 
@@ -178,9 +182,46 @@ ATK.DataGrid = {
             data: queryComponents.join('&'),
             success: ATK.DataGrid.update(name, {atkgridedit: 0}, {}, null)
         });
+    },
+    updateScroller: function (name) {
+        var container = jQuery(ATK.DataGrid.getContainer(name));
+        var recordListScroller = container.find('.recordListScroller');
+        if (recordListScroller.length) {
+            var recordListContainer = container.find('.recordListContainer');
+            var scroller = recordListScroller.find('.scroller');
+            var scrollWidth = recordListContainer.get(0).scrollWidth;
+            var clientWidth = recordListContainer.get(0).clientWidth;
+            var datagridList = container.find('.datagrid-list');
+
+            scroller.width(scrollWidth);
+            if (scrollWidth <= clientWidth) {
+                recordListScroller.hide();
+                datagridList.css('margin-top', 0);
+            } else {
+                recordListScroller.show();
+                datagridList.css('margin-top', '-15px');
+
+                var scrollTimeoutId;
+                recordListScroller.scroll(function () {
+                    recordListContainer.scrollLeft(recordListScroller.scrollLeft())
+                });
+                recordListContainer.scroll(function () {
+                    clearTimeout(scrollTimeoutId);
+                    scrollTimeoutId = setTimeout(function () {
+                        recordListScroller.scrollLeft(recordListContainer.scrollLeft());
+                    }, 50);
+                });
+            }
+        }
+    },
+    updateAllScrollers: function () {
+        jQuery.each(ATK.DataGrid.grids, function(key){
+            ATK.DataGrid.updateScroller(key);
+        });
     }
 };
 
+jQuery(window).on('resize', ATK.Tools.debounce(ATK.DataGrid.updateAllScrollers, 100));
 
 jQuery(function () {
     jQuery(document).on('keypress', '.atkdatagrid-container .recordListSearch input[type="text"]', function (e) {

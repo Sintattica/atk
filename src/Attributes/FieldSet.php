@@ -126,6 +126,7 @@ class FieldSet extends Attribute
      */
     protected function renderFieldSet($type, $record, $mode, $fieldprefix = '')
     {
+
         $replacements = [];
 
         $fields = array_unique($this->getParser()->getFields());
@@ -213,7 +214,7 @@ class FieldSet extends Attribute
     /**
      * Display fieldset.
      *
-     * @param string $record
+     * @param array $record
      * @param string $mode
      *
      * @return string
@@ -221,5 +222,16 @@ class FieldSet extends Attribute
     public function display($record, $mode)
     {
         return $this->renderFieldSet('display', $record, $mode);
+    }
+
+    public function hide($record, $fieldprefix, $mode)
+    {
+        $fields = array_unique($this->getParser()->getFields());
+        $result = '';
+        foreach ($fields as $attrName) {
+            $attr = $this->getOwnerInstance()->getAttribute($attrName);
+            $result .= $attr->hide($record, $fieldprefix, $mode);
+        }
+        return $result;
     }
 }

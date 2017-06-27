@@ -20,10 +20,16 @@ span.select2-container--bootstrap {
   display: inline-block;
 }
 
+.select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
+  padding-right: 20px;
+}
+
+
 .select2-container--bootstrap .select2-selection__clear {
-  float: none;
-  margin-left: 0;
-  margin-right: 5px;
+  float: right;
+  display: block;
+  position: absolute;
+  right: 0;
 }
 
 .select2-selection__rendered {

@@ -210,6 +210,7 @@ return [
     'language_nl' => 'Olandese',
     'language_pl' => 'Polacco',
     'language_es' => 'Spagnolo',
+    'language_zh' => 'Cinese',
     'link_add' => 'Aggiungi',
     'list_null_value' => 'Nessuno',
     'list_null_value_obligatory' => '(Seleziona...)',
