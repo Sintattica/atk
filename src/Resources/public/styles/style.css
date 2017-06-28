@@ -9659,7 +9659,7 @@ span.select-inline > span.select2-container--bootstrap {
     text-decoration: none; }
   .panel-body #action-buttons {
     display: none !important; }
-  .panel-body a[href]:after {
+  a[href]:after {
     content: none !important; } }
 
 .ExportHandler .attributes-group {
