@@ -9651,6 +9651,8 @@ span.select-inline > span.select2-container--bootstrap {
     display: none !important; }
   .panel-body .recordListThFirst, .panel-body .recordListTdFirst {
     display: none !important; }
+  .panel-body .recordListSearch:first-of-type {
+    display: none !important; }
   .panel-body .recordList {
     margin: 0; }
   .panel-body .recordListTh a {
