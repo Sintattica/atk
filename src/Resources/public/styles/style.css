@@ -9658,7 +9658,9 @@ span.select-inline > span.select2-container--bootstrap {
   .panel-body .recordListTh a {
     text-decoration: none; }
   .panel-body #action-buttons {
-    display: none !important; } }
+    display: none !important; }
+  .panel-body a[href]:after {
+    content: none !important; } }
 
 .ExportHandler .attributes-group {
   border: 1px solid #d8d8d8;
