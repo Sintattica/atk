@@ -25,11 +25,11 @@ Calendar._MN = new Array
 // tooltips
 Calendar._TT = {};
 Calendar._TT["TOGGLE"] = "Toggle startdag van de week";
-Calendar._TT["PREV_YEAR"] = "Vorig jaar (indrukken voor menu)";
-Calendar._TT["PREV_MONTH"] = "Vorige month (indrukken voor menu)";
+Calendar._TT["PREV_YEAR"] = "Vorig jaar";
+Calendar._TT["PREV_MONTH"] = "Vorige month";
 Calendar._TT["GO_TODAY"] = "Naar Vandaag";
-Calendar._TT["NEXT_MONTH"] = "Volgende Maand (indrukken voor menu)";
-Calendar._TT["NEXT_YEAR"] = "Volgend jaar (indrukken voor menu)";
+Calendar._TT["NEXT_MONTH"] = "Volgende Maand";
+Calendar._TT["NEXT_YEAR"] = "Volgend jaar";
 Calendar._TT["SEL_DATE"] = "Selecteer datum";
 Calendar._TT["DRAG_TO_MOVE"] = "Sleep om te verplaatsen";
 Calendar._TT["PART_TODAY"] = " (vandaag)";
