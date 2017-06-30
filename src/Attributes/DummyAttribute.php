@@ -80,7 +80,14 @@ class DummyAttribute extends Attribute
             $result .= ' style="'.$style.'"';
         }
         $result .= '>';
-        $result .= '<span>'.$this->m_text.'</span></div>';
+
+        if (in_array($mode, ['csv', 'plain', 'list'])) {
+            return $this->m_text;
+        }
+
+        $result .= '<span class="form-control-static">'.$this->m_text.'</span>';
+
+        $result .= '</div>';
 
         return $result;
     }
