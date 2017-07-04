@@ -26,11 +26,11 @@ Calendar._MN = new Array
 // tooltips
 Calendar._TT = {};
 Calendar._TT["TOGGLE"] = "Auswahl Wochentag";
-Calendar._TT["PREV_YEAR"] = "Letztes Jahr (halten Sie für Menu)";
-Calendar._TT["PREV_MONTH"] = "Letzter Monat (halten Sie für Menu)";
+Calendar._TT["PREV_YEAR"] = "Letztes Jahr";
+Calendar._TT["PREV_MONTH"] = "Letzter Monat";
 Calendar._TT["GO_TODAY"] = "Zu heute";
-Calendar._TT["NEXT_MONTH"] = "Folgendes Monat (halten Sie für Menu)";
-Calendar._TT["NEXT_YEAR"] = "Folgendes Jahr (halten Sie für Menu)";
+Calendar._TT["NEXT_MONTH"] = "Folgendes Monat";
+Calendar._TT["NEXT_YEAR"] = "Folgendes Jahr";
 Calendar._TT["SEL_DATE"] = "Auswahl Datum";
 Calendar._TT["DRAG_TO_MOVE"] = "Gegenkraft zum Bewegen";
 Calendar._TT["PART_TODAY"] = " (heute)";
