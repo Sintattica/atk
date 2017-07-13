@@ -3196,8 +3196,12 @@ class Node
             } else {
                 // default descriptor.. (default is first attribute of a node)
                 $keys = array_keys($this->m_attribList);
+                $ret = $record[$keys[0]];
+                if(is_array($ret)){
+                    return '';
+                }
 
-                return $record[$keys[0]];
+                return $ret;
             }
         }
     }
