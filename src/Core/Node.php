@@ -1413,7 +1413,7 @@ class Node
         }
         foreach ($actionList as $action) {
             $new_index = $index;
-            $list = $this->m_tabList[$action];
+            $list = &$this->m_tabList[$action];
             if ($new_index < 0) {
                 $new_index = 0;
             }
