@@ -1325,7 +1325,14 @@ class Attribute
             return $ret;
         }
 
-        return '<span class="form-control-static">'.$ret.'</span>';
+        $result = '<span class="form-control-static">'.$ret.'</span>';
+
+        $helpText = $this->getHelp();
+        if($helpText !== ''){
+            $result .= '<p class="help-block">'.htmlspecialchars($helpText).'</p>';
+        }
+
+        return $result;
     }
 
     /**
@@ -1380,16 +1387,23 @@ class Attribute
 
         $method = $this->m_name.'_edit';
         if ($this->getEditCallback() != null) {
-            return call_user_func($this->getEditCallback(), $defaults, $fieldprefix, $mode, $this);
+            $result = call_user_func($this->getEditCallback(), $defaults, $fieldprefix, $mode, $this);
         } else {
             if ($this->m_name != 'action' && method_exists($this->m_ownerInstance, $method)) {
                 // we can't support the override for attributes named action, because of a conflict with
                 // a possible edit action override (in both cases the method is called action_edit)
-                return $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode);
+                $result = $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode);
             } else {
-                return $this->edit($defaults, $fieldprefix, $mode).(strlen($this->m_postfixlabel) > 0 ? '&nbsp;'.$this->m_postfixlabel : '');
+                $result = $this->edit($defaults, $fieldprefix, $mode).(strlen($this->m_postfixlabel) > 0 ? '&nbsp;'.$this->m_postfixlabel : '');
             }
         }
+
+        $helpText = $this->getHelp();
+        if($helpText !== ''){
+            $result .= '<p class="help-block">'.htmlspecialchars($helpText).'</p>';
+        }
+
+        return $result;
     }
 
     public function isReadonlyEdit($mode)

@@ -10,28 +10,28 @@ Calendar._DN = new Array
  "Dimanche");
 Calendar._MN = new Array
 ("Janvier",
- "FÈvrier",
+ "F√©vrier",
  "Mars",
  "Avril",
  "Mai",
  "Juin",
  "Juillet",
- "Ao˚t",
+ "Ao√ªt",
  "Septembre",
  "Octobre",
  "Novembre",
- "DÈcembre");
+ "D√©cembre");
 
 // tooltips
 Calendar._TT = {};
 Calendar._TT["TOGGLE"] = "Changer le premier jour de la semaine";
-Calendar._TT["PREV_YEAR"] = "AnnÈe prÈc. (maintenir pour menu)";
-Calendar._TT["PREV_MONTH"] = "Mois prÈc. (maintenir pour menu)";
+Calendar._TT["PREV_YEAR"] = "Ann√©e pr√©c√©dent";
+Calendar._TT["PREV_MONTH"] = "Mois pr√©c√©dent";
 Calendar._TT["GO_TODAY"] = "Atteindre date du jour";
-Calendar._TT["NEXT_MONTH"] = "Mois suiv. (maintenir pour menu)";
-Calendar._TT["NEXT_YEAR"] = "AnnÈe suiv. (maintenir pour menu)";
+Calendar._TT["NEXT_MONTH"] = "Mois suivant";
+Calendar._TT["NEXT_YEAR"] = "Ann√©e suivant";
 Calendar._TT["SEL_DATE"] = "Choisir une date";
-Calendar._TT["DRAG_TO_MOVE"] = "DÈplacer";
+Calendar._TT["DRAG_TO_MOVE"] = "D√©placer";
 Calendar._TT["PART_TODAY"] = " (Aujourd'hui)";
 Calendar._TT["MON_FIRST"] = "Commencer par lundi";
 Calendar._TT["SUN_FIRST"] = "Commencer par dimanche";

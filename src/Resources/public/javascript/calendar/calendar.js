@@ -37,9 +37,7 @@ Calendar = function (mondayFirst, dateStr, onSelected, onClose) {
 	this.element = null;
 	this.tbody = null;
 	this.firstdayname = null;
-	// Combo boxes
-	this.monthsCombo = null;
-	this.yearsCombo = null;
+
 	this.hilitedMonth = null;
 	this.activeMonth = null;
 	this.hilitedYear = null;
@@ -221,67 +219,6 @@ Calendar.findYear = function(el) {
 	return null;
 };
 
-Calendar.showMonthsCombo = function () {
-	var cal = Calendar._C;
-	if (!cal) {
-		return false;
-	}
-	var cal = cal;
-	var cd = cal.activeDiv;
-	var mc = cal.monthsCombo;
-	if (cal.hilitedMonth) {
-		Calendar.removeClass(cal.hilitedMonth, "hilite");
-	}
-	if (cal.activeMonth) {
-		Calendar.removeClass(cal.activeMonth, "active");
-	}
-	var mon = cal.monthsCombo.getElementsByTagName("div")[cal.date.getMonth()];
-	Calendar.addClass(mon, "active");
-	cal.activeMonth = mon;
-	mc.style.left = cd.offsetLeft + "px";
-	mc.style.top = (cd.offsetTop + cd.offsetHeight) + "px";
-	mc.style.display = "block";
-	
-	return true;
-};
-
-Calendar.showYearsCombo = function (fwd) {
-	var cal = Calendar._C;
-	if (!cal) {
-		return false;
-	}
-	var cal = cal;
-	var cd = cal.activeDiv;
-	var yc = cal.yearsCombo;
-	if (cal.hilitedYear) {
-		Calendar.removeClass(cal.hilitedYear, "hilite");
-	}
-	if (cal.activeYear) {
-		Calendar.removeClass(cal.activeYear, "active");
-	}
-	cal.activeYear = null;
-	var Y = cal.date.getFullYear() + (fwd ? 1 : -1);
-	var yr = yc.firstChild;
-	var show = false;
-	for (var i = 12; i > 0; --i) {
-		if (Y >= cal.minYear && Y <= cal.maxYear) {
-			yr.firstChild.data = Y;
-			yr.year = Y;
-			yr.style.display = "block";
-			show = true;
-		} else {
-			yr.style.display = "none";
-		}
-		yr = yr.nextSibling;
-		Y += fwd ? 2 : -2;
-	}
-	if (show) {
-		yc.style.left = cd.offsetLeft + "px";
-		yc.style.top = (cd.offsetTop + cd.offsetHeight) + "px";
-		yc.style.display = "block";
-	}
-	return true;
-};
 
 // event handlers
 
@@ -324,7 +261,6 @@ Calendar.tableMouseUp = function(ev) {
 		removeEvent(document, "mouseup", tableMouseUp);
 		removeEvent(document, "mouseover", tableMouseOver);
 		removeEvent(document, "mousemove", tableMouseOver);
-		cal._hideCombos();
 		stopEvent(ev);
 		_C = null;
 	}
@@ -435,13 +371,7 @@ Calendar.dayMouseDown = function(ev) {
 		cal._dragStart(ev);
 	}
 	Calendar.stopEvent(ev);
-	if (el.navtype == -1 || el.navtype == 1) {
-		cal.timeout = setTimeout("Calendar.showMonthsCombo()", 250);
-	} else if (el.navtype == -2 || el.navtype == 2) {
-		cal.timeout = setTimeout((el.navtype > 0) ? "Calendar.showYearsCombo(true)" : "Calendar.showYearsCombo(false)", 250);
-	} else {
-		cal.timeout = null;
-	}
+	cal.timeout = null;
 	return true;
 };
 
@@ -717,27 +647,6 @@ Calendar.prototype.create = function (_par) {
 		cell.style.cursor = "move";
 	}
 	this.tooltips = cell;
-
-	div = Calendar.createElement("div", this.element);
-	this.monthsCombo = div;
-	div.className = "combo";
-	for (i = 0; i < Calendar._MN.length; ++i) {
-		var mn = Calendar.createElement("div");
-		mn.className = "label";
-		mn.month = i;
-		mn.appendChild(document.createTextNode(Calendar._MN3[i]));
-		div.appendChild(mn);
-	}
-
-	div = Calendar.createElement("div", this.element);
-	this.yearsCombo = div;
-	div.className = "combo";
-	for (i = 12; i > 0; --i) {
-		var yr = Calendar.createElement("div");
-		yr.className = "label";
-		yr.appendChild(document.createTextNode(""));
-		div.appendChild(yr);
-	}
 
 	this._init(this.mondayFirst, this.date);
 	parent.appendChild(this.element);
@@ -1196,12 +1105,6 @@ Calendar.prototype._displayWeekdays = function () {
 		cell.firstChild.data = Calendar._DN3[i + 1 - MON];
 		cell = cell.nextSibling;
 	}
-};
-
-/** Internal function.  Hides all combo boxes that might be displayed. */
-Calendar.prototype._hideCombos = function () {
-	this.monthsCombo.style.display = "none";
-	this.yearsCombo.style.display = "none";
 };
 
 /** Internal function.  Starts dragging the element. */

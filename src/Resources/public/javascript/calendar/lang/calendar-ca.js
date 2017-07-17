@@ -11,7 +11,7 @@ Calendar._DN = new Array
 Calendar._MN = new Array
 ("Gener",
  "Febrer",
- "Març",
+ "MarÃ§",
  "Abril",
  "Maig",
  "Juny",
@@ -25,11 +25,11 @@ Calendar._MN = new Array
 // tooltips
 Calendar._TT = {};
 Calendar._TT["TOGGLE"] = "Canvia el primer dia de la setmana";
-Calendar._TT["PREV_YEAR"] = "Any anterior (mantenir per a menu)";
-Calendar._TT["PREV_MONTH"] = "Mes anterior (mantenir per a menu)";
+Calendar._TT["PREV_YEAR"] = "Any anterior";
+Calendar._TT["PREV_MONTH"] = "Mes anterior";
 Calendar._TT["GO_TODAY"] = "Anar a avui";
-Calendar._TT["NEXT_MONTH"] = "Mes següent (mantenir per a menu)";
-Calendar._TT["NEXT_YEAR"] = "Any següent (mantenir per a menu)";
+Calendar._TT["NEXT_MONTH"] = "Mes segÃ¼ent";
+Calendar._TT["NEXT_YEAR"] = "Any segÃ¼ent";
 Calendar._TT["SEL_DATE"] = "Seleccionar data";
 Calendar._TT["DRAG_TO_MOVE"] = "Arrastrar per a moure";
 Calendar._TT["PART_TODAY"] = " (avui)";
