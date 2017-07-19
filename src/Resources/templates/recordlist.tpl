@@ -2,7 +2,6 @@
 {atkconfig var="recordlist_top_scroller" smartyvar="recordlist_top_scroller"}
 {if isset($formstart)}{$formstart}{/if}
 
-
 {if $recordlist_top_scroller == true}
     <div class="recordListScroller" style="height:30px;line-height:0;margin:0;padding:0;display:none;overflow-x:auto;overflow-y:hidden;">
         <div class="scroller" style="height:30px;line-height:0;margin:0;padding:0;"></div>
@@ -19,8 +18,7 @@
         <!-- header -->
         <tr>
             {section name=headerloop loop=$header}
-                <th {if isset($header[headerloop].htmlattributes)}{$header[headerloop].htmlattributes}{/if}
-                        {if $smarty.section.headerloop.index===0}class="recordListThFirst"{else}class="recordListTh"{/if}>
+                <th {if $smarty.section.headerloop.index===0}class="recordListThFirst"{else}class="recordListTh"{/if}>
                     {if $header[headerloop].content != ""}{$header[headerloop].content}{else}&nbsp;{/if}
                 </th>
             {/section}
@@ -31,9 +29,7 @@
             <tr class="recordList-sort-row">
                 {$sortstart}
                 {foreach from=$sort item=col}
-                    <th {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
-                        {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
-                    </th>
+                    <th>{if $col.content != ""}{$col.content}{else}&nbsp;{/if}</th>
                 {/foreach}
                 {$sortend}
             </tr>
@@ -44,9 +40,7 @@
             <tr class="recordList-search-row">
                 {$searchstart}
                 {foreach from=$search item=col}
-                    <th class="recordListSearch" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
-                        {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
-                    </th>
+                    <th class="recordListSearch">{if $col.content != ""}{$col.content}{else}&nbsp;{/if}</th>
                 {/foreach}
                 {$searchend}
             </tr>
@@ -66,7 +60,6 @@
                 {section name=colloop loop=$row.cols}
                     <{if $row.type == "subtotal"}th{else}td{/if}
                             class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data" && $recordlist_onclick} clickable{/if} row-type-{$row.cols[colloop].type}"
-                            {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}
                             {if $row.cols[colloop].type == "data" && $recordlist_onclick} onclick="ATK.RL.rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'
                     ], false);"{/if}>
                         {if $row.cols[colloop].content != ""}{$row.cols[colloop].content}{else}&nbsp;{/if}
@@ -80,9 +73,7 @@
             <!-- totals row -->
             <tr class="recordList-totals-row">
                 {foreach from=$total item=col}
-                    <th {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
-                        {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
-                    </th>
+                    <th>{if $col.content != ""}{$col.content}{else}&nbsp;{/if}</th>
                 {/foreach}
             </tr>
         {/if}

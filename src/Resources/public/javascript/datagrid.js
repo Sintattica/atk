@@ -36,7 +36,7 @@ ATK.DataGrid = {
      * Returns the form for the grid with the given name.
      */
     getForm: function (name) {
-        return ATK.DataGrid.getContainer(name).up('form');
+        return ATK.DataGrid.getContainer(name).closest('form');
     },
     /**
      * Returns the grid form elements.
