@@ -195,8 +195,8 @@ class TimeAttribute extends Attribute
             $m_defSec = $field['seconds'];
         } else {
             $m_defHour = $default[0];
-            $m_defMin = $default[1];
-            $m_defSec = $default[2];
+            $m_defMin = isset($default[1])?$default[1]:null;
+            $m_defSec = isset($default[2])?$default[2]:null;
         }
 
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
@@ -306,7 +306,7 @@ class TimeAttribute extends Attribute
      */
     public function db2value($rec)
     {
-        if (strlen($rec[$this->fieldName()]) == 0) {
+        if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) {
             $retval = null;
         } else {
             $retval = array(

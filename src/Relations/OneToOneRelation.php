@@ -504,7 +504,7 @@ class OneToOneRelation extends Relation
                 //if the a onetoonerelation has no relation on the other side the m_refKey is not an array
                 // experimental, will the next line always work?
                 $refattr = $this->m_destInstance->getAttribute($this->m_refKey);
-                if ($refattr->m_destination) {
+                if (isset($refattr->m_destination) && $refattr->m_destination) {
                     /*
                      * If we have a destination, the ref key is a non-onetoone relation!
                      * So we have to treat the record as such... this is specifically geared towards
