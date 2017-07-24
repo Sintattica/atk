@@ -280,7 +280,7 @@ class ManyToManyRelation extends Relation
      * Change the name of the attribute of the intermediairy node that points
      * to the master node.
      *
-     * @param string $attributename The name of the attribute.
+     * @param string|array $attributename The name of the attribute.
      */
     public function setLocalKey($attributename)
     {
@@ -712,12 +712,19 @@ class ManyToManyRelation extends Relation
     public function hide($record, $fieldprefix, $mode)
     {
         $result = '';
+
         if (is_array(Tools::atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {
             $ownerFields = $this->getOwnerFields();
             for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; ++$i) {
-                if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey())) {
-                    $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$i.']['.$this->getLocalKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
-                            $ownerFields[0]).'">';
+
+                $localKey = $this->getLocalKey();
+                if (!is_array($localKey)) {
+                    $localKey = [$localKey];
+                }
+                foreach ($localKey as $key) {
+                    if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $key)) {
+                        $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$i.']['.$key.']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$key], $ownerFields[0]).'">';
+                    }
                 }
 
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getRemoteKey())) {
@@ -823,8 +830,7 @@ class ManyToManyRelation extends Relation
         // which should work in any ansi compatible database.
         if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $this->createLink();
-            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(),
-                false);
+            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(), false);
             $query->setDistinct(true);
 
             if (count($value) == 1) { // exactly one value

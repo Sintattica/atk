@@ -790,11 +790,9 @@ class ManyToOneRelation extends Relation
                 }
             }
         } else {
-
-            if (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, $mode)) {
+            if (!isset($record[$this->fieldName()]) || (is_array($record[$this->fieldName()]) && !$this->_isSelectableRecord($record, $mode))) {
                 $record[$this->fieldName()] = null;
             } else {
-
                 if (is_array($record[$this->fieldName()])) {
                     $this->populate($record);
                 }

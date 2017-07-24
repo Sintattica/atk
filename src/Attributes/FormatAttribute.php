@@ -295,7 +295,7 @@ class FormatAttribute extends Attribute
     public function fetchValue($postvars)
     {
         $masks = $this->_breakDown();
-        $elems = $postvars[$this->fieldName()];
+        $elems = isset($postvars[$this->fieldName()])?$postvars[$this->fieldName()]:null;
         $result = '';
 
         for ($i = 0, $_i = count($masks); $i < $_i; ++$i) {
@@ -342,7 +342,7 @@ class FormatAttribute extends Attribute
         $elems = $this->_breakDown();
         for ($i = 0, $_i = count($elems); $i < $_i; ++$i) {
             if ($elems[$i]['type'] != '/') { // not a literal
-                if ($values[$i] != '') {
+                if (isset($values[$i]) && $values[$i] != '') {
                     return false;
                 }
             }
