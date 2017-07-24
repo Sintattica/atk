@@ -1073,6 +1073,7 @@ class ManyToOneRelation extends Relation
 
     public function drawSelect($id, $name, $options = [], $selected = [], $selectOptions = [], $htmlAttributes = [])
     {
+        $result = '';
         $page = $this->m_ownerInstance->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/class.atkmanytoonerelation.js');
 
@@ -1084,13 +1085,19 @@ class ManyToOneRelation extends Relation
             $htmlAttrs .= ' '.$k.'="'.htmlspecialchars($v).'"';
         }
 
-        $result = '<select '.$this->getCSSClassAttribute('form-control').' id="'.$id.'" name="'.$name.'"'.$htmlAttrs.'>';
+        $selected = array_map(function($el){
+            return $el.'';
+        }, $selected);
+
+        $result .= '<select '.$this->getCSSClassAttribute('form-control').' id="'.$id.'" name="'.$name.'"'.$htmlAttrs.'>';
         foreach ($options as $value => $option) {
+            $value = $value.'';
             $result .= '<option ';
             $result .= 'value="'.htmlspecialchars($value).'"';
-            $result .= in_array($value, $selected) ? ' selected' : '';
+            $result .= in_array($value, $selected, true) ? ' selected' : '';
             $result .= '>';
             $result .= htmlspecialchars($option);
+
             $result .= '</option>';
         }
         $result .= '</select>';
