@@ -9434,6 +9434,13 @@ span.form-control-static {
 .fieldset-form-group-field > div, .fieldset-form-group-field > span {
   display: inline-block; }
 
+.atkfieldset .form-control-static {
+  padding-top: 0;
+  min-height: inherit; }
+
+.atkfieldset label.control-label {
+  padding-top: 0; }
+
 .error {
   color: #A94442; }
 
@@ -9495,8 +9502,7 @@ span.form-control-static {
   display: none !important; }
 
 .atkfieldset > .fieldset-form-group, .atkfieldset > .fieldset-form-group > div {
-  display: inline;
-  vertical-align: middle; }
+  display: inline; }
 
 .atkfieldset label {
   font-weight: normal; }

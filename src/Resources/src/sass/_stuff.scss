@@ -37,7 +37,7 @@ body {
 }
 
 span.form-control-static {
-  display: block;
+   display: block;
 }
 
 .form-group.required > .control-label:before, span.required:before {
@@ -54,6 +54,15 @@ span.form-control-static {
 
 .fieldset-form-group-field > div, .fieldset-form-group-field > span {
   display: inline-block;
+}
+
+.atkfieldset .form-control-static {
+  padding-top: 0;
+  min-height: inherit;
+}
+
+.atkfieldset label.control-label {
+  padding-top: 0;
 }
 
 .error {
@@ -76,9 +85,7 @@ span.form-control-static {
 .atkmessages_failure,
 .atkmessages_warning {
   margin-bottom: 1px;
-  padding: 3px;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding: 3px 6px;
 }
 
 .atkmessages_general {
@@ -103,9 +110,7 @@ span.form-control-static {
 .atkmessages_failure {
   background-color: #ff0000;
   color: #fff;
-  padding: 3px;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding: 3px 6px;
 }
 
 .red {
@@ -132,7 +137,7 @@ span.form-control-static {
 
 .atkfieldset > .fieldset-form-group, .atkfieldset > .fieldset-form-group > div  {
   display: inline;
-  vertical-align: middle;
+  // vertical-align: middle;
 }
 
 .atkfieldset label {
