@@ -199,14 +199,23 @@ class EditFormModifier
         $offset = count($this->getNode()->getPage()->getLoadScripts());
 
         $error = [];
-        $editArray = array('fields' => array());
-        $this->m_node->getAttribute($name)->addToEditArray($this->getMode(), $editArray, $this->getRecord(), $error, $this->getFieldPrefix());
+        $editArray = array('fields' => array(), 'hide' => array());
+        $attr = $this->m_node->getAttribute($name);
+        $attr->addToEditArray($this->getMode(), $editArray, $this->getRecord(), $error, $this->getFieldPrefix());
 
         $scriptCode = '';
+        //update field
         foreach ($editArray['fields'] as $field) {
             $element = str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
-            $value = Json::encode(Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html'])); // Json::encode excepts string in UTF-8
+            $value = Json::encode(Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field['html']));
             $scriptCode .= "if (\$('$element')) { \$('$element').update($value); } ";
+        }
+
+        //replace hidden field
+        foreach ($editArray['hide'] as $field) {
+            $element = $attr->getHtmlId($this->getFieldPrefix());
+            $value = Json::encode(Tools::atk_iconv(Tools::atkGetCharset(), 'UTF-8', $field));
+            $scriptCode .= "if (\$('$element')) { \$('$element').replace($value); } ";
         }
 
         $this->getNode()->getPage()->register_loadscript($scriptCode, $offset);
