@@ -18,7 +18,9 @@ class Config
         // Include the defaults
         $defaultConfig = self::getConfigValues(__DIR__.'/../Resources/config/atk.php');
         foreach ($defaultConfig as $key => $value) {
-            self::$s_globals[$key] = $value;
+            if(!array_key_exists($key, self::$s_globals)) {
+                self::$s_globals[$key] = $value;
+            }
         }
 
         // Get the application config
