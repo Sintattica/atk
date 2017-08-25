@@ -966,7 +966,7 @@ class ManyToOneRelation extends Relation
             $linkname = Tools::atktext('select_a');
         }
 
-        $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', ['atkfilter' => $filter, 'atktarget' => $atktarget]),
+        $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', ['atkfilter' => $filter ?: 'true', 'atktarget' => $atktarget]),
             $linkname, SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
 
         return $result;
