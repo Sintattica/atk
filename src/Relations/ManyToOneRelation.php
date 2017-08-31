@@ -1632,7 +1632,7 @@ EOF;
      */
     public function isSelectableRecord($record = [], $mode = '')
     {
-        if ($record[$this->fieldName()] == null) {
+        if (!isset($record[$this->fieldName()]) || $record[$this->fieldName()] == null) {
             return false;
         }
 
