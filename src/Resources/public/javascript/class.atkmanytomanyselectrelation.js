@@ -16,11 +16,11 @@ ATK.ManyToManySelectRelation = {
     add: function(el, url, makeSortable) {
         var params = {selector: $F(el)};
         var li = $(el).up('li');
-
         new Ajax.Request(
             url, {
                 parameters: params,
                 onSuccess: function(response) {
+                    jQuery(li).find('select.ManyToOneRelation').empty();
                     li.insert({before: response.responseText});
                     response.responseText.evalScripts();
                     if (makeSortable)

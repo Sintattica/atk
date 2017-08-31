@@ -464,6 +464,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}', {$hasPositionAttribute});");
 
         $relation->setNoneLabel($this->text('select_none_obligatory'));
+
+        unset($record[$relation->fieldName()]);
         $result = $relation->edit($record, $fieldprefix, $mode);
         if ($result == $this->text('select_none_obligatory')) {
             $result = '';
