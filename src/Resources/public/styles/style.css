@@ -9497,7 +9497,9 @@ span.form-control-static {
 .atkAttrRowHidden {
   display: none !important; }
 
-.atkfieldset > .fieldset-form-group, .atkfieldset > .fieldset-form-group > div {
+.atkfieldset > .fieldset-form-group,
+.atkfieldset > .fieldset-form-group > div,
+.atkfieldset > .fieldset-form-group input[type="file"] {
   display: inline; }
 
 .atkfieldset label {
