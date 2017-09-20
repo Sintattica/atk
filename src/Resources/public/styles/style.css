@@ -9448,6 +9448,13 @@ span.form-control-static {
 .fieldset-form-group-field > div, .fieldset-form-group-field > span {
   display: inline-block; }
 
+.atkfieldset .form-control-static {
+  padding-top: 0;
+  min-height: inherit; }
+
+.atkfieldset label.control-label {
+  padding-top: 0; }
+
 .error {
   color: #A94442; }
 
@@ -9465,9 +9472,7 @@ span.form-control-static {
 .atkmessages_failure,
 .atkmessages_warning {
   margin-bottom: 1px;
-  padding: 3px;
-  padding-left: 6px;
-  padding-right: 6px; }
+  padding: 3px 6px; }
 
 .atkmessages_general {
   background-color: yellow;
@@ -9487,9 +9492,7 @@ span.form-control-static {
 .atkmessages_failure {
   background-color: #ff0000;
   color: #fff;
-  padding: 3px;
-  padding-left: 6px;
-  padding-right: 6px; }
+  padding: 3px 6px; }
 
 .red {
   color: #9a1010; }
@@ -9508,9 +9511,10 @@ span.form-control-static {
 .atkAttrRowHidden {
   display: none !important; }
 
-.atkfieldset > .fieldset-form-group, .atkfieldset > .fieldset-form-group > div {
-  display: inline;
-  vertical-align: middle; }
+.atkfieldset > .fieldset-form-group,
+.atkfieldset > .fieldset-form-group > div,
+.atkfieldset > .fieldset-form-group input[type="file"] {
+  display: inline; }
 
 .atkfieldset label {
   font-weight: normal; }

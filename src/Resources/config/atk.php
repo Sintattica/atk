@@ -451,6 +451,11 @@ return [
 
     'indexPage' => Sintattica\Atk\Ui\IndexPage::class,
 
+    /*
+     * ['Module.Node', 'action']
+     */
+    'default_destination' => null,
+
     /************************** MENU *********************************/
 
     'menu' => Sintattica\Atk\Core\Menu::class,

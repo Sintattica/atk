@@ -14,6 +14,7 @@ ATK.ManyToManySelectRelation = {
 
         jQuery.post(url, params, function (responseText) {
             li.before(responseText);
+            li.find('select.ManyToOneRelation').empty();
             jQuery('<div>').html(responseText).find("script").each(function () {
                 var text = jQuery(this).text();
                 if(text) {
