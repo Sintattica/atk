@@ -22,6 +22,6 @@
     "jquery": "2.2.4",
     "select2": "4.0.3",
     "select2-bootstrap-theme": "0.1.0-beta.8",
-    "smartmenus": "1.0.0",
+    "smartmenus": "1.1.0",
   }
 }

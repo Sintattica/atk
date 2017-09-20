@@ -88,7 +88,7 @@
 		"../../src/bower_components/font-awesome-sass/assets/stylesheets/font-awesome/_rotated-flipped.scss",
 		"../../src/bower_components/font-awesome-sass/assets/stylesheets/font-awesome/_stacked.scss",
 		"../../src/bower_components/font-awesome-sass/assets/stylesheets/font-awesome/_icons.scss",
-		"../../src/bower_components/smartmenus/scss/_jquery.smartmenus.bootstrap.scss",
+		"../../src/bower_components/smartmenus/src/addons/bootstrap/jquery.smartmenus.bootstrap.css",
 		"../../src/bower_components/select2/src/scss/core.scss",
 		"../../src/bower_components/select2/src/scss/_single.scss",
 		"../../src/bower_components/select2/src/scss/_multiple.scss",
