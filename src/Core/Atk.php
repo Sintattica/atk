@@ -126,6 +126,12 @@ class Atk
 
             /** @var IndexPage $indexPage */
             $indexPage = new $indexPageClass($this);
+
+            $default_destination = Config::getGlobal('default_destination');
+            if(is_array($default_destination)) {
+                $indexPage->setDefaultDestination($default_destination);
+            }
+
             $indexPage->generate();
         }
     }
