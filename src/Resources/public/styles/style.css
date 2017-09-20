@@ -9458,9 +9458,7 @@ span.form-control-static {
 .atkmessages_failure,
 .atkmessages_warning {
   margin-bottom: 1px;
-  padding: 3px;
-  padding-left: 6px;
-  padding-right: 6px; }
+  padding: 3px 6px; }
 
 .atkmessages_general {
   background-color: yellow;
@@ -9480,9 +9478,7 @@ span.form-control-static {
 .atkmessages_failure {
   background-color: #ff0000;
   color: #fff;
-  padding: 3px;
-  padding-left: 6px;
-  padding-right: 6px; }
+  padding: 3px 6px; }
 
 .red {
   color: #9a1010; }

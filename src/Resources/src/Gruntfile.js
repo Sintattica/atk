@@ -15,15 +15,6 @@ module.exports = function (grunt) {
                         cwd: 'bower_components/font-awesome-sass/assets/fonts/',
                         src: ['**'],
                         dest: '../public/fonts/'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'bower_components/smartmenus/src/addons/bootstrap/',
-                        src: ['**/*.css'],
-                        dest: 'bower_components/smartmenus/scss/',
-                        rename: function (dest, src) {
-                            return dest + '_' + src.replace(/\.css$/, ".scss");
-                        }
                     }
                 ]
             }
