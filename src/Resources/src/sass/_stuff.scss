@@ -135,7 +135,10 @@ span.form-control-static {
   display: none !important;
 }
 
-.atkfieldset > .fieldset-form-group, .atkfieldset > .fieldset-form-group > div  {
+.atkfieldset > .fieldset-form-group,
+.atkfieldset > .fieldset-form-group > div,
+.atkfieldset > .fieldset-form-group input[type="file"]
+{
   display: inline;
   // vertical-align: middle;
 }
