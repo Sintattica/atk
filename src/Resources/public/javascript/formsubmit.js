@@ -38,7 +38,7 @@ function atkSubmit(target, standardSubmit)
     // call global submit function, which doesn't get called automatically
     // when we call entryform.submit manually.
     var entryForm = jQuery("#entryform");
-    ATK.globalSubmit(entryForm, standardSubmit);
+    globalSubmit(entryForm, standardSubmit);
     entryForm.submit();
 }
 
