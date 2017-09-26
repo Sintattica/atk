@@ -315,7 +315,7 @@ class ListAttribute extends Attribute
         for ($i = 0; $i < count($values); ++$i) {
             $sel = '';
             // If the current value is selected or occurs in the record
-            if ((!is_null($this->m_selected) && $values[$i] === $this->m_selected) || (is_null($this->m_selected) && $values[$i] === $recvalue && $recvalue !== '')) {
+            if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) || (is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== '')) {
                 $sel = 'selected';
             }
 
