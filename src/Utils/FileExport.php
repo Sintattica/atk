@@ -48,6 +48,12 @@ class FileExport
         } elseif ($type == 'xml') {
             $mime_type = 'text/xml';
             $ext = 'xml';
+        } elseif ($type == 'ics') {
+            $mime_type = 'text/calendar';
+            $ext = 'ics';
+        } elseif ($type == 'txt') {
+            $mime_type = 'text/plain';
+            $ext = 'txt';
         } else {
             $mime_type = 'application/octet-stream';
         }
@@ -84,6 +90,8 @@ class FileExport
                 if ($type == 'csv' || $type == 'excel') {
                     // in order to output UTF-8 content that Excel both on Windows and OS X will be able to successfully read
                     echo mb_convert_encoding($data, 'Windows-1252', 'UTF-8');
+                } else {
+                    echo $data;
                 }
             }
         }
