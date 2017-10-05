@@ -4,6 +4,11 @@ jQuery(function () {
         jQuery("form #action-buttons button").removeAttr("clicked");
         jQuery(this).attr("clicked", "true");
     });
+
+    // resize window fix smartmenu rendering
+    setTimeout(function(){
+        jQuery(window).trigger('resize');
+    }, 10);
 });
 
 
