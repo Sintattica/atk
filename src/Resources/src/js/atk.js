@@ -86,3 +86,10 @@ ATK.showAttribute = function (rowId) {
 ATK.hideAttribute = function (rowId) {
     jQuery('#' + rowId).addClass('atkAttrRowHidden');
 };
+
+// resize window fix smartmenu rendering
+jQuery(function(){
+    setTimeout(function(){
+        jQuery(window).trigger('resize');
+    }, 10);
+});
