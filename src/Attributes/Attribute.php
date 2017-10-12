@@ -1316,7 +1316,7 @@ class Attribute
             $ret = $this->m_ownerInstance->$method($defaults, $mode);
         } else {
             $ret = $this->display($defaults, $mode);
-            if ($ret && strlen($this->m_postfixlabel) > 0) {
+            if ($ret != '' && strlen($this->m_postfixlabel) > 0) {
                 $ret .= '&nbsp;'.$this->m_postfixlabel;
             }
         }
