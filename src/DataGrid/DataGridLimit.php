@@ -75,7 +75,7 @@ class DataGridLimit extends DataGridComponent
         }
 
         $options = $this->getOptions($values);
-        $call = $this->getGrid()->getUpdateCall(array('atkstartat' => 0), array('atklimit' => '$F(this)'));
+        $call = $this->getGrid()->getUpdateCall(array('atkstartat' => 0), array('atklimit' => 'this.value'));
         $result = $this->getUi()->render('dglimit.tpl', array('options' => $options, 'call' => $call, 'label' => $this->text('datagrid_dglimit', '', false)));
 
         return $result;
