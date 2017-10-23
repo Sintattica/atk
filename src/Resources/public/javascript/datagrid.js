@@ -105,7 +105,11 @@ ATK.DataGrid = {
 
         var params = queryComponents.join('&');
         var container = ATK.DataGrid.getContainer(name);
-        container.load(grid.baseUrl, params, ATK.DataGrid.updateCompleted.bind(this, name));
+
+        jQuery.post(grid.baseUrl, params, function(data){
+            container.html(data);
+            ATK.DataGrid.updateCompleted(name);
+        });
     },
     /**
      * After update of the grid has successfully completed.
