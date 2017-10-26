@@ -925,31 +925,45 @@ class DateAttribute extends Attribute
         // If we search through datagrid we got no from/to values
         // Therefore we will simulate them
         if (!is_array($value)) {
-            // exact: ex. "d/m/yyyy", "d/m/yy", "d/m" (use current year), "m/yyyy" (from 1 to number of days in month), "yyyy" (from 1/1 to 31/12)
-            // between: two values divided by "-"
-            // >=: one value followed by "-" // TODO using ">" and ">="
-            // <=: one value preceded by "-" // TODO using "<" and "<="
+            // exact or between (two values divided by "-")
+            // ex. value "d/m/yyyy", "d/m" (use current year), "m/yyyy" (from 1 to number of days in month), "yyyy" (from 1/1 to 31/12)
+            // >=: one value followed by "-"
+            // <=: one value preceded by "-"
             $value = trim($value);
             if (strpos($value, '-') !== false) {
                 list($from, $to) = explode('-', $value);
                 $value = array('from' => trim($from), 'to' => trim($to));
-            } elseif (strlen($value) == 4 && is_numeric($value)) {
-                $value = array('from' => "$value-01-01", 'to' => "$value-12-31");
-            } elseif (!is_numeric($value) && substr_count($value, '/') == 1 && (strlen($value) == 6 || strlen($value) == 7)) {
-                $value = explode('/', $value);
-                // if we always set the day to 31, the framework somewhere modifies the query for months with less than 31 days
-                // eg. '2015-09-31' becomes '2015-10-01'
-                $daysInMonth = self::daysInMonth($value[0], $value[1]);
-                $value = $value[1].'-'.$value[0];
-                $value = array('from' => "$value-01", 'to' => "$value-$daysInMonth");
             } else {
                 $value = array('from' => $value, 'to' => $value);
             }
-            if (substr_count($value['from'], '/') == 1) {
-                $value['from'] .= '/'.date('Y');
-            }
-            if (substr_count($value['to'], '/') == 1) {
-                $value['to'] .= '/'.date('Y');
+            foreach (['from', 'to'] as $k) {
+                if ($v = $value[$k]) {
+                    // yyyy
+                    if (strlen($v) == 4 && is_numeric($v)) {
+                        if ($k == 'from') {
+                            $v = "1/1/$v";
+                        } else {
+                            $v = "31/12/$v";
+                        }
+                    }
+                    // m/yyyy
+                    if (!is_numeric($v) && substr_count($v, '/') == 1 && (strlen($v) == 6 || strlen($v) == 7)) {
+                        // if we always set the day to 31, the framework somewhere modifies the query for months with less than 31 days
+                        // eg. '2015-09-31' becomes '2015-10-01'
+                        $parts = explode('/', $v);
+                        $daysInMonth = self::daysInMonth($parts[0], $parts[1]);
+                        if ($k == 'from') {
+                            $v = "1/$v";
+                        } else {
+                            $v = "$daysInMonth/$v";
+                        }
+                    }
+                    // d/m
+                    if (substr_count($v, '/') == 1) {
+                        $v .= '/'.date('Y');
+                    }
+                    $value[$k] = $v;
+                }
             }
         }
 
