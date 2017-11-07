@@ -143,7 +143,7 @@ class ExportHandler extends ActionHandler
     {
         $value = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue'] : null;
 
-        return $this->getAttributeSelect();
+        return $this->getAttributeSelect($value);
     }
 
     /**
@@ -198,11 +198,11 @@ class ExportHandler extends ActionHandler
         $sm = SessionManager::getInstance();
 
         $params = [];
-        $params['formstart'] = '<form name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post" class="form-horizontal">';
+        $params['formstart'] = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post" class="form-horizontal">';
         $params['formstart'] .= $sm->formState();
         $params['formstart'] .= '<input type="hidden" name="phase" value="process"/>';
-        $params['buttons'][] = Tools::atkButton(Tools::atktext('cancel', 'atk'), '', SessionManager::SESSION_BACK, true);
-        $params['buttons'][] = '<input class="btn" type="submit" value="'.Tools::atktext('export', 'atk').'"/>';
+        $params['buttons'][] = Tools::atkButton(Tools::atktext('cancel', 'atk'), '', SessionManager::SESSION_BACK);
+        $params['buttons'][] = '<input class="btn btn-primary" type="submit" value="'.Tools::atktext('export', 'atk').'"/>';
         $params['buttons'][] = '<input id="export_save_button" style="display:none;" value="'.Tools::atktext('save_export_selection',
                 'atk').'" name="save_export" class="btn" type="submit" /> ';
         $params['content'] = '<b>'.Tools::atktext('export_config_explanation', 'atk', $this->m_node->m_type).'</b><br/><br/>';
@@ -430,12 +430,12 @@ class ExportHandler extends ActionHandler
 
     /**
      * Get all attributes to select for the export.
-     *
+     * @param string $value
      * @return string HTML code with checkboxes for each attribute to select
      */
-    public function getAttributeSelect()
+    public function getAttributeSelect($value = '')
     {
-        $atts = $this->getUsableAttributes();
+        $atts = $this->getUsableAttributes($value);
         $content = '<div class="container-fluid ExportHandler">';
 
         foreach ($atts as $tab => $group) {
@@ -464,10 +464,10 @@ class ExportHandler extends ActionHandler
 
     /**
      * Gives all the attributes that can be used for the import.
-     *
+     * @param string $value
      * @return array the attributes
      */
-    public function getUsableAttributes()
+    public function getUsableAttributes($value = '')
     {
         $selected = ($value == 'new') ? false : true;
 
@@ -480,18 +480,18 @@ class ExportHandler extends ActionHandler
 
         $atts = [];
         $attriblist = $this->invoke('getExportAttributes');
-        foreach ($attriblist as $key => $value) {
-            $flags = $value->m_flags;
-            $class = strtolower(get_class($value));
-            if ($value->hasFlag(Attribute::AF_AUTOKEY) || $value->hasFlag(Attribute::AF_HIDE_VIEW) || !(strpos($class, 'dummy') === false) || !(strpos($class,
+        foreach ($attriblist as $key => $attr) {
+            $flags = $attr->m_flags;
+            $class = strtolower(get_class($attr));
+            if ($attr->hasFlag(Attribute::AF_AUTOKEY) || $attr->hasFlag(Attribute::AF_HIDE_VIEW) || !(strpos($class, 'dummy') === false) || !(strpos($class,
                         'image') === false) || !(strpos($class, 'tabbedpane') === false)
             ) {
                 continue;
             }
             if (method_exists($this->m_node, 'getExportAttributeGroup')) {
-                $group = $this->m_node->getExportAttributeGroup($value->m_name);
+                $group = $this->m_node->getExportAttributeGroup($attr->m_name);
             } else {
-                $group = $value->m_tabs[0];
+                $group = $attr->m_tabs[0];
             }
             if (in_array($group, $atts)) {
                 $atts[$group] = [];
@@ -500,14 +500,14 @@ class ExportHandler extends ActionHandler
             if (empty($criteria)) {
                 $atts[$group][] = array(
                     'name' => $key,
-                    'text' => $value->label(),
-                    'checked' => $selected == true ? !$value->hasFlag(Attribute::AF_HIDE_LIST) : false,
+                    'text' => $attr->label(),
+                    'checked' => $selected == true ? !$attr->hasFlag(Attribute::AF_HIDE_LIST) : false,
                 );
             } // selected options based on a selection from DB
             else {
                 $atts[$group][] = array(
                     'name' => $key,
-                    'text' => $value->label(),
+                    'text' => $attr->label(),
                     'checked' => in_array('export_'.$key, $criteria) ? true : false,
                 );
             }
@@ -550,11 +550,10 @@ class ExportHandler extends ActionHandler
         $sm = SessionManager::getInstance();
         $sessionData = &SessionManager::getSession();
         $session_back = $sessionData['default']['stack'][$sm->atkStackID()][$sm->atkLevel() - 1];
-        $atkorderby = $session_back['atkorderby'];
+        $atkorderby = isset($session_back['atkorderby'])?$session_back['atkorderby']:null;
 
         $node = $this->m_node;
         $node_bk = $node;
-        $num_atts = count($node_bk->m_attribList);
         $atts = &$node_bk->m_attribList;
 
         foreach ($atts as $name => $object) {
@@ -567,7 +566,6 @@ class ExportHandler extends ActionHandler
         }
 
         $rl = new CustomRecordList();
-        $flags = ($node_bk->hasFlag(Node::NF_MRA) ? RecordList::RL_MRA : 0) | ($node_bk->hasFlag(Node::NF_MRPA) ? RecordList::RL_MRPA : 0);
         $node_bk->m_postvars = $session_back;
 
         if (isset($session_back['atkdg']['admin']['atksearch'])) {
@@ -579,7 +577,8 @@ class ExportHandler extends ActionHandler
 
         $atkfilter = Tools::atkArrayNvl($source, 'atkfilter', '');
 
-        $condition = $session_back['atkselector'].($session_back['atkselector'] != '' && $atkfilter != '' ? ' AND ' : '').$atkfilter;
+        $atkselector = isset($session_back['atkselector'])?$session_back['atkselector']:'';
+        $condition = $atkselector.($atkselector != '' && $atkfilter != '' ? ' AND ' : '').$atkfilter;
         $recordset = $node_bk->select($condition)->orderBy($atkorderby)->includes($list_includes)->mode('export')->getAllRows();
         if (method_exists($this->m_node, 'assignExportData')) {
             $this->m_node->assignExportData($list_includes, $recordset);
