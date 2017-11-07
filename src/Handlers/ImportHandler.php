@@ -146,7 +146,7 @@ class ImportHandler extends ActionHandler
         $sm = SessionManager::getInstance();
 
         if ($sm->atkLevel() > 0) {
-            $result[] = Tools::atkButton($this->m_node->text('cancel', 'atk'), '', SessionManager::SESSION_BACK, true);
+            $result[] = Tools::atkButton($this->m_node->text('cancel', 'atk'), '', SessionManager::SESSION_BACK);
         }
         if ($phase == 'init') {
             $result[] = '<input class="btn btn-primary" type="submit" value="'.$this->m_node->text('import_upload').'">';
