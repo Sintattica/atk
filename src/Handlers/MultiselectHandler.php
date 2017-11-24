@@ -15,7 +15,7 @@ use Sintattica\Atk\Core\Config;
  *
  * @author Lineke Kerckhoffs-Willems <lineke@ibuildings.nl>
  */
-class MultiSelectHandler extends AdminHandler
+class MultiselectHandler extends AdminHandler
 {
     /**
      * The action handler method.

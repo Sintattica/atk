@@ -2,7 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
-class MultiUpdateHandler extends ActionHandler
+class MultiupdateHandler extends ActionHandler
 {
     /**
      * The action handler method.
