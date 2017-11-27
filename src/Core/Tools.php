@@ -1294,7 +1294,6 @@ class Tools
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
      * @param string $cssclass the css class the button should get
-     * @param bool $embeded wether or not it's an embedded button
      *
      * @return string html button
      */
@@ -1302,7 +1301,6 @@ class Tools
         $text,
         $url = '',
         $sessionstatus = SessionManager::SESSION_DEFAULT,
-        $embedded = true,
         $cssclass = ''
     ) {
         $sm = SessionManager::getInstance();
@@ -1318,15 +1316,7 @@ class Tools
         $script = 'ATK.FormSubmit.atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'")';
         $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
 
-        if (!$embedded) {
-            $res = '<form name="entryform">';
-            $res .= $sm->formState();
-            $res .= $button.'</form>';
-
-            return $res;
-        } else {
-            return $button;
-        }
+        return $button;
     }
 
     /**
