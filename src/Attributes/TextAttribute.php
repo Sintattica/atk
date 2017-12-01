@@ -99,8 +99,9 @@ class TextAttribute extends Attribute
           };
         ");
 
-            $result = '<textarea id="'.$id.'" name="'.$name.'" wrap="soft" rows="1" cols="20" style="overflow:hidden;'.$style.'">'."\n";
-            $result .= htmlspecialchars($record[$this->fieldName()]).'</textarea>';
+            $result = '<textarea id="'.$id.'" name="'.$name.'" wrap="soft" rows="1" cols="20" style="overflow:hidden;'.$style.'">';
+            $result .= htmlspecialchars($record[$this->fieldName()]);
+            $result .= '</textarea>';
             $result .= '<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
 
             return $result;
@@ -136,7 +137,7 @@ class TextAttribute extends Attribute
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }
-        $result .= ">\n".htmlspecialchars($text).'</textarea>';
+        $result .= ">".htmlspecialchars($text).'</textarea>';
 
         return $result;
     }
