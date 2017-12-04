@@ -648,7 +648,7 @@ class ManyToOneRelation extends Relation
                     if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
                         $saveForm = $mode == 'add' || $mode == 'edit';
                         $url = Tools::dispatch_url($this->m_destination, 'view',
-                            ['atkfilter' => '', 'atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
+                            ['atkfilter' => 'true', 'atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
 
                         if ($mode != 'list') {
                             $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm,
@@ -721,14 +721,14 @@ class ManyToOneRelation extends Relation
             if ($this->m_destInstance->allowed('add') && !$this->m_destInstance->hasFlag(Node::NF_NO_ADD)) {
                 $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
                     'atkpkret' => $id,
-                    'atkfilter' => ($filter != '' ? $filter : ''),
+                    'atkfilter' => ($filter ?: 'true'),
                 )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
             }
 
             if ($this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => 'true')),
                     SessionManager::SESSION_NESTED);
                 $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
             }
@@ -991,14 +991,14 @@ class ManyToOneRelation extends Relation
             $sm = SessionManager::getInstance();
 
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $this->m_destInstance->allowed('view')) {
-                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => '')),
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => 'true')),
                     SessionManager::SESSION_NESTED);
                 $autolink['view'] = " <a href='javascript:atkSubmit(mto_parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
             }
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
                 $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
                         'atkpkret' => $name,
-                        'atkfilter' => ($this->m_useFilterForAddLink && $filter != '' ? $filter : ''),
+                        'atkfilter' => ($this->m_useFilterForAddLink && $filter != '' ? $filter : 'true'),
                     )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
             }
         }
