@@ -8,6 +8,7 @@ use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\RecordList\ColumnConfig;
+use Sintattica\Atk\Relations\Relation;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\State;
@@ -1048,7 +1049,7 @@ class Node
      *
      * @param string $name The name of the attribute to retrieve.
      *
-     * @return Attribute The attribute.
+     * @return Attribute|Relation The attribute.
      */
     public function getAttribute($name)
     {
