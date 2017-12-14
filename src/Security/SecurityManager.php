@@ -138,7 +138,9 @@ class SecurityManager
 
         // try a standard login with user / password
         if ($this->auth_response === self::AUTH_UNVERIFIED) {
-            $this->login($auth_user, $auth_pw);
+            if($auth_user) {
+                $this->login($auth_user, $auth_pw);
+            }
 
             if (Config::getGlobal('auth_enable_u2f') && $this->auth_response === self::AUTH_SUCCESS) {
                 $u2f_enabledfield = Config::getGlobal('auth_u2f_enabledfield');
@@ -242,11 +244,12 @@ class SecurityManager
      *
      * @param string $event name
      * @param string $username (might be null)
+     * @param array extra data
      */
-    public function notifyListeners($event, $username)
+    public function notifyListeners($event, $username, $extra = [])
     {
         for ($i = 0, $_i = count($this->m_listeners); $i < $_i; ++$i) {
-            $this->m_listeners[$i]->handleEvent($event, $username);
+            $this->m_listeners[$i]->handleEvent($event, $username, $extra);
         }
     }
 
@@ -346,46 +349,40 @@ class SecurityManager
     {
         $this->notifyListeners('preLogin', $auth_user);
 
-        // check if is system user
+        // System user
         if ($system_user = $this->getSystemUser($auth_user)) {
             $config_pw = Config::getGlobal($system_user['name'].'password');
-            $match = !empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || self::verify($auth_pw, $config_pw));
-            if (!$match) {
-                $this->auth_response = self::AUTH_MISMATCH;
-            } else {
+            $match = ! empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || self::verify($auth_pw, $config_pw));
+            if ($match) {
                 $this->auth_response = self::AUTH_SUCCESS;
                 $this->m_user = $system_user;
-            }
-        } else {
-            // We have a username, which we must now validate against several checks.
-            // If all of these fail, we have a status of SecurityManager::AUTH_MISMATCH.
-            $error = null;
-            $auth_name = null;
-            foreach ($this->m_authentication as $class => $obj) {
-                $this->auth_response = $obj->validateUser($auth_user, $auth_pw);
-                if ($this->auth_response == self::AUTH_SUCCESS) {
-                    $auth_name = $class;
-                    break;
-                } else {
-                    $error = $obj->m_fatalError;
-                }
+                return $this->m_user;
             }
 
-            switch ($this->auth_response) {
-                // We store the username + securitylevel of the logged in user.
-                case self::AUTH_SUCCESS:
+            $this->auth_response = self::AUTH_MISMATCH;
+            $this->notifyListeners('errorLogin', $auth_user, ['auth_response' => $this->auth_response]);
+            return;
+        }
 
-                    $this->storeAuth($auth_user, $auth_name);
-                    break;
+        // Standard user
+        foreach ($this->m_authentication as $class => $obj) {
+            $this->auth_response = $obj->validateUser($auth_user, $auth_pw);
+            if ($this->auth_response === self::AUTH_SUCCESS) {
+                $this->m_fatalError = null;
+                $this->storeAuth($auth_user, $class);
+                return $this->m_user;
 
-                // login was incorrect. Either the supplied username/password combination is
-                // incorrect (we just try again) or there was an error (we display an error message)
-                case self::AUTH_ERROR:
-                    $this->m_fatalError = $error;
-                    break;
+            }elseif ($this->auth_response === self::AUTH_ERROR) {
+                $this->m_fatalError = isset($obj->m_fatalError) ? $obj->m_fatalError : 'Login error';
             }
         }
-        return $this->m_user;
+
+        $extra = ['auth_response' => $this->auth_response];
+        if($this->m_fatalError) {
+            $extra['fatal_error'] = $this->m_fatalError;
+        }
+        $this->notifyListeners('errorLogin', $auth_user, $extra);
+        return;
     }
 
     /**
