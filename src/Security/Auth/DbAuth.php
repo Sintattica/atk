@@ -310,21 +310,16 @@ class DbAuth extends AuthInterface
      */
     public function getAccessLevel($recs)
     {
+        $access = 0;
+        $levelField = Config::getGlobal('auth_accesslevelfield');
+        if($levelField === null) {
+            return $access;
+        }
+
         // We might have more then one access level, so we loop the result.
-        if (count($recs) > 1) {
-            $access = [];
-            for ($i = 0; $i < count($recs); ++$i) {
-                if ($i == 0) {
-                    $access = $recs[$i][Config::getGlobal('auth_accesslevelfield')];
-                }
-                if ($recs[$i][Config::getGlobal('auth_accesslevelfield')] > $access) {
-                    $access = $recs[$i][Config::getGlobal('auth_accesslevelfield')];
-                }
-            }
-        } else {
-            $access = '';
-            if (isset($recs[0][Config::getGlobal('auth_accesslevelfield')])) {
-                $access = $recs[0][Config::getGlobal('auth_accesslevelfield')];
+        for ($i = 0; $i < count($recs); $i++) {
+            if (isset($recs[$i][$levelField]) && $recs[$i][$levelField] > $access) {
+                $access = $recs[$i][$levelField];
             }
         }
 
