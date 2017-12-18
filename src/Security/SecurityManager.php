@@ -136,9 +136,10 @@ class SecurityManager
             $this->u2fAuthenticate($auth_user, $ATK_VARS['u2f_response']);
         }
 
+
         // try a standard login with user / password
         if ($this->auth_response === self::AUTH_UNVERIFIED) {
-            if($auth_user) {
+            if($auth_user || $isCli) {
                 $this->login($auth_user, $auth_pw);
             }
 
@@ -356,11 +357,13 @@ class SecurityManager
             if ($match) {
                 $this->auth_response = self::AUTH_SUCCESS;
                 $this->m_user = $system_user;
+
                 return $this->m_user;
             }
 
             $this->auth_response = self::AUTH_MISMATCH;
             $this->notifyListeners('errorLogin', $auth_user, ['auth_response' => $this->auth_response]);
+
             return;
         }
 
