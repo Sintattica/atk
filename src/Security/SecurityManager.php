@@ -138,7 +138,7 @@ class SecurityManager
 
         // try a standard login with user / password
         if ($this->auth_response === self::AUTH_UNVERIFIED) {
-            if($auth_user) {
+            if($auth_user || $isCli) {
                 $this->login($auth_user, $auth_pw);
             }
 
