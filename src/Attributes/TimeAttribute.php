@@ -127,7 +127,7 @@ class TimeAttribute extends Attribute
 
         if (!is_array($result)) {
             $exploded = explode(':', $postvars[$this->fieldName()]);
-            if (count($exploded) <= 1) {
+            if (Tools::count($exploded) <= 1) {
                 return '';
             }
             $result = [];
@@ -180,7 +180,7 @@ class TimeAttribute extends Attribute
         }
 
         $onChangeCode = '';
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $this->_renderChangeHandler($fieldprefix);
             $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
@@ -224,7 +224,7 @@ class TimeAttribute extends Attribute
             $minute_steps = $this->m_steps;
         }
 
-        for ($i = 0; $i <= count($minute_steps) - 1; ++$i) {
+        for ($i = 0; $i <= Tools::count($minute_steps) - 1; ++$i) {
             if ($i != 0) {
                 $prev = $minute_steps[$i - 1];
             } else {
@@ -243,7 +243,7 @@ class TimeAttribute extends Attribute
         if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
             $m_secBox .= '<option value""'.($m_defSec === '' ? ' selected' : '').'></option>';
         }
-        for ($i = 0; $i <= count($this->m_steps) - 1; ++$i) {
+        for ($i = 0; $i <= Tools::count($this->m_steps) - 1; ++$i) {
             if ($i != 0) {
                 $prev = $this->m_steps[$i - 1];
             } else {

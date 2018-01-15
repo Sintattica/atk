@@ -37,7 +37,7 @@ class FlagAttribute extends MultiSelectAttribute
      */
     public function value2db($rec)
     {
-        if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]) >= 1) {
+        if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
             $flags = 0;
             foreach ($rec[$this->fieldName()] as $flag) {
                 $flags |= $flag;
@@ -102,9 +102,9 @@ class FlagAttribute extends MultiSelectAttribute
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $searchcondition = '';
-        if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $field = $table.'.'.$this->fieldName();
-            if (count($value) == 1) { // exactly one value
+            if (Tools::count($value) == 1) { // exactly one value
                 $query->addSearchCondition($field.' & '.$value[0]);
             } else {
                 $mask = '('.implode('|', $value).')';

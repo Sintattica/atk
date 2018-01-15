@@ -96,7 +96,7 @@ class NodeValidator
     public function validate($mode = '', $ignoreList = array())
     {
         // check overrides
-        if (count($ignoreList)) {
+        if (Tools::count($ignoreList)) {
             $this->setIgnoreList($ignoreList);
         }
 
@@ -152,8 +152,8 @@ class NodeValidator
             }
         }
 
-        if (isset($record['atkerror']) && count($record['atkerror']) > 0) {
-            for ($i = 0, $_i = count($record['atkerror']); $i < $_i; ++$i) {
+        if (isset($record['atkerror']) && Tools::count($record['atkerror']) > 0) {
+            for ($i = 0, $_i = Tools::count($record['atkerror']); $i < $_i; ++$i) {
                 $record['atkerror'][$i]['node'] = $this->m_nodeObj->m_type;
             }
         }
@@ -161,7 +161,7 @@ class NodeValidator
         $this->validateUniqueFieldSets($record);
 
         if (isset($record['atkerror'])) {
-            for ($i = 0, $_i = count($record['atkerror']); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($record['atkerror']); $i < $_i; ++$i) {
                 $record['atkerror'][$i]['node'] = $this->m_nodeObj->m_type;
             }
 
@@ -211,7 +211,7 @@ class NodeValidator
                 if ($attrib) {
                     $attribs[] = $attrib;
 
-                    if (method_exists($attrib, 'createDestination') && isset($attrib->m_refKey) && is_array($attrib->m_refKey) && count($attrib->m_refKey) > 1) {
+                    if (method_exists($attrib, 'createDestination') && isset($attrib->m_refKey) && is_array($attrib->m_refKey) && Tools::count($attrib->m_refKey) > 1) {
                         $attrib->createDestination();
                         foreach ($attrib->m_refKey as $refkey) {
                             $query->addCondition($query->quoteField($refkey)." = '".$db->escapeSQL($record[$attrib->fieldName()][$refkey])."'");
@@ -232,7 +232,7 @@ class NodeValidator
                 $query->addCondition('NOT ('.$this->m_nodeObj->primaryKey($record).')');
             }
 
-            if (count($db->getRows($query->buildSelect())) > 0) {
+            if (Tools::count($db->getRows($query->buildSelect())) > 0) {
                 Tools::atkTriggerError($record, $attribs, 'error_uniquefieldset');
             }
         }

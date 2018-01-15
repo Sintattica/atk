@@ -935,7 +935,7 @@ class Attribute
     {
         $id = $this->getHtmlId($fieldprefix);
 
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {
@@ -998,7 +998,7 @@ class Attribute
      */
     public function _renderChangeHandler($fieldprefix, $elementNr = '')
     {
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $page = Page::getInstance();
             $page->register_scriptcode('
     function '.$this->getHtmlId($fieldprefix).$elementNr."_onChange(el)
@@ -1422,7 +1422,7 @@ class Attribute
      */
     public function getError($errors)
     {
-        for ($i = 0; $i < count($errors); ++$i) {
+        for ($i = 0; $i < Tools::count($errors); ++$i) {
             if ($errors[$i]['attrib_name'] == $this->fieldName() || Tools::atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])) {
                 return true;
             }
@@ -1614,7 +1614,7 @@ class Attribute
             $searchMode = isset($searchModes[0]) ? $searchModes[0] : null;
         }
 
-        if ($extended && count($searchModes) > 1) {
+        if ($extended && Tools::count($searchModes) > 1) {
             $field = '<select class="form-control select-standard" name="'.$this->getSearchModeFieldname($fieldprefix).'">';
 
             foreach ($searchModes as $value) {
@@ -1663,7 +1663,7 @@ class Attribute
     {
         // default implementation doesn't supported nested paths, this method
         // should be overriden by relations etc. if they want to support this
-        if (count($path) > 0) {
+        if (Tools::count($path) > 0) {
             Tools::atk_var_dump($path, 'Invalid search path for '.$this->m_ownerInstance->atkNodeUri().'#'.$this->fieldName().', ignoring criterium!');
         } else {
             $this->searchCondition($query, $ownerAlias, $value, $mode);
@@ -2170,7 +2170,7 @@ class Attribute
      */
     public function setAttribSize($size)
     {
-        if (is_array($size) && count($size) > 0) {
+        if (is_array($size) && Tools::count($size) > 0) {
             if (!empty($size[2])) {
                 $this->m_searchsize = $size[2];
             } else {
@@ -2953,7 +2953,7 @@ class Attribute
      */
     public function initDependencies(&$record, $fieldPrefix, $mode, $noCall = false)
     {
-        if (count($this->getDependencies()) == 0) {
+        if (Tools::count($this->getDependencies()) == 0) {
             return;
         }
 

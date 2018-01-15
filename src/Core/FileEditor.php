@@ -192,7 +192,7 @@ class FileEditor extends Node
             $start = 0;
             $max = -1; // no max
 
-            if (is_array($limit) && count($limit) == 2) {
+            if (is_array($limit) && Tools::count($limit) == 2) {
                 $start = $limit['offset'];
                 $max = $limit['limit'];
             }
@@ -207,7 +207,7 @@ class FileEditor extends Node
                 }
                 $d->close();
 
-                if (count($arr) > 0) {
+                if (Tools::count($arr) > 0) {
                     if ($orderby == 'dummy.filename DESC') {
                         rsort($arr);
                     } else {
@@ -217,8 +217,8 @@ class FileEditor extends Node
 
                 $res = [];
 
-                for ($i = 0; $i < count($arr); ++$i) {
-                    if ($i >= $start && ($max == -1 || count($res) < $max)) {
+                for ($i = 0; $i < Tools::count($arr); ++$i) {
+                    if ($i >= $start && ($max == -1 || Tools::count($res) < $max)) {
                         $res[] = array('filename' => $arr[$i]);
                     }
                 }

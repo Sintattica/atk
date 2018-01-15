@@ -51,7 +51,7 @@ class TreeToolsTree
         $res = '';
         while (list($id, $objarr) = each($tree)) {
             $res .= '<tr><td>'.str_repeat('-', (2 * $level)).' '.$objarr->m_label.'</td></tr>';
-            if (count($objarr->m_sub) > 0) {
+            if (Tools::count($objarr->m_sub) > 0) {
                 $res .= $this->render($objarr->m_sub, $level + 1);
             }
         }

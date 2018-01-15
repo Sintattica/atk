@@ -52,7 +52,7 @@ class EditCopyHandler extends ActionHandler
     {
         $selector = $this->m_postvars['atkselector'];
         $recordset = $this->m_node->select($selector)->mode('copy')->getAllRows();
-        if (count($recordset) > 0) {
+        if (Tools::count($recordset) > 0) {
             return $recordset[0];
         } else {
             Tools::atkdebug("Geen records gevonden met selector: $selector");

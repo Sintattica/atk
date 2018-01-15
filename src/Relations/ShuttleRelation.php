@@ -27,7 +27,7 @@ class ShuttleRelation extends ManyToManyRelation
      */
     public function _renderChangeHandler($fieldprefix, $elementNr = '')
     {
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $page = $this->m_ownerInstance->getPage();
             $page->register_scriptcode('
     function '.$this->getHtmlId($fieldprefix)."_onChange()
@@ -90,7 +90,7 @@ class ShuttleRelation extends ManyToManyRelation
 
         $selectedPk = [];
         // first the selected records..
-        for ($i = 0; $i < count($record[$this->m_name]); ++$i) {
+        for ($i = 0; $i < Tools::count($record[$this->m_name]); ++$i) {
             if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
                 $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->getRemoteKey()]);
             } else {
@@ -107,7 +107,7 @@ class ShuttleRelation extends ManyToManyRelation
         $right = [];
         $width = 100;
 
-        for ($i = 0; $i < count($recordset); ++$i) {
+        for ($i = 0; $i < Tools::count($recordset); ++$i) {
             if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()],
                         $this->initialValue()) && $mode == 'add')
             ) {
@@ -222,7 +222,7 @@ class ShuttleRelation extends ManyToManyRelation
                 style="width: '.($width - 10).'px; margin-bottom: 5px; max-width: 400px !important;"><div style="clear:both"></div>';
         }
         $result .= '<select class="form-control shuttle_select" id="'.$name.'" name="'.$name.'" multiple size="10" style="width: '.$width.'px;" onDblClick="ATK.ShuttleRelation.shuttle_move(\''.$name.'\', \''.$opposite.'\', \''.$fieldname.'\')">';
-        for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
             $result .= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'">'.$this->m_destInstance->descriptor($recordset[$i]);
         }
         $result .= '</select>';

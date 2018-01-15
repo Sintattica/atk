@@ -172,7 +172,7 @@ class Atk
 
         if ($actions) {
             // prefix tabs with tab_
-            for ($i = 0, $_i = count($tabs); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($tabs); $i < $_i; ++$i) {
                 $tabs[$i] = 'tab_'.$tabs[$i];
             }
 

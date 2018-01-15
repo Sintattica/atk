@@ -511,7 +511,7 @@ class NumberAttribute extends Attribute
             $style .= "$k:$v;";
         }
         
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {

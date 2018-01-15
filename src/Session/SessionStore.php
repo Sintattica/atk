@@ -102,7 +102,7 @@ class SessionStore
             return false;
         }
 
-        $primary_key = -1 * count($data);
+        $primary_key = -1 * Tools::count($data);
         $row[$primary_key_field] = $primary_key;
         $data[] = $row;
 
@@ -265,7 +265,7 @@ class SessionStore
         $selector = Tools::decodeKeyValuePair($selector);
         $selector_values = array_values($selector);
 
-        if (count($selector_values) === 1 && is_numeric($selector_values[0]) && $selector_values[0] <= 0) {
+        if (Tools::count($selector_values) === 1 && is_numeric($selector_values[0]) && $selector_values[0] <= 0) {
             return -1 * $selector_values[0];
         }
 

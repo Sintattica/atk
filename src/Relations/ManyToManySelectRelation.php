@@ -147,7 +147,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $selectedKeys = $this->getSelectedKeys($record, $id);
 
         $selectedRecords = [];
-        if (count($selectedKeys) > 0) {
+        if (Tools::count($selectedKeys) > 0) {
             $selector = '('.implode(') OR (', $selectedKeys).')';
             $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->getAllRows();
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
@@ -215,7 +215,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         // Ensure we're only adding an item once
-        if ($enforceUnique && is_array($selectedKeys) && count($selectedKeys)) {
+        if ($enforceUnique && is_array($selectedKeys) && Tools::count($selectedKeys)) {
             $selectedKeys = array_unique($selectedKeys);
         }
 
@@ -355,7 +355,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         $htmlActionLinks = '';
-        if (count($actionLink)) {
+        if (Tools::count($actionLink)) {
             $htmlActionLinks = '&nbsp;'.implode(' ', $actionLinks);
         }
 

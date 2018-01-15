@@ -556,13 +556,13 @@ class DateTimeAttribute extends Attribute
                 $parts = explode('.', $this->m_timezoneAttribute);
                 $node = $this->getOwnerInstance();
 
-                while (count($parts) > 0) {
+                while (Tools::count($parts) > 0) {
                     $part = array_shift($parts);
                     $attr = $node->getAttribute($part);
 
                     // relation, prepare for next iteration
                     if (is_a($attr, 'ManyToOneRelation')) {
-                        if (count($parts) > 0 && !isset($record[$part][$parts[0]])) {
+                        if (Tools::count($parts) > 0 && !isset($record[$part][$parts[0]])) {
                             /** @var ManyToOneRelation $attr */
                             $attr->populate($record, array($parts[0]));
                         }

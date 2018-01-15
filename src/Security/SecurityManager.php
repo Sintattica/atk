@@ -248,7 +248,7 @@ class SecurityManager
      */
     public function notifyListeners($event, $username, $extra = [])
     {
-        for ($i = 0, $_i = count($this->m_listeners); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_listeners); $i < $_i; ++$i) {
             $this->m_listeners[$i]->handleEvent($event, $username, $extra);
         }
     }
@@ -531,7 +531,7 @@ class SecurityManager
     {
         if (is_array($level)) {
             if (is_array($this->m_user['level'])) {
-                return count(array_intersect($this->m_user['level'], $level)) >= 1;
+                return Tools::count(array_intersect($this->m_user['level'], $level)) >= 1;
             } else {
                 return in_array($this->m_user['level'], $level);
             }

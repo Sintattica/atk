@@ -204,7 +204,7 @@ class TabbedPane extends Attribute
         $fields = [];
         $tab = $this->getDefaultTab();
 
-        for ($i = 0, $_i = count($data['fields']); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($data['fields']); $i < $_i; ++$i) {
             $field = &$data['fields'][$i];
             $tplfield = [];
 
@@ -368,7 +368,7 @@ class TabbedPane extends Attribute
     {
         $activeTabName = 'tabbedPaneTab'.$this->getDefaultTab();
         $list = $this->getPaneTabs($action);
-        if (count($list) > 0) {
+        if (Tools::count($list) > 0) {
             $node = $this->m_ownerInstance;
 
             $page = $node->getPage();

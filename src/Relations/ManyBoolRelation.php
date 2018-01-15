@@ -54,7 +54,7 @@ class ManyBoolRelation extends ManyToManyRelation
         $selectedPk = $this->getSelectedRecords($record);
 
         $recordset = $this->_getSelectableRecords($record, $mode);
-        $total_records = count($recordset);
+        $total_records = Tools::count($recordset);
         if ($total_records > 0) {
             $page = Page::getInstance();
             $page->register_script(Config::getGlobal('assets_url').'javascript/profileattribute.js');
@@ -87,7 +87,7 @@ class ManyBoolRelation extends ManyToManyRelation
                     }
                 }
 
-                if (count($this->m_onchangecode)) {
+                if (Tools::count($this->m_onchangecode)) {
                     $onchange = ' onChange="'.$inputId.'_onChange(this);"';
                     $this->_renderChangeHandler($fieldprefix, '_'.$i);
                 }

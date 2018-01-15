@@ -6,6 +6,7 @@ use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Driver for authentication and authorization using Microsoft's Security
@@ -91,18 +92,18 @@ class SspiAuth extends DbAuth
             Config::getGlobal('auth_sspi_accountfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
 
         $recs = $db->getRows($query);
-        if (count($recs) > 0 && $this->isLocked($recs[0])) {
+        if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
         // Erreur : on affiche le domaine et l'utilisateur dans la fenetre de login
-        if (count($recs) == 0) {
+        if (Tools::count($recs) == 0) {
             $_SERVER['PHP_AUTH_USER'] = $domain.'.'.$user;
             $ATK_VARS['auth_user'] = $domain.'.'.$user;
 
             return SecurityManager::AUTH_MISMATCH;
         }
 
-        if ((count($recs) == 1)) {
+        if ((Tools::count($recs) == 1)) {
             // Mise jour des variables directement : l'utilisateur n'a pas ete renseigne donc on le renseigne
             $_SERVER['PHP_AUTH_USER'] = $user;
             $ATK_VARS['auth_user'] = $user;
@@ -166,8 +167,8 @@ class SspiAuth extends DbAuth
         $parents = [];
 
         // We might have more then one level, so we loop the result.
-        if (count($recs) > 0) {
-            for ($i = 0; $i < count($recs); ++$i) {
+        if (Tools::count($recs) > 0) {
+            for ($i = 0; $i < Tools::count($recs); ++$i) {
                 $level[] = $recs[$i][Config::getGlobal('auth_levelfield')];
                 $groups[] = $recs[$i][$groupfield];
 
@@ -177,7 +178,7 @@ class SspiAuth extends DbAuth
             }
 
             $groups = array_merge($groups, $parents);
-            while (count($parents) > 0) {
+            while (Tools::count($parents) > 0) {
                 $precs = $this->getParentGroups($parents);
                 $parents = [];
                 foreach ($precs as $prec) {
@@ -191,7 +192,7 @@ class SspiAuth extends DbAuth
 
             $groups = array_unique($groups);
         }
-        if (count($level) == 1) {
+        if (Tools::count($level) == 1) {
             $level = $level[0];
         }
 

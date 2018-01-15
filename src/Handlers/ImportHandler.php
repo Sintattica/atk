@@ -256,9 +256,9 @@ class ImportHandler extends ActionHandler
             $skipfirstrow = $matchFound;
         }
 
-        if ($columncount > count($col_map)) {
+        if ($columncount > Tools::count($col_map)) {
             // fill with ignored
-            for ($i = 0, $_i = ($columncount - count($col_map)); $i < $_i; ++$i) {
+            for ($i = 0, $_i = ($columncount - Tools::count($col_map)); $i < $_i; ++$i) {
                 $col_map[] = '-';
             }
         }
@@ -321,7 +321,7 @@ class ImportHandler extends ActionHandler
                         $content .= "<b>Record $record:</b>&nbsp;";
                         $content .= '</td><td valign="top" class="error">';
                         $counter = 0;
-                        for ($counter = 0; $counter < count($errors) && $counter < Config::getGlobal('showmaximporterrors', 50); ++$counter) {
+                        for ($counter = 0; $counter < Tools::count($errors) && $counter < Config::getGlobal('showmaximporterrors', 50); ++$counter) {
                             $content .= $this->m_node->text($errors[$counter]['msg']).$errors[$counter]['spec'].'<br />';
                         }
                         $content .= '</td></tr>';
@@ -389,7 +389,7 @@ class ImportHandler extends ActionHandler
         $sample .= '</tr>';
 
         // sample data
-        for ($i = 0; $i < count($csv_data); ++$i) {
+        for ($i = 0; $i < Tools::count($csv_data); ++$i) {
             $line = $csv_data[$i];
 
             $sample .= '<tr class="row'.(($i % 2) + 1).'">';
@@ -453,7 +453,7 @@ class ImportHandler extends ActionHandler
             // If we can create a destination, then we can be reasonably sure it's a relation
             // and importing in a relation is a different matter altogether
             $searchresults = $attr->m_destInstance->searchDb($newval);
-            if (count($searchresults) == 1) {
+            if (Tools::count($searchresults) == 1) {
                 $atkval = array($attributename => array($attr->m_destInstance->primaryKeyField() => $searchresults[0][$attr->m_destInstance->primaryKeyField()]));
             }
         } else {
@@ -570,7 +570,7 @@ class ImportHandler extends ActionHandler
      */
     public function estimateDelimiter($rows)
     {
-        if (!is_array($rows) || count($rows) == 0) {
+        if (!is_array($rows) || Tools::count($rows) == 0) {
             return ',';
         }
         if (strpos($rows[0], ';') !== false) {
@@ -595,7 +595,7 @@ class ImportHandler extends ActionHandler
      */
     public function estimateEnclosure($rows)
     {
-        if (!is_array($rows) || count($rows) == 0) {
+        if (!is_array($rows) || Tools::count($rows) == 0) {
             return '"';
         }
         if (substr_count($rows[0], '"') >= 2) {
@@ -615,7 +615,7 @@ class ImportHandler extends ActionHandler
      */
     public function estimateColumnCount($rows, $delimiter)
     {
-        if (!is_array($rows) || count($rows) == 0) {
+        if (!is_array($rows) || Tools::count($rows) == 0) {
             return 0;
         }
         if ($delimiter == '') {
@@ -1162,7 +1162,7 @@ class ImportHandler extends ActionHandler
             $importerrors[0][] = $allfielderror;
         }
 
-        if (count($importerrors[0]) > 0) {
+        if (Tools::count($importerrors[0]) > 0) {
             // don't start importing if even the minimum requirements haven't been met
             return array('importerrors' => &$importerrors, 'validatedrecs' => array());
         }
@@ -1204,7 +1204,7 @@ class ImportHandler extends ActionHandler
 
             $rec = $initial_values;
 
-            for ($i = 0, $_i = count($col_map); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($col_map); $i < $_i; ++$i) {
                 if ($col_map[$i] != '-') {
                     if (!in_array($col_map[$i], $allFields)) {
                         // column is mapped
@@ -1253,7 +1253,7 @@ class ImportHandler extends ActionHandler
                 $relationselect = $attr->m_destInstance->select($attr->m_destInstance->m_table.'.'.$attr->m_destInstance->primaryKeyField().' = \''.$db->escapeSQL($value)."'")->getAllRows();
             }
 
-            if (count($relationselect) == 0 || count($relationselect) > 1) {
+            if (Tools::count($relationselect) == 0 || Tools::count($relationselect) > 1) {
                 static $searchresults = [];
                 if (!array_key_exists($attributename, $searchresults) || (array_key_exists($attributename, $searchresults) && !array_key_exists($value,
                             $searchresults[$attributename]))
@@ -1262,7 +1262,7 @@ class ImportHandler extends ActionHandler
                     $searchresults[$attributename][$value] = $attr->m_destInstance->searchDb($value);
                 }
 
-                if (count($searchresults[$attributename][$value]) == 1) {
+                if (Tools::count($searchresults[$attributename][$value]) == 1) {
                     $value = array($attr->m_destInstance->primaryKeyField() => $searchresults[$attributename][$value][0][$attr->m_destInstance->primaryKeyField()]);
                 } else {
                     $relation = $this->isRelationAttribute($attributename);
@@ -1412,7 +1412,7 @@ class ImportHandler extends ActionHandler
         $this->m_importNode->validate($record, $mode);
 
         foreach (array_keys($record) as $key) {
-            $error = (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
+            $error = (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && Tools::count($record[$key]['atkerror']) > 0);
         }
 
         if (isset($error)) {
@@ -1455,8 +1455,8 @@ class ImportHandler extends ActionHandler
      */
     public function _returnErrors($errors, $singleerror, $doubleerror, &$collection)
     {
-        if (count($errors) > 0) {
-            $msg = Tools::atktext((count($errors) == 1) ? $singleerror : $doubleerror).': ';
+        if (Tools::count($errors) > 0) {
+            $msg = Tools::atktext((Tools::count($errors) == 1) ? $singleerror : $doubleerror).': ';
             foreach ($errors as $key => $field) {
                 $attr = $this->getUsableAttribute($field);
                 $errors[$key] = $attr->label();
@@ -1543,7 +1543,7 @@ class ImportHandler extends ActionHandler
                 }
             }
             foreach (array_keys($rec) as $key) {
-                if (is_array($rec[$key]) && array_key_exists('atkerror', $rec[$key]) && count($rec[$key]['atkerror']) > 0) {
+                if (is_array($rec[$key]) && array_key_exists('atkerror', $rec[$key]) && Tools::count($rec[$key]['atkerror']) > 0) {
                     foreach ($rec[$key]['atkerror'] as $atkerror) {
                         $errors[] = $atkerror;
                     }
@@ -1606,7 +1606,7 @@ class ImportHandler extends ActionHandler
 
         $dbrec = $this->m_importNode->searchDb(array($updatekey1 => $updatekey1val));
 
-        if (count($dbrec) == 1) {
+        if (Tools::count($dbrec) == 1) {
             $record[$this->m_importNode->primaryKeyField()] = $dbrec[0][$this->m_importNode->primaryKeyField()];
             $record['atkprimkey'] = $dbrec[0]['atkprimkey'];
 

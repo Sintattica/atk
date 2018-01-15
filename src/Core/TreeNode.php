@@ -79,7 +79,7 @@ class TreeNode extends Node
         $recordset = $this->select(Tools::atkArrayNvl($this->m_postvars, 'atkfilter', ''))->excludes($this->m_listExcludes)->mode('admin')->getAllRows();
 
         $treeobject = new TreeToolsTree();
-        for ($i = 0; $i < count($recordset); ++$i) {
+        for ($i = 0; $i < Tools::count($recordset); ++$i) {
             $treeobject->addNode($recordset[$i][$this->m_primaryKey[0]], $recordset[$i], $recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
         }
 
@@ -180,7 +180,7 @@ class TreeNode extends Node
             // Store extra info in the record, so the recordActions override can make
             // use of some extra info to determine whether or not to show certain actions.
             if (is_array($objarr->m_label)) {
-                $objarr->m_label['subcount'] = count($objarr->m_sub);
+                $objarr->m_label['subcount'] = Tools::count($objarr->m_sub);
             }
             $this->m_tree[$s_count]['label'] = $objarr->m_label;
             $this->m_tree[$s_count]['img'] = $objarr->m_img;
@@ -192,7 +192,7 @@ class TreeNode extends Node
             }
 
             ++$s_count;
-            if (count($objarr->m_sub) > 0) {
+            if (Tools::count($objarr->m_sub) > 0) {
                 $this->treeToArray($objarr->m_sub, $level + 1);
             }
         }
@@ -226,7 +226,7 @@ class TreeNode extends Node
         global $g_maxlevel, $exp_index;
 
         // Return
-        if (count($this->m_tree) == 1) {
+        if (Tools::count($this->m_tree) == 1) {
             return '';
         }
 
@@ -249,7 +249,7 @@ class TreeNode extends Node
         //echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
         $explevels = [];
         if ($this->m_tree[0]['expand'] != 1 && $this->m_tree[0]['colapse'] != 1) { // normal operation
-            for ($i = 0; $i < count($this->m_tree); ++$i) {
+            for ($i = 0; $i < Tools::count($this->m_tree); ++$i) {
                 if ($this->m_tree[$i]['level'] < 2) {
                     if ($this->m_tree[$i]['isleaf'] == 1 && $this->m_tree[$i]['level'] < 1) {
                         $expand[$i] = 1;
@@ -268,14 +268,14 @@ class TreeNode extends Node
                 $explevels = explode('|', $this->m_postvars['atktree']);
             }
         } elseif ($this->m_tree[0]['expand'] == 1) { // expand all mode!
-            for ($i = 0; $i < count($this->m_tree); ++$i) {
+            for ($i = 0; $i < Tools::count($this->m_tree); ++$i) {
                 $expand[$i] = 1;
                 $visible[$i] = 1;
                 $levels[$i] = 0;
             }
             $this->m_tree[0]['expand'] = 0; // next time we are back in normal view mode!
         } elseif ($this->m_tree[0]['colapse'] == 1) { //  colapse all mode!
-            for ($i = 0; $i < count($this->m_tree); ++$i) {
+            for ($i = 0; $i < Tools::count($this->m_tree); ++$i) {
                 if ($this->m_tree[$i]['level'] < 2) {
                     if ($this->m_tree[$i]['isleaf'] == 1 && $this->m_tree[$i]['level'] < 1) {
                         $expand[$i] = 1;
@@ -293,7 +293,7 @@ class TreeNode extends Node
         /*  Get Node numbers to expand               */
         /*         * ****************************************** */
         $i = 0;
-        while ($i < count($explevels)) {
+        while ($i < Tools::count($explevels)) {
             //$expand[$explevels[$i]]=1;
             $expand[$exp_index[$explevels[$i]]] = 1;
 
@@ -305,7 +305,7 @@ class TreeNode extends Node
 
         $lastlevel = $g_maxlevel;
 
-        for ($i = count($this->m_tree) - 1; $i >= 0; --$i) {
+        for ($i = Tools::count($this->m_tree) - 1; $i >= 0; --$i) {
             if ($this->m_tree[$i]['level'] < $lastlevel) {
                 for ($j = $this->m_tree[$i]['level'] + 1; $j <= $g_maxlevel; ++$j) {
                     $levels[$j] = 0;
@@ -324,7 +324,7 @@ class TreeNode extends Node
         /*         * ****************************************** */
 
         $visible[0] = 1;   // root is always visible
-        for ($i = 0; $i < count($explevels); ++$i) {
+        for ($i = 0; $i < Tools::count($explevels); ++$i) {
             $n = $exp_index[$explevels[$i]];
             if (($visible[$n] == 1) && ($expand[$n] == 1)) {
                 $j = $n + 1;
@@ -354,7 +354,7 @@ class TreeNode extends Node
         }
         $res .= "</tr>\n";
         $cnt = 0;
-        while ($cnt < count($this->m_tree)) {
+        while ($cnt < Tools::count($this->m_tree)) {
             if ($visible[$cnt]) {
                 $currentlevel = (isset($this->m_tree[$cnt]['level']) ? $this->m_tree[$cnt]['level'] : 0);
                 $nextlevel = (isset($this->m_tree[$cnt + 1]['level']) ? $this->m_tree[$cnt + 1]['level'] : 0);
@@ -393,7 +393,7 @@ class TreeNode extends Node
                             /*                             * ************************************* */
                             $i = 0;
                             $params = 'atktree=';
-                            while ($i < count($expand)) {
+                            while ($i < Tools::count($expand)) {
                                 if (($expand[$i] == 1) && ($cnt != $i) || ($expand[$i] == 0 && $cnt == $i)) {
                                     $params = $params.$this->m_tree[$i]['id'];
                                     $params = $params.'|';
@@ -425,7 +425,7 @@ class TreeNode extends Node
                             /*                             * ************************************* */
                             $i = 0;
                             $params = 'atktree=';
-                            while ($i < count($expand)) {
+                            while ($i < Tools::count($expand)) {
                                 if (($expand[$i] == 1) && ($cnt != $i) || ($expand[$i] == 0 && $cnt == $i)) {
                                     $params = $params.$this->m_tree[$i]['id'];
                                     $params = $params.'|';
@@ -475,7 +475,7 @@ class TreeNode extends Node
                     if ($foldable) {
                         $i = 0;
                         $params = 'atktree=';
-                        while ($i < count($expand)) {
+                        while ($i < Tools::count($expand)) {
                             if (($expand[$i] == 1) && ($cnt != $i) || ($expand[$i] == 0 && $cnt == $i)) {
                                 $params = $params.$this->m_tree[$i]['id'];
                                 $params = $params.'|';
@@ -614,8 +614,8 @@ class TreeNode extends Node
     {
         $recordset = $this->select($selector)->mode($mode)->getAllRows();
 
-        if (count($recordset) > 0) {
-            for ($i = 0; $i < count($recordset); ++$i) {
+        if (Tools::count($recordset) > 0) {
+            for ($i = 0; $i < Tools::count($recordset); ++$i) {
                 $recordset[$i][$this->m_parent] = array('' => '', $this->m_primaryKey[0] => $parent);
                 $oldrec = $recordset[$i];
                 parent::copyDb($recordset[$i], $mode);
@@ -642,7 +642,7 @@ class TreeNode extends Node
     {
         Tools::atkdebug('Retrieve record');
         $recordset = $this->select($selector)->mode('delete')->getAllRows();
-        for ($i = 0; $i < count($recordset); ++$i) {
+        for ($i = 0; $i < Tools::count($recordset); ++$i) {
             foreach (array_keys($this->m_attribList) as $attribname) {
                 $p_attrib = $this->m_attribList[$attribname];
                 if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
@@ -655,7 +655,7 @@ class TreeNode extends Node
             Tools::atkdebug('Check for child records');
             $children = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
 
-            if (count($children) > 0) {
+            if (Tools::count($children) > 0) {
                 Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
                 $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent, $parent);
             }
@@ -665,7 +665,7 @@ class TreeNode extends Node
         $query = 'DELETE FROM '.$this->m_table.' WHERE '.$selector;
         $db->query($query);
 
-        for ($i = 0; $i < count($recordset); ++$i) {
+        for ($i = 0; $i < Tools::count($recordset); ++$i) {
             $this->postDel($recordset[$i]);
             $this->postDelete($recordset[$i]);
         }
@@ -684,7 +684,7 @@ class TreeNode extends Node
     {
         Tools::atkdebug('Check for child records of the Child');
         $recordset = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
-        for ($i = 0; $i < count($recordset); ++$i) {
+        for ($i = 0; $i < Tools::count($recordset); ++$i) {
             foreach (array_keys($this->m_attribList) as $attribname) {
                 $p_attrib = $this->m_attribList[$attribname];
                 if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
@@ -693,8 +693,8 @@ class TreeNode extends Node
             }
         }
 
-        if (count($recordset) > 0) {
-            for ($i = 0; $i < count($recordset); ++$i) {
+        if (Tools::count($recordset) > 0) {
+            for ($i = 0; $i < Tools::count($recordset); ++$i) {
                 $parent = $recordset[$i][$this->m_primaryKey[0]];
                 Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]].','.$parent.')');
                 $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]], $parent);

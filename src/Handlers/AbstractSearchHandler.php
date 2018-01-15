@@ -176,7 +176,7 @@ abstract class AbstractSearchHandler extends ActionHandler
     public function getLoadCriteria($current)
     {
         $criteria = $this->listCriteria();
-        if (count($criteria) == 0) {
+        if (Tools::count($criteria) == 0) {
             return;
         }
 

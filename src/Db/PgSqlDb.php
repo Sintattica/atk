@@ -411,7 +411,7 @@ class PgSqlDb extends Db
         }
 
         if ($full) {
-            $meta['num_fields'] = count($rows);
+            $meta['num_fields'] = Tools::count($rows);
         }
 
         return $meta;
@@ -497,7 +497,7 @@ class PgSqlDb extends Db
     {
         $res = $this->getRows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('".$table."')");
 
-        return count($res) == 0 ? false : true;
+        return Tools::count($res) == 0 ? false : true;
     }
 
     public function commit()

@@ -25,7 +25,7 @@ class Config
 
         // Get the application config
         $applicationConfig = self::getConfigValues(self::$s_globals['application_config']);
-        if (is_array($applicationConfig) && count($applicationConfig)) {
+        if (is_array($applicationConfig) && Tools::count($applicationConfig)) {
             self::$s_globals = Tools::atk_array_merge_recursive(self::$s_globals, $applicationConfig);
         }
     }

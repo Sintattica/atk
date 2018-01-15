@@ -481,7 +481,7 @@ class DataGrid
             $this->addComponent('index', 'atk.datagrid.atkdgindex');
         }
 
-        if (count($this->getNode()->m_editableListAttributes) > 0) {
+        if (Tools::count($this->getNode()->m_editableListAttributes) > 0) {
             $this->addComponent('editcontrol', __NAMESPACE__.'\\DataGridEditControl');
         }
     }

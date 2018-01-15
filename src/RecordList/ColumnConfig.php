@@ -614,7 +614,7 @@ class ColumnConfig
             $expression = trim($expression);
             $expressionParts = preg_split('/\\s+/', $expression);
 
-            if (count($expressionParts) == 2) {
+            if (Tools::count($expressionParts) == 2) {
                 list($column, $direction) = $expressionParts;
             } else {
                 $column = $expression;

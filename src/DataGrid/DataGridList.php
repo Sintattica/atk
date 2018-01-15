@@ -28,7 +28,7 @@ class DataGridList extends DataGridComponent
     {
         $alwaysShowGrid = $this->getOption('alwaysShowGrid', false);
 
-        if (!$alwaysShowGrid && $this->getGrid()->isEmbedded() && !$this->getGrid()->isUpdate() && count($this->getGrid()->getRecords()) == 0) {
+        if (!$alwaysShowGrid && $this->getGrid()->isEmbedded() && !$this->getGrid()->isUpdate() && Tools::count($this->getGrid()->getRecords()) == 0) {
             return '';
         }
 
@@ -67,22 +67,22 @@ class DataGridList extends DataGridComponent
 
         /* Check if some flags are still valid or not... */
         $hasMRA = $grid->hasFlag(DataGrid::MULTI_RECORD_ACTIONS);
-        if ($hasMRA && (count($list['mra']) == 0 || count($list['rows']) == 0)) {
+        if ($hasMRA && (Tools::count($list['mra']) == 0 || Tools::count($list['rows']) == 0)) {
             $hasMRA = false;
         }
 
         $hasSearch = $grid->hasFlag(DataGrid::SEARCH) && !$grid->isEditing();
-        if ($hasSearch && count($list['search']) == 0) {
+        if ($hasSearch && Tools::count($list['search']) == 0) {
             $hasSearch = false;
         }
 
-        if ($grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS) && (count($grid->getNode()->m_priority_actions) == 0 || count($list['rows']) == 0)) {
+        if ($grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS) && (Tools::count($grid->getNode()->m_priority_actions) == 0 || Tools::count($list['rows']) == 0)) {
             $grid->removeFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
         } else {
             if ($grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
                 $grid->removeFlag(DataGrid::MULTI_RECORD_ACTIONS);
                 if ($grid->getNode()->m_priority_max == 0) {
-                    $grid->getNode()->m_priority_max = $grid->getNode()->m_priority_min + count($list['rows']) - 1;
+                    $grid->getNode()->m_priority_max = $grid->getNode()->m_priority_min + Tools::count($list['rows']) - 1;
                 }
             }
         }
@@ -96,7 +96,7 @@ class DataGridList extends DataGridComponent
         /**************/
         $headercols = [];
 
-        if ($hasActionCol && count($list['rows']) == 0) {
+        if ($hasActionCol && Tools::count($list['rows']) == 0) {
             if ($orientation == 'left' || $orientation == 'both') {
                 // empty cell above search button, if zero rows
                 // if $orientation is empty, no search button is shown, so no empty cell is needed
@@ -108,7 +108,7 @@ class DataGridList extends DataGridComponent
             $headercols[] = array('content' => ''); // Empty leader on top of mra action list.
         }
 
-        if (($orientation == 'left' || $orientation == 'both') && ($hasActionCol && count($list['rows']) > 0)) {
+        if (($orientation == 'left' || $orientation == 'both') && ($hasActionCol && Tools::count($list['rows']) > 0)) {
             $headercols[] = array('content' => '');
         }
 
@@ -121,11 +121,11 @@ class DataGridList extends DataGridComponent
             }
         }
 
-        if (($orientation == 'right' || $orientation == 'both') && ($hasActionCol && count($list['rows']) > 0)) {
+        if (($orientation == 'right' || $orientation == 'both') && ($hasActionCol && Tools::count($list['rows']) > 0)) {
             $headercols[] = array('content' => '');
         }
 
-        if ($hasActionCol && count($list['rows']) == 0) {
+        if ($hasActionCol && Tools::count($list['rows']) == 0) {
             if ($orientation == 'right' || $orientation == 'both') {
                 // empty cell above search button, if zero rows
                 // if $orientation is empty, no search button is shown, so no empty cell is needed
@@ -221,12 +221,12 @@ class DataGridList extends DataGridComponent
         /********/
         $records = [];
         $keys = array_keys($actions);
-        $actionurl = (count($actions) > 0) ? $actions[$keys[0]] : '';
+        $actionurl = (Tools::count($actions) > 0) ? $actions[$keys[0]] : '';
         $actionloader = "ATK.RL.a['".$listName."'] = {};";
         $actionloader .= "\nATK.RL.a['".$listName."']['base'] = '".$sm->sessionVars($grid->getActionSessionStatus(), 1, $actionurl)."';";
         $actionloader .= "\nATK.RL.a['".$listName."']['embed'] = ".($grid->isEmbedded() ? 'true' : 'false').';';
 
-        for ($i = 0, $_i = count($list['rows']); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($list['rows']); $i < $_i; ++$i) {
             $record = [];
 
             /* Special rowColor method makes it possible to change the row color based on the record data.
@@ -267,7 +267,7 @@ class DataGridList extends DataGridComponent
                 $record['cols'][] = array('content' => $select, 'type' => 'mrpa');
             }  elseif (!$edit && $hasMRA) {
                 /* multi-record-actions -> checkbox */
-                if (count($list['rows'][$i]['mra']) > 0) {
+                if (Tools::count($list['rows'][$i]['mra']) > 0) {
                     switch ($grid->getMRASelectionMode()) {
                         case Node::MRA_SINGLE_SELECT:
                             $inputHTML = '<input type="radio" name="'.$listName.'_atkselector[]" value="'.$list['rows'][$i]['selector'].'" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
@@ -374,12 +374,12 @@ class DataGridList extends DataGridComponent
         /*************/
         $totalcols = [];
 
-        if (count($list['total']) > 0) {
+        if (Tools::count($list['total']) > 0) {
             if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
                 $totalcols[] = array('content' => '');
             }
 
-            if (($orientation == 'left' || $orientation == 'both') && ($hasActionCol && count($list['rows']) > 0)) {
+            if (($orientation == 'left' || $orientation == 'both') && ($hasActionCol && Tools::count($list['rows']) > 0)) {
                 $totalcols[] = array('content' => '');
             }
 
@@ -391,7 +391,7 @@ class DataGridList extends DataGridComponent
             }
 
 
-            if (($orientation == 'right' || $orientation == 'both') && ($hasActionCol && count($list['rows']) > 0)) {
+            if (($orientation == 'right' || $orientation == 'both') && ($hasActionCol && Tools::count($list['rows']) > 0)) {
                 $totalcols[] = array('content' => '');
             }
         }
@@ -404,7 +404,7 @@ class DataGridList extends DataGridComponent
             $target = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$grid->getActionNode()->atkNodeUri(), SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
-            if (count($grid->getNode()->m_priority_actions) > 1) {
+            if (Tools::count($grid->getNode()->m_priority_actions) > 1) {
                 $mra = '<select name="'.$listName.'_atkaction" class="form-control select-standard">'.'<option value="">'.Tools::atktext('with_selected').':</option>';
 
                 foreach ($grid->getNode()->m_priority_actions as $name) {
@@ -429,13 +429,13 @@ class DataGridList extends DataGridComponent
 
             $mra_select = "$mra_all $mra_none $mra_invert ";
 
-            $mra = (count($list['rows']) > 1 && $grid->getMRASelectionMode() == Node::MRA_MULTI_SELECT ? $mra_select : '');
+            $mra = (Tools::count($list['rows']) > 1 && $grid->getMRASelectionMode() == Node::MRA_MULTI_SELECT ? $mra_select : '');
 
             $module = $grid->getNode()->m_module;
             $nodetype = $grid->getNode()->m_type;
 
             /* multiple actions -> dropdown */
-            if (count($list['mra']) > 1) {
+            if (Tools::count($list['mra']) > 1) {
                 $default = $this->getGrid()->getMRADefaultAction();
                 $mra .= '<select data-minimum-results-for-search="Infinity" data-width="element" name="'.$listName.'_atkaction" id="'.$listName.'_atkaction" onchange="ATK.FormSelect.updateSelectable(\''.$listName.'\', this.form);" class="form-control">'.'<option value="">'.Tools::atktext('with_selected').'</option>';
 
@@ -653,7 +653,7 @@ class DataGridList extends DataGridComponent
         $this->_addListArrayHeader($result, $prefix, $suppress, $flags, $columnConfig);
 
         /* actions array can contain multi-record-actions */
-        if (count($actions) == 2 && count(array_diff(array_keys($actions), array('actions', 'mra'))) == 0) {
+        if (Tools::count($actions) == 2 && Tools::count(array_diff(array_keys($actions), array('actions', 'mra'))) == 0) {
             $mra = $actions['mra'];
             $actions = $actions['actions'];
         } else {
@@ -661,7 +661,7 @@ class DataGridList extends DataGridComponent
         }
 
         /* get the rows */
-        for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
             $result['rows'][$i] = array(
                 'columns' => [],
                 'actions' => $actions,
@@ -719,7 +719,7 @@ class DataGridList extends DataGridComponent
         }
 
         // override totals
-        if (!Config::getGlobal('datagrid_total_paginate') && is_array($result['total']) && count($result['total']) > 0) {
+        if (!Config::getGlobal('datagrid_total_paginate') && is_array($result['total']) && Tools::count($result['total']) > 0) {
             $selector = $grid->getNode()->select()->ignoreDefaultFilters();
             foreach ($grid->getFilters() as $filter) {
                 $selector->where($filter['filter'], $filter['params']);

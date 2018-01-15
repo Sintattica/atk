@@ -59,7 +59,7 @@ class AggregatedColumn extends Attribute
         $parser = new StringParser($template);
         $this->m_displayfields = $parser->getFields();
 
-        if (!count($searchFields)) {
+        if (!Tools::count($searchFields)) {
             $this->m_searchfields = $this->m_displayfields;
         } else {
             $this->m_searchfields = $searchFields;
@@ -219,7 +219,7 @@ class AggregatedColumn extends Attribute
             $searchconditions[] = $condition;
         }
 
-        if (count($searchconditions)) {
+        if (Tools::count($searchconditions)) {
             return '('.implode(' OR ', $searchconditions).')';
         }
 

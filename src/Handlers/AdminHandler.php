@@ -187,7 +187,7 @@ class AdminHandler extends ActionHandler
         $search = $grid->getPostvar('atksearch');
 
         // check if we are searching and a search action has been defined
-        if (!is_array($search) || count($search) == 0 || !is_array($node->m_search_action) || count($node->m_search_action) == 0) {
+        if (!is_array($search) || Tools::count($search) == 0 || !is_array($node->m_search_action) || Tools::count($node->m_search_action) == 0) {
             return false;
         }
 
@@ -279,7 +279,7 @@ class AdminHandler extends ActionHandler
         $link = '';
         if ($this->m_node->allowed('view') && $this->m_node->allowed('export') && $this->m_node->hasFlag(Node::NF_EXPORT)) {
             $filter = '';
-            if (count($this->m_node->m_fuzzyFilters) > 0) {
+            if (Tools::count($this->m_node->m_fuzzyFilters) > 0) {
                 $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
             }
 

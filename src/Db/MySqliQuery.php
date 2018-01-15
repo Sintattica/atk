@@ -47,12 +47,12 @@ class MySqliQuery extends Query
     public function _addFrom(&$query)
     {
         $query .= ' FROM (';
-        for ($i = 0; $i < count($this->m_tables); ++$i) {
+        for ($i = 0; $i < Tools::count($this->m_tables); ++$i) {
             $query .= $this->quoteField($this->m_tables[$i]);
             if ($this->m_aliases[$i] != '') {
                 $query .= ' '.$this->m_aliases[$i];
             }
-            if ($i < count($this->m_tables) - 1) {
+            if ($i < Tools::count($this->m_tables) - 1) {
                 $query .= ', ';
             }
         }
@@ -68,23 +68,23 @@ class MySqliQuery extends Query
     {
         $result = 'INSERT INTO '.$this->quoteField($this->m_tables[0]).' (';
 
-        for ($i = 0; $i < count($this->m_fields); ++$i) {
+        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
             $result .= $this->quoteField($this->m_fields[$i]);
-            if ($i < count($this->m_fields) - 1) {
+            if ($i < Tools::count($this->m_fields) - 1) {
                 $result .= ',';
             }
         }
 
         $result .= ') VALUES (';
 
-        for ($i = 0; $i < count($this->m_fields); ++$i) {
+        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
             if (($this->m_values[$this->m_fields[$i]] === "''") and ($this->m_db->m_tableMeta[$this->m_tables[0]][$this->m_fields[$i]]['type'] == 'int')) {
                 Tools::atkdebug("MysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '".$this->m_fields[$i]."'");
                 $result .= "'0'";
             } else {
                 $result .= $this->m_values[$this->m_fields[$i]];
             }
-            if ($i < count($this->m_fields) - 1) {
+            if ($i < Tools::count($this->m_fields) - 1) {
                 $result .= ',';
             }
         }
@@ -200,10 +200,10 @@ class MySqliQuery extends Query
      */
     public function buildCount($distinct = false)
     {
-        if (($distinct || $this->m_distinct) && count($this->m_fields) > 0) {
+        if (($distinct || $this->m_distinct) && Tools::count($this->m_fields) > 0) {
             $result = 'SELECT COUNT(DISTINCT ';
             $fields = $this->quoteFields($this->m_fields);
-            for ($i = 0; $i < count($fields); ++$i) {
+            for ($i = 0; $i < Tools::count($fields); ++$i) {
                 $fields[$i] = "COALESCE({$fields[$i]}, '###ATKNULL###')";
             }
             $result .= implode($this->quoteFields($fields), ', ');
@@ -212,26 +212,26 @@ class MySqliQuery extends Query
             $result = 'SELECT COUNT(*) as count FROM ';
         }
 
-        for ($i = 0; $i < count($this->m_tables); ++$i) {
+        for ($i = 0; $i < Tools::count($this->m_tables); ++$i) {
             $result .= $this->quoteField($this->m_tables[$i]);
             if ($this->m_aliases[$i] != '') {
                 $result .= ' '.$this->m_aliases[$i];
             }
-            if ($i < count($this->m_tables) - 1) {
+            if ($i < Tools::count($this->m_tables) - 1) {
                 $result .= ', ';
             }
         }
 
-        for ($i = 0; $i < count($this->m_joins); ++$i) {
+        for ($i = 0; $i < Tools::count($this->m_joins); ++$i) {
             $result .= $this->m_joins[$i];
         }
 
-        if (count($this->m_conditions) > 0) {
+        if (Tools::count($this->m_conditions) > 0) {
             $result .= ' WHERE ('.implode(') AND (', $this->m_conditions).')';
         }
 
-        if (count($this->m_searchconditions) > 0) {
-            if (count($this->m_conditions) == 0) {
+        if (Tools::count($this->m_searchconditions) > 0) {
+            if (Tools::count($this->m_conditions) == 0) {
                 $prefix = ' WHERE ';
             } else {
                 $prefix = ' AND ';
@@ -243,7 +243,7 @@ class MySqliQuery extends Query
             }
         }
 
-        if (count($this->m_groupbys) > 0) {
+        if (Tools::count($this->m_groupbys) > 0) {
             $result .= ' GROUP BY '.implode(', ', $this->m_groupbys);
         }
 

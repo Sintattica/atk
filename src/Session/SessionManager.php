@@ -578,16 +578,16 @@ class SessionManager
         // Prevent going more than 1 level above the current stack top which
         // causes a new stackitem to be pushed onto the stack at the wrong
         // location.
-        if ($this->atklevel > count($stack)) {
-            Tools::atkdebug('Requested ATKLevel ('.$this->atklevel.') too high for stack, lowering to '.count($stack));
-            $this->atklevel = count($stack);
+        if ($this->atklevel > Tools::count($stack)) {
+            Tools::atkdebug('Requested ATKLevel ('.$this->atklevel.') too high for stack, lowering to '.Tools::count($stack));
+            $this->atklevel = Tools::count($stack);
         }
 
         if (isset($postvars['atkescape']) && $postvars['atkescape'] != '') {
             $this->m_escapemode = true;
             Tools::atkdebug('ATK session escapemode');
 
-            $currentitem = &$stack[count($stack) - 1];
+            $currentitem = &$stack[Tools::count($stack) - 1];
 
             Tools::atkdebug('Saving formdata in session');
 
@@ -634,7 +634,7 @@ class SessionManager
                     // Note that the atklevel is now -2. This is actually wrong. We are at
                     // some level in the stack. We can determine the real level by
                     // counting the stack.
-                    $this->atklevel = count($stack);
+                    $this->atklevel = Tools::count($stack);
                 } else {
                     if ($this->atklevel == -3) { // SessionManager::SESSION_PARTIAL
                         $partial = true;
@@ -642,7 +642,7 @@ class SessionManager
                         // Note that the atklevel is now -3. This is actually wrong. We are at
                         // some level in the stack. We can determine the real level by
                         // counting the stack.
-                        $this->atklevel = count($stack) - 1;
+                        $this->atklevel = Tools::count($stack) - 1;
                     }
                 }
             }
@@ -656,8 +656,8 @@ class SessionManager
                 // Initialise
                 $currentitem = [];
                 // new level.. always based on the previous level
-                if (isset($stack[count($stack) - 1])) {
-                    $copieditem = $stack[count($stack) - 1];
+                if (isset($stack[Tools::count($stack) - 1])) {
+                    $copieditem = $stack[Tools::count($stack) - 1];
                 }
 
                 if (isset($copieditem) && is_array($copieditem)) {
@@ -696,7 +696,7 @@ class SessionManager
             } else {
                 // Stay at the current level..
                 // If we are getting back from a higher level, we may now delete everything above
-                $deletecount = (count($stack) - 1) - $this->atklevel;
+                $deletecount = (Tools::count($stack) - 1) - $this->atklevel;
                 for ($i = 0; $i < $deletecount; ++$i) {
                     Tools::atkdebug('popped an item out of the stack');
                     array_pop($stack);
@@ -706,7 +706,7 @@ class SessionManager
                     $recursive = $var{strlen($var) - 1} == '*';
                     $var = $recursive ? substr($var, 0, -1) : $var;
 
-                    if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
+                    if (isset($postvars[$var]) && Tools::count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
                         if ($recursive && isset($currentitem[$var]) && is_array($currentitem[$var]) && is_array($postvars[$var])) {
                             $currentitem[$var] = Tools::atk_array_merge_recursive($currentitem[$var], $postvars[$var]);
                         } else {
@@ -720,7 +720,7 @@ class SessionManager
 
                 // session vars need not be remembered..
                 foreach ($sessionVars as $var) {
-                    if (isset($postvars[$var]) && count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
+                    if (isset($postvars[$var]) && Tools::count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
                         $currentitem[$var] = $postvars[$var];
                     }
                 }
@@ -777,7 +777,7 @@ class SessionManager
         $res = [];
         $stack = $sessionData[$this->m_namespace]['stack'][$this->atkStackID()];
 
-        for ($i = 0; $i < count($stack); ++$i) {
+        for ($i = 0; $i < Tools::count($stack); ++$i) {
             if (!isset($stack[$i]['atknodeuri'])) {
                 continue;
             }
@@ -799,7 +799,7 @@ class SessionManager
                 'actiontitle' => Tools::atktext($action, $module, $type),
             );
 
-            if ($i < count($stack) - 1) {
+            if ($i < Tools::count($stack) - 1) {
                 $entry['url'] = $this->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$i);
             }
 
@@ -828,7 +828,7 @@ class SessionManager
         $node = null;
         $module = null;
         $nodename = null;
-        $stackcount = count($stack);
+        $stackcount = Tools::count($stack);
         $atk = Atk::getInstance();
         for ($i = 0; $i < $stackcount; ++$i) {
             if (isset($stack[$i]['descriptor']) || $i == ($stackcount - 1)) {
@@ -874,7 +874,7 @@ class SessionManager
         if (!is_array($stack)) {
             $prevlevelfromstack = 0;
         } else {
-            $prevlevelfromstack = count($stack) - 1;
+            $prevlevelfromstack = Tools::count($stack) - 1;
         }
 
         $oldStackId = $this->atkStackID();
@@ -892,7 +892,7 @@ class SessionManager
             // (there may be more levels on the stack than we should have, because
             // we forked from another window which might already be at a higher
             // stack level).
-            $deletecount = (count($stack) - 1) - $this->atkprevlevel;
+            $deletecount = (Tools::count($stack) - 1) - $this->atkprevlevel;
             for ($i = 0; $i < $deletecount; ++$i) {
                 Tools::atkdebug('popped an item out of the forked stack');
                 array_pop($stack);
@@ -1022,7 +1022,7 @@ class SessionManager
         $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'" />';
         $res .= '<input type="hidden" name="atkescape" value="" autocomplete="off" />';
 
-        for ($i = 0; $i < count($g_stickyurl); ++$i) {
+        for ($i = 0; $i < Tools::count($g_stickyurl); ++$i) {
             $value = $GLOBALS[$g_stickyurl[$i]];
             if ($value != '') {
                 $res .= "\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'" />';
@@ -1060,7 +1060,7 @@ class SessionManager
             $vars .= '&atkstackid='.$this->atkStackID();
         }
 
-        for ($i = 0; $i < count($g_stickyurl); ++$i) {
+        for ($i = 0; $i < Tools::count($g_stickyurl); ++$i) {
             $value = $GLOBALS[$g_stickyurl[$i]];
             if ($value != '') {
                 if (substr($vars, -1) != '&') {

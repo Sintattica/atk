@@ -193,7 +193,7 @@ class OneToManyRelation extends Relation
      */
     public function getOwnerFields()
     {
-        if (is_array($this->m_ownerFields) && count($this->m_ownerFields) > 0) {
+        if (is_array($this->m_ownerFields) && Tools::count($this->m_ownerFields) > 0) {
             return $this->m_ownerFields;
         }
 
@@ -360,7 +360,7 @@ class OneToManyRelation extends Relation
         $records = $record[$this->fieldName()];
 
         // no records
-        if (count($records) == 0) {
+        if (Tools::count($records) == 0) {
             return !in_array($mode, array('csv', 'plain', 'list')) ? $this->text('none') : '';
         }
 
@@ -421,7 +421,7 @@ class OneToManyRelation extends Relation
 
         if ($mode === 'edit') {
             $usesIndex = $grid->getIndex() != null;
-            $isSearching = is_array($grid->getPostvar('atksearch')) && count($grid->getPostvar('atksearch')) > 0;
+            $isSearching = is_array($grid->getPostvar('atksearch')) && Tools::count($grid->getPostvar('atksearch')) > 0;
             if ($grid->getCount() == 0 && ($usesIndex || $isSearching)) {
                 $grid->setComponentOption('list', 'alwaysShowGrid', true);
             }
@@ -567,7 +567,7 @@ class OneToManyRelation extends Relation
     public function _getNestedAddLink($myrecords, $record, $saveform = true, $fieldprefix = '', $params = [])
     {
         $url = '';
-        if ((int)$this->m_maxRecords !== 0 && $this->m_maxRecords <= count($myrecords)) {
+        if ((int)$this->m_maxRecords !== 0 && $this->m_maxRecords <= Tools::count($myrecords)) {
             return $url;
         }
         if (!$this->createDestination()) {
@@ -583,7 +583,7 @@ class OneToManyRelation extends Relation
         }
 
         $onchange = '';
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         }
@@ -611,7 +611,7 @@ class OneToManyRelation extends Relation
             // The referential key must be set to the value of the current
             // primary key.
             $this->createDestination();
-            for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
                 $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
                 $value = $primkeyattr->value2db($record);
                 if (!strlen($value)) {
@@ -621,7 +621,7 @@ class OneToManyRelation extends Relation
                 $filterelems[] = $this->m_refKey[0].'.'.$ownerfields[$i]."='".$this->escapeSQL($value)."'";
             }
         } else {
-            for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
                 $value = $record[$ownerfields[$i]];
                 if (!strlen($value)) {
                     continue;
@@ -724,12 +724,12 @@ class OneToManyRelation extends Relation
 
         $whereelems = [];
 
-        if (count($this->m_refKey) == 0 || $this->m_refKey[0] == '') {
+        if (Tools::count($this->m_refKey) == 0 || $this->m_refKey[0] == '') {
             $this->m_refKey[0] = $this->m_owner;
         }
         $ownerfields = $this->getOwnerFields();
 
-        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
@@ -796,12 +796,12 @@ class OneToManyRelation extends Relation
      */
     public function isEmpty($record)
     {
-        if (!isset($record[$this->fieldName()]) || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == 0)) {
+        if (!isset($record[$this->fieldName()]) || (is_array($record[$this->fieldName()]) && Tools::count($record[$this->fieldName()]) == 0)) {
             // empty. It might be that the record has not yet been fetched. In this case, we do
             // a forced load to see if it's really empty.
             $recs = $this->load($this->m_ownerInstance->getDb(), $record, null);
 
-            return count($recs) == 0;
+            return Tools::count($recs) == 0;
         }
 
         return false;
@@ -828,7 +828,7 @@ class OneToManyRelation extends Relation
         $ownerfields = $this->getOwnerFields();
 
         $whereelems = [];
-        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
             $whereelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
         }
@@ -936,7 +936,7 @@ class OneToManyRelation extends Relation
     private function storeCopy($db, $record, $mode)
     {
         $onetomanyrecs = $record[$this->fieldName()];
-        if (!is_array($onetomanyrecs) || count($onetomanyrecs) <= 0) {
+        if (!is_array($onetomanyrecs) || Tools::count($onetomanyrecs) <= 0) {
             return true;
         }
 
@@ -945,7 +945,7 @@ class OneToManyRelation extends Relation
         }
 
         $ownerfields = $this->getOwnerFields();
-        for ($i = 0; $i < count($onetomanyrecs); ++$i) {
+        for ($i = 0; $i < Tools::count($onetomanyrecs); ++$i) {
             // original record
             $original = $onetomanyrecs[$i];
             $onetomanyrecs[$i]['atkorgrec'] = $original;
@@ -954,11 +954,11 @@ class OneToManyRelation extends Relation
             // are called for example from a copy function. So just in case,
             // we reset the correct key.
             if (!$this->destinationHasRelation()) {
-                for ($j = 0, $_j = count($this->m_refKey); $j < $_j; ++$j) {
+                for ($j = 0, $_j = Tools::count($this->m_refKey); $j < $_j; ++$j) {
                     $onetomanyrecs[$i][$this->m_refKey[$j]] = $record[$ownerfields[$j]];
                 }
             } else {
-                for ($j = 0, $_j = count($this->m_refKey); $j < $_j; ++$j) {
+                for ($j = 0, $_j = Tools::count($this->m_refKey); $j < $_j; ++$j) {
                     $onetomanyrecs[$i][$this->m_refKey[0]][$ownerfields[$j]] = $record[$ownerfields[$j]];
                 }
             }
@@ -1027,7 +1027,7 @@ class OneToManyRelation extends Relation
         $conditions = [];
         $ownerfields = $this->getOwnerFields();
 
-        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
             $conditions[] = $this->_addTablePrefix($this->m_refKey[$i], $destAlias).'='.$ownerAlias.'.'.$ownerfields[$i];
         }
 
@@ -1051,7 +1051,7 @@ class OneToManyRelation extends Relation
         // one-to-many join means we need to perform a distinct select
         $query->setDistinct(true);
 
-        if (count($path) > 0) {
+        if (Tools::count($path) > 0) {
             $this->createDestination();
 
             $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
@@ -1141,7 +1141,7 @@ class OneToManyRelation extends Relation
             }
         }
 
-        if (count($searchconditions) > 0) {
+        if (Tools::count($searchconditions) > 0) {
             return '('.implode(' OR ', $searchconditions).')';
         } else {
             return false;
@@ -1256,7 +1256,7 @@ class OneToManyRelation extends Relation
         $this->createDestination();
 
         // Check the filter for every SQL operators
-        for ($counter = 0; $counter < count($sqloperators); ++$counter) {
+        for ($counter = 0; $counter < Tools::count($sqloperators); ++$counter) {
             if ($sqloperators[$counter]) {
                 list($key, $value) = explode($sqloperators[$counter], $selector);
 
@@ -1264,7 +1264,7 @@ class OneToManyRelation extends Relation
                 if ($value) {
                     // check if it's on the destination
                     $destinationkey = '';
-                    for ($refkeycount = 0; $refkeycount < count($this->m_refKey); ++$refkeycount) {
+                    for ($refkeycount = 0; $refkeycount < Tools::count($this->m_refKey); ++$refkeycount) {
                         $destinationkey = $this->m_destInstance->m_table.'.'.$this->m_refKey[$refkeycount];
 
                         // if the selector is on the destination, we pass it back

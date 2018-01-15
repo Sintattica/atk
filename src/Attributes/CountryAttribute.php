@@ -374,7 +374,7 @@ class CountryAttribute extends ListAttribute
             }
         }
 
-        if (count($custom_list) == 0) {
+        if (Tools::count($custom_list) == 0) {
             Tools::atkerror('atkCountryAttribute: setList: empty custom country list');
 
             return false;

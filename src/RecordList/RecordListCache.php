@@ -239,7 +239,7 @@ class RecordListCache
      */
     public function _formatIdentifiers($identifiers, &$output)
     {
-        if (count($identifiers) > 0) {
+        if (Tools::count($identifiers) > 0) {
             foreach ($identifiers as $identifier) {
                 $output[] = '_'.$identifier['key'].$identifier['value'];
             }
