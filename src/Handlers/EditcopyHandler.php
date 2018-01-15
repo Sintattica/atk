@@ -11,7 +11,7 @@ use Sintattica\Atk\Core\Tools;
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-class EditCopyHandler extends ActionHandler
+class EditcopyHandler extends ActionHandler
 {
     /**
      * The action method.
