@@ -193,7 +193,7 @@ class Language
         }
 
         // If multiple strings given, iterate through all strings and return the translation if found
-        for ($i = 0, $_i = count($string); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($string); $i < $_i; ++$i) {
             // Try to get the translation
             $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
 

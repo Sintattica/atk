@@ -56,7 +56,7 @@ class MultiSelectHandler extends AdminHandler
         $atktargetvar = $node->m_postvars['atktargetvar'];
         $atktargettpl = $node->m_postvars['atktargetvartpl'];
 
-        for ($i = 0; $i < count($recordset); ++$i) {
+        for ($i = 0; $i < Tools::count($recordset); ++$i) {
             if ($i == 0 && strpos($atktarget, '&') === false) {
                 $atktarget .= '?';
             } else {

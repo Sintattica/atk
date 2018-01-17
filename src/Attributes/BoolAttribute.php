@@ -105,7 +105,7 @@ class BoolAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $onchange = '';
 
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = 'onClick="'.$id.'_onChange(this);" ';
             $this->_renderChangeHandler($fieldprefix);
         }

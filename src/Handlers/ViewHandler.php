@@ -61,7 +61,7 @@ class ViewHandler extends ViewEditBase
     public function getFormStart($record = null)
     {
         $sm = SessionManager::getInstance();
-        $formstart = '<form name="entryform" id="entryform" action="'.Config::getGlobal('dispatcher').'" method="get" onsubmit="return ATK.globalSubmit(this,false)">';
+        $formstart = '<form id="entryform" name="entryform" action="'.Config::getGlobal('dispatcher').'" method="get" onsubmit="return ATK.globalSubmit(this,false)">';
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
         $formstart .= '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKey($record).'">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
@@ -167,7 +167,7 @@ class ViewHandler extends ViewEditBase
         // For all attributes we use the display() function to display the
         // attributes current value. This may be overridden by supplying
         // an <attributename>_display function in the derived classes.
-        for ($i = 0, $_i = count($data['fields']); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($data['fields']); $i < $_i; ++$i) {
             $field = &$data['fields'][$i];
             $tplfield = [];
 
@@ -198,7 +198,7 @@ class ViewHandler extends ViewEditBase
             // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
             // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
             $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab,
-                        $field['tabs'])) && (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+                        $field['tabs'])) && (!is_array($field['sections']) || Tools::count(array_intersect($field['sections'], $visibleSections)) > 0);
 
             // Give the row an id if it doesn't have one yet
             if (!isset($field['id']) || empty($field['id'])) {
@@ -258,7 +258,7 @@ class ViewHandler extends ViewEditBase
         if ($template) {
             $innerform = $ui->render($template, array('fields' => $fields, 'attributes' => $attributes));
         } else {
-            if (count(array_unique($tabTpl)) > 1) {
+            if (Tools::count(array_unique($tabTpl)) > 1) {
                 $tabForm = $this->_renderTabs($fields, $tabTpl);
                 $innerform = implode(null, $tabForm);
             } else {

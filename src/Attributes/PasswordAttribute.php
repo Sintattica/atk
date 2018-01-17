@@ -278,7 +278,7 @@ class PasswordAttribute extends Attribute
     public function getRestrictionsText()
     {
         // If no restrictions are set, return "No restrictions apply to this password"
-        if (count($this->m_restrictions) == 0) {
+        if (Tools::count($this->m_restrictions) == 0) {
             return Tools::atktext('no_restrictions_apply_to_this_password', 'atk');
         }
 
@@ -416,7 +416,7 @@ class PasswordAttribute extends Attribute
         // Add a character one by one
         for ($i = 0; $i < $count; ++$i) {
             // Pick the set of characters to be used from the array
-            $chars = $charset[$i % count($charset)];
+            $chars = $charset[$i % Tools::count($charset)];
 
             // Choose a character randomly and add it to the result
             $randomchars .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);

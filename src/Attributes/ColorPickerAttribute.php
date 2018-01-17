@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Core\Tools;
 
 class ColorPickerAttribute extends Attribute
 {
@@ -47,7 +48,7 @@ class ColorPickerAttribute extends Attribute
 
         $id = $this->getHtmlId($fieldprefix);
 
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {

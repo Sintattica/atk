@@ -79,13 +79,13 @@ class DbAuth extends AuthInterface
         $query = $this->buildSelectUserQuery($db->escapeSQL($user), Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_passwordfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
         $recs = $db->getRows($query);
-        if (count($recs) > 0 && $this->isLocked($recs[0])) {
+        if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
 
         $matchPassword = $this->matchPasswords($this->getPassword(isset($recs[0]) ? $recs[0] : null), $passwd);
 
-        return (count($recs) > 0 && $user != '' && $matchPassword) ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
+        return (Tools::count($recs) > 0 && $user != '' && $matchPassword) ? SecurityManager::AUTH_SUCCESS : SecurityManager::AUTH_MISMATCH;
     }
 
     public function isValidUser($user)
@@ -258,13 +258,13 @@ class DbAuth extends AuthInterface
         $parents = [];
 
         // user not found
-        if (count($recs) == 0) {
+        if (Tools::count($recs) == 0) {
             return null;
         }
 
         // We might have more then one level, so we loop the result.
-        if (count($recs) > 0) {
-            for ($i = 0; $i < count($recs); ++$i) {
+        if (Tools::count($recs) > 0) {
+            for ($i = 0; $i < Tools::count($recs); ++$i) {
                 $level[] = $recs[$i][Config::getGlobal('auth_levelfield')];
                 $groups[] = $recs[$i][Config::getGlobal('auth_levelfield')];
 
@@ -274,7 +274,7 @@ class DbAuth extends AuthInterface
             }
 
             $groups = array_merge($groups, $parents);
-            while (count($parents) > 0) {
+            while (Tools::count($parents) > 0) {
                 $precs = $this->getParentGroups($parents);
                 $parents = [];
                 foreach ($precs as $prec) {
@@ -288,7 +288,7 @@ class DbAuth extends AuthInterface
 
             $groups = array_unique($groups);
         }
-        if (count($level) == 1) {
+        if (Tools::count($level) == 1) {
             $level = $level[0];
         }
 
@@ -310,21 +310,16 @@ class DbAuth extends AuthInterface
      */
     public function getAccessLevel($recs)
     {
+        $access = 0;
+        $levelField = Config::getGlobal('auth_accesslevelfield');
+        if($levelField === null) {
+            return $access;
+        }
+
         // We might have more then one access level, so we loop the result.
-        if (count($recs) > 1) {
-            $access = [];
-            for ($i = 0; $i < count($recs); ++$i) {
-                if ($i == 0) {
-                    $access = $recs[$i][Config::getGlobal('auth_accesslevelfield')];
-                }
-                if ($recs[$i][Config::getGlobal('auth_accesslevelfield')] > $access) {
-                    $access = $recs[$i][Config::getGlobal('auth_accesslevelfield')];
-                }
-            }
-        } else {
-            $access = '';
-            if (isset($recs[0][Config::getGlobal('auth_accesslevelfield')])) {
-                $access = $recs[0][Config::getGlobal('auth_accesslevelfield')];
+        for ($i = 0; $i < Tools::count($recs); $i++) {
+            if (isset($recs[$i][$levelField]) && $recs[$i][$levelField] > $access) {
+                $access = $recs[$i][$levelField];
             }
         }
 
@@ -346,7 +341,7 @@ class DbAuth extends AuthInterface
     {
         $db = Db::getInstance(Config::getGlobal('auth_database'));
 
-        if (!isset($this->m_rightscache[$node]) || count($this->m_rightscache[$node]) == 0) {
+        if (!isset($this->m_rightscache[$node]) || Tools::count($this->m_rightscache[$node]) == 0) {
             $query = 'SELECT * FROM '.Config::getGlobal('auth_accesstable')." WHERE node='$node'";
 
             $this->m_rightscache[$node] = $db->getRows($query);
@@ -361,7 +356,7 @@ class DbAuth extends AuthInterface
             $field = Config::getGlobal('auth_levelfield');
         }
 
-        for ($i = 0, $_i = count($rights); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($rights); $i < $_i; ++$i) {
             if ($rights[$i]['action'] == $action) {
                 $result[] = $rights[$i][$field];
             }
@@ -391,7 +386,7 @@ class DbAuth extends AuthInterface
 
         $result = [];
 
-        for ($i = 0; $i < count($rights); ++$i) {
+        for ($i = 0; $i < Tools::count($rights); ++$i) {
             if ($rights[$i][Config::getGlobal('auth_levelfield')] != '') {
                 $result[] = $rights[$i][Config::getGlobal('auth_levelfield')];
             }
@@ -443,7 +438,7 @@ class DbAuth extends AuthInterface
 
         $userlist = [];
         $stringparser = new StringParser(Config::getGlobal('auth_userdescriptor'));
-        for ($i = 0, $_i = count($recs); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
             $userlist[] = array(
                 'userid' => $recs[$i][Config::getGlobal('auth_userfield')],
                 'username' => $stringparser->parse($recs[$i]),
@@ -482,7 +477,7 @@ class DbAuth extends AuthInterface
             Config::getGlobal('auth_emailfield'),
             Config::getGlobal('auth_passwordfield'),
         ))->getAllRows();
-        if (count($userrecords) != 1) {
+        if (Tools::count($userrecords) != 1) {
             Tools::atkdebug("User '$username' not found.");
 
             return false;

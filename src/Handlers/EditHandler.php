@@ -360,7 +360,7 @@ class EditHandler extends ViewEditBase
         // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
         // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
         $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab,
-                    $field['tabs'])) && (!is_array($field['sections']) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+                    $field['tabs'])) && (!is_array($field['sections']) || Tools::count(array_intersect($field['sections'], $visibleSections)) > 0);
 
         // ar_ stands for 'attribrow'.
         $tplfield['rowid'] = 'ar_'.(!empty($field['id']) ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
@@ -471,14 +471,14 @@ class EditHandler extends ViewEditBase
 
         // Handle errors
         $errors = [];
-        if (count($data['error']) > 0) {
+        if (Tools::count($data['error']) > 0) {
             $error_title = '<b>'.Tools::atktext('error_formdataerror').'</b>';
 
             foreach ($data['error'] as $error) {
                 if ($error['err'] == 'error_primarykey_exists') {
                     $pk_err_attrib[] = $error['attrib_name'];
                 } else {
-                    if (count($tabs) > 1 && $error['tab']) {
+                    if (Tools::count($tabs) > 1 && $error['tab']) {
                         $tabLink = $this->getTabLink($node, $error);
                         $error_tab = ' ('.Tools::atktext('error_tab').' '.$tabLink.' )';
                     } else {
@@ -518,11 +518,11 @@ class EditHandler extends ViewEditBase
                 }
             }
 
-            if (count($pk_err_attrib) > 0) { // Make primary key error message
+            if (Tools::count($pk_err_attrib) > 0) { // Make primary key error message
                 $pk_err_msg = '';
-                for ($i = 0; $i < count($pk_err_attrib); ++$i) {
+                for ($i = 0; $i < Tools::count($pk_err_attrib); ++$i) {
                     $pk_err_msg .= Tools::atktext($pk_err_attrib[$i], $node->m_module, $node->m_type);
-                    if (($i + 1) < count($pk_err_attrib)) {
+                    if (($i + 1) < Tools::count($pk_err_attrib)) {
                         $pk_err_msg .= ', ';
                     }
                 }
@@ -535,7 +535,7 @@ class EditHandler extends ViewEditBase
         $errorFields = [];
         $attributes = [];
 
-        for ($i = 0, $_i = count($data['fields']); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($data['fields']); $i < $_i; ++$i) {
             $field = &$data['fields'][$i];
             $tplfield = $this->createTplField($data['fields'], $i, $mode, $tab);
             $fields[] = $tplfield; // make field available in numeric array
@@ -588,7 +588,7 @@ class EditHandler extends ViewEditBase
      */
     public function getTabLink($node, $error)
     {
-        if (count($node->getTabs($node->m_action)) < 2) {
+        if (Tools::count($node->getTabs($node->m_action)) < 2) {
             return '';
         }
 

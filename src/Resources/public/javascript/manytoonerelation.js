@@ -24,7 +24,6 @@ ATK.ManyToOneRelation = {
             processResults: function (data) {
                 var results = [];
                 var $ = jQuery;
-
                 var $dom = $.parseHTML(data, document, true);
                 var more = false;
 

@@ -822,7 +822,7 @@ class Db
     {
         $rows = $this->getRows($query, $useLimit ? 0 : -1, $useLimit ? 1 : -1);
 
-        return count($rows) > 0 ? $rows[0] : null;
+        return Tools::count($rows) > 0 ? $rows[0] : null;
     }
 
     /**
@@ -1040,7 +1040,7 @@ class Db
         $meta = $this->metadata($table, false);
 
         $result = [];
-        for ($i = 0, $_i = count($meta); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($meta); $i < $_i; ++$i) {
             $meta[$i]['num'] = $i;
             $result[$meta[$i]['name']] = $meta[$i];
         }
@@ -1104,9 +1104,9 @@ class Db
      */
     public function func_concat($fields)
     {
-        if (count($fields) == 0 or !is_array($fields)) {
+        if (Tools::count($fields) == 0 or !is_array($fields)) {
             return '';
-        } elseif (count($fields) == 1) {
+        } elseif (Tools::count($fields) == 1) {
             return $fields[0];
         }
 
@@ -1124,9 +1124,9 @@ class Db
      */
     public function func_concat_ws($fields, $separator, $remove_all_spaces = false)
     {
-        if (count($fields) == 0 or !is_array($fields)) {
+        if (Tools::count($fields) == 0 or !is_array($fields)) {
             return '';
-        } elseif (count($fields) == 1) {
+        } elseif (Tools::count($fields) == 1) {
             return $fields[0];
         }
 
@@ -1234,7 +1234,7 @@ class Db
     public function deleteAll()
     {
         $tables = $this->table_names(false);
-        $count = count($tables);
+        $count = Tools::count($tables);
 
         do {
             $prevCount = $count;

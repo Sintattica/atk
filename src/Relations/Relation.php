@@ -227,7 +227,7 @@ class Relation extends Attribute
                 ) {
                     $attribute->m_destInstance = $this->m_ownerInstance;
 
-                    if (count($attribute->m_tabs) == 1 && $attribute->m_tabs[0] == 'default') {
+                    if (Tools::count($attribute->m_tabs) == 1 && $attribute->m_tabs[0] == 'default') {
                         $attribute->setTabs($this->m_tabs);
                     }
                 }

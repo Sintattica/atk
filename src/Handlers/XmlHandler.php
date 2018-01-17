@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Handlers;
 
 use Sintattica\Atk\Ui\Output;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Handler class for the exporting a record to an XML file.
@@ -22,7 +23,7 @@ class XmlHandler extends ActionHandler
 
         $document = '<?xml version="1.0"?>'."\n";
 
-        for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
             $document .= $this->invoke('xml', $recordset[$i])."\n";
         }
         $output->output($document);
@@ -50,7 +51,7 @@ class XmlHandler extends ActionHandler
                 $attrs[] = $attribname.'="'.$p_attrib->display($record, 'xml').'"';
             }
         }
-        if (count($attrs)) {
+        if (Tools::count($attrs)) {
             $xml .= implode(' ', $attrs);
         }
 

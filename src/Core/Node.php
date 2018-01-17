@@ -8,6 +8,7 @@ use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\RecordList\ColumnConfig;
+use Sintattica\Atk\Relations\Relation;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\State;
@@ -1048,7 +1049,7 @@ class Node
      *
      * @param string $name The name of the attribute to retrieve.
      *
-     * @return Attribute The attribute.
+     * @return Attribute|Relation The attribute.
      */
     public function getAttribute($name)
     {
@@ -1251,7 +1252,7 @@ class Node
     public function primaryKey($rec)
     {
         $primKey = '';
-        $nrOfElements = count($this->m_primaryKey);
+        $nrOfElements = Tools::count($this->m_primaryKey);
         for ($i = 0; $i < $nrOfElements; ++$i) {
             $p_attrib = $this->m_attribList[$this->m_primaryKey[$i]];
             $primKey .= $this->m_table.'.'.$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
@@ -1273,7 +1274,7 @@ class Node
      */
     public function primaryKeyField()
     {
-        if (count($this->m_primaryKey) === 0) {
+        if (Tools::count($this->m_primaryKey) === 0) {
             Tools::atkwarning($this->atkNodeUri().'::primaryKeyField() called, but there are no primary key fields defined!');
 
             return;
@@ -1295,7 +1296,7 @@ class Node
     public function primaryKeyTpl()
     {
         $primKey = '';
-        $nrOfElements = count($this->m_primaryKey);
+        $nrOfElements = Tools::count($this->m_primaryKey);
         for ($i = 0; $i < $nrOfElements; ++$i) {
             $primKey .= $this->m_primaryKey[$i]."='[".$this->m_primaryKey[$i]."]'";
             if ($i < ($nrOfElements - 1)) {
@@ -1417,8 +1418,8 @@ class Node
             if ($new_index < 0) {
                 $new_index = 0;
             }
-            if ($new_index > count($list)) {
-                $new_index = count($list);
+            if ($new_index > Tools::count($list)) {
+                $new_index = Tools::count($list);
             }
             $current_index = array_search($tabname, $list);
             if ($current_index !== null) {
@@ -1480,7 +1481,7 @@ class Node
 
             if (is_object($p_attrib)) {
                 $additional = $p_attrib->getAdditionalTabs(null);
-                if (is_array($additional) && count($additional) > 0) {
+                if (is_array($additional) && Tools::count($additional) > 0) {
                     $list = Tools::atk_array_merge($list, $additional);
                     $this->m_filledTabs = Tools::atk_array_merge($this->m_filledTabs, $additional);
                 }
@@ -1564,7 +1565,7 @@ class Node
             return $disable;
         }
 
-        for ($i = 0, $_i = count($tablist); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($tablist); $i < $_i; ++$i) {
             if ($tablist[$i] == '' || $tablist[$i] == 'default') {
                 continue;
             }
@@ -1923,7 +1924,7 @@ class Node
             $nomodule = true;
             $descrtrace = '';
             // only show the last 3 elems
-            $cnt = count($descriptortrace);
+            $cnt = Tools::count($descriptortrace);
             if ($maxel > 1 && $cnt > $maxel) {
                 $descrtrace = '... - ';
             }
@@ -1954,9 +1955,9 @@ class Node
     {
         $list = $this->getTabs($action);
         $sections = $this->getSections($action);
-        $tabs = count($list);
+        $tabs = Tools::count($list);
 
-        if (count($sections) > 0 || $tabs > 1) {
+        if (Tools::count($sections) > 0 || $tabs > 1) {
             $page = $this->getPage();
             $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js?stateful='.(Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
 
@@ -2117,7 +2118,7 @@ class Node
             /* nodes can define initial values, if they don't already have values. */
             if (!isset($defaults['atkerror'])) { // only load initial values the first time (not after an error occured)
                 $overrides = $this->initial_values();
-                if (is_array($overrides) && count($overrides) > 0) {
+                if (is_array($overrides) && Tools::count($overrides) > 0) {
                     foreach ($overrides as $varname => $value) {
                         if (!isset($defaults[$varname]) || $defaults[$varname] == '') {
                             $defaults[$varname] = $value;
@@ -2200,7 +2201,7 @@ class Node
                     $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
                 }
 
-                if (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList)) {
+                if (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList)) {
                     $p_attrib->m_flags |= ($mode == 'add' ? $p_attrib::AF_HIDE_ADD : $p_attrib::AF_HIDE_EDIT);
                 }
 
@@ -2298,7 +2299,7 @@ class Node
             }
 
             $newSections = array_diff($fieldSections, $addedSections);
-            if (count($newSections) > 0) {
+            if (Tools::count($newSections) > 0) {
                 foreach ($newSections as $section) {
                     if (strpos($section, '.') !== false) {
                         $result[] = array(
@@ -2329,7 +2330,7 @@ class Node
 
         // first find sectionless fields and collect all sections
         foreach ($fields as $field) {
-            if ($field['sections'] == '*' || (count($field['sections']) == 1 && $field['sections'][0] == $this->m_default_tab)) {
+            if ($field['sections'] == '*' || (Tools::count($field['sections']) == 1 && $field['sections'][0] == $this->m_default_tab)) {
                 $result[] = $field;
             } else {
                 if (is_array($field['sections'])) {
@@ -2341,7 +2342,7 @@ class Node
         $sections = array_unique($sections);
 
         // loop through each section (except the default tab/section) of the mode we are currently in.
-        while (count($sections) > 0) {
+        while (Tools::count($sections) > 0) {
             $section = array_shift($sections);
 
             // find fields for this section
@@ -2507,7 +2508,7 @@ class Node
 
         if (is_array($list)) {
             $sm = SessionManager::getInstance();
-            $newtab['total'] = count($list);
+            $newtab['total'] = Tools::count($list);
             foreach ($list as $t) {
                 $newtab['title'] = $this->text(array("tab_$t", $t));
                 $newtab['tab'] = $t;
@@ -2556,7 +2557,7 @@ class Node
         $actions = [];
         $postfix = '';
 
-        if (count($params) > 0) {
+        if (Tools::count($params) > 0) {
             foreach ($params as $key => $value) {
                 $postfix .= "&$key=".rawurlencode($value);
             }
@@ -2708,7 +2709,7 @@ class Node
         }
 
         $buttons = $this->getFormButtons($action, array());
-        if (count($buttons) == 0) {
+        if (Tools::count($buttons) == 0) {
             $buttons[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok atkdefaultbutton" value="'.$this->text('yes').'">';
             $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="'.$this->text('no').'">';
         }
@@ -2716,7 +2717,7 @@ class Node
         $content = '';
         $record = null;
         $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
-        if (count($recs) == 1) {
+        if (Tools::count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
             $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$this->actionTitle($action, $record));
@@ -2726,7 +2727,7 @@ class Node
             // descriptor_def method
             if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
                 $content .= '<ul>';
-                for ($i = 0, $_i = count($recs); $i < $_i; ++$i) {
+                for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
                     $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
                 }
                 $content .= '</ul>';
@@ -2765,7 +2766,7 @@ class Node
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector);
         } else {
-            return $this->text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''));
+            return $this->text("confirm_$action".(is_array($atkselector) && Tools::count($atkselector) > 1 ? '_multi' : ''));
         }
     }
 
@@ -2931,7 +2932,7 @@ class Node
     public function setFeedback($action, $statusmask)
     {
         if (is_array($action)) {
-            for ($i = 0, $_i = count($action); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($action); $i < $_i; ++$i) {
                 $this->m_feedback[$action[$i]] = $statusmask;
             }
         } else {
@@ -3004,7 +3005,7 @@ class Node
             $location = $sm->sessionUrl(Config::getGlobal('dispatcher'), SessionManager::SESSION_BACK, $levelskip);
         }
 
-        if (count($record)) {
+        if (Tools::count($record)) {
             if (isset($this->m_postvars['atkpkret'])) {
                 $location .= '&'.$this->m_postvars['atkpkret'].'='.rawurlencode($this->primaryKey($record));
             }
@@ -3136,9 +3137,9 @@ class Node
             // a concatenation of an attributename (probably a relation), and a subfield
             // (a field of the destination node).
             // The actual field is the one in front of the '.'.
-            for ($i = 0, $_i = count($fields); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($fields); $i < $_i; ++$i) {
                 $elems = explode('.', $fields[$i]);
-                if (count($elems) > 1) {
+                if (Tools::count($elems) > 1) {
                     // dot found. attribute is the first item.
                     $fields[$i] = $elems[0];
                 }
@@ -3337,12 +3338,12 @@ class Node
                 return false;
             }
 
-            for ($i = 0, $_i = count($storelist['query']); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($storelist['query']); $i < $_i; ++$i) {
                 $p_attrib = $this->m_attribList[$storelist['query'][$i]];
                 $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'update'); // start at level 1
             }
 
-            if (count($query->m_fields) && !$query->executeUpdate()) {
+            if (Tools::count($query->m_fields) && !$query->executeUpdate()) {
                 return false;
             }
 
@@ -3377,7 +3378,7 @@ class Node
     public function _storeAttributes($storelist, &$record, $mode)
     {
         // store special storage attributes.
-        for ($i = 0, $_i = count($storelist); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($storelist); $i < $_i; ++$i) {
             $p_attrib = $this->m_attribList[$storelist[$i]];
             if (!$p_attrib->store($this->getDb(), $record, $mode)) {
                 // something went wrong.
@@ -3626,7 +3627,7 @@ class Node
             }
         }
 
-        if (count($searchConditions)) {
+        if (Tools::count($searchConditions)) {
             return '('.implode(' OR ', $searchConditions).')';
         } else {
             return '';
@@ -3687,7 +3688,7 @@ class Node
             return false;
         }
 
-        for ($i = 0, $_i = count($storelist['query']); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($storelist['query']); $i < $_i; ++$i) {
             $p_attrib = $this->m_attribList[$storelist['query'][$i]];
             $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'add'); // start at level 1
         }
@@ -3748,7 +3749,7 @@ class Node
                 return false;
             }
 
-            for ($i = 0, $_i = count($this->m_triggerListeners); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($this->m_triggerListeners); $i < $_i; ++$i) {
                 $listener = $this->m_triggerListeners[$i];
                 $return = $listener->notify($trigger, $record, $mode);
 
@@ -3794,14 +3795,14 @@ class Node
         $recordset = $this->select($selector)->mode('delete')->getAllRows();
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
-        if (count($recordset) == 0) {
+        if (Tools::count($recordset) == 0) {
             Tools::atkwarning($this->atkNodeUri()."->deleteDb($selector): 0 records found, not deleting anything.");
 
             return !$failwhenempty;
         }
 
         if ($exectrigger) {
-            for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
                 $return = $this->executeTrigger('preDelete', $recordset[$i]);
                 if (!$return) {
                     return false;
@@ -3810,9 +3811,9 @@ class Node
         }
 
         // delete on "cascading" attributes (like relations, file attribute) BEFORE the query execution
-        if (count($this->m_cascadingAttribs) > 0) {
-            for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
-                for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; ++$j) {
+        if (Tools::count($this->m_cascadingAttribs) > 0) {
+            for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
+                for ($j = 0, $_j = Tools::count($this->m_cascadingAttribs); $j < $_j; ++$j) {
                     $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
                     if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
                         if (!$p_attrib->delete($recordset[$i])) {
@@ -3830,9 +3831,9 @@ class Node
         if ($query->executeDelete()) {
 
             // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
-            if (count($this->m_cascadingAttribs) > 0) {
-                for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
-                    for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; ++$j) {
+            if (Tools::count($this->m_cascadingAttribs) > 0) {
+                for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
+                    for ($j = 0, $_j = Tools::count($this->m_cascadingAttribs); $j < $_j; ++$j) {
                         $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
                         if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
                             if (!$p_attrib->postDelete($recordset[$i])) {
@@ -3845,7 +3846,7 @@ class Node
             }
 
             if ($exectrigger) {
-                for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
+                for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
                     $return = ($this->executeTrigger('postDel', $recordset[$i]) && $this->executeTrigger('postDelete', $recordset[$i]));
                     if (!$return) {
                         return false;
@@ -4210,7 +4211,7 @@ class Node
 
         if (strpos($action, '.') !== false) {
             $complete = explode('.', $action);
-            if (count($complete) == 3) {
+            if (Tools::count($complete) == 3) {
                 $alias = $complete[0].'.'.$complete[1];
                 $action = $complete[2];
             } else {
@@ -4582,7 +4583,7 @@ class Node
      */
     public function notify($action, $record)
     {
-        for ($i = 0, $_i = count($this->m_actionListeners); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_actionListeners); $i < $_i; ++$i) {
             $this->m_actionListeners[$i]->notify($action, $record);
         }
     }
@@ -4595,7 +4596,7 @@ class Node
      */
     public function preNotify($action, &$record)
     {
-        for ($i = 0, $_i = count($this->m_actionListeners); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_actionListeners); $i < $_i; ++$i) {
             $this->m_actionListeners[$i]->preNotify($action, $record);
         }
     }

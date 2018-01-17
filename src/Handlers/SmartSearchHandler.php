@@ -116,7 +116,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $path = $this->getNodeAndAttrPath($attrNames);
         $path = array_slice($path, $field_nr + 1);
 
-        if (count($path) > 0) {
+        if (Tools::count($path) > 0) {
             return $this->getCriteriumField($criterium_id, $path, $scriptCode).'<script language="javascript">'.implode("\n", $scriptCode).'</script>';
         } else {
             return '';
@@ -139,7 +139,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         $attrNames = array_slice($attrNames, 0, $field_nr + 1);
         $path = $this->getNodeAndAttrPath($attrNames);
 
-        if (count($path) == $field_nr + 1) {
+        if (Tools::count($path) == $field_nr + 1) {
             if ($type == 'mode') {
                 return $this->getCriteriumMode($criterium_id, $path);
             } else {
@@ -173,9 +173,9 @@ class SmartSearchHandler extends AbstractSearchHandler
      */
     public function redirectToResults($criteria)
     {
-        for ($i = 0, $_i = count($criteria); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($criteria); $i < $_i; ++$i) {
             $attrs = &$criteria[$i]['attrs'];
-            if ($attrs[count($attrs) - 1] == '.') {
+            if ($attrs[Tools::count($attrs) - 1] == '.') {
                 array_pop($attrs);
             }
         }
@@ -267,7 +267,7 @@ class SmartSearchHandler extends AbstractSearchHandler
      */
     public function getAttributeList($entry)
     {
-        if (count($entry['attrs']) == 1 && !$entry['includeSelf']) {
+        if (Tools::count($entry['attrs']) == 1 && !$entry['includeSelf']) {
             $attr = $entry['attrs'][0];
             $label = is_a($attr, 'ManyToOneRelation') ? '' : htmlentities(strip_tags($attr->label()));
 
@@ -281,7 +281,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         }
 
         $current = $entry['attr'];
-        for ($i = 0, $_i = count($entry['attrs']); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($entry['attrs']); $i < $_i; ++$i) {
             $attr = $entry['attrs'][$i];
             $selected = $current != null && $attr->fieldName() == $current->fieldName() ? ' selected="selected"' : '';
             $label = htmlentities(strip_tags($attr->label()));
@@ -319,10 +319,10 @@ class SmartSearchHandler extends AbstractSearchHandler
     {
         $attr = $node->getAttribute($attrName);
 
-        $nr = count($path);
+        $nr = Tools::count($path);
         $attrs = $this->getSearchableAttributes($node, $excludes);
 
-        if (count($attrs) == 1 && !$includeSelf) {
+        if (Tools::count($attrs) == 1 && !$includeSelf) {
             $attr = $attrs[0];
         }
 
@@ -396,17 +396,17 @@ class SmartSearchHandler extends AbstractSearchHandler
         $prefix = "criteria[{$id}][attrs]";
         $sm = SessionManager::getInstance();
 
-        for ($i = 0, $_i = count($path); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($path); $i < $_i; ++$i) {
             $entry = &$path[$i];
             $entry['name'] = "{$prefix}[{$entry[nr]}]";
             $entry['field'] = $this->getAttributeList($entry);
         }
 
         $result = '';
-        for ($i = count($path) - 1, $_i = 0; $i >= $_i; --$i) {
+        for ($i = Tools::count($path) - 1, $_i = 0; $i >= $_i; --$i) {
             $entry = &$path[$i];
             $fieldName = "criterium_{$id}_{$entry[nr]}_other";
-            $readOnly = count($entry['attrs']) == 1 && !$entry['includeSelf'];
+            $readOnly = Tools::count($entry['attrs']) == 1 && !$entry['includeSelf'];
             $hasLabel = !$readOnly || !is_a($entry['attr'], 'ManyToOneRelation');
 
             if (!$readOnly) {
@@ -630,7 +630,7 @@ class SmartSearchHandler extends AbstractSearchHandler
         DateAttribute::registerScriptsAndStyles();
 
         $params = [];
-        $params['formstart'] = '<form name="entryform" action="'.Config::getGlobal('dispatcher').'" method="post" class="form">'.$sm->formState(SessionManager::SESSION_REPLACE).'<input type="hidden" name="atkaction" value="smartsearch">'.'<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
+        $params['formstart'] = '<form id="entryform" name="entryform" action="'.Config::getGlobal('dispatcher').'" method="post" class="form">'.$sm->formState(SessionManager::SESSION_REPLACE).'<input type="hidden" name="atkaction" value="smartsearch">'.'<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
         $params['content'] = $this->invoke('smartSearchForm', $name, $criteria);
         $params['buttons'][] = '<input type="submit" class="btn btn-default btn_search" name="atkdosearch" value="'.Tools::atktext('search', 'atk').'">';
         $params['formend'] = '</form>';

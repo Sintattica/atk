@@ -32,7 +32,7 @@ class MultiSelectListAttribute extends ListAttribute
 
         $size = 0;
         $valueArray = $this->getValues();
-        for ($i = 0, $_i = count($valueArray); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($valueArray); $i < $_i; ++$i) {
             $size += (Tools::atk_strlen($valueArray[$i]) + 1); // 1 extra for the '|' symbol
         }
         if ($size > 0) {
@@ -55,7 +55,7 @@ class MultiSelectListAttribute extends ListAttribute
         $result = '';
         if (is_array($record[$this->fieldName()])) {
             $values = $this->getValues();
-            for ($i = 0; $i < count($values); ++$i) {
+            for ($i = 0; $i < Tools::count($values); ++$i) {
                 if (in_array($values[$i], $record[$this->fieldName()])) {
                     $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[]" value="'.$values[$i].'">';
                 }
@@ -70,7 +70,7 @@ class MultiSelectListAttribute extends ListAttribute
 
     public function value2db($rec)
     {
-        if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]) >= 1) {
+        if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
         } else {
             return '';
@@ -127,7 +127,7 @@ class MultiSelectListAttribute extends ListAttribute
     {
         $values = $record[$this->fieldName()];
         $res = [];
-        for ($i = 0; $i < count($values); ++$i) {
+        for ($i = 0; $i < Tools::count($values); ++$i) {
             $res[] = $this->_translateValue($values[$i], $record);
         }
 
@@ -177,7 +177,7 @@ class MultiSelectListAttribute extends ListAttribute
         }
 
         $onchange = '';
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
             $this->_renderChangeHandler($fieldprefix);
         }
@@ -191,7 +191,7 @@ class MultiSelectListAttribute extends ListAttribute
             $recordvalue = $record[$this->fieldName()];
         }
 
-        for ($i = 0; $i < count($values); ++$i) {
+        for ($i = 0; $i < Tools::count($values); ++$i) {
             // If the current value is selected or occurs in the record
             $sel = (Tools::atk_in_array($values[$i], $recordvalue)) ? 'selected' : '';
 
@@ -208,7 +208,7 @@ class MultiSelectListAttribute extends ListAttribute
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $searchcondition = '';
-        if (is_array($value) && $value[0] != '' && count($value) > 0) {
+        if (is_array($value) && $value[0] != '' && Tools::count($value) > 0) {
             $searchcondition = [];
 
             if (in_array('__NONE__', $value)) {
@@ -260,7 +260,7 @@ class MultiSelectListAttribute extends ListAttribute
      */
     public function _addLinks($fieldprefix)
     {
-        if (count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
+        if (Tools::count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
             return '<div align="left">
                   [<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
         }
@@ -277,6 +277,6 @@ class MultiSelectListAttribute extends ListAttribute
      */
     public function isEmpty($record)
     {
-        return !isset($record[$this->fieldName()]) || (!is_array($record[$this->fieldName()])) || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) === 0);
+        return !isset($record[$this->fieldName()]) || (!is_array($record[$this->fieldName()])) || (is_array($record[$this->fieldName()]) && Tools::count($record[$this->fieldName()]) === 0);
     }
 }

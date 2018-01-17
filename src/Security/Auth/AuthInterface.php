@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Security\Auth;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * This class is the abstract baseclass (interface) for all auth_ classes.
@@ -125,7 +126,7 @@ class AuthInterface
             else {
                 $required = $this->getEntity($node, $privilege);
 
-                if (count($required) == 0) {
+                if (Tools::count($required) == 0) {
                     // No access restrictions found..
                     // so either nobody or anybody can perform this
                     // operation, depending on the configuration.
@@ -138,7 +139,7 @@ class AuthInterface
                         if ($securityMgr->m_scheme == 'group') {
                             // user may have more then one level
                             if (is_array($securityMgr->m_user['level'])) {
-                                $allowed = (count(array_intersect($securityMgr->m_user['level'], $required)) > 0);
+                                $allowed = (Tools::count(array_intersect($securityMgr->m_user['level'], $required)) > 0);
                             } else {
                                 // user has only one level
                                 $allowed = in_array($securityMgr->m_user['level'], $required);

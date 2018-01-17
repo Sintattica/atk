@@ -196,7 +196,7 @@ class EditFormModifier
             return;
         }
 
-        $offset = count($this->getNode()->getPage()->getLoadScripts());
+        $offset = Tools::count($this->getNode()->getPage()->getLoadScripts());
 
         $error = [];
         $editArray = array('fields' => array());
@@ -205,8 +205,17 @@ class EditFormModifier
         $scriptCode = '';
         foreach ($editArray['fields'] as $field) {
             $element = '#'.str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
+
             $value = str_replace("'", "\'", $field['html']);
             $scriptCode .= "jQuery('$element').html('$value');";
+
+            // extract the javascript code from the scriptCode
+            $re = '/<script\>(.*?)<\/script>/i';
+            preg_match_all($re, $field['html'], $matches, PREG_SET_ORDER, 0);
+            $scriptCode = preg_replace($re, '', $scriptCode);
+            foreach ($matches as $match) {
+                $scriptCode .= "\n".$match[1];
+            }
         }
 
         $this->getNode()->getPage()->register_loadscript($scriptCode, $offset);

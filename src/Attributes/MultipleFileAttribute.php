@@ -74,9 +74,9 @@ class MultipleFileAttribute extends FileAttribute
             return Tools::atktext('no_valid_directory');
         }
 
-        if (count($file_arr) > 0) {
+        if (Tools::count($file_arr) > 0) {
             $result = '<select multiple size="3" name="select_'.$this->fieldName().'[]" class="form-control">';
-            for ($i = 0; $i < count($file_arr); ++$i) {
+            for ($i = 0; $i < Tools::count($file_arr); ++$i) {
                 $sel = '';
                 if (in_array($file_arr[$i], $this->getFiles($record[$this->fieldName()]['orgfilename']))) {
                     $sel = 'selected';
@@ -85,7 +85,7 @@ class MultipleFileAttribute extends FileAttribute
                     $result .= '<option value="'.$file_arr[$i].'" '.$sel.'>'.$file_arr[$i];
                 }
             }
-            if (count($file_arr) > 0) {
+            if (Tools::count($file_arr) > 0) {
                 $result .= '</select>';
             }
         } else {
@@ -154,7 +154,7 @@ class MultipleFileAttribute extends FileAttribute
         $prev_type = array('jpg', 'jpeg', 'gif', 'tif', 'png', 'bmp', 'htm', 'html', 'txt');  // file types for preview
         $imgtype_prev = array('jpg', 'jpeg', 'gif', 'png');  // types whitch are supported by GetImageSize
         $r = '';
-        for ($i = 0; $i < count($files); ++$i) {
+        for ($i = 0; $i < Tools::count($files); ++$i) {
             if (is_file($this->m_dir.$files[$i])) {
                 $ext = strtolower(substr($files[$i], strrpos($files[$i], '.') + 1, strlen($files[$i])));
                 if (in_array($ext, $prev_type)) {

@@ -128,7 +128,7 @@ class ManyToManyRelation extends Relation
     {
         $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
-            return count($this->_getSelectableRecords($record, $mode));
+            return Tools::count($this->_getSelectableRecords($record, $mode));
         } else {
             return $this->getSelectableRecordCount($record, $mode);
         }
@@ -209,7 +209,7 @@ class ManyToManyRelation extends Relation
         $keys = [];
 
         if (isset($record[$this->fieldName()])) {
-            for ($i = 0; $i < count($record[$this->fieldName()]); ++$i) {
+            for ($i = 0; $i < Tools::count($record[$this->fieldName()]); ++$i) {
                 if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
                     $key = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
                 } else {
@@ -325,7 +325,7 @@ class ManyToManyRelation extends Relation
      */
     public function getOwnerFields()
     {
-        if (is_array($this->m_ownerFields) && count($this->m_ownerFields) > 0) {
+        if (is_array($this->m_ownerFields) && Tools::count($this->m_ownerFields) > 0) {
             return $this->m_ownerFields;
         }
 
@@ -386,7 +386,7 @@ class ManyToManyRelation extends Relation
         if ($this->createDestination() && Tools::atk_value_in_array($record[$this->fieldName()])) {
             $recordset = [];
             $remotekey = $this->getRemoteKey();
-            for ($i = 0; $i < count($record[$this->fieldName()]); ++$i) {
+            for ($i = 0; $i < Tools::count($record[$this->fieldName()]); ++$i) {
                 $rec = $record[$this->fieldName()][$i][$remotekey];
                 if (!is_array($rec)) {
                     $selector = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField()."= '$rec'";
@@ -472,7 +472,7 @@ class ManyToManyRelation extends Relation
 
         $ownerfields = $this->getOwnerFields();
 
-        for ($i = 0, $_i = count($localkey); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($localkey); $i < $_i; ++$i) {
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
@@ -611,7 +611,7 @@ class ManyToManyRelation extends Relation
         $localKey = $this->getLocalKey();
 
         if (is_array($localKey)) {
-            for ($j = 0; $j < count($localKey); ++$j) {
+            for ($j = 0; $j < Tools::count($localKey); ++$j) {
                 $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[$j]]);
                 $record[$localKey[0]][$ownerFields[$j]] = $locKey;
             }
@@ -696,7 +696,7 @@ class ManyToManyRelation extends Relation
      */
     public function isEmpty($postvars)
     {
-        return !is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()]) == 0;
+        return !is_array($postvars[$this->fieldName()]) || Tools::count($postvars[$this->fieldName()]) == 0;
     }
 
     /**
@@ -714,7 +714,7 @@ class ManyToManyRelation extends Relation
         $result = '';
         if (is_array(Tools::atkArrayNvl($record, $this->fieldName())) && $this->createDestination()) {
             $ownerFields = $this->getOwnerFields();
-            for ($i = 0, $_i = count($record[$this->fieldName()]); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($record[$this->fieldName()]); $i < $_i; ++$i) {
                 if (Tools::atkArrayNvl($record[$this->fieldName()][$i], $this->getLocalKey())) {
                     $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$i.']['.$this->getLocalKey().']" value="'.$this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
                             $ownerFields[0]).'">';
@@ -776,7 +776,7 @@ class ManyToManyRelation extends Relation
             $this->m_destInstance->m_primaryKey))->getAllRows();
         $result = '<select class="form-control"'.$data;
         if ($extended) {
-            $result .= 'multiple="multiple" size="'.min(5, count($recordset) + 1).'"';
+            $result .= 'multiple="multiple" size="'.min(5, Tools::count($recordset) + 1).'"';
         }
 
         $result .= 'id="'.$id.'" name="'.$name.'[]">';
@@ -787,7 +787,7 @@ class ManyToManyRelation extends Relation
             $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         }
 
-        for ($i = 0; $i < count($recordset); ++$i) {
+        for ($i = 0; $i < Tools::count($recordset); ++$i) {
             $pk = $recordset[$i][$pkfield];
             if (!empty($record[$this->fieldName()]) && Tools::atk_in_array($pk, $record[$this->fieldName()])) {
                 $sel = ' selected="selected"';
@@ -821,13 +821,13 @@ class ManyToManyRelation extends Relation
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $this->createLink();
             $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(),
                 false);
             $query->setDistinct(true);
 
-            if (count($value) == 1) { // exactly one value
+            if (Tools::count($value) == 1) { // exactly one value
                 $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(), $this->escapeSQL($value[0]), $this->dbFieldType()));
             } else { // search for more values using IN()
                 $query->addSearchCondition($this->fieldName().'.'.$this->getRemoteKey()." IN ('".implode("','", $value)."')");

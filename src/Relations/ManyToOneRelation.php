@@ -274,7 +274,7 @@ class ManyToOneRelation extends Relation
             parent::__construct($name, $flags, $destination);
         }
 
-        if ($this->hasFlag(self::AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
+        if ($this->hasFlag(self::AF_MANYTOONE_LAZY) && (Tools::count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
             Tools::atkerror('self::AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.');
         }
     }
@@ -450,7 +450,7 @@ class ManyToOneRelation extends Relation
         $this->m_listColumns = [];
 
         $attrs = func_get_args();
-        if (count($attrs) === 1 && is_array($attrs[0])) {
+        if (Tools::count($attrs) === 1 && is_array($attrs[0])) {
             $columns = $attrs[0];
         } else {
             $columns = $attrs;
@@ -537,7 +537,7 @@ class ManyToOneRelation extends Relation
                 }
             }
 
-            if (count($result) == 0) {
+            if (Tools::count($result) == 0) {
                 return;
             }
 
@@ -637,8 +637,8 @@ class ManyToOneRelation extends Relation
     public function display($record, $mode)
     {
         if ($this->createDestination()) {
-            $cnt = isset($record[$this->fieldName()]) ? count($record[$this->fieldName()]) : null;
-            if ($cnt === count($this->m_refKey)) {
+            $cnt = isset($record[$this->fieldName()]) ? Tools::count($record[$this->fieldName()]) : null;
+            if ($cnt === Tools::count($this->m_refKey)) {
                 $this->populate($record);
             }
 
@@ -771,7 +771,7 @@ class ManyToOneRelation extends Relation
         if ((!$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(self::AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
 
-            if (count($this->m_selectableRecords) > 0 && !Config::getGlobal('list_obligatory_null_item') && (($this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) || (!$this->hasFlag(self::AF_OBLIGATORY) && $this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)))) {
+            if (Tools::count($this->m_selectableRecords) > 0 && !Config::getGlobal('list_obligatory_null_item') && (($this->hasFlag(self::AF_OBLIGATORY) && !$this->hasFlag(self::AF_MANYTOONE_OBLIGATORY_NULL_ITEM)) || (!$this->hasFlag(self::AF_OBLIGATORY) && $this->hasFlag(self::AF_RELATION_NO_NULL_ITEM)))) {
                 if (!isset($record[$this->fieldName()]) || !is_array($record[$this->fieldName()])) {
                     $record[$this->fieldName()] = $this->m_selectableRecords[0];
                 } else {
@@ -816,7 +816,7 @@ class ManyToOneRelation extends Relation
             $recordset = $this->_getSelectableRecords($record, $mode);
         }
 
-        $isAutocomplete = (is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1;
+        $isAutocomplete = (is_array($recordset) && Tools::count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1;
         if ($this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && is_object($this->m_ownerInstance) && $isAutocomplete) {
 
 
@@ -887,7 +887,7 @@ class ManyToOneRelation extends Relation
             // autoselect if there is only one record (if obligatory is not set,
             // we don't autoselect, since user may wist to select 'none' instead
             // of the 1 record.
-            if (count($recordset) == 0) {
+            if (Tools::count($recordset) == 0) {
                 $result = $this->getNoneLabel();
             } else {
                 // relation may be empty, so we must provide an empty selectable..
@@ -921,7 +921,7 @@ class ManyToOneRelation extends Relation
                 }
                 $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
-                if (count($this->m_onchangecode)) {
+                if (Tools::count($this->m_onchangecode)) {
                     $this->_renderChangeHandler($fieldprefix);
                     $htmlAttributes['onchange'] = $this->getHtmlId($fieldprefix).'_onChange(this)';
                 }
@@ -1272,7 +1272,7 @@ EOF;
 
     public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)
     {
-        if (count($path) > 0) {
+        if (Tools::count($path) > 0) {
             $this->createDestination();
 
             $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
@@ -1325,7 +1325,7 @@ EOF;
                     $value = array($value);
                 }
 
-                if (count($value) == 1) { // exactly one value
+                if (Tools::count($value) == 1) { // exactly one value
 
                     if ($value[0] == '__NONE__') {
                         return $query->nullCondition($table.'.'.$this->fieldName(), true);
@@ -1345,7 +1345,7 @@ EOF;
                 // If we have a descriptor with multiple fields, use CONCAT
                 $attribs = $this->m_destInstance->descriptorFields();
                 $alias = $fieldname.$this->fieldName();
-                if (count($attribs) > 1) {
+                if (Tools::count($attribs) > 1) {
                     $searchcondition = $this->getConcatFilter($value, $alias);
                 } else {
                     // ask the destination node for it's search condition
@@ -1380,7 +1380,7 @@ EOF;
                 $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $tablename, $alias), $this->m_leftjoin);
                 $this->m_destInstance->addToQuery($query, $alias, $level + 1, false, $mode, $this->m_listColumns);
             } else {
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+                for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
                     if ($record[$this->fieldName()] === null) {
                         $query->addField($this->m_refKey[$i], 'NULL', '', '', false);
                     } else {
@@ -1464,9 +1464,9 @@ EOF;
         // the type of field of the primary key of the node we have a
         // relationship with.
         if ($this->createDestination()) {
-            if (count($this->m_refKey) > 1) {
+            if (Tools::count($this->m_refKey) > 1) {
                 $keys = [];
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+                for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
                     /** @var Attribute $attrib */
                     $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
                     $keys [] = $attrib->dbFieldType();
@@ -1490,9 +1490,9 @@ EOF;
         // the size of the field of the primary key of the node we have a
         // relationship with.
         if ($this->createDestination()) {
-            if (count($this->m_refKey) > 1) {
+            if (Tools::count($this->m_refKey) > 1) {
                 $keys = [];
-                for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+                for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
                     /** @var Attribute $attrib */
                     $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
                     $keys [] = $attrib->dbFieldSize();
@@ -1722,7 +1722,7 @@ EOF;
         }
         $joinconditions = [];
 
-        for ($i = 0, $_i = count($this->m_refKey); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
             $joinconditions[] = $realtablename.'.'.$this->m_refKey[$i].'='.$fieldalias.'.'.$this->m_destInstance->m_primaryKey[$i];
         }
 
@@ -1756,7 +1756,7 @@ EOF;
             // only check if hidewhenempty is set to true
             if ($this->m_hidewhenempty) {
                 $recs = $this->_getSelectableRecords($defaults, $mode);
-                if (count($recs) == 0) {
+                if (Tools::count($recs) == 0) {
                     return $this->hide($defaults, $fieldprefix, $mode);
                 }
             }
@@ -1818,7 +1818,7 @@ EOF;
             return implode(', ', $newParts);
         } else {
             $fields = $this->m_destInstance->descriptorFields();
-            if (count($fields) == 0) {
+            if (Tools::count($fields) == 0) {
                 $fields = array($this->m_destInstance->primaryKeyField());
             }
 
@@ -1852,7 +1852,7 @@ EOF;
             if ($this->hasFlag(self::AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
                 return;
             }
-            if (!$this->createDestination() || count($this->m_listColumns) == 0) {
+            if (!$this->createDestination() || Tools::count($this->m_listColumns) == 0) {
                 return;
             }
 
@@ -1946,7 +1946,7 @@ EOF;
             if ($this->hasFlag(self::AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
                 return;
             }
-            if (!$this->createDestination() || count($this->m_listColumns) == 0) {
+            if (!$this->createDestination() || Tools::count($this->m_listColumns) == 0) {
                 return;
             }
 
@@ -2014,7 +2014,7 @@ EOF;
         if ($this->hasFlag(self::AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) {
             return;
         }
-        if (!$this->createDestination() || count($this->m_listColumns) == 0) {
+        if (!$this->createDestination() || Tools::count($this->m_listColumns) == 0) {
             return;
         }
 
@@ -2121,7 +2121,7 @@ EOF;
 
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $htmlAttributes['onchange'] = $this->getHtmlId($fieldprefix).'_onChange(this)';
             $this->_renderChangeHandler($fieldprefix);
         }
@@ -2295,12 +2295,12 @@ EOF;
                 $filter[] = $tmp;
             }
 
-            if (count($filter) > 0) {
+            if (Tools::count($filter) > 0) {
                 $mainFilter[] = '('.implode(') OR (', $filter).')';
             }
         }
 
-        if (count($mainFilter) > 0) {
+        if (Tools::count($mainFilter) > 0) {
             $searchFilter = '('.implode(') AND (', $mainFilter).')';
         } else {
             $searchFilter = '';
@@ -2333,7 +2333,7 @@ EOF;
     {
         // If we have a descriptor with multiple fields, use CONCAT
         $attribs = $this->m_destInstance->descriptorFields();
-        if (count($attribs) > 1) {
+        if (Tools::count($attribs) > 1) {
             $fields = [];
             foreach ($attribs as $attribname) {
                 $post = '';

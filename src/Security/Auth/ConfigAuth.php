@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Security\Auth;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Driver for authentication and authorization using entries in the
@@ -93,7 +94,7 @@ class ConfigAuth extends AuthInterface
 
         $result = [];
 
-        for ($i = 0; $i < count($rights); ++$i) {
+        for ($i = 0; $i < Tools::count($rights); ++$i) {
             if ($rights[$i][$action] != '') {
                 $result[] = $rights[$i][$action];
             }

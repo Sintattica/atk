@@ -52,7 +52,7 @@ class MailErrorHandler extends ErrorHandlerBase
             $body .= "\nDEBUGMESSAGES\n".str_repeat('-', 70)."\n";
 
             $lines = [];
-            for ($i = 0, $_ = count($debugMessage); $i < $_; ++$i) {
+            for ($i = 0, $_ = Tools::count($debugMessage); $i < $_; ++$i) {
                 $lines[] = $this->_wordwrap(Tools::atk_html_entity_decode(preg_replace('(\[<a.*</a>\])', '', $debugMessage[$i])));
             }
             $body .= implode("\n", $lines);
@@ -66,7 +66,7 @@ class MailErrorHandler extends ErrorHandlerBase
 
             if (function_exists('getallheaders')) {
                 $request = getallheaders();
-                if (count($request) > 0) {
+                if (Tools::count($request) > 0) {
                     $body .= "\n\nREQUEST INFORMATION\n".str_repeat('-', 70)."\n";
                     foreach ($request as $key => $value) {
                         $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
@@ -103,7 +103,7 @@ class MailErrorHandler extends ErrorHandlerBase
 
             $body .= "\n\nCurrent User:\n".str_repeat('-', 70)."\n";
             $user = SecurityManager::atkGetUser();
-            if (is_array($user) && count($user)) {
+            if (is_array($user) && Tools::count($user)) {
                 foreach ($user as $key => $value) {
                     $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                 }
@@ -116,7 +116,7 @@ class MailErrorHandler extends ErrorHandlerBase
                 $body .= "\nNamespace: ".$sessionManager->getNameSpace()."\n";
                 if (isset($sessionData[$sessionManager->getNameSpace()]['stack'])) {
                     $stack = $sessionData[$sessionManager->getNameSpace()]['stack'];
-                    for ($i = 0; $i < count($stack); ++$i) {
+                    for ($i = 0; $i < Tools::count($stack); ++$i) {
                         $body .= "\nStack level $i:\n";
                         $item = isset($stack[$i]) ? $stack[$i] : null;
                         if (is_array($item)) {
@@ -128,7 +128,7 @@ class MailErrorHandler extends ErrorHandlerBase
                 }
                 if (isset($sessionData[$sessionManager->getNameSpace()]['globals'])) {
                     $ns_globals = $sessionData[$sessionManager->getNameSpace()]['globals'];
-                    if (count($ns_globals) > 0) {
+                    if (Tools::count($ns_globals) > 0) {
                         $body .= "\nNamespace globals:\n";
                         foreach ($ns_globals as $key => $value) {
                             $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
@@ -137,7 +137,7 @@ class MailErrorHandler extends ErrorHandlerBase
                 }
                 if (isset($sessionData['globals'])) {
                     $globals = $sessionData['globals'];
-                    if (count($globals) > 0) {
+                    if (Tools::count($globals) > 0) {
                         $body .= "\nGlobals:\n";
                         foreach ($globals as $key => $value) {
                             $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";

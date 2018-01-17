@@ -85,7 +85,7 @@ class CustomRecordList extends RecordList
             // are totalisable collumns.
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = $this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+                $musthide = (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     $output .= $sof.$this->eolreplace($p_attrib->label(), $rfeplace).$eof.$fsep;
                 }
@@ -100,11 +100,11 @@ class CustomRecordList extends RecordList
         }
 
         // Display the values
-        for ($i = 0, $_i = count($recordset); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
             $output .= $sol;
             foreach (array_keys($this->m_node->m_attribList) as $attribname) {
                 $p_attrib = $this->m_node->m_attribList[$attribname];
-                $musthide = (is_array($suppressList) && count($suppressList) > 0 && in_array($attribname, $suppressList));
+                $musthide = (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList));
 
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     // An <attributename>_display function may be provided in a derived

@@ -369,8 +369,8 @@ class Tools
         $theSpacer = '';
 
         // Loop through all items found in the backtrace
-        for ($i = 0, $_i = count($traceArr); $i < $_i; ++$i) {
-            //for($i=count($traceArr)-1; $i >= 0; $i--)
+        for ($i = 0, $_i = Tools::count($traceArr); $i < $_i; ++$i) {
+            //for($i=Tools::count($traceArr)-1; $i >= 0; $i--)
             // Skip this item in the backtrace if empty
             if (empty($traceArr[$i])) {
                 continue;
@@ -617,7 +617,7 @@ class Tools
      */
     public static function dataSetContains($set, $key, $value)
     {
-        for ($i = 0; $i < count($set); ++$i) {
+        for ($i = 0; $i < Tools::count($set); ++$i) {
             if ($set[$i][$key] == $value) {
                 return true;
             }
@@ -681,7 +681,7 @@ class Tools
     {
         $result = [];
         $items = explode(' AND ', $set);
-        for ($i = 0; $i < count($items); ++$i) {
+        for ($i = 0; $i < Tools::count($items); ++$i) {
             $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
             if (strstr($items[$i], '!=') !== false) {
                 list($key, $value) = explode('!=', $items[$i]);
@@ -755,7 +755,7 @@ class Tools
                 list($dimension1, $dimension2) = explode('_AMDAE_', strtoupper($varname));
                 if (is_array($value)) {
                     // Multidimensional thing
-                    for ($i = 0; $i < count($value); ++$i) {
+                    for ($i = 0; $i < Tools::count($value); ++$i) {
                         $vars[strtolower($dimension1)][$i][strtolower($dimension2)] = $value[$i];
                     }
                 } else {
@@ -779,7 +779,7 @@ class Tools
     public static function AE_decode(&$dest, $var)
     {
         $items = explode('_AE_', $var);
-        if (count($items) <= 1) {
+        if (Tools::count($items) <= 1) {
             return;
         }
 
@@ -895,7 +895,7 @@ class Tools
             $attribName = [];
             $label = [];
 
-            for ($i = 0; $i < count($attrib); ++$i) {
+            for ($i = 0; $i < Tools::count($attrib); ++$i) {
                 $attribName[$i] = $attrib[$i]->fieldName();
                 $label[$i] = $attrib[$i]->label();
             }
@@ -1121,7 +1121,7 @@ class Tools
     {
         global $ATK_VARS;
 
-        if (count($ATK_VARS)) {
+        if (Tools::count($ATK_VARS)) {
             $url = $target.'?';
             foreach ($ATK_VARS as $key => $val) {
                 $url .= $key.'='.rawurlencode($val).'&';
@@ -1143,7 +1143,7 @@ class Tools
         global $ATK_VARS;
         $str = '';
 
-        if (count($ATK_VARS)) {
+        if (Tools::count($ATK_VARS)) {
             foreach ($ATK_VARS as $key => $val) {
                 if (!in_array($key, $excludes)) {
                     $inputs = [];
@@ -1251,7 +1251,7 @@ class Tools
         }
         $params = array_merge($atkParams, $params);
 
-        if ($params != '' && is_array($params) && count($params) > 0) {
+        if ($params != '' && is_array($params) && Tools::count($params) > 0) {
             $phpfile .= '?'.self::buildQueryString($params);
         }
 
@@ -1294,7 +1294,6 @@ class Tools
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
      * @param string $cssclass the css class the button should get
-     * @param bool $embeded wether or not it's an embedded button
      *
      * @return string html button
      */
@@ -1302,7 +1301,6 @@ class Tools
         $text,
         $url = '',
         $sessionstatus = SessionManager::SESSION_DEFAULT,
-        $embedded = true,
         $cssclass = ''
     ) {
         $sm = SessionManager::getInstance();
@@ -1318,15 +1316,7 @@ class Tools
         $script = 'ATK.FormSubmit.atkSubmit("'.self::atkurlencode($sm->sessionUrl($url, $sessionstatus)).'")';
         $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
 
-        if (!$embedded) {
-            $res = '<form name="entryform">';
-            $res .= $sm->formState();
-            $res .= $button.'</form>';
-
-            return $res;
-        } else {
-            return $button;
-        }
+        return $button;
     }
 
     /**
@@ -1867,7 +1857,7 @@ class Tools
     public static function getNodeModule($nodeUri)
     {
         $arr = explode('.', $nodeUri);
-        if (count($arr) == 2) {
+        if (Tools::count($arr) == 2) {
             return $arr[0];
         } else {
             return '';
@@ -1884,7 +1874,7 @@ class Tools
     public static function getNodeType($nodeUri)
     {
         $arr = explode('.', $nodeUri);
-        if (count($arr) == 2) {
+        if (Tools::count($arr) == 2) {
             return $arr[1];
         } else {
             return $nodeUri;
@@ -1925,7 +1915,7 @@ class Tools
             preg_match_all('/./su', $str, $matches);
             $chars = $matches[0];
 
-            return count($chars);
+            return Tools::count($chars);
         } else {
             return strlen($str);
         }
@@ -2103,5 +2093,21 @@ class Tools
 
             return self::substr($string, 0, $length).$replace;
         }
+    }
+
+    /**
+     * Count $value items.
+     *
+     * Does not use is_iterable() because >=php7.2
+     *
+     * @param $value
+     *
+     * @return int number of items. Zero if $value is not iterable.
+     */
+    public static function count($value){
+        if(is_array($value) || $value instanceof \Traversable){
+            return count($value);
+        }
+        return 0;
     }
 }

@@ -11,7 +11,7 @@ use Sintattica\Atk\Ui\IndexPage;
 
 class Atk
 {
-    const VERSION = 'v9.1.0';
+    const VERSION = 'v9.1.2-dev';
 
     public $g_nodes = [];
     public $g_nodesClasses = [];
@@ -172,7 +172,7 @@ class Atk
 
         if ($actions) {
             // prefix tabs with tab_
-            for ($i = 0, $_i = count($tabs); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($tabs); $i < $_i; ++$i) {
                 $tabs[$i] = 'tab_'.$tabs[$i];
             }
 

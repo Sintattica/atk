@@ -309,7 +309,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $smartSearchCriteria = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
         $indexValue = $this->_getNode()->m_index != '' ? Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atkindex', '') : '';
 
-        return (is_array($searchCriteria) && count($searchCriteria) > 0) || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0) || !empty($indexValue);
+        return (is_array($searchCriteria) && Tools::count($searchCriteria) > 0) || (is_array($smartSearchCriteria) && Tools::count($smartSearchCriteria) > 0) || !empty($indexValue);
     }
 
     /**
@@ -377,7 +377,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected function _applyPostedSearchCriteriaToQuery(Query $query, array $attrsByLoadType)
     {
         $searchCriteria = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksearch');
-        if (!is_array($searchCriteria) || count($searchCriteria) == 0) {
+        if (!is_array($searchCriteria) || Tools::count($searchCriteria) == 0) {
             return;
         }
 
@@ -390,7 +390,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
             $attr = $this->_getNode()->getAttribute($key);
             if (is_object($attr)) {
-                if (is_array($value) && isset($value[$key]) && count($value) == 1) {
+                if (is_array($value) && isset($value[$key]) && Tools::count($value) == 1) {
                     $value = $value[$key];
                 }
 
@@ -421,7 +421,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected function _applyPostedSmartSearchCriteriaToQuery(Query $query)
     {
         $searchCriteria = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atksmartsearch');
-        if (!is_array($searchCriteria) || count($searchCriteria) == 0) {
+        if (!is_array($searchCriteria) || Tools::count($searchCriteria) == 0) {
             return;
         }
 
@@ -693,7 +693,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $this->limit(1, $this->m_offset);
         $rows = $this->getAllRows();
 
-        return count($rows) == 1 ? $rows[0] : null;
+        return Tools::count($rows) == 1 ? $rows[0] : null;
     }
 
     /**
@@ -762,7 +762,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $stmt->execute($this->_getBindParameters());
             $rows = $stmt->getAllRows();
             $stmt->close();
-            $this->m_rowCount = count($rows) == 1 ? $rows[0]['count'] : count($rows); // group by fix
+            $this->m_rowCount = Tools::count($rows) == 1 ? $rows[0]['count'] : Tools::count($rows); // group by fix
         }
 
         return $this->m_rowCount;
@@ -907,7 +907,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Returns the row count (used when calling count on an Selector object,
      * don't use this if you want to efficiently retrieve the row count using
-     * a count() select statement, use getRowCount instead!
+     * a Tools::count() select statement, use getRowCount instead!
      *
      * @return int row count
      */
@@ -915,6 +915,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $this->getAllRows();
 
-        return count($this->m_rows);
+        return Tools::count($this->m_rows);
     }
 }

@@ -47,9 +47,9 @@ class Totalizer
 
         $totals = [];
 
-        for ($i = 0, $_i = count($rowset); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($rowset); $i < $_i; ++$i) {
             $record = $rowset[$i]['record'];
-            for ($j = count($subtotalfields) - 1; $j >= 0; --$j) { // reverse loop, to ensure right-to-left subtotalling
+            for ($j = Tools::count($subtotalfields) - 1; $j >= 0; --$j) { // reverse loop, to ensure right-to-left subtotalling
                 $fieldname = $subtotalfields[$j];
                 $value = $record[$fieldname];
                 $p_subtotalling_attrib = $this->m_node->m_attribList[$fieldname];
@@ -68,10 +68,10 @@ class Totalizer
             $result[] = $rowset[$i];
         }
         // leftovers, subtotals of last rows
-        if (count($rowset)) {
-            for ($j = count($subtotalfields) - 1; $j >= 0; --$j) { // reverse loop, to ensure right-to-left subtotalling
+        if (Tools::count($rowset)) {
+            for ($j = Tools::count($subtotalfields) - 1; $j >= 0; --$j) { // reverse loop, to ensure right-to-left subtotalling
                 $fieldname = $subtotalfields[$j];
-                $result[] = $this->_subTotalRow($rowset[count($rowset) - 1], $totals, $fieldname, $totalizers);
+                $result[] = $this->_subTotalRow($rowset[Tools::count($rowset) - 1], $totals, $fieldname, $totalizers);
             }
         }
 

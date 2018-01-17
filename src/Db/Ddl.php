@@ -336,7 +336,7 @@ class Ddl
      */
     public function buildPrimaryKey($fieldlist = array())
     {
-        if (count($fieldlist) > 0) {
+        if (Tools::count($fieldlist) > 0) {
             return 'PRIMARY KEY ('.implode(', ', $fieldlist).')';
         }
 
@@ -413,7 +413,7 @@ class Ddl
     public function buildFields()
     {
         $fields = $this->_buildFieldsArray();
-        if (count($fields) > 0) {
+        if (Tools::count($fields) > 0) {
             return implode(",\n", $fields);
         } else {
             return '';
@@ -446,7 +446,7 @@ class Ddl
     public function buildConstraints()
     {
         $constraints = $this->_buildConstraintsArray();
-        if (count($constraints) > 0) {
+        if (Tools::count($constraints) > 0) {
             return implode(",\n", $constraints);
         } else {
             return '';
@@ -493,8 +493,8 @@ class Ddl
         }
 
         $queries = $this->buildAlter();
-        if (count($queries) > 0) {
-            for ($i = 0, $_i = count($queries); $i < $_i; ++$i) {
+        if (Tools::count($queries) > 0) {
+            for ($i = 0, $_i = Tools::count($queries); $i < $_i; ++$i) {
                 if ($queries[$i] != '') {
                     if (!$this->m_db->query($queries[$i])) {
                         return false;

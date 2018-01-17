@@ -98,14 +98,14 @@ class ListAttribute extends Attribute
      */
     public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
-        if (!is_array($valueArray) || count($valueArray) == 0) {
+        if (!is_array($valueArray) || Tools::count($valueArray) == 0) {
             $valueArray = $optionArray;
         }
 
         // If all values are numeric, we can use a numeric field to store the selected
         // value.
         $this->m_dbfieldtype = 'number';
-        for ($i = 0, $_i = count($valueArray); $i < $_i && $this->m_dbfieldtype == 'number'; ++$i) {
+        for ($i = 0, $_i = Tools::count($valueArray); $i < $_i && $this->m_dbfieldtype == 'number'; ++$i) {
             if (!is_numeric($valueArray[$i])) {
                 $this->m_dbfieldtype = 'string';
             }
@@ -115,7 +115,7 @@ class ListAttribute extends Attribute
 
         // the max size we have is equal to the biggest value.
         $size = 0;
-        for ($i = 0, $_i = count($valueArray); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($valueArray); $i < $_i; ++$i) {
             $size = max($size, Tools::atk_strlen($valueArray[$i]));
         }
         if ($size > 0) {
@@ -149,7 +149,7 @@ class ListAttribute extends Attribute
      */
     public function getOptions()
     {
-        if (!isset($this->m_types['options']) || count($this->m_types['options']) == 0) {
+        if (!isset($this->m_types['options']) || Tools::count($this->m_types['options']) == 0) {
             return $this->m_options;
         }
 
@@ -163,7 +163,7 @@ class ListAttribute extends Attribute
      */
     public function getValues()
     {
-        if (!isset($this->m_types['values']) || count($this->m_types['values']) == 0) {
+        if (!isset($this->m_types['values']) || Tools::count($this->m_types['values']) == 0) {
             return $this->m_values;
         }
 
@@ -177,7 +177,7 @@ class ListAttribute extends Attribute
      */
     public function getLookup()
     {
-        if (!isset($this->m_types['lookup']) || count($this->m_types['lookup']) == 0) {
+        if (!isset($this->m_types['lookup']) || Tools::count($this->m_types['lookup']) == 0) {
             return $this->m_lookup;
         }
 
@@ -285,7 +285,7 @@ class ListAttribute extends Attribute
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         $onchange = '';
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
             $this->_renderChangeHandler($fieldprefix);
         }
@@ -312,7 +312,7 @@ class ListAttribute extends Attribute
         $values = $this->getValues();
         $recvalue = Tools::atkArrayNvl($record, $this->fieldName());
 
-        for ($i = 0; $i < count($values); ++$i) {
+        for ($i = 0; $i < Tools::count($values); ++$i) {
             $sel = '';
             // If the current value is selected or occurs in the record
             if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) || (is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== '')) {
@@ -495,15 +495,15 @@ EOF;
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
         $searchcondition = '';
-        if (is_array($value) && count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
 
-            if (count($value) == 1 && $value[0] != '') { // exactly one value
+            if (Tools::count($value) == 1 && $value[0] != '') { // exactly one value
                 if ($value[0] == '__NONE__') {
                     return $query->nullCondition($table.'.'.$this->fieldName(), true);
                 } else {
                     return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
                 }
-            } elseif (count($value) > 1) { // search for more values
+            } elseif (Tools::count($value) > 1) { // search for more values
                 if (in_array('__NONE__', $value)) {
                     unset($value[array_search('__NONE__', $value)]);
 

@@ -154,6 +154,6 @@ class PgSqlDdl extends Ddl
             }
         }
 
-        return count($result) > 0 ? $result : '';
+        return Tools::count($result) > 0 ? $result : '';
     }
 }

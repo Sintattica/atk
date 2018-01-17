@@ -88,10 +88,10 @@ class StringParser
     public function isComplete($data)
     {
         $fields = $this->getFields();
-        for ($i = 0; $i < count($fields); ++$i) {
+        for ($i = 0; $i < Tools::count($fields); ++$i) {
             $elements = explode('.', $fields[$i]);
             $databin = $data;
-            for ($j = 0; $j < count($elements); ++$j) {
+            for ($j = 0; $j < Tools::count($elements); ++$j) {
                 $value = $databin[$elements[$j]];
                 if (!isset($value)) {
                     return false;
@@ -111,7 +111,7 @@ class StringParser
      */
     public function getFields()
     {
-        if (!count($this->m_fields)) {
+        if (!Tools::count($this->m_fields)) {
             $tmp = '';
             $adding = false;
 

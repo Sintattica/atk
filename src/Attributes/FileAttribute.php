@@ -242,7 +242,7 @@ class FileAttribute extends Attribute
         }
 
         $onchange = '';
-        if (count($this->m_onchangecode)) {
+        if (Tools::count($this->m_onchangecode)) {
             $onchange = ' onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         }
@@ -253,7 +253,7 @@ class FileAttribute extends Attribute
 
         if (!$this->hasFlag(self::AF_FILE_NO_SELECT)) {
             $file_arr = $this->getFiles($this->m_dir);
-            if (count($file_arr) > 0) {
+            if (Tools::count($file_arr) > 0) {
                 natcasesort($file_arr);
 
                 $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.$style.' class="form-control select-standard">';
@@ -365,7 +365,7 @@ class FileAttribute extends Attribute
         }
 
         while ($item = $dirHandle->read()) {
-            if (count($this->m_allowedFileTypes) == 0) {
+            if (Tools::count($this->m_allowedFileTypes) == 0) {
                 if (is_file($this->m_dir.$item)) {
                     $file_arr[] = $item;
                 }
@@ -450,7 +450,7 @@ class FileAttribute extends Attribute
 
         $this->isAllowedFileType($record);
 
-        $error = $record[$this->fieldName()]['error'];
+        $error = isset($record[$this->fieldName()]['error']) ? $record[$this->fieldName()]['error'] : 0;
         if ($error > 0) {
             $error_text = $this->fetchFileErrorType($error);
             Tools::atkTriggerError($record, $this, $error_text, Tools::atktext($error_text, 'atk'));
@@ -473,7 +473,7 @@ class FileAttribute extends Attribute
      */
     public function isAllowedFileType(&$rec)
     {
-        if (count($this->m_allowedFileTypes) == 0) {
+        if (Tools::count($this->m_allowedFileTypes) == 0) {
             return true;
         }
 
@@ -554,7 +554,7 @@ class FileAttribute extends Attribute
                     'error' => $postvars['atkfiles'][$this->fieldName()]['error'],
                 );
             } // if no new file has been uploaded..
-            elseif (count($postvars['atkfiles']) == 0 || $postvars['atkfiles'][$basename]['tmp_name'] == 'none' || $postvars['atkfiles'][$basename]['tmp_name'] == '') {
+            elseif (Tools::count($postvars['atkfiles']) == 0 || $postvars['atkfiles'][$basename]['tmp_name'] == 'none' || $postvars['atkfiles'][$basename]['tmp_name'] == '') {
                 // No file to upload, then check if the select box is filled
                 if ($fileselected) {
                     Tools::atkdebug('file selected!');
@@ -693,7 +693,7 @@ class FileAttribute extends Attribute
 
         $records = $db->getRows($sql);
 
-        if (count($records) > 0) {
+        if (Tools::count($records) > 0) {
             // Check for the highest number
             $max_count = 0;
             foreach ($records as $record) {

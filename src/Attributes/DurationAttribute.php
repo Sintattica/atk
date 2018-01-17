@@ -248,7 +248,7 @@ class DurationAttribute extends Attribute
     public function _getHourPart($minutes)
     {
         if (!is_array($minutes)) {
-            return floor($minutes / 60);
+            return floor(floatval($minutes) / 60);
         } else {
             return $minutes['hours'];
         }
@@ -264,6 +264,7 @@ class DurationAttribute extends Attribute
     public function _getMinutePart($minutes)
     {
         if (!is_array($minutes)) {
+            $minutes = floatval($minutes);
             return $minutes - (floor($minutes / 60) * 60);
         } else {
             return $minutes['minutes'];
