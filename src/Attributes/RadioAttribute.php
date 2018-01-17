@@ -93,6 +93,7 @@ class RadioAttribute extends ListAttribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
+        $value = Tools::atkArrayNvl($record, $this->fieldName());
         $values = $this->getValues();
 
         $total_items = Tools::count($values);
@@ -115,8 +116,11 @@ class RadioAttribute extends ListAttribute
         }
         $item_count = 0;
 
+
+
         for ($i = 0; $i < $total_items; ++$i) {
-            if ($values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()] !== '') {
+
+            if ($values[$i] == $value && $value !== '') {
                 $sel = 'checked';
             } else {
                 $sel = '';
@@ -150,7 +154,7 @@ class RadioAttribute extends ListAttribute
                 }
 
                 for ($j = ($items + $i); $j < $tmp_items; $j = $j + $items) {
-                    if ($this->m_values[$j] == $record[$this->fieldName()] && $record[$this->fieldName()] != '') {
+                    if ($this->m_values[$j] == $value && $value != '') {
                         $sel = 'checked';
                     } else {
                         $sel = '';

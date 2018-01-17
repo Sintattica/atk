@@ -58,8 +58,9 @@ class FormatAttribute extends Attribute
      */
     public function validate(&$record, $mode)
     {
+        $value = Tools::atkArrayNvl($record, $this->fieldName());
         $elems = $this->_breakDown();
-        $values = $this->_valueBreakDown($record[$this->fieldName()]);
+        $values = $this->_valueBreakDown($value);
 
         for ($i = 0, $j = 0, $_i = Tools::count($elems); $i < $_i; ++$i) {
             if ($elems[$i]['type'] != '/') {
@@ -85,8 +86,9 @@ class FormatAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
+        $value = Tools::atkArrayNvl($record, $this->fieldName());
         $elems = $this->_breakDown();
-        $values = $this->_valueBreakDown($record[$this->fieldName()]);
+        $values = $this->_valueBreakDown($value);
 
         $inputs = [];
         $hints = [];
