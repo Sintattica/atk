@@ -204,9 +204,9 @@ class UpdateHandler extends ActionHandler
     {
         $error = false;
         if (isset($record['atkerror'])) {
-            $error = count($record['atkerror']) > 0;
+            $error = Tools::count($record['atkerror']) > 0;
             foreach (array_keys($record) as $key) {
-                $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
+                $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && Tools::count($record[$key]['atkerror']) > 0);
             }
         }
 

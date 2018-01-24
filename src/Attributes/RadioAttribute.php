@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Tools;
+
 /**
  * The RadioAttribute class represents an attribute of a node
  * that has a field with radio button  to select from predefined values.
@@ -51,7 +53,7 @@ class RadioAttribute extends ListAttribute
         } else {
             $this->m_cols = true;
         }
-        $this->m_amount = count($optionArray);
+        $this->m_amount = Tools::count($optionArray);
 
         parent::__construct($name, $flags, $optionArray, $valueArray);
     }
@@ -93,7 +95,7 @@ class RadioAttribute extends ListAttribute
     {
         $values = $this->getValues();
 
-        $total_items = count($values);
+        $total_items = Tools::count($values);
         $items = 0;
         if ($this->m_cols && !$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $items = $this->m_amount;
@@ -127,7 +129,7 @@ class RadioAttribute extends ListAttribute
             $id = $this->getHtmlId($fieldprefix);
 
             $onchange = '';
-            if (count($this->m_onchangecode)) {
+            if (Tools::count($this->m_onchangecode)) {
                 $onchange = 'onClick="'.$id.'_onChange(this);" ';
                 $this->_renderChangeHandler($fieldprefix);
             }
@@ -142,7 +144,7 @@ class RadioAttribute extends ListAttribute
 
             if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
                 if ($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_rows) {
-                    $tmp_items = count($values);
+                    $tmp_items = Tools::count($values);
                 } else {
                     $tmp_items = $items * $this->m_amount;
                 }

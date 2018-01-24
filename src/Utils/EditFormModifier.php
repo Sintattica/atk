@@ -196,7 +196,7 @@ class EditFormModifier
             return;
         }
 
-        $offset = count($this->getNode()->getPage()->getLoadScripts());
+        $offset = Tools::count($this->getNode()->getPage()->getLoadScripts());
 
         $error = [];
         $editArray = array('fields' => array());

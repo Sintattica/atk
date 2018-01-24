@@ -61,7 +61,7 @@ class FormatAttribute extends Attribute
         $elems = $this->_breakDown();
         $values = $this->_valueBreakDown($record[$this->fieldName()]);
 
-        for ($i = 0, $j = 0, $_i = count($elems); $i < $_i; ++$i) {
+        for ($i = 0, $j = 0, $_i = Tools::count($elems); $i < $_i; ++$i) {
             if ($elems[$i]['type'] != '/') {
                 if (!$this->_checkString($elems[$i]['type'], $values[$j])) {
                     Tools::triggerError($record, $this->fieldName(), 'err',
@@ -90,7 +90,7 @@ class FormatAttribute extends Attribute
 
         $inputs = [];
         $hints = [];
-        for ($i = 0, $j = 0, $_i = count($elems); $i < $_i; ++$i) {
+        for ($i = 0, $j = 0, $_i = Tools::count($elems); $i < $_i; ++$i) {
             if ($elems[$i]['type'] == '/') { // literal
                 $inputs[] = $elems[$i]['mask'];
             } else { // format
@@ -193,7 +193,7 @@ class FormatAttribute extends Attribute
      */
     public function _breakDown()
     {
-        if (count($this->m_breakdownCached) == 0) {
+        if (Tools::count($this->m_breakdownCached) == 0) {
             $elems = [];
             $elem = [];
             $last = '';
@@ -298,7 +298,7 @@ class FormatAttribute extends Attribute
         $elems = isset($postvars[$this->fieldName()])?$postvars[$this->fieldName()]:null;
         $result = '';
 
-        for ($i = 0, $_i = count($masks); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($masks); $i < $_i; ++$i) {
             if ($masks[$i]['type'] == '/') { // literal
                 $result .= $masks[$i]['mask'];
             } else { // mask
@@ -340,7 +340,7 @@ class FormatAttribute extends Attribute
         // value is empty if all non-literals have not been filled in.
         $values = $this->_valueBreakDown($record[$this->fieldName()]);
         $elems = $this->_breakDown();
-        for ($i = 0, $_i = count($elems); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($elems); $i < $_i; ++$i) {
             if ($elems[$i]['type'] != '/') { // not a literal
                 if (isset($values[$i]) && $values[$i] != '') {
                     return false;

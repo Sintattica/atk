@@ -58,7 +58,7 @@ class ProfileAttribute extends Attribute
 
         $result = [];
         $rows = $db->getRows($query);
-        for ($i = 0; $i < count($rows); ++$i) {
+        for ($i = 0; $i < Tools::count($rows); ++$i) {
             $result[$rows[$i]['node']][] = $rows[$i]['action'];
         }
 
@@ -121,7 +121,7 @@ class ProfileAttribute extends Attribute
                     }
                 }
 
-                if (count($children) > 0 && count($validActions) > 0) {
+                if (Tools::count($children) > 0 && Tools::count($validActions) > 0) {
                     $query = 'DELETE FROM '.Config::getGlobal('auth_accesstable').' '.'WHERE '.$this->m_accessField.' IN ('.implode(',',
                             $children).') '."AND node = '".$db->escapeSQL($node)."' "."AND action NOT IN ('".implode("','", $validActions)."')";
 
@@ -303,7 +303,7 @@ class ProfileAttribute extends Attribute
         $rights = '';
 
         foreach ($checked as $key => $val) {
-            for ($i = 0; $i <= count($val) - 1; ++$i) {
+            for ($i = 0; $i <= Tools::count($val) - 1; ++$i) {
                 $value = $key.'.'.$val[$i];
                 $rights .= '<input type="hidden" name="rights[]" value="'.$value.'">';
             }
@@ -348,7 +348,7 @@ class ProfileAttribute extends Attribute
         $editableActions = $this->getEditableActions($record);
         $selectedActions = $this->getSelectedActions($record);
 
-        $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
+        $showModule = Tools::count($allActions) > 1 && ($isAdmin || Tools::count($editableActions) > 1);
 
         $firstModule = true;
 
@@ -356,7 +356,7 @@ class ProfileAttribute extends Attribute
             $module_result = '';
 
             foreach ($nodes as $node => $actions) {
-                $showBox = $isAdmin || count(array_intersect($actions,
+                $showBox = $isAdmin || Tools::count(array_intersect($actions,
                         (is_array($editableActions[$module][$node]) ? $editableActions[$module][$node] : array()))) > 0;
                 $display_node_str = false;
                 $display_tabs_str = false;
@@ -545,7 +545,7 @@ class ProfileAttribute extends Attribute
 
             foreach ($modules as $module => $nodes) {
                 foreach ($nodes as $node => $actions) {
-                    $showBox = $isAdmin || count(array_intersect($actions,
+                    $showBox = $isAdmin || Tools::count(array_intersect($actions,
                             (is_array($editableActions[$module][$node]) ? $editableActions[$module][$node] : array()))) > 0;
 
                     if ($showBox) {
@@ -619,14 +619,14 @@ class ProfileAttribute extends Attribute
         }
 
         $actions = [];
-        for ($i = 0; $i < count($checkboxes); ++$i) {
+        for ($i = 0; $i < Tools::count($checkboxes); ++$i) {
             $node = $action = null;
             $elems = explode('.', $checkboxes[$i]);
-            if (count($elems) == 4) {
+            if (Tools::count($elems) == 4) {
                 $node = $elems[1].'.'.$elems[2];
                 $action = $elems[3];
             } else {
-                if (count($elems) == 3) {
+                if (Tools::count($elems) == 3) {
                     $node = $elems[1];
                     $action = $elems[2];
                 } else {

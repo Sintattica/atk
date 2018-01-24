@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Relations;
 
 use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The OTM Session Grid Handler
@@ -37,7 +38,7 @@ class OneToManyRelationSessionGridHandler
 
         $limit = $grid->getLimit();
         $offset = $grid->getOffset();
-        $records_count = count($records);
+        $records_count = Tools::count($records);
 
         // If we don't need to limit the result, then we don't
         if ((int)$offset === 0 && $limit >= $records_count) {
@@ -66,7 +67,7 @@ class OneToManyRelationSessionGridHandler
      */
     public function countHandlerForAdd()
     {
-        return count($this->getRecordsFromSession());
+        return Tools::count($this->getRecordsFromSession());
     }
 
     /**

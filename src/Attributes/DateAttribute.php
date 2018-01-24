@@ -620,7 +620,7 @@ class DateAttribute extends Attribute
         /* small date selections, never possible is field isn't obligatory (no min/max date) */
         if (!empty($maximum) && !empty($minimum) && $str_max - $str_min < 25) {
             $str_script = '';
-            if (count($this->m_onchangecode)) {
+            if (Tools::count($this->m_onchangecode)) {
                 $this->_renderChangeHandler($fieldprefix);
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
             }
@@ -667,7 +667,7 @@ class DateAttribute extends Attribute
                 $str_script = "ATK.DateAttribute.adjustDate(this, '".$id."');";
             }
 
-            if (count($this->m_onchangecode)) {
+            if (Tools::count($this->m_onchangecode)) {
                 $this->_renderChangeHandler($fieldprefix);
                 $str_script .= $this->getHtmlId($fieldprefix).'_onChange(this);';
             }

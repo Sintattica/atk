@@ -164,7 +164,7 @@ class Page
                 // lookup the dependency and inject script right before it.
                 $result = [];
                 $injected = false;
-                for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; ++$i) {
+                for ($i = 0, $_i = Tools::count($this->m_scriptfiles); $i < $_i; ++$i) {
                     if (stristr($this->m_scriptfiles[$i], $before) !== false) {
                         // inject the new one here.
                         $result[] = $file;
@@ -197,7 +197,7 @@ class Page
     public function unregister_script($name)
     {
         $removed = false;
-        for ($i = 0, $_i = count($this->m_scriptfiles); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_scriptfiles); $i < $_i; ++$i) {
             if (stristr($this->m_scriptfiles[$i], $name) !== false) {
                 unset($this->m_scriptfiles[$i]);
                 $removed = true;
@@ -403,7 +403,7 @@ class Page
      */
     public function addScripts(&$res, $partial = false)
     {
-        $count_scriptcode = count($this->m_scriptcode['before']);
+        $count_scriptcode = Tools::count($this->m_scriptcode['before']);
         if ($count_scriptcode > 0) {
             $res .= '  <script type="text/javascript">'."\n";
         }
@@ -414,12 +414,12 @@ class Page
         }
 
         if (!$partial) {
-            for ($i = 0; $i < count($this->m_scriptfiles); ++$i) {
+            for ($i = 0; $i < Tools::count($this->m_scriptfiles); ++$i) {
                 $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
             }
         } else {
             $files = '';
-            for ($i = 0; $i < count($this->m_scriptfiles); ++$i) {
+            for ($i = 0; $i < Tools::count($this->m_scriptfiles); ++$i) {
                 $files .= "ATK.Tools.loadScript('".$this->m_scriptfiles[$i]."');\n";
             }
 
@@ -452,7 +452,7 @@ class Page
     public function renderScriptCode($position)
     {
         $res = '';
-        for ($i = 0, $_i = count($this->m_scriptcode[$position]); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_scriptcode[$position]); $i < $_i; ++$i) {
             $res .= $this->m_scriptcode[$position][$i]."\n";
         }
 
@@ -479,7 +479,7 @@ class Page
         $res .= "      var retval = true; var bag = {};\n";
         $res .= "      if (typeof(ATK.FormSubmit.preGlobalSubmit) == 'function') { ATK.FormSubmit.preGlobalSubmit(form, bag, standardSubmit);}\n";
 
-        for ($i = 0, $_i = count($this->m_submitscripts); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_submitscripts); $i < $_i; ++$i) {
             $res .= '      retval = '.$this->m_submitscripts[$i]."\n";
             $res .= "      if (retval != true) {\n";
             $res .= "        if (typeof(ATK.FormSubmit.postGlobalSubmit) == 'function') {\n";
@@ -506,14 +506,14 @@ class Page
     public function _getGlobalLoadScriptCode($partial = false)
     {
         $res = '';
-        if (count($this->m_loadscripts)) {
+        if (Tools::count($this->m_loadscripts)) {
             $res = '';
             if (!$partial) {
                 $res .= "function globalLoad()\n";
                 $res .= "{\n";
             }
 
-            for ($i = 0, $_i = count($this->m_loadscripts); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($this->m_loadscripts); $i < $_i; ++$i) {
                 $res .= "{$this->m_loadscripts[$i]}\n";
             }
 
@@ -539,7 +539,7 @@ class Page
                 $res .= '  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
             }
 
-            for ($i = 0; $i < count($this->m_stylecode); ++$i) {
+            for ($i = 0; $i < Tools::count($this->m_stylecode); ++$i) {
                 $res .= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
             }
         } else {

@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\Utils;
 
+use Sintattica\Atk\Core\Tools;
+
     /**
      * This file is part of the ATK distribution on GitHub.
      * Detailed copyright and licensing information can be found
@@ -141,7 +143,7 @@ class DirectoryTraverser
      */
     public function _callback($method, $filename)
     {
-        for ($i = 0, $_i = count($this->m_callbackObjects); $i < $_i; ++$i) {
+        for ($i = 0, $_i = Tools::count($this->m_callbackObjects); $i < $_i; ++$i) {
             if (method_exists($this->m_callbackObjects[$i], $method)) {
                 $this->m_callbackObjects[$i]->$method($filename);
             }
@@ -175,7 +177,7 @@ class DirectoryTraverser
     {
         $excluded = false;
         $i = 0;
-        $count = count($this->m_excludes);
+        $count = Tools::count($this->m_excludes);
         while (!$excluded && $i < $count) {
             $excluded = (preg_match($this->m_excludes[$i], $file) > 0);
             ++$i;

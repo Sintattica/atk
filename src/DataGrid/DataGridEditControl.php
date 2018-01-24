@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\DataGrid;
 
+use Sintattica\Atk\Core\Tools;
+
 /**
  * The data grid no records found message. Can be used to render a
  * simple message underneath the grid stating there are no records
@@ -18,7 +20,7 @@ class DataGridEditControl extends DataGridComponent
      */
     public function render()
     {
-        if (count($this->getGrid()->getRecords()) == 0 || count($this->getNode()->m_editableListAttributes) == 0) {
+        if (Tools::count($this->getGrid()->getRecords()) == 0 || Tools::count($this->getNode()->m_editableListAttributes) == 0) {
             return;
         }
 

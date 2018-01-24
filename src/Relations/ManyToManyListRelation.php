@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\Relations;
 
+use Sintattica\Atk\Core\Tools;
+
 /**
  * Many-to-many list relation.
  *
@@ -74,14 +76,14 @@ class ManyToManyListRelation extends ManyToManyRelation
         $selected = $this->getSelectedRecords($record);
         $selectable = $this->_getSelectableRecords($record, $mode);
 
-        if (count($selectable) == 0) {
+        if (Tools::count($selectable) == 0) {
             return $this->text('select_none');
         }
 
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 
-        $size = $this->autoCalculateRows() ? min(count($selectable), $this->getRows()) : $this->getRows();
+        $size = $this->autoCalculateRows() ? min(Tools::count($selectable), $this->getRows()) : $this->getRows();
 
         $style = '';
         foreach($this->getCssStyles('edit') as $k => $v) {

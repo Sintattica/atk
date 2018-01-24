@@ -231,7 +231,7 @@ class OneToOneRelation extends Relation
     {
         $condition = '';
         if (is_array($this->m_destinationFilter)) {
-            for ($i = 0, $_i = count($this->m_destinationFilter); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($this->m_destinationFilter); $i < $_i; ++$i) {
                 $condition .= ' AND '.$fieldaliasprefix.$this->m_name.'.'.$this->m_destinationFilter[$i];
             }
         } elseif ($this->m_destinationFilter != '') {
@@ -683,9 +683,9 @@ class OneToOneRelation extends Relation
                 if (!is_array($arr['fields'])) {
                     $arr['fields'] = [];
                 }
-                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                     /* separator and name */
-                    if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
+                    if ($arr['fields'][Tools::count($arr['fields']) - 1]['html'] !== '-') {
                         $arr['fields'][] = array(
                             'html' => '-',
                             'tabs' => $this->m_tabs,
@@ -711,7 +711,7 @@ class OneToOneRelation extends Relation
                     $arr['fields'] = array_merge($arr['fields'], $a['fields']);
                 }
 
-                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+                if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                     /* separator */
                     $arr['fields'][] = array(
                         'html' => '-',
@@ -766,9 +766,9 @@ class OneToOneRelation extends Relation
             if (!is_array($arr['fields'])) {
                 $arr['fields'] = [];
             }
-            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                 /* separator and name */
-                if ($arr['fields'][count($arr['fields']) - 1]['html'] !== '-') {
+                if ($arr['fields'][Tools::count($arr['fields']) - 1]['html'] !== '-') {
                     $arr['fields'][] = array(
                         'html' => '-',
                         'tabs' => $this->m_tabs,
@@ -792,7 +792,7 @@ class OneToOneRelation extends Relation
                 $arr['fields'] = array_merge($arr['fields'], $a['fields']);
             }
 
-            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
+            if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                 /* separator */
                 $arr['fields'][] = array('html' => '-', 'tabs' => $this->m_tabs, 'sections' => $this->getSections());
             }
@@ -852,7 +852,7 @@ class OneToOneRelation extends Relation
         $filter = $this->m_destinationFilter;
         if (is_array($filter)) {
             $tmp_filter = '';
-            for ($i = 0, $_i = count($filter); $i < $_i; ++$i) {
+            for ($i = 0, $_i = Tools::count($filter); $i < $_i; ++$i) {
                 if ($tmp_filter != '') {
                     $tmp_filter .= ' AND ';
                 }
@@ -882,7 +882,7 @@ class OneToOneRelation extends Relation
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
             $detailtabs = $this->m_destInstance->getTabs($action);
-            if (count($detailtabs) == 1 && $detailtabs[0] == 'default') {
+            if (Tools::count($detailtabs) == 1 && $detailtabs[0] == 'default') {
                 // All elements in the relation are on the default tab. That means we should
                 // inherit the tab from the onetoonerelation itself.
                 return parent::getAdditionalTabs($action);

@@ -88,7 +88,7 @@ class WeekdayAttribute extends NumberAttribute
 
         $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;' : '<br>';
 
-        $max = 7 + count($this->m_extra);
+        $max = 7 + Tools::count($this->m_extra);
         for ($i = 1; $i <= $max; ++$i) {
             $day = pow(2, $i - 1);
 
@@ -131,7 +131,7 @@ class WeekdayAttribute extends NumberAttribute
         $result = '';
         $value = (int)$record[$this->fieldName()];
 
-        $max = 7 + count($this->m_extra);
+        $max = 7 + Tools::count($this->m_extra);
         for ($i = 1; $i <= $max; ++$i) {
             $day = pow(2, $i - 1);
 

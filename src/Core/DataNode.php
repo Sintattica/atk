@@ -79,7 +79,7 @@ class DataNode extends Node
         );
 
         $result = $this->findData($params);
-        Tools::atkdebug('Result '.get_class($this).'::select('.$selector.') => '.count($result).' row(s)');
+        Tools::atkdebug('Result '.get_class($this).'::select('.$selector.') => '.Tools::count($result).' row(s)');
 
         return $result;
     }
@@ -112,7 +112,7 @@ class DataNode extends Node
      */
     protected function countData($params = array())
     {
-        return count($this->findData($params));
+        return Tools::count($this->findData($params));
     }
 
     /**

@@ -165,12 +165,12 @@ class Menu
         $secManager = SecurityManager::getInstance();
 
         $enable = $menuitem['enable'];
-        if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) && is_callable($enable)) {
+        if ((is_string($enable) || (is_array($enable) && Tools::count($enable) == 2 && is_object(@$enable[0]))) && is_callable($enable)) {
             $enable = call_user_func($enable);
         } else {
             if (is_array($enable)) {
                 $enabled = false;
-                for ($j = 0; $j < (count($enable) / 2); ++$j) {
+                for ($j = 0; $j < (Tools::count($enable) / 2); ++$j) {
                     $enabled = $enabled || $secManager->allowed($enable[(2 * $j)], $enable[(2 * $j) + 1]);
                 }
                 $enable = $enabled;
@@ -255,7 +255,7 @@ class Menu
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
             $this->menuItems[$parent][$s_dupelookup[$parent][$name]] = $item;
         } else {
-            $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? count($this->menuItems[$parent]) : 0;
+            $s_dupelookup[$parent][$name] = isset($this->menuItems[$parent]) ? Tools::count($this->menuItems[$parent]) : 0;
             $this->menuItems[$parent][] = $item;
         }
     }
@@ -282,7 +282,7 @@ class Menu
 
     public function _hasSubmenu($item)
     {
-        return isset($item['submenu']) && count($item['submenu']);
+        return isset($item['submenu']) && Tools::count($item['submenu']);
     }
 
     public function _getMenuTitle($item, $append = '')

@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\DataGrid;
 
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * The data grid paginator. Can be used to render pagination
@@ -146,7 +147,7 @@ class DataGridPaginator extends DataGridComponent
 
         $links = $this->getLinks();
 
-        if(!count($links)){
+        if(!Tools::count($links)){
             return '';
         }
 

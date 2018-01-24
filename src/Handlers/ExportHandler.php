@@ -159,7 +159,7 @@ class ExportHandler extends ActionHandler
         if ($selected) {
             $db = Db::getInstance();
             $rows = $db->getRows('SELECT name FROM atk_exportcriteria WHERE id = '.(int)$selected);
-            if (count($rows) == 1) {
+            if (Tools::count($rows) == 1) {
                 $value = htmlentities($rows[0]['name']);
             }
         }
@@ -321,7 +321,7 @@ class ExportHandler extends ActionHandler
           <option value="none">'.Tools::atktext('none', 'atk');
 
         $options = $this->getExportSelections();
-        if (count($options)) {
+        if (Tools::count($options)) {
             foreach ($options as $option) {
                 $html .= '
            <option value="'.$option['id'].'">'.htmlentities($option['name']).'</option>';
@@ -352,7 +352,7 @@ class ExportHandler extends ActionHandler
                             WHERE nodetype = '".$this->m_postvars['atknodeuri']."'
                             AND name = '".$this->m_postvars['export_selection_name']."'
                             AND user_id = ".$user_id);
-        if (count($rows)) {
+        if (Tools::count($rows)) {
             return;
         }
 
@@ -382,7 +382,7 @@ class ExportHandler extends ActionHandler
                             AND name = '".$this->m_postvars['export_selection_name']."'
                             AND user_id = ".$user_id.'
                             AND id <> '.(int)$this->m_postvars['exportvalue']);
-        if (count($rows)) {
+        if (Tools::count($rows)) {
             return;
         }
 

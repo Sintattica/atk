@@ -78,13 +78,13 @@ class MySqliStatement extends Statement
      */
     private function _bindParams($params)
     {
-        if (count($params) == 0) {
+        if (Tools::count($params) == 0) {
             return;
         }
 
         $i = 0;
         $args = [];
-        $args[] = str_repeat('s', count($this->_getBindPositions()));
+        $args[] = str_repeat('s', Tools::count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
             Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
             $args[] = &$params[$param];
@@ -135,7 +135,7 @@ class MySqliStatement extends Statement
         $this->m_values = [];
         $refs = [];
 
-        for ($i = 0; $i < count($this->m_columnNames); ++$i) {
+        for ($i = 0; $i < Tools::count($this->m_columnNames); ++$i) {
             $this->m_values[$i] = null;
             $refs[$i] = &$this->m_values[$i];
         }
