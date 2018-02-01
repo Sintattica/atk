@@ -71,7 +71,7 @@ class DurationAttribute extends Attribute
     public function hide($record, $fieldprefix, $mode)
     {
         // hide as a parseable string
-        $record[$this->fieldName()] = $this->_minutes2string($record[$this->fieldName()]);
+        $record[$this->fieldName()] = self::_minutes2string($record[$this->fieldName()]);
 
         return parent::hide($record, $fieldprefix, $mode);
     }
@@ -95,8 +95,8 @@ class DurationAttribute extends Attribute
             $curminutes = null;
             $result = '<div class="form-inline">';
             if ($this->m_maxtime_min >= 60) {
-                $curhours = $this->_getHourPart($fieldvalue);
-                $curminutes = $this->_getMinutePart($fieldvalue);
+                $curhours = self::_getHourPart($fieldvalue);
+                $curminutes = self::_getMinutePart($fieldvalue);
                 $result .= '<select id="'.$id.'_hours" name="'.$this->getHtmlName($fieldprefix).'[hours]" class="form-control select-standard">';
                 for ($h = 0; $h <= $this->m_maxtime_min / 60;) {
                     $result .= '<option value="'.$h.'" ';
@@ -135,7 +135,7 @@ class DurationAttribute extends Attribute
 
             $result .= '</div>';
         } else {
-            $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';
+            $curval = ($fieldvalue > 0) ? self::_minutes2string($fieldvalue) : '';
             $result = '<input type="text" name="'.$this->getHtmlName($fieldprefix).'" value="'.$curval.'"'.($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
         }
 
@@ -165,7 +165,7 @@ class DurationAttribute extends Attribute
      */
     public function display($record, $mode)
     {
-        return $this->_minutes2string($record[$this->fieldName()]);
+        return self::_minutes2string($record[$this->fieldName()]);
     }
 
     /**
@@ -196,7 +196,7 @@ class DurationAttribute extends Attribute
      *
      * @return int with number of minutes
      */
-    public function _string2minutes($value)
+    public static function _string2minutes($value)
     {
         if (strpos($value, ':') === false) {
             // decimal format
@@ -221,7 +221,7 @@ class DurationAttribute extends Attribute
      *
      * @return string with minutes
      */
-    public function _minutes2string($minutes)
+    public static function _minutes2string($minutes)
     {
         $prefix = '';
         if ($minutes < 0) {
@@ -230,7 +230,7 @@ class DurationAttribute extends Attribute
         }
 
         if (Config::getGlobal('durationformat', 0) == self::DURATIONFORMAT_DECIMAL) {
-            $decimalvalue = (int)$this->_getHourPart($minutes) + ((int)self::_getMinutePart($minutes) / 60);
+            $decimalvalue = (int)self::_getHourPart($minutes) + ((int)self::_getMinutePart($minutes) / 60);
 
             return $prefix.sprintf('%02.02f', $decimalvalue);
         } elseif (Config::getGlobal('durationformat', 0) == self::DURATIONFORMAT_TIME) {
@@ -245,7 +245,7 @@ class DurationAttribute extends Attribute
      *
      * @return string with hours
      */
-    public function _getHourPart($minutes)
+    public static function _getHourPart($minutes)
     {
         if (!is_array($minutes)) {
             return floor(floatval($minutes) / 60);
@@ -261,7 +261,7 @@ class DurationAttribute extends Attribute
      *
      * @return string with minutes
      */
-    public function _getMinutePart($minutes)
+    public static function _getMinutePart($minutes)
     {
         if (!is_array($minutes)) {
             $minutes = floatval($minutes);
@@ -281,7 +281,7 @@ class DurationAttribute extends Attribute
     public function fetchValue($postvars)
     {
         if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($postvars[$this->fieldName()])) {
-            return $this->_string2minutes($postvars[$this->fieldName()]);
+            return self::_string2minutes($postvars[$this->fieldName()]);
         } else {
             return $postvars[$this->fieldName()]['hours'] * 60 + $postvars[$this->fieldName()]['minutes'];
         }
