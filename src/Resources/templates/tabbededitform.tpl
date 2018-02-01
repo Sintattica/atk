@@ -1,5 +1,5 @@
 <div id="{$panename}_editform" style="width:100%;">
-    {if (count($errors)>0)}
+    {if isset($errors) && $errors}
         <div class="error">
             {$errortitle}
             {foreach from=$errors item=error}
