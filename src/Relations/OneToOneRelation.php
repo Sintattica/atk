@@ -667,7 +667,7 @@ class OneToOneRelation extends Relation
                         $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
                     } else {
                         // its possible that the destination has no relation back. In that case the refKey is just an attribute
-                        $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
+                        $forceList[$this->m_refKey] = Tools::atkArrayNvl($defaults, $this->m_ownerInstance->primaryKeyField());
                     }
                 }
 

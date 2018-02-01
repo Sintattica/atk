@@ -84,7 +84,7 @@ class WeekdayAttribute extends NumberAttribute
         $result = '';
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
-        $value = (int)$record[$this->fieldName()];
+        $value = intval(Tools::atkArrayNvl($record, $this->fieldName()));
 
         $separator = $this->hasFlag(self::AF_WEEKDAY_SMALL_EDIT) || $mode == 'list' ? '&nbsp;' : '<br>';
 

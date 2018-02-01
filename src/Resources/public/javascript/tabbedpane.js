@@ -8,6 +8,9 @@ ATK.TabbedPane = {
         var attrs = pane.find('.tabbedPaneAttr');
         var tabs = pane.find('.tabbedPaneTab');
 
+        var input = jQuery('input[name="'+paneName.substring(10)+'"]');
+        input.val(tabName.substring(13));
+
         // show attribute of the current tab
         attrs.each(function (index, attr) {
             var $attr = jQuery(attr);
