@@ -3039,6 +3039,20 @@ class Attribute
     }
 
     /**
+     * Remove a CSS class for this attribute on an HTML form.
+     *
+     * @param string $classname The name of a class.
+     *
+     * @return Attribute The instance of this Attribute
+     */
+    public function removeCSSClass($classname)
+    {
+        $this->m_cssclasses = array_diff($this->m_cssclasses, array($classname));
+
+        return $this;
+    }
+
+    /**
      * Add a CSS class for the container of this attribute on an HTML form.
      *
      * @param string $classname The name of a class.
