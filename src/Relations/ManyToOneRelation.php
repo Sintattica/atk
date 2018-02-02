@@ -888,7 +888,7 @@ class ManyToOneRelation extends Relation
             // we don't autoselect, since user may wist to select 'none' instead
             // of the 1 record.
             if (count($recordset) == 0) {
-                $result = $this->getNoneLabel();
+                $result = '<span class="form-control-static">' . $this->getNoneLabel();
             } else {
                 // relation may be empty, so we must provide an empty selectable..
                 $hasNullOption = false;
@@ -934,7 +934,7 @@ class ManyToOneRelation extends Relation
         $result .= $linkview && isset($autolink['view']) ? $autolink['view'] : '';
         $result .= isset($autolink['add']) ? $autolink['add'] : '';
 
-        if ($this->hasFlag(self::AF_LARGE)) {
+        if ($this->hasFlag(self::AF_LARGE) || count($recordset) == 0) {
             $result .= '</span>'; // atkmanytoonerelation-large-container
         }
 
