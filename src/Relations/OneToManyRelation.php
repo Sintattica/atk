@@ -892,7 +892,8 @@ class OneToManyRelation extends Relation
         $rows = SessionStore::getInstance($this->getSessionStoreKey())->getData();
 
         foreach ($rows as $row) {
-            $this->updateSessionAddFakeId($row, $this->getSessionAddFakeId(), $record);
+            $pk = $record[$this->getOwnerInstance()->primaryKeyField()];
+            $row[$this->m_refKey[0]] = $pk;
             $this->m_destInstance->addDb($row);
         }
 
@@ -900,28 +901,6 @@ class OneToManyRelation extends Relation
         SessionStore::getInstance($this->getSessionStoreKey())->setData(null);
 
         return true;
-    }
-
-    /**
-     * Recursive method to look for the fake id in the record and replace it
-     * with the proper id.
-     *
-     * @param array $row Destination record
-     * @param mixed $id Fake id to look for
-     * @param array $record Owner record
-     */
-    private function updateSessionAddFakeId(&$row, $id, $record)
-    {
-        $row_keys = array_keys($row);
-        foreach ($row_keys as $key) {
-            if (is_array($row[$key])) {
-                $this->updateSessionAddFakeId($row[$key], $id, $record);
-            } else {
-                if ($row[$key] === $id) {
-                    $row[$key] = $record[$key];
-                }
-            }
-        }
     }
 
     /**
