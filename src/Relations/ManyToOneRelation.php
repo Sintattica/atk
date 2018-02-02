@@ -2083,7 +2083,6 @@ EOF;
         $noneLabel = '';
         $emptyValue = '';
         $htmlAttributes = [];
-        $type = 'edit';
 
         // validate is this is a selectable record and if so retrieve the display label and hidden value
         if ($this->_isSelectableRecord($record, $mode)) {
@@ -2105,11 +2104,16 @@ EOF;
         }
 
 
+        $ajaxUrlParams = [];
+        if($this->m_destinationFilter && ($mode == 'edit' || $mode == 'add')) {
+            $ajaxUrlParams['atkfilter'] =  $this->parseFilter($this->m_destinationFilter, $record);
+        }
+
         $selectOptions = [];
         $selectOptions['enable-select2'] = true;
         $selectOptions['enable-manytoonereleation-autocomplete'] = true;
         $selectOptions['dropdown-auto-width'] = false;
-        $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
+        $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $mode, 'attribute.'.$this->fieldName().'.autocomplete', $ajaxUrlParams);
         $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
         $selectOptions['width'] = '100%';
 
@@ -2153,11 +2157,16 @@ EOF;
     public function partial_autocomplete($mode)
     {
         $this->createDestination();
+
         $searchvalue = $this->escapeSQL($this->m_ownerInstance->m_postvars['value']);
         $filter = $this->createSearchFilter($searchvalue);
         $this->addDestinationFilter($filter);
-        $record = $this->m_ownerInstance->updateRecord();
 
+        if($this->getOwnerInstance()->m_postvars['atkfilter']) {
+            $this->addDestinationFilter($this->getOwnerInstance()->m_postvars['atkfilter']);
+        }
+
+        $record = $this->m_ownerInstance->updateRecord();
         $result = "\n";
         $limit = $this->m_autocomplete_pagination_limit;
         $page = 1;
