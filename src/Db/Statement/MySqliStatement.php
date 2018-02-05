@@ -40,17 +40,26 @@ class MySqliStatement extends Statement
 
     /**
      * Prepares the statement for execution.
+     *
+     * @var bool $retryOnFail
+     * @throws StatementException
      */
-    protected function _prepare()
+    protected function _prepare($retryOnFail = true)
     {
-        if ($this->getDb()->connect() != Db::DB_SUCCESS) {
+        if ($this->getDb()->connect() !== Db::DB_SUCCESS) {
             throw new StatementException('Cannot connect to database.', StatementException::NO_DATABASE_CONNECTION);
         }
 
+        $query = $this->_getParsedQuery();
         $conn = $this->getDb()->link_id();
-        Tools::atkdebug('Prepare query: '.$this->_getParsedQuery());
-        $this->m_stmt = $conn->prepare($this->_getParsedQuery());
-        if (!$this->m_stmt || $conn->errno) {
+        Tools::atkdebug('Prepare query: '.$query);
+        $this->m_stmt = mysqli_prepare($conn, $query);
+
+        if($conn->errno === 2006 && $retryOnFail) {
+            Tools::atkdebug('DB has gone away, try to reconnect');
+            $this->getDb()->disconnect();
+            $this->_prepare(false);
+        }elseif (!$this->m_stmt || $conn->errno) {
             throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", StatementException::PREPARE_STATEMENT_ERROR);
         }
     }
