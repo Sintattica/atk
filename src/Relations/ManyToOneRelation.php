@@ -2162,8 +2162,9 @@ EOF;
         $filter = $this->createSearchFilter($searchvalue);
         $this->addDestinationFilter($filter);
 
-        if($this->getOwnerInstance()->m_postvars['atkfilter']) {
-            $this->addDestinationFilter($this->getOwnerInstance()->m_postvars['atkfilter']);
+        // use "request" because "m_postvars" yelds stange results...
+        if(isset($_REQUEST['atkfilter'])) {
+            $this->addDestinationFilter($_REQUEST['atkfilter']);
         }
 
         $record = $this->m_ownerInstance->updateRecord();
