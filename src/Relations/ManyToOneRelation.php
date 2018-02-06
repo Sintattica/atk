@@ -2148,16 +2148,15 @@ EOF;
      */
     public function partial_autocomplete($mode)
     {
-        global $ATK_VARS;
-
         $this->createDestination();
 
         $searchvalue = $this->escapeSQL($this->m_ownerInstance->m_postvars['value']);
         $filter = $this->createSearchFilter($searchvalue);
         $this->addDestinationFilter($filter);
 
-        if(isset($ATK_VARS['atkfilter'])) {
-            $this->addDestinationFilter($ATK_VARS['atkfilter']);
+        // use "request" because "m_postvars" yelds stange results...
+        if(isset($_REQUEST['atkfilter'])) {
+            $this->addDestinationFilter($_REQUEST['atkfilter']);
         }
 
         $record = $this->m_ownerInstance->updateRecord();
