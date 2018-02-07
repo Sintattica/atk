@@ -335,7 +335,10 @@ class OneToManyRelation extends Relation
         if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {
             $grid = $this->createGrid($record, 'admin', 'view');
             $grid->loadRecords(); // load records early
-            $grid->setEmbedded(false);
+
+            if($mode == 'view') {
+                $grid->setEmbedded(false);
+            }
 
             // no records
             if ($grid->getCount() == 0) {
