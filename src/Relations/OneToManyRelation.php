@@ -331,11 +331,15 @@ class OneToManyRelation extends Relation
      */
     public function display($record, $mode)
     {
+
         // for the view mode we use the datagrid and load the records ourselves
         if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {
             $grid = $this->createGrid($record, 'admin', 'view');
             $grid->loadRecords(); // load records early
-            $grid->setEmbedded(false);
+
+           if($mode == 'view') {
+              $grid->setEmbedded(false);
+           }
 
             // no records
             if ($grid->getCount() == 0) {
