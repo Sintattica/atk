@@ -70,11 +70,11 @@ class Atk
 
         $debug = 'Created a new Atk ('.self::VERSION.') instance.';
         $debug .= ' Environment: '.$environment.'.';
+        $debug .= ' PHP version: '.PHP_VERSION.'.';
 
         if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
             $debug .= ' Server info: '.$_SERVER['SERVER_NAME'].' ('.$_SERVER['SERVER_ADDR'].')';
         }
-
 
         Tools::atkdebug($debug);
 

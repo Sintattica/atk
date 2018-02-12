@@ -475,8 +475,7 @@ class Debugger
         $usage = function_exists('memory_get_usage') ? sprintf('%02.02f', (memory_get_usage() / 1024 / 1024)) : '? ';
         $method = $_SERVER['REQUEST_METHOD'];
         $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off' ? 'http' : 'https';
-        $url = $protocol.'://'.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
-
+        $url = $protocol.'://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
         $label = "[{$time}h / {$duration}s / {$usage}MB / ".self::$s_queryCount.' Queries / '.self::$s_systemQueryCount." System Queries] $method $url";
 
         $output = '
