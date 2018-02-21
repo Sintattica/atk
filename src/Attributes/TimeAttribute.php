@@ -126,7 +126,13 @@ class TimeAttribute extends Attribute
         $result = $postvars[$this->fieldName()];
 
         if (!is_array($result)) {
-            $exploded = explode(':', $postvars[$this->fieldName()]);
+            // $result could contain "date" data (when TimeAttribute is embedded in the DateTimeAttribute)
+            // we extract the time information assuming the space is the separator between data and time
+            if(strpos(trim($result), ' ') !== false) {
+                $result = trim(substr($result, strpos($result, ' ')));
+            }
+
+            $exploded = explode(':', $result);
             if (Tools::count($exploded) <= 1) {
                 return '';
             }
