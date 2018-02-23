@@ -355,7 +355,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         $htmlActionLinks = '';
-        if (Tools::count($actionLink)) {
+        if (Tools::count($actionLinks)) {
             $htmlActionLinks = '&nbsp;'.implode(' ', $actionLinks);
         }
 
