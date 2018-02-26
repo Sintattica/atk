@@ -259,7 +259,7 @@ class FileAttribute extends Attribute
                 $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.$style.' class="form-control select-standard">';
                 // Add default option with value NULL
                 $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
-                while (list(, $val) = each($file_arr)) {
+                foreach($file_arr as $val){
                     (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val) ? $selected = 'selected' : $selected = '';
                     if (is_file($this->m_dir.$val)) {
                         $result .= '<option value="'.$val."\" $selected>".$val;
