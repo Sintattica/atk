@@ -259,7 +259,18 @@ class MySqliDb extends Db
             Debugger::addQuery($query, $isSystemQuery);
         }
 
-        return @mysqli_query($this->m_link_id, $query);
+        $result = @mysqli_query($this->m_link_id, $query);
+        if(!$result && mysqli_errno($this->m_link_id) === 2006) {
+            Tools::atkdebug('DB has gone away, try to reconnect');
+            $this->disconnect();
+            if ($this->connect() !== Db::DB_SUCCESS) {
+                Tools::atkerror('Cannot connect to database.');
+            }else {
+                $result = @mysqli_query($this->m_link_id, $query);
+            }
+        }
+
+        return $result;
     }
 
     /**
