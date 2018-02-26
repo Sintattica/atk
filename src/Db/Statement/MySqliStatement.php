@@ -43,13 +43,27 @@ class MySqliStatement extends Statement
      */
     protected function _prepare()
     {
-        if ($this->getDb()->connect() != Db::DB_SUCCESS) {
+        if ($this->getDb()->connect() !== Db::DB_SUCCESS) {
             throw new StatementException('Cannot connect to database.', StatementException::NO_DATABASE_CONNECTION);
         }
 
+        $query = $this->_getParsedQuery();
         $conn = $this->getDb()->link_id();
-        Tools::atkdebug('Prepare query: '.$this->_getParsedQuery());
-        $this->m_stmt = $conn->prepare($this->_getParsedQuery());
+        Tools::atkdebug('Prepare query: '.$query);
+        $this->m_stmt = mysqli_prepare($conn, $query);
+
+        if(!$this->m_stmt && $conn->errno === 2006) {
+            // retry
+            Tools::atkdebug('DB has gone away, try to reconnect');
+            $this->getDb()->disconnect();
+            if ($this->getDb()->connect() !== Db::DB_SUCCESS) {
+                throw new StatementException('Cannot connect to database.', StatementException::NO_DATABASE_CONNECTION);
+            }
+            $conn = $this->getDb()->link_id();
+            Tools::atkdebug('Prepare query after reconnection: '.$query);
+            $this->m_stmt = mysqli_prepare($conn, $query);
+        }
+
         if (!$this->m_stmt || $conn->errno) {
             throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", StatementException::PREPARE_STATEMENT_ERROR);
         }
