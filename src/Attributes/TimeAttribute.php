@@ -77,11 +77,19 @@ class TimeAttribute extends Attribute
      */
     public static function timeArray($time)
     {
-        return array(
-            'hours' => substr($time, 0, 2),
-            'minutes' => substr($time, 2, 2),
-            'seconds' => substr($time, 4, 2),
-        );
+        if (strstr($time, ':')) {
+            return array(
+                'hours' => substr($time, 0, 2),
+                'minutes' => substr($time, 3, 2),
+                'seconds' => substr($time, 5, 2),
+            );
+        } else {
+            return array(
+                'hours' => substr($time, 0, 2),
+                'minutes' => substr($time, 2, 2),
+                'seconds' => substr($time, 4, 2),
+            );
+        }
     }
 
     /**
