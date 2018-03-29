@@ -101,6 +101,10 @@ class IndexPage
                 'menu' => $menuObj->getMenu(),
             ), 'top');
             $this->m_page->addContent($top);
+
+            if(Config::getGlobal('session_autorefresh')){
+                $this->m_page->register_scriptcode(SessionManager::getSessionAutoRefreshJs());
+            }
         }
 
         $this->atkGenerateDispatcher();
