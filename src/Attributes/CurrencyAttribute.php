@@ -100,7 +100,7 @@ class CurrencyAttribute extends NumberAttribute
     public function display($record, $mode)
     {
         $result = parent::display($record, $mode);
-        if ($result && $this->m_currencysymbol) {
+        if ($result !== '' && $this->m_currencysymbol) {
             $result = $this->getCurrencySymbolDisplay() . ' ' . $result;
         }
 

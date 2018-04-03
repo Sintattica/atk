@@ -934,7 +934,7 @@ class ManyToOneRelation extends Relation
         $result .= $linkview && isset($autolink['view']) ? $autolink['view'] : '';
         $result .= isset($autolink['add']) ? $autolink['add'] : '';
 
-        if ($this->hasFlag(self::AF_LARGE) || count($recordset) == 0) {
+        if ($this->hasFlag(self::AF_LARGE) || Tools::count($recordset) == 0) {
             $result .= '</span>'; // atkmanytoonerelation-large-container
         }
 
