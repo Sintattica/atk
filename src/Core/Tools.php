@@ -2098,14 +2098,15 @@ class Tools
     /**
      * Count $value items.
      *
-     * Does not use is_iterable() because >=php7.2
+     * Does not use is_iterable() because >= php7.1
      *
      * @param $value
      *
      * @return int number of items. Zero if $value is not iterable.
      */
-    public static function count($value){
-        if(is_array($value) || $value instanceof \Traversable){
+    public static function count($value)
+    {
+        if(is_array($value) || $value instanceof \Countable){
             return count($value);
         }
         return 0;
