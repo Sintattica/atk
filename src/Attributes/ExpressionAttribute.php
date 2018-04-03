@@ -131,6 +131,7 @@ class ExpressionAttribute extends Attribute
     {
         if ($this->getSearchType() == 'number') {
             $attr = new NumberAttribute($this->fieldName());
+            $attr->m_searchsize = $this->m_searchsize;
 
             return $attr->search($record, $extended, $fieldprefix);
         } else {
