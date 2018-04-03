@@ -23,7 +23,7 @@ class IndexPage
     /*
      * @var Ui
      */
-    public $_ui;
+    public $m_ui;
 
     /*
      * @var Output
@@ -47,8 +47,6 @@ class IndexPage
     /**
      * Constructor
      * @param $atk Atk
-     *
-     * @return IndexPage
      */
     public function __construct(Atk $atk)
     {
