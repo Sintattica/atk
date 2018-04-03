@@ -2910,11 +2910,11 @@ class Attribute
         $script = '';
         foreach ($arr['fields'] as $field) {
             $element = str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$field['id']);
-            $value = str_replace("'", "\'", $field['html']);
+            $value = str_replace("'", "\\'", $field['html']);
             $script .= "jQuery('$element').html('$value');";
         }
 
-        return '<script type="text/javascript">'.$script.'</script>';
+        return '<script>'.$script.'</script>';
     }
 
     /**

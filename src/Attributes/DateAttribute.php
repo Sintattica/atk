@@ -655,7 +655,7 @@ class DateAttribute extends Attribute
         );
 
         if (!$this->m_simplemode) {
-            $result .= '<div class="DateAttribute form-inline"><script language="javascript">var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
+            $result .= '<div class="DateAttribute form-inline"><script>var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
         }
 
         /* other date selections */

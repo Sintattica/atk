@@ -64,7 +64,7 @@ ATK.DataGrid = {
 
         // overrides
         var overrides = jQuery.extend(plainOverrides, jsOverrides);
-        if (jsCallback !== null) {
+        if (jsCallback !== null && jsCallback !== undefined) {
             overrides = jQuery.extend(overrides, jsCallback(name));
         }
 
