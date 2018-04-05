@@ -1018,9 +1018,7 @@ class ManyToOneRelation extends Relation
             $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
         }
 
-        $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'"
-                name="'.$this->getHtmlName($fieldprefix).'"
-                value="'.$currentPk.'">';
+        $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.$currentPk.'">';
 
         return $result;
     }
