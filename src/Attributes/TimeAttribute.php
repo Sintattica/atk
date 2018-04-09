@@ -191,7 +191,7 @@ class TimeAttribute extends Attribute
         $name = $this->getHtmlName($fieldprefix);
         $field = Tools::atkArrayNvl($record, $this->fieldName());
         if($field && !is_array($field)){
-           $field = self::parseTime($field);
+            $field = self::parseTime($field);
         }
 
         $onChangeCode = '';
@@ -200,9 +200,9 @@ class TimeAttribute extends Attribute
             $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
 
-        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>\n";
-        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>\n";
-        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>\n";
+        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
+        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
+        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
 
         if (is_array($field)) {
             $m_defHour = $field['hours'];
@@ -225,7 +225,7 @@ class TimeAttribute extends Attribute
             } else {
                 $sel = '';
             }
-            $m_hourBox .= sprintf("<option value='%02d'%s>%02d</option>\n", $i, $sel, $i);
+            $m_hourBox .= sprintf("<option value='%02d'%s>%02d</option>", $i, $sel, $i);
         }
 
         // generate minute dropdown
@@ -251,7 +251,7 @@ class TimeAttribute extends Attribute
                 $sel = '';
             }
 
-            $m_minBox .= sprintf("<option value='%02d'%s>%02d</option>\n", $minute_steps[$i], $sel, $minute_steps[$i]);
+            $m_minBox .= sprintf("<option value='%02d'%s>%02d</option>", $minute_steps[$i], $sel, $minute_steps[$i]);
         }
 
         // generate second dropdown
@@ -270,7 +270,7 @@ class TimeAttribute extends Attribute
                 $sel = '';
             }
 
-            $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n", $this->m_steps[$i], $sel, $this->m_steps[$i]);
+            $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>", $this->m_steps[$i], $sel, $this->m_steps[$i]);
         }
 
         // close dropdown structures
@@ -280,7 +280,7 @@ class TimeAttribute extends Attribute
             $m_secBox .= '</select>';
             $m_secBox = ':'.$m_secBox;
         } else {
-            $m_secBox = '<input type="hidden" id="'.$fieldprefix.$this->fieldName().'[seconds]" name="'.$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
+            $m_secBox = '<input type="hidden" id="'.$fieldprefix.$this->fieldName().'[seconds]" name="'.$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">";
         }
 
         // assemble display version
