@@ -515,8 +515,7 @@ class ProfileAttribute extends Attribute
 
         $this->_restoreDivStates($page);
 
-        $result = '<div align="right">
-                  [<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
+        $result = '<div align="right">[<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
 
         $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
