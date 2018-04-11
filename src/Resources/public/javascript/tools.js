@@ -23,6 +23,7 @@ ATK.Tools = {
         var absUrl = ATK.Tools.absScriptPath(url);
         if (ATK.Tools.scripts.indexOf(absUrl) < 0) {
             ATK.Tools.scripts.push(absUrl);
+            jQuery.getScript(absUrl);
         }
     },
     loadStyle: function (url, media) {
