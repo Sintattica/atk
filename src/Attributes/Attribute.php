@@ -1316,7 +1316,7 @@ class Attribute
             $ret = $this->m_ownerInstance->$method($defaults, $mode);
         } else {
             $ret = $this->display($defaults, $mode);
-            if ($ret && strlen($this->m_postfixlabel) > 0) {
+            if ($ret != '' && strlen($this->m_postfixlabel) > 0) {
                 $ret .= '&nbsp;'.$this->m_postfixlabel;
             }
         }
@@ -2910,11 +2910,11 @@ class Attribute
         $script = '';
         foreach ($arr['fields'] as $field) {
             $element = str_replace('.', '_', $this->m_ownerInstance->atkNodeUri().'_'.$field['id']);
-            $value = str_replace("'", "\'", $field['html']);
+            $value = str_replace("'", "\\'", $field['html']);
             $script .= "jQuery('$element').html('$value');";
         }
 
-        return '<script type="text/javascript">'.$script.'</script>';
+        return '<script>'.$script.'</script>';
     }
 
     /**

@@ -11,7 +11,7 @@ use Sintattica\Atk\Ui\IndexPage;
 
 class Atk
 {
-    const VERSION = 'v9.1.7-dev';
+    const VERSION = 'v9.1.8-dev';
 
     public $g_nodes = [];
     public $g_nodesClasses = [];

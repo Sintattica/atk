@@ -203,16 +203,16 @@ class EditFormModifier
         $this->m_node->getAttribute($name)->addToEditArray($this->getMode(), $editArray, $this->getRecord(), $error, $this->getFieldPrefix());
 
         $scriptCode = '';
+        $re = '/<script.*>(.*)<\/script>/iU';
+
         foreach ($editArray['fields'] as $field) {
             $element = '#'.str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
 
-            $value = str_replace("'", "\'", $field['html']);
+            $value = preg_replace($re, '', $field['html']);
+            $value = str_replace("'", "\\'", $value);
             $scriptCode .= "jQuery('$element').html('$value');";
 
-            // extract the javascript code from the scriptCode
-            $re = '/<script\>(.*?)<\/script>/i';
             preg_match_all($re, $field['html'], $matches, PREG_SET_ORDER, 0);
-            $scriptCode = preg_replace($re, '', $scriptCode);
             foreach ($matches as $match) {
                 $scriptCode .= "\n".$match[1];
             }

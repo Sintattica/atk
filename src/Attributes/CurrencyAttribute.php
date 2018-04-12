@@ -37,10 +37,15 @@ class CurrencyAttribute extends NumberAttribute
         if ($currencysymbol == '') {
             $currencysymbol = Tools::atktext('currencysymbol', 'atk', '', '', '', true);
         }
-
         $this->m_currencysymbol = $currencysymbol;
-        $this->m_decimalseparator = ($decimalseparator != '' ? $decimalseparator : '.');
-        $this->m_thousandsseparator = ($thousandsseparator != '' ? $thousandsseparator : ',');
+        if ($decimalseparator == '') {
+            $decimalseparator = Tools::atktext('decimal_separator', 'atk', '', '', '', true);
+        }
+        $this->m_decimalseparator = $decimalseparator ?: '.';
+        if ($thousandsseparator == '') {
+            $thousandsseparator = Tools::atktext('thousands_separator', 'atk', '', '', '', true);
+        }
+        $this->m_thousandsseparator = $thousandsseparator ?: ',';
 
         $this->setUseThousandsSeparator(true);
         $this->setTrailingZeros(true);
@@ -94,8 +99,10 @@ class CurrencyAttribute extends NumberAttribute
      */
     public function display($record, $mode)
     {
-        $result = empty($this->m_currencysymbol) ? '' : $this->getCurrencySymbolDisplay().' ';
-        $result .= parent::display($record, $mode);
+        $result = parent::display($record, $mode);
+        if ($result !== '' && $this->m_currencysymbol) {
+            $result = $this->getCurrencySymbolDisplay() . ' ' . $result;
+        }
 
         return $result;
     }

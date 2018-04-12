@@ -125,9 +125,8 @@ class NumberAttribute extends Attribute
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
         if (!is_array($record[$this->fieldName()])) {
-            $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($this->formatNumber($record[$this->fieldName()])).'">';
-
-            return $result;
+            $value = $this->formatNumber($record[$this->fieldName()]);
+            return '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($value).'">';
         } else {
             Tools::atkdebug('Warning attribute '.$this->m_name.' has no proper hide method!');
         }
@@ -262,6 +261,10 @@ class NumberAttribute extends Attribute
      */
     protected function formatNumber($number, $decimalSeparator = '', $thousandsSeparator = '', $mode = '')
     {
+        if ($number === null || $number === '') {
+            return '';
+        }
+
         $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
         $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
         // (never shows the thousands separator in add/edit mode)
@@ -539,8 +542,8 @@ class NumberAttribute extends Attribute
         if($size > 0){
             $result .= ' size="'.$size.'"';
         }
-        if($this->m_maxsize > 0){
-            $result .= ' maxlength="'.$this->m_maxsize.'"';
+        if($maxsize > 0){
+            $result .= ' maxlength="'.$maxsize.'"';
         }
         if($onchange){
             $result .= ' '.$onchange;
