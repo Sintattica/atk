@@ -210,6 +210,7 @@ class EditFormModifier
 
             $value = preg_replace($re, '', $field['html']);
             $value = str_replace("'", "\\'", $value);
+            $value = str_replace("\n", '', $value);
             $scriptCode .= "jQuery('$element').html('$value');";
 
             preg_match_all($re, $field['html'], $matches, PREG_SET_ORDER, 0);
