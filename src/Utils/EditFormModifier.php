@@ -214,7 +214,7 @@ class EditFormModifier
 
             preg_match_all($re, $field['html'], $matches, PREG_SET_ORDER, 0);
             foreach ($matches as $match) {
-                $scriptCode .= $match[1];
+                $scriptCode .= "\n".$match[1];
             }
         }
 
