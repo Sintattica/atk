@@ -595,6 +595,8 @@ return [
     'tplcompilecheck' => Config::env('TPL_COMPILE_CHECK', 1),
     'tplforcecompile' => Config::env('TPL_FORCE_COMPILE', 0),
 
+    'smarty_file_perms' => 0775,
+
     /****************** MISCELLANEOUS CONFIGURATION OPTIONS ********************/
 
     /*

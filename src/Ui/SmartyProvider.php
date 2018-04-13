@@ -4,7 +4,6 @@ namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Smarty;
 
 /**
  * Wrapper class for the Smarty template engine.
@@ -15,7 +14,8 @@ class SmartyProvider
     /**
      * Get the Smarty instance.
      *
-     * @return \Smarty The one and only instance.
+     * @return Smarty The one and only instance.
+     * @throws \Exception
      */
     public static function getInstance()
     {
@@ -33,8 +33,8 @@ class SmartyProvider
             $s_smarty->setTemplateDir(Config::getGlobal('template_dir')); // name of directory for templates
             $s_smarty->autoload_filters = [];    // indicates which filters will be auto-loaded
             $s_smarty->setCompileDir($tplcompiledir); // name of directory for compiled templates
-            $s_smarty->setForceCompile(Config::getGlobal('tplforcecompile'));   // force templates to compile every time,
-            $s_smarty->addPluginsDir(__DIR__.'/plugins');
+            $s_smarty->setForceCompile(Config::getGlobal('tplforcecompile')); // force templates to compile every time
+            $s_smarty->addPluginsDir([__DIR__.'/plugins']);
 
             Tools::atkdebug('Instantiated new Smarty');
         }
