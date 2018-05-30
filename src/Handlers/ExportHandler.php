@@ -201,7 +201,9 @@ class ExportHandler extends ActionHandler
         $params['formstart'] = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post" class="form-horizontal">';
         $params['formstart'] .= $sm->formState();
         $params['formstart'] .= '<input type="hidden" name="phase" value="process"/>';
-        $params['buttons'][] = Tools::atkButton(Tools::atktext('cancel', 'atk'), '', SessionManager::SESSION_BACK);
+        if ($sm->atkLevel() > 0) {
+            $params['buttons'][] = Tools::atkButton(Tools::atktext('cancel', 'atk'), '', SessionManager::SESSION_BACK);
+        }
         $params['buttons'][] = '<input class="btn btn-primary" type="submit" value="'.Tools::atktext('export', 'atk').'"/>';
         $params['buttons'][] = '<input id="export_save_button" style="display:none;" value="'.Tools::atktext('save_export_selection',
                 'atk').'" name="save_export" class="btn" type="submit" /> ';
