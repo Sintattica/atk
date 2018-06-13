@@ -66,7 +66,7 @@ class TabbedPane extends Attribute
             $tab = $attrib;
         }
 
-        if ( ! in_array($tab, $this->m_tabsList)) {
+        if (!in_array($tab, $this->m_tabsList)) {
             $this->m_tabsList[] = $tab;
         }
         $this->m_attribsList[$attrib] = $tab;
@@ -129,10 +129,10 @@ class TabbedPane extends Attribute
         global $g_stickyurl;
         $key = str_replace('.', '_', 'atktabbedpane_'.$this->getOwnerInstance()->atkNodeUri().'_'.$this->fieldName());
         $value = Tools::atkArrayNvl($record, $this->fieldName());
-        if ( ! is_array($g_stickyurl)) {
+        if (!is_array($g_stickyurl)) {
             $g_stickyurl = [];
         }
-        if ( ! array_key_exists($key, $g_stickyurl)) {
+        if (!array_key_exists($key, $g_stickyurl)) {
             $g_stickyurl[] = $key;
         }
         $GLOBALS[$key] = $value;
@@ -166,7 +166,7 @@ class TabbedPane extends Attribute
     {
         $result = false;
 
-        if ( ! $this->hasFlag(self::AF_TABBEDPANE_NO_AUTO_HIDE_LABEL)) {
+        if (!$this->hasFlag(self::AF_TABBEDPANE_NO_AUTO_HIDE_LABEL)) {
             $tab = $this->m_attribsList[$name];
             $friquency = array_count_values(array_values($this->m_attribsList));
             $result = ($friquency[$tab] == 1);
@@ -198,7 +198,7 @@ class TabbedPane extends Attribute
                 /* hide - nothing to do with tabbedpane, must be render on higher level */
                 if (($mode == 'edit' && $p_attrib->hasFlag(self::AF_HIDE_EDIT)) || ($mode == 'add' && $p_attrib->hasFlag(self::AF_HIDE_ADD))) {
                     /* when adding, there's nothing to hide... */
-                    if ($mode == 'edit' || ($mode == 'add' && ! $p_attrib->isEmpty($defaults))) {
+                    if ($mode == 'edit' || ($mode == 'add' && !$p_attrib->isEmpty($defaults))) {
                         $arr['hide'][] = $p_attrib->hide($defaults, $fieldprefix, $mode);
                     }
                 } /* edit */ else {
@@ -229,6 +229,50 @@ class TabbedPane extends Attribute
 
         return $fields;
     }
+
+    public function _addToViewArray($mode, &$arr, &$defaults, &$error)
+    {
+        $node = $this->m_ownerInstance;
+        $fields = [];
+
+        //collecting output from attributes
+        foreach ($this->m_attribsList as $name => $tab) {
+            $p_attrib = $node->getAttribute($name);
+            if (is_object($p_attrib)) {
+                /* hide - nothing to do with tabbedpane, must be render on higher level */
+                if ($mode == 'view' && $p_attrib->hasFlag(self::AF_HIDE_VIEW)) {
+                    $arr['hide'][] = $p_attrib->hide($defaults, '', $mode);
+                } /* view */ else {
+
+                        $entry = array(
+                            'name' => $p_attrib->m_name,
+                            'obligatory' => $p_attrib->hasFlag(self::AF_OBLIGATORY),
+                            'attribute' => $p_attrib);
+
+                        $entry['id'] = $p_attrib->getHtmlId('');
+
+                        /* label? */
+                        $entry['label'] = $p_attrib->getLabel($defaults, $mode);
+                        // on which tab? - from tabbedpane properties
+                        $entry['tabs'] = $tab;
+                        //on which sections?
+                        $entry['sections'] = $p_attrib->getSections();
+                        /* the actual edit contents */
+                        $entry['html'] = $p_attrib->getView($mode, $defaults);
+                        $arr['fields'][] = $entry;
+
+                        $fields['fields'][] = $entry;
+                }
+            } else {
+                Tools::atkerror("Attribute $name not found!");
+            }
+        }
+        /* check for errors */
+        $fields['error'] = $defaults['atkerror'];
+
+        return $fields;
+    }
+
 
     public function edit($record, $fieldprefix, $mode)
     {
@@ -279,9 +323,9 @@ class TabbedPane extends Attribute
                 }
 
                 /* does the field have a label? */
-                if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') && ! $this->isAttributeSingleOnTab(
+                if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') && !$this->isAttributeSingleOnTab(
                         $field['name']
-                    ) || ! isset($field['label'])) {
+                    ) || !isset($field['label'])) {
                     if ($field['label'] == '') {
                         $tplfield['label'] = '';
                     } else {
@@ -330,74 +374,105 @@ class TabbedPane extends Attribute
         return $content;
     }
 
-    /**
-     * Display a tabbed pane with attributes.
-     *
-     * @param array $record Array with fields
-     * @param string $mode The mode
-     *
-     * @return string html code
-     */
+
     public function display($record, $mode)
     {
-        // get active tab
-        $active_tab = $this->getDefaultTab();
-        $fields = [];
-        $tab = '';
-
         $node = $this->m_ownerInstance;
+        $arr = ['hide' => []];
+        //get data
+        $data = $this->_addToViewArray($mode, $arr, $record, $record['atkerror']);
+
+        // Handle fields
+        // load images
+        $reqimg = "<span class='required'></span>";
+
+        /* display the edit fields */
+        $fields = [];
+        $tab = $this->getDefaultTab();
+
+        for ($i = 0, $_i = Tools::count($data['fields']); $i < $_i; ++$i) {
+            $field = &$data['fields'][$i];
+            $tplfield = [];
+
+            $tplfield['tab'] = $field['tabs'];
+
+            $tplfield['initial_on_tab'] = $tplfield['tab'] == $tab;
+
+            $tplfield['class'] = "tabbedPaneAttr tabbedPaneTab{$field['tabs']}";
+
+            /** @var Attribute $attr */
+            $attr = $field['attribute'];
+
+            // Check if there are attributes initially hidden on this tabbedpane
+            if ($attr->isInitialHidden()) {
+                $tplfield['class'] .= ' atkAttrRowHidden';
+            }
+
+            $tplfield['rowid'] = 'tabbedPaneAttr_'.($field['id'] != '' ? $field['id'] : Tools::getUniqueId(
+                    'anonymousattribrows'
+                )); // The id of the containing row
+
+            /* check for separator */
+            if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
+                $tplfield['line'] = '<hr>';
+            } /* double separator, ignore */ elseif ($field['html'] == '-') {
+            } /* only full HTML */ elseif (isset($field['line'])) {
+                $tplfield['line'] = $field['line'];
+            } /* edit field */ else {
+                if ($field['attribute']->m_ownerInstance->getNumbering()) {
+                    ViewEditBase::_addNumbering($field, $tplfield, $i);
+                }
+
+                /* does the field have a label? */
+                if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') && !$this->isAttributeSingleOnTab(
+                        $field['name']
+                    ) || !isset($field['label'])) {
+                    if ($field['label'] == '') {
+                        $tplfield['label'] = '';
+                    } else {
+                        $tplfield['label'] = $field['label'];
+                        if (isset($field['error']) && $field['error']) {
+                            $tplfield['error'] = $field['error'];
+                        }
+                    }
+                } else {
+                    $tplfield['label'] = 'AF_NO_LABEL';
+                }
+
+                /* obligatory indicator */
+                if ($field['obligatory']) {
+                    $tplfield['obligatory'] = $reqimg;
+                }
+
+                /* html source */
+                $tplfield['widget'] = $field['html'];
+                $editsrc = $field['html'];
+
+                $tplfield['htmlid'] = $field['id'];
+                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
+                $tplfield['full'] = $editsrc;
+            }
+            $fields[] = $tplfield; // make field available in numeric array
+            $params[$field['name']] = $tplfield; // make field available in associative array
+        }
+
         $ui = $node->getUi();
 
-        // For all attributes we use the display() function to display the
-        // attributes current value. This may be overridden by supplying
-        // an <attributename>_display function in the derived classes.
-        foreach ($this->m_attribsList as $name => $tab) {
-            $p_attrib = $node->getAttribute($name);
-            if (is_object($p_attrib)) {
-                $tplfield = [];
-                if ( ! $p_attrib->hasFlag(self::AF_HIDE_VIEW)) {
-                    $fieldtab = $this->m_attribsList[$name];
+        $result = '';
 
-                    $tplfield['class'] = "tabbedPaneAttr tabbedPaneTab{$fieldtab}";
-                    $tplfield['rowid'] = 'tabbedPaneAttr_'.Tools::getUniqueId('anonymousattribrows'); // The id of the containing row
-                    $tplfield['tab'] = $tplfield['class']; // for backwards compatibility
-
-                    $tplfield['initial_on_tab'] = ($fieldtab == $active_tab);
-
-                    // An <attributename>_display function may be provided in a derived
-                    // class to display an attribute. If it exists we will use that method
-                    // else we will just use the attribute's display method.
-                    $funcname = $p_attrib->m_name.'_display';
-                    if (method_exists($node, $funcname)) {
-                        $editsrc = $node->$funcname($record, 'view');
-                    } else {
-                        $editsrc = $p_attrib->display($record, 'view');
-                    }
-
-                    $tplfield['full'] = $editsrc;
-                    $tplfield['widget'] = $editsrc; // in view mode, widget and full are equal
-                    // The Label of the attribute (can be suppressed with self::AF_NOLABEL or self::AF_BLANKLABEL)
-                    // For each attribute, a txt_<attributename> must be provided in the language files.
-                    if ( ! $p_attrib->hasFlag(self::AF_NOLABEL) && ! $this->isAttributeSingleOnTab($name)) {
-                        if ($p_attrib->hasFlag(self::AF_BLANKLABEL)) {
-                            $tplfield['label'] = '';
-                        } else {
-                            $tplfield['label'] = $p_attrib->label();
-                        }
-                    } else {
-                        // Make the rest fill up the entire line
-                        $tplfield['label'] = '';
-                        $tplfield['line'] = $tplfield['full'];
-                    }
-                    $fields[] = $tplfield;
-                }
-            } else {
-                Tools::atkerror("Attribute $name not found!");
-            }
+        foreach ($arr['hide'] as $hidden) {
+            $result .= $hidden;
         }
-        $innerform = $ui->render($node->getTemplate('view', $record, $tab), ['fields' => $fields]);
 
-        return $this->tabulate('view', $innerform, '', $active_tab);
+        $params['activeTab'] = $tab;
+        $params['panename'] = $this->m_name;
+        $params['fields'] = $fields; // add all fields as an numeric array.
+
+        $result .= $ui->render('tabbedviewform.tpl', $params);
+
+        $content = $this->tabulate($mode, $result, '', $tab);
+
+        return $content;
     }
 
     /**
