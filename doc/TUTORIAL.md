@@ -147,32 +147,35 @@ Now, we will need to configure our application.
 
 ### Configuring our application
 
-If you take a look at the root directory of our project you will see a file called **.env.example**.  You can set ATK options and parameters by setting environmental variables, i.e. you can set the database user and password by setting two environment vars :
-
-- DB_USER
-- DB_PASSWORD
-
-In linux it can be achieved by issuing:
-
-`export DB_USER=root` and `export DB_PASSWORD=xxxx`
-
-But these setting will last until the job ends, so, how to avoid having to re-enter all the parameters in each session?. That is the job of the .env file. You can set your environment variables in the file and ATK will load all the env vars for you.
-The **.env.example**  file is to be copied to a customized **.env** with the proper values edited in.
-So copy it wit:
-
-`cp .env.example .env`
+Main configurations options are specified in **config/** directory. Specifically, the parameters.xxx.php files (where xxx stands for dev, dist, prod or staging) contains per-site variables. For current tutorial, we'll work with "dev" environment so you'll have to specify values in **config/parameters.dev.php**.
 
 Let's take a look at the contents of the file:
+```
+return [
+    'atk' => [
+
+        'identifier' => 'atk-skeleton-dev',
+
+        'db' => [
+            'default' => [
+                'host' => 'localhost',
+                'db' => 'atk-skeleton',
+                'user' => 'root',
+                'password' => '',
+                'charset' => 'utf8',
+                'driver' => 'MySqli',
+            ],
+        ],
+
+        'debug' => 1,
+        'meta_caching' => false,
+        'auth_ignorepasswordmatch' => false,
+        'administratorpassword' => '$2y$10$erDvMUhORJraJyxw9KXKKOn7D1FZNsaiT.g2Rdl/4V6qbkulOjUqi', // administrator
+    ],
+];
 
 ```
-DB_NAME=atk-skeleton
-DEBUG_LEVEL=1
-
-# adminpwd
-ADMIN_PASSWORD="$2y$10$H17EjSHXZckjBoIWEd.SUe7pHcDqRH5RZhpu.VVv3H48M5Im7Z0Tq"
-
-```
-It's allready obvious that we need to change DB_NAME from atk-skeleton to our database wich is called 'conference', but  what about the funny line ADMIN_PASSWORD?
+It's allready obvious that we need to change db, user and password from 'atk-skeleton'/'root'/'' to our database parameters ('conference'/'conference'/'conference'), but  what about the funny line ADMIN_PASSWORD?
 The admin password is the administrative ATK password, when you login into an ATK application with the user **administrator**, all security is bypassed and you can do anything. It is the super user password.
 You have to set an administrative password in the **.env** file, but you have to store it encrypted, ATK provides a tool to encrypt the password, and you invoke it like this:
 
@@ -185,22 +188,41 @@ clean: demo
 hash: $2y$10$HURwCzn3JJmSV.8UZEVW/eaO/RSlYKELKFacIwTyKSPssxp101XDC
 ```
 
-Let's edit our .env file, to look like this:
+Let's edit our parameters.dev.php file, to look like this:
 
 ```
-DB_NAME=conference
-DB_USER=conference
-DB_PASSWORD=conference
-DEBUG_LEVEL=1
+<?php
 
-# adminpwd
-ADMIN_PASSWORD="$2y$10$HURwCzn3JJmSV.8UZEVW/eaO/RSlYKELKFacIwTyKSPssxp101XDC"
+return [
+    'atk' => [
+
+        'identifier' => 'atk-skeleton-dev',
+
+        'db' => [
+            'default' => [
+                'host' => 'localhost',
+                'db' => 'root',
+                'user' => 'conference',
+                'password' => 'conference',
+                'charset' => 'utf8',
+                'driver' => 'MySqli',
+            ],
+        ],
+
+        'debug' => 1,
+        'meta_caching' => false,
+        'auth_ignorepasswordmatch' => false,
+        'administratorpassword' => '$2y$10$HURwCzn3JJmSV.8UZEVW/eaO/RSlYKELKFacIwTyKSPssxp101XDC', // demo
+    ],
+];
 ```
+
+But now that we specified the configuration in parameters.dev.php, how will the server know which parameters file to pick up ? The application will look up to an *environmental variable* called **APP_ENV**. The most simple way to set it is on the command line.
 
 Ok, our basic configuration is done, now we can have a little gratification, let's 
 take a look to our app, in order to do so, let's start our personal php web server with:
 
-`php -S 0.0.0.0:8000 -t web/`
+`APP_ENV=dev php -S 0.0.0.0:8000 -t web/`
 
 Now open your browser and navigate to **http://localhost:8000** you should see a login form. You can now login with user **administrator** and password **demo**.
 Most probably, the login form is shown in the italian language (As the Sintattica.it are italians that should come as not surprising), let's tell our app to show up in good old english, edit de **config/atk.php** file and change the line:
@@ -220,6 +242,7 @@ bp.php  cf.php  da.php  el.php  es.php  fr.php  id.php  ja.php  no.php  pt.php  
 This is the complete list of languages that atk is translated to, if your language isn't there, copy the **en.php** to your **xx.php**, translate it and add it to the project git.
 
 ### Our first Module
+
  *this is work in progress *
  
 ## Let's dive further: Adding a Relation				
