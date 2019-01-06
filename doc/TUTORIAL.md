@@ -63,16 +63,20 @@ This should download a copy of the skeleton project in a directory called **conf
 
 ```
 conference/
+├── atk-skeleton.sql
 ├── composer.json
 ├── config
 │   ├── app.php
-│   └── atk.php
+│   ├── atk.php
+│   ├── parameters.dev.php
+│   ├── parameters.dist.php
+│   ├── parameters.prod.php
+│   ├── parameters.staging.php
 ├── README.md
+├── languages
+│   ├── en.php
+│   └── it.php
 ├── src
-│   ├── atk-skeleton.sql
-│   ├── languages
-│   │   ├── en.php
-│   │   └── it.php
 │   └── Modules
 │       ├── App
 │       │   ├── languages
@@ -92,14 +96,17 @@ conference/
 └── web
     ├── bundles
     │   └── atk -> ../../vendor/sintattica/atk/src/Resources/public
-    └── index.php
+    ├── index.php
+    └── images
+        ├── brand_logo.png
+        └── login_logo.png
 ```
 
 Let's take a quick look to some files and directories:
 
 - composer.json: It is the composer dependencies file, any time you need a new software librry you should add its name here and run **composer update**.
 - The config direcory contains the configuration files.
-- The src directory: Our work will go mainly in this directory, this is the diretory where our application sources will reside, more specifically in the modules directory.
+- The src directory: Our work will go mainly in this directory, this is the directory where our application sources will reside, more specifically in the modules directory.
 - The var directory is for temporary files
 - The web directory is the directory that will need to be served by a web server (Apache, Nginx, Lighttpd or any other).
 
@@ -132,9 +139,9 @@ And :
 
 `grant all on conference.* to conference@localhost identified by 'conference';`
 
-If you take a look around the skeleton project maybe you noticed a file called **atk-skeleton.sql** lying in the **src/** directory, this file contains the table definitions for ATK security system, your database should have these tables, we will create them with:
+If you take a look around the skeleton project maybe you noticed a file called **atk-skeleton.sql** lying in the root directory, this file contains the table definitions for ATK security system, your database should have these tables, we will create them with:
 
-`mysql -u root -p conference < src/atk-skeleton.sql `
+`mysql -u conference -p conference < atk-skeleton.sql `
 
 Now, we will need to configure our application.
 
