@@ -15,7 +15,7 @@ This book will cover how to build applications with ATK 9, this book will not di
 
 ## Let's dive in: Building our first app
 
-Let build's a conference app our app will allow us to register the Speaker, the onference titles, and the conference attendants for each conference.
+Let build's a conference app our app will allow us to register the Speaker, the conference titles, and the conference attendants for each conference.
 
 ### Getting the necesary tools.
 
@@ -53,7 +53,7 @@ Finally, you should put composer in the path to be readily available when needed
 
 `sudo mv composer.phar /usr/local/bin/composer`
 
-Now we are gonna need to clone the Sintattica/atk-skeleton project. The skeleton project is an empty project to serve as boiler plate for your own project. In order to graba a copy you will need git:
+Now we are gonna need to clone the Sintattica/atk-skeleton project. The skeleton project is an empty project to serve as boiler plate for your own project. In order to grab a copy you will need git:
 
 `
 git clone https://github.com/Sintattica/atk-skeleton.git conference
@@ -104,7 +104,7 @@ conference/
 
 Let's take a quick look to some files and directories:
 
-- composer.json: It is the composer dependencies file, any time you need a new software librry you should add its name here and run **composer update**.
+- composer.json: It is the composer dependencies file, any time you need a new software library you should add its name here and run **composer update**.
 - The config direcory contains the configuration files.
 - The src directory: Our work will go mainly in this directory, this is the directory where our application sources will reside, more specifically in the modules directory.
 - The var directory is for temporary files
@@ -147,7 +147,7 @@ Now, we will need to configure our application.
 
 ### Configuring our application
 
-Main configurations options are specified in **config/** directory. Specifically, the parameters.xxx.php files (where xxx stands for dev, dist, prod or staging) contains per-site variables. For current tutorial, we'll work with "dev" environment so you'll have to specify values in **config/parameters.dev.php**.
+Main configuration options are specified in **config/** directory. Specifically, the parameters.xxx.php files (where xxx stands for dev, dist, prod or staging) contains per-site variables. For this tutorial, we'll work with "dev" environment so you'll have to specify values in **config/parameters.dev.php**.
 
 Let's take a look at the contents of the file:
 ```
@@ -181,7 +181,7 @@ You have to set an administrative password in the **.env** file, but you have to
 
 ` php ./vendor/sintattica/atk/src/Utils/generatehash.php demo`
 
-The clear password is **demo**, once you run the command you'll get:
+The clear password is **demo**, once you run the command you'll get something like:
 
 ``` 
 clean: demo
@@ -242,7 +242,6 @@ bp.php  cf.php  da.php  el.php  es.php  fr.php  id.php  ja.php  no.php  pt.php  
 This is the complete list of languages that atk is translated to, if your language isn't there, copy the **en.php** to your **xx.php**, translate it and add it to the project git.
 
 ### Our first Module
-
  *this is work in progress *
  
 ## Let's dive further: Adding a Relation				
