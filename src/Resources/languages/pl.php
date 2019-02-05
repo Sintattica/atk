@@ -18,13 +18,13 @@
 return [
     'above_maximum_value' => 'Above the maximum allowed value',
     // Missing string!!!
-    'access_denied' => 'Dost�p zabroniony',
+    'access_denied' => 'Dostęp zabroniony',
     'add' => 'Dodaj',
     'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
-    'admin' => 'Zarz�dzaj',
+    'admin' => 'Zarządzaj',
     'administration_application' => 'Administration application',
     // Missing string!!!
     'all' => 'All',
@@ -43,27 +43,27 @@ return [
     'app_title' => 'Aplikacja ATK',
     'apr' => 'Apr',
     // Missing string!!!
-    'april' => 'Kwiecie�',
+    'april' => 'Kwiecień',
     'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted. (%s)'",
     // Missing string!!!
     'aug' => 'Aug',
     // Missing string!!!
-    'august' => 'Sierpie�',
-    'auth_account_locked' => 'Konto zosta�o zablokowane. Spr�buj uzy� innej nazwy u�ytkownika lub skontaktuj si� z administratorem systemu.',
-    'auth_max_loginattempts_exceeded' => 'Za du�o nieudanych pr�b logowania. Logowanie zosta�o zablokowane. Skontaktuj si� z administratorem systemu.',
-    'auth_mismatch' => 'Niepoprawna nazwa uzytkownika lub has�o. Spr�buj ponownie.',
+    'august' => 'Sierpień',
+    'auth_account_locked' => 'Konto zostało zablokowane. Spróbuj uzyć innej nazwy użytkownika lub skontaktuj się z administratorem systemu.',
+    'auth_max_loginattempts_exceeded' => 'Za dużo nieudanych prób logowania. Logowanie zostało zablokowane. Skontaktuj się z administratorem systemu.',
+    'auth_mismatch' => 'Niepoprawna nazwa uzytkownika lub hasło. Spróbuj ponownie.',
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
-    'auth_no_server' => 'Nie podano serwera. Autoryzacja niemo�liwa (skontaktuj si� z administratorem systemu).',
+    'auth_no_server' => 'Nie podano serwera. Autoryzacja niemożliwa (skontaktuj się z administratorem systemu).',
     'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
     'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
     'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
-    'auth_unable_to_connect' => 'Nie mo�na po�aczy� sie z serwerem w celu autoryzacji (skontaktuj si� z administratorem systemu).',
+    'auth_unable_to_connect' => 'Nie można połaczyć sie z serwerem w celu autoryzacji (skontaktuj się z administratorem systemu).',
     'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
     'autocomplete_no_results' => 'No results found for the given search value.',
@@ -76,8 +76,8 @@ return [
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
-    'back' => 'Wr��',
-    'back_to' => 'Wr�� do',
+    'back' => 'Wróć',
+    'back_to' => 'Wróć do',
     'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
     'cancel' => 'Anuluj',
@@ -87,16 +87,16 @@ return [
     // Missing string!!!
     'cannot make file' => 'Cannot create file: ',
     // Missing string!!!
-    'cannot_remove_file' => 'Nie mo�na usun�� pliku!',
+    'cannot_remove_file' => 'Nie można usunąć pliku!',
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'iso-8859-2',
+    'charset' => 'UTF-8',
     'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
     'check_all' => 'Zaznacz wszystkie',
     'check_none' => 'Odznacz wszystkie',
     'clickheretoadd_postfix' => '.',
-    'clickheretoadd_prefix' => 'Kliknij tu aby doda� nowe ',
+    'clickheretoadd_prefix' => 'Kliknij tu aby dodać nowe ',
     'close' => 'Zamknij',
     'color' => 'Color',
     // Missing string!!!
@@ -112,8 +112,8 @@ return [
     // Missing string!!!
     'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
-    'confirm_delete' => 'Czy jeste� pewien, �e chcesz usun�� t� pozycj�?',
-    'confirm_delete_multi' => 'Czy jeste� pewien, �e chcesz usun�� wybrane pozycje?',
+    'confirm_delete' => 'Czy jesteś pewien, że chcesz usunąć tę pozycję?',
+    'confirm_delete_multi' => 'Czy jesteś pewien, że chcesz usunąć wybrane pozycje?',
     'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
     'copy' => 'Kopiuj',
@@ -145,22 +145,22 @@ return [
     // Missing string!!!
     'dec' => 'Dec',
     // Missing string!!!
-    'december' => 'Grudzie�',
+    'december' => 'Grudzień',
     'decimal_separator' => '.',
     // Missing string!!!
-    'delete' => 'Usu�',
+    'delete' => 'Usuń',
     'delimiter' => 'Delimiter',
     // Missing string!!!
     'deselect_all' => 'Odznacz wszystkie',
     'document' => 'Open document',
     // Missing string!!!
     'edit' => 'Edytuj',
-    'editcopy' => 'Edytuj kopi�',
+    'editcopy' => 'Edytuj kopię',
     'email' => 'E-mail',
     // Missing string!!!
     'enclosure' => 'Enclosure',
     // Missing string!!!
-    'error' => 'B��d',
+    'error' => 'Błąd',
     'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
     'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
@@ -185,12 +185,12 @@ return [
     // Missing string!!!
     'error_format_mismatch' => 'The element at position %d does not match the desired format (%s)',
     // Missing string!!!
-    'error_formdataerror' => 'Zapisanie nie powiod�o si�: ',
+    'error_formdataerror' => 'Zapisanie nie powiodło się: ',
     'error_iconv_not_install' => "iconv module don't install in your system, but it needs for right functionality",
     // Missing string!!!
-    'error_invalid_email' => 'Niew�a�ciwy adres e-mail',
-    'error_node_action_access_denied' => 'Nie masz uprawnie� do wykonania tej operacji.',
-    'error_notnumeric' => 'Podana warto�� nie jest liczb�',
+    'error_invalid_email' => 'Niewłaściwy adres e-mail',
+    'error_node_action_access_denied' => 'Nie masz uprawnień do wykonania tej operacji.',
+    'error_notnumeric' => 'Podana wartość nie jest liczbą',
     'error_not_a_valid_ip' => 'This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.',
     // Missing string!!!
     'error_obligatoryfield' => 'to pole jest wymagane.',
@@ -198,16 +198,16 @@ return [
     // Missing string!!!
     'error_password_invalid' => 'The password you entered is not a valid password!',
     // Missing string!!!
-    'error_password_nomatch' => 'Wprowadzone nowe has�a nie s� takie same.',
-    'error_primarykey_exists' => 'Wpis z podanym kluczem ju� istnieje',
+    'error_password_nomatch' => 'Wprowadzone nowe hasła nie są takie same.',
+    'error_primarykey_exists' => 'Wpis z podanym kluczem już istnieje',
     'error_tab' => 'zobacz',
     'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
-    'error_uniquefield' => 'Warto�� w tym polu musi by� unikalna',
+    'error_uniquefield' => 'Wartość w tym polu musi być unikalna',
     'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
     // Missing string!!!
     'error_unkown_domain' => 'Nieznana domena',
-    'explain_session_expired' => 'Czas Twojej sesji zosta� przekroczony. Zdarzenie to wyst�puje gdy aplikacja nie by�a przez pewien czas u�ywana. Zaloguj si� ponownie aby kontynuowa� prac�.',
+    'explain_session_expired' => 'Czas Twojej sesji został przekroczony. Zdarzenie to występuje gdy aplikacja nie była przez pewien czas używana. Zaloguj się ponownie aby kontynuować pracę.',
     'export' => 'Eksport',
     'export_config_explanation' => 'Please select the options for the CSV export.',
     // Missing string!!!
@@ -246,19 +246,19 @@ return [
     'feedback_update_success' => 'The changes have been saved.',
     // Missing string!!!
     'field_obligatory' => 'To pole jest wymagane',
-    'filecontent' => 'Zawarto��',
+    'filecontent' => 'Zawartość',
     'filename' => 'Nazwa pliku',
-    'filename_invalid' => 'Podana nazwa pliku jest niew�a�ciwa',
-    'file_exists' => 'Plik o podanej nazwie ju� istnieje',
+    'filename_invalid' => 'Podana nazwa pliku jest niewłaściwa',
+    'file_exists' => 'Plik o podanej nazwie już istnieje',
     'file_not_exist' => 'Plik nie istnieje',
     'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
-    'fri' => 'Pi�',
+    'fri' => 'Pią',
     'friday' => 'Friday',
     // Missing string!!!
-    'fsa_pleasemakeselection' => 'Znaleziono kilka wynik�w. Wybierz jeden.',
+    'fsa_pleasemakeselection' => 'Znaleziono kilka wyników. Wybierz jeden.',
     'help' => 'Pomoc',
     'import' => 'Import data',
     // Missing string!!!
@@ -314,12 +314,12 @@ return [
     // Missing string!!!
     'invalid_url_anchor' => "Invalid URL anchor, please use this format: '#internal_bookmark'",
     // Missing string!!!
-    'invert_selection' => 'Odwr�� zaznaczenie',
+    'invert_selection' => 'Odwróć zaznaczenie',
     'in_use_by' => 'In use by',
     // Missing string!!!
     'jan' => 'Jan',
     // Missing string!!!
-    'january' => 'Stycze�',
+    'january' => 'Styczeń',
     'jul' => 'Jul',
     // Missing string!!!
     'july' => 'Lipiec',
@@ -350,7 +350,7 @@ return [
     'logged_in_as' => 'Logged in as',
     // Missing string!!!
     'login' => 'Zaloguj',
-    'login_failed' => 'Logowanie nie powiod�o si�',
+    'login_failed' => 'Logowanie nie powiodło się',
     'login_form' => 'Logowanie',
     'logout' => 'Log out',
     // Missing string!!!
@@ -363,7 +363,7 @@ return [
     'march' => 'Marzec',
     'may' => 'Maj',
     'menu' => 'Menu',
-    'menu_main' => 'G��wne menu',
+    'menu_main' => 'Główne menu',
     'mon' => 'Pon',
     'monday' => 'Monday',
     // Missing string!!!
@@ -371,7 +371,7 @@ return [
     // Missing string!!!
     'new' => 'New',
     // Missing string!!!
-    'next' => 'Nast�pne',
+    'next' => 'Następne',
     'no' => 'Nie',
     'none' => 'None',
     // Missing string!!!
@@ -391,21 +391,21 @@ return [
     // Missing string!!!
     'oct' => 'Oct',
     // Missing string!!!
-    'october' => 'Pa�dziernik',
+    'october' => 'Październik',
     'open' => 'Open',
     // Missing string!!!
     'or' => 'Or',
     // Missing string!!!
-    'password' => 'Has�o',
+    'password' => 'Hasło',
     'password_again' => 'Ponownie',
-    'password_current' => 'Bie��ce',
+    'password_current' => 'Bieżące',
     'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
-    'password_incorrect' => 'Niepoprawne stare has�o. Brak dost�pu!',
-    'password_invalid' => 'Wprowadzone nowe has�o nie jest dobre.',
+    'password_incorrect' => 'Niepoprawne stare hasło. Brak dostępu!',
+    'password_invalid' => 'Wprowadzone nowe hasło nie jest dobre.',
     'password_new' => 'Nowe',
-    'permission_denied' => 'Nie masz uprawnie� do wykonania tej operacji',
+    'permission_denied' => 'Nie masz uprawnień do wykonania tej operacji',
     'previous' => 'Poprzednie',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
@@ -413,7 +413,7 @@ return [
     // Missing string!!!
     'remove_criterium' => 'Remove',
     // Missing string!!!
-    'remove_current_file' => 'Usu� bie��cy plik',
+    'remove_current_file' => 'Usuń bieżący plik',
     'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
@@ -457,9 +457,9 @@ return [
     // Missing string!!!
     'search_or' => 'Match any criteria',
     // Missing string!!!
-    'search_regexp' => 'Szukaj wg wyra�enia regularnego (zaawansowane)',
-    'search_soundex' => 'Szukaj ci�gu znak�w kt�ry brzmi podobnie do',
-    'search_substring' => 'Szukaj ci�gu znak�w',
+    'search_regexp' => 'Szukaj wg wyrażenia regularnego (zaawansowane)',
+    'search_soundex' => 'Szukaj ciągu znaków który brzmi podobnie do',
+    'search_substring' => 'Szukaj ciągu znaków',
     'search_wildcard' => 'Szukaj wg maski (*)',
     'select' => 'Wybierz',
     'selected' => 'Selected',
@@ -469,13 +469,13 @@ return [
     'select_a' => 'Select',
     // Missing string!!!
     'select_all' => 'Zaznacz wszystkie',
-    'select_invert' => 'Odwr�� zaznaczenie',
+    'select_invert' => 'Odwróć zaznaczenie',
     'select_none' => 'brak',
     'self' => 'Self',
     // Missing string!!!
     'sep' => 'Sep',
     // Missing string!!!
-    'september' => 'Wrzesie�',
+    'september' => 'Wrzesień',
     'settings' => 'Settings',
     // Missing string!!!
     'show' => 'Show',
@@ -488,7 +488,7 @@ return [
     // Missing string!!!
     'steelblue' => 'SteelBlue',
     // Missing string!!!
-    'submit' => 'Zatwierd�',
+    'submit' => 'Zatwierdź',
     'successfully_imported_one_record' => 'Successfully imported 1 record.',
     // Missing string!!!
     'successfully_imported_x_records' => 'Successfully imported %d records.',
@@ -559,12 +559,12 @@ return [
     // Missing string!!!
     'timezone_utc_-1200' => '(UTC-12:00) International Date Line West',
     // Missing string!!!
-    'title_delete' => 'Potwierd� usuni�cie',
+    'title_delete' => 'Potwierdź usunięcie',
     'title_multiselect' => 'Multiselect',
     // Missing string!!!
     'title_select' => 'Select',
     // Missing string!!!
-    'title_session_expired' => 'Czas sesji zosta� przekroczony',
+    'title_session_expired' => 'Czas sesji został przekroczony',
     'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Today',
@@ -581,15 +581,15 @@ return [
     // Missing string!!!
     'upperchars' => 'uppercase characters',
     // Missing string!!!
-    'username' => 'U�ytkownik',
-    'view' => 'Poka�',
+    'username' => 'Użytkownik',
+    'view' => 'Pokaż',
     'view_all' => 'View all',
     // Missing string!!!
-    'wed' => '�ro',
+    'wed' => 'Śro',
     'wednesday' => 'Wednesday',
     // Missing string!!!
     'with_selected' => 'Dla zaznaczonych',
-    'ww_sourcemode' => 'Poka� �r�d�o',
+    'ww_sourcemode' => 'Pokaż źródło',
     'ww_visualmode' => 'Edytor wizualny',
     'wysiwyg_delete_cell' => 'Delete cell',
     // Missing string!!!
