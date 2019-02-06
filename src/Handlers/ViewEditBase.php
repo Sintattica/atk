@@ -6,6 +6,7 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\State;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionStore;
 
 /**
@@ -145,20 +146,20 @@ class ViewEditBase extends ActionHandler
 
         // create onclick statement.
         $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}'); return false;\"";
-        $initClass = 'openedSection';
+        $initIcon = 'icon_minussquare';
 
         //if the section is not active, we close it on load.
         $default = in_array($field['name'], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
         $sectionstate = State::get(array('nodetype' => $this->m_node->atkNodeUri(), 'section' => $name), $default);
 
         if ($sectionstate == 'closed') {
-            $initClass = 'closedSection';
+            $initIcon = 'icon_plussquare';
             $page = $this->getPage();
             $page->register_scriptcode("addClosedSection('$name');");
         }
 
         // create the clickable link
-        return '<span class="atksectionwr"><a href="javascript:void(0)" id="'.$name.'" class="atksection '.$initClass.'"'.$onClick.'>'.$label.'</a></span>';
+        return '<span class="atksectionwr"><a href="javascript:void(0)" id="'.$name.'" class="atksection"'.$onClick.'><i class="'.Config::getGlobal($initIcon).'" id="img_'.$name.'"></i> '.$label.'</a></span>';
     }
 
     /**

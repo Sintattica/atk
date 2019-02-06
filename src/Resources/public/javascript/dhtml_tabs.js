@@ -30,15 +30,16 @@ function handleSectionToggle(element, expand, url) {
         }
     });
 
+    icon = $("img_"+element.id);
     if (expand) {
         var param = 'opened';
-        element.removeClassName('closedSection');
-        element.addClassName('openedSection');
+        icon.removeClassName('fa-plus-square-o');
+        icon.addClassName('fa-minus-square-o');
         closedSections = closedSections.without(element.id);
     } else {
         var param = 'closed';
-        element.removeClassName('openedSection');
-        element.addClassName('closedSection');
+        icon.removeClassName('fa-minus-square-o');
+        icon.addClassName('fa-plus-square-o');
         closedSections.push(element.id);
     }
 
