@@ -25,21 +25,22 @@ function handleSectionToggle(element, expand, url) {
     }).each(function (tr) {
         if (expand) {
             Element.show(tr);
-            element.removeClassName('closedSection');
-            element.addClassName('openedSection');
-            closedSections = closedSections.without(element.id);
         } else {
             Element.hide(tr);
-            element.removeClassName('openedSection');
-            element.addClassName('closedSection');
-            closedSections.push(element.id);
         }
     });
 
-    if (expand)
-        var param = 'opened'
-    else
-        var param = 'closed'
+    if (expand) {
+        var param = 'opened';
+        element.removeClassName('closedSection');
+        element.addClassName('openedSection');
+        closedSections = closedSections.without(element.id);
+    } else {
+        var param = 'closed';
+        element.removeClassName('openedSection');
+        element.addClassName('closedSection');
+        closedSections.push(element.id);
+    }
 
     new Ajax.Request(url, {
         method: 'get',
