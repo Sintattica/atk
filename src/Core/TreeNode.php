@@ -230,23 +230,12 @@ class TreeNode extends Node
             return '';
         }
 
-        $img_expand = $this->getIcon('expand');
-        $img_collapse = $this->getIcon('collapse');
-        $img_line = $this->getIcon('vertline');
-        $img_split = $this->getIcon('split');
-        $img_plus = $this->getIcon('split_plus');
-        $img_minus = $this->getIcon('split_minus');
-        $img_end = $this->getIcon('end');
-        $img_end_plus = $this->getIcon('end_plus');
-        $img_end_minus = $this->getIcon('end_minus');
-        $img_leaf = $this->getIcon('leaf');
-        $img_leaflink = $this->getIcon('leaf_link');
-        $img_spc = $this->getIcon('space');
-        $img_extfile = $this->getIcon('extfile');
+        $img_expand = Config::getGlobal('icon_expand');
+        $img_collapse = Config::getGlobal('icon_collapse');
+        $img_leaf = Config::getGlobal('icon_leaf');
 
         $res = '';
         $lastlevel = 0;
-        //echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
         $explevels = [];
         if ($this->m_tree[0]['expand'] != 1 && $this->m_tree[0]['colapse'] != 1) { // normal operation
             for ($i = 0; $i < count($this->m_tree); ++$i) {
@@ -294,7 +283,6 @@ class TreeNode extends Node
         /*         * ****************************************** */
         $i = 0;
         while ($i < count($explevels)) {
-            //$expand[$explevels[$i]]=1;
             $expand[$exp_index[$explevels[$i]]] = 1;
 
             ++$i;
@@ -344,7 +332,7 @@ class TreeNode extends Node
         $res .= '<tr>';
         // Make cols for max level
         for ($i = 0; $i < $g_maxlevel; ++$i) {
-            $res .= "<td width=16>&nbsp;</td>\n";
+            $res .= "<td width=23>&nbsp;</td>\n";
         }
         // Make the last text column
         $res .= '<td width=300>&nbsp;</td>';
@@ -369,100 +357,15 @@ class TreeNode extends Node
                 /****************************************/
                 $i = 0;
                 while ($i < $this->m_tree[$cnt]['level'] - 1) {
-                    if ($levels[$i] == 1) {
-                        $res .= '<td><img src="'.$img_line."\" border=0></td>\n";
-                    } else {
-                        $res .= '<td><img src="'.$img_spc."\" border=0></td>\n";
-                    }
+                    $res .= "<td style='text-align:center'> │ </td>\n";
                     ++$i;
                 }
 
-                /***************************************/
-                /* corner at end of subtree or t-split */
-                /***************************************/
+                if ($cnt != 0) {
+                   $res .= "<td style='text-align:center'> │ </td>\n";
+                }
                 if ($this->m_tree[$cnt]['isleaf'] == 1 && $nextlevel < $currentlevel) {
-                    if ($cnt != 0) {
-                        $res .= '<td><img src="'.$img_end."\" border=0></td>\n";
-                    }
                     $levels[$this->m_tree[$cnt]['level'] - 1] = 0;
-                } else {
-                    if ($expand[$cnt] == 0) {
-                        if ($nextlevel > $currentlevel) {
-                            /*                             * ************************************* */
-                            /* Create expand/collapse parameters    */
-                            /*                             * ************************************* */
-                            $i = 0;
-                            $params = 'atktree=';
-                            while ($i < count($expand)) {
-                                if (($expand[$i] == 1) && ($cnt != $i) || ($expand[$i] == 0 && $cnt == $i)) {
-                                    $params = $params.$this->m_tree[$i]['id'];
-                                    $params = $params.'|';
-                                }
-                                ++$i;
-                            }
-                            if ($this->extraparams) {
-                                $params = $params.$this->extraparams;
-                            }
-
-                            if ($this->m_tree[$cnt]['isleaf'] == 1) {
-                                if ($cnt != 0) {
-                                    $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                            '<img src="'.$img_end_plus.'" border=0>')."</td>\n";
-                                }
-                            } else {
-                                if ($cnt != 0) {
-                                    $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                            '<img src="'.$img_plus.'" border=0>')."</td>\n";
-                                }
-                            }
-                        } else {
-                            $res .= '<td><img src="'.$img_split."\" border=0></td>\n";
-                        }
-                    } else {
-                        if ($nextlevel > $currentlevel) {
-                            /*                             * ************************************* */
-                            /* Create expand/collapse parameters    */
-                            /*                             * ************************************* */
-                            $i = 0;
-                            $params = 'atktree=';
-                            while ($i < count($expand)) {
-                                if (($expand[$i] == 1) && ($cnt != $i) || ($expand[$i] == 0 && $cnt == $i)) {
-                                    $params = $params.$this->m_tree[$i]['id'];
-                                    $params = $params.'|';
-                                }
-                                ++$i;
-                            }
-                            if (isset($this->extraparams)) {
-                                $params = $params.$this->extraparams;
-                            }
-                            if ($this->m_tree[$cnt]['isleaf'] == 1) {
-                                if ($cnt != 0) {
-                                    if ($foldable) {
-                                        $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                                '<img src="'.$img_end_minus.'" border=0>')."</td>\n";
-                                    } else {
-                                        $res .= '<td><img src="'.$img_end."\" border=0></td>\n";
-                                    }
-                                }
-                            } else {
-                                if ($cnt != 0) {
-                                    if ($foldable) {
-                                        $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                                '<img src="'.$img_minus.'" border=0>')."</td>\n";
-                                    } else {
-                                        $res .= '<td><img src="'.$img_split."\" border=0></td>\n";
-                                    }
-                                }
-                            }
-                        } else {
-                            $res .= '<td><img src="'.$img_split."\" border=0></td>\n";
-                        }
-                    }
-                    if ($this->m_tree[$cnt]['isleaf'] == 1) {
-                        $levels[$this->m_tree[$cnt]['level'] - 1] = 0;
-                    } else {
-                        $levels[$this->m_tree[$cnt]['level'] - 1] = 1;
-                    }
                 }
 
                 /*                 * ***************************************** */
@@ -486,12 +389,12 @@ class TreeNode extends Node
                             $params = $params.$this->extraparams;
                         }
                         if ($expand[$cnt] == 0) {
-                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<img src="'.$img_expand.'" border=0>')."</td>\n";
+                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<i class="fa fa-'.$img_expand.'"></i>', SessionManager::SESSION_DEFAULT, false, 'class="btn btn-default"')."</td>\n";
                         } else {
-                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<img src="'.$img_collapse.'" border=0>')."</td>\n";
+                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<i class="fa fa-'.$img_collapse.'"></i>', SessionManager::SESSION_DEFAULT, false, 'class="btn btn-default"')."</td>\n";
                         }
                     } else {
-                        $res .= '<td><img src="'.$img_collapse."\" border=0></td>\n";
+                        $res .= '<td><i class="fa fa-'.$img_collapse."\"></i></td>\n";
                     }
                 } else {
                     /*                     * ********************** */
@@ -503,7 +406,7 @@ class TreeNode extends Node
                         $imgname = $this->m_tree[$cnt]['img'];
                         $img = $$imgname;
                     }
-                    $res .= '<td><img src="'.$img."\"></td>\n";
+                    $res .= '<td style="text-align:center"><i class="fa fa-'.$img."\"></i></td>\n";
                 }
 
                 /*                 * ************************************* */
