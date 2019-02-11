@@ -251,7 +251,6 @@ class TreeNode extends Node
                     $expand[$i] = 0;
                     $visible[$i] = 0;
                 }
-                $levels[$i] = 0;
             }
             if ($this->m_postvars['atktree'] != '') {
                 $explevels = explode('|', $this->m_postvars['atktree']);
@@ -260,7 +259,6 @@ class TreeNode extends Node
             for ($i = 0; $i < count($this->m_tree); ++$i) {
                 $expand[$i] = 1;
                 $visible[$i] = 1;
-                $levels[$i] = 0;
             }
             $this->m_tree[0]['expand'] = 0; // next time we are back in normal view mode!
         } elseif ($this->m_tree[0]['colapse'] == 1) { //  colapse all mode!
@@ -274,46 +272,23 @@ class TreeNode extends Node
                         $visible[$i] = 1;
                     }
                 }
-                $levels[$i] = 0;
             }
             $this->m_tree[0]['colapse'] = 0; // next time we are back in normal view mode!
         }
         /*         * ****************************************** */
         /*  Get Node numbers to expand               */
         /*         * ****************************************** */
-        $i = 0;
-        while ($i < count($explevels)) {
-            $expand[$exp_index[$explevels[$i]]] = 1;
-
-            ++$i;
+        foreach ($explevels as $explevel)
+        {
+            $expand[$exp_index[$explevel]] = 1;
         }
-        /*         * ****************************************** */
-        /*  Find last nodes of subtrees              */
-        /*         * ****************************************** */
 
-        $lastlevel = $g_maxlevel;
-
-        for ($i = count($this->m_tree) - 1; $i >= 0; --$i) {
-            if ($this->m_tree[$i]['level'] < $lastlevel) {
-                for ($j = $this->m_tree[$i]['level'] + 1; $j <= $g_maxlevel; ++$j) {
-                    $levels[$j] = 0;
-                }
-            }
-            if ($levels[$this->m_tree[$i]['level']] == 0) {
-                $levels[$this->m_tree[$i]['level']] = 1;
-                $this->m_tree[$i]['isleaf'] = 1;
-            } else {
-                $this->m_tree[$i]['isleaf'] = 0;
-            }
-            $lastlevel = $this->m_tree[$i]['level'];
-        }
         /*         * ****************************************** */
         /*  Determine visible nodes                  */
         /*         * ****************************************** */
-
         $visible[0] = 1;   // root is always visible
-        for ($i = 0; $i < count($explevels); ++$i) {
-            $n = $exp_index[$explevels[$i]];
+        foreach ($explevels as $explevel) {
+            $n = $exp_index[$explevel];
             if (($visible[$n] == 1) && ($expand[$n] == 1)) {
                 $j = $n + 1;
                 while ($this->m_tree[$j]['level'] > $this->m_tree[$n]['level']) {
@@ -325,15 +300,9 @@ class TreeNode extends Node
             }
         }
 
-        for ($i = 0; $i < $g_maxlevel; ++$i) {
-            $levels[$i] = 1;
-        }
-
         $res .= '<tr>';
         // Make cols for max level
-        for ($i = 0; $i < $g_maxlevel; ++$i) {
-            $res .= "<td width=23>&nbsp;</td>\n";
-        }
+        $res .= str_repeat("<td width=23>&nbsp;</td>\n", $g_maxlevel);
         // Make the last text column
         $res .= '<td width=300>&nbsp;</td>';
         // Column for the functions
@@ -355,17 +324,11 @@ class TreeNode extends Node
                 /****************************************/
                 /* vertical lines from higher levels    */
                 /****************************************/
-                $i = 0;
-                while ($i < $this->m_tree[$cnt]['level'] - 1) {
-                    $res .= "<td style='text-align:center'> │ </td>\n";
-                    ++$i;
-                }
-
                 if ($cnt != 0) {
                    $res .= "<td style='text-align:center'> │ </td>\n";
                 }
-                if ($this->m_tree[$cnt]['isleaf'] == 1 && $nextlevel < $currentlevel) {
-                    $levels[$this->m_tree[$cnt]['level'] - 1] = 0;
+                if ($this->m_tree[$cnt]['level'] - 1 >= 1) {
+                    $res .= str_repeat("<td style='text-align:center'> │ </td>\n", $this->m_tree[$cnt]['level'] - 1);
                 }
 
                 /*                 * ***************************************** */
