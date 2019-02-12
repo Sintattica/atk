@@ -53,7 +53,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));
         }
-        $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->getAllRows();
+        $recordset = $this->m_destInstance->select()->includes($tmp2)->getAllRows();
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
         $result = '<select class="form-control" name="'.$this->getHtmlName($fieldprefix).'">';
 
@@ -61,7 +61,8 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             // Relation may be empty, so we must provide an empty selectable..
             $result .= '<option value="0">'.Tools::atktext('select_none');
         }
-        $result .= $this->createdd($recordset);
+        $value = $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] ?? '';
+        $result .= $this->createdd($recordset, $value);
         $result .= '</select>';
 
         return $result;
@@ -92,7 +93,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      *
      * @return string The HTML code for the options
      */
-    public function createdd($recordset)
+    public function createdd($recordset, $value = '')
     {
         $t = new TreeToolsTree();
         for ($i = 0; $i < count($recordset); ++$i) {
@@ -100,7 +101,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group),
                 $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
         }
-        $tmp = $this->render($t->m_tree);
+        $tmp = $this->render($t->m_tree, $value);
 
         return $tmp;
     }
@@ -113,25 +114,27 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      *
      * @return string The rendered tree
      */
-    public function render($tree = [], $level = 0)
+    public function render($tree = [], $value, $level = 0)
     {
         $res = '';
-        $i = 0;
         while (list(, $objarr) = each($tree)) {
-            ++$i;
+            $sel = '';
             if ($this->m_current != $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") {
                 $this->m_level = $level;
-                $sel = '';
+                $dis = '';
             } else {
-                // if equal, select the option it and do not render childs (parent cannot be moved to a childnode of its own)
-                $sel = 'SELECTED';
+                // if equal, disable the option it and do not render childs (parent cannot be moved to a childnode of its own)
+                $dis = 'DISABLED';
+            }
+            if ($objarr->m_id == $value) {
+                $sel = ' SELECTED';
             }
 
-            $res .= '<option value="'.$this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$sel.'>'.str_repeat('-',
+            $res .= '<option value="'.$this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$dis.$sel.'>'.str_repeat('-',
                     (2 * $level)).' '.$objarr->m_label;
 
-            if (count($objarr->m_sub) > 0 && $sel == '') {
-                $res .= $this->render($objarr->m_sub, $level + 1);
+            if (count($objarr->m_sub) > 0 && $dis == '') {
+                $res .= $this->render($objarr->m_sub, $value, $level + 1);
             }
         }
         $this->m_level = 0;
