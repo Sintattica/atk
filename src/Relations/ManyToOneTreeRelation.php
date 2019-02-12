@@ -18,7 +18,6 @@ use Sintattica\Atk\Utils\StringParser;
 class ManyToOneTreeRelation extends ManyToOneRelation
 {
     public $m_current = '';
-    public $m_level = '';
 
     /**
      * Constructor.
@@ -96,10 +95,9 @@ class ManyToOneTreeRelation extends ManyToOneRelation
     public function createdd($recordset, $value = '')
     {
         $t = new TreeToolsTree();
-        for ($i = 0; $i < count($recordset); ++$i) {
-            $group = $recordset[$i];
-            $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group),
-                $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
+        foreach ($recordset as $record) {
+            $t->addNode($record[$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($record),
+                $record[$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
         }
         $tmp = $this->render($t->m_tree, $value);
 
@@ -119,10 +117,8 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         $res = '';
         while (list(, $objarr) = each($tree)) {
             $sel = '';
-            if ($this->m_current != $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") {
-                $this->m_level = $level;
-                $dis = '';
-            } else {
+            $dis = '';
+            if ($this->m_current == $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") {
                 // if equal, disable the option it and do not render childs (parent cannot be moved to a childnode of its own)
                 $dis = 'DISABLED';
             }
@@ -137,7 +133,6 @@ class ManyToOneTreeRelation extends ManyToOneRelation
                 $res .= $this->render($objarr->m_sub, $value, $level + 1);
             }
         }
-        $this->m_level = 0;
 
         return $res;
     }
