@@ -451,7 +451,7 @@ class TreeNode extends Node
      * @param array $record The record to copy
      * @param string $mode The mode we're in (usually "copy")
      */
-    public function copyDb($record, $mode = 'copy')
+    public function copyDb(&$record, $mode = 'copy')
     {
         $oldparent = $record[$this->m_primaryKey[0]];
 
@@ -499,76 +499,41 @@ class TreeNode extends Node
     }
 
     /**
-     * delete record from the database also the childrecords.
-     * todo: instead of delete, set the deleted flag.
+     * Delete record(s) and childrecord from the database.
      *
-     * @param string $selector Selector
+     * After deletion, the postDel() trigger in the node method is called, and
+     * on any attribute that has the Attribute::AF_CASCADE_DELETE flag set, the delete()
+     * method is invoked.
+     *
+     * NOTE: Does not commit your transaction! If you are using a database that uses
+     * transactions you will need to call 'Db::getInstance()->commit()' manually.
+     *
+     * @todo There's a discrepancy between updateDb, addDb and deleteDb:
+     *       There should be a deleteDb which accepts a record, instead
+     *       of a selector.
+     *
+     * @param string $selector SQL expression used as where-clause that
+     *                              indicates which records to delete.
+     * @param bool $exectrigger wether to execute the pre/post triggers. Note that the preDelete
+     *        trigger is execute after the deletion of all children nodes and before the deletion
+     *        of selected nodes.
+     * @param bool $failwhenempty determine whether to throw an error if there is nothing to delete
+     * @returns boolean True if successful, false if not.
      */
-    public function deleteDb($selector)
+    public function deleteDb($selector, $exectrigger = true, $failwhenempty = false)
     {
         Tools::atkdebug('Retrieve record');
         $recordset = $this->select($selector)->mode('delete')->getAllRows();
-        for ($i = 0; $i < count($recordset); ++$i) {
-            foreach (array_keys($this->m_attribList) as $attribname) {
-                $p_attrib = $this->m_attribList[$attribname];
-                if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
-                    $p_attrib->delete($recordset[$i]);
-                }
-            }
-        }
-        $parent = $recordset[0][$this->m_primaryKey[0]];
+        // First, recursively deleting children (and stopping if it fails) :
         if ($this->m_parent != '') {
-            Tools::atkdebug('Check for child records');
-            $children = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
-
-            if (count($children) > 0) {
-                Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
-                $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent, $parent);
-            }
-        }
-
-        $db = $this->getDb();
-        $query = 'DELETE FROM '.$this->m_table.' WHERE '.$selector;
-        $db->query($query);
-
-        for ($i = 0; $i < count($recordset); ++$i) {
-            $this->postDel($recordset[$i]);
-            $this->postDelete($recordset[$i]);
-        }
-
-        return $recordset;
-        // todo: instead of delete, set the deleted flag.
-    }
-
-    /**
-     * Recursive function whitch deletes all the child records of a parent.
-     *
-     * @param string $selector Selector
-     * @param int $parent Id of the parent
-     */
-    public function deleteChildren($selector, $parent)
-    {
-        Tools::atkdebug('Check for child records of the Child');
-        $recordset = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
-        for ($i = 0; $i < count($recordset); ++$i) {
-            foreach (array_keys($this->m_attribList) as $attribname) {
-                $p_attrib = $this->m_attribList[$attribname];
-                if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
-                    $p_attrib->delete($recordset[$i]);
+            foreach ($recordset as $record) {
+                $parent = $record[$this->m_primaryKey[0]];
+                if (!$this->deleteDb($this->m_table.'.'.$this->m_parent.'='.$parent, $exectrigger, false)) {
+                    return false;
                 }
             }
         }
-
-        if (count($recordset) > 0) {
-            for ($i = 0; $i < count($recordset); ++$i) {
-                $parent = $recordset[$i][$this->m_primaryKey[0]];
-                Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]].','.$parent.')');
-                $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]], $parent);
-            }
-        }
-
-        $db = $this->getDb();
-        $query = 'DELETE FROM '.$this->m_table.' WHERE '.$selector;
-        $db->query($query);
+        // Then deleting records :
+        return parent::deleteDb($selector, $exectrigger, $failwhenempty);
     }
 }
