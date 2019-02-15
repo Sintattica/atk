@@ -21,32 +21,24 @@ return [
     'access_denied' => 'Access denied',
     // Missing string!!!
     'add' => 'Afegir',
-    'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
     'admin' => 'Administració',
-    'administration_application' => 'Administration application',
     // Missing string!!!
     'all' => 'All',
     // Missing string!!!
-    'alphabeticchars' => 'alphabetic characters',
     // Missing string!!!
-    'apply' => 'Apply',
     // Missing string!!!
-    'app_close' => 'Close',
     // Missing string!!!
     'app_description' => 'Benvingut a aquesta aplicació ATK.',
-    'app_launcher' => 'ATK Application Launcher',
     // Missing string!!!
-    'app_reopen' => 'Restart',
     // Missing string!!!
     'app_shorttitle' => 'ATKApp',
     'app_title' => 'Aplicació ATK ',
     'apr' => 'Apr',
     // Missing string!!!
     'april' => 'Abril',
-    'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted. (%s)'",
     // Missing string!!!
@@ -62,52 +54,32 @@ return [
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
     'auth_no_server' => "No s'ha especificat un servidor. No es possible autenticar (consulti amb el seu administrador de sistemes).",
-    'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
-    'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
-    'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
     'auth_unable_to_connect' => "No s'ha pogut connectar amb un servidor per a autenticar (consulti amb el seu administrador de sistemes).",
-    'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
-    'autocomplete_no_results' => 'No results found for the given search value.',
     // Missing string!!!
-    'autocomplete_no_results_contains' => 'No results found that contain the given search value.',
     // Missing string!!!
-    'autocomplete_no_results_exact' => 'No results found that exactly match the given search value.',
     // Missing string!!!
-    'autocomplete_no_results_startswith' => 'No results found that start with the given search value.',
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
     'back' => 'Tornar',
-    'back_to' => 'Tornar a',
-    'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
     'cancel' => 'Cancel·lar',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
-    'cannot create directory' => 'Cannot create directory: ',
     // Missing string!!!
-    'cannot make file' => 'Cannot create file: ',
     // Missing string!!!
-    'cannot_remove_file' => 'No es pot eliminar el arxiu!',
-    'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
     'charset' => 'UTF-8',
-    'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
     'check_all' => 'Seleccionar tot',
     'check_none' => 'Seleccionar cap',
-    'clickheretoadd_postfix' => '.',
-    'clickheretoadd_prefix' => 'Faci clic aquí per afegir un nou ',
     'close' => 'Tancar',
-    'color' => 'Color',
     // Missing string!!!
-    'colorcode' => 'Color code',
     // Missing string!!!
-    'colorpicker_selectcolor' => 'Seleccionar un color',
     'column' => 'column',
     // Missing string!!!
     'column_asc' => 'Up',
@@ -119,9 +91,7 @@ return [
     'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
     'confirm_delete' => '¿Està segur que vol esborrar aquest element?',
-    'confirm_delete_multi' => 'Are you sure you want to delete these items?',
     // Missing string!!!
-    'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
     'copy' => 'Copy',
     // Missing string!!!
@@ -161,7 +131,6 @@ return [
     // Missing string!!!
     'deselect_all' => 'Deselect all',
     // Missing string!!!
-    'document' => 'Open document',
     // Missing string!!!
     'edit' => 'Editar',
     'editcopy' => 'Edit copy',
@@ -171,21 +140,14 @@ return [
     'enclosure' => 'Enclosure',
     // Missing string!!!
     'error' => 'Error',
-    'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
-    'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     // Missing string!!!
-    'error_attributeedit_update' => 'An error occured when updating the selected records.',
     // Missing string!!!
-    'error_attributeedit_validationfailed' => 'This value is not allowed.',
     // Missing string!!!
-    'error_captchafield' => 'The given code is invalid, please try again',
     // Missing string!!!
-    'error_copy_record' => 'Unknown error copying record',
     // Missing string!!!
     'error_date_invalid' => 'Invalid date',
     // Missing string!!!
-    'error_fileexists' => 'File already exists on server. Please rename the file.',
     // Missing string!!!
     'error_file_mime_type' => 'Unsupported file uploaded please check your filetype or extension',
     // Missing string!!!
@@ -207,14 +169,12 @@ return [
     'error_obligatoryfield' => 'aquest camp es obligatori',
     'error_password_incorrect' => 'The password you entered is incorrect!',
     // Missing string!!!
-    'error_password_invalid' => 'The password you entered is not a valid password!',
     // Missing string!!!
     'error_password_nomatch' => 'The supplied passwords do not match.',
     // Missing string!!!
     'error_primarykey_exists' => 'Ja existeix un registre amb aquesta clau',
     'error_tab' => 'see',
     // Missing string!!!
-    'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
     'error_uniquefield' => "El valor per aquest camp ha d'ésser únic",
     'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
@@ -261,13 +221,11 @@ return [
     // Missing string!!!
     'feedback_update_success' => 'The changes have been saved.',
     // Missing string!!!
-    'field_obligatory' => 'aquest camp es obligatori',
     'filecontent' => 'Contingut',
     'filename' => "Nom d'arxiu",
     'filename_invalid' => 'El nom del arxiu no es vàlid',
     'file_exists' => 'Ja existeix un arxiu amb aquest nom',
     'file_not_exist' => 'El arxiu no existeix',
-    'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
@@ -324,7 +282,6 @@ return [
     // Missing string!!!
     'import_validatefirst' => 'Do not validate before importing',
     // Missing string!!!
-    'intro_addorcopy' => 'Do you want to create a new record or copy an existing record?',
     // Missing string!!!
     'invalid_relative_url' => "Invalid relative URL, please use this format: '/mysite/guestbook'",
     // Missing string!!!
@@ -358,24 +315,18 @@ return [
     // Missing string!!!
     'load_criteria' => 'Load saved search',
     // Missing string!!!
-    'lock_expired' => 'The items you have opened are no longer exclusively accessible by you. This can have various causes, the most common is that you have not saved for a too long period of time. You can try to save your work, but it is possible that the items are currently locked by another user.',
     // Missing string!!!
     'lock_info_line' => '[user_id] (ip: [user_ip]) since [lock_date]',
     // Missing string!!!
-    'lock_locked' => 'The selected items are not accessible because another user has locked them.',
     // Missing string!!!
-    'logged_in_as' => 'Logged in as',
     // Missing string!!!
     'login' => 'Login',
     // Missing string!!!
-    'login_failed' => "No s'ha pogut iniciar la sessió",
     'login_form' => 'Login',
     // Missing string!!!
-    'logout' => 'Log out',
     // Missing string!!!
     'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
     // Missing string!!!
-    'lowerchars' => 'lowercase characters',
     // Missing string!!!
     'mar' => 'Mar',
     // Missing string!!!
@@ -386,7 +337,6 @@ return [
     'mon' => 'Dil',
     'monday' => 'Monday',
     // Missing string!!!
-    'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'New',
     // Missing string!!!
@@ -397,9 +347,7 @@ return [
     'nov' => 'Nov',
     // Missing string!!!
     'november' => 'Novembre',
-    'no_color_selected' => 'No color selected',
     // Missing string!!!
-    'no_copyable_records' => 'no copyable records',
     // Missing string!!!
     'no_records_to_import' => 'No records found that needed to be imported.',
     // Missing string!!!
@@ -419,14 +367,10 @@ return [
     // Missing string!!!
     'password_again' => 'Repeteixi-la',
     'password_current' => 'Actual',
-    'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
     'password_incorrect' => 'La contrasenya ingressada no es correcta!',
-    'password_invalid' => 'La contrasenya proporcionada no es vàlida.',
     'password_new' => 'Nova',
-    'permission_denied' => 'Ho sento, però no està autoritzat per a realitzar aquesta acció',
-    'previous' => 'Anterior',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
     'relogin' => 'Log in again',
@@ -434,7 +378,6 @@ return [
     'remove_criterium' => 'Remove',
     // Missing string!!!
     'remove_current_file' => 'Eliminar el arxiu actual',
-    'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
     // Missing string!!!
@@ -505,9 +448,7 @@ return [
     // Missing string!!!
     'sort' => 'Sort',
     // Missing string!!!
-    'specialchars' => 'special characters',
     // Missing string!!!
-    'steelblue' => 'SteelBlue',
     // Missing string!!!
     'submit' => 'Go',
     // Missing string!!!
@@ -588,7 +529,6 @@ return [
     // Missing string!!!
     'title_session_expired' => 'Session expired',
     // Missing string!!!
-    'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Today',
     // Missing string!!!
@@ -614,31 +554,18 @@ return [
     // Missing string!!!
     'with_selected' => 'With selected',
     // Missing string!!!
-    'ww_sourcemode' => 'Source mode',
     // Missing string!!!
-    'ww_visualmode' => 'Visual mode',
     // Missing string!!!
-    'wysiwyg_delete_cell' => 'Delete cell',
     // Missing string!!!
-    'wysiwyg_delete_col' => 'Delete column',
     // Missing string!!!
-    'wysiwyg_delete_row' => 'Delete row',
     // Missing string!!!
-    'wysiwyg_fontface' => 'Font',
     // Missing string!!!
-    'wysiwyg_fontsize' => 'Pt',
     // Missing string!!!
-    'wysiwyg_insert_cell' => 'Insert cell',
     // Missing string!!!
-    'wysiwyg_insert_col' => 'Insert column',
     // Missing string!!!
-    'wysiwyg_insert_row' => 'Insert row',
     // Missing string!!!
-    'wysiwyg_insert_table' => 'Insert table',
     // Missing string!!!
-    'wysiwyg_merge_cell' => 'Merge cells',
     // Missing string!!!
-    'wysiwyg_split_cell' => 'Split cells',
     // Missing string!!!
     'yes' => 'Sí',
 ];

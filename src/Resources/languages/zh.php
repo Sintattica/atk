@@ -20,27 +20,19 @@ return [
     // Missing string!!!
     'access_denied' => '�v������',
     'add' => '�s�W',
-    'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
     'admin' => '�޲z',
-    'administration_application' => '�޲z���Ψt��',
     'all' => 'All',
     // Missing string!!!
-    'alphabeticchars' => 'alphabetic characters',
     // Missing string!!!
-    'apply' => '����',
-    'app_close' => '����',
     'app_description' => '�w��i�J ATK ���Ψt��.',
-    'app_launcher' => 'ATK ���Ψt�Ұʲ�',
-    'app_reopen' => '���s�Ұ�',
     'app_shorttitle' => 'ATK����',
     'app_title' => 'ATK ���Ψt��',
     'apr' => 'Apr',
     // Missing string!!!
     'april' => '�|��',
-    'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "��� '%s' �T���ƧR��. (%s)'",
     'aug' => 'Aug',
@@ -53,57 +45,35 @@ return [
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
     'auth_no_server' => '���]�w��A��. �L�k�i�樭���{�� (�лP�t�κ޲z���p��).',
-    'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
-    'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
-    'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
     'auth_unable_to_connect' => '�L�k�s�u���A���i�樭���{�� (�лP�t�κ޲z���p��).',
-    'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
-    'autocomplete_no_results' => 'No results found for the given search value.',
     // Missing string!!!
-    'autocomplete_no_results_contains' => 'No results found that contain the given search value.',
     // Missing string!!!
-    'autocomplete_no_results_exact' => 'No results found that exactly match the given search value.',
     // Missing string!!!
-    'autocomplete_no_results_startswith' => 'No results found that start with the given search value.',
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
     'back' => '�^�W��',
-    'back_to' => '�^��',
-    'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
     'cancel' => '���',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
-    'cannot create directory' => '�L�k�إߥؿ�: ',
-    'cannot make file' => '�L�k�إ��ɮ�: ',
-    'cannot_remove_file' => '�L�k�R���ɮ�!',
-    'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
     'charset' => 'UTF-8',
     // Missing string!!!
-    'check rights to' => '���ˬd�z�O�_���������v���i��',
     'check_all' => '����',
     'check_none' => '��@��',
-    'clickheretoadd_postfix' => '.',
-    'clickheretoadd_prefix' => '�I���H�s�W�@�� ',
     'close' => '����',
-    'color' => 'Color',
     // Missing string!!!
-    'colorcode' => '��X',
-    'colorpicker_selectcolor' => '��ܤ@���C��',
     'column' => '��',
     'column_asc' => '�Ѥp��j�Ƨ�',
     'column_desc' => '�Ѥj��p�Ƨ�',
     'column_subtotal' => '�p�p',
     'column_unsubtotal' => '�L�k�[�`',
     'confirm_delete' => '�z�T�w�n�R���o�ӵ���ƶ�?',
-    'confirm_delete_multi' => '�z�T�w�n�R���o�Ǹ�ƶ�?',
-    'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
     'copy' => '�ƻs',
     'criterium_field' => 'Field',
@@ -135,7 +105,6 @@ return [
     'delimiter' => 'Delimiter',
     // Missing string!!!
     'deselect_all' => '�M���������',
-    'document' => 'Open document',
     // Missing string!!!
     'edit' => '�s��',
     'editcopy' => '�s��ƻs',
@@ -144,20 +113,13 @@ return [
     'enclosure' => 'Enclosure',
     // Missing string!!!
     'error' => '��~',
-    'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
-    'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     // Missing string!!!
-    'error_attributeedit_update' => 'An error occured when updating the selected records.',
     // Missing string!!!
-    'error_attributeedit_validationfailed' => 'This value is not allowed.',
     // Missing string!!!
-    'error_captchafield' => 'The given code is invalid, please try again',
     // Missing string!!!
-    'error_copy_record' => 'Unknown error copying record',
     // Missing string!!!
     'error_date_invalid' => '��~���',
-    'error_fileexists' => '�ɮפw�s�b��A����. �бN�ɮק�W.',
     'error_file_mime_type' => 'Unsupported file uploaded please check your filetype or extension',
     // Missing string!!!
     'error_file_size' => 'File is too big',
@@ -175,11 +137,9 @@ return [
     // Missing string!!!
     'error_obligatoryfield' => '�п�J�o�����',
     'error_password_incorrect' => '�K�X��~!',
-    'error_password_invalid' => '�K�X��~!',
     'error_password_nomatch' => '�K�X�����T.',
     'error_primarykey_exists' => '������Ȫ���Ƥw�g�s�b',
     'error_tab' => '��',
-    'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
     'error_uniquefield' => '���ȥ����O�ߤ@��,���i����',
     'error_uniquefieldset' => '�o����쪺�զX�ȥ����O�ߤ@��,���i����',
@@ -213,13 +173,11 @@ return [
     'feedback_update_cancelled' => '�ܰʥ��x�s.',
     'feedback_update_failed' => '�ܰʵL�k�x�s.',
     'feedback_update_success' => '�ܰʤw�x�s.',
-    'field_obligatory' => '�o����쥲����J',
     'filecontent' => '���e',
     'filename' => '�ɦW',
     'filename_invalid' => '�ɦW���X�k',
     'file_exists' => '�t�Τ��w���o���ɦW�F',
     'file_not_exist' => '�ɮפ��s�b',
-    'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
@@ -256,7 +214,6 @@ return [
     'import_upload_explanation' => '�W�Ǹ���ɨ��Ʈw��.',
     'import_validatefirst' => 'Do not validate before importing',
     // Missing string!!!
-    'intro_addorcopy' => 'Do you want to create a new record or copy an existing record?',
     // Missing string!!!
     'invalid_relative_url' => "Invalid relative URL, please use this format: '/mysite/guestbook'",
     // Missing string!!!
@@ -287,18 +244,12 @@ return [
     // Missing string!!!
     'load_criteria' => 'Load saved search',
     // Missing string!!!
-    'lock_expired' => '�}�Ҫ���ƶ��w���A�ȴ��ѱz�s��. �i�઺��]���ƺ�, �`�����]�����z�O�ɩ|���x�s���. �A�i�H�յ��x�s, ���ƶ��i��w�Q��L�ϥΪ����.',
     'lock_info_line' => '[user_id] (ip: [user_ip]) since [lock_date]',
     // Missing string!!!
-    'lock_locked' => '�A��ܪ���ƶ��w�Q��L�ϥΪ����,�L�kŪ��.',
-    'logged_in_as' => '�n�J��',
     'login' => '�n�J',
-    'login_failed' => '�n�J����',
     'login_form' => '�n�J',
-    'logout' => '�n�X',
     'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
     // Missing string!!!
-    'lowerchars' => 'lowercase characters',
     // Missing string!!!
     'mar' => 'Mar',
     // Missing string!!!
@@ -308,7 +259,6 @@ return [
     'menu_main' => '�D���',
     'mon' => '�g�@',
     'monday' => '�g�@',
-    'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => '�s�W',
     'next' => '�U�@��',
@@ -317,9 +267,7 @@ return [
     'nov' => 'Nov',
     // Missing string!!!
     'november' => '�Q�@��',
-    'no_color_selected' => 'No color selected',
     // Missing string!!!
-    'no_copyable_records' => 'no copyable records',
     // Missing string!!!
     'no_records_to_import' => 'No records found that needed to be imported.',
     // Missing string!!!
@@ -337,14 +285,10 @@ return [
     'password' => '�K�X',
     'password_again' => '�A��J�@��',
     'password_current' => '�ثe�]�w��',
-    'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
     'password_incorrect' => '�A��J���K�X�����T!',
-    'password_invalid' => '�A��J���K�X�����T.',
     'password_new' => '�s���K�X',
-    'permission_denied' => '��p, �A�S���o���@�~���v��',
-    'previous' => '�e�@��',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
     'relogin' => 'Log in again',
@@ -352,7 +296,6 @@ return [
     'remove_criterium' => 'Remove',
     // Missing string!!!
     'remove_current_file' => '�e���ثe�ɮ�',
-    'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
     // Missing string!!!
@@ -410,9 +353,7 @@ return [
     'smartsearch' => 'Smart search',
     // Missing string!!!
     'sort' => '�Ƨ�',
-    'specialchars' => 'special characters',
     // Missing string!!!
-    'steelblue' => 'SteelBlue',
     // Missing string!!!
     'submit' => '����',
     'successfully_imported_one_record' => 'Successfully imported 1 record.',
@@ -489,7 +430,6 @@ return [
     'title_select' => 'Select',
     // Missing string!!!
     'title_session_expired' => '�s�u���q�w�O��',
-    'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Today',
     // Missing string!!!
@@ -511,18 +451,5 @@ return [
     'wed' => '�g�T',
     'wednesday' => '�g�T',
     'with_selected' => '�P�w��ܪ�',
-    'ww_sourcemode' => '��l�X�Ҧ�',
-    'ww_visualmode' => '��ı�Ҧ�',
-    'wysiwyg_delete_cell' => '�R���x�s��',
-    'wysiwyg_delete_col' => '�R���@��',
-    'wysiwyg_delete_row' => '�R���@�C',
-    'wysiwyg_fontface' => '�r��',
-    'wysiwyg_fontsize' => 'Pt',
-    'wysiwyg_insert_cell' => '�s�W�x�s��',
-    'wysiwyg_insert_col' => '�s�W�@��',
-    'wysiwyg_insert_row' => '�s�W�@�C',
-    'wysiwyg_insert_table' => '�s�W���',
-    'wysiwyg_merge_cell' => '�X���x�s��',
-    'wysiwyg_split_cell' => '�����x�s��',
     'yes' => '�O',
 ];
