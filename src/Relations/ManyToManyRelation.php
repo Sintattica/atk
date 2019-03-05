@@ -612,12 +612,10 @@ class ManyToManyRelation extends Relation
 
         if (is_array($localKey)) {
             for ($j = 0; $j < Tools::count($localKey); ++$j) {
-                $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[$j]]);
-                $record[$localKey[0]][$ownerFields[$j]] = $locKey;
+                $record[$localKey[0]][$ownerFields[$j]] = $ownerRecord[$ownerFields[$j]];
             }
         } else {
-            $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[0]]);
-            $record[$localKey] = $locKey;
+            $record[$localKey] = $ownerRecord[$ownerFields[$j]];
         }
 
         return $record;
