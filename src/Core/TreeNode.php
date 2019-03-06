@@ -130,9 +130,10 @@ class TreeNode extends Node
                 $label = Tools::atktext('link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module);
             } else {
                 // generic text
-                $label = Tools::atktext(Tools::getNodeType($this->m_type), $this->m_module).' '.Tools::atktext('add', 'atk');
+                $label = Tools::atktext('add', 'atk');
             }
-            $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED).'<br><br>';
+            $cssClass = 'class="btn btn-default admin_link admin_link_add"';
+            $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED, false, $cssClass).'<br><br>';
         }
 
         $content .= $this->GraphTreeRender();
