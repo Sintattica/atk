@@ -65,7 +65,7 @@ class ListAttribute extends Attribute
      */
     public $m_emptyvalue = '';
 
-    public $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
+    public $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex] ? el.options[el.selectedIndex].value : null;\n";
 
     /**
      * When autosearch is set to true, this attribute will automatically submit
