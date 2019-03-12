@@ -1,4 +1,4 @@
-# ATK Framework
+# ATK Framework
 
 ATK Framework is a special purpose PHP framework targeted at business applications.
 
@@ -17,7 +17,7 @@ We currently have 4 branches:
 * 9.1
 * master
 
-## 8.2
+### 8.2
 We call this the "classic" ATK, i.e. the closest to iBuildings' version. It's largely backward compatible, with no additional functions:
 
 * lots of bug fixes
@@ -31,7 +31,7 @@ We call this the "classic" ATK, i.e. the closest to iBuildings' version. It's la
 * refactoring of meta fetching
 * added a couple of utility functions
 
-## 9.0
+### 9.0
 
 This is a deeply refactored version that's not backward compatible. It's been developed with the following objectives:
 
@@ -45,15 +45,15 @@ This is a deeply refactored version that's not backward compatible. It's been de
 * [Select2](https://select2.github.io/) integration
 
 
-## 9.1
+### 9.1
 
 Version like 9.0, but with jQuery only
 
-## master
+### master
 
 This is the head of development. Currently it points to 9.1
 
-## Contributions
+## Contributions
 
 Since we use both branches in production projects, pull requests for bug fixes are welcome, but we cannot guarantee to accept new features. Please get in touch before submitting such requests.
 
