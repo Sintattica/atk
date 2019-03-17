@@ -403,7 +403,7 @@ class NumberAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return $this->getDecimals() > 0 ? 'decimal' : 'number';
+        return $this->getDecimals() > 0 ? Db::FT_DECIMAL : Db::FT_NUMBER;
     }
 
     /**

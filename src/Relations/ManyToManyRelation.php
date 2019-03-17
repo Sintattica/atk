@@ -181,7 +181,7 @@ class ManyToManyRelation extends Relation
         $cacheKey = md5($filter);
         if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force) {
             $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()->select($filter)->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-                $this->m_destInstance->m_primaryKey))->getAllRows();
+                $this->m_destInstance->m_primaryKey))->fetchAll();
         }
 
         return $this->m_selectableRecordsCache[$cacheKey];
@@ -449,7 +449,7 @@ class ManyToManyRelation extends Relation
             $where = $this->_getLoadWhereClause($record);
             $rel = $this->m_linkInstance;
 
-            return $rel->select($where)->getAllRows();
+            return $rel->select($where)->fetchAll();
         }
 
         return [];
@@ -779,7 +779,7 @@ class ManyToManyRelation extends Relation
 
         // now select all records
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-            $this->m_destInstance->m_primaryKey))->getAllRows();
+            $this->m_destInstance->m_primaryKey))->fetchAll();
         $result = '<select class="form-control"'.$data;
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, Tools::count($recordset) + 1).'"';

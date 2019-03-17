@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\BrowserInfo;
@@ -1364,7 +1365,7 @@ class DateAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return 'date';
+        return Db::FT_DATE;
     }
 
     /**

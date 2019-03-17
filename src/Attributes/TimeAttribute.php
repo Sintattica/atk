@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 
 /**
@@ -409,7 +410,7 @@ class TimeAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return 'time';
+        return Db::FT_TIME;
     }
 
     /**

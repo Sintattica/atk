@@ -1693,7 +1693,7 @@ EOF;
      */
     public function getSelectableRecords($record = [], $mode = '')
     {
-        return $this->getSelectableRecordsSelector($record, $mode)->getAllRows();
+        return $this->getSelectableRecordsSelector($record, $mode)->fetchAll();
     }
 
     public function getSelectableRecordsSelector($record = [], $mode = '')

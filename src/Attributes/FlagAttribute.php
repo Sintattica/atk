@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The FlagAttribute class offers an way to edit bitmask flags.
@@ -12,6 +13,8 @@ use Sintattica\Atk\Db\Query;
  */
 class FlagAttribute extends MultiSelectAttribute
 {
+    public $m_dbfieldtype = Db::FT_NUMBER;
+
     /**
      * Constructor.
      *
@@ -24,7 +27,6 @@ class FlagAttribute extends MultiSelectAttribute
     public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
         parent::__construct($name, $flags, $optionArray, $valueArray);
-        $this->m_dbfieldtype = 'number';
     }
 
     /**
@@ -70,17 +72,6 @@ class FlagAttribute extends MultiSelectAttribute
         }
 
         return [];
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return $this->m_dbfieldtype;
     }
 
     /**

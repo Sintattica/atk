@@ -11,7 +11,7 @@ use Sintattica\Atk\Core\Config;
  *
  * @author Rene van den Ouden <rene@ibuildings.nl>
  */
-class MySqliDdl extends Ddl
+class MysqlDdl extends Ddl
 {
     private $m_table_type;
 
@@ -35,73 +35,23 @@ class MySqliDdl extends Ddl
         }
 
         switch ($generictype) {
-            case 'number':
+            case Db::FT_NUMBER:
                 return 'INT';
-            case 'decimal':
+            case Db::FT_DECIMAL:
                 return 'DECIMAL';
-            case 'string':
+            case Db::FT_STRING:
                 return 'VARCHAR';
-            case 'date':
+            case Db::FT_DATE:
                 return 'DATE';
-            case 'text':
-                return 'TEXT';
-            case 'datetime':
-                return 'DATETIME';
-            case 'time':
+            case Db::FT_DATETIME:
+                return 'TIMESTAMP';
+            case Db::FT_TIME:
                 return 'TIME';
-            case 'boolean':
-                return 'NUMBER(1,0)'; // size is added fixed. (because a boolean has no size of its own)
+            case Db::FT_BOOLEAN:
+                return 'BOOLEAN';
         }
 
         return ''; // in case we have an unsupported type.
-    }
-
-    /**
-     * Convert an database specific type to an ATK generic datatype.
-     *
-     * @param string $type The database specific datatype to convert.
-     *
-     * @return string
-     */
-    public function getGenericType($type)
-    {
-        $type = strtolower($type);
-        switch ($type) {
-            case MYSQLI_TYPE_TINY:
-            case MYSQLI_TYPE_SHORT:
-            case MYSQLI_TYPE_LONG:
-            case MYSQLI_TYPE_LONGLONG:
-            case MYSQLI_TYPE_INT24:
-            case MYSQLI_TYPE_YEAR:
-                return 'number';
-            case MYSQLI_TYPE_DECIMAL:
-            case MYSQLI_TYPE_NEWDECIMAL:
-            case MYSQLI_TYPE_FLOAT:
-            case MYSQLI_TYPE_DOUBLE:
-                return 'decimal';
-            case MYSQLI_TYPE_VAR_STRING:
-            case MYSQLI_TYPE_STRING:
-                return 'string';
-            case MYSQLI_TYPE_DATE:
-                return 'date';
-            case MYSQLI_TYPE_TINY_BLOB:
-            case MYSQLI_TYPE_MEDIUM_BLOB:
-            case MYSQLI_TYPE_LONG_BLOB:
-            case MYSQLI_TYPE_BLOB:
-                return 'text';
-            case MYSQLI_TYPE_TIME:
-                return 'time';
-            case MYSQLI_TYPE_TIMESTAMP:
-            case MYSQLI_TYPE_DATETIME:
-                return 'datetime';
-            case MYSQLI_TYPE_NEWDATE:
-            case MYSQLI_TYPE_ENUM:
-            case MYSQLI_TYPE_SET:
-            case MYSQLI_TYPE_GEOMETRY:
-                return ''; // NOT SUPPORTED FIELD TYPES 
-        }
-
-        return ''; // in case we have an unsupported type.      
     }
 
     /**

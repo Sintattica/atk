@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
@@ -680,13 +681,13 @@ class FileAttribute extends Attribute
 
         $owner = $this->m_ownerInstance;
         $db = $owner->getDb();
-        $tableSql = $db->escapeSQL($this->m_ownerInstance->getTable());
-        $fieldnameSql = $db->escapeSQL($this->fieldName());
+        $tableSql = Db::quoteIdentifier($this->m_ownerInstance->getTable());
+        $fieldnameSql = Db::quoteIdentifier($this->fieldName());
         $filenameSql = $db->escapeSQL($filename);
         $nameSql = $db->escapeSQL($name);
         $extSql = $db->escapeSQL($ext);
 
-        $sql = "SELECT `$fieldnameSql` AS filename FROM `$tableSql` WHERE `$fieldnameSql` = '$filenameSql' OR `$fieldnameSql` LIKE '$nameSql-%$extSql'";
+        $sql = "SELECT $fieldnameSql AS filename FROM $tableSql WHERE $fieldnameSql = '$filenameSql' OR $fieldnameSql LIKE '$nameSql-%$extSql'";
         if ($rec[$owner->primaryKeyField()] != '') {
             $sql .= " AND NOT (".$owner->primaryKey($rec).")";
         }
@@ -812,7 +813,7 @@ class FileAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return 'string';
+        return Db::FT_STRING;
     }
 
     public function store($db, $record, $mode)

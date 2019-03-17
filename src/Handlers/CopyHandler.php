@@ -26,7 +26,7 @@ class CopyHandler extends ActionHandler
     public function nodeCopy()
     {
         Tools::atkdebug('CopyHandler::nodeCopy()');
-        $recordset = $this->m_node->select($this->m_postvars['atkselector'])->mode('copy')->getAllRows();
+        $recordset = $this->m_node->select($this->m_postvars['atkselector'])->mode('copy')->fetchAll();
         $db = $this->m_node->getDb();
         if (Tools::count($recordset) > 0) {
             // allowed to copy record?

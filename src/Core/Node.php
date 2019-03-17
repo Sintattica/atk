@@ -2716,7 +2716,7 @@ class Node
 
         $content = '';
         $record = null;
-        $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
+        $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->fetchAll();
         if (Tools::count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
@@ -3792,7 +3792,7 @@ class Node
      */
     public function deleteDb($selector, $exectrigger = true, $failwhenempty = false)
     {
-        $recordset = $this->select($selector)->mode('delete')->getAllRows();
+        $recordset = $this->select($selector)->mode('delete')->fetchAll();
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
         if (Tools::count($recordset) == 0) {
@@ -4428,7 +4428,7 @@ class Node
         }
 
         // We load records in admin mode, se we are certain that all fields are added.
-        $recs = $this->select()->excludes($this->m_listExcludes)->mode('admin')->getAllRows();
+        $recs = $this->select()->excludes($this->m_listExcludes)->mode('admin')->fetchAll();
 
         // Restore original atksearch
         $this->m_postvars['atksearch'] = $orgsearch;

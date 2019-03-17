@@ -49,7 +49,7 @@ class MultiselectHandler extends AdminHandler
         $node = $this->getNode();
         $columnConfig = $node->getColumnConfig();
         $recordset = $node->select(implode(' OR ',
-            $this->m_postvars['atkselector']))->orderBy($columnConfig->getOrderByStatement())->excludes($node->m_listExcludes)->mode('multiselect')->getAllRows();
+            $this->m_postvars['atkselector']))->orderBy($columnConfig->getOrderByStatement())->excludes($node->m_listExcludes)->mode('multiselect')->fetchAll();
 
         // loop recordset to parse atktargetvar
         $atktarget = Tools::atkurldecode($node->m_postvars['atktarget']);

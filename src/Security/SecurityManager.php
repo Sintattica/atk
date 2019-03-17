@@ -685,14 +685,15 @@ class SecurityManager
         $authenticator = openssl_random_pseudo_bytes(33);
 
         $userfield = Config::getGlobal('auth_userfield');
-        $sql = "INSERT INTO `".$dbTable."` (selector, token, `$userfield`, expires, created) VALUES (?, ?, ?, ?, NOW())";
+        $sql = 'INSERT INTO '.Db::quoteIdentifier($dbTable).' (selector, token, '.Db::quoteIdentifier($userfield).', expires, created) '.
+            'VALUES (?, ?, ?, ?, '.$db->func_now().')';
 
         $stmt = $db->prepare($sql);
         $stmt->execute([$selector, hash('sha256', $authenticator), $username, $expires->format('Y-m-d H:i:s')]);
         $db->commit();
 
         //get the current tokenId
-        $tokenId = $db->getValue("SELECT id FROM `".$dbTable."` WHERE selector = '".$db->escapeSQL($selector)."'");
+        $tokenId = $db->getValue("SELECT id FROM ".Db::quoteIdentifier($dbTable)." WHERE selector = '".$db->escapeSQL($selector)."'");
 
         //create the cookie
         $tokenValue = $selector.':'.base64_encode($authenticator);
@@ -727,7 +728,7 @@ class SecurityManager
         list($selector, $authenticator) = explode(':', $remember);
 
         $db = Db::getInstance();
-        $sql = "SELECT * FROM `$dbTable` WHERE selector = '".$db->escapeSQL($selector)."'";
+        $sql = 'SELECT * FROM '.Db::quoteIdentifier($dbTable)." WHERE selector = '".$db->escapeSQL($selector)."'";
         $row = $db->getRow($sql);
 
         //token found?
@@ -764,7 +765,7 @@ class SecurityManager
     {
         $db = Db::getInstance();
         $dbTable = Config::getGlobal('auth_rememberme_dbtable');
-        $sql = "DELETE FROM `$dbTable` WHERE id = ?";
+        $sql = 'DELETE FROM '.Db::quoteIdentifier($dbTable).' WHERE id = ?';
         $stmt = $db->prepare($sql);
         $stmt->execute([$id]);
         $db->commit();
@@ -802,7 +803,7 @@ class SecurityManager
         $userfk = Config::getGlobal('auth_userfk');
 
         $db = Db::getInstance();
-        $sel = $db->prepare("select * from `$table` where `$userfk` = ?");
+        $sel = $db->prepare('select * from '.Db::quoteIdentifier($table).' where '.Db::quoteIdentifier($userfk).' = ?');
         $sel->execute([$user_id]);
         $res = [];
         while ($r = $sel->fetch()) {
@@ -816,7 +817,7 @@ class SecurityManager
     {
         $table = Config::getGlobal('auth_u2f_dbtable');
         $db = Db::getInstance();
-        $upd = $db->prepare("UPDATE `$table` set counter = ? where id = ?");
+        $upd = $db->prepare('UPDATE '.Db::quoteIdentifier($table).' set counter = ? where id = ?');
         $upd->execute([$reg->counter, $reg->id]);
         $db->commit();
     }

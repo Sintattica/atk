@@ -149,7 +149,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $selectedRecords = [];
         if (Tools::count($selectedKeys) > 0) {
             $selector = '('.implode(') OR (', $selectedKeys).')';
-            $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->getAllRows();
+            $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->fetchAll();
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
         }
 
@@ -241,7 +241,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $where = $this->_getLoadWhereClause($record);
         $link = $this->getLink();
 
-        return $link->select()->where($where)->orderBy($link->getTable().'.'.$this->getPositionAttribute())->getAllRows();
+        return $link->select()->where($where)->orderBy($link->getTable().'.'.$this->getPositionAttribute())->fetchAll();
     }
 
     /**

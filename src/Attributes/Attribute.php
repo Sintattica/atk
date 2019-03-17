@@ -378,7 +378,7 @@ class Attribute
      * @access private
      * @var String
      */
-    public $m_dbfieldtype = '';
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
     /*
      * The order of the attribute within its node.
@@ -1934,6 +1934,7 @@ class Attribute
      *
      * Lengths for the edit and searchboxes, and maximum lengths are retrieved
      * from the table metadata by this method.
+     * Db field type is alse retrieved from this method if not previously defined.
      *
      * @param array $metadata The table metadata from the table for this
      *                        attribute.
@@ -1951,6 +1952,10 @@ class Attribute
                 // no size explicitly set, so use the one we retrieved from the database
                 $this->m_maxsize = $metadata[$attribname]['len'];
             }
+            // Set dbfieldtype from metadata if not set from specific attribute definition.
+            if ($m_dbfieldtype == Db::FT_UNSUPPORTED) {
+                $this->m_dbfieldtype = $metadata[$attribname]['gentype'];
+            }
         }
 
         // size (the size of the input box in add/edit forms)
@@ -1962,10 +1967,6 @@ class Attribute
         if (!$this->m_searchsize) {
             $this->m_searchsize = min($this->m_maxsize, $this->maxSearchInputSize());
         }
-
-        // TODO FIXME: The metadata contains the real field type. $this->m_dbfieldtype should be
-        // set accordingly. Currently the metadata contains database specific types, so this
-        // feature is not yet implemented, until metadata contains generic field types.
     }
 
     /**
@@ -2209,8 +2210,8 @@ class Attribute
      */
     public function dbFieldType()
     {
-        if ($this->m_dbfieldtype == '') {
-            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? 'number' : 'string');
+        if ($this->m_dbfieldtype == Db::FT_UNSUPPORTED) {
+            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? Db::FT_NUMBER : Db::FT_STRING);
         }
 
         return $this->m_dbfieldtype;
@@ -2238,7 +2239,7 @@ class Attribute
         if ($this->m_maxsize != 0) {
             return $this->m_maxsize;
         } else {
-            if ($this->dbFieldType() == 'number') {
+            if ($this->dbFieldType() == Db::FT_NUMBER) {
                 return '10'; // default for numbers.
             } else {
                 return '100'; // default for strings.
@@ -2802,21 +2803,21 @@ class Attribute
 
             $tableIdentifier = '';
             foreach ($identifiers as $identifier) {
-                $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier).'.';
+                $tableIdentifier .= Db::quoteIdentifier($identifier).'.';
             }
 
-            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
-                return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            if ($this->dbFieldType() == Db::FT_STRING && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.$tableIdentifier.Db::quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
             }
 
-            return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+            return $tableIdentifier.Db::quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
 
         } else {
-            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
-                return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            if ($this->dbFieldType() == Db::FT_STRING && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.Db::quoteIdentifier($table).'.'.Db::quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
             }
 
-            return $this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+            return Db::quoteIdentifier($table).'.'.Db::quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
         }
     }
 

@@ -9,7 +9,7 @@ use Sintattica\Atk\Core\Tools;
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-class PgSqlDdl extends Ddl
+class PgsqlDdl extends Ddl
 {
     /**
      * Constructor.
@@ -29,62 +29,20 @@ class PgSqlDdl extends Ddl
     public function getType($generictype)
     {
         switch ($generictype) {
-            case 'number':
+            case Db::FT_NUMBER:
                 return 'INT4';
-            case 'decimal':
+            case Db::FT_DECIMAL:
                 return 'FLOAT8';
-            case 'string':
+            case Db::FT_STRING:
                 return 'VARCHAR';
-            case 'date':
+            case Db::FT_DATE:
                 return 'DATE';
-            case 'text':
-                return 'TEXT';
-            case 'datetime':
+            case Db::FT_DATETIME:
                 return 'TIMESTAMP';
-            case 'time':
+            case Db::FT_TIME:
                 return 'TIME';
-            case 'boolean':
+            case Db::FT_BOOLEAN:
                 return 'BOOLEAN';
-        }
-
-        return ''; // in case we have an unsupported type.      
-    }
-
-    /**
-     * Convert an database specific type to an ATK generic datatype.
-     *
-     * @param string $type The database specific datatype to convert.
-     *
-     * @return string
-     */
-    public function getGenericType($type)
-    {
-        $type = strtolower($type);
-        switch ($type) {
-            case 'int':
-            case 'int2':
-            case 'int4':
-            case 'int8':
-                return 'number';
-            case 'float':
-            case 'float8':
-            case 'float16':
-            case 'numeric':
-                return 'decimal';
-            case 'varchar':
-            case 'char':
-                return 'string';
-            case 'date':
-                return 'date';
-            case 'time':
-                return 'time';
-            case 'text':
-                return 'text';
-            case 'timestamp':
-            case 'datetime':
-                return 'datetime';
-            case 'boolean':
-                return 'boolean';
         }
 
         return ''; // in case we have an unsupported type.      

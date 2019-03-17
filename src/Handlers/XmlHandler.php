@@ -17,7 +17,7 @@ class XmlHandler extends ActionHandler
      */
     public function action_xml()
     {
-        $recordset = $this->m_node->select($this->m_postvars['atkselector'])->mode('xml')->getAllRows();
+        $recordset = $this->m_node->select($this->m_postvars['atkselector'])->mode('xml')->fetchAll();
 
         $output = Output::getInstance();
 

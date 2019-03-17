@@ -8,7 +8,7 @@ use Sintattica\Atk\Core\Tools;
  *
  * @author Peter C. Verhage <peter@ibuildings.nl>
  */
-class PgSqlQuery extends Query
+class PgsqlQuery extends Query
 {
     /**
      * Makes a join SQL query for PostgreSQL.

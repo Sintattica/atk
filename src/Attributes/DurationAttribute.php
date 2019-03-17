@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The DurationAttribute is an attribute for entering a length of time.
@@ -186,7 +187,7 @@ class DurationAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return 'number';
+        return Db::FT_NUMBER;
     }
 
     /**

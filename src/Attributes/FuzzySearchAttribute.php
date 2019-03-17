@@ -290,7 +290,7 @@ class FuzzySearchAttribute extends Attribute
             if (Tools::count($wheres) && $this->createSearchNodeInstance()) {
                 $whereclause = '(('.implode(') OR (', $wheres).'))';
 
-                $resultset = $this->m_searchnodeInstance->select($whereclause)->excludes($this->m_searchnodeInstance->m_listExcludes)->mode('admin')->getAllRows();
+                $resultset = $this->m_searchnodeInstance->select($whereclause)->excludes($this->m_searchnodeInstance->m_listExcludes)->mode('admin')->fetchAll();
             }
         } else {
             if (Tools::count($this->m_matches) > 0) {

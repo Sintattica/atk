@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The ListAttribute class represents an attribute of a node
@@ -104,10 +105,10 @@ class ListAttribute extends Attribute
 
         // If all values are numeric, we can use a numeric field to store the selected
         // value.
-        $this->m_dbfieldtype = 'number';
-        for ($i = 0, $_i = Tools::count($valueArray); $i < $_i && $this->m_dbfieldtype == 'number'; ++$i) {
+        $this->m_dbfieldtype = Db::FT_NUMBER;
+        for ($i = 0, $_i = Tools::count($valueArray); $i < $_i && $this->m_dbfieldtype == Db::FT_NUMBER; ++$i) {
             if (!is_numeric($valueArray[$i])) {
-                $this->m_dbfieldtype = 'string';
+                $this->m_dbfieldtype = Db::FT_STRING;
             }
             // if one of the values is not a number, the fieldtype must be string, and
             // the loop is stopped.
@@ -531,18 +532,6 @@ EOF;
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return array('exact');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        // Fieldtype was determined in the constructor.
-        return $this->m_dbfieldtype;
     }
 
     /**

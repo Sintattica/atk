@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Core\Tools;
 
@@ -21,6 +22,7 @@ class TextAttribute extends Attribute
     public $m_cols;
     public $m_autoadjust;
     private $m_wrapMode = 'soft';
+    public $m_dbfieldtype = Db::FT_STRING;
 
     /**
      * @param string $name Name of the attribute
@@ -161,7 +163,7 @@ class TextAttribute extends Attribute
     public function value2db($rec)
     {
         $db = $this->getDb();
-        if ($db->getType() != 'oci9' || $this->dbFieldType() != 'text') {
+        if ($db->getType() != 'oci9' || $this->dbFieldType() != Db::FT_STRING) {
             return $db->escapeSQL($rec[$this->fieldName()]);
         } else {
             return $rec[$this->fieldName()];
@@ -182,41 +184,6 @@ class TextAttribute extends Attribute
         }
 
         return;
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        // make sure our metadata is set
-        if (is_object($this->m_ownerInstance)) {
-            $this->m_ownerInstance->setAttribSizes();
-        }
-
-        if ($this->m_dbfieldtype == '') {
-            return 'text';
-        }
-
-        return $this->m_dbfieldtype;
-    }
-
-    /**
-     * Fetch the metadata about this attrib from the table metadata, and
-     * process it.
-     *
-     * @param array $metadata The table metadata from the table for this
-     *                        attribute.
-     */
-    public function fetchMeta($metadata)
-    {
-        $this->m_dbfieldtype = isset($metadata[$this->fieldName()]['gentype'])?$metadata[$this->fieldName()]['gentype']:null;
-        if ($this->m_dbfieldtype == 'string') {
-            parent::fetchMeta($metadata);
-        }
     }
 
     /**

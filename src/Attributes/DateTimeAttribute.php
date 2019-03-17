@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -455,8 +456,7 @@ class DateTimeAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        // TODO FIXME: Is this correct? Or does the datetimeattribute currently only support varchar fields?
-        return 'datetime';
+        return Db::FT_DATETIME;
     }
 
     /**

@@ -51,15 +51,13 @@ class Ddl
      * method will determine the database type (mysql, oci, etc) and
      * instantiate the correct DDL class.
      *
-     * @param string $database The database driver to use
+     * @param string $driver The database driver to use
      *
      * @return Ddl instance of db specific DDL driver
      */
-    public static function create($database = null)
+    public static function create($driver)
     {
-        $db = Config::getGlobal('db');
-        $database = $database === null ? $db['default']['driver'] : $database;
-        $classname = __NAMESPACE__.'\\'.$database.'Ddl';
+        $classname = __NAMESPACE__.'\\'.ucfirst($driver).'Ddl';
 
         return new $classname();
     }

@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The atkBoolAttribute class represents an attribute of a node
@@ -292,7 +293,7 @@ class BoolAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return 'number';
+        return Db::FT_BOOLEAN;
     }
     
     /**

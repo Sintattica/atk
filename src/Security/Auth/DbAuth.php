@@ -40,9 +40,10 @@ class DbAuth extends AuthInterface
     ) {
         $disableexpr = '';
         if ($accountdisablefield) {
-            $disableexpr = ", $accountdisablefield";
+            $disableexpr = ', '.Db::quoteIdentifier($accountdisablefield);
         }
-        $query = "SELECT $passwordfield $disableexpr FROM $usertable WHERE $userfield ='$user'";
+        $query = 'SELECT '.Db::quoteIdentifier($passwordfield)." $disableexpr FROM ".Db::QuoteIdentifier($usertable).
+            ' WHERE '.Db::quoteIdentifier($userfield)." ='$user'";
         if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
         }
@@ -91,15 +92,15 @@ class DbAuth extends AuthInterface
     public function isValidUser($user)
     {
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $usertable = Config::getGlobal('auth_usertable');
-        $userfield = Config::getGlobal('auth_userfield');
-        $disablefield = Config::getGlobal('auth_accountdisablefield');
+        $usertable = Db::quoteIdentifier(Config::getGlobal('auth_usertable'));
+        $userfield = Db::quoteIdentifier(Config::getGlobal('auth_userfield'));
+        $disablefield = Db::quoteIdentifier(Config::getGlobal('auth_accountdisablefield'));
         $enableexpression = Config::getGlobal('auth_accountenableexpression');
-        $sql = "SELECT COUNT(*) AS cnt FROM `$usertable` WHERE `$userfield` = '".$db->escapeSQL($user)."'";
+        $sql = "SELECT COUNT(*) AS cnt FROM {$usertable} WHERE {$userfield} = '".$db->escapeSQL($user)."'";
 
 
         if ($disablefield) {
-            $sql .= " AND `$disablefield` != 1";
+            $sql .= " AND $disablefield != 1";
         }
         if ($enableexpression) {
             $sql .= " AND $enableexpression";
@@ -476,7 +477,7 @@ class DbAuth extends AuthInterface
             Config::getGlobal('auth_userpk'),
             Config::getGlobal('auth_emailfield'),
             Config::getGlobal('auth_passwordfield'),
-        ))->getAllRows();
+        ))->fetchAll();
         if (Tools::count($userrecords) != 1) {
             Tools::atkdebug("User '$username' not found.");
 

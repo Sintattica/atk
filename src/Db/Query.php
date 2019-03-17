@@ -95,13 +95,6 @@ class Query
     public $m_db;
 
     /*
-     * The quote char to put around fields, for example `
-     * @var String
-     * @access private
-     */
-    public $m_fieldquote;
-
-    /*
      * Wether or not a field should be quoted in a query
      *
      * @var array
@@ -118,6 +111,29 @@ class Query
      * @access private
      */
     public $m_reservedNames = array('from', 'select', 'order', 'group', 'release', 'index', 'table');
+
+    /**
+     * Reference to the field where the new sequence
+     * value should be stored.
+     *
+     * @var int
+     */
+    protected $m_seqValue;
+
+    /**
+     * Sequence field name.
+     *
+     * @var string
+     */
+    protected $m_seqField;
+
+    /**
+     * Should we return a sequence value by setting
+     * $this->m_seqValue?
+     *
+     * @var bool
+     */
+    protected $m_returnSeqValue = false;
 
     /**
      * Initialize all variables.
@@ -222,14 +238,23 @@ class Query
      * @param int $value field to store the new sequence value in, note certain drivers
      *                          might populate this field only after the insert query has been
      *                          executed
-     * @param string $seqName sequence name (optional for certain drivers)
+     * @param string $seqName sequence name to store the value if the DB does not autoincrement
+     *                         field by itself.
      *
      * @return Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
-        $value = $this->getDb()->nextid($seqName);
-        $this->addField($fieldName, $value, null, null, false, true);
+        $meta = $this->getDb()->tableMeta($this->m_tables[0]);
+        if (!Tools::hasFlag($meta[$fieldName]['flags'], Db::MF_AUTO_INCREMENT)) {
+            $value = $this->getDb()->nextid($seqName);
+            $this->addField($fieldName, $value, null, null, false, true);
+            return $this;
+        }
+
+        $this->m_seqValue = -1;
+        $this->m_seqField = $fieldName;
+        $this->m_returnSeqValue = true;
 
         return $this;
     }
@@ -672,7 +697,13 @@ class Query
     {
         $query = $this->buildInsert();
 
-        return $this->getDb()->query($query);
+        $result = $this->getDb()->query($query);
+        if ($result && $this->m_returnSeqValue) {
+            $this->m_seqValue = $this->getDb()->lastInsertId();
+            Tools::atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
+        }
+
+        return $result;
     }
 
     /**
@@ -989,7 +1020,7 @@ class Query
         $identifiers = [];
         foreach ($exploded as $identifier) {
             if ($quotefield || in_array($identifier, $this->m_reservedNames)) {
-                $identifiers[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
+                $identifiers[] = Db::quoteIdentifier($identifier);
             } else {
                 $identifiers[] = $identifier;
             }

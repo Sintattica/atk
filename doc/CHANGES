@@ -15,6 +15,26 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+- Removed some functions/options from Db that where never used or became
+    pointless:
+    func_concat, savepoint, next_record, (un)lock, (delete|drop|clone)All,
+    m_collate variable, getRowsAssoc, getInsertId (use lastInsertId if needed),
+    setSequenceValue, (use|get|clear)Mapping, (get|set|reset)query_id,
+    getQueryMode, (do)connect, init, getDbStatus, newInstance,
+    database mode (ro/rw) and reset option in Db::getInstance.
+* Changed Db->metadata format
+* moving field types from strings ('number', 'string') to constants (defined as
+    Db::FT_ + STRING/NUMBER/...).
+    Note : it does not changeExpressionAttribute->m_searchType (still strings).
+* Set Mysql connection to ASCII mode : this implies escaping identifiers
+    (tables, columns, ...) with double quotes " or, better, use
+    Db::quoteIdentifier (which is now static). You can't use backticks anymore
+    (they only worked with mysql anyway).
+- Stopped locking tables on Mysql->nextid() calls (isolation is provided by 
+    transactions).
+* Switched Db drivers to PDO : Db class now extends PDO
+- Removed Statement classes in favor of \PDOStatement : getAllRows() no longer
+    exists, use fetchAll() which has the same use.
 
 
 New Release ATK 9.0 (2016-03-09)

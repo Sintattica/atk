@@ -5,36 +5,12 @@ namespace Sintattica\Atk\Db;
 use Sintattica\Atk\Core\Tools;
 
 /**
- * SQL Builder for MySQL 4.1+ databases.
+ * SQL Builder for MySQL databases.
  *
  * @author Rene van den Ouden <rene@ibuildings.nl>
  */
-class MySqliQuery extends Query
+class MySqlQuery extends Query
 {
-    /**
-     * Reference to the field where the new sequence
-     * value should be stored.
-     *
-     * @var int
-     */
-    protected $m_seqValue;
-
-    /**
-     * Sequence field name.
-     *
-     * @var string
-     */
-    protected $m_seqField;
-
-    /**
-     * Should we return a sequence value by setting
-     * $this->m_seqValue?
-     *
-     * @var bool
-     */
-    protected $m_returnSeqValue = false;
-
-    public $m_fieldquote = '`';
 
     /**
      * Overriding the _addFrom function to support a change that was made in
@@ -48,7 +24,7 @@ class MySqliQuery extends Query
     {
         $query .= ' FROM (';
         for ($i = 0; $i < Tools::count($this->m_tables); ++$i) {
-            $query .= $this->quoteField($this->m_tables[$i]);
+            $query .= self::quoteField($this->m_tables[$i]);
             if ($this->m_aliases[$i] != '') {
                 $query .= ' '.$this->m_aliases[$i];
             }
@@ -66,10 +42,10 @@ class MySqliQuery extends Query
      */
     public function buildInsert()
     {
-        $result = 'INSERT INTO '.$this->quoteField($this->m_tables[0]).' (';
+        $result = 'INSERT INTO '.self::quoteField($this->m_tables[0]).' (';
 
         for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->quoteField($this->m_fields[$i]);
+            $result .= self::quoteField($this->m_fields[$i]);
             if ($i < Tools::count($this->m_fields) - 1) {
                 $result .= ',';
             }
@@ -90,47 +66,6 @@ class MySqliQuery extends Query
         }
 
         $result .= ')';
-
-        return $result;
-    }
-
-    /**
-     * Add's a sequence field to the query.
-     *
-     * @param string $fieldName field name
-     * @param int $value field to store the new sequence value in, note certain drivers
-     *                          might populate this field only after the insert query has been
-     *                          executed
-     * @param string $seqName sequence name (optional for certain drivers)
-     *
-     * @return Query
-     */
-    public function addSequenceField($fieldName, &$value, $seqName = null)
-    {
-        $meta = $this->getDb()->tableMeta($this->m_tables[0]);
-        if (!Tools::hasFlag($meta[$fieldName]['flags'], Db::MF_AUTO_INCREMENT)) {
-            return parent::addSequenceField($fieldName, $value, $seqName);
-        }
-
-        $this->m_seqValue = &$value;
-        $this->m_seqValue = -1;
-        $this->m_seqField = $fieldName;
-        $this->m_returnSeqValue = true;
-
-        return $this;
-    }
-
-    /**
-     * Wrapper function to execute an insert query.
-     */
-    public function executeInsert()
-    {
-        $result = parent::executeInsert();
-
-        if ($result && $this->m_returnSeqValue) {
-            $this->m_seqValue = $this->getDb()->getInsertId();
-            Tools::atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
-        }
 
         return $result;
     }

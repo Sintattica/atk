@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * With the ExpressionAttribute class you can select arbitrary SQL expressions
@@ -115,10 +116,10 @@ class ExpressionAttribute extends Attribute
      */
     public function getSearchModes()
     {
-        if ($this->getSearchType() == 'number') {
+        if ($this->getSearchType() == Db::FT_NUMBER) {
             return NumberAttribute::getStaticSearchModes();
         } else {
-            if ($this->getSearchType() == 'date') {
+            if ($this->getSearchType() == Db::FT_DATE) {
                 return DateAttribute::getStaticSearchModes();
             } else {
                 return parent::getSearchModes();
@@ -129,13 +130,13 @@ class ExpressionAttribute extends Attribute
 
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        if ($this->getSearchType() == 'number') {
+        if ($this->getSearchType() == Db::FT_NUMBER) {
             $attr = new NumberAttribute($this->fieldName());
             $attr->m_searchsize = $this->m_searchsize;
 
             return $attr->search($record, $extended, $fieldprefix);
         } else {
-            if ($this->getSearchType() == 'date') {
+            if ($this->getSearchType() == Db::FT_DATE) {
                 $attr = new DateAttribute($this->fieldName());
                 $attr->m_searchsize = 10;
 

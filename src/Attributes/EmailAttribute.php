@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 
 /**
  * Attribute for editing email fields.
@@ -136,7 +137,7 @@ class EmailAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return 'string';
+        return Db::FT_STRING;
     }
 }
 

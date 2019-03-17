@@ -6,7 +6,6 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Db\Statement\Statement;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
 use Exception;
@@ -68,13 +67,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * @var SelectorIterator
      */
     private $m_iterator = null;
-
-    /**
-     * Current statement object (if iterator is used).
-     *
-     * @var Statement
-     */
-    private $m_stmt = null;
 
     /**
      * Current query object (if iterator is used).
@@ -691,7 +683,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function getFirstRow()
     {
         $this->limit(1, $this->m_offset);
-        $rows = $this->getAllRows();
+        $rows = $this->fetchAll();
 
         return Tools::count($rows) == 1 ? $rows[0] : null;
     }
@@ -701,15 +693,14 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @return array all rows
      */
-    public function getAllRows()
+    public function fetchAll()
     {
         if ($this->m_rows === null) {
             $attrsByLoadType = $this->_getAttributesByLoadType();
             $query = $this->_buildSelectQuery($attrsByLoadType);
             $stmt = $this->_getDb()->prepare($query->buildSelect());
             $stmt->execute($this->_getBindParameters());
-            $rows = $stmt->getAllRows();
-            $stmt->close();
+            $rows = $stmt->fetchAll();
             $this->m_rows = $this->_transformRows($rows, $query, $attrsByLoadType);
         }
 
@@ -728,15 +719,14 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             if ($i !== false) {
                 $expr = $query->m_expressions[$i]['expression'];
             } else {
-                $expr = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()) . '.' . $this->_getDb()->quoteIdentifier($field);
+                $expr = Db::quoteIdentifier($this->_getNode()->getTable()) . '.' . Db::quoteIdentifier($field);
             }
             $query->addExpression($field, 'SUM('.$expr.')', $prefix);
         }
 
         $stmt = $this->_getDb()->prepare($query->buildSelect());
         $stmt->execute($this->_getBindParameters());
-        $row = $stmt->getFirstRow();
-        $stmt->close();
+        $row = $stmt->fetch();
 
         $query->deAlias($row);
         $res = [];
@@ -760,8 +750,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $query = $this->_buildCountQuery($attrsByLoadType);
             $stmt = $this->_getDb()->prepare($query->buildCount());
             $stmt->execute($this->_getBindParameters());
-            $rows = $stmt->getAllRows();
-            $stmt->close();
+            $rows = $stmt->fetchAll();
             $this->m_rowCount = Tools::count($rows) == 1 ? $rows[0]['count'] : Tools::count($rows); // group by fix
         }
 
@@ -793,7 +782,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $query->clearFields();
         $query->clearExpressions();
 
-        $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()).'.'.$this->_getDb()->quoteIdentifier($index);
+        $indexColumn = Db::quoteIdentifier($this->_getNode()->getTable()).'.'.Db::quoteIdentifier($index);
         $expression = 'UPPER('.$this->_getDb()->func_substring($indexColumn, 1, 1).')';
         $query->addExpression('index', $expression);
         $query->addGroupBy($expression);
@@ -802,7 +791,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $stmt = $this->_getDb()->prepare($query->buildSelect());
         $stmt->execute($this->_getBindParameters());
         $this->m_indices = $stmt->getAllValues();
-        $stmt->close();
 
         return $this->m_indices;
     }
@@ -816,7 +804,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetExists($key)
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return isset($this->m_rows[$key]);
     }
@@ -830,7 +818,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetGet($key)
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return $this->m_rows[$key];
     }
@@ -845,7 +833,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetSet($key, $value)
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return $this->m_rows[$key] = $value;
     }
@@ -857,7 +845,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetUnset($key)
     {
-        $this->getAllRows();
+        $this->fetchAll();
         unset($this->m_rows[$key]);
     }
 
@@ -877,9 +865,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
             $this->m_attrsByLoadType = $attrsByLoadType;
             $this->m_query = $query;
-            $this->m_stmt = $stmt;
 
-            $this->m_iterator = new SelectorIterator($this->m_stmt->getIterator(), $this);
+            $this->m_iterator = new SelectorIterator($stmt, $this);
         }
 
         return $this->m_iterator;
@@ -893,8 +880,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         if ($this->m_iterator != null) {
             $this->m_iterator = null;
-            $this->m_stmt->close();
-            $this->m_stmt = null;
             $this->m_query = null;
             $this->m_attrsByLoadType = null;
         }
@@ -913,7 +898,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function count()
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return Tools::count($this->m_rows);
     }
