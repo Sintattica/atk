@@ -252,6 +252,7 @@ class Query
             return $this;
         }
 
+        $this->m_seqValue = &$value;
         $this->m_seqValue = -1;
         $this->m_seqField = $fieldName;
         $this->m_returnSeqValue = true;
