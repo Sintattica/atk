@@ -453,11 +453,45 @@ class Db extends \PDO
      * @return \PDOStatement
      */
     public function query($query)
-    {    
+    {
         Tools::atkdebug("Running query : $query");
         $stmt = parent::query($query);
         if (!$stmt) {
             $this->halt('Query execution failed');
+        }
+        return $stmt;
+    }
+
+    /**
+     * Prepare & execute a query with a prepared statement.
+     *
+     * If the query is a select query, the rows can be retrieved using the
+     * next_record() method.
+     *
+     * @param QueryPart|string $query to prepare and execute
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
+     *
+     * @return \PDOStatement
+     */
+    public function queryP($query, $parameters = [])
+    {
+        if (!$query instanceof QueryPart) {
+            $query = new QueryPart($query, $parameters);
+        }
+
+        // Fast-track : no parameters -> using \PDO::query
+        if (!count($query->parameters)) {
+            return $this->query($query->sql);
+        }
+
+        $stmt = $this->prepare($query->sql);
+        if (!$stmt) {
+            // Error handling already have been done in $this->prepare.
+            return null;
+        }
+        Tools::atkdebug("Executing query");
+        if(!$stmt->execute($query->parameters)) {
+            $this->halt('Query execution failed', $stmt);
         }
         return $stmt;
     }
@@ -498,13 +532,14 @@ class Db extends \PDO
      *
      * Please note: this method does *not* add a limit to the query
      *
-     * @param string $query query
+     * @param QueryPart|string $query query
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
      *
      * @return array row
      */
-    public function getRow($query)
+    public function getRow($query, $parameters = [])
     {
-        return $this->query($query)->fetch();
+        return $this->queryP($query, $parameters)->fetch();
     }
 
     /**
@@ -516,25 +551,27 @@ class Db extends \PDO
      * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string $query query
+     * @param QueryPart|string $query query
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
      *
      * @return array rows
      */
-    public function getRows($query)
+    public function getRows($query, $parameters = [])
     {
-        return $this->query($query)->fetchAll();
+        return $this->queryP($query, $parameters)->fetchAll();
     }
 
     /**
      * Get the value of the first column of the first row returned by $query
      *
-     * @param string $query query
+     * @param QueryPart|string $query query
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
      *
      * @return mixed value if found, null if not
      */
-    public function getValue($query)
+    public function getValue($query, $parameters = [])
     {
-        $row =  $this->query($query)->fetch(\PDO::FETCH_NUM);
+        $row =  $this->queryP($query, $parameters)->fetch(\PDO::FETCH_NUM);
         return $row[0] ?? null;
     }
 

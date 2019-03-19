@@ -688,7 +688,7 @@ class Query
     {
         $query = $this->buildUpdate();
 
-        return $this->getDb()->query($query);
+        return $this->getDb()->queryP($query);
     }
 
     /**
@@ -698,7 +698,7 @@ class Query
     {
         $query = $this->buildInsert();
 
-        $result = $this->getDb()->query($query);
+        $result = $this->getDb()->queryP($query);
         if ($result && $this->m_returnSeqValue) {
             $this->m_seqValue = $this->getDb()->lastInsertId();
             Tools::atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
@@ -760,7 +760,7 @@ class Query
     {
         $query = $this->buildDelete();
 
-        return $this->getDb()->query($query);
+        return $this->getDb()->queryP($query);
     }
 
     /**
