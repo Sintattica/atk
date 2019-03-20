@@ -138,7 +138,7 @@ class SspiAuth extends DbAuth
             // mean (but doesn't have to) that a user can have more than one
             // level.
             $qryobj = $db->createQuery();
-            $qryobj->addTable($usertable);
+            $qryobj->setTable($usertable);
             $qryobj->addField("$usertable.*");
             $qryobj->addField('usergroup.*');
             $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);

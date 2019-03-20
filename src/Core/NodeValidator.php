@@ -203,7 +203,7 @@ class NodeValidator
         foreach ($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet) {
             $query = $db->createQuery();
             $query->addField('*');
-            $query->addTable($this->m_nodeObj->m_table);
+            $query->setTable($this->m_nodeObj->m_table);
 
             $attribs = [];
             foreach ($uniqueFieldSet as $field) {

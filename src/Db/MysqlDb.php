@@ -72,14 +72,4 @@ class MysqlDb extends Db
         }
         return $meta;
     }
-
-    /**
-     * This function indicates what searchmodes the database supports.
-     *
-     * @return array with search modes
-     */
-    public function getSearchModes()
-    {
-        return array_merge(parent::getSearchModes(), ['regexp', 'soundex']);
-    }
 }

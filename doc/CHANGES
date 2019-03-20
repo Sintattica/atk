@@ -15,12 +15,17 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+* Removed per-database Query Object classes.
++ Added regexp searches for PostgreSql.
+- Removed soundex search for MySQL
+- Query objects holds now only one table (for secondary tables, use joins).
+    addTable is deprecated in favor of setTable.
 - Removed some functions/options from Db that where never used or became
     pointless:
     func_concat, savepoint, next_record, (un)lock, (delete|drop|clone)All,
     m_collate variable, getRowsAssoc, getInsertId (use lastInsertId if needed),
     setSequenceValue, (use|get|clear)Mapping, (get|set|reset)query_id,
-    getQueryMode, (do)connect, init, getDbStatus, newInstance,
+    getQueryMode, (do)connect, getDbStatus, newInstance,
     database mode (ro/rw) and reset option in Db::getInstance.
 * Changed Db->metadata format
 * moving field types from strings ('number', 'string') to constants (defined as

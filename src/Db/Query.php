@@ -26,26 +26,27 @@ class Query
      */
     public $m_expressions;
 
-    /*
-     * Array with tables
+    /**
+     * Table name for current query
+     *
+     * @var string
      */
-    public $m_tables;
+    public $m_table;
 
     /*
      * Array with conditions
+     *
+     * @var QueryPart[]
      */
     public $m_conditions;
     public $m_searchconditions;
 
     /*
      * Var with AND or OR method
+     *
+     * @var string
      */
     public $m_searchmethod;
-
-    /*
-     * Array with aliases
-     */
-    public $m_aliases;
 
     /*
      * Array with field aliases
@@ -121,11 +122,11 @@ class Query
     protected $m_seqValue;
 
     /**
-     * Sequence field name.
+     * Sequence name.
      *
      * @var string
      */
-    protected $m_seqField;
+    protected $m_seqName;
 
     /**
      * Should we return a sequence value by setting
@@ -142,10 +143,9 @@ class Query
     {
         $this->m_fields = [];
         $this->m_expressions = [];
-        $this->m_tables = [];
+        $this->m_table = '';
         $this->m_conditions = [];
         $this->m_searchconditions = [];
-        $this->m_aliases = [];
         $this->m_values = [];
         $this->m_fieldaliases = [];
         $this->m_joinaliases = [];
@@ -245,7 +245,7 @@ class Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
-        $meta = $this->getDb()->tableMeta($this->m_tables[0]);
+        $meta = $this->getDb()->tableMeta($this->m_table);
         if (!Tools::hasFlag($meta[$fieldName]['flags'], Db::MF_AUTO_INCREMENT)) {
             $value = $this->getDb()->nextid($seqName);
             $this->addField($fieldName, $value, null, null, false, true);
@@ -254,7 +254,7 @@ class Query
 
         $this->m_seqValue = &$value;
         $this->m_seqValue = -1;
-        $this->m_seqField = $fieldName;
+        $this->m_seqName = $this->m_table.'_'.$fieldName.'_seq';
         $this->m_returnSeqValue = true;
 
         return $this;
@@ -326,7 +326,22 @@ class Query
     }
 
     /**
-     * Add table to Tables array.
+     * Set the table on which the query will be executed.
+     *
+     * @param string $name Table name
+     *
+     * @return Query The query object itself (for fluent usage)
+     */
+    public function setTable($name)
+    {
+        $this->m_table = $name;
+        return $this;
+    }
+
+    /**
+     * Add a table to current query.
+     *
+     * @deprecated : use setTable
      *
      * @param string $name Table name
      * @param string $alias Alias of table
@@ -335,11 +350,11 @@ class Query
      */
     public function addTable($name, $alias = '')
     {
-        $this->m_tables[] = $name;
-        $this->m_aliases[Tools::count($this->m_tables) - 1] = $alias;
-
-        return $this;
+        Tools::atkwarning('Query->addTable deprecated. Use setTable().');
+        return $this->setTable($name);
     }
+
+
 
     /**
      * Add join to Join Array.
@@ -506,7 +521,7 @@ class Query
             $result .= "($expression) AS $fieldAlias";
         }
 
-        $this->_addFrom($result);
+        $result .= ' FROM '.Db::quoteIdentifier($this->m_table).' ';
 
         for ($i = 0; $i < Tools::count($this->m_joins); ++$i) {
             $result .= $this->m_joins[$i];
@@ -545,26 +560,6 @@ class Query
     }
 
     /**
-     * Add FROM clause to query.
-     *
-     * @param string $query The query
-     */
-    public function _addFrom(&$query)
-    {
-        $query .= ' FROM ';
-        for ($i = 0; $i < Tools::count($this->m_tables); ++$i) {
-            $query .= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != '') {
-                $query .= ' '.$this->m_aliases[$i];
-            }
-            if ($i < Tools::count($this->m_tables) - 1) {
-                $query .= ', ';
-            }
-        }
-        $query .= ' ';
-    }
-
-    /**
      * Wrapper function to execute a select query.
      *
      * @param bool $distinct Set to true to perform a distinct select,
@@ -581,13 +576,14 @@ class Query
 
     /**
      * Add limiting clauses to the query.
-     * Default implementation: no limit supported. Derived classes should implement this.
      *
      * @param string $query The query to add the limiter to
      */
     public function _addLimiter(&$query)
     {
-        // not supported..
+        if ($this->m_offset >= 0 && $this->m_limit > 0) {
+            $query .= ' LIMIT '.$this->m_limit.' OFFSET '.$this->m_offset;
+        }
     }
 
     /**
@@ -607,8 +603,6 @@ class Query
      * because we do joins, like in a select, but we don't really select the
      * fields.
      *
-     * @param bool $distinct distinct rows?
-     *
      * @return string a SQL Select COUNT(*) Query
      */
     public function buildCount($distinct = false)
@@ -616,20 +610,12 @@ class Query
         if (($distinct || $this->m_distinct) && Tools::count($this->m_fields) > 0) {
             $result = 'SELECT COUNT(DISTINCT ';
             $result .= implode($this->quoteFields($this->m_fields), ', ');
-            $result .= ') as count FROM ';
+            $result .= ') as count FROM';
         } else {
             $result = 'SELECT COUNT(*) AS count FROM ';
         }
-
-        for ($i = 0; $i < Tools::count($this->m_tables); ++$i) {
-            $result .= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != '') {
-                $result .= ' '.$this->m_aliases[$i];
-            }
-            if ($i < Tools::count($this->m_tables) - 1) {
-                $result .= ', ';
-            }
-        }
+        
+        $result .= Db::quoteIdentifier($this->m_table).' ';
 
         for ($i = 0; $i < Tools::count($this->m_joins); ++$i) {
             $result .= $this->m_joins[$i];
@@ -666,7 +652,7 @@ class Query
      */
     public function buildUpdate()
     {
-        $result = 'UPDATE '.$this->quoteField($this->m_tables[0]).' SET ';
+        $result = 'UPDATE '.$this->quoteField($this->m_table).' SET ';
 
         for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
             $result .= $this->quoteField($this->m_fields[$i]).'='.$this->m_values[$this->m_fields[$i]];
@@ -700,8 +686,8 @@ class Query
 
         $result = $this->getDb()->queryP($query);
         if ($result && $this->m_returnSeqValue) {
-            $this->m_seqValue = $this->getDb()->lastInsertId();
-            Tools::atkdebug("Value for sequence column {$this->m_tables[0]}.{$this->m_seqField}: {$this->m_seqValue}");
+            $this->m_seqValue = $this->getDb()->lastInsertId($this->m_seqName);
+            Tools::atkdebug("Value for sequence {$this->m_seqName}: {$this->m_seqValue}");
         }
 
         return $result;
@@ -714,7 +700,7 @@ class Query
      */
     public function buildInsert()
     {
-        $result = 'INSERT INTO '.$this->quoteField($this->m_tables[0]).' (';
+        $result = 'INSERT INTO '.$this->quoteField($this->m_table).' (';
 
         for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
             $result .= $this->quoteField($this->m_fields[$i]);
@@ -744,7 +730,7 @@ class Query
      */
     public function buildDelete()
     {
-        $result = 'DELETE FROM '.$this->quoteField($this->m_tables[0]);
+        $result = 'DELETE FROM '.Db::quoteIdentifier($this->m_table);
 
         if (Tools::count($this->m_conditions) > 0) {
             $result .= ' WHERE '.implode(' AND ', $this->m_conditions);
@@ -860,7 +846,7 @@ class Query
 
     public function exactBoolCondition($field, $value)
     {
-        $value = $value ? '1' : '0';
+        $value = $value ? 'true' : 'false';
 
         return "$field = $value";
     }
@@ -1003,6 +989,20 @@ class Query
     }
 
     /**
+     * Generate an SQL searchcondition for a regular expression match.
+     *
+     * @param string $field The fieldname on which the regular expression
+     *                        match will be performed.
+     * @param string $value The regular expression to search for.
+     *
+     * @return string A SQL regexp expression.
+     */
+    public function regexpCondition($field, $value)
+    {
+        return $this->m_db->func_regexp($field, $value); 
+    }
+
+    /**
      * If we set a m_fieldquote you can pass a field to this function and it will
      * quote all the identifiers (db, table, column, etc...) in the field.
      *
@@ -1013,7 +1013,7 @@ class Query
     public function quoteField($field)
     {
         $quotefield = false;
-        if ((in_array($field, $this->m_quotedfields) || in_array($field, $this->m_tables)) && preg_match('/(^[\w\.]+)/', $field)."'") {
+        if ((in_array($field, $this->m_quotedfields) || $field == $this->m_table) && preg_match('/(^[\w\.]+)/', $field)."'") {
             $quotefield = true;
         }
 

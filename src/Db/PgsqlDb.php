@@ -99,4 +99,22 @@ class PgsqlDb extends Db
         /* return id */
         return $stmt->fetch(\PDO::FETCH_NUM)[0];
     }
+
+    /**
+     * Regexp search condition for Postgresql
+     *
+     * @param string $fieldname The field which will be matched
+     * @param string $value The regexp it will be matched against
+     *
+     * @return string Piece of SQL query
+     */
+    public function func_regexp($fieldname, $value)
+    {
+        $suffix = $this->getForceCaseInsensitive() ? '*' : '';
+        if ($value[0] == '!') {
+            return "{$fieldname} !~{$suffix} '".substr($value, 1, Tools::atk_strlen($value))."'";
+        } else {
+            return "{$fieldname} ~{$suffix} '{$value}'";
+        }
+    }
 }

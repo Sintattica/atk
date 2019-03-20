@@ -171,6 +171,7 @@ class Db extends \PDO
             'exact',
             'substring',
             'wildcard',
+            'regexp',
             'greaterthan',
             'greaterthanequal',
             'lessthan',
@@ -867,6 +868,23 @@ class Db extends \PDO
         return "TO_CHAR($fieldname, 'YYYY-MM-DD hh:mi')";
     }
 
+    /**
+     * Get a regexp search condition for current database
+     *
+     * @param string $fieldname The field which will be matched
+     * @param string $value The regexp it will be matched against
+     *
+     * @return string Piece of SQL query
+     */
+    public function func_regexp($fieldname, $value)
+    {
+        if ($value[0] == '!') {
+            return $fieldname." NOT REGEXP '".substr($value, 1, Tools::atk_strlen($value))."'";
+        } else {
+            return $fieldname." REGEXP '$value'";
+        }
+    }
+
     /******************************************** Escaping functions **********************************************************/
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%).
@@ -913,8 +931,7 @@ class Db extends \PDO
      */
     public function createQuery()
     {
-        $class = __NAMESPACE__.'\\'.ucfirst($this->m_type).'Query';
-        $query = new $class();
+        $query = new Query();
         $query->m_db = $this;
 
         return $query;

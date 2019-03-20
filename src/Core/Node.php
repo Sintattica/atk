@@ -3298,7 +3298,7 @@ class Node
         $db = $this->getDb();
         $query = $db->createQuery();
 
-        $query->addTable($this->m_table);
+        $query->setTable($this->m_table);
 
         // The record that must be updated is indicated by 'atkprimkey'
         // (not by atkselector, since the primary key might have
@@ -3666,7 +3666,7 @@ class Node
 
         $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
-        $query->addTable($this->m_table);
+        $query->setTable($this->m_table);
 
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
@@ -3826,7 +3826,7 @@ class Node
         }
 
         $query = $this->getDb()->createQuery();
-        $query->addTable($this->m_table);
+        $query->setTable($this->m_table);
         $query->addCondition($selector);
         if ($query->executeDelete()) {
 

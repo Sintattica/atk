@@ -1074,7 +1074,7 @@ class OneToManyRelation extends Relation
 
                 // @todo: is this still needed?
                 if ($this->m_ownerInstance->m_postvars['atkselector']) {
-                    $query->addTable($this->m_destInstance->m_table);
+                    $query->setTable($this->m_destInstance->m_table);
                     $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
                 }
             }

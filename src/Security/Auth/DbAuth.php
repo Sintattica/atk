@@ -189,7 +189,7 @@ class DbAuth extends AuthInterface
             // mean (but doesn't have to) that a user can have more than one
             // level.
             $qryobj = $db->createQuery();
-            $qryobj->addTable($usertable);
+            $qryobj->setTable($usertable);
             $qryobj->addField("$usertable.*");
             $qryobj->addField("usergroup.$levelfield");
             $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
@@ -227,7 +227,7 @@ class DbAuth extends AuthInterface
 
         $query = $db->createQuery();
         $query->addField($groupparentfield);
-        $query->addTable($grouptable);
+        $query->setTable($grouptable);
         $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).')');
         $recs = $db->getRows($query->buildSelect(true));
 
