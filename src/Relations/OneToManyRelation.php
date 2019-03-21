@@ -12,6 +12,7 @@ use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Exception;
 
 /**
@@ -1124,7 +1125,10 @@ class OneToManyRelation extends Relation
         }
 
         if (Tools::count($searchconditions) > 0) {
-            return '('.implode(' OR ', $searchconditions).')';
+            $query = new QueryPart('(');
+            $query->append(QueryPart::implode(' OR ', $searchconditions));
+            $query->appendSql(')');
+            return $query;
         } else {
             return false;
         }

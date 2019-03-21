@@ -22,10 +22,12 @@ class QueryPart
     protected $sql;
     
     /**
-     * array of ':parameter_name' => value
+     * array of ':parameter_name' => [value, type] wher type is one of
+     * \PDO::PARAM_ constant value (fallback to \PDO::PARAM_INT for int
+     * values and \PDO::PARAM_STR for other values if unspecified)
      * 
      * @access readonly
-     * @var array of string => mixed
+     * @var array of string => [mixed $value, int $pdo_type]
      */
     protected $parameters = [];
     
@@ -44,7 +46,15 @@ class QueryPart
     public function __construct(string $sql, array $parameters = [])
     {
         $this->sql = $sql;
-        $this->parameters = $parameters;
+        $this->parameters = [];
+        foreach($parameters as $name => $parameter) {
+            if (isset($parameter[1])) {
+                $type = $parameter[1];
+            } else {
+                $type = gettype($parameter[0])=='integer' ? \PDO::PARAM_INT:\PDO::PARAM_STR;
+            }
+            $this->parameters[$name] = [$parameter[0], $type];
+        }
     }
     
     /**
@@ -63,18 +73,18 @@ class QueryPart
     }
 
     /**
-     * Concatenate 2 query parts ensuring there is no conflict without parameter names
+     * Append another query to current query, ensuring there is no conflict with parameter names
      *
      * @param QueryPart $secondPart to append to the this one.
      *
      * @return QueryPart $this
      */
-    public function concat(QueryPart $secondPart)
+    public function append(QueryPart $secondPart)
     {
         $sql2 = $secondPart->sql;
         // Taking care of parameters with the same name present in both QueryParts
         $parameterNames1 = array_keys($this->parameters);
-        foreach ($secondPart->parameters as $name => $value) {
+        foreach ($secondPart->parameters as $name => $param) {
             $newName = $name;
             if (in_array($name, $parameterNames1)) {
                 if (!isset($this->parameterCounter[$name])) {
@@ -83,10 +93,23 @@ class QueryPart
                 $newName = $name . '_al' . ($this->parameterCounter[$name]++);
                 $sql2 = str_replace($name, $newName, $sql2);
             }
-            $this->parameters[$newName] = $value;
+            $this->parameters[$newName] = $param;
         }
-        $this->sql .= $sql2;
+        $this->sql .= ' '.$sql2;
         
+        return $this;
+    }
+
+    /**
+     * Append SQL string to current query (without parameters)
+     *
+     * @param string $sql to append to the this one.
+     *
+     * @return QueryPart $this
+     */
+    public function appendSql(string $sql)
+    {
+        $this->sql .= ' '.$sql;
         return $this;
     }
 
@@ -105,9 +128,31 @@ class QueryPart
             return $query;
         }
         while ($nextQuery = array_shift($pieces)) {
-            $query->concat(new QueryPart($glue, []));
-            $query->concat($nextQuery);            
+            $query->appendSql($glue);
+            $query->append($nextQuery);
         }
         return $query;
+    }
+
+    /**
+     * Returns a valid placeholder/parameter name
+     *
+     * It can only contain A-Za-z0-9_ characters and may start with a ':'.
+     * Source: https://github.com/php/php-src/blob/master/ext/pdo/pdo_sql_parser.re#L47
+     *
+     * @param string $initial name of the placeholder
+     *
+     * @return string $placeholder with only accepted chars
+     */
+    public static function placeholder(string $name) : string
+    {
+        $newName = preg_replace('/[^A-Za-z0-9_]/', '_', $name);
+        $cksum = '';
+        // If we replaced some characters, then we append a checksum part to it
+        // to avoid that placeholder('首页') and placeholder('典范') return the same name.
+        if ($newName != $name) {
+            $cksum = '_'.substr(md5($name), 0, 8);
+        }
+        return ':'.$newName.$cksum;
     }
 }

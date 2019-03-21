@@ -140,6 +140,7 @@ class Query
         $this->m_aliasLookup = [];
     }
 
+    /****************************** Getter / setters *****************************************/
     /**
      * Sets the database instance.
      *
@@ -155,7 +156,7 @@ class Query
      *
      * @return Db database instance
      */
-    public function getDb()
+    private function getDb()
     {
         if (!isset($this->m_db)) {
             $this->m_db = Db::getInstance();
@@ -171,13 +172,10 @@ class Query
      * @param string $value Field value
      * @param string $table Table name
      * @param string $fieldaliasprefix Field alias prefix
-     * @param bool $quote If this parameter is true, stuff is inserted into the db
-     *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
-     *                                 done without quotes, e.d. SET number = 4.
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addField($name, $value = '', $table = '', $fieldaliasprefix = '', $quote = true)
+    public function addField($name, $value = '', $table = '', $fieldaliasprefix = '')
     {
         if ($table != '') {
             $fieldname = Db::quoteIdentifier($table).'.'.Db::quoteIdentifier($name);
@@ -186,12 +184,6 @@ class Query
         }
         if (!in_array($fieldname, $this->m_fields)) {
             $this->m_fields[] = $fieldname;
-        }
-
-        if ($quote && !is_null($value)) {
-            $value = "'".$value."'";
-        } elseif ($value === null || $value === '') {
-            $value = 'NULL';
         }
 
         $this->m_values[$fieldname] = $value;
@@ -340,8 +332,6 @@ class Query
         return $this->setTable($name);
     }
 
-
-
     /**
      * Add join to Join Array.
      *
@@ -391,24 +381,6 @@ class Query
     }
 
     /**
-     * Add a query condition (conditions are where-expressions that are AND-ed).
-     *
-     * @param string $condition Condition
-     *
-     * @return Query The query object itself (for fluent usage)
-     */
-    public function addCondition($condition)
-    {
-        if ($condition != '') {
-            // NOTE: previous code tried to make sure a condition wasn't added
-            // twice, however when supporting bind params you can't do this anymore
-            $this->m_conditions[] = $condition;
-        }
-
-        return $this;
-    }
-
-    /**
      * Sets this queries search method.
      *
      * @param string $searchMethod search method
@@ -423,20 +395,46 @@ class Query
     }
 
     /**
+     * Add a query condition (conditions are where-expressions that are AND-ed).
+     *
+     * @param QueryPart|string $query sql condition
+     * @param array $parameters for the condition (only if $query is not already au QueryPart)
+     *
+     * @return Query The query object itself (for fluent usage)
+     */
+    public function addCondition($query, $parameters = [])
+    {
+        if (!$query instanceof QueryPart) {
+            if ($query == '') {
+                return;
+            }
+            $query = new QueryPart($query, $parameters);
+        }
+
+        $this->m_conditions[] = $query;
+        return $this;
+    }
+
+    /**
      * Add search condition to the query. Basically similar to addCondition, but
      * searchconditions make use of the searchmode setting to determine whether the
      * different searchconditions should be and'ed or or'ed.
      *
-     * @param string $condition Condition
+     * @param QueryPart|string $query condition
+     * @param array $parameters for the condition (only if $query is not already a QueryPart)
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addSearchCondition($condition)
+    public function addSearchCondition($query, $parameters = [])
     {
-        if ($condition != '') {
-            $this->m_searchconditions[] = $condition;
+        if (!$query instanceof QueryPart) {
+            if ($query == '') {
+                return;
+            }
+            $query = new QueryPart($query, $parameters);
         }
 
+        $this->m_searchconditions[] = $query;
         return $this;
     }
 
@@ -473,76 +471,157 @@ class Query
         return $this;
     }
 
+    /******************************** Helper functions ****************************************/
+    /**
+     * Search Alias in alias array.
+     *
+     * @param array $record Array with fields
+     */
+    public function deAlias(&$record)
+    {
+        foreach ($record as $name => $value) {
+            if (isset($this->m_aliasLookup[$name])) {
+                $record[$this->m_aliasLookup[$name]] = $value;
+                unset($record[$name]);
+            }
+        }
+    }
+
+    /**
+     * build the WHERE part of the query with conditions and searchconditions
+     *
+     * @return QueryPart to append to current query
+     */
+    private function whereClause()
+    {
+        $query = new QueryPart('');
+        if (!empty($this->m_conditions)) {
+            $query->appendSql(' WHERE (');
+            $query->append(QueryPart::implode(') AND (', $this->m_conditions));
+            $query->appendSql(')');
+        }
+
+        if (!empty($this->m_searchconditions)) {
+            $query->appendSql(empty($this->m_conditions) ? 'WHERE (':'AND (');
+            $searchOperator = ($this->m_searchmethod == '' || $this->m_searchmethod == 'AND') ? 'AND':'OR';
+            $query->append(QueryPart::implode($searchOperator, $this->m_searchconditions));
+            $query->appendSql(')');
+        }
+
+        return $query;
+    }
+
+    /**
+     * Add limiting clauses to the query.
+     *
+     * @return QueryPart limiter clause (which can be appended)
+     */
+    private function limiterClause()
+    {
+        if ($this->m_offset >= 0 && $this->m_limit > 0) {
+            return new QueryPart(
+                'LIMIT :limit OFFSET :offset',
+                [':limit' => [(int) $this->m_limit, \PDO::PARAM_INT], ':offset' => [(int) $this->m_offset, \PDO::PARAM_INT]]
+                );
+        }
+    }
+
+    /**
+     * Add the ORDER BY clause.
+     *
+     * @return QueryPart order clause (which can be appended)
+     */
+    private function orderByClause()
+    {
+        if (empty($this->m_orderbys)) {
+            return new QueryPart('');
+        }
+        return new QueryPart('ORDER BY ' . implode(', ', $this->m_orderbys));
+        
+    }
+
+    /******************************** Builder/executer functions *****************************/
+
     /**
      * Builds the SQL Select query.
      *
      * @param bool $distinct distinct records?
      *
-     * @return string a SQL Select Query
+     * @return QueryPart a SQL Select Query
      */
     public function buildSelect($distinct = false)
     {
-        if (Tools::count($this->m_fields) < 1 && Tools::count($this->m_expressions) < 1) {
+        if (empty($this->m_fields) && empty($this->m_expressions)) {
             return false;
         }
-        $result = 'SELECT '.($distinct || $this->m_distinct ? 'DISTINCT ' : '');
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->m_fields[$i];
-            $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]]) ? $this->m_fieldaliases[$this->m_fields[$i]] : '');
-            if ($fieldalias != '') {
-                $result .= ' AS '.$fieldalias;
-            }
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ', ';
-            }
-        }
-
-        foreach ($this->m_expressions as $i => $entry) {
-            if (Tools::count($this->m_fields) > 0 || $i > 0) {
-                $result .= ', ';
-            }
-            $fieldName = $entry['name'];
-            $expression = $entry['expression'];
-            $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName] : Db::quoteIdentifier($fieldName);
-            $result .= "($expression) AS $fieldAlias";
-        }
-
-        $result .= ' FROM '.Db::quoteIdentifier($this->m_table).' ';
-
-        for ($i = 0; $i < Tools::count($this->m_joins); ++$i) {
-            $result .= $this->m_joins[$i];
-        }
-
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE ('.implode(') AND (', $this->m_conditions).')';
-        }
-
-        if (Tools::count($this->m_searchconditions) > 0) {
-            if (Tools::count($this->m_conditions) == 0) {
-                $prefix = ' WHERE ';
+        $query = new QueryPart('SELECT'.($distinct || $this->m_distinct ? ' DISTINCT' : ''));
+        
+        // Fields and expressions
+        $fieldAndAliasFn = function ($field) {
+            if (isset($this->m_fieldaliases[$field])) {
+                return "{$field} AS {$this->m_fieldaliases[$field]}";
             } else {
-                $prefix = ' AND ';
+                return $field;
             }
-            if ($this->m_searchmethod == '' || $this->m_searchmethod == 'AND') {
-                $result .= $prefix.'('.implode(' AND ', $this->m_searchconditions).')';
-            } else {
-                $result .= $prefix.'('.implode(' OR ', $this->m_searchconditions).')';
-            }
+        };
+        $fieldsAndAlias = array_map($fieldAndAliasFn, $this->m_fields);
+        
+        $exprAndAliasFn = function($expression) {
+            return "({$expression['expression']}) AS ".
+                ($this->m_fieldaliases[$expression['name']] ?? Db::quoteIdentifier($expression['name']));
+        };
+        $exprsAndAlias = array_map($exprAndAliasFn, $this->m_expressions);
+        
+        $query->appendSql(implode(', ', array_merge($fieldsAndAlias, $exprsAndAlias)));
+
+        $query->appendSql('FROM '.Db::quoteIdentifier($this->m_table));
+        $query->appendSql(implode(' ', $this->m_joins));
+
+        $query->append($this->whereClause());
+
+        if (!empty($this->m_groupbys)) {
+           $query->appendSql(' GROUP BY '.implode(', ', $this->m_groupbys));
         }
 
-        if (Tools::count($this->m_groupbys) > 0) {
-            $result .= ' GROUP BY '.implode(', ', $this->m_groupbys);
-        }
-
-        if (Tools::count($this->m_orderbys) > 0) {
-            $this->_addOrderBy($result);
+        if (!empty($this->m_orderbys)) {
+            $query->append($this->orderByClause());
         }
 
         if ($this->m_limit > 0) {
-            $this->_addLimiter($result);
+            $query->append($this->limiterClause());
         }
 
-        return $result;
+        return $query;
+    }
+
+    /**
+     * Builds the SQL Select COUNT(*) query. This is different from select,
+     * because we do joins, like in a select, but we don't really select the
+     * fields.
+     *
+     * @return string a SQL Select COUNT(*) Query
+     */
+    public function buildCount($distinct = false)
+    {
+        $query = new QueryPart('');
+        if (($distinct || $this->m_distinct) && !empty($this->m_fields)) {
+            $query->appendSql('SELECT COUNT(DISTINCT ');
+            $query->appendSql(implode(', ', $this->m_fields));
+            $query->appendSql(') as count FROM');
+        } else {
+            $query->appendSql('SELECT COUNT(*) AS count FROM');
+        }
+        
+        $query->appendSql(Db::quoteIdentifier($this->m_table));
+        $query->appendSql(implode(' ', $this->m_joins));
+
+        $query->append($this->whereClause());
+
+        if (!empty($this->m_groupbys)) {
+           $query->appendSql(' GROUP BY '.implode(', ', $this->m_groupbys));
+        }
+
+        return $query;
     }
 
     /**
@@ -561,96 +640,24 @@ class Query
     }
 
     /**
-     * Add limiting clauses to the query.
-     *
-     * @param string $query The query to add the limiter to
-     */
-    public function _addLimiter(&$query)
-    {
-        if ($this->m_offset >= 0 && $this->m_limit > 0) {
-            $query .= ' LIMIT '.$this->m_limit.' OFFSET '.$this->m_offset;
-        }
-    }
-
-    /**
-     * Add the ORDER BY clause.
-     *
-     * @param string $query The query
-     */
-    public function _addOrderBy(&$query)
-    {
-        if (Tools::count($this->m_orderbys) > 0) {
-            $query .= ' ORDER BY '.implode(', ', $this->m_orderbys);
-        }
-    }
-
-    /**
-     * Builds the SQL Select COUNT(*) query. This is different from select,
-     * because we do joins, like in a select, but we don't really select the
-     * fields.
-     *
-     * @return string a SQL Select COUNT(*) Query
-     */
-    public function buildCount($distinct = false)
-    {
-        if (($distinct || $this->m_distinct) && Tools::count($this->m_fields) > 0) {
-            $result = 'SELECT COUNT(DISTINCT ';
-            $result .= implode(', ', $this->m_fields);
-            $result .= ') as count FROM';
-        } else {
-            $result = 'SELECT COUNT(*) AS count FROM ';
-        }
-        
-        $result .= Db::quoteIdentifier($this->m_table).' ';
-
-        for ($i = 0; $i < Tools::count($this->m_joins); ++$i) {
-            $result .= $this->m_joins[$i];
-        }
-
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE ('.implode(') AND (', $this->m_conditions).')';
-        }
-
-        if (Tools::count($this->m_searchconditions) > 0) {
-            if (Tools::count($this->m_conditions) == 0) {
-                $prefix = ' WHERE ';
-            } else {
-                $prefix = ' AND ';
-            };
-            if ($this->m_searchmethod == '' || $this->m_searchmethod == 'AND') {
-                $result .= $prefix.'('.implode(' AND ', $this->m_searchconditions).')';
-            } else {
-                $result .= $prefix.'('.implode(' OR ', $this->m_searchconditions).')';
-            }
-        }
-
-        if (Tools::count($this->m_groupbys) > 0) {
-            $result .= ' GROUP BY '.implode(', ', $this->m_groupbys);
-        }
-
-        return $result;
-    }
-
-    /**
      * Builds the SQL Update query.
      *
      * @return string a SQL Update Query
      */
     public function buildUpdate()
     {
-        $result = 'UPDATE '.Db::quoteIdentifier($this->m_table).' SET ';
+        $query = new QueryPart('UPDATE '.Db::quoteIdentifier($this->m_table).' SET');
 
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->m_fields[$i].'='.$this->m_values[$this->m_fields[$i]];
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ',';
-            }
-        }
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE '.implode(' AND ', $this->m_conditions);
-        }
+        $updateFieldFn = function($field) {
+            $placeholder = QueryPart::placeholder($field);
+            $value = $this->m_values[$field];
+            return new QueryPart("{$field}={$placeholder}", [$placeholder => [$value]]);
+        };
+        $query->append(QueryPart::implode(', ', array_map($updateFieldFn, $this->m_fields)));
 
-        return $result;
+        $query->append($this->whereClause());
+
+        return $query;
     }
 
     /**
@@ -661,6 +668,26 @@ class Query
         $query = $this->buildUpdate();
 
         return $this->getDb()->queryP($query);
+    }
+
+    /**
+     * Builds the SQL Insert query.
+     *
+     * @return string a SQL Insert Query
+     */
+    public function buildInsert()
+    {
+        $query = new QueryPart('INSERT INTO '.Db::quoteIdentifier($this->m_table).'');
+
+        $query->appendSql('('.implode(', ', $this->m_fields).') VALUES (');
+        foreach ($this->m_fields as $field) {
+            $placeholder = QueryPart::placeholder($field);
+            $parameters[$placeholder] = [$this->m_values[$field]];
+        }
+        $query->append(new QueryPart(implode(', ', array_keys($parameters)), $parameters));
+        $query->appendSql(')');
+
+        return $query;
     }
 
     /**
@@ -680,49 +707,15 @@ class Query
     }
 
     /**
-     * Builds the SQL Insert query.
-     *
-     * @return string a SQL Insert Query
-     */
-    public function buildInsert()
-    {
-        $result = 'INSERT INTO '.Db::quoteIdentifier($this->m_table).' (';
-
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->m_fields[$i];
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ',';
-            }
-        }
-
-        $result .= ') VALUES (';
-
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->m_values[$this->m_fields[$i]];
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ',';
-            }
-        }
-
-        $result .= ')';
-
-        return $result;
-    }
-
-    /**
      * Builds the SQL Delete query.
      *
      * @return string a SQL Delete Query
      */
     public function buildDelete()
     {
-        $result = 'DELETE FROM '.Db::quoteIdentifier($this->m_table);
-
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE '.implode(' AND ', $this->m_conditions);
-        }
-
-        return $result;
+        $query = new QueryPart('DELETE FROM '.Db::quoteIdentifier($this->m_table));
+        $query->append($this->whereClause());
+        return $query;
     }
 
     /**
@@ -735,20 +728,15 @@ class Query
         return $this->getDb()->queryP($query);
     }
 
-    /**
-     * Search Alias in alias array.
+    /**************************** Search functions **********************************************
+     * General form :
+     * public function myCondition(string $field, mixed $value)
      *
-     * @param array $record Array with fields
-     */
-    public function deAlias(&$record)
-    {
-        foreach ($record as $name => $value) {
-            if (isset($this->m_aliasLookup[$name])) {
-                $record[$this->m_aliasLookup[$name]] = $value;
-                unset($record[$name]);
-            }
-        }
-    }
+     * @param string $field name that should be quoted BEFORE calling this function
+     * @param mixed $value (0 to 2 values depending the search function)
+     *
+     * @return QueryPart
+     ********************************************************************************************/
 
     /**
      * Generate a searchcondition that checks if the field is null.
@@ -756,7 +744,7 @@ class Query
      * @param string $field
      * @param bool $emptyStringIsNull
      *
-     * @return string
+     * @return QueryPart
      */
     public function nullCondition($field, $emptyStringIsNull = false)
     {
@@ -765,7 +753,7 @@ class Query
             $result = "($result OR $field = '')";
         }
 
-        return $result;
+        return new QueryPart($result);
     }
 
     /**
@@ -774,16 +762,59 @@ class Query
      * @param string $field
      * @param bool $emptyStringIsNull
      *
-     * @return string
+     * @return QueryPart
      */
     public function notNullCondition($field, $emptyStringIsNull = false)
     {
         $result = "$field IS NOT NULL";
         if ($emptyStringIsNull) {
-            $result = "($result AND $field <> '')";
+            $result = "($result AND $field != '')";
         }
 
-        return $result;
+        return new QueryPart($result);
+    }
+
+    /**
+     * Generate a searchcondition that check boolean value
+     *
+     * @param string $field full qualified table column
+     * @param mixed $value integer/float/double etc.
+     *
+     * @return QueryPart
+     */
+    public function exactBoolCondition($field, $value)
+    {
+        $value = $value ? 'true' : 'false';
+
+        return new QueryPart("$field = $value");
+    }
+
+    /**
+     * Conditions of type "field [OPERATOR] value" (OPERATOR like '<', '>', 'LIKE'...)
+     *
+     * this is the meta for (greater|lower)than(equal)?Condition functions
+     *
+     * @param string $field The database field
+     * @param string $value The value
+     * @param string $positiveOp ('>', '<',...) when value does not start with '!'
+     * @param string $negativeOp ('>', '<',...) when value starts with '!'
+     *
+     * @return QueryPart
+     */
+    private function simpleCondition($field, $value, $positiveOp, $negativeOp)
+    {
+        $placeholder = QueryPart::placeholder($field);
+        $operator = ($value[0] == '!') ? $negativeOp:$positiveOp;
+        if ($value[0] == '!') {
+            $value = substr($value, 1);
+        }
+        $parameter = [$placeholder => [$value]];
+        
+        if ($this->getDb()->getForceCaseInsensitive()) {
+            return new QueryPart("LOWER({$field}) {$operator} LOWER({$placeholder})", $parameter);
+        } else {
+            return new QueryPart("{$field} {$operator} {$placeholder}", $parameter);
+        }
     }
 
     /**
@@ -793,73 +824,14 @@ class Query
      * @param mixed $value string/number/decimal expected column value
      * @param string $dbFieldType help determine exact search method
      *
-     * @return string piece of where clause to use in your SQL statement
+     * @return QueryPart
      */
     public function exactCondition($field, $value, $dbFieldType = null)
     {
-        if (in_array($dbFieldType, array('decimal', 'number'))) {
-            return self::exactNumberCondition($field, $value);
+        if ($dbFieldType == Db::FT_NUMBER) {
+            $value = (int) $value;
         }
-
-        if ($this->getDb()->getForceCaseInsensitive()) {
-            if ($value[0] == '!') {
-                return 'LOWER('.$field.")!=LOWER('".substr($value, 1, Tools::atk_strlen($value))."')";
-            }
-
-            return 'LOWER('.$field.")=LOWER('".$value."')";
-        } else {
-            if ($value[0] == '!') {
-                return $field."!='".substr($value, 1, Tools::atk_strlen($value))."'";
-            }
-
-            return $field."='".$value."'";
-        }
-    }
-
-    /**
-     * Generate a searchcondition that check number/decimal literal values.
-     *
-     * @param string $field full qualified table column
-     * @param mixed $value integer/float/double etc.
-     *
-     * @return string piece of where clause to use in your SQL statement
-     */
-    public static function exactNumberCondition($field, $value)
-    {
-        return "$field = $value";
-    }
-
-
-    public function exactBoolCondition($field, $value)
-    {
-        $value = $value ? 'true' : 'false';
-
-        return "$field = $value";
-    }
-
-    /**
-     * Generate a searchcondition that checks whether $field contains $value .
-     *
-     * @param string $field The field
-     * @param string $value The value
-     *
-     * @return string The substring condition
-     */
-    public function substringCondition($field, $value)
-    {
-        if ($this->getDb()->getForceCaseInsensitive()) {
-            if ($value[0] == '!') {
-                return 'LOWER('.$field.") NOT LIKE LOWER('%".substr($value, 1, Tools::atk_strlen($value))."%')";
-            }
-
-            return 'LOWER('.$field.") LIKE LOWER('%".$value."%')";
-        } else {
-            if ($value[0] == '!') {
-                return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
-            }
-
-            return $field." LIKE '%".$value."%'";
-        }
+        return $this->simpleCondition($field, $value, '=', '!=');
     }
 
     /**
@@ -872,19 +844,20 @@ class Query
      */
     public function wildcardCondition($field, $value)
     {
-        if ($this->getDb()->getForceCaseInsensitive()) {
-            if ($value[0] == '!') {
-                return 'LOWER('.$field.") NOT LIKE LOWER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
-            }
+        return $this->simpleCondition($field, str_replace('*', '%', $value), 'LIKE', 'NOT LIKE');
+    }
 
-            return 'LOWER('.$field.") LIKE LOWER('".str_replace('*', '%', $value)."')";
-        } else {
-            if ($value[0] == '!') {
-                return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
-            }
-
-            return $field." LIKE '".str_replace('*', '%', $value)."'";
-        }
+    /**
+     * Generate a searchcondition that checks whether $field contains $value .
+     *
+     * @param string $field The field
+     * @param string $value The value
+     *
+     * @return QueryPart
+     */
+    public function substringCondition($field, $value)
+    {
+        return $this->simpleCondition($field, '%'.str_replace('%', '%%', $value).'%', 'LIKE', 'NOT LIKE');
     }
 
     /**
@@ -893,15 +866,11 @@ class Query
      * @param string $field The database field
      * @param string $value The value
      *
-     * @return string
+     * @return QueryPart
      */
     public function greaterthanCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." < '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." > '".$value."'";
-        }
+        return simpleCondition($field, $value, '>', '<=');
     }
 
     /**
@@ -914,11 +883,7 @@ class Query
      */
     public function greaterthanequalCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." < '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." >= '".$value."'";
-        }
+        return $this->simpleCondition($field, $value, '>=', '<');
     }
 
     /**
@@ -927,15 +892,11 @@ class Query
      * @param string $field The database field
      * @param string $value The value
      *
-     * @return string
+     * @return QueryPart
      */
     public function lessthanCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." > '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." < '".$value."'";
-        }
+        return $this->simpleCondition($field, $value, '<=', '>');
     }
 
     /**
@@ -944,15 +905,11 @@ class Query
      * @param string $field The database field
      * @param string $value The value
      *
-     * @return string
+     * @return QueryPart
      */
     public function lessthanequalCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." > '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." <= '".$value."'";
-        }
+        return $this->simpleCondition($field, $value, '<=', '>');
     }
 
     /**
@@ -961,17 +918,16 @@ class Query
      * @param string $field The database field
      * @param mixed $value1 The first value
      * @param mixed $value2 The second value
-     * @param bool $quote Add quotes?
+     * @param int $dbfieldtype from Db::FT_ constants
      *
-     * @return string
+     * @return QueryPart
      */
-    public function betweenCondition($field, $value1, $value2, $quote = true)
+    public function betweenCondition($field, $value1, $value2, $dbfieldtype)
     {
-        if ($quote) {
-            return $field." BETWEEN '".$value1."' AND '".$value2."'";
-        } else {
-            return $field.' BETWEEN '.$value1.' AND '.$value2;
-        }
+        $placeholder = QueryPart::placeholder($field);
+        $parameters = [$placeholder.'_min' => [$value1], $placeholder.'_max' => [$value2]];
+
+        return new QueryPart("{$field} BETWEEN {$placeholder}_min AND {$placeholder}_max", $parameters);
     }
 
     /**
@@ -981,7 +937,7 @@ class Query
      *                        match will be performed.
      * @param string $value The regular expression to search for.
      *
-     * @return string A SQL regexp expression.
+     * @return QueryPart
      */
     public function regexpCondition($field, $value)
     {

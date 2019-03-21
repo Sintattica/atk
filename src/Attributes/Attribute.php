@@ -818,9 +818,8 @@ class Attribute
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * For the regular Attribute, this means escaping things like
-     * quotes and slashes. Derived attributes may reimplement this for their
-     * own conversion.
+     * For the regular Attribute, it's simply returning the value.
+     * Derived attributes may reimplement this for their own conversion.
      * This is the exact opposite of the db2value method.
      *
      * @param array $rec The record that holds this attribute's value.
@@ -830,7 +829,7 @@ class Attribute
     public function value2db($rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
-            return $this->escapeSQL($rec[$this->fieldName()]);
+            return $rec[$this->fieldName()];
         }
 
         return;
@@ -1706,7 +1705,7 @@ class Attribute
      *                           attribute's getSearchModes() method.
      * @param string $fieldname alias?
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart the search condition
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
@@ -1728,7 +1727,7 @@ class Attribute
 
         $func = $searchmode.'Condition';
         if (method_exists($query, $func) && ($value || ($value == 0))) {
-            return $query->$func($table.'.'.$this->fieldName(), $this->escapeSQL($value), $this->dbFieldType());
+            return $query->$func($table.'.'.$this->fieldName(), $value, $this->dbFieldType());
         } elseif (!method_exists($query, $func)) {
             Tools::atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().', ignoring condition.');
         }

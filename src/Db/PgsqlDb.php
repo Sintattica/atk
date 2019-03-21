@@ -110,11 +110,15 @@ class PgsqlDb extends Db
      */
     public function func_regexp($fieldname, $value)
     {
+        $placeholder = QueryPart::placeholder($fieldname);
+        $negate = ($value[0] == '!') ? '!':'';
         $suffix = $this->getForceCaseInsensitive() ? '*' : '';
         if ($value[0] == '!') {
-            return "{$fieldname} !~{$suffix} '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return "{$fieldname} ~{$suffix} '{$value}'";
+            $value = substr($value, 1);
         }
+        $parameter = [$placeholder => $value];
+        $field = Db::quoteIdentifier($field);
+
+        return new QueryPart("{$field} {$negate}~{$suffix} {$placeholder}", $parameter);
     }
 }

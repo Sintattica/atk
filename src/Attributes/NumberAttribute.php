@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Ui\Page;
 
@@ -699,7 +700,7 @@ class NumberAttribute extends Attribute
                 $value['to'] = $tmp;
             }
 
-            return $query->betweenCondition($fieldname, $this->escapeSQL($value['from']), $this->escapeSQL($value['to']));
+            return $query->betweenCondition($fieldname, $value['from'], $value['to'], $this->dbFieldType());
         } elseif ($value['from'] != '' && $value['to'] == '') {
             return $query->greaterthanequalCondition($fieldname, $value['from']);
         } elseif ($value['from'] == '' && $value['to'] != '') {

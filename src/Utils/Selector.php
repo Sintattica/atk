@@ -6,8 +6,9 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Exception;
 
 /**
@@ -123,7 +124,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function where($condition, $params = array())
     {
         if (strlen(trim($condition)) > 0) {
-            $this->m_conditions[] = array('condition' => $condition, 'params' => $params);
+            $this->m_conditions[] = new QueryPart($condition, $params);
         }
 
         return $this;
@@ -312,7 +313,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected function _applyConditionsToQuery($query)
     {
         foreach ($this->m_conditions as $condition) {
-            $query->addCondition($condition['condition']);
+            $query->addCondition($condition);
         }
     }
 
@@ -461,7 +462,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
         // key/value filters
         foreach ($this->_getNode()->m_filters as $key => $value) {
-            $query->addCondition($key."='".$this->_getDb()->escapeSQL($value)."'");
+            $placeholder = QueryPart::placeholder($key);
+            $query->addCondition(Db::quoteIdentifier($key).'='.$placeholder, [$placeholder => $value]);
         }
 
         // fuzzy filters
@@ -596,22 +598,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns all bind parameters for all conditions.
-     *
-     * @return array bind parameters
-     */
-    protected function _getBindParameters()
-    {
-        $params = [];
-
-        foreach ($this->m_conditions as $condition) {
-            $params = array_merge($params, $condition['params']);
-        }
-
-        return $params;
-    }
-
-    /**
      * Transform raw database row to node compatible row.
      *
      * @param array $row raw database row
@@ -698,8 +684,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($this->m_rows === null) {
             $attrsByLoadType = $this->_getAttributesByLoadType();
             $query = $this->_buildSelectQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->prepare($query->buildSelect());
-            $stmt->execute($this->_getBindParameters());
+            $stmt = $this->_getDb()->queryP($query->buildSelect());
             $rows = $stmt->fetchAll();
             $this->m_rows = $this->_transformRows($rows, $query, $attrsByLoadType);
         }
@@ -724,8 +709,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $query->addExpression($field, 'SUM('.$expr.')', $prefix);
         }
 
-        $stmt = $this->_getDb()->prepare($query->buildSelect());
-        $stmt->execute($this->_getBindParameters());
+        $stmt = $this->_getDb()->queryP($query->buildSelect());
         $row = $stmt->fetch();
 
         $query->deAlias($row);
@@ -748,8 +732,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($this->m_rowCount === null) {
             $attrsByLoadType = $this->_getAttributesByLoadType();
             $query = $this->_buildCountQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->prepare($query->buildCount());
-            $stmt->execute($this->_getBindParameters());
+            $stmt = $this->_getDb()->queryP($query->buildCount());
             $rows = $stmt->fetchAll();
             $this->m_rowCount = Tools::count($rows) == 1 ? $rows[0]['count'] : Tools::count($rows); // group by fix
         }
@@ -788,8 +771,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $query->addGroupBy($expression);
         $query->addOrderBy($expression);
 
-        $stmt = $this->_getDb()->prepare($query->buildSelect());
-        $stmt->execute($this->_getBindParameters());
+        $stmt = $this->_getDb()->queryP($query->buildSelect());
         $this->m_indices = $stmt->getAllValues();
 
         return $this->m_indices;
@@ -860,8 +842,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($this->m_iterator == null) {
             $attrsByLoadType = $this->_getAttributesByLoadType();
             $query = $this->_buildSelectQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->prepare($query->buildSelect());
-            $stmt->execute($this->_getBindParameters());
+            $stmt = $this->_getDb()->queryP($query->buildSelect());
 
             $this->m_attrsByLoadType = $attrsByLoadType;
             $this->m_query = $query;

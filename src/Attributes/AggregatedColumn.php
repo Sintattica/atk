@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Core\Config;
@@ -152,27 +153,6 @@ class AggregatedColumn extends Attribute
         }
     }
 
-    /**
-     * Creates a search condition for a given search value, and adds it to the
-     * query that will be used for performing the actual search.
-     *
-     * @param Query $query The query to which the condition will be added.
-     * @param string $table The name of the table in which this attribute
-     *                                 is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                                 of the supported modes, as returned by this
-     *                                 attribute's getSearchModes() method.
-     * @param string $fieldaliasprefix optional prefix for the fiedalias in the table
-     */
-    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
-    {
-        $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
-        if (!empty($searchcondition)) {
-            $query->addSearchCondition($searchcondition);
-        }
-    }
-
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         $searchconditions = [];
@@ -214,13 +194,18 @@ class AggregatedColumn extends Attribute
             }
 
             $db = $this->getDb();
-            $condition = 'UPPER('.$db->func_concat_ws($concatTags, '', true).") LIKE UPPER('%".$value."%')";
+            $fieldName = $db->func_concat_ws($concatTags, '', true);
+            $placeholder = QueryPart::placeholder($fieldName);
+            $condition = new QueryPart("UPPER({$fieldName}) LIKE UPPER({$placeholder})", [$placeholder => ['%'.$value.'%']]);
 
             $searchconditions[] = $condition;
         }
 
         if (Tools::count($searchconditions)) {
-            return '('.implode(' OR ', $searchconditions).')';
+            $query = new QueryPart('(');
+            $query->append(QueryPart::implode(' OR ', $searchconditions));
+            $query->appendSql(')');
+            return $query;
         }
 
         return '';

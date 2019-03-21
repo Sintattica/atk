@@ -374,7 +374,7 @@ class Db extends \PDO
      */
     public function getErrorMsg($stmt = null)
     {
-        $errInfo = $object ? $stmt->errorInfo() : $this->errorInfo();
+        $errInfo = $stmt ? $stmt->errorInfo() : $this->errorInfo();
         return Tools::atktext('unknown_error').": SQLSTATE:{$errInfo[0]} [{$errInfo[1]}] ({$errInfo[2]})";
     }
 
@@ -490,8 +490,12 @@ class Db extends \PDO
             // Error handling already have been done in $this->prepare.
             return null;
         }
+        Tools::atkdebug("Binding params");
+        foreach ($query->parameters as $placeholder => $parameter) {
+            $stmt->bindValue($placeholder, $parameter[0], $parameter[1]);
+        }
         Tools::atkdebug("Executing query");
-        if(!$stmt->execute($query->parameters)) {
+        if(!$stmt->execute()) {
             $this->halt('Query execution failed', $stmt);
         }
         return $stmt;
@@ -657,16 +661,10 @@ class Db extends \PDO
             ],
             $extraCols);
         /* get meta information */
-        $stmt = $this->prepare('SELECT '.implode(',', $columns). ' FROM information_schema.columns WHERE table_name = :tablename;');
-        if (!$stmt) {
-            $this->halt('Metadata query failed');
-            return [];
-        }
-
-        if(!$stmt->execute([':tablename' => $table])) {
-            $this->halt('Metadata query failed', $stmt);
-            return [];
-        }
+        $stmt = $this->queryP(
+            'SELECT '.implode(',', $columns). ' FROM information_schema.columns WHERE table_name = :tablename;',
+            [':tablename' => [$table]]
+        );
 
         /* Transforming to or destination form */
         $result = [];
@@ -874,15 +872,18 @@ class Db extends \PDO
      * @param string $fieldname The field which will be matched
      * @param string $value The regexp it will be matched against
      *
-     * @return string Piece of SQL query
+     * @return QueryPart Piece of SQL query
      */
     public function func_regexp($fieldname, $value)
     {
+        $placeholder = QueryPart::placeholder($fieldname);
+        $negate = ($value[0] == '!') ? 'NOT ':'';
         if ($value[0] == '!') {
-            return $fieldname." NOT REGEXP '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $fieldname." REGEXP '$value'";
+            $value = substr($value, 1);
         }
+        $parameter = [$placeholder => [$value]];
+
+        return new QueryPart("{$fieldname} {$negate} REGEXP {$placeholder}", $parameter);
     }
 
     /******************************************** Escaping functions **********************************************************/
