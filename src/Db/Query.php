@@ -12,8 +12,10 @@ use Sintattica\Atk\Core\Tools;
  */
 class Query
 {
-    /*
-     * Array with Fieldnames
+    /**
+     * Array with Fieldnames (quoted)
+     *
+     * @var array[] string
      */
     public $m_fields;
 
@@ -23,14 +25,14 @@ class Query
     public $m_expressions;
 
     /**
-     * Table name for current query
+     * Table name for current query (unquoted)
      *
      * @var string
      */
     public $m_table;
 
     /*
-     * Array with conditions
+     * Array with conditions (quoted)
      *
      * @var QueryPart[]
      */
@@ -45,12 +47,12 @@ class Query
     public $m_searchmethod;
 
     /*
-     * Array with field aliases
+     * Array with field aliases (unquoted, but no need to quote them)
      */
-    public $m_fieldaliases;
+    private $m_fieldaliases;
 
     /*
-     * Array with aliases from joins
+     * Array with aliases from joins (quoted)
      */
     public $m_joinaliases;
 
@@ -60,12 +62,12 @@ class Query
     public $m_joins;
 
     /*
-     * Array with group by statements
+     * Array with group by statements (quoted)
      */
     public $m_groupbys;
 
     /*
-     * Array with order by statements
+     * Array with order by statements (quoted)
      */
     public $m_orderbys;
 
@@ -81,7 +83,7 @@ class Query
     public $m_limit = 0;
 
     /*
-     * Array with generated aliasses
+     * Array with generated aliasses (quoted)
      * Oracle has a problem when aliases are too long
      */
     public $m_generatedAlias;
@@ -90,24 +92,6 @@ class Query
      * The database that this query does it's thing on
      */
     public $m_db;
-
-    /*
-     * Wether or not a field should be quoted in a query
-     *
-     * @var array
-     * @access private
-     */
-    public $m_quotedfields = [];
-
-    /*
-     * Names reserved by the database,
-     * if any of these are used ATK MUST quote the fieldname
-     * or the database engine will not be able to make any sense of the queries.
-     *
-     * @var array
-     * @access private
-     */
-    public $m_reservedNames = array('from', 'select', 'order', 'group', 'release', 'index', 'table');
 
     /**
      * Reference to the field where the new sequence
@@ -190,23 +174,18 @@ class Query
      * @param bool $quote If this parameter is true, stuff is inserted into the db
      *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
      *                                 done without quotes, e.d. SET number = 4.
-     * @param bool $quotefield Wether or not to quote the fieldname
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addField($name, $value = '', $table = '', $fieldaliasprefix = '', $quote = true, $quotefield = false)
+    public function addField($name, $value = '', $table = '', $fieldaliasprefix = '', $quote = true)
     {
         if ($table != '') {
-            $fieldname = $table.'.'.$name;
+            $fieldname = Db::quoteIdentifier($table).'.'.Db::quoteIdentifier($name);
         } else {
-            $fieldname = $name;
+            $fieldname = Db::quoteIdentifier($name);
         }
         if (!in_array($fieldname, $this->m_fields)) {
             $this->m_fields[] = $fieldname;
-        }
-
-        if ($quotefield && !in_array($fieldname, $this->m_quotedfields)) {
-            $this->m_quotedfields[] = $fieldname;
         }
 
         if ($quote && !is_null($value)) {
@@ -282,14 +261,13 @@ class Query
      * @param bool $quote If this parameter is true, stuff is inserted into the db
      *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
      *                                 done without quotes, e.d. SET number = 4.
-     * @param bool $quotefield Wether or not to quote the fieldname
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addFields(array $fields, $table = '', $fieldaliasprefix = '', $quote = true, $quotefield = false)
+    public function addFields(array $fields, $table = '', $fieldaliasprefix = '', $quote = true)
     {
         foreach ($fields as $name => $value) {
-            $this->addField($name, $value, $table, $fieldaliasprefix, $quote, $quotefield);
+            $this->addField($name, $value, $table, $fieldaliasprefix, $quote);
         }
 
         return $this;
@@ -301,17 +279,12 @@ class Query
      * @param string $fieldName expression field name
      * @param string $expression expression value
      * @param string $fieldAliasPrefix field alias prefix
-     * @param bool $quoteFieldName wether or not to quote the expression field name
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addExpression($fieldName, $expression, $fieldAliasPrefix = '', $quoteFieldName = false)
+    public function addExpression($fieldName, $expression, $fieldAliasPrefix = '')
     {
-        if ($quoteFieldName) {
-            $this->m_quotedfields[] = $fieldName;
-        }
-
-        $this->m_expressions[] = array('name' => $fieldAliasPrefix.$fieldName, 'expression' => $expression);
+        $this->m_expressions[] = ['name' => $fieldAliasPrefix.$fieldName, 'expression' => $expression];
 
         if (!empty($fieldAliasPrefix)) {
             $this->m_aliasLookup['al_'.$this->m_generatedAlias] = $fieldAliasPrefix.$fieldName;
@@ -381,7 +354,7 @@ class Query
      */
     public function addJoin($table, $alias, $condition, $outer = false)
     {
-        $join = ' '.($outer ? 'LEFT JOIN ' : 'JOIN ').$this->quoteField($table).' '.$this->quoteField($alias).' ON ('.$condition.') ';
+        $join = ' '.($outer ? 'LEFT JOIN ' : 'JOIN ').Db::quoteIdentifier($table).' '.Db::quoteIdentifier($alias).' ON ('.$condition.') ';
         if (!in_array($join, $this->m_joins)) {
             $this->m_joins[] = $join;
         }
@@ -514,7 +487,7 @@ class Query
         }
         $result = 'SELECT '.($distinct || $this->m_distinct ? 'DISTINCT ' : '');
         for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->quoteField($this->m_fields[$i]);
+            $result .= $this->m_fields[$i];
             $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]]) ? $this->m_fieldaliases[$this->m_fields[$i]] : '');
             if ($fieldalias != '') {
                 $result .= ' AS '.$fieldalias;
@@ -530,7 +503,7 @@ class Query
             }
             $fieldName = $entry['name'];
             $expression = $entry['expression'];
-            $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName] : $this->quoteField($fieldName);
+            $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName] : Db::quoteIdentifier($fieldName);
             $result .= "($expression) AS $fieldAlias";
         }
 
@@ -622,7 +595,7 @@ class Query
     {
         if (($distinct || $this->m_distinct) && Tools::count($this->m_fields) > 0) {
             $result = 'SELECT COUNT(DISTINCT ';
-            $result .= implode($this->quoteFields($this->m_fields), ', ');
+            $result .= implode(', ', $this->m_fields);
             $result .= ') as count FROM';
         } else {
             $result = 'SELECT COUNT(*) AS count FROM ';
@@ -665,10 +638,10 @@ class Query
      */
     public function buildUpdate()
     {
-        $result = 'UPDATE '.$this->quoteField($this->m_table).' SET ';
+        $result = 'UPDATE '.Db::quoteIdentifier($this->m_table).' SET ';
 
         for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->quoteField($this->m_fields[$i]).'='.$this->m_values[$this->m_fields[$i]];
+            $result .= $this->m_fields[$i].'='.$this->m_values[$this->m_fields[$i]];
             if ($i < Tools::count($this->m_fields) - 1) {
                 $result .= ',';
             }
@@ -713,10 +686,10 @@ class Query
      */
     public function buildInsert()
     {
-        $result = 'INSERT INTO '.$this->quoteField($this->m_table).' (';
+        $result = 'INSERT INTO '.Db::quoteIdentifier($this->m_table).' (';
 
         for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->quoteField($this->m_fields[$i]);
+            $result .= $this->m_fields[$i];
             if ($i < Tools::count($this->m_fields) - 1) {
                 $result .= ',';
             }
@@ -771,8 +744,8 @@ class Query
     {
         foreach ($record as $name => $value) {
             if (isset($this->m_aliasLookup[$name])) {
-                $record[$this->m_aliasLookup[strtolower($name)]] = $value;
-                unset($record[strtolower($name)]);
+                $record[$this->m_aliasLookup[$name]] = $value;
+                unset($record[$name]);
             }
         }
     }
@@ -1013,55 +986,5 @@ class Query
     public function regexpCondition($field, $value)
     {
         return $this->m_db->func_regexp($field, $value); 
-    }
-
-    /**
-     * If we set a m_fieldquote you can pass a field to this function and it will
-     * quote all the identifiers (db, table, column, etc...) in the field.
-     *
-     * @param string $field The field to add quotes too
-     *
-     * @return string The quoted field, if we have a fieldquote
-     */
-    public function quoteField($field)
-    {
-        $quotefield = false;
-        if ((in_array($field, $this->m_quotedfields) || $field == $this->m_table) && preg_match('/(^[\w\.]+)/', $field)."'") {
-            $quotefield = true;
-        }
-
-        $exploded = explode('.', $field);
-        $identifiers = [];
-        foreach ($exploded as $identifier) {
-            if ($quotefield || in_array($identifier, $this->m_reservedNames)) {
-                $identifiers[] = Db::quoteIdentifier($identifier);
-            } else {
-                $identifiers[] = $identifier;
-            }
-        }
-        $field = implode('.', $identifiers);
-
-        return $field;
-    }
-
-    /**
-     * Quote an array of fields if m_fieldquote is set.
-     * Uses $this->quoteField($field).
-     *
-     * @param array $fields The fields to add quotes to
-     *
-     * @return array The quoted fields
-     */
-    public function quoteFields($fields)
-    {
-        if ($this->m_fieldquote) {
-            $quoted = [];
-            foreach ($fields as $key => $field) {
-                $quoted[$key] = $this->quoteField($field);
-            }
-            $fields = $quoted;
-        }
-
-        return $fields;
     }
 }

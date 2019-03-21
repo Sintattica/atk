@@ -362,19 +362,10 @@ class DateTimeAttribute extends Attribute
                 $query->addField($this->fieldName(), 'NULL', '', '', false);
             } else {
                 $db = $this->m_ownerInstance->getDb();
-                if ($db->getType() != 'oci9') {
-                    $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
-                } else {
-                    $value = $this->value2db($record);
-                    $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
-                }
+                $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
             }
         } else {
-            if (Config::getGlobal('database') != 'oci9') {
                 $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
-            } else {
-                $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
-            }
         }
     }
 
