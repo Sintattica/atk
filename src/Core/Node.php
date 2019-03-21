@@ -3308,7 +3308,10 @@ class Node
             $this->trackChangesIfNeeded($record, $excludes, $includes);
 
             if ($exectrigger) {
-                $this->executeTrigger('preUpdate', $record);
+                if (!$this->executeTrigger('preUpdate', $record)) {
+                    Tools::atkerror('preUpdate() failed!');
+                    return false;
+                }
             }
 
             $pk = $record['atkprimkey'];
