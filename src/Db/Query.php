@@ -5,14 +5,10 @@ namespace Sintattica\Atk\Db;
 use Sintattica\Atk\Core\Tools;
 
 /**
- * Abstract baseclass for SQL query builder drivers.
- *
- * All db drivers should derive a class from this baseclass and implement
- * the necessary methods.
- *
+ * SQL query builder
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @abstract
+ * @author Samuel BF
  */
 class Query
 {
@@ -228,6 +224,23 @@ class Query
             ++$this->m_generatedAlias;
         }
 
+        return $this;
+    }
+
+    /**
+     * Add a * to the field list (select all fields)
+     *
+     * @param string $table of the fields. If not set, will select fields from table and all joins.
+     *
+     * @return Query the query object itself
+     */
+    public function addAllFields($table = null)
+    {
+        if ($table) {
+            $this->m_fields[] = Db::quoteIdentifier($table).'.*';
+        } else {
+            $this->m_fields[] = '*';
+        }
         return $this;
     }
 

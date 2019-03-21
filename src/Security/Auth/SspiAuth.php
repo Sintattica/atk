@@ -139,13 +139,13 @@ class SspiAuth extends DbAuth
             // level.
             $qryobj = $db->createQuery();
             $qryobj->setTable($usertable);
-            $qryobj->addField("$usertable.*");
-            $qryobj->addField('usergroup.*');
+            $qryobj->addAllFields($usertable);
+            $qryobj->addAllFields('usergroup');
             $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
             $qryobj->addCondition("$usertable.$sspifield = '$user'");
 
             if (!empty($groupparentfield)) {
-                $qryobj->addField("grp.$groupparentfield");
+                $qryobj->addField($groupparentfield, '', 'grp');
                 $qryobj->addJoin($grouptable, 'grp', "usergroup.$levelfield = grp.$groupfield", true);
             }
             $query = $qryobj->buildSelect();

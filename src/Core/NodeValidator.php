@@ -202,7 +202,6 @@ class NodeValidator
         $db = $this->m_nodeObj->getDb();
         foreach ($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet) {
             $query = $db->createQuery();
-            $query->addField('*');
             $query->setTable($this->m_nodeObj->m_table);
 
             $attribs = [];
@@ -232,7 +231,7 @@ class NodeValidator
                 $query->addCondition('NOT ('.$this->m_nodeObj->primaryKey($record).')');
             }
 
-            if (Tools::count($db->getRows($query->buildSelect())) > 0) {
+            if ($db->getValue($query->buildCount()) > 0) {
                 Tools::atkTriggerError($record, $attribs, 'error_uniquefieldset');
             }
         }
