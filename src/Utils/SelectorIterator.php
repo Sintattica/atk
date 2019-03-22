@@ -26,7 +26,7 @@ class SelectorIterator extends IteratorIterator
      * @param Iterator $iterator iterator
      * @param Selector $selector selector
      */
-    public function __construct(\Iterator $iterator, Selector $selector)
+    public function __construct(\Traversable $iterator, Selector $selector)
     {
         parent::__construct($iterator);
         $this->m_selector = $selector;
