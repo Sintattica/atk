@@ -896,7 +896,7 @@ class FileAttribute extends Attribute
     {
         if ($mode == 'add' || $mode == 'update') {
             if (empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
-                $query->addField($this->fieldName(), 'NULL', '', '', false);
+                $query->addField($this->fieldName(), null, '', '', false);
             } else {
                 $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
             }

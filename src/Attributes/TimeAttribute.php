@@ -393,7 +393,7 @@ class TimeAttribute extends Attribute
         if ($mode == 'add' || $mode == 'update') {
             $value = $this->value2db($record);
             if ($value == null) {
-                $query->addField($this->fieldName(), 'NULL', '', '', false);
+                $query->addField($this->fieldName(), null, '', '', false);
             } else {
                 $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES));
             }

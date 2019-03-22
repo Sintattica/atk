@@ -1380,7 +1380,7 @@ EOF;
             } else {
                 for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
                     if ($record[$this->fieldName()] === null) {
-                        $query->addField($this->m_refKey[$i], 'NULL', '', '', false);
+                        $query->addField($this->m_refKey[$i], null, '', '', false);
                     } else {
                         $value = $record[$this->fieldName()];
                         if (is_array($value)) {
