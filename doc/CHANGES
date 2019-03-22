@@ -15,6 +15,10 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+- Removed Query->build* functions in favor of execute* ones.
+- Selector does not implement IteratorAggregate anymore, SelectorIterator is
+    removed.
++ Added Query->executeCount() functions (returns an int).
 + added Query->addAllFields to add a '*' to a select query.
 * Query->addField automatically add quotes around field and, if present, table.
 * Removed per-database Query Object classes.

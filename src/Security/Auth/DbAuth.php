@@ -180,34 +180,27 @@ class DbAuth extends AuthInterface
         $accountenableexpression = Config::getGlobal('auth_accountenableexpression');
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        if ($usertable == $leveltable || $leveltable == '') {
-            // Level and userid are stored in the same table.
-            // This means one user can only have one level.
-            $query = "SELECT * FROM $usertable WHERE $userfield ='$user'";
-        } else {
+        $query = $db->createQuery();
+        $query->addTable($usertable)
+            ->addAllFields()
+            ->addCondition(Db::quoteIdentifier($usertable).'.'.Db::quoteIdentifier($userfield).'=:user', [':user' => [$user]]);
+        if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one
             // level.
-            $qryobj = $db->createQuery();
-            $qryobj->setTable($usertable);
-            $qryobj->addAllFields($usertable);
-            $qryobj->addField($levelfield, '', 'usergroup');
-            $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
-            $qryobj->addCondition("$usertable.$userfield = '$user'");
+            $query->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
+            $query->addField($levelfield, '', 'usergroup');
 
             if (!empty($groupparentfield)) {
-                $qryobj->addField("grp.$groupparentfield");
-                $qryobj->addJoin($grouptable, 'grp', "usergroup.$levelfield = grp.$groupfield", true);
+                $query->addJoin($grouptable, 'grp', "usergroup.$levelfield = grp.$groupfield", true);
+                $query->addField("grp.$groupparentfield");
             }
-            $query = $qryobj->buildSelect();
         }
 
         if ($accountenableexpression) {
-            $query .= " AND $accountenableexpression";
+            $query->addCondition(" AND $accountenableexpression");
         }
-        $recs = $db->getRows($query);
-
-        return $recs;
+        return $query->executeSelect();
     }
 
     /**
@@ -229,9 +222,8 @@ class DbAuth extends AuthInterface
         $query->addField($groupparentfield);
         $query->setTable($grouptable);
         $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).')');
-        $recs = $db->getRows($query->buildSelect(true));
 
-        return $recs;
+        return $query->executeSelect(true);
     }
 
     /**

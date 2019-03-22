@@ -2177,7 +2177,7 @@ EOF;
         $selector = $this->_getSelectableRecordsSelector($record, $mode);
         $selector->limit($limit, $offset);
         $count = $selector->getRowCount();
-        $iterator = $selector->getIterator();
+        $rows = $selector->fetchAll();
         $more = ($offset + $limit > $count) ? 'false' : 'true';
 
         $result .= '<div id="total">'.$count.'</div>'."\n";
@@ -2185,7 +2185,7 @@ EOF;
         $result .= '<div id="more">'.$more.'</div>'."\n";
 
         $result .= '<ul>';
-        foreach ($iterator as $rec) {
+        foreach ($rows as $rec) {
             $option = $this->m_destInstance->descriptor($rec);
             $value = $this->m_destInstance->primaryKey($rec);
             $result .= '
@@ -2221,7 +2221,7 @@ EOF;
         $selector = $this->_getSelectableRecordsSelector($record, $mode);
         $selector->limit($limit, $offset);
         $count = $selector->getRowCount();
-        $iterator = $selector->getIterator();
+        $rows = $selector->fetchAll();
         $more = ($offset + $limit > $count) ? 'false' : 'true';
 
         $result .= '<div id="total">'.$count.'</div>'."\n";
@@ -2229,7 +2229,7 @@ EOF;
         $result .= '<div id="more">'.$more.'</div>'."\n";
 
         $result .= '<ul>';
-        foreach ($iterator as $rec) {
+        foreach ($rows as $rec) {
             $option = $value = $this->m_destInstance->descriptor($rec);
             $result .= '
           <li value="'.htmlentities($value).'">'.htmlentities($option).'</li>';

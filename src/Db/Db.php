@@ -761,6 +761,8 @@ class Db extends \PDO
      * get NOW() or SYSDATE() equivalent for the current database.
      *
      * Every database has it's own implementation to get the current date
+     *
+     * @return string
      */
     public function func_now()
     {
@@ -770,9 +772,10 @@ class Db extends \PDO
     /**
      * get SUBSTRING() equivalent for the current database.
      *
-     * @param string $fieldname The database fieldname
+     * @param string $fieldname The database fieldname (already quoted)
      * @param int $startat The position to start from
      * @param int $length The number of characters
+     *
      * @return string
      */
     public function func_substring($fieldname, $startat = 0, $length = 0)
@@ -785,7 +788,7 @@ class Db extends \PDO
      * Each database driver should override this method to perform vendor
      * specific conversion.
      *
-     * @param string $fieldname The field to generate the to_char for.
+     * @param string $fieldname The field to generate the to_char for (already quoted)
      * @param string $format Format specifier. The format is compatible with
      *                          php's date() function (http://www.php.net/date)
      *                          The default is what's specified by
@@ -807,7 +810,7 @@ class Db extends \PDO
     /**
      * Get CONCAT_WS() equivalent for the current database.
      *
-     * @param array $fields
+     * @param array $fields (quoted)
      * @param string $separator
      * @param bool $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
      *
@@ -856,7 +859,7 @@ class Db extends \PDO
      *
      * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
      *
-     * @param string $fieldname The field to generate the to_char for.
+     * @param string $fieldname The field to generate the to_char for (quoted).
      *
      * @return string Piece of sql query that converts a datetime field to char
      *                for the current database

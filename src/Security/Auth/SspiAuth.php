@@ -129,30 +129,23 @@ class SspiAuth extends DbAuth
         $groupparentfield = Config::getGlobal('auth_groupparentfield');
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        if ($usertable == $leveltable || $leveltable == '') {
-            // Level and userid are stored in the same table.
-            // This means one user can only have one level.
-            $query = "SELECT * FROM $usertable WHERE $sspifield ='$user'";
-        } else {
+        $query = $db->createQuery();
+        $query->setTable($userTable)
+            ->addAllFields($usertable)
+            ->addCondition(Db::quoteIdentifier($usertable).'.'.Db::quoteIdentifier($sspifield).'=:user', [':user' => [$user]]);
+        if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one
             // level.
-            $qryobj = $db->createQuery();
-            $qryobj->setTable($usertable);
-            $qryobj->addAllFields($usertable);
-            $qryobj->addAllFields('usergroup');
-            $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
-            $qryobj->addCondition("$usertable.$sspifield = '$user'");
+            $query->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
+            $query->addAllFields('usergroup');
 
             if (!empty($groupparentfield)) {
-                $qryobj->addField($groupparentfield, '', 'grp');
-                $qryobj->addJoin($grouptable, 'grp', "usergroup.$levelfield = grp.$groupfield", true);
+                $query->addJoin($grouptable, 'grp', "usergroup.$levelfield = grp.$groupfield", true);
+                $query->addField($groupparentfield, '', 'grp');
             }
-            $query = $qryobj->buildSelect();
         }
-        $recs = $db->getRows($query);
-
-        return $recs;
+        return $query->executeSelect();
     }
 
     public function getUser(&$user)

@@ -16,7 +16,7 @@ use Exception;
  *
  * @author Peter C. Verhage <peter@achievo.org>
  */
-class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
+class Selector implements \ArrayAccess, \Countable
 {
     /**
      * This selector's node.
@@ -61,27 +61,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      * @var array
      */
     protected $m_indices = null;
-
-    /**
-     * Current iterator instance (if iterator is used).
-     *
-     * @var SelectorIterator
-     */
-    private $m_iterator = null;
-
-    /**
-     * Current query object (if iterator is used).
-     *
-     * @var Query
-     */
-    private $m_query = null;
-
-    /**
-     * Current attributes by load type (if iterator is used).
-     *
-     * @var array
-     */
-    private $m_attrsByLoadType = null;
 
     /**
      * Constructor.
@@ -646,22 +625,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Transform raw database row to node compatible row for the current iterator.
-     *
-     * @param array $row raw database row
-     *
-     * @return array node compatible row
-     */
-    public function transformRow($row)
-    {
-        if ($this->m_iterator == null) {
-            throw new Exception(__METHOD__.' should only be called by the current atkSelectorIterator instance!');
-        }
-
-        return $this->_transformRow($row, $this->m_query, $this->m_attrsByLoadType);
-    }
-
-    /**
      * Returns the first found row.
      *
      * @return array first row
@@ -684,8 +647,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($this->m_rows === null) {
             $attrsByLoadType = $this->_getAttributesByLoadType();
             $query = $this->_buildSelectQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->queryP($query->buildSelect());
-            $rows = $stmt->fetchAll();
+            $rows = $query->executeSelect();
             $this->m_rows = $this->_transformRows($rows, $query, $attrsByLoadType);
         }
 
@@ -709,8 +671,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             $query->addExpression($field, 'SUM('.$expr.')', $prefix);
         }
 
-        $stmt = $this->_getDb()->queryP($query->buildSelect());
-        $row = $stmt->fetch();
+        $row = $query->executeSelect()[0];
 
         $query->deAlias($row);
         $res = [];
@@ -731,10 +692,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         if ($this->m_rowCount === null) {
             $attrsByLoadType = $this->_getAttributesByLoadType();
-            $query = $this->_buildCountQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->queryP($query->buildCount());
-            $rows = $stmt->fetchAll();
-            $this->m_rowCount = Tools::count($rows) == 1 ? $rows[0]['count'] : Tools::count($rows); // group by fix
+            $this->m_rowCount = $this->_buildCountQuery($attrsByLoadType)->executeCount();
         }
 
         return $this->m_rowCount;
@@ -771,8 +729,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         $query->addGroupBy($expression);
         $query->addOrderBy($expression);
 
-        $stmt = $this->_getDb()->queryP($query->buildSelect());
-        $this->m_indices = $stmt->getAllValues();
+        $this->m_indices = $query->executeSelect();
 
         return $this->m_indices;
     }
@@ -832,39 +789,10 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Returns this selector's iterator.
-     *
-     * NOTE: if you call this method multiple times, the same iterator will
-     *       be returned, unless you have closed the selector first
-     */
-    public function getIterator()
-    {
-        if ($this->m_iterator == null) {
-            $attrsByLoadType = $this->_getAttributesByLoadType();
-            $query = $this->_buildSelectQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->queryP($query->buildSelect());
-
-            $this->m_attrsByLoadType = $attrsByLoadType;
-            $this->m_query = $query;
-
-            $this->m_iterator = new SelectorIterator($stmt, $this);
-        }
-
-        return $this->m_iterator;
-    }
-
-    /**
-     * Closes the current statement used for this selector.
-     * Also clears the row and row count cache.
+     * Clears the row and row count cache.
      */
     public function close()
     {
-        if ($this->m_iterator != null) {
-            $this->m_iterator = null;
-            $this->m_query = null;
-            $this->m_attrsByLoadType = null;
-        }
-
         $this->m_rows = null;
         $this->m_rowCount = null;
         $this->m_indices = null;

@@ -541,15 +541,47 @@ class Query
     }
 
     /******************************** Builder/executer functions *****************************/
+    /**
+     * Builds and execute the SQL Select COUNT(*) query.
+     *
+     * This is different from select,
+     * because we do joins, like in a select, but we don't really select the
+     * fields.
+     *
+     * @return int $count
+     */
+    public function executeCount($distinct = false)
+    {
+        $query = new QueryPart('');
+        if (($distinct || $this->m_distinct) && !empty($this->m_fields)) {
+            $query->appendSql('SELECT COUNT(DISTINCT ');
+            $query->appendSql(implode(', ', $this->m_fields));
+            $query->appendSql(') as count FROM');
+        } else {
+            $query->appendSql('SELECT COUNT(*) AS count FROM');
+        }
+
+        $query->appendSql(Db::quoteIdentifier($this->m_table));
+        $query->appendSql(implode(' ', $this->m_joins));
+
+        $query->append($this->whereClause());
+
+        if (!empty($this->m_groupbys)) {
+           $query->appendSql(' GROUP BY '.implode(', ', $this->m_groupbys));
+        }
+
+        return $this->m_db->getValue($query);
+    }
 
     /**
-     * Builds the SQL Select query.
+     * Wrapper function to execute a select query.
      *
-     * @param bool $distinct distinct records?
+     * @param bool $distinct Set to true to perform a distinct select,
+     *                       false for a regular select.
      *
-     * @return QueryPart a SQL Select Query
+     * @return records[] array
      */
-    public function buildSelect($distinct = false)
+    public function executeSelect($distinct = false)
     {
         if (empty($this->m_fields) && empty($this->m_expressions)) {
             return false;
@@ -591,60 +623,15 @@ class Query
             $query->append($this->limiterClause());
         }
 
-        return $query;
+        return $this->getDb()->queryP($query)->fetchAll();
     }
 
     /**
-     * Builds the SQL Select COUNT(*) query. This is different from select,
-     * because we do joins, like in a select, but we don't really select the
-     * fields.
+     * Builds and execute the SQL Update query.
      *
-     * @return string a SQL Select COUNT(*) Query
+     * @return bool $success
      */
-    public function buildCount($distinct = false)
-    {
-        $query = new QueryPart('');
-        if (($distinct || $this->m_distinct) && !empty($this->m_fields)) {
-            $query->appendSql('SELECT COUNT(DISTINCT ');
-            $query->appendSql(implode(', ', $this->m_fields));
-            $query->appendSql(') as count FROM');
-        } else {
-            $query->appendSql('SELECT COUNT(*) AS count FROM');
-        }
-        
-        $query->appendSql(Db::quoteIdentifier($this->m_table));
-        $query->appendSql(implode(' ', $this->m_joins));
-
-        $query->append($this->whereClause());
-
-        if (!empty($this->m_groupbys)) {
-           $query->appendSql(' GROUP BY '.implode(', ', $this->m_groupbys));
-        }
-
-        return $query;
-    }
-
-    /**
-     * Wrapper function to execute a select query.
-     *
-     * @param bool $distinct Set to true to perform a distinct select,
-     *                       false for a regular select.
-     *
-     * @return array The set of records returned by the database.
-     */
-    public function executeSelect($distinct = false)
-    {
-        $query = $this->buildSelect($distinct);
-
-        return $this->getDb()->getRows($query);
-    }
-
-    /**
-     * Builds the SQL Update query.
-     *
-     * @return string a SQL Update Query
-     */
-    public function buildUpdate()
+    public function executeUpdate($distinct = false)
     {
         $query = new QueryPart('UPDATE '.Db::quoteIdentifier($this->m_table).' SET');
 
@@ -657,25 +644,15 @@ class Query
 
         $query->append($this->whereClause());
 
-        return $query;
+        return ($this->getDb()->queryP($query) != false);
     }
 
     /**
-     * Wrapper function to execute an update query.
-     */
-    public function executeUpdate()
-    {
-        $query = $this->buildUpdate();
-
-        return $this->getDb()->queryP($query);
-    }
-
-    /**
-     * Builds the SQL Insert query.
+     * Builds & execute the SQL Insert query.
      *
-     * @return string a SQL Insert Query
+     * @return bool $success
      */
-    public function buildInsert()
+    public function executeInsert($distinct = false)
     {
         $query = new QueryPart('INSERT INTO '.Db::quoteIdentifier($this->m_table).'');
 
@@ -687,45 +664,26 @@ class Query
         $query->append(new QueryPart(implode(', ', array_keys($parameters)), $parameters));
         $query->appendSql(')');
 
-        return $query;
-    }
-
-    /**
-     * Wrapper function to execute an insert query.
-     */
-    public function executeInsert()
-    {
-        $query = $this->buildInsert();
-
         $result = $this->getDb()->queryP($query);
         if ($result && $this->m_returnSeqValue) {
             $this->m_seqValue = $this->getDb()->lastInsertId($this->m_seqName);
             Tools::atkdebug("Value for sequence {$this->m_seqName}: {$this->m_seqValue}");
         }
 
-        return $result;
+        return ($result != false);
     }
 
     /**
-     * Builds the SQL Delete query.
+     * Execute a SQL delete query
      *
-     * @return string a SQL Delete Query
+     * @return bool $success
      */
-    public function buildDelete()
+    public function executeDelete($distinct = false)
     {
         $query = new QueryPart('DELETE FROM '.Db::quoteIdentifier($this->m_table));
         $query->append($this->whereClause());
-        return $query;
-    }
 
-    /**
-     * Wrapper function to execute a delete query.
-     */
-    public function executeDelete()
-    {
-        $query = $this->buildDelete();
-
-        return $this->getDb()->queryP($query);
+        return ($this->getDb()->queryP($query) != false);
     }
 
     /**************************** Search functions **********************************************
