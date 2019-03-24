@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Session\SessionManager;
@@ -162,53 +163,29 @@ class AggregatedColumn extends Attribute
 
             if (is_object($p_attrib)) {
                 $condition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode);
-                if (!empty($condition)) {
+                if (!is_null($condition)) {
                     $searchconditions[] = $condition;
                 }
             }
         }
 
         // When searchmode is substring also search the value in a concat of all searchfields
-        if ($searchmode == 'substring') {
-            $value = $this->escapeSQL(trim($value));
+        $value = trim($value);
 
-            $data = [];
-            foreach ($this->m_searchfields as $field) {
-                if (strpos($field, '.') == false) {
-                    $data[$field] = $table.'.'.$field;
-                } else {
-                    $data[$field] = $field;
-                }
+        $data = [];
+        foreach ($this->m_searchfields as $field) {
+            if (strpos($field, '.') == false) {
+                $data[$field] = Db::quoteIdentifier($table, $field);
+            } else {
+                $parts = explode('.', $field);
+                $data[$field] = Db::quoteIdentifier($parts[0], $parts[1]);
             }
-
-            $parser = new StringParser($this->m_template);
-            $concatFields = $parser->getAllParsedFieldsAsArray($data, true);
-            $concatTags = $concatFields['tags'];
-            $concatSeparators = $concatFields['separators'];
-
-            // to search independent of characters between tags, like spaces and comma's,
-            // we remove all these separators (defined in the node with new atkAggregatedColumn)
-            // so we can search for just the concatenated tags in concat_ws [Jeroen]
-            foreach ($concatSeparators as $separator) {
-                $value = str_replace($separator, '', $value);
-            }
-
-            $db = $this->getDb();
-            $fieldName = $db->func_concat_ws($concatTags, '', true);
-            $placeholder = QueryPart::placeholder($fieldName);
-            $condition = new QueryPart("UPPER({$fieldName}) LIKE UPPER({$placeholder})", [$placeholder => ['%'.$value.'%']]);
-
-            $searchconditions[] = $condition;
         }
+        $parser = new StringParser($this->m_template);
+        $expr = $parser->getConcatExpr($data, $this->getDb());
+        $searchconditions[] = $query->substringCondition($expr, $value);
 
-        if (Tools::count($searchconditions)) {
-            $query = new QueryPart('(');
-            $query->append(QueryPart::implode(' OR ', $searchconditions));
-            $query->appendSql(')');
-            return $query;
-        }
-
-        return '';
+        return QueryPart::implode('OR', $searchconditions, true);
     }
 
     /**

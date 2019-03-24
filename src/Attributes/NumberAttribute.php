@@ -682,13 +682,16 @@ class NumberAttribute extends Attribute
     }
 
     /**
-     * Get the between search condition.
+     * Get the between search condition
+     *
+     * This function checks the nullity of one attribute (which leads to greaterthan or
+     * lessthan condition) and the order of value*
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param string $fieldname The name of the field in the database
-     * @param array $value The processed search value
+     * @param string $fieldname The name of the field in the database (quoted)
+     * @param array $value The processed search values indexed by 'from' and 'to'
      *
-     * @return string query where clause for searching
+     * @return QueryPart where clause for searching
      */
     public function getBetweenCondition($query, $fieldname, $value)
     {
@@ -707,7 +710,7 @@ class NumberAttribute extends Attribute
             return $query->lessthanequalCondition($fieldname, $value['to']);
         }
 
-        return '';
+        return null;
     }
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
@@ -720,14 +723,12 @@ class NumberAttribute extends Attribute
             } elseif ($value['to'] != '') {
                 $value = $value['to'];
             } else {
-                return '';
+                return null;
             }
 
             return parent::getSearchCondition($query, $table, $value, $searchmode);
         }
 
-        $fieldname = $table.'.'.$this->fieldName();
-
-        return $this->getBetweenCondition($query, $fieldname, $value);
+        return $this->getBetweenCondition($query, Db::quoteIdentifier($table, $this->fieldName()), $value);
     }
 }

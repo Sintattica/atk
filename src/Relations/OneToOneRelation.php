@@ -5,8 +5,9 @@ namespace Sintattica\Atk\Relations;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Core\Node;
 
 /**
@@ -1020,68 +1021,53 @@ class OneToOneRelation extends Relation
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if ($this->createDestination() && is_array($value)) {
-            // we are a relation, so instead of hooking ourselves into the
-            // query, hook the attributes in the destination node onto the query
-            foreach ($value as $key => $val) {
-                // if we aren't searching for anything in this field, there is no need
-                // to look any further:
-                if ($val === '' || $val === null) {
-                    continue;
-                }
-
-                $p_attrib = $this->m_destInstance->m_attribList[$key];
-
-                if (is_object($p_attrib)) {
-                    if ($this->m_refKey && $this->createDestination()) {
-                        // master mode
-                        $new_table = $this->fieldName();
-                    } else {
-                        // slave mode
-                        $new_table = $this->m_destInstance->m_table;
-
-                        // we need to left join the destination table into the query
-                        // (don't worry ATK won't add it when it's already there)
-                        $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
-                    }
-                    $p_attrib->searchCondition($query, $new_table, $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
-                } else {
-                    // attribute not found in destination, so it should
-                    // be in the owner (this is the case when extra fields
-                    // are in the relation
-                    $p_attrib = $this->m_ownerInstance->m_attribList[$key];
-                    if (is_object($p_attrib)) {
-                        $p_attrib->searchCondition($query, $p_attrib->getOwnerInstance()->getTable(), $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
-                    } else {
-                        Tools::atkdebug("Field $key was not found in this relation (this is very weird)");
-                    }
-                }
-            }
-        } else {
+        if (!$this->createDestination) {
+            return null;
+        }
+        if (!is_array($value)) {
             // we were passed a value that is not an array, so appearantly the function calling us
             // does not know we are a relation, not just another attrib
             // so we assume that it is looking for something in the descriptor def of the destination
-            if ($this->createDestination()) {
-                $descfields = $this->m_destInstance->descriptorFields();
-                foreach ($descfields as $key) {
-                    $p_attrib = $this->m_destInstance->m_attribList[$key];
-                    if (is_object($p_attrib)) {
-                        if ($this->m_refKey && $this->createDestination()) {
-                            // master mode
-                            $new_table = $this->fieldName();
-                        } else {
-                            // slave mode
-                            $new_table = $this->m_destInstance->m_table;
+            return $this->m_destInstance->getSeachCondition($query, $table, $value, $searchmode, $fieldname);
+        }
+        // we are a relation, so instead of hooking ourselves into the
+        // query, hook the attributes in the destination node onto the query
+        $conditions = [];
+        foreach ($value as $key => $val) {
+            // if we aren't searching for anything in this field, there is no need
+            // to look any further:
+            if ($val === '' || $val === null) {
+                continue;
+            }
 
-                            // we need to left join the destination table into the query
-                            // (don't worry ATK won't add it when it's already there)
-                            $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
-                        }
-                        $p_attrib->searchCondition($query, $new_table, $value, $searchmode);
-                    }
+            $p_attrib = $this->m_destInstance->m_attribList[$key];
+
+            if (is_object($p_attrib)) {
+                if ($this->m_refKey && $this->createDestination()) {
+                    // master mode
+                    $new_table = $this->fieldName();
+                } else {
+                    // slave mode
+                    $new_table = $this->m_destInstance->m_table;
+
+                    // we need to left join the destination table into the query
+                    // (don't worry ATK won't add it when it's already there)
+                    $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
+                }
+                $conditions[] = $p_attrib->getSearchCondition($query, $new_table, $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
+            } else {
+                // attribute not found in destination, so it should
+                // be in the owner (this is the case when extra fields
+                // are in the relation
+                $p_attrib = $this->m_ownerInstance->m_attribList[$key];
+                if (is_object($p_attrib)) {
+                    $conditions[] = $p_attrib->getSearchCondition($query, $p_attrib->getOwnerInstance()->getTable(), $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
+                } else {
+                    Tools::atkdebug("Field $key was not found in this relation (this is very weird)");
                 }
             }
         }
+        return QueryPart::implode('OR', $conditions, true);
     }
 
     /**

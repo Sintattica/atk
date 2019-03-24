@@ -1692,9 +1692,12 @@ class Attribute
     }
 
     /**
-     * Creates a searchcondition for the field,
-     * was once part of searchCondition, however,
+     * Creates a searchcondition for the field and returns it.
+     *
+     * Was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
+     *
+     * Side effect : it may add some joins into $query needed to perform searches.
      *
      * @param Query $query The query object where the search condition should be placed on
      * @param string $table The name of the table in which this attribute
@@ -1703,9 +1706,9 @@ class Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
-     * @param string $fieldname alias?
+     * @param string $fieldname prefix for joined tables.
      *
-     * @return QueryPart the search condition
+     * @return QueryPart the search condition or null if no condition was returned
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
@@ -1727,12 +1730,12 @@ class Attribute
 
         $func = $searchmode.'Condition';
         if (method_exists($query, $func) && ($value || ($value == 0))) {
-            return $query->$func($table.'.'.$this->fieldName(), $value, $this->dbFieldType());
+            return $query->$func(Db::quoteIdentifier($table, $this->fieldName()), $value, $this->dbFieldType());
         } elseif (!method_exists($query, $func)) {
             Tools::atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().', ignoring condition.');
         }
 
-        return '';
+        return null;
     }
 
     /**

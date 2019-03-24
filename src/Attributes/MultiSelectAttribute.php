@@ -200,15 +200,14 @@ class MultiSelectAttribute extends ListAttribute
     {
         // Multiselect attribute has only 1 searchmode, and that is substring.
         $searchcondition = '';
-        if (is_array($value) && $value[0] != '' && Tools::count($value) > 0) {
-            $searchcondition = [];
-            foreach ($value as $str) {
-                $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
-            }
-            $searchcondition = implode(' OR ', $searchcondition);
+        if (!is_array($value) || $value[0] == '' || empty($value)) {
+            return null;
         }
-
-        return $searchcondition;
+        $searchconditions = [];
+        foreach ($value as $str) {
+            $searchconditions[] = $query->substringCondition(Db::quoteIdentifier($table, $this->fieldName()), $str);
+        }
+        return QueryPart::implode('OR', $searchconditions, true);
     }
 
     /**

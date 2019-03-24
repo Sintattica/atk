@@ -937,34 +937,32 @@ class DateAttribute extends Attribute
             } else {
                 $value = array('from' => $value, 'to' => $value);
             }
-            foreach (['from', 'to'] as $k) {
-                if ($v = $value[$k]) {
-                    // yyyy
-                    if (strlen($v) == 4 && is_numeric($v)) {
-                        if ($k == 'from') {
-                            $v = "1/1/$v";
-                        } else {
-                            $v = "31/12/$v";
-                        }
+            foreach ($value as $k => $v) {
+                // yyyy
+                if (strlen($v) == 4 && is_numeric($v)) {
+                    if ($k == 'from') {
+                        $v = "1/1/$v";
+                    } else {
+                        $v = "31/12/$v";
                     }
-                    // m/yyyy
-                    if (!is_numeric($v) && substr_count($v, '/') == 1 && (strlen($v) == 6 || strlen($v) == 7)) {
-                        // if we always set the day to 31, the framework somewhere modifies the query for months with less than 31 days
-                        // eg. '2015-09-31' becomes '2015-10-01'
-                        $parts = explode('/', $v);
-                        $daysInMonth = self::daysInMonth($parts[0], $parts[1]);
-                        if ($k == 'from') {
-                            $v = "1/$v";
-                        } else {
-                            $v = "$daysInMonth/$v";
-                        }
-                    }
-                    // d/m
-                    if (substr_count($v, '/') == 1) {
-                        $v .= '/'.date('Y');
-                    }
-                    $value[$k] = $v;
                 }
+                // m/yyyy
+                if (!is_numeric($v) && substr_count($v, '/') == 1 && (strlen($v) == 6 || strlen($v) == 7)) {
+                    // if we always set the day to 31, the framework somewhere modifies the query for months with less than 31 days
+                    // eg. '2015-09-31' becomes '2015-10-01'
+                    $parts = explode('/', $v);
+                    $daysInMonth = date('t', mktime(0, 0, 0, $parts[0], 0, $parts[1]));
+                    if ($k == 'from') {
+                        $v = "1/$v";
+                    } else {
+                        $v = "$daysInMonth/$v";
+                    }
+                }
+                // d/m
+                if (substr_count($v, '/') == 1) {
+                    $v .= '/'.date('Y');
+                }
+                $value[$k] = $v;
             }
         }
 
@@ -974,138 +972,34 @@ class DateAttribute extends Attribute
         $fromval = $this->value2db(array($this->fieldName() => $valueFrom));
         $toval = $this->value2db(array($this->fieldName() => $valueTo));
 
-        $fieldname = $db->func_datetochar($fieldname ? $fieldname : ($table.'.'.$this->fieldName()));
+        $fieldname = $fieldname ? Db::quoteIdentifier($fieldname) : Db::quoteIdentifier($table, $this->fieldName());
 
-        if ($fromval == null && $toval == null) {
-            ;
-        } // do nothing
-        else {
-            if ($fromval != null && $toval != null) {
+        switch($fromval == null) {
+        case true:
+            switch($toval == null) {
+            case true:
+                // Both null, do nothing
+                return null;
+            case false:
+                return $query->lessthanequalCondition($fieldname, $toval);
+            }
+            break;
+        case false:
+            switch($toval == null) {
+            case true:
+                return $query->greaterthanequalCondition($fieldname, $fromval);
+            case false:
+                // Both present : reorder if needed
                 if ($fromval > $toval) {
-                    // User entered dates in wrong order. Let's put them in the right order.
                     $tmp = $fromval;
                     $fromval = $toval;
                     $toval = $tmp;
                 }
-                $searchcondition = $query->betweenCondition($fieldname, $fromval, $toval);
-            } else {
-                if ($fromval != null && $toval == null) {
-                    $searchcondition = $query->greaterthanequalCondition($fieldname, $fromval);
-                } else {
-                    if ($fromval == null && $toval != null) {
-                        $searchcondition = $query->lessthanequalCondition($fieldname, $toval);
-                    } else {
-                        if ((is_array($value['from'])) or (is_array($value['to']))) {
-                            $searchcondition = $this->_getDateArraySearchCondition($query, $table, $value);
-                        } else {
-                            // plain text search condition
-                            $value = $this->_autoCompleteDateString($value);
-                            $searchcondition = $query->exactCondition($fieldname, $value, $this->dbFieldType());
-                        }
-                    }
-                }
+                return $query->betweenCondition($fieldname, $fromval, $toval, $this->dbFieldType());
             }
+            break;
         }
-
-        return $searchcondition;
-    }
-
-    /**
-     * Completes a date string by adding zeros to day and month
-     * (if absent) and 19 or 20 in front of the year, depending
-     * on the current value of the year. If the year is below 50
-     * it will assume it's a year of the 21th century otherwise
-     * (50 or above) it will assume it's a 20th century year.
-     *
-     * @todo make this suitable for other date formats like
-     *       YYYY-MM-DD
-     * @todo change this code when it's approaching 2050 :-)
-     *
-     * @param string $value String A date in String format (like 9-12-2005)
-     *
-     * @return string The auto-completed date String
-     */
-    public function _autoCompleteDateString($value)
-    {
-        $elems = explode('-', $value);
-
-        return sprintf('%02d', $elems[0]).'-'.sprintf('%02d', $elems[1]).'-'.($elems[2] < 100 ? ($elems[2] < 50 ? '20' : '19') : '').sprintf('%02d', $elems[2]);
-    }
-
-    /**
-     * Makes the search conditions if the normal conditions are
-     * not met and if given date is an array,
-     * for example when only the year or year-month is given.
-     *
-     * @param Query $query Query which is given in getSearchCondition
-     * @param string $table Table on which the condition must be executed
-     * @param array $value Array with values given for the search
-     *
-     * @return string YYYY-MM or YYYY
-     */
-    public function _getDateArraySearchCondition($query, $table, $value)
-    {
-        $db = $this->getDb();
-        $fromvalue = $this->_MakeDateForCondition($value['from']);
-        $tovalue = $this->_MakeDateForCondition($value['to']);
-        $datearraysearchcondition = '';
-
-        if ($fromvalue != '') {
-            $field = $db->func_datetochar($table.'.'.$this->fieldName(), $this->_SetDateFormat($value['from']));
-            $datearraysearchcondition = $query->greaterthanequalCondition($field, $fromvalue);
-            // check if tovalue is set, if so add the AND
-            if ($tovalue != '') {
-                $datearraysearchcondition .= ' AND ';
-            }
-        }
-        if ($tovalue != '') {
-            $field = $db->func_datetochar($table.'.'.$this->fieldName(), $this->_SetDateFormat($value['to']));
-            $datearraysearchcondition .= $query->lessthanequalCondition($field, $tovalue);
-        }
-
-        return $datearraysearchcondition;
-    }
-
-    /**
-     * Checks which of the two values are filled in the array
-     * and returns them.
-     *
-     * @param array $value Array with 3 fields (year, month, day)
-     *
-     * @return string YYYY-MM or YYYY
-     */
-    public function _MakeDateForCondition($value)
-    {
-        $fromvalue = '';
-        if ($value['year'] != '') {
-            $fromvalue .= $value['year'];
-        }
-        if ($value['year'] != '' && $value['month'] != 0) {
-            $fromvalue .= '-'.sprintf('%02d', $value['month']);
-        }
-
-        return $fromvalue;
-    }
-
-    /**
-     * Checks which of the two values are filled in the array
-     * and returns the DATE_FORMAT for the database.
-     *
-     * @param array $value Array with 3 fields (year, month, day)
-     *
-     * @return string DATE_FORMAT
-     */
-    public function _SetDateFormat($value)
-    {
-        $format = '';
-        if ($value['year'] != '') {
-            $format = 'Y';
-        }
-        if ($value['year'] != '' && $value['month'] != 0) {
-            $format = 'Y-m';
-        }
-
-        return $format;
+        return null; // but you can't get there, even if you try very hard :)
     }
 
     /**
@@ -1551,24 +1445,5 @@ class DateAttribute extends Attribute
     public function getYearSorting()
     {
         return $this->m_year_sorting;
-    }
-
-    /**
-     * Returns the number of days in a given month and year
-     * see also http://php.net/manual/en/function.cal-days-in-month.php#38666.
-     *
-     * @param int $month (1-12)
-     * @param int $year
-     *
-     * @return int the length in days of the selected month in the given calendar
-     */
-    public static function daysInMonth($month, $year)
-    {
-        if (function_exists('cal_days_in_month')) {
-            // the php calendar extension is installed so we use it
-            return cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        }
-
-        return $month == 2 ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29))) : (($month - 1) % 7 % 2 ? 30 : 31);
     }
 }

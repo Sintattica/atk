@@ -6,6 +6,7 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\FieldSet;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\Relation;
@@ -3567,70 +3568,78 @@ class Node
     }
 
     /**
-     * Get search condition for this node.
+     * Get search condition for this node based on descriptor fields
+     *
+     * This function is used by relations columns to perform searches 
      *
      * @param Query $query
-     * @param string $table
-     * @param string $alias
-     * @param string $value
+     * @param string $table or alias used to identify this node's table.
+     * @param string $value to search for
      * @param string $searchmode
+     * @param string $fieldaliasprefix to prefix to table names if need to join more tables.
      *
      * @return string The search condition
      */
-    public function getSearchCondition($query, $table, $alias, $value, $searchmode)
+    public function getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix)
     {
-        $usefieldalias = false;
-
-        if ($alias == '') {
-            $alias = $this->m_table;
-        } else {
-            $usefieldalias = true;
+        if ($table == '') {
+            $table = $this->m_table;
         }
-
         $searchConditions = [];
 
         $attribs = $this->descriptorFields();
         array_unique($attribs);
 
+        // Searching by individual attributes in descriptor
         foreach ($attribs as $field) {
             $p_attrib = $this->getAttribute($field);
             if (!is_object($p_attrib)) {
                 continue;
-            }
-            $fieldaliasprefix = '';
-
-            if ($usefieldalias) {
-                $fieldaliasprefix = $alias.'_AE_';
             }
 
             // check if the node has a searchcondition method defined for this attr
             $methodName = $field.'_searchcondition';
             if (method_exists($this, $methodName)) {
                 $searchCondition = $this->$methodName($query, $table, $value, $searchmode);
-                if ($searchCondition != '') {
+                if (!is_null($searchCondition)) {
                     $searchConditions[] = $searchCondition;
                 }
             } else {
-                // checking for the getSearchCondition for backwards compatibility
-                if (method_exists($p_attrib, 'getSearchCondition')) {
-
-                    Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
-                    $searchCondition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
-                    if ($searchCondition != '') {
-                        $searchConditions[] = $searchCondition;
-                    }
-                } else {
-                    // if the attrib can't return it's searchcondition, we'll just add it to the query
-                    // and hope for the best
-                    $p_attrib->searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+                Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
+                $searchCondition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+                if (!is_null($searchCondition)) {
+                    $searchConditions[] = $searchCondition;
                 }
             }
         }
 
-        if (Tools::count($searchConditions)) {
-            return '('.implode(' OR ', $searchConditions).')';
+        // Searching by descriptor value in itself
+        $data = [];
+        foreach ($attribs as $field) {
+            if (strpos($field, '.') == false) {
+                $data[$field] = Db::quoteIdentifier($table, $field);
+            } else {
+                $parts = explode('.', $field);
+                $data[$field] = Db::quoteIdentifier($parts[0], $parts[1]);
+            }
+        }
+
+        // Getting the descriptor string :
+        if ($this->m_descTemplate != null) {
+            $descriptordef = $this->m_descTemplate;
+        } elseif (method_exists($this, 'descriptor_def')) {
+            $descriptordef = $this->descriptor_def();
         } else {
-            return '';
+            $descriptordef = $this->descriptor(null);
+        }
+        $parser = new StringParser($descriptordef);
+        $expr = $parser->getConcatExpr($data, $this->getDb());
+        $searchConditions[] = $query->substringCondition($expr, $value);
+
+        if (!empty($searchConditions)) {
+            return QueryPart::implode('OR', $searchConditions, true);
+        } else {
+            return null;
         }
     }
 

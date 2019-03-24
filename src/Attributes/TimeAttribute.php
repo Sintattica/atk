@@ -452,7 +452,7 @@ class TimeAttribute extends Attribute
      *                           attribute's getSearchModes() method.
      * @param string $fieldname
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart The searchcondition to use.
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {

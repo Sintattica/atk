@@ -11,6 +11,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
@@ -1290,10 +1291,12 @@ EOF;
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->createDestination()) {
-            return;
+        if (!$this->createDestination() || empty($value)) {
+            return null;
         }
 
+        $searchConditions = [];
+        // First, searching on listColumns values
         if (is_array($value)) {
             foreach ($this->m_listColumns as $attr) {
                 $attrValue = $value[$attr];
@@ -1301,7 +1304,7 @@ EOF;
                     /** @var Attribute $p_attrib */
                     $p_attrib = $this->m_destInstance->m_attribList[$attr];
                     if (!$p_attrib == null) {
-                        $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
+                        $searchConditions[] = $p_attrib->getSearchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
                     }
                 }
             }
@@ -1311,57 +1314,49 @@ EOF;
             }
         }
 
+        // Then, searching on target values (either on refKeys stored in the current node table, either
+        // on descriptors).
 
-        if (empty($value)) {
-            return '';
-        } else {
-            if (!$this->hasFlag(self::AF_LARGE) && !$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE)) {
-                // We only support 'exact' matches.
-                // But you can select more than one value, which we search using the IN() statement,
-                // which should work in any ansi compatible database.
-                if (!is_array($value)) { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-                    $value = array($value);
-                }
+        // Without autocomplete, we receive one reference or a list of references (keys stored in
+        // current node table).
+        if (!$this->hasFlag(self::AF_LARGE) && !$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE)) {
+            // We only support 'exact' matches.
+            // But you can select more than one value, which we search using the IN() statement,
+            // which should work in any ansi compatible database.
+            if (!is_array($value)) {
+                $value = array($value);
+            }
 
-                if (Tools::count($value) == 1) { // exactly one value
+            if (Tools::count($value) == 1) { // exactly one value
 
-                    if ($value[0] == '__NONE__') {
-                        return $query->nullCondition($table.'.'.$this->fieldName(), true);
-                    } elseif ($value[0] != '') {
-                        return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
-                    }
-                } else { // search for more values using IN()
-                    return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
-                }
-            } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
-
-                if($value[0] == ''){
-                    return '';
-                }
-
-
-                // If we have a descriptor with multiple fields, use CONCAT
-                $attribs = $this->m_destInstance->descriptorFields();
-                $alias = $fieldname.$this->fieldName();
-                if (Tools::count($attribs) > 1) {
-                    $searchcondition = $this->getConcatFilter($value, $alias);
+                if ($value[0] == '__NONE__') {
+                    $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
+                } elseif ($value[0] != '') {
+                    $searchConditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $this->escapeSQL($value[0]), $this->dbFieldType());
                 } else {
-                    // ask the destination node for it's search condition
-                    $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
-                    $conditions = '';
-                    foreach($value as $v) {
-                        $sc = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode);
-
-                        if($sc != '') {
-                            $conditions[] = '('.$sc.')';
-                        }
-                    }
-                    $searchcondition = implode(' OR ', $conditions);
+                    return null;
                 }
+            } else { // search for more values using IN()
+                $searchConditions[] = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
+            }
+        } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
+            //  With autocomplete, we receive the label of target node.
+            if($value[0] == ''){
+                return null;
+            }
+            // ask the destination node for it's search condition
+            $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
+            foreach($value as $v) {
+                $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+                $sc = $this->m_destInstance->getSearchCondition($query, $alias, $v, $searchmode, $fieldname);
 
-                return $searchcondition;
+                if($sc != null) {
+                    $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $this->m_destInstance->m_table, $alias), false);
+                    $searchConditions[] = $sc;
+                }
             }
         }
+        return QueryPart::implode('OR', $searchConditions, true);
     }
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')

@@ -202,7 +202,7 @@ class BoolAttribute extends Attribute
             $value = $value[$this->fieldName()];
         }
         if (isset($value)) {
-            return $query->exactBoolCondition($table.'.'.$this->fieldName(), $value);
+            return $query->exactBoolCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
         }
 
         return '';

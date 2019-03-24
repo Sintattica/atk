@@ -1090,7 +1090,7 @@ class OneToManyRelation extends Relation
      * @param Query $query The query object where the search condition should be placed on
      * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param mixed $values The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
@@ -1098,67 +1098,29 @@ class OneToManyRelation extends Relation
      *
      * @return string The searchcondition to use.
      */
-    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $values, $searchmode, $fieldname = '')
     {
-        $usedfields = [];
-        $searchconditions = [];
-
-        if (!is_array($value)) {
-            foreach ($this->m_destInstance->descriptorFields() as $field) {
-                if (!in_array($field, $usedfields)) {
-                    $sc = $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $value, $searchmode, $field, $table);
-                    if (!empty($sc)) {
-                        $searchconditions[] = $sc;
-                    }
-                    $usedfields[] = $field;
-                }
-            }
-        } else {
-            foreach ($value as $key => $val) {
-                if ($val) {
-                    $sc = $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $val, $searchmode, $key, $table);
-                    if (!empty($sc)) {
-                        $searchconditions[] = $sc;
-                    }
-                }
+        if (!$this->createDestination() || empty($values)) {
+            return null;
+        }
+        $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+        $searchConditions = [];
+        if(!is_array($values)) {
+            $values = [$values];
+        }
+        Tools::atk_var_dump($values);
+        // Searching each value individually :
+        foreach ($values as $value) {
+            $sc = $this->m_destInstance->getSearchCondition($query, $alias, $value, $searchmode, $fieldname);
+            if ($sc != null) {
+                $searchConditions[] = $sc;
             }
         }
-
-        if (Tools::count($searchconditions) > 0) {
-            $query = new QueryPart('(');
-            $query->append(QueryPart::implode(' OR ', $searchconditions));
-            $query->appendSql(')');
-            return $query;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Calls searchCondition on an attribute in the destination
-     * To hook the destination attribute on the query.
-     *
-     * @param Query &$query The query object
-     * @param string $table The table to search on
-     * @param mixed $value The value to search
-     * @param mixed $searchmode The mode used when searching
-     * @param string $field The name of the attribute
-     * @param string $reftable
-     *
-     * @return string the search condition
-     */
-    public function _callSearchConditionOnDestField($query, $table, $value, $searchmode, $field, $reftable)
-    {
-        if ($this->createDestination()) {
-            $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;
-            $attr = $this->m_destInstance->getAttribute($field);
-
-            $query->addJoin($table, $alias, $this->getJoinCondition($query, $reftable, $alias), false);
-
-            return $attr->getSearchCondition($query, $alias, $value, $searchmode);
+        if (!empty($searchConditions)) {
+            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $reftable, $alias), false);
         }
 
-        return '';
+        return QueryPart::implode('OR', $searchConditions, true);
     }
 
     /**

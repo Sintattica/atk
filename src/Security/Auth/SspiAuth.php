@@ -132,7 +132,7 @@ class SspiAuth extends DbAuth
         $query = $db->createQuery();
         $query->setTable($userTable)
             ->addAllFields($usertable)
-            ->addCondition(Db::quoteIdentifier($usertable).'.'.Db::quoteIdentifier($sspifield).'=:user', [':user' => [$user]]);
+            ->addCondition(Db::quoteIdentifier($usertable, $sspifield).'=:user', [':user' => [$user]]);
         if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one

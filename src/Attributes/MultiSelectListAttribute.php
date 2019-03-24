@@ -204,27 +204,6 @@ class MultiSelectListAttribute extends ListAttribute
         return $result;
     }
 
-
-    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
-    {
-        $searchcondition = '';
-        if (is_array($value) && $value[0] != '' && Tools::count($value) > 0) {
-            $searchcondition = [];
-
-            if (in_array('__NONE__', $value)) {
-                 unset($value[array_search('__NONE__', $value)]);
-                $searchcondition[] = $query->nullCondition($table.'.'.$this->fieldName(), true);
-            }
-
-            foreach ($value as $str) {
-                $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
-            }
-            $searchcondition = implode(' OR ', $searchcondition);
-        }
-
-        return $searchcondition;
-    }
-
     /**
      * Return the database field type of the attribute.
      *

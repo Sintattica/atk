@@ -20,6 +20,7 @@ WIP Changes
     removed.
 + Added Query->executeCount() functions (returns an int).
 + added Query->addAllFields to add a '*' to a select query.
++ Added Query->betweenCondition, Query->bitmaskCondition & Query->inCondition.
 * Query->addField automatically add quotes around field and, if present, table.
 * Removed per-database Query Object classes.
 + Added regexp searches for PostgreSql.
@@ -41,6 +42,8 @@ WIP Changes
     (tables, columns, ...) with double quotes " or, better, use
     Db::quoteIdentifier (which is now static). You can't use backticks anymore
     (they only worked with mysql anyway).
++ Db::quoteIdentifier can take two parameters : it quotes both and returns them
+    joined with a '.' (Db::quoteIdentifier('tbl', 'field') => '"tbl"."field"')
 - Stopped locking tables on Mysql->nextid() calls (isolation is provided by 
     transactions).
 * Switched Db drivers to PDO : Db class now extends PDO

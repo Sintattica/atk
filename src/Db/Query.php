@@ -178,7 +178,7 @@ class Query
     public function addField($name, $value = '', $table = '', $fieldaliasprefix = '')
     {
         if ($table != '') {
-            $fieldname = Db::quoteIdentifier($table).'.'.Db::quoteIdentifier($name);
+            $fieldname = Db::quoteIdentifier($table, $name);
         } else {
             $fieldname = Db::quoteIdentifier($name);
         }
@@ -871,6 +871,20 @@ class Query
     }
 
     /**
+     * Generate searchcondition with bitmask
+     *
+     * @param string $field The database field
+     * @param int $value The value
+     *
+     * @return QueryPart
+     */
+    public function bitmaskCondition($field, $value)
+    {
+        // There is no negative operator for this one.
+        return $this->simpleCondition($field, (int) $value, '&', '');
+    }
+
+    /**
      * Get the between condition.
      *
      * @param string $field The database field
@@ -900,5 +914,29 @@ class Query
     public function regexpCondition($field, $value)
     {
         return $this->m_db->func_regexp($field, $value); 
+    }
+
+    /**
+     * Get the IN condition (field in a list of possible values)
+     *
+     * @param string $field The database field
+     * @param array[] $values Possible values
+     * @param int $dbfieldtype from Db::FT_ constants
+     *
+     * @return QueryPart
+     */
+    public function inCondition($field, $values, $dbfieldtype)
+    {
+        if (empty($values)) {
+            return null;
+        }
+        $placeholder = QueryPart::placeholder($field);
+        $parameters = [];
+        for ($i = 0; $i < count($values); $i++) {
+            $parameters["{$placeholder}_{$i}"]= [$values[$i]];
+        }
+
+        $sql = $field.' IN ('.implode(', ', array_keys($parameters)).')';
+        return new QueryPart($sql, $parameters);
     }
 }

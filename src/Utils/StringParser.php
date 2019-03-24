@@ -192,6 +192,37 @@ class StringParser
     }
 
     /**
+     * Parse data into the string and return as a SQL concat expression
+     *
+     * e.g if $this->m_string = '[name] ([address.city])' and
+     * $data = ['name' => '"node"."name"', 'address.city' => '"adress"."city"'],
+     * It returns : CONCAT_WS('', "node"."name", ' (', "address"."city", ')') or
+     * DB-equivalent.
+     *
+     * @param array $data $field => $replace_value
+     * @param \Db\Db $db current db connection
+     *
+     * @return array
+     */
+    public function getConcatExpr($data, $db)
+    {
+        $matches = $this->getAllFieldsAsArray();
+
+        $parts = [];
+        foreach ($matches[0] as $match) {
+            // Check if need to parse the match
+            if (strpos($match, '[') !== false && strpos($match, ']') !== false) {
+                $parser = new self($match);
+                $parts[] = $parser->parse($data);
+            } else {
+                $parts[] = $db->quote($match);
+            }
+        }
+
+        return $db->func_concat_ws($parts, '');
+    }
+
+    /**
      * Same as getFields but if a relation is referenced using
      * a dot only returns the attribute name before the dot.
      *

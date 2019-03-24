@@ -118,18 +118,30 @@ class QueryPart
      *
      * @param string $glue to put between sql parts (no parameters in it, just plain string)
      * @param array $pieces of QueryParts
+     * @param bool $wrap resulting SQL query into parenthesis if more than one part is present
+    *                    (default false)
      *
      * @return QueryPart with all parameters and glue
      */
-    public static function implode(string $glue, array $pieces) : QueryPart
+    public static function implode(string $glue, array $pieces, $wrap = false) : QueryPart
     {
-        $query = array_shift($pieces);
-        if (!count($pieces)) {
-            return $query;
+        if (empty($pieces)) {
+            return null;
         }
+        if (count($pieces) == 1) {
+            return $pieces[0];
+        }
+        $query = new QueryPart('');
+        if ($wrap) {
+            $query->appendSql('(');
+        }
+        $query->append(array_shift($pieces));
         while ($nextQuery = array_shift($pieces)) {
             $query->appendSql($glue);
             $query->append($nextQuery);
+        }
+        if ($wrap) {
+            $query->appendSql(')');
         }
         return $query;
     }

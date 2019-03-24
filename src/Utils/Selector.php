@@ -666,7 +666,7 @@ class Selector implements \ArrayAccess, \Countable
             if ($i !== false) {
                 $expr = $query->m_expressions[$i]['expression'];
             } else {
-                $expr = Db::quoteIdentifier($this->_getNode()->getTable()) . '.' . Db::quoteIdentifier($field);
+                $expr = Db::quoteIdentifier($this->_getNode()->getTable(), $field);
             }
             $query->addExpression($field, 'SUM('.$expr.')', $prefix);
         }
@@ -723,7 +723,7 @@ class Selector implements \ArrayAccess, \Countable
         $query->clearFields();
         $query->clearExpressions();
 
-        $indexColumn = Db::quoteIdentifier($this->_getNode()->getTable()).'.'.Db::quoteIdentifier($index);
+        $indexColumn = Db::quoteIdentifier($this->_getNode()->getTable(), $index);
         $expression = 'UPPER('.$this->_getDb()->func_substring($indexColumn, 1, 1).')';
         $query->addExpression('index', $expression);
         $query->addGroupBy($expression);

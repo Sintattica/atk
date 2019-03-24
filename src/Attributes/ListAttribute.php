@@ -5,8 +5,9 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 
 /**
  * The ListAttribute class represents an attribute of a node
@@ -495,28 +496,27 @@ EOF;
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        $searchcondition = '';
-        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-
-            if (Tools::count($value) == 1 && $value[0] != '') { // exactly one value
-                if ($value[0] == '__NONE__') {
-                    return $query->nullCondition($table.'.'.$this->fieldName(), true);
-                } else {
-                    return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
-                }
-            } elseif (Tools::count($value) > 1) { // search for more values
-                if (in_array('__NONE__', $value)) {
-                    unset($value[array_search('__NONE__', $value)]);
-
-                    return sprintf('(%s OR %s)', $query->nullCondition($table.'.'.$this->fieldName(), true),
-                        $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')");
-                } else {
-                    return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
-                }
-            }
+        if (!is_array($value) || empty($value) > 0 || $value[0] == '') {
+            // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            return null;
         }
 
-        return $searchcondition;
+        if (count($value) == 1 && $value[0] != '') { // exactly one value
+            if ($value[0] == '__NONE__') {
+                return $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
+            } else {
+                return $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0], $this->dbFieldType());
+            }
+        }
+        // search for more values
+        if (in_array('__NONE__', $value)) {
+            unset($value[array_search('__NONE__', $value)]);
+
+            $nullCondition = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
+            $inCondition = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value, $this->dbFieldType());
+            return QueryPart::implode('OR', [$nullCondition, $inCondition], true);
+        }
+        return $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value, $this->dbFieldType());
     }
 
     /**

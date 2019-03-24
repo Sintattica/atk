@@ -818,17 +818,16 @@ class Db extends \PDO
      */
     public function func_concat_ws($fields, $separator, $remove_all_spaces = false)
     {
-        if (Tools::count($fields) == 0 or !is_array($fields)) {
+        if (Tools::count($fields) == 0) {
             return '';
         } elseif (Tools::count($fields) == 1) {
             return $fields[0];
         }
 
         if ($remove_all_spaces) {
-            return 'REPLACE('.implode('||'.$this->quote($separator).'||', $fields).", ' ', '')";
-        } else {
-            return implode('||'.$this->quote($separator).'||', $fields);
+            return 'REPLACE(COALESCE('.implode(",'')||".$this->quote($separator).'||COALESCE(', $fields).",''), ' ', '')";
         }
+        return 'COALESCE('.implode(",'')||".$this->quote($separator).'||COALESCE(', $fields).",'')";
     }
 
     /**
@@ -913,17 +912,24 @@ class Db extends \PDO
     }
 
     /**
-     * Quote Indentifier with " (which works on most DB vendor, and on MySQL in ANSI mode)
+     * Quote Indentifier with " (which works on most DB vendor and on MySQL in ANSI mode)
      *
      * This function should be applied to every field, table or sequence name which comes from 
      * the framework user.
+     * examples :
+     *   Db::quoteIdentifier($field);
+     *   Db::quoteIdentifier($table, $field);
      *
-     * @param string $identifier to escape
+     * @param string $identifier1 to escape
+     * @param string $identifier2 : if present, will return $identifier1.$identifier2 (both escaped).
      *
      * @return string
      */
-    public static function quoteIdentifier($identifier)
+    public static function quoteIdentifier($identifier, $secondIdentifier = '')
     {
+        if ($secondIdentifier) {
+            return self::quoteIdentifier($identifier).'.'.self::quoteIdentifier($secondIdentifier);
+        }
         return '"'.str_replace('"', '""', $identifier).'"';
     }
 

@@ -88,22 +88,18 @@ class FlagAttribute extends MultiSelectAttribute
      *                           attribute's getSearchModes() method.
      * @param string $fieldname
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart The searchcondition to use.
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $searchcondition = '';
-        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-            $field = $table.'.'.$this->fieldName();
-            if (Tools::count($value) == 1) { // exactly one value
-                $query->addSearchCondition($field.' & '.$value[0]);
-            } else {
-                $mask = '('.implode('|', $value).')';
-                $searchcondition = $field.'&'.$mask.'='.$mask;
-            }
+        if (!is_array($value) || empty($value) || $value[0] == '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            return null;
         }
-
-        return $searchcondition;
+        $bitmask = 0;
+        foreach($value as $v) {
+            $bitmask |= $v;
+        }
+        return $query->bitmaskCondition(Db::quoteIdentifier($table, $this->fieldName()), $bitmask);
     }
 
     /**

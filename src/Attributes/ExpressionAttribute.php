@@ -168,7 +168,7 @@ class ExpressionAttribute extends Attribute
             $searchmode = $this->m_searchmode;
         }
 
-        $expression = '('.str_replace('[table]', $table, $this->m_expression).')';
+        $expression = '('.str_replace('[table]', Db::quoteIdentifier($table), $this->m_expression).')';
 
         if ($this->getSearchType() == 'date') {
             $attr = new DateAttribute($this->fieldName());
@@ -190,7 +190,7 @@ class ExpressionAttribute extends Attribute
                 if (isset($value['to']) && $value['to'] != '') {
                     $value = $value['to'];
                 } else {
-                    return '';
+                    return null;
                 }
             }
         }
@@ -200,6 +200,6 @@ class ExpressionAttribute extends Attribute
             return $query->$func($expression, $this->escapeSQL($value));
         }
 
-        return '';
+        return null;
     }
 }
