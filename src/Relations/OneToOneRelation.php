@@ -145,43 +145,39 @@ class OneToOneRelation extends Relation
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-        if ($this->createDestination()) {
-            if ($mode != 'update' && $mode != 'add') {
-                if ($this->hasFlag(self::AF_ONETOONE_LAZY)) {
-                    if ($this->m_refKey == '') {
-                        parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
-
-                        return;
-                    }
-                }
-
-                if ($tablename != '') {
-                    $tablename .= '.';
-                }
-
-                if ($this->m_refKey != '') {
-                    // Foreign key is in the destination node.
-                    $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0].'='.$fieldaliasprefix.$this->fieldName().'.'.$this->m_refKey;
-                } else {
-                    // Foreign key is in the source node
-                    $condition = $tablename.$this->fieldName().'='.$fieldaliasprefix.$this->fieldName().'.'.$this->m_destInstance->m_primaryKey[0];
-                }
-
-                $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
-                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true);
-
-                // we pass true as the last param to addToQuery, because we need all fields..
-                $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level + 1, true, $mode);
-            }
-
+        if (!$this->createDestination()) {
+            return;
+        }
+        if ($mode == 'add' || $mode == 'update') {
             // When storing, we don't add to the query.. we have our own store() method..
             // With one exception. If the foreign key is in the source node, we also need to update
             // the refkey value.
-            if ($this->m_refKey == '' && $mode == 'add') {
+            if ($this->m_refKey == '' && ($mode == 'add'||$mode == 'update')) {
                 $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]], '', '',
-                    !$this->hasFlag(self::AF_NO_QUOTES));
+                !$this->hasFlag(self::AF_NO_QUOTES));
             }
+            return;
         }
+        // No add or update ... we're now in select mode :
+        if ($this->hasFlag(self::AF_ONETOONE_LAZY) && $this->m_refKey == '') {
+            parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
+            return;
+        }
+
+        if ($this->m_refKey != '') {
+            // Foreign key is in the destination node.
+            $condition = Db::quoteIdentifier($tablename, $this->m_ownerInstance->m_primaryKey[0]).'='.
+                Db::quoteIdentifier($fieldaliasprefix.$this->fieldName(), $this->m_refKey);
+        } else {
+            // Foreign key is in the source node
+            $condition = Db::quoteIdentifier($tablename, $this->fieldName()).'='.
+                Db::quoteIdentifier($fieldaliasprefix.$this->fieldName(), $this->m_destInstance->m_primaryKey[0]);
+        }
+        $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
+        $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true);
+
+        // we pass true as the last param to addToQuery, because we need all fields..
+        $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level + 1, true, $mode);
     }
 
     /**
