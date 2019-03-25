@@ -31,7 +31,6 @@ class DbAuth extends AuthInterface
      * @return string which contains the query
      */
     public function buildSelectUserQuery(
-        $user,
         $usertable,
         $userfield,
         $passwordfield,
@@ -43,7 +42,7 @@ class DbAuth extends AuthInterface
             $disableexpr = ', '.Db::quoteIdentifier($accountdisablefield);
         }
         $query = 'SELECT '.Db::quoteIdentifier($passwordfield)." $disableexpr FROM ".Db::QuoteIdentifier($usertable).
-            ' WHERE '.Db::quoteIdentifier($userfield)." ='$user'";
+            ' WHERE '.Db::quoteIdentifier($userfield)." =:user";
         if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
         }
@@ -77,9 +76,9 @@ class DbAuth extends AuthInterface
         } // can't verify if we have no userid
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $this->buildSelectUserQuery($db->escapeSQL($user), Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
+        $query = $this->buildSelectUserQuery(Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_passwordfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
-        $recs = $db->getRows($query);
+        $recs = $db->getRows($query, [':user' => [$user]]);
         if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
@@ -96,7 +95,7 @@ class DbAuth extends AuthInterface
         $userfield = Db::quoteIdentifier(Config::getGlobal('auth_userfield'));
         $disablefield = Db::quoteIdentifier(Config::getGlobal('auth_accountdisablefield'));
         $enableexpression = Config::getGlobal('auth_accountenableexpression');
-        $sql = "SELECT COUNT(*) AS cnt FROM {$usertable} WHERE {$userfield} = '".$db->escapeSQL($user)."'";
+        $sql = "SELECT COUNT(*) AS cnt FROM {$usertable} WHERE {$userfield} = :user";
 
 
         if ($disablefield) {
@@ -106,7 +105,7 @@ class DbAuth extends AuthInterface
             $sql .= " AND $enableexpression";
         }
 
-        if ($db->getValue($sql)) {
+        if ($db->getValue($sql, [':user' => [$user]])) {
             return true;
         };
 

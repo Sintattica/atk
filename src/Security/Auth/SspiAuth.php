@@ -46,7 +46,6 @@ class SspiAuth extends DbAuth
     }
 
     public function buildSelectUserQuery(
-        $sspiaccount,
         $usertable,
         $userfield,
         $sspiaccountfield,
@@ -58,7 +57,8 @@ class SspiAuth extends DbAuth
         if ($accountdisablefield) {
             $disableexpr = ", $accountdisablefield";
         }
-        $query = "SELECT $userfield $disableexpr FROM $usertable WHERE $sspiaccountfield ='".$sspiaccount."'";
+        $query = "SELECT ".Db::quoteIdentifier($userfield)." $disableexpr FROM ".
+            Db::quoteIdentifier($usertable)." WHERE ".Db::quoteIdentifier($sspiaccountfield).' =:sspiaccount';
         if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
         }
@@ -88,10 +88,10 @@ class SspiAuth extends DbAuth
         $_SERVER['PHP_AUTH_USER'] = '';
         $ATK_VARS['auth_user'] = '';
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $this->buildSelectUserQuery($user, Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
+        $query = $this->buildSelectUserQuery(Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_sspi_accountfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
 
-        $recs = $db->getRows($query);
+        $recs = $db->getRows($query, [':sspiaccount' => [$user]]);
         if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }

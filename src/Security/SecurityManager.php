@@ -685,15 +685,20 @@ class SecurityManager
         $authenticator = openssl_random_pseudo_bytes(33);
 
         $userfield = Config::getGlobal('auth_userfield');
-        $sql = 'INSERT INTO '.Db::quoteIdentifier($dbTable).' (selector, token, '.Db::quoteIdentifier($userfield).', expires, created) '.
-            'VALUES (?, ?, ?, ?, '.$db->func_now().')';
-
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$selector, hash('sha256', $authenticator), $username, $expires->format('Y-m-d H:i:s')]);
+        $query = $db->createQuery($dbTable);
+        $query->addField('selector', $selector)
+            ->addField('token', hash('sha256', $authenticator))
+            ->addField($userfield, $username)
+            ->addField('expires', $expires->format('Y-m-d H:i:s'))
+            ->addField('created', date('Y-m-d H:i:s'));
+        $query->executeInsert();
         $db->commit();
 
         //get the current tokenId
-        $tokenId = $db->getValue("SELECT id FROM ".Db::quoteIdentifier($dbTable)." WHERE selector = '".$db->escapeSQL($selector)."'");
+        $tokenId = $db->getValue(
+            "SELECT id FROM ".Db::quoteIdentifier($dbTable)." WHERE selector = :selector",
+            [':selector' => [$selector]]
+        );
 
         //create the cookie
         $tokenValue = $selector.':'.base64_encode($authenticator);
@@ -728,8 +733,8 @@ class SecurityManager
         list($selector, $authenticator) = explode(':', $remember);
 
         $db = Db::getInstance();
-        $sql = 'SELECT * FROM '.Db::quoteIdentifier($dbTable)." WHERE selector = '".$db->escapeSQL($selector)."'";
-        $row = $db->getRow($sql);
+        $sql = 'SELECT * FROM '.Db::quoteIdentifier($dbTable)." WHERE selector = :selector";
+        $row = $db->getRow($sql, [':selector' => [$selector]]);
 
         //token found?
         if (!$row) {
