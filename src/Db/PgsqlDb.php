@@ -121,4 +121,22 @@ class PgsqlDb extends Db
 
         return new QueryPart("{$field} {$negate}~{$suffix} {$placeholder}", $parameter);
     }
+
+    /**
+     * Postgresql has a concat_ws function :
+     */
+    public function func_concat_ws(array $fields, string $separator, bool $remove_all_spaces = false)
+    {
+        if (count($fields) == 0 or !is_array($fields)) {
+            return '';
+        } elseif (count($fields) == 1) {
+            return $fields[0];
+        }
+
+        if ($remove_all_spaces) {
+            return "REPLACE(CONCAT_WS('$separator', ".implode(',', $fields)."), ' ', '')";
+        } else {
+            return "CONCAT_WS('$separator', ".implode(',', $fields).')';
+        }
+    }
 }

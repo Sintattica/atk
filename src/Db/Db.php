@@ -810,13 +810,16 @@ class Db extends \PDO
     /**
      * Get CONCAT_WS() equivalent for the current database.
      *
+     * The main interest is to concat strings together without a null string making
+     * the generated expression null : null strings are replaced by ''.
+     *
      * @param array $fields (quoted)
      * @param string $separator (unquoted)
      * @param bool $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
      *
      * @return string $query_part
      */
-    public function func_concat_ws($fields, $separator, $remove_all_spaces = false)
+    public function func_concat_ws(array $fields, string $separator, bool $remove_all_spaces = false)
     {
         if (Tools::count($fields) == 0) {
             return '';
@@ -824,10 +827,16 @@ class Db extends \PDO
             return $fields[0];
         }
 
-        if ($remove_all_spaces) {
-            return 'REPLACE(COALESCE('.implode(",'')||".$this->quote($separator).'||COALESCE(', $fields).",''), ' ', '')";
+        if ($separator == '') {
+            $separator = '||';
+        } else {
+            $separator = '||'.$this->quote($separator).'||';
         }
-        return 'COALESCE('.implode(",'')||".$this->quote($separator).'||COALESCE(', $fields).",'')";
+
+        if ($remove_all_spaces) {
+            return 'REPLACE(COALESCE('.implode(",''){$separator}COALESCE(", $fields).",''), ' ', '')";
+        }
+        return 'COALESCE('.implode(",''){$separator}||COALESCE(", $fields).",'')";
     }
 
     /**
