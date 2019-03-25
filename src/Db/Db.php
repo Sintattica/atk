@@ -811,7 +811,7 @@ class Db extends \PDO
      * Get CONCAT_WS() equivalent for the current database.
      *
      * @param array $fields (quoted)
-     * @param string $separator
+     * @param string $separator (unquoted)
      * @param bool $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
      *
      * @return string $query_part

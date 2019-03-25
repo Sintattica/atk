@@ -984,7 +984,7 @@ class OneToManyRelation extends Relation
      */
     public function getSearchModes()
     {
-        return array('substring');
+        return array('exact', 'substring', 'wildcard', 'regexp');
     }
 
     /**
@@ -1108,10 +1108,16 @@ class OneToManyRelation extends Relation
         if(!is_array($values)) {
             $values = [$values];
         }
-        Tools::atk_var_dump($values);
         // Searching each value individually :
         foreach ($values as $value) {
-            $sc = $this->m_destInstance->getSearchCondition($query, $alias, $value, $searchmode, $fieldname);
+            $sc = $this->m_destInstance->getTemplateSearchCondition(
+                $query,
+                $alias,
+                $this->m_destInstance->getDescriptorTemplate(),
+                $value,
+                $searchmode,
+                $fieldname
+            );
             if ($sc != null) {
                 $searchConditions[] = $sc;
             }

@@ -3095,11 +3095,27 @@ class Node
     /**
      * Returns the descriptor template for this node.
      *
+     * It will return (by priority order) :
+     * $this->m_descTemplate;
+     * $this->descriptor_def();
+     * '['.name of the first attribute.']'
+     * ''
+     *
      * @return string The descriptor Template
      */
     public function getDescriptorTemplate()
     {
-        return $this->m_descTemplate;
+        if ($this->m_descTemplate != null) {
+            return $this->m_descTemplate;
+        }
+        if (method_exists($this, 'descriptor_def')) {
+            return $this->descriptor_def();
+        }
+        if (!empty($this->m_attribList)) {
+            // default descriptor : first attribute of a node
+            return '['.array_keys($this->m_attribList)[0].']';
+        }
+        return '';
     }
 
     /**
@@ -3122,33 +3138,19 @@ class Node
     {
         $fields = [];
 
-        // See if node has a custom descriptor definition.
-        if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
-            if ($this->m_descTemplate != null) {
-                $descriptordef = $this->m_descTemplate;
-            } else {
-                $descriptordef = $this->descriptor_def();
-            }
+        $parser = new StringParser($this->getDescriptorTemplate());
+        $fields = $parser->getFields();
 
-            // parse fields from descriptordef
-            $parser = new StringParser($descriptordef);
-            $fields = $parser->getFields();
-
-            // There might be fields that have a '.' in them. These fields are
-            // a concatenation of an attributename (probably a relation), and a subfield
-            // (a field of the destination node).
-            // The actual field is the one in front of the '.'.
-            for ($i = 0, $_i = Tools::count($fields); $i < $_i; ++$i) {
-                $elems = explode('.', $fields[$i]);
-                if (Tools::count($elems) > 1) {
-                    // dot found. attribute is the first item.
-                    $fields[$i] = $elems[0];
-                }
+        // There might be fields that have a '.' in them. These fields are
+        // a concatenation of an attributename (probably a relation), and a subfield
+        // (a field of the destination node).
+        // The actual field is the one in front of the '.'.
+        for ($i = 0, $_i = Tools::count($fields); $i < $_i; ++$i) {
+            $elems = explode('.', $fields[$i]);
+            if (Tools::count($elems) > 1) {
+                // dot found. attribute is the first item.
+                $fields[$i] = $elems[0];
             }
-        } else {
-            // default descriptor.. (default is first attribute of a node)
-            $keys = array_keys($this->m_attribList);
-            $fields[0] = $keys[0];
         }
 
         return $fields;
@@ -3184,28 +3186,8 @@ class Node
             return $this->m_descHandler->descriptor($record, $this);
         }
 
-        // Descriptor template is set?
-        if ($this->m_descTemplate != null) {
-            $parser = new StringParser($this->m_descTemplate);
-
-            return $parser->parse($record);
-        } // See if node has a custom descriptor definition.
-        else {
-            if (method_exists($this, 'descriptor_def')) {
-                $parser = new StringParser($this->descriptor_def());
-
-                return $parser->parse($record);
-            } else {
-                // default descriptor.. (default is first attribute of a node)
-                $keys = array_keys($this->m_attribList);
-                $ret = $record[$keys[0]];
-                if(is_array($ret)){
-                    return '';
-                }
-
-                return $ret;
-            }
-        }
+        $parser = new StringParser($this->getDescriptorTemplate());
+        return $parser->parse($record);
     }
 
     /**
@@ -3568,30 +3550,37 @@ class Node
     }
 
     /**
-     * Get search condition for this node based on descriptor fields
+     * Get a search condition from a template string
      *
-     * This function is used by relations columns to perform searches 
+     * Used for searching by descriptor or by aggregated columns.
+     * For an expression like '[name] ([email])', it will perform the search
+     * on "table"."name", on "table"."email" and on the expression :
+     * CONCAT_WS('', "table".name", ' (', "table"."email", ')')
+     * (the use of CONCAT_WS permit that null fields are coalesced to '').
+     *
+     * For the last part (the expression), only 'exact', 'substring', 'wildcard'
+     * and 'regexp' modes' are allowed, and it will work with simple types, not
+     * with complex types (such as : relations, flags, list attributes, ...)
+     *
+     * TODO : handle relations (at least).
      *
      * @param Query $query
-     * @param string $table or alias used to identify this node's table.
+     * @param string $table or alias used to identifiy this node's table
+     * @param string $expr to use for searching values
      * @param string $value to search for
      * @param string $searchmode
-     * @param string $fieldaliasprefix to prefix to table names if need to join more tables.
-     *
-     * @return string The search condition
+     * @param string $fieldaliasprefix to prepend to joins if needed.
      */
-    public function getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix)
+    public function getTemplateSearchCondition($query, $table, $expr, $value, $searchmode, $fieldaliasprefix)
     {
-        if ($table == '') {
+        if(empty($table)) {
             $table = $this->m_table;
         }
         $searchConditions = [];
 
-        $attribs = $this->descriptorFields();
-        array_unique($attribs);
-
-        // Searching by individual attributes in descriptor
-        foreach ($attribs as $field) {
+        $parser = new StringParser($expr);
+        // Searching by individual fields :
+        foreach ($parser->getFields() as $field) {
             $p_attrib = $this->getAttribute($field);
             if (!is_object($p_attrib)) {
                 continue;
@@ -3600,47 +3589,43 @@ class Node
             // check if the node has a searchcondition method defined for this attr
             $methodName = $field.'_searchcondition';
             if (method_exists($this, $methodName)) {
-                $searchCondition = $this->$methodName($query, $table, $value, $searchmode);
-                if (!is_null($searchCondition)) {
-                    $searchConditions[] = $searchCondition;
+                $sc = $this->$methodName($query, $table, $value, $searchmode);
+                if (!is_null($sc)) {
+                    $sc[] = $sc;
                 }
             } else {
                 Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
-                $searchCondition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
-                if (!is_null($searchCondition)) {
-                    $searchConditions[] = $searchCondition;
+                $sc = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+                if (!is_null($sc)) {
+                    $searchConditions[] = $sc;
                 }
             }
         }
 
-        // Searching by descriptor value in itself
-        $data = [];
-        foreach ($attribs as $field) {
-            if (strpos($field, '.') == false) {
-                $data[$field] = Db::quoteIdentifier($table, $field);
+        if (!in_array($searchmode, ['exact', 'substring', 'wildcard', 'regexp'])) {
+            return QueryPart::implode('OR', $searchConditions, true);
+        }
+
+        // Searching by the expression concatenating all fields :
+        $parts = [];
+        $db = $this->getDb();
+        foreach($parser->getAllFieldsAsArray() as $field) {
+            if($field[0] != '[' || $field[strlen($field)-1] != ']') {
+                // If it's a string part, just quote it and append it :
+                $parts[] = $db->quote($field);
             } else {
-                $parts = explode('.', $field);
-                $data[$field] = Db::quoteIdentifier($parts[0], $parts[1]);
+                // If it's an attribute, then add its name to query, after removing the []
+                $field = substr($field, 1, strlen($field) - 2);
+                $parts[] = Db::quoteIdentifier($table, $field);
             }
         }
-
-        // Getting the descriptor string :
-        if ($this->m_descTemplate != null) {
-            $descriptordef = $this->m_descTemplate;
-        } elseif (method_exists($this, 'descriptor_def')) {
-            $descriptordef = $this->descriptor_def();
-        } else {
-            $descriptordef = $this->descriptor(null);
+        $expression = $db->func_concat_ws($parts, '');
+        $func = $searchmode.'Condition';
+        $sc = $query->$func($expression, $value);
+        if (!is_null($sc)) {
+            $searchConditions[] = $sc;
         }
-        $parser = new StringParser($descriptordef);
-        $expr = $parser->getConcatExpr($data, $this->getDb());
-        $searchConditions[] = $query->substringCondition($expr, $value);
-
-        if (!empty($searchConditions)) {
-            return QueryPart::implode('OR', $searchConditions, true);
-        } else {
-            return null;
-        }
+        return QueryPart::implode('OR', $searchConditions, true);
     }
 
     /**

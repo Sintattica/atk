@@ -121,9 +121,9 @@ class QueryPart
      * @param bool $wrap resulting SQL query into parenthesis if more than one part is present
     *                    (default false)
      *
-     * @return QueryPart with all parameters and glue
+     * @return QueryPart with all parameters and glue, null if no pieces given
      */
-    public static function implode(string $glue, array $pieces, $wrap = false) : QueryPart
+    public static function implode(string $glue, array $pieces, $wrap = false)
     {
         if (empty($pieces)) {
             return null;

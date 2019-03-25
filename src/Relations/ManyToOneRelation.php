@@ -1327,7 +1327,7 @@ EOF;
                 $value = array($value);
             }
 
-            if (Tools::count($value) == 1) { // exactly one value
+            if (count($value) == 1) { // exactly one value
 
                 if ($value[0] == '__NONE__') {
                     $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
@@ -1347,11 +1347,8 @@ EOF;
             // ask the destination node for it's search condition
             $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
             foreach($value as $v) {
-                $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;
-                $sc = $this->m_destInstance->getSearchCondition($query, $alias, $v, $searchmode, $fieldname);
-
+                $sc = $this->getSearchFilterByTargetDescriptor($query, $v, $searchmode, $fieldname);
                 if($sc != null) {
-                    $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $this->m_destInstance->m_table, $alias), false);
                     $searchConditions[] = $sc;
                 }
             }
@@ -2399,6 +2396,45 @@ EOF;
         }
 
         return false;
+    }
+
+    /**
+     * Returns a search query condition based on the target descriptor
+     *
+     * Side effect : it may add joins to $query (first parameter).
+     *
+     * TODO : This function should replace getConcatFilter.
+     *
+     * @param \Db\Query $query to work with
+     * @param string $searchValue Search value
+     * @param string $searchmode
+     * @param string $fieldaliasprefix Field alias prefix
+     *
+     * @return QueryPart|null
+     */
+    public function getSearchFilterByTargetDescriptor($query, $searchValue, $searchmode = 'substring', $fieldaliasprefix = '')
+    {
+        $alias = $fieldaliasprefix.$this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+
+        $function = $this->getConcatDescriptorFunction();
+        if ($function != '' && method_exists($this->m_destInstance, $function)) {
+            $descriptordef = $this->m_destInstance->$function();
+        } else {
+            $descriptordef = $this->m_destInstance->getDescriptorTemplate();
+        }
+        $searchCondition = $this->m_destInstance->getTemplateSearchCondition(
+            $query,
+            $alias,
+            $descriptordef,
+            $searchValue,
+            $searchmode,
+            $fieldaliasprefix
+        );
+
+        if($searchCondition != null) {
+            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $this->m_destInstance->m_table, $alias), false);
+        }
+        return $searchCondition;
     }
 
     /**

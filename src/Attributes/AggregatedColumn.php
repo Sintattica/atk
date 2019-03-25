@@ -156,7 +156,7 @@ class AggregatedColumn extends Attribute
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $searchconditions = [];
+        $searchConditions = [];
         // Get search condition for all searchFields
         foreach ($this->m_searchfields as $field) {
             $p_attrib = $this->m_ownerInstance->getAttribute($field);
@@ -164,28 +164,23 @@ class AggregatedColumn extends Attribute
             if (is_object($p_attrib)) {
                 $condition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode);
                 if (!is_null($condition)) {
-                    $searchconditions[] = $condition;
+                    $searchConditions[] = $condition;
                 }
             }
         }
 
-        // When searchmode is substring also search the value in a concat of all searchfields
+        // we also search the value in a concat of all searchfields
         $value = trim($value);
+        $searchConditions[] = $this->m_ownerInstance->getTemplateSearchCondition(
+            $query,
+            $tablename,
+            $this->m_template,
+            $value,
+            $searchmode,
+            $fieldname
+        );
 
-        $data = [];
-        foreach ($this->m_searchfields as $field) {
-            if (strpos($field, '.') == false) {
-                $data[$field] = Db::quoteIdentifier($table, $field);
-            } else {
-                $parts = explode('.', $field);
-                $data[$field] = Db::quoteIdentifier($parts[0], $parts[1]);
-            }
-        }
-        $parser = new StringParser($this->m_template);
-        $expr = $parser->getConcatExpr($data, $this->getDb());
-        $searchconditions[] = $query->substringCondition($expr, $value);
-
-        return QueryPart::implode('OR', $searchconditions, true);
+        return QueryPart::implode('OR', $searchConditions, true);
     }
 
     /**

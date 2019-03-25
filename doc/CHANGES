@@ -15,6 +15,12 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
++ Added exact, wildcard and regex searches for OneToMany relations.
+* Node->getDescriptorTemplate now uses descriptor_def function as a fallback
+    or, if none exists, uses first attribute.
+* Node->getSearchCondition is renamed Node->getTemplateSearchCondition and
+    can be used with templates like ones in AggregatedColumn (and not only
+    with descriptor templates).
 - Removed Query->build* functions in favor of execute* ones.
 - Selector does not implement IteratorAggregate anymore, SelectorIterator is
     removed.
