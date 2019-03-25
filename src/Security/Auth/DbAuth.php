@@ -180,9 +180,8 @@ class DbAuth extends AuthInterface
         $accountenableexpression = Config::getGlobal('auth_accountenableexpression');
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $db->createQuery();
-        $query->addTable($usertable)
-            ->addAllFields()
+        $query = $db->createQuery($usertable);
+        $query->addAllFields()
             ->addCondition(Db::quoteIdentifier($usertable, $userfield).'=:user', [':user' => [$user]]);
         if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could
@@ -218,9 +217,8 @@ class DbAuth extends AuthInterface
         $groupfield = Config::getGlobal('auth_groupfield');
         $groupparentfield = Config::getGlobal('auth_groupparentfield');
 
-        $query = $db->createQuery();
+        $query = $db->createQuery($grouptable);
         $query->addField($groupparentfield);
-        $query->setTable($grouptable);
         $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).')');
 
         return $query->executeSelect(true);

@@ -530,9 +530,8 @@ class Selector implements \ArrayAccess, \Countable
      */
     protected function _buildQuery(array $attrsByLoadType)
     {
-        $query = $this->_getNode()->getDb()->createQuery();
+        $query = $this->_getNode()->getDb()->createQuery($this->_getNode()->getTable());
         $query->setDistinct($this->m_distinct);
-        $query->setTable($this->_getNode()->getTable());
 
         $this->_applyConditionsToQuery($query);
         $this->_applyFiltersToQuery($query);
@@ -662,8 +661,7 @@ class Selector implements \ArrayAccess, \Countable
         $prefix = '__sum__';
 
         foreach ($fields as $field) {
-            $i = array_search($field, array_column($query->m_expressions, 'name'));
-            if ($i !== false) {
+            if ($query->isExpression($field)) {
                 $expr = $query->m_expressions[$i]['expression'];
             } else {
                 $expr = Db::quoteIdentifier($this->_getNode()->getTable(), $field);

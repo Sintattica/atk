@@ -946,14 +946,13 @@ class Db extends \PDO
     /**
      * Create an Query object for constructing queries.
      *
+     * @param string $table the query will run on.
+     *
      * @return Query Query class.
      */
-    public function createQuery()
+    public function createQuery($table = '')
     {
-        $query = new Query();
-        $query->m_db = $this;
-
-        return $query;
+        return new Query($table, $this);
     }
 
     /**

@@ -12,101 +12,83 @@ use Sintattica\Atk\Core\Tools;
  */
 class Query
 {
-    /**
-     * Array with Fieldnames (quoted)
-     *
-     * @var array[] string
-     */
-    public $m_fields;
-
+    /*** variables for all queries ***/
     /*
-     * Array with expressions.
+     * The database that this query does it's thing on
+     *
+     * @var Db
      */
-    public $m_expressions;
+    private $m_db;
 
     /**
      * Table name for current query (unquoted)
      *
      * @var string
      */
-    public $m_table;
+    private $m_table = [];
 
     /*
      * Array with conditions (quoted)
      *
      * @var QueryPart[]
      */
-    public $m_conditions;
-    public $m_searchconditions;
+    private $m_conditions;
+    private $m_searchconditions;
 
     /*
      * Var with AND or OR method
      *
      * @var string
      */
-    public $m_searchmethod;
+    private $m_searchmethod = 'AND';
 
-    /*
-     * Array with field aliases (unquoted, but no need to quote them)
-     */
-    private $m_fieldaliases;
 
-    /*
-     * Array with aliases from joins (quoted)
+    /*** variables for UPDATE/DELETE queries ***/
+    /**
+     * Array with Fieldnames (quoted)
+     *
+     * for SELECT, UPDATE and INSERT queries
+     *
+     * @var array[] string
      */
-    public $m_joinaliases;
-
-    /*
-     * Array with Joins
-     */
-    public $m_joins;
-
-    /*
-     * Array with group by statements (quoted)
-     */
-    public $m_groupbys;
-
-    /*
-     * Array with order by statements (quoted)
-     */
-    public $m_orderbys;
-
-    /*
-     * Do we need to perform a DISTINCT query?
-     */
-    public $m_distinct = false;
-
-    /*
-     * Do we need to fetch only a specific set of records?
-     */
-    public $m_offset = 0;
-    public $m_limit = 0;
+    private $m_fields = [];
 
     /*
      * Array with generated aliasses (quoted)
      * Oracle has a problem when aliases are too long
+     *
+     * for SELECT, UPDATE and INSERT queries
+     *
+     * @var string
      */
-    public $m_generatedAlias;
-
-    /*
-     * The database that this query does it's thing on
-     */
-    public $m_db;
+    private $m_generatedAlias = 'a';
 
     /**
+     * array with values
+     * These values are inserted as parameters in final query.
+     *
+     * for UPDATE and INSERT queries only
+     *
+     * @var array[] mixed
+     */
+    private $m_values = [];
+
+    /**
+     * Sequence stuff : for INSERT queries only
+     *
      * Reference to the field where the new sequence
      * value should be stored.
      *
      * @var int
      */
-    protected $m_seqValue;
+    private $m_seqValue;
 
     /**
      * Sequence name.
      *
      * @var string
      */
-    protected $m_seqName;
+    private $m_seqName;
 
     /**
      * Should we return a sequence value by setting
@@ -114,57 +96,70 @@ class Query
      *
      * @var bool
      */
-    protected $m_returnSeqValue = false;
+    private $m_returnSeqValue = false;
 
-    /**
-     * Initialize all variables.
-     */
-    public function __construct()
-    {
-        $this->m_fields = [];
-        $this->m_expressions = [];
-        $this->m_table = '';
-        $this->m_conditions = [];
-        $this->m_searchconditions = [];
-        $this->m_values = [];
-        $this->m_fieldaliases = [];
-        $this->m_joinaliases = [];
-        $this->m_joins = [];
-        $this->m_orderbys = [];
-        $this->m_groupbys = [];
-        $this->m_searchmethod = '';
-
-        // start at 'a'.
-        $this->m_generatedAlias = 'a';
-
-        $this->m_aliasLookup = [];
-    }
-
-    /****************************** Getter / setters *****************************************/
-    /**
-     * Sets the database instance.
+    /*** variables for SELECT/COUNT queries only ***/
+    /*
+     * Array with expressions.
      *
-     * @var Db database instance
+     * for SELECT queries only
      */
-    public function setDb($db)
+    private $m_expressions = [];
+
+    /*
+     * Array with field aliases (unquoted, but no need to quote them)
+     *
+     * for SELECT/COUNT queries only
+     */
+    private $m_fieldaliases = [];
+
+    /*
+     * Array with aliases from joins (quoted)
+     *
+     * for SELECT/COUNT queries only
+     */
+    private $m_joinaliases = [];
+
+    /*
+     * Array with Joins
+     *
+     * for SELECT/COUNT queries only
+     */
+    private $m_joins = [];
+
+    /**
+     * Arrays with group by/order by statements (quoted)
+     *
+     * for SELECT/COUNT queries only
+     */
+    public $m_groupbys = [];
+    private $m_orderbys = [];
+
+    /*
+     * Do we need to perform a DISTINCT query?
+     *
+     * for SELECT/COUNT queries only
+     */
+    private $m_distinct = false;
+
+    /**
+     * Do we need to fetch only a specific set of records?
+     *
+     * for SELECT queries only
+     */
+    private $m_offset = 0;
+    private $m_limit = 0;
+
+    /**
+     * Initialize read-only variables
+     */
+    public function __construct(string $table, Db $db)
     {
+        $this->m_table = $table;
         $this->m_db = $db;
     }
 
-    /**
-     * Returns the database instance.
-     *
-     * @return Db database instance
-     */
-    private function getDb()
-    {
-        if (!isset($this->m_db)) {
-            $this->m_db = Db::getInstance();
-        }
-
-        return $this->m_db;
-    }
-
+    /****************************** Getter / setters *****************************************/
     /**
      * Add's a field to the query.
      *
@@ -229,9 +224,9 @@ class Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
-        $meta = $this->getDb()->tableMeta($this->m_table);
+        $meta = $this->m_db->tableMeta($this->m_table);
         if (!Tools::hasFlag($meta[$fieldName]['flags'], Db::MF_AUTO_INCREMENT)) {
-            $value = $this->getDb()->nextid($seqName);
+            $value = $this->m_db->nextid($seqName);
             $this->addField($fieldName, $value, null, null, false, true);
             return $this;
         }
@@ -288,6 +283,17 @@ class Query
     }
 
     /**
+     * Tell if a field is an expression or a regular field
+     *
+     * @param string $fieldName
+     *
+     * @return boolean true if it is an expression, false otherwise
+     */
+    public function isExpression($fieldName) {
+       return (array_search($fieldName, array_column($this->m_expressions, 'name')) !== false);
+    }
+
+    /**
      * Clear field list.
      */
     public function clearFields()
@@ -304,19 +310,6 @@ class Query
     }
 
     /**
-     * Set the table on which the query will be executed.
-     *
-     * @param string $name Table name
-     *
-     * @return Query The query object itself (for fluent usage)
-     */
-    public function setTable($name)
-    {
-        $this->m_table = $name;
-        return $this;
-    }
-
-    /**
      * Add a table to current query.
      *
      * @deprecated : use setTable
@@ -328,8 +321,8 @@ class Query
      */
     public function addTable($name, $alias = '')
     {
-        Tools::atkwarning('Query->addTable deprecated. Use setTable().');
-        return $this->setTable($name);
+        Tools::atkwarning('Query->addTable deprecated. Set table at build time.');
+        return $this->m_table = $name;
     }
 
     /**
@@ -559,7 +552,7 @@ class Query
         
     }
 
-    /******************************** Builder/executer functions *****************************/
+    /************************************** Execute functions *****************************/
     /**
      * Builds and execute the SQL Select COUNT(*) query.
      *
@@ -593,7 +586,7 @@ class Query
     }
 
     /**
-     * Wrapper function to execute a select query.
+     * Builds and execute a select query.
      *
      * @param bool $distinct Set to true to perform a distinct select,
      *                       false for a regular select.
@@ -642,7 +635,7 @@ class Query
             $query->append($this->limiterClause());
         }
 
-        return $this->getDb()->queryP($query)->fetchAll();
+        return $this->m_db->queryP($query)->fetchAll();
     }
 
     /**
@@ -652,6 +645,9 @@ class Query
      */
     public function executeUpdate($distinct = false)
     {
+        if(!count($this->m_fields)) {
+            return false;
+        }
         $query = new QueryPart('UPDATE '.Db::quoteIdentifier($this->m_table).' SET');
 
         $updateFieldFn = function($field) {
@@ -663,7 +659,7 @@ class Query
 
         $query->append($this->whereClause());
 
-        return ($this->getDb()->queryP($query) != false);
+        return ($this->m_db->queryP($query) != false);
     }
 
     /**
@@ -673,6 +669,9 @@ class Query
      */
     public function executeInsert($distinct = false)
     {
+        if(!count($this->m_fields)) {
+            return false;
+        }
         $query = new QueryPart('INSERT INTO '.Db::quoteIdentifier($this->m_table).'');
 
         $query->appendSql('('.implode(', ', $this->m_fields).') VALUES (');
@@ -683,9 +682,9 @@ class Query
         $query->append(new QueryPart(implode(', ', array_keys($parameters)), $parameters));
         $query->appendSql(')');
 
-        $result = $this->getDb()->queryP($query);
+        $result = $this->m_db->queryP($query);
         if ($result && $this->m_returnSeqValue) {
-            $this->m_seqValue = $this->getDb()->lastInsertId($this->m_seqName);
+            $this->m_seqValue = $this->m_db->lastInsertId($this->m_seqName);
             Tools::atkdebug("Value for sequence {$this->m_seqName}: {$this->m_seqValue}");
         }
 
@@ -702,7 +701,7 @@ class Query
         $query = new QueryPart('DELETE FROM '.Db::quoteIdentifier($this->m_table));
         $query->append($this->whereClause());
 
-        return ($this->getDb()->queryP($query) != false);
+        return ($this->m_db->queryP($query) != false);
     }
 
     /**************************** Search functions **********************************************
@@ -787,7 +786,7 @@ class Query
         }
         $parameter = [$placeholder => [$value]];
         
-        if ($this->getDb()->getForceCaseInsensitive()) {
+        if ($this->m_db->getForceCaseInsensitive()) {
             return new QueryPart("LOWER({$field}) {$operator} LOWER({$placeholder})", $parameter);
         } else {
             return new QueryPart("{$field} {$operator} {$placeholder}", $parameter);

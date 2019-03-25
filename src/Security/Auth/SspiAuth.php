@@ -129,9 +129,8 @@ class SspiAuth extends DbAuth
         $groupparentfield = Config::getGlobal('auth_groupparentfield');
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $db->createQuery();
-        $query->setTable($userTable)
-            ->addAllFields($usertable)
+        $query = $db->createQuery($usertable);
+        $query->addAllFields($usertable)
             ->addCondition(Db::quoteIdentifier($usertable, $sspifield).'=:user', [':user' => [$user]]);
         if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could

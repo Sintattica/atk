@@ -3279,9 +3279,7 @@ class Node
     public function updateDb(&$record, $exectrigger = true, $excludes = '', $includes = '')
     {
         $db = $this->getDb();
-        $query = $db->createQuery();
-
-        $query->setTable($this->m_table);
+        $query = $db->createQuery($this->m_table);
 
         // The record that must be updated is indicated by 'atkprimkey'
         // (not by atkselector, since the primary key might have
@@ -3326,7 +3324,7 @@ class Node
                 $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'update'); // start at level 1
             }
 
-            if (Tools::count($query->m_fields) && !$query->executeUpdate()) {
+            if (!$query->executeUpdate()) {
                 return false;
             }
 
@@ -3656,11 +3654,9 @@ class Node
         }
 
         $db = $this->getDb();
-        $query = $db->createQuery();
+        $query = $db->createQuery($this->m_table);
 
         $storelist = array('pre' => [], 'post' => [], 'query' => array());
-
-        $query->setTable($this->m_table);
 
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
@@ -3819,8 +3815,7 @@ class Node
             }
         }
 
-        $query = $this->getDb()->createQuery();
-        $query->setTable($this->m_table);
+        $query = $this->getDb()->createQuery($this->m_table);
         $query->addCondition($selector);
         if ($query->executeDelete()) {
 
