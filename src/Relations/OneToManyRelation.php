@@ -966,7 +966,7 @@ class OneToManyRelation extends Relation
      */
     public function getSearchModes()
     {
-        return array('exact', 'substring', 'wildcard', 'regexp');
+        return array('substring', 'exact', 'wildcard', 'regexp');
     }
 
     /**
