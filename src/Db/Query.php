@@ -333,18 +333,37 @@ class Query
     }
 
     /**
-     * Add join to Join Array.
+     * Add join to Join Array
      *
-     * @param string $table Table name
-     * @param string $alias Alias of table
-     * @param string $condition Condition for the Join
+     * $condition is either the (quoted) condition string, either an array :
+     * $fromField => [$targetTable, $targetColumn].
+     *
+     * example : addJoin('auth_groups', 'grp', ['id' => ['auth_users', 'group']]) will generate :
+     *  JOIN "auth_groups" "grp" ON ("grp"."id" = "auth_users"."group")
+     *
+     * @param string $table Table name (unquoted)
+     * @param string $alias Alias of table (unquoted)
+     * @param array|string $condition
      * @param bool $outer Wether to use an outer (left) join or an inner join
      *
      * @return Query The query object itself (for fluent usage)
      */
     public function addJoin($table, $alias, $condition, $outer = false)
     {
-        $join = ' '.($outer ? 'LEFT JOIN ' : 'JOIN ').Db::quoteIdentifier($table).' '.Db::quoteIdentifier($alias).' ON ('.$condition.') ';
+        if (is_array($condition)) {
+            // Building condition from array :
+            $conditionParts = [];
+            foreach($condition as $fromField => $toField) {
+                if (!is_array($toField)) {
+                    $toField = array($toField);
+                }
+                $conditionParts[] = Db::quoteIdentifier($alias, $fromField).'='.Db::quoteIdentifier($toField[0], $toField[1]);
+            }
+            $condition = implode(' AND ', $conditionParts);
+        }
+
+        // Adding the join :
+        $join = ($outer ? 'LEFT JOIN ' : 'JOIN ').Db::quoteIdentifier($table).' '.Db::quoteIdentifier($alias).' ON ('.$condition.')';
         if (!in_array($join, $this->m_joins)) {
             $this->m_joins[] = $join;
         }

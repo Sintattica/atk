@@ -1276,7 +1276,7 @@ EOF;
 
             $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
 
-            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias), false);
+            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($ownerAlias, $destAlias), false);
 
             $attrName = array_shift($path);
             $attr = $this->m_destInstance->getAttribute($attrName);
@@ -1367,7 +1367,7 @@ EOF;
         if ($this->createDestination()) {
             if ($mode != 'update' && $mode != 'add') {
                 $alias = $fieldaliasprefix.$this->fieldName();
-                $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $tablename, $alias), $this->m_leftjoin);
+                $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($tablename, $alias), $this->m_leftjoin);
                 $this->m_destInstance->addToQuery($query, $alias, $level + 1, false, $mode, $this->m_listColumns);
             } else {
                 for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
@@ -1699,7 +1699,15 @@ EOF;
         return $result;
     }
 
-    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
+    /**
+     * Return a join condition string with keys and m_joinFilters.
+     *
+     * @param string $tablename
+     * @param string $fieldalias
+     *
+     * @return string
+     */
+    public function getJoinCondition($tablename = '', $fieldalias = '')
     {
         if (!$this->createDestination()) {
             return false;
@@ -1713,15 +1721,16 @@ EOF;
         $joinconditions = [];
 
         for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-            $joinconditions[] = $realtablename.'.'.$this->m_refKey[$i].'='.$fieldalias.'.'.$this->m_destInstance->m_primaryKey[$i];
+            $joinconditions[] = Db::quoteIdentifier($realtablename, $this->m_refKey[$i]).'='.
+                Db::quoteIdentifier($fieldalias, $this->m_destInstance->m_primaryKey[$i]);
         }
 
         if ($this->m_joinFilter != '') {
             $parser = new StringParser($this->m_joinFilter);
             $filter = $parser->parse(array(
-                'table' => $realtablename,
-                'owner' => $realtablename,
-                'destination' => $fieldalias,
+                'table' => Db::quoteIdentifier($realtablename),
+                'owner' => Db::quoteIdentifier($realtablename),
+                'destination' => Db::quoteIdentifier($fieldalias),
             ));
             $joinconditions[] = $filter;
         }
@@ -2432,7 +2441,7 @@ EOF;
         );
 
         if($searchCondition != null) {
-            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $this->m_destInstance->m_table, $alias), false);
+            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($this->m_destInstance->m_table, $alias), false);
         }
         return $searchCondition;
     }

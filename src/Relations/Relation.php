@@ -343,7 +343,7 @@ class Relation extends Attribute
      * @return string SQL string for joining the owner with the destination.
      *                Defaults to false.
      */
-    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
+    public function getJoinCondition($tablename = '', $fieldalias = '')
     {
         return false;
     }

@@ -1052,7 +1052,7 @@ class OneToOneRelation extends Relation
 
                     // we need to left join the destination table into the query
                     // (don't worry ATK won't add it when it's already there)
-                    $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
+                    $query->addJoin($new_table, $new_table, ($this->getJoinCondition()), false);
                 }
                 $conditions[] = $p_attrib->getSearchCondition($query, $new_table, $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
             } else {
@@ -1074,17 +1074,16 @@ class OneToOneRelation extends Relation
      * Returns the condition which can be used when calling Query's addJoin() method
      * Joins the relation's owner with the destination.
      *
-     * @param Query $query The query object
      * @param string $tablename The name of the table
      * @param string $fieldalias The field alias
      *
      * @return string condition the condition that can be pasted into the query
      */
-    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
+    public function getJoinCondition($tablename = '', $fieldalias = '')
     {
-        $condition = $this->m_ownerInstance->m_table.'.'.$this->fieldName();
+        $condition = Db::quoteIdentifier($this->m_ownerInstance->m_table, $this->fieldName());
         $condition .= '=';
-        $condition .= $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField();
+        $condition .= Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField());
 
         return $condition;
     }

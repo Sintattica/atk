@@ -631,30 +631,12 @@ class OneToManyRelation extends Relation
                     continue;
                 }
 
-                $filterelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$this->escapeSQL($value)."'";
+                $filterelems[] = Db::quoteIdentifier($this->m_destInstance->getTable(), $this->m_refKey[$i])."='".
+                    $this->escapeSQL($value)."'";
             }
         }
 
         return $filterelems;
-    }
-
-    /**
-     * Prefix the passed column name with the table name if there is no prefix in the column name yet.
-     *
-     * @param string $columnName
-     * @param string $destAlias
-     *
-     * @return string
-     */
-    public function _addTablePrefix($columnName, $destAlias = '')
-    {
-        $prefix = '';
-        if (strpos($columnName, '.') === false) {
-            $prefix = $destAlias ? $destAlias : ($this->m_destInstance->getTable());
-            $prefix .= '.';
-        }
-
-        return $prefix.$columnName;
     }
 
     protected function getAddURL($params = array())
@@ -737,7 +719,7 @@ class OneToManyRelation extends Relation
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
-                $whereelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
+                $whereelems[] = Db::quoteIdentifier($this->m_destInstance->getTable(), $this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
             }
         }
 
@@ -991,27 +973,30 @@ class OneToManyRelation extends Relation
      * Returns the condition (SQL) that should be used when we want to join an owner
      * node with the destination node of the atkOneToManyRelation.
      *
-     * @param Query $query The query object.
      * @param string $ownerAlias The owner table alias.
      * @param string $destAlias The destination table alias.
      *
      * @return string SQL string for joining the owner with the destination.
      */
-    public function getJoinCondition($query, $ownerAlias = '', $destAlias = '')
+    public function getJoinCondition($ownerAlias = '', $destAlias = '')
     {
         if (!$this->createDestination()) {
             return false;
         }
 
         if ($ownerAlias == '') {
-            $ownerAlias = $this->m_ownerInstance->m_table;
+            $ownerAlias = $this->m_ownerInstance->getTable();
+        }
+        if ($destAlias == '') {
+            $destAlias = $this->m_destInstance->getTable();
         }
 
         $conditions = [];
         $ownerfields = $this->getOwnerFields();
 
         for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-            $conditions[] = $this->_addTablePrefix($this->m_refKey[$i], $destAlias).'='.$ownerAlias.'.'.$ownerfields[$i];
+            $conditions[] = Db::quoteIdentifier($destAlias, $this->m_refKey[$i]).'='.
+                Db::quoteIdentifier($ownerAlias, $ownerfields[$i]);
         }
 
         return implode(' AND ', $conditions);
@@ -1039,7 +1024,7 @@ class OneToManyRelation extends Relation
 
             $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
 
-            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias), false);
+            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($ownerAlias, $destAlias), false);
 
             $attrName = array_shift($path);
             $attr = $this->m_destInstance->getAttribute($attrName);
@@ -1123,7 +1108,7 @@ class OneToManyRelation extends Relation
             }
         }
         if (!empty($searchConditions)) {
-            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($query, $reftable, $alias), false);
+            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($reftable, $alias), false);
         }
 
         return QueryPart::implode('OR', $searchConditions, true);

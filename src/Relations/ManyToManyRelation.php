@@ -829,7 +829,7 @@ class ManyToManyRelation extends Relation
         // which should work in any ansi compatible database.
         if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             $this->createLink();
-            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(), false);
+            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), [$this->getLocalKey() => [$table, $ownerFields[0]]], false);
             $query->setDistinct(true);
 
             if (Tools::count($value) == 1) { // exactly one value
