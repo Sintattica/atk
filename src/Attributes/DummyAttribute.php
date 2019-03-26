@@ -25,6 +25,13 @@ class DummyAttribute extends Attribute
     public $m_text;
 
     /**
+     * The database fieldtype : no store, type undefined.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+
+    /**
      * Constructor.
      *
      * @param string $name The name of the attribute
@@ -186,16 +193,5 @@ class DummyAttribute extends Attribute
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return [];
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     * VOID implementation because dummy attributes are not stored in the database.
-     *
-     * @return string empty string
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 }

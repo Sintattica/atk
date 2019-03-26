@@ -27,6 +27,13 @@ class TimeAttribute extends Attribute
     public $m_default = '';
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_TIME;
+
+    /**
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      * @param int $beginTime Time to start with (eg 8)
@@ -400,17 +407,6 @@ class TimeAttribute extends Attribute
         } else {
             $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
         }
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_TIME;
     }
 
     /**

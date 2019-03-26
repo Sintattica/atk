@@ -18,33 +18,40 @@ use Sintattica\Atk\Db\Query;
  */
 class FuzzySearchAttribute extends Attribute
 {
-    /*
+    /**
      * The node we are searching on
      * @var String
      * @access private
      */
     public $m_searchnode = '';
 
-    /*
+    /**
      * The function to call back with the record and results
      * @var String
      * @access private
      */
     public $m_callback = '';
 
-    /*
+    /**
      * The mode of the the fuzzy search
      * @var String
      * @access private
      */
     public $m_mode = 'all';
 
-    /*
+    /**
      * The matches we got from the search
      * @var array
      * @access private
      */
     public $m_matches = [];
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
 
     /** @var Node $m_searchnodeInstance An instance of the node we are searching on */
@@ -406,11 +413,6 @@ class FuzzySearchAttribute extends Attribute
     public function dbFieldSize()
     {
         // Dummy method to prevent loading/storing of data.
-    }
-
-    public function dbFieldType()
-    {
-        //Dummy method to prevent loading/storing of data.
     }
 
     /**

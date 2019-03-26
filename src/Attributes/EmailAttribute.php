@@ -20,6 +20,13 @@ class EmailAttribute extends Attribute
     public $m_dnsSearch = false;
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_STRING;
+
+    /**
      * Constructor.
      *
      * <b>Example:</b>
@@ -128,16 +135,6 @@ class EmailAttribute extends Attribute
         } else {
             return false;
         }
-    }
-
-    /**
-     * Called by the framework to determine the database field datatype.
-     *
-     * @return string The databasefield datatype.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_STRING;
     }
 }
 

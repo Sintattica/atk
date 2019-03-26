@@ -373,12 +373,12 @@ class Attribute
      */
     public $m_maxsize = 0;
 
-    /*
+    /**
      * The database fieldtype.
      * @access private
-     * @var String
+     * @var int
      */
-    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+    public $m_dbfieldtype = null;
 
     /*
      * The order of the attribute within its node.
@@ -2193,26 +2193,24 @@ class Attribute
     /**
      * Return the database field type of the attribute.
      *
-     * Note that the type returned is a 'generic' type. Each database
-     * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $db->fieldType().
+     * Note that the type returned is a 'generic' type.
      *
      * If the type was read from the table metadata, that value will
      * be used. Else, the attribute will analyze its flags to guess
      * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
-     * Note: Derived attributes should override this method if they
+     * Note: Derived attributes should set m_dbfieldtype property if they
      *       use other field types than string or number. If the
      *       derived attribute is one that can not be stored in the
-     *       database, an empty string should be returned.
+     *       database, Db::FT_UNSUPPORTED should be returned.
      *
-     * @return string The 'generic' type of the database field for this
+     * @return int The 'generic' type of the database field for this
      *                attribute.
      */
     public function dbFieldType()
     {
-        if ($this->m_dbfieldtype == Db::FT_UNSUPPORTED) {
+        if (is_null($this->m_dbfieldtype)) {
             $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? Db::FT_NUMBER : Db::FT_STRING);
         }
 

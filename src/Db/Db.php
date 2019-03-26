@@ -25,14 +25,14 @@ class Db extends \PDO
     /**
      * Field types for database values
      */
-    const FT_UNSUPPORTED = 0;
-    const FT_BOOLEAN = 1;
-    const FT_NUMBER = 2;
-    const FT_DECIMAL = 3;
-    const FT_STRING = 4;
-    const FT_DATE = 5;
-    const FT_TIME = 6;
-    const FT_DATETIME = 7;
+    const FT_UNSUPPORTED = 1;
+    const FT_BOOLEAN = 2;
+    const FT_NUMBER = 3;
+    const FT_DECIMAL = 4;
+    const FT_STRING = 5;
+    const FT_DATE = 6;
+    const FT_TIME = 7;
+    const FT_DATETIME = 8;
 
     /**
      * Field flags

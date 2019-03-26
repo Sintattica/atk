@@ -25,6 +25,7 @@ class NumberAttribute extends Attribute
     public $m_decimalseparator;
     public $m_thousandsseparator;
     public $m_trailingzeros = false; // Show trailing zeros
+    public $m_dbfieldtype = Db::FT_NUMBER; // By default, without decimals, store as an NUMBER
 
     protected $touchspin;
 
@@ -69,6 +70,7 @@ class NumberAttribute extends Attribute
     public function setDecimals($decimals)
     {
         $this->m_decimals = $decimals;
+        $this->m_dbfieldtype = $this->getDecimals() > 0 ? Db::FT_DECIMAL : Db::FT_NUMBER;
     }
 
     /**
@@ -390,21 +392,6 @@ class NumberAttribute extends Attribute
     public static function getStaticSearchModes()
     {
         return array('exact', 'between', 'greaterthan', 'greaterthanequal', 'lessthan', 'lessthanequal');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * Note that the type returned is a 'generic' type. Each database
-     * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $db->fieldType().
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return $this->getDecimals() > 0 ? Db::FT_DECIMAL : Db::FT_NUMBER;
     }
 
     /**

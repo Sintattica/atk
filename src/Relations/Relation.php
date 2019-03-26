@@ -8,6 +8,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The atkRelation class defines a relation to another node.
@@ -17,7 +18,7 @@ use Sintattica\Atk\Db\Query;
  */
 class Relation extends Attribute
 {
-    /*
+    /**
      * @var String Destination node.
      */
     public $m_destination;
@@ -25,22 +26,31 @@ class Relation extends Attribute
     /** @var Node $m_destInstance Destination instance */
     public $m_destInstance;
 
-    /*
+    /**
      * @var String Filter for destination records.
      */
     public $m_destinationFilter = '';
 
-    /*
+    /**
      * Descriptor template for destination node.
      * @var String
      */
     public $m_descTemplate = null;
 
-    /*
+    /**
      * Descriptor handler.
      * @var Object
      */
     public $m_descHandler = null;
+
+    /**
+     * Since most relations do not store anything in a field, the default
+     * fieldtype for relations is FT_UNSUPPORTED. Exceptions (like the 
+     * many2oone relation, which stores a foreign key) can implement their
+     * own dbFieldType().
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
     /**
      * Constructor.
@@ -316,20 +326,6 @@ class Relation extends Attribute
         }
 
         return $searchmode;
-    }
-
-    /**
-     * Since most relations do not store anything in a field, the default
-     * fieldtype for relations is "". Exceptions (like the many2oone relation,
-     * which stores a foreign key) can implement their own dbFieldType().
-     *
-     * @abstract
-     *
-     * @return string
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 
     /**

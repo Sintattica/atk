@@ -18,6 +18,13 @@ class ExpressionAttribute extends Attribute
     public $m_expression;
 
     /**
+     * No storage and undefined Db type for expressions
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+
+    /**
      * Constructor.
      *
      * @param string $name The name of the attribute.
@@ -96,17 +103,6 @@ class ExpressionAttribute extends Attribute
     public function getSearchType()
     {
         return $this->m_searchType;
-    }
-
-    /**
-     * We don't know our field type plus we can't be stored anyways.
-     * So return an empty field type.
-     *
-     * @return string field type (empty string)
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 
     /**

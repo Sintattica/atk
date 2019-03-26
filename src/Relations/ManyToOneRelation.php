@@ -1448,56 +1448,61 @@ EOF;
         return false;
     }
 
+    /**
+     * Return the database field type of the attribute.
+     *
+     * The type of field that we need to store the foreign key, is equal to
+     * the type of field of the primary key of the node we have a
+     * relationship with.
+     * If we store a mutli-attribute referential key, then the field types are
+     * returned as a array
+     *
+     * @return int|array[] of ints : The 'generic' type of the database field(s).
+     */
     public function dbFieldType()
     {
-        // The type of field that we need to store the foreign key, is equal to
-        // the type of field of the primary key of the node we have a
-        // relationship with.
-        if ($this->createDestination()) {
-            if (Tools::count($this->m_refKey) > 1) {
-                $keys = [];
-                for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                    /** @var Attribute $attrib */
-                    $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
-                    $keys [] = $attrib->dbFieldType();
-                }
-
-                return $keys;
-            } else {
-                /** @var Attribute $attrib */
-                $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
-
-                return $attrib->dbFieldType();
-            }
+        if (!$this->createDestination() || empty($this->m_refKey)) {
+            return Db::FT_UNSUPPORTED;
         }
+        // One key case (most common) :
+        if (Tools::count($this->m_refKey) == 1) {
+            /** @var Attribute $attrib */
+            $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
 
-        return '';
+            return $attrib->dbFieldType();
+        }
+        // Several key case :
+        $keys = [];
+        for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
+            /** @var Attribute $attrib */
+            $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
+            $keys[] = $attrib->dbFieldType();
+        }
+        return $keys;
     }
 
     public function dbFieldSize()
     {
+        if (!$this->createDestination() || empty($this->m_refKey)) {
+            return 0;
+        }
         // The size of the field we need to store the foreign key, is equal to
         // the size of the field of the primary key of the node we have a
         // relationship with.
-        if ($this->createDestination()) {
-            if (Tools::count($this->m_refKey) > 1) {
-                $keys = [];
-                for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                    /** @var Attribute $attrib */
-                    $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
-                    $keys [] = $attrib->dbFieldSize();
-                }
-
-                return $keys;
-            } else {
-                /** @var Attribute $attrib */
-                $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
-
-                return $attrib->dbFieldSize();
-            }
+        if (Tools::count($this->m_refKey) == 1) {
+            /** @var Attribute $attrib */
+            $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
+            return $attrib->dbFieldSize();
+        }
+        // Several-keys case :
+        $keys = [];
+        for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
+            /** @var Attribute $attrib */
+            $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
+            $keys [] = $attrib->dbFieldSize();
         }
 
-        return 0;
+        return $keys;
     }
 
     /**

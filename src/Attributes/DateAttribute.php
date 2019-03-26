@@ -69,6 +69,13 @@ class DateAttribute extends Attribute
     public $m_maxyears = 25;
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_DATE;
+
+    /**
      * Format date according to a format string.
      *
      * @param array $date date array (gotten with getdate())
@@ -1245,21 +1252,6 @@ class DateAttribute extends Attribute
         } else {
             $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
         }
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * Note that the type returned is a 'generic' type. Each database
-     * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $db->fieldType().
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_DATE;
     }
 
     /**

@@ -34,6 +34,13 @@ class BoolAttribute extends Attribute
     const AF_BOOL_DISPLAY_CHECKBOX = 134217728;
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_BOOLEAN;
+
+    /**
      * Constructor.
      *
      * @param string $name Name of the attribute
@@ -283,17 +290,6 @@ class BoolAttribute extends Attribute
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return array('exact');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_BOOLEAN;
     }
     
     /**

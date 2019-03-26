@@ -23,6 +23,12 @@ class DateTimeAttribute extends Attribute
     public $m_timezoneAttribute = null;
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_DATETIME;
+    /**
      * Converts a date array to a timestamp
      * year, month, day are obligatory !!
      *
@@ -437,17 +443,6 @@ class DateTimeAttribute extends Attribute
     public function getSearchModes()
     {
         return $this->m_date->getSearchModes();
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_DATETIME;
     }
 
     /**

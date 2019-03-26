@@ -30,7 +30,9 @@ class MultiSelectAttribute extends ListAttribute
     protected $m_fieldSeparator = '|';
 
     /**
-     * Type in database
+     * The database fieldtype.
+     * @access private
+     * @var int
      */
     public $m_dbfieldtype = Db::FT_STRING;
 

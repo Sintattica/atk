@@ -24,6 +24,13 @@ class DurationAttribute extends Attribute
     public $m_maxtime_min;
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_NUMBER;
+
+    /**
      * Default Constructor, sets up Attribute.
      *
      * @param string $name The name of this attribute
@@ -177,17 +184,6 @@ class DurationAttribute extends Attribute
     public function getSearchModes()
     {
         return array('exact');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_NUMBER;
     }
 
     /**

@@ -17,6 +17,13 @@ class ParserAttribute extends Attribute
     public $m_text;
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+
+    /**
      * Constructor.
      *
      * @param string $name Name of the attribute
@@ -82,15 +89,5 @@ class ParserAttribute extends Attribute
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-    }
-
-    /**
-     * Dummy implementation.
-     *
-     * @return string Empty string
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 }

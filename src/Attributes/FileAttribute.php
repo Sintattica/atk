@@ -51,13 +51,13 @@ class FileAttribute extends Attribute
      */
     const AF_FILE_POPUP = self::AF_POPUP;
 
-    /*
+    /**
      * Directory with images
      */
     public $m_dir = '';
     public $m_url = '';
 
-    /*
+    /**
      * Name mangle feature. If you set filename tpl, then uploaded files
      * are renamed to what you set in the template. You can use
      * fieldnames between brackets to have the filename determined by
@@ -75,7 +75,7 @@ class FileAttribute extends Attribute
      */
     public $m_filenameTpl = '';
 
-    /*
+    /**
      * When set to true, a file is auto-renumbered if another record exists with the
      * same filename.
      *
@@ -83,13 +83,20 @@ class FileAttribute extends Attribute
      */
     public $m_autonumbering = false;
 
-    /*
+    /**
      * List of mime types which a uses is allowed to upload
      * Example: array('image/jpeg');
      *
      * @var array
      */
     public $m_allowedFileTypes = [];
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_STRING;
 
     /**
      * Constructor.
@@ -804,16 +811,6 @@ class FileAttribute extends Attribute
         }
 
         return $result;
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string "string" which is the 'generic' type of the database field for this attribute.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_STRING;
     }
 
     public function store($db, $record, $mode)

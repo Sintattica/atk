@@ -13,6 +13,11 @@ use Sintattica\Atk\Db\Db;
  */
 class FlagAttribute extends MultiSelectAttribute
 {
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
     public $m_dbfieldtype = Db::FT_NUMBER;
 
     /**

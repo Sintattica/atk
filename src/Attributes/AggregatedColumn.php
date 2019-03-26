@@ -22,26 +22,33 @@ use Sintattica\Atk\Core\Config;
  */
 class AggregatedColumn extends Attribute
 {
-    /*
+    /**
      * The display/sort template
      * @var String
      * @access private
      */
     public $m_template;
 
-    /*
+    /**
      * The array with searchs fileds
      * @var array
      * @access private
      */
     public $m_searchfields = [];
 
-    /*
+    /**
      * The array with displays fileds
      * @var array
      * @access private
      */
     public $m_displayfields = [];
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
     /**
      * Constructor.
@@ -201,6 +208,6 @@ class AggregatedColumn extends Attribute
      */
     public function dbFieldType()
     {
-        return '';
+        return Db::FT_UNSUPPORTED;
     }
 }

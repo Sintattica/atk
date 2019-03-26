@@ -22,6 +22,13 @@ class ProfileAttribute extends Attribute
     public $m_accessField;
 
     /**
+     * The database fieldtype: no storage, type undefined.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+
+    /**
      * Constructor.
      *
      * @param string $name The name of the attribute
@@ -658,25 +665,5 @@ class ProfileAttribute extends Attribute
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return [];
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * Note that the type returned is a 'generic' type. Each database
-     * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $db->fieldType().
-     *
-     * If the type was read from the table metadata, that value will
-     * be used. Else, the attribute will analyze its flags to guess
-     * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
-     * is probaly "number". If not, it's probably "string".
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 }
