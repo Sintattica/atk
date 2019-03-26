@@ -1296,7 +1296,7 @@ EOF;
         }
 
         $searchConditions = [];
-        // First, searching on listColumns values
+        // First, applying searchConditions implied by list Columns :
         if (is_array($value)) {
             foreach ($this->m_listColumns as $attr) {
                 $attrValue = $value[$attr];
@@ -1304,7 +1304,7 @@ EOF;
                     /** @var Attribute $p_attrib */
                     $p_attrib = $this->m_destInstance->m_attribList[$attr];
                     if (!$p_attrib == null) {
-                        $searchConditions[] = $p_attrib->getSearchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
+                        $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
                     }
                 }
             }

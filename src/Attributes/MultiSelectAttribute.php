@@ -5,7 +5,9 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 
 /**
  * The MultiSelectAttribute class represents an attribute of a node
@@ -26,6 +28,11 @@ class MultiSelectAttribute extends ListAttribute
      * @var string separator
      */
     protected $m_fieldSeparator = '|';
+
+    /**
+     * Type in database
+     */
+    public $m_dbfieldtype = Db::FT_STRING;
 
     /**
      * Constructor.
@@ -208,17 +215,6 @@ class MultiSelectAttribute extends ListAttribute
             $searchconditions[] = $query->substringCondition(Db::quoteIdentifier($table, $this->fieldName()), $str);
         }
         return QueryPart::implode('OR', $searchconditions, true);
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'text' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return 'text';
     }
 
     /**
