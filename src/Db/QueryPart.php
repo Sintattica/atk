@@ -125,6 +125,7 @@ class QueryPart
      */
     public static function implode(string $glue, array $pieces, $wrap = false)
     {
+        $pieces = array_filter($pieces, function($x) { return !is_null($x); });
         if (empty($pieces)) {
             return null;
         }

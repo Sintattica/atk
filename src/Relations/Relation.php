@@ -33,6 +33,7 @@ class Relation extends Attribute
 
     /**
      * Descriptor template for destination node.
+     *
      * @var String
      */
     public $m_descTemplate = null;
@@ -166,16 +167,6 @@ class Relation extends Attribute
     }
 
     /**
-     * Returns the descriptor template for the destination node.
-     *
-     * @return string The descriptor Template
-     */
-    public function getDescriptorTemplate()
-    {
-        return $this->m_descTemplate;
-    }
-
-    /**
      * Sets the descriptor template for the destination node.
      *
      * @param string $template The descriptor template.
@@ -186,8 +177,20 @@ class Relation extends Attribute
     }
 
     /**
-     * Descriptor handler. Forwards description handler calls
-     * to the real description handler.
+     * Forwards description handler calls to the real description handler.
+     *
+     * Never call this function directly:
+     * A. If $this->m_descHandler is set, then :
+     *  - createDestination will set m_destInstance descHandler to $this
+     *  - m_destInstance->descriptor() will call $this->descriptor (this function)
+     *  - this function will call $this->m_descHandler->[name]_descriptor (if exists)
+     *  - if above method does not exist, it will call $this->m_descHandler->descriptor.
+     * B. If $this->m_descHandler is not set and $this->m_descTemplate is set then :
+     *  - createDestination will set m_destInstance descTemplate to $this->m_descTemplate.
+     *  - m_destInstance->descriptor() will parse the common descTemplate.
+     * C. If neither $this->m_descHandler nor $this->m_descTemplate is set then :
+     *  - createDestination will not do anything
+     *  - m_destInstance->descriptor() will work as usual.
      *
      * @param array $record The record
      * @param Node $node The atknode object

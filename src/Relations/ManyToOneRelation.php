@@ -136,13 +136,23 @@ class ManyToOneRelation extends Relation
     public $m_autocomplete_minchars;
 
     /*
-     * An array with the fieldnames of the destination node in which the autocompletion must search
+     * A template with fields that will be searched for in autocompletion search.
      * for results.
+     *
+     * Few words about how search will be performed for autocomplete lists :
+     * - if $m_autocomplete_searchtemplate is set, it will be used
+     * - else, if $m_concatDescriptorFunction is set, this function will be called (on
+     *   destination node) and search will be performed on this basis.
+     * - else, classical search for relations will be performed, i.e in priority order :
+     *   - by using $this->m_descTemplate
+     *   - by using destination node descriptor template
+     *   - by using destination node descriptor_def function
+     *   - by using first attribute of destination node.
      *
      * @access private
      * @var array
      */
-    public $m_autocomplete_searchfields = '';
+    public $m_autocomplete_searchtemplate = '';
 
     /*
      * The search mode of the autocomplete fields. Can be 'startswith', 'exact' or 'contains'.
@@ -195,7 +205,7 @@ class ManyToOneRelation extends Relation
     public $m_useFilterForAddLink = true;
 
     /*
-     * Set a function to use for determining the descriptor in the getConcatFilter function
+     * Set a function to use for determining the descriptor in the getSearchFilterByTargetDescriptor function
      *
      * @access private
      * @var string
@@ -318,7 +328,18 @@ class ManyToOneRelation extends Relation
      */
     public function setAutoCompleteSearchFields($searchfields)
     {
-        $this->m_autocomplete_searchfields = $searchfields;
+        Tools::atkerror('setAutoCompleteSearchFields deprecated. Use setAutoCompleteSearchTemplate.');
+        $this->m_autocomplete_searchtemplate = '['.implode('] [', $searchfields).']';
+    }
+
+    /**
+     * Set the searchfields for the autocompletion.
+     *
+     * @param array $searchfields
+     */
+    public function setAutoCompleteSearchTemplate($template)
+    {
+        $this->m_autocomplete_searchtemplate = $template;
     }
 
     /**
@@ -1538,7 +1559,7 @@ EOF;
 
         $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField()."='".$record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]."'";
 
-        $filter = $this->createFilter($record, $mode);
+        $filter = $this->parseFilter($this->m_destinationFilter, $record);
         if (!empty($filter)) {
             $condition = $condition.' AND '.$filter;
         }
@@ -1593,25 +1614,6 @@ EOF;
             return $this->m_ownerInstance->$method($record, $mode);
         } else {
             return $this->isSelectableRecord($record, $mode);
-        }
-    }
-
-    /**
-     * Create the destination filter for the given record.
-     *
-     * @param array $record
-     * @param string $mode (not used here, but usable in derived classes)
-     *
-     * @return string filter
-     */
-    public function createFilter($record, $mode)
-    {
-        if ($this->m_destinationFilter != '') {
-            $parser = new StringParser($this->m_destinationFilter);
-
-            return $parser->parse($record);
-        } else {
-            return '';
         }
     }
 
@@ -1672,8 +1674,8 @@ EOF;
         }
 
         // No selection override exists, simply add the record key to the selector.
-        $filter = $this->createFilter($record, $mode);
-        $selector = "($selectedKey)".($filter != null ? " AND ($filter)" : '');
+        $filter = $this->parseFilter($this->m_destinationFilter, $record);
+        $selector = "($selectedKey)".($filter != '' ? " AND ($filter)" : '');
 
         return $this->m_destInstance->select($selector)->getRowCount() > 0;
     }
@@ -1697,7 +1699,7 @@ EOF;
     {
         $this->createDestination();
 
-        $selector = $this->createFilter($record, $mode);
+        $selector = $this->parseFilter($this->m_destinationFilter, $record);
         $result = $this->m_destInstance->select($selector)->orderBy($this->getDestination()->getOrder())->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey));
 
@@ -2151,7 +2153,6 @@ EOF;
         return $result;
     }
 
-
     /**
      * Auto-complete partial.
      *
@@ -2161,45 +2162,8 @@ EOF;
     public function partial_autocomplete($mode)
     {
         $this->createDestination();
-
-        $searchvalue = $this->escapeSQL($this->m_ownerInstance->m_postvars['value']);
-        $filter = $this->createSearchFilter($searchvalue);
-        $this->addDestinationFilter($filter);
-
-        // use "request" because "m_postvars" yelds stange results...
-        if(isset($_REQUEST['atkfilter'])) {
-            $this->addDestinationFilter($_REQUEST['atkfilter']);
-        }
-
         $record = $this->m_ownerInstance->updateRecord();
-        $result = "\n";
-        $limit = $this->m_autocomplete_pagination_limit;
-        $page = 1;
-        if (isset($this->m_ownerInstance->m_postvars['page']) && is_numeric($this->m_ownerInstance->m_postvars['page'])) {
-            $page = $this->m_ownerInstance->m_postvars['page'];
-        }
-        $offset = ($page - 1) * $limit;
-
-        $selector = $this->_getSelectableRecordsSelector($record, $mode);
-        $selector->limit($limit, $offset);
-        $count = $selector->getRowCount();
-        $rows = $selector->fetchAll();
-        $more = ($offset + $limit > $count) ? 'false' : 'true';
-
-        $result .= '<div id="total">'.$count.'</div>'."\n";
-        $result .= '<div id="page">'.$page.'</div>'."\n";
-        $result .= '<div id="more">'.$more.'</div>'."\n";
-
-        $result .= '<ul>';
-        foreach ($rows as $rec) {
-            $option = $this->m_destInstance->descriptor($rec);
-            $value = $this->m_destInstance->primaryKey($rec);
-            $result .= '
-          <li value="'.htmlentities($value).'">'.htmlentities($option).'</li>';
-        }
-        $result .= '</ul>';
-
-        return $result;
+        return $this->autocompleteList($record, $mode);
     }
 
     /**
@@ -2210,24 +2174,37 @@ EOF;
     public function partial_autocomplete_search()
     {
         $this->createDestination();
-        $searchvalue = $this->escapeSQL($this->m_ownerInstance->m_postvars['value']);
-        $filter = $this->createSearchFilter($searchvalue);
-        $this->addDestinationFilter($filter);
-        $record = [];
-        $mode = 'search';
+        return $this->autocompleteList([], 'search');
+    }
 
-        $result = "\n";
+    /**
+     * Returns auto-complete options list for the select list in add/edit/search boxes.
+     *
+     * @param array $record we're in (in add/edit mode)
+     * @param string $mode add/edit/search
+     *
+     * @return string html
+     */
+    protected function autocompleteList($record, $mode)
+    {
+        $selector = $this->_getSelectableRecordsSelector($record, $mode);
+
+        // Adding pagination :
         $limit = $this->m_autocomplete_pagination_limit;
         $page = 1;
         if (isset($this->m_ownerInstance->m_postvars['page']) && is_numeric($this->m_ownerInstance->m_postvars['page'])) {
             $page = $this->m_ownerInstance->m_postvars['page'];
         }
         $offset = ($page - 1) * $limit;
-
-        $selector = $this->_getSelectableRecordsSelector($record, $mode);
         $selector->limit($limit, $offset);
-        $count = $selector->getRowCount();
-        $rows = $selector->fetchAll();
+
+        // Adding search condition :
+        $query = $selector->buildQuery();
+        $searchvalue = $this->m_ownerInstance->m_postvars['value'];
+        $this->addAutocompleteSearchFilter($query, $searchvalue);
+
+        // Returning the list :
+        $count = $query->executeCount();
         $more = ($offset + $limit > $count) ? 'false' : 'true';
 
         $result .= '<div id="total">'.$count.'</div>'."\n";
@@ -2235,6 +2212,7 @@ EOF;
         $result .= '<div id="more">'.$more.'</div>'."\n";
 
         $result .= '<ul>';
+        $rows = $query->executeSelect();
         foreach ($rows as $rec) {
             $option = $value = $this->m_destInstance->descriptor($rec);
             $result .= '
@@ -2245,179 +2223,69 @@ EOF;
         return $result;
     }
 
-
     /**
-     * Creates a search filter with the given search value on the given
-     * descriptor fields.
+     * Adds a search filter in a query based on the given search value for autocomplete
+     * searches.
      *
-     * @param string $searchvalue A searchstring
+     * If search value contains several parts separated by spaces, each part should be
+     * present in target descriptor for it to be matched against.
      *
-     * @return string a search string (WHERE clause)
+     * @param $query Query object
+     * @param string $searchvalue a searchstring
      */
-    public function createSearchFilter($searchvalue)
+    protected function addAutocompleteSearchFilter(Query $query, $searchvalue)
     {
-        if ($this->m_autocomplete_searchfields == '') {
-            $searchfields = $this->m_destInstance->descriptorFields();
+        // First, get the applicable descriptor template :
+        $function = $this->getConcatDescriptorFunction();
+        if ($this->m_autocomplete_searchtemplate != '') {
+            $template = $this->m_autocomplete_searchtemplate;
+        } elseif ($function != '' && method_exists($this->m_destInstance, $function)) {
+            $template = $this->m_destInstance->$function();
         } else {
-            $searchfields = $this->m_autocomplete_searchfields;
+            $template = $this->m_destInstance->getDescriptorTemplate();
         }
 
+        // Then, select the right seach mode :
+        switch($this->m_autocomplete_searchmode) {
+            case self::SEARCH_MODE_STARTSWITH:
+                // In fact, 'startswith' mode doesn't work. To fix it, 'startswith' should be
+                // listed as a standard search mode in Attribute->getSearchModes()
+                $searchMode = 'startswith';
+                break;
+            case self::SEARCH_MODE_CONTAINS:
+                $searchMode = 'substring';
+                break;
+            case self::SEARCH_MODE_EXACT:
+            default:
+                $searchMode = 'exact';
+                break;
+        }
+
+        // Then, run the query on each word form $searchValue :
+        $conditions = [];
         $parts = preg_split('/\s+/', $searchvalue);
-
-        $mainFilter = [];
+        $table = $this->m_destInstance->m_table;
         foreach ($parts as $part) {
-            $filter = [];
-            foreach ($searchfields as $attribname) {
-                if (strstr($attribname, '.')) {
-                    $table = '';
-                } else {
-                    $table = $this->m_destInstance->m_table.'.';
-                }
-
-                if (!$this->m_autocomplete_search_case_sensitive) {
-                    $tmp = 'LOWER('.$table.$attribname.')';
-                } else {
-                    $tmp = $table.$attribname;
-                }
-
-                switch ($this->m_autocomplete_searchmode) {
-                    case self::SEARCH_MODE_EXACT:
-                        if (!$this->m_autocomplete_search_case_sensitive) {
-                            $tmp .= " = LOWER('{$part}')";
-                        } else {
-                            $tmp .= " = '{$part}'";
-                        }
-                        break;
-                    case self::SEARCH_MODE_STARTSWITH:
-                        if (!$this->m_autocomplete_search_case_sensitive) {
-                            $tmp .= " LIKE LOWER('{$part}%')";
-                        } else {
-                            $tmp .= " LIKE '{$part}%'";
-                        }
-                        break;
-                    case self::SEARCH_MODE_CONTAINS:
-                        if (!$this->m_autocomplete_search_case_sensitive) {
-                            $tmp .= " LIKE LOWER('%{$part}%')";
-                        } else {
-                            $tmp .= " LIKE '%{$part}%'";
-                        }
-                        break;
-                    default:
-                        $tmp .= " = LOWER('{$part}')";
-                }
-
-                $filter[] = $tmp;
-            }
-
-            if (Tools::count($filter) > 0) {
-                $mainFilter[] = '('.implode(') OR (', $filter).')';
-            }
+            $conditions[] = $this->m_destInstance->getTemplateSearchCondition(
+                $query,
+                $table,
+                $template,
+                $part,
+                $searchMode,
+                ''
+            );
         }
+        $searchCondition = QueryPart::implode('AND', $conditions);
 
-        if (Tools::count($mainFilter) > 0) {
-            $searchFilter = '('.implode(') AND (', $mainFilter).')';
-        } else {
-            $searchFilter = '';
+        if($searchCondition != null) {
+            $query->addCondition($searchCondition);
         }
-
-        // When no searchfields are specified and we use the CONTAINS mode
-        // add a concat filter
-        if ($this->m_autocomplete_searchmode == self::SEARCH_MODE_CONTAINS && $this->m_autocomplete_searchfields == '') {
-            $filter = $this->getConcatFilter($searchvalue);
-            if ($filter) {
-                if ($searchFilter != '') {
-                    $searchFilter .= ' OR ';
-                }
-                $searchFilter .= $filter;
-            }
-        }
-
-        return $searchFilter;
-    }
-
-    /**
-     * Get Concat filter.
-     *
-     * @param string $searchValue Search value
-     * @param string $fieldaliasprefix Field alias prefix
-     *
-     * @return string|bool
-     */
-    public function getConcatFilter($searchValue, $fieldaliasprefix = '')
-    {
-        // If we have a descriptor with multiple fields, use CONCAT
-        $attribs = $this->m_destInstance->descriptorFields();
-        if (Tools::count($attribs) > 1) {
-            $fields = [];
-            foreach ($attribs as $attribname) {
-                $post = '';
-                if (strstr($attribname, '.')) {
-                    if ($fieldaliasprefix != '') {
-                        $table = $fieldaliasprefix.'_AE_';
-                    } else {
-                        $table = '';
-                    }
-                    $post = substr($attribname, strpos($attribname, '.'));
-                    $attribname = substr($attribname, 0, strpos($attribname, '.'));
-                } elseif ($fieldaliasprefix != '') {
-                    $table = $fieldaliasprefix.'.';
-                } else {
-                    $table = $this->m_destInstance->m_table.'.';
-                }
-
-                /** @var Attribute $p_attrib */
-                $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-                $fields[$p_attrib->fieldName()] = $table.$p_attrib->fieldName().$post;
-            }
-
-            if (is_array($searchValue)) {
-                // (fix warning trim function)
-                $searchValue = $searchValue[0];
-            }
-
-            $value = $this->escapeSQL(trim($searchValue));
-            $value = str_replace('  ', ' ', $value);
-            if (!$value) {
-                return false;
-            } else {
-                $function = $this->getConcatDescriptorFunction();
-                if ($function != '' && method_exists($this->m_destInstance, $function)) {
-                    $descriptordef = $this->m_destInstance->$function();
-                } elseif ($this->m_destInstance->m_descTemplate != null) {
-                    $descriptordef = $this->m_destInstance->m_descTemplate;
-                } elseif (method_exists($this->m_destInstance, 'descriptor_def')) {
-                    $descriptordef = $this->m_destInstance->descriptor_def();
-                } else {
-                    $descriptordef = $this->m_destInstance->descriptor(null);
-                }
-
-                $parser = new StringParser($descriptordef);
-                $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
-                $concatTags = $concatFields['tags'];
-                $concatSeparators = $concatFields['separators'];
-                $concatSeparators[] = ' '; //the query removes all spaces, so let's do the same here [Bjorn]
-                // to search independent of characters between tags, like spaces and comma's,
-                // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
-                foreach ($concatSeparators as $separator) {
-                    $value = str_replace($separator, '', $value);
-                }
-
-                $db = $this->getDb();
-                $searchcondition = 'UPPER('.$db->func_concat_ws($concatTags, '', true).") LIKE UPPER('%".$value."%')";
-            }
-
-            return $searchcondition;
-        }
-
-        return false;
     }
 
     /**
      * Returns a search query condition based on the target descriptor
      *
      * Side effect : it may add joins to $query (first parameter).
-     *
-     * TODO : This function should replace getConcatFilter.
      *
      * @param \Db\Query $query to work with
      * @param string $searchValue Search value
@@ -2445,7 +2313,7 @@ EOF;
             $fieldaliasprefix
         );
 
-        if($searchCondition != null) {
+        if($searchCondition != null && $query != null) {
             $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($this->m_destInstance->m_table, $alias), false);
         }
         return $searchCondition;

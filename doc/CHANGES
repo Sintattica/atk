@@ -15,9 +15,18 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
++ Added Query->startswithCondition.
+* ManyToOneRelation :
+    createFilter removed in favor of Relation->parseFilter.
+    setAutoCompleteSearchFields deprecated in favor of
+    setAutoCompleteSearchTemplate (more generic).
+* Selector->buildQuery() is now a public function.
+- Node->initSelector removed. Node->select accepts QueryParts
 + Query->isExpression($field) tells wether $field is an expression (true) or 
     a regular field (false). If field does not exist, returns false.
 * Query object members are now private.
+- Removes Relation->getDescriptorTemplate (prefer
+    m_destInstance->getDescriptorTemplate()).
 * Relation->getJoinCondition does not take a $query argument anymore.
 + Added exact, wildcard and regex searches for OneToMany relations.
 * Node->getDescriptorTemplate now uses descriptor_def function as a fallback

@@ -95,14 +95,16 @@ class Selector implements \ArrayAccess, \Countable
     /**
      * Adds a condition..
      *
-     * @param string $condition where clause
-     * @param array $params bind parameters
+     * @param string|QueryPart $condition where clause
+     * @param array $params bind parameters (if $condition not a QueryPart already)
      *
      * @return Selector
      */
     public function where($condition, $params = array())
     {
-        if (strlen(trim($condition)) > 0) {
+        if ($condition instanceof QueryPart) {
+            $this->m_conditions[] = $condition;
+        } elseif(strlen(trim($condition)) > 0) {
             $this->m_conditions[] = new QueryPart($condition, $params);
         }
 
@@ -524,33 +526,19 @@ class Selector implements \ArrayAccess, \Countable
     /**
      * Build base query object.
      *
-     * @param array $attrsByLoadType attributes by load type
-     *
      * @return Query query object
      */
-    protected function _buildQuery(array $attrsByLoadType)
+    public function buildQuery()
     {
         $query = $this->_getNode()->getDb()->createQuery($this->_getNode()->getTable());
         $query->setDistinct($this->m_distinct);
 
         $this->_applyConditionsToQuery($query);
         $this->_applyFiltersToQuery($query);
+
+        $attrsByLoadType = $this->_getAttributesByLoadType();
         $this->_applyPostvarsToQuery($query, $attrsByLoadType);
         $this->_applyAttributesToQuery($query, $attrsByLoadType);
-
-        return $query;
-    }
-
-    /**
-     * Build select query object.
-     *
-     * @param array $attrsByLoadType attributes by load type
-     *
-     * @return Query query object
-     */
-    protected function _buildSelectQuery(array $attrsByLoadType)
-    {
-        $query = $this->_buildQuery($attrsByLoadType);
 
         if (!empty($this->m_order)) {
             $query->addOrderBy($this->m_order);
@@ -564,18 +552,6 @@ class Selector implements \ArrayAccess, \Countable
     }
 
     /**
-     * Build count query object.
-     *
-     * @param array $attrsByLoadType attributes by load type
-     *
-     * @return Query query object
-     */
-    protected function _buildCountQuery(array $attrsByLoadType)
-    {
-        return $this->_buildQuery($attrsByLoadType);
-    }
-
-    /**
      * Transform raw database row to node compatible row.
      *
      * @param array $row raw database row
@@ -584,10 +560,11 @@ class Selector implements \ArrayAccess, \Countable
      *
      * @return array node compatible row
      */
-    protected function _transformRow($row, Query $query, array $attrsByLoadType)
+    protected function _transformRow($row, Query $query)
     {
         $query->deAlias($row);
         Tools::atkDataDecode($row);
+        $attrsByLoadType = $this->_getAttributesByLoadType();
 
         $result = [];
         foreach ($attrsByLoadType[Attribute::ADDTOQUERY] as $attr) {
@@ -610,14 +587,13 @@ class Selector implements \ArrayAccess, \Countable
      *
      * @param array $rows raw database rows
      * @param Query $query query object
-     * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible rows
      */
-    protected function _transformRows($rows, Query $query, array $attrsByLoadType)
+    protected function _transformRows($rows, Query $query)
     {
         foreach ($rows as &$row) {
-            $row = $this->_transformRow($row, $query, $attrsByLoadType);
+            $row = $this->_transformRow($row, $query);
         }
 
         return $rows;
@@ -644,10 +620,9 @@ class Selector implements \ArrayAccess, \Countable
     public function fetchAll()
     {
         if ($this->m_rows === null) {
-            $attrsByLoadType = $this->_getAttributesByLoadType();
-            $query = $this->_buildSelectQuery($attrsByLoadType);
+            $query = $this->buildQuery();
             $rows = $query->executeSelect();
-            $this->m_rows = $this->_transformRows($rows, $query, $attrsByLoadType);
+            $this->m_rows = $this->_transformRows($rows, $query);
         }
 
         return $this->m_rows;
@@ -656,8 +631,7 @@ class Selector implements \ArrayAccess, \Countable
 
     public function getTotals($fields = [])
     {
-        $attrsByLoadType = $this->_getAttributesByLoadType();
-        $query = $this->_buildQuery($attrsByLoadType);
+        $query = $this->buildQuery();
         $prefix = '__sum__';
 
         foreach ($fields as $field) {
@@ -689,8 +663,7 @@ class Selector implements \ArrayAccess, \Countable
     public function getRowCount()
     {
         if ($this->m_rowCount === null) {
-            $attrsByLoadType = $this->_getAttributesByLoadType();
-            $this->m_rowCount = $this->_buildCountQuery($attrsByLoadType)->executeCount();
+            $this->m_rowCount = $this->buildQuery()->executeCount();
         }
 
         return $this->m_rowCount;
@@ -711,11 +684,9 @@ class Selector implements \ArrayAccess, \Countable
             }
         }
 
-        $attrsByLoadType = $this->_getAttributesByLoadType();
-
         $index = $this->_getNode()->m_index;
         $this->_getNode()->m_index = null;
-        $query = $this->_buildQuery($attrsByLoadType);
+        $query = $this->buildQuery();
         $this->_getNode()->m_index = $index;
 
         $query->clearFields();

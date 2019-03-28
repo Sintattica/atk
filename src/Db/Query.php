@@ -837,6 +837,19 @@ class Query
     }
 
     /**
+     * Generate a searchcondition that checks whether $field starts with $value .
+     *
+     * @param string $field The field
+     * @param string $value The value
+     *
+     * @return QueryPart
+     */
+    public function startswithCondition($field, $value)
+    {
+        return $this->simpleCondition($field, str_replace('%', '%%', $value).'%', 'LIKE', 'NOT LIKE');
+    }
+
+    /**
      * Generate searchcondition with greater than.
      *
      * @param string $field The database field

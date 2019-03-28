@@ -3431,35 +3431,25 @@ class Node
     }
 
     /**
-     * Set some default for the selector.
+     * Retrieve records from the database using a handy helper class.
      *
-     * @param Selector $selector selector
-     * @param string $condition condition
-     * @param array $params condition bind parameters
+     * @param QueryPart|string $condition SQL condition
+     *
+     * @return Selector
      */
-    protected function _initSelector(Selector $selector, $condition = null, $params = array())
+    public function select($condition = null)
     {
+        $selector = new Selector($this);
+
         $selector->orderBy($this->getOrder());
         $selector->ignoreDefaultFilters($this->hasFlag(self::NF_NO_FILTER));
         $selector->ignorePostvars($this->atkReadOptimizer());
 
-        if ($condition != null) {
-            $selector->where($condition, $params);
+        if (is_string($condition) && !empty($condition)) {
+            $selector->where(new QueryPart($condition));
+        } elseif (!is_null($condition)) {
+            $selector->where($condition);
         }
-    }
-
-    /**
-     * Retrieve records from the database using a handy helper class.
-     *
-     * @param string $condition condition
-     * @param array $params condition bind parameters
-     *
-     * @return Selector
-     */
-    public function select($condition = null, array $params = array())
-    {
-        $selector = new Selector($this);
-        $this->_initSelector($selector, $condition, $params);
 
         return $selector;
     }
