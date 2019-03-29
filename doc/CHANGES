@@ -40,7 +40,8 @@ WIP Changes
     removed.
 + Added Query->executeCount() functions (returns an int).
 + added Query->addAllFields to add a '*' to a select query.
-+ Added Query->betweenCondition, Query->bitmaskCondition & Query->inCondition.
++ Added Query->betweenCondition, Query->bitmaskCondition, Query->inCondition,
+    Query->notinCondition
 * Query->addField automatically add quotes around field and, if present, table.
 * Removed per-database Query Object classes.
 + Added regexp searches for PostgreSql.

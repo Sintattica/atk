@@ -90,7 +90,7 @@ class MultiSelectAttribute extends ListAttribute
     public function value2db($rec)
     {
         if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
-            return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
+            return implode($this->m_fieldSeparator, $rec[$this->fieldName()]);
         } else {
             return '';
         }

@@ -853,7 +853,7 @@ class Attribute
     public function db2value($rec)
     {
         if (isset($rec[$this->fieldName()])) {
-            return $rec[$this->fieldName()] === null ? null : $rec[$this->fieldName()];
+            return $rec[$this->fieldName()];
         }
 
         return;

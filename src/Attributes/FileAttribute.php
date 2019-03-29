@@ -687,21 +687,20 @@ class FileAttribute extends Attribute
         }
 
         $owner = $this->m_ownerInstance;
-        $db = $owner->getDb();
-        $tableSql = Db::quoteIdentifier($this->m_ownerInstance->getTable());
-        $fieldnameSql = Db::quoteIdentifier($this->fieldName());
-        $filenameSql = $db->escapeSQL($filename);
-        $nameSql = $db->escapeSQL($name);
-        $extSql = $db->escapeSQL($ext);
 
-        $sql = "SELECT $fieldnameSql AS filename FROM $tableSql WHERE $fieldnameSql = '$filenameSql' OR $fieldnameSql LIKE '$nameSql-%$extSql'";
+        $query = $owner->getDb()->createQuery($this->m_ownerInstance->getTable());
+        $query->addField($this->fieldName());
+        $fieldnameSql = Db::quoteIdentifier($this->fieldName());
+        $query->addCondition(
+            "{$fieldnameSql}= :filename OR {$fieldnameSql} LIKE :name",
+            [':filename' => [$filename], ':name' => $name.'-%'.$ext]);
         if ($rec[$owner->primaryKeyField()] != '') {
-            $sql .= " AND NOT (".$owner->primaryKey($rec).")";
+            $query->addCondition('NOT ('.$owner->primaryKey($rec).')');
         }
 
-        $records = $db->getRows($sql);
+        $records = $query->executeSelect();
 
-        if (Tools::count($records) > 0) {
+        if (!empty($records)) {
             // Check for the highest number
             $max_count = 0;
             foreach ($records as $record) {
@@ -835,7 +834,7 @@ class FileAttribute extends Attribute
                 if (@copy($record[$this->fieldName()]['tmpfile'], $this->m_dir.$filename)) {
                     $this->processFile($this->m_dir, $filename);
 
-                    return $this->escapeSQL($filename);
+                    return true;
                 } else {
                     Tools::atkerror("File could not be saved, unable to copy file '{$record[$this->fieldName()]['tmpfile']}' to destination '{$this->m_dir}{$filename}'");
 
@@ -913,13 +912,13 @@ class FileAttribute extends Attribute
         $del = isset($rec[$this->fieldName()]['postdel']) ? $rec[$this->fieldName()]['postdel'] : null;
 
         if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && ($del != null || $del != $rec[$this->fieldName()]['filename'])) {
-            return $this->escapeSQL($rec[$this->fieldName()]['filename']);
+            return $rec[$this->fieldName()]['filename'];
         }
 
         if ($del != null) {
             return '';
         }
 
-        return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
+        return $rec[$this->fieldName()]['orgfilename'];
     }
 }

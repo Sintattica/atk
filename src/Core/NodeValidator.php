@@ -3,6 +3,8 @@
 namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\QueryPart;
 
 /**
  * Validator for records, based on node definition.
@@ -139,9 +141,12 @@ class NodeValidator
                 } // if flag is primary
                 else {
                     if ($p_attrib->hasFlag(Attribute::AF_UNIQUE) && !$p_attrib->hasFlag(Attribute::AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
-                        $condition = $this->m_nodeObj->getTable().".$attribname='".$db->escapeSQL($p_attrib->value2db($record))."'";
+                        $condition = new QueryPart(
+                            Db::quoteIdentifier($this->m_nodeObj->getTable(), $attribname).'= :value',
+                            [':value' => [$p_attrib->value2db($record)]]
+                        );
                         if ($this->m_mode != 'add') {
-                            $condition .= ' AND NOT ('.$this->m_nodeObj->primaryKey($record).')';
+                            $condition->appendSql(' AND NOT ('.$this->m_nodeObj->primaryKey($record).')');
                         }
                         $cnt = $this->m_nodeObj->select($condition)->ignoreDefaultFilters(true)->ignorePostvars(true)->getRowCount();
                         if ($cnt > 0) {
@@ -212,13 +217,13 @@ class NodeValidator
                     if (method_exists($attrib, 'createDestination') && isset($attrib->m_refKey) && is_array($attrib->m_refKey) && Tools::count($attrib->m_refKey) > 1) {
                         $attrib->createDestination();
                         foreach ($attrib->m_refKey as $refkey) {
-                            $query->addCondition($query->quoteField($refkey)." = '".$db->escapeSQL($record[$attrib->fieldName()][$refkey])."'");
+                            $query->addCondition(Db::quoteIdentifier($refkey).' = :refkey', [':refkey' => [$record[$attrib->fieldName()][$refkey]]]);
                         }
                     } else {
                         if (!$attrib->isNotNullInDb() && $attrib->isEmpty($record)) {
-                            $query->addCondition($query->quoteField($field).' IS NULL');
+                            $query->addCondition(Db::quoteIdentifier($field).' IS NULL');
                         } else {
-                            $query->addCondition($query->quoteField($field)." = '".$attrib->value2db($record)."'");
+                            $query->addCondition(Db::quoteIdentifier($field).' = :value', [':value' => [$attrib->value2db($record)]]);
                         }
                     }
                 } else {
@@ -230,7 +235,7 @@ class NodeValidator
                 $query->addCondition('NOT ('.$this->m_nodeObj->primaryKey($record).')');
             }
 
-            if ($db->getValue($query->buildCount()) > 0) {
+            if ($query->executeCount() > 0) {
                 Tools::atkTriggerError($record, $attribs, 'error_uniquefieldset');
             }
         }

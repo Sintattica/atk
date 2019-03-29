@@ -193,7 +193,7 @@ class ExpressionAttribute extends Attribute
 
         $func = $searchmode.'Condition';
         if (method_exists($query, $func) && $value !== '' && $value !== null) {
-            return $query->$func($expression, $this->escapeSQL($value));
+            return $query->$func($expression, $value);
         }
 
         return null;

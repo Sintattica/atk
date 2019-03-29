@@ -145,39 +145,6 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * Add's slashes to the string for the database.
-     *
-     * @param array $rec Array with values
-     *
-     * @return string with slashes
-     */
-    public function value2db($rec)
-    {
-        $db = $this->getDb();
-        if ($db->getType() != 'oci9' || $this->dbFieldType() != Db::FT_STRING) {
-            return $db->escapeSQL($rec[$this->fieldName()]);
-        } else {
-            return $rec[$this->fieldName()];
-        } //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
-    }
-
-    /**
-     * Removes slashes from the string.
-     *
-     * @param array $rec Array with values
-     *
-     * @return string without slashes
-     */
-    public function db2value($rec)
-    {
-        if (isset($rec[$this->fieldName()])) {
-            return $rec[$this->fieldName()];
-        }
-
-        return;
-    }
-
-    /**
      * Parses the data that we are going to display in the textfield
      * and adjust rows to ensure that all the data is actually displayed.
      *

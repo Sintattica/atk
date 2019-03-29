@@ -953,7 +953,7 @@ class Query
      *
      * @return QueryPart
      */
-    public function inCondition($field, $values, $dbfieldtype)
+    public function inCondition($field, $values, $dbfieldtype = Db::FT_STRING)
     {
         if (empty($values)) {
             return null;
@@ -961,10 +961,34 @@ class Query
         $placeholder = QueryPart::placeholder($field);
         $parameters = [];
         for ($i = 0; $i < count($values); $i++) {
-            $parameters["{$placeholder}_{$i}"]= [$values[$i]];
+            $parameters["{$placeholder}_{$i}"]= [$values[$i], $dbfieldtype];
         }
 
         $sql = $field.' IN ('.implode(', ', array_keys($parameters)).')';
+        return new QueryPart($sql, $parameters);
+    }
+
+    /**
+     * Get the NOT IN condition (field not in a list of possible values)
+     *
+     * @param string $field The database field
+     * @param array[] $values Impossible values
+     * @param int $dbfieldtype from Db::FT_ constants
+     *
+     * @return QueryPart
+     */
+    public function notinCondition($field, $values, $dbfieldtype = Db::FT_STRING)
+    {
+        if (empty($values)) {
+            return null;
+        }
+        $placeholder = QueryPart::placeholder($field);
+        $parameters = [];
+        for ($i = 0; $i < count($values); $i++) {
+            $parameters["{$placeholder}_{$i}"]= [$values[$i], $dbfieldtype];
+        }
+
+        $sql = $field.' NOT IN ('.implode(', ', array_keys($parameters)).')';
         return new QueryPart($sql, $parameters);
     }
 }
