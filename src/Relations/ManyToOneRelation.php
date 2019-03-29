@@ -2214,7 +2214,12 @@ EOF;
         $result .= '<ul>';
         $rows = $query->executeSelect();
         foreach ($rows as $rec) {
-            $option = $value = $this->m_destInstance->descriptor($rec);
+            $option = $this->m_destInstance->descriptor($rec);
+            if ($mode == 'search') {
+                $value = $option;
+            } else {
+                $value = $this->m_destInstance->primaryKey($rec);
+            }
             $result .= '
           <li value="'.htmlentities($value).'">'.htmlentities($option).'</li>';
         }
