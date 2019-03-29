@@ -99,7 +99,7 @@ class DbAuth extends AuthInterface
 
 
         if ($disablefield) {
-            $sql .= " AND $disablefield != 1";
+            $sql .= " AND $disablefield != true";
         }
         if ($enableexpression) {
             $sql .= " AND $enableexpression";

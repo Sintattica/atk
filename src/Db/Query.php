@@ -291,19 +291,18 @@ class Query
     }
 
     /**
-     * Clear field list.
+     * Clear fields, expressions, group by and order by lists.
+     *
+     * It preserves table, joins, conditions and searchconditions.
+     * This is useful when you want to transform an initial query
+     * to a grouped one (such as SUM, COUNT, ...).
      */
     public function clearFields()
     {
         $this->m_fields = [];
-    }
-
-    /**
-     * Clear expression list.
-     */
-    public function clearExpressions()
-    {
         $this->m_expressions = [];
+        $this->m_orderbys = [];
+        $this->m_groupbys = [];
     }
 
     /**
@@ -563,9 +562,9 @@ class Query
     {
         $query = new QueryPart('');
         if (($distinct || $this->m_distinct) && !empty($this->m_fields)) {
-            $query->appendSql('SELECT COUNT(DISTINCT ');
-            $query->appendSql(implode(', ', $this->m_fields));
-            $query->appendSql(') as count FROM');
+            $query->appendSql('SELECT COUNT(DISTINCT(');
+            $query->appendSql($this->m_db->func_concat_ws($this->m_fields, ''));
+            $query->appendSql(')) as count FROM');
         } else {
             $query->appendSql('SELECT COUNT(*) AS count FROM');
         }

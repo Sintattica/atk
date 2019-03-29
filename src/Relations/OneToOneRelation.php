@@ -199,15 +199,20 @@ class OneToOneRelation extends Relation
         if ($this->createDestination()) {
             if ($this->m_refKey == '') {
                 // Foreign key in owner
-                //$condition = $this->m_destInstance->m_primaryKey[0]."=".$record[$this->fieldName()];
-                $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$record[$this->fieldName()]."'";
+                $condition = new QueryPart(
+                    Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_destInstance->m_primaryKey[0]).'=:key',
+                    [':key' => [$record[$this->fieldName()]]]
+                );
             } else {
                 // Foreign key in destination
-                $condition = $this->m_destInstance->m_table.'.'.$this->m_refKey."='".$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record)."'";
+                $condition = new QueryPart(
+                    Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_refKey).'=:key',
+                    [':key' => [$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record)]]
+                );
 
                 $destfilter = $this->getDestinationFilter();
                 if (is_string($destfilter) && $destfilter != '') {
-                    $condition .= ' AND '.$this->m_destInstance->m_table.'.'.$destfilter;
+                    $condition->appendSql(' AND '.Db::quoteIdentifier($this->m_destInstance->m_table).'.'.$destfilter);
                 }
             }
 

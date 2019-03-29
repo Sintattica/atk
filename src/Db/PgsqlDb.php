@@ -116,10 +116,10 @@ class PgsqlDb extends Db
         if ($value[0] == '!') {
             $value = substr($value, 1);
         }
-        $parameter = [$placeholder => $value];
+        $parameter = [$placeholder => [$value]];
         $field = Db::quoteIdentifier($field);
 
-        return new QueryPart("{$field} {$negate}~{$suffix} {$placeholder}", $parameter);
+        return new QueryPart("{$fieldname} {$negate}~{$suffix} {$placeholder}", $parameter);
     }
 
     /**

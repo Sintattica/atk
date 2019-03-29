@@ -631,6 +631,7 @@ class Selector implements \ArrayAccess, \Countable
     public function getTotals($fields = [])
     {
         $query = $this->buildQuery();
+        $query->clearFields();
         $prefix = '__sum__';
 
         foreach ($fields as $field) {
@@ -689,7 +690,6 @@ class Selector implements \ArrayAccess, \Countable
         $this->_getNode()->m_index = $index;
 
         $query->clearFields();
-        $query->clearExpressions();
 
         $indexColumn = Db::quoteIdentifier($this->_getNode()->getTable(), $index);
         $expression = 'UPPER('.$this->_getDb()->func_substring($indexColumn, 1, 1).')';
