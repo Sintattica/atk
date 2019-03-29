@@ -2297,6 +2297,7 @@ EOF;
     public function getSearchFilterByTargetDescriptor($query, $searchValue, $searchmode = 'substring', $fieldaliasprefix = '')
     {
         $alias = $fieldaliasprefix.$this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+        $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($this->m_destInstance->m_table, $alias), false);
 
         $function = $this->getConcatDescriptorFunction();
         if ($function != '' && method_exists($this->m_destInstance, $function)) {
@@ -2304,6 +2305,7 @@ EOF;
         } else {
             $descriptordef = $this->m_destInstance->getDescriptorTemplate();
         }
+
         $searchCondition = $this->m_destInstance->getTemplateSearchCondition(
             $query,
             $alias,
@@ -2312,10 +2314,6 @@ EOF;
             $searchmode,
             $fieldaliasprefix
         );
-
-        if($searchCondition != null && $query != null) {
-            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($this->m_destInstance->m_table, $alias), false);
-        }
         return $searchCondition;
     }
 

@@ -1081,7 +1081,7 @@ class OneToManyRelation extends Relation
      *                           attribute's getSearchModes() method.
      * @param string $fieldname
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart The searchcondition to use.
      */
     public function getSearchCondition(Query $query, $table, $values, $searchmode, $fieldname = '')
     {
@@ -1089,26 +1089,16 @@ class OneToManyRelation extends Relation
             return null;
         }
         $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+        $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($table, $alias), false);
         $searchConditions = [];
         if(!is_array($values)) {
             $values = [$values];
         }
         // Searching each value individually :
+        $descTemplate = $this->m_destInstance->getDescriptorTemplate();
         foreach ($values as $value) {
-            $sc = $this->m_destInstance->getTemplateSearchCondition(
-                $query,
-                $alias,
-                $this->m_destInstance->getDescriptorTemplate(),
-                $value,
-                $searchmode,
-                $fieldname
-            );
-            if ($sc != null) {
-                $searchConditions[] = $sc;
-            }
-        }
-        if (!empty($searchConditions)) {
-            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($reftable, $alias), false);
+            $searchConditions[] =
+                $this->m_destInstance->getTemplateSearchCondition($query, $alias, $descTemplate, $value, $searchmode, $fieldname);
         }
 
         return QueryPart::implode('OR', $searchConditions, true);

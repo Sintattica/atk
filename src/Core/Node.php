@@ -3604,7 +3604,19 @@ class Node
             } else {
                 // If it's an attribute, then add its name to query, after removing the []
                 $field = substr($field, 1, strlen($field) - 2);
-                $parts[] = Db::quoteIdentifier($table, $field);
+                if (strpos($field, '.') === false) {
+                    // Simple case : attribute from this node.
+                    $parts[] = Db::quoteIdentifier($table, $field);
+                } else {
+                    // Complex case : attribute from a relation :
+                    list($relationName, $attributeName) = explode('.', $field);
+                    $relation = $this->getAttribute($relationName);
+                    if ($relation instanceof Relation) {
+                        $alias = $table.'_AE_'.$relationName;
+                        $query->addJoin($relation->getDestination()->getTable(), $alias, $relation->getJoinCondition($table, $alias));
+                        $parts[] = Db::quoteIdentifier($alias, $attributeName);
+                    }
+                }
             }
         }
         $expression = $db->func_concat_ws($parts, '');

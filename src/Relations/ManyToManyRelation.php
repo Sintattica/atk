@@ -811,7 +811,7 @@ class ManyToManyRelation extends Relation
     /**
      * Creates an search condition for a given search value.
      *
-     * @param Query $query The query to which the condition will be added.
+     * @param Query $query  The query to which the condition will be added.
      * @param string $table The name of the table in which this attribute
      *                                 is stored
      * @param mixed $value The value the user has entered in the searchbox
@@ -820,23 +820,24 @@ class ManyToManyRelation extends Relation
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-        $ownerFields = $this->getOwnerFields();
-
+        if (!is_array($value) || empty($value) || $value[0] == '') {
+            // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            return null;
+        }
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-            $this->createLink();
-            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), [$this->getLocalKey() => [$table, $ownerFields[0]]], false);
-            $query->setDistinct(true);
+        $ownerFields = $this->getOwnerFields();
+        $this->createLink();
+        $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), [$this->getLocalKey() => [$table, $ownerFields[0]]], false);
+        $query->setDistinct(true);
 
-            if (Tools::count($value) == 1) { // exactly one value
-                $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(), $this->escapeSQL($value[0]), $this->dbFieldType()));
-            } else { // search for more values using IN()
-                $query->addSearchCondition($this->fieldName().'.'.$this->getRemoteKey()." IN ('".implode("','", $value)."')");
-            }
+        if (Tools::count($value) == 1) { // exactly one value
+            return $query->exactCondition(Db::quoteIdentifier($this->fieldName(), $this->getRemoteKey()), $value[0], $this->dbFieldType());
+        } else { // search for more values using IN()
+            return $query->inCondition(Db::quoteIdentifier($this->fieldName(), $this->getRemoteKey()), $value);
         }
     }
 

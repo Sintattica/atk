@@ -1039,7 +1039,7 @@ class OneToOneRelation extends Relation
             $p_attrib = $this->m_destInstance->m_attribList[$key];
 
             if (is_object($p_attrib)) {
-                if ($this->m_refKey && $this->createDestination()) {
+                if ($this->m_refKey) {
                     // master mode
                     $new_table = $this->fieldName();
                 } else {
@@ -1077,9 +1077,15 @@ class OneToOneRelation extends Relation
      */
     public function getJoinCondition($tablename = '', $fieldalias = '')
     {
-        $condition = Db::quoteIdentifier($this->m_ownerInstance->m_table, $this->fieldName());
+        if ($tablename == '') {
+            $tablename = $this->m_ownerInstance->m_table;
+        }
+        if ($fieldalias == '') {
+            $fieldalias = $this->m_destInstance->m_table;
+        }
+        $condition = Db::quoteIdentifier($tablename, $this->fieldName());
         $condition .= '=';
-        $condition .= Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField());
+        $condition .= Db::quoteIdentifier($fieldalias, $this->m_destInstance->primaryKeyField());
 
         return $condition;
     }
