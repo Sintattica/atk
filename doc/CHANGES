@@ -3,9 +3,8 @@
 * : bugfix or changed code
 
 Issue numbers are references to issues in the ATK project issue tracker
-    on GitHub: https://github.com/atkphpframework/atk/issues
-Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
-	http://bugzilla.achievo.org
+    on GitHub: https://github.com/sintattica/atk/issues
+    or the old one :  https://github.com/atkphpframework/atk/issues
 [names] are references to contributors listed in the AUTHORS file.
 
 * Please do not exceed 80 characters per line.
