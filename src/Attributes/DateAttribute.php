@@ -1241,19 +1241,6 @@ class DateAttribute extends Attribute
         return array('between');
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
-    {
-        if ($mode == 'add' || $mode == 'update') {
-            if ($this->value2db($record) == null) {
-                $query->addField($this->fieldName(), null, '', '', false);
-            } else {
-                $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
-            }
-        } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
-        }
-    }
-
     /**
      * Convert a String representation into an internal value.
      *

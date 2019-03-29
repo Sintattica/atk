@@ -15,6 +15,7 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
+* Attributes::AF_NO_QUOTES is useless (as values are passed as parameters).
 + Added Query->startswithCondition.
 * ManyToOneRelation :
     createFilter removed in favor of Relation->parseFilter.

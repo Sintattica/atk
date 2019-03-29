@@ -241,6 +241,8 @@ class Attribute
     /**
      * No quotes are used when adding to the database.
      *
+     * DEPRECATED : values are passed as parameters, quotes are not needed anymore.
+     *
      * miscellaneous processing flag
      */
     const AF_NO_QUOTES = 8388608;
@@ -1859,12 +1861,12 @@ class Attribute
             }
 
             if ($this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
-                $query->addField($this->fieldName(), null, '', '', false);
+                $query->addField($this->fieldName(), null);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
+                $query->addField($this->fieldName(), $this->value2db($record));
             }
         } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
+            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix);
         }
     }
 

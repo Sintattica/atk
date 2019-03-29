@@ -227,7 +227,7 @@ class Query
         $meta = $this->m_db->tableMeta($this->m_table);
         if (!Tools::hasFlag($meta[$fieldName]['flags'], Db::MF_AUTO_INCREMENT)) {
             $value = $this->m_db->nextid($seqName);
-            $this->addField($fieldName, $value, null, null, false, true);
+            $this->addField($fieldName, $value);
             return $this;
         }
 
@@ -245,16 +245,13 @@ class Query
      * @param array $fields array with field value pairs
      * @param string $table Table name
      * @param string $fieldaliasprefix Field alias prefix
-     * @param bool $quote If this parameter is true, stuff is inserted into the db
-     *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
-     *                                 done without quotes, e.d. SET number = 4.
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addFields(array $fields, $table = '', $fieldaliasprefix = '', $quote = true)
+    public function addFields(array $fields, $table = '', $fieldaliasprefix = '')
     {
         foreach ($fields as $name => $value) {
-            $this->addField($name, $value, $table, $fieldaliasprefix, $quote);
+            $this->addField($name, $value, $table, $fieldaliasprefix);
         }
 
         return $this;

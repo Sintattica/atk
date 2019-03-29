@@ -1393,7 +1393,7 @@ EOF;
             } else {
                 for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
                     if ($record[$this->fieldName()] === null) {
-                        $query->addField($this->m_refKey[$i], null, '', '', false);
+                        $query->addField($this->m_refKey[$i], null);
                     } else {
                         $value = $record[$this->fieldName()];
                         if (is_array($value)) {
@@ -1401,7 +1401,7 @@ EOF;
                             $value = $fk->value2db($value);
                         }
 
-                        $query->addField($this->m_refKey[$i], $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES));
+                        $query->addField($this->m_refKey[$i], $value);
                     }
                 }
             }

@@ -395,20 +395,6 @@ class TimeAttribute extends Attribute
         }
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
-    {
-        if ($mode == 'add' || $mode == 'update') {
-            $value = $this->value2db($record);
-            if ($value == null) {
-                $query->addField($this->fieldName(), null, '', '', false);
-            } else {
-                $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES));
-            }
-        } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
-        }
-    }
-
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.

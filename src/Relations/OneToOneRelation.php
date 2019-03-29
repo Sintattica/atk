@@ -153,8 +153,7 @@ class OneToOneRelation extends Relation
             // With one exception. If the foreign key is in the source node, we also need to update
             // the refkey value.
             if ($this->m_refKey == '' && ($mode == 'add'||$mode == 'update')) {
-                $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]], '', '',
-                !$this->hasFlag(self::AF_NO_QUOTES));
+                $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]]);
             }
             return;
         }

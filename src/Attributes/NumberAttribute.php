@@ -44,7 +44,6 @@ class NumberAttribute extends Attribute
      */
     public function __construct($name, $flags = 0, $decimals = null)
     {
-        $flags = $flags | self::AF_NO_QUOTES;
         parent::__construct($name, $flags);
 
         $this->m_decimals = $decimals;

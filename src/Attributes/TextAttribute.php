@@ -144,15 +144,6 @@ class TextAttribute extends Attribute
         return $result;
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
-    {
-        if ($mode == 'add' || $mode == 'update') {
-            $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
-        } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
-        }
-    }
-
     /**
      * Add's slashes to the string for the database.
      *
