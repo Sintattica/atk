@@ -257,6 +257,9 @@ class Db extends \PDO
             case 'postgresql':
                 $driver = 'pgsql';
                 break;
+            case 'sqlite':
+                $driver = 'sqlite';
+                break;
             default:
                 Tools::atkhalt(sprintf(Tools::atktext('db_unsupported_driver', 'atk'), $driver));
         }
@@ -274,6 +277,9 @@ class Db extends \PDO
         if ($driver == 'mysql') {
             $options[] = 'charset='.
                 ($config['charset'] ?? 'utf8mb4');
+        }
+        if ($driver == 'sqlite') {
+            $options = [$config['file']];
         }
         
         return $driver.':'.implode(';', $options);
@@ -666,7 +672,7 @@ class Db extends \PDO
             [':tablename' => [$table]]
         );
 
-        /* Transforming to or destination form */
+        /* Transforming to our destination array */
         $result = [];
         while ($field = $stmt->fetch()) {
             $key = $field['column_name'];
