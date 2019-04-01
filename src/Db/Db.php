@@ -842,7 +842,7 @@ class Db extends \PDO
         if ($remove_all_spaces) {
             return 'REPLACE(COALESCE('.implode(",''){$separator}COALESCE(", $fields).",''), ' ', '')";
         }
-        return 'COALESCE('.implode(",''){$separator}||COALESCE(", $fields).",'')";
+        return 'COALESCE('.implode(",''){$separator}COALESCE(", $fields).",'')";
     }
 
     /**

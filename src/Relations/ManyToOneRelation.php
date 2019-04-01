@@ -670,7 +670,7 @@ class ManyToOneRelation extends Relation
                     if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
                         $saveForm = $mode == 'add' || $mode == 'edit';
                         $url = Tools::dispatch_url($this->m_destination, 'view',
-                            ['atkfilter' => 'true', 'atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
+                            ['atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
 
                         if ($mode != 'list') {
                             $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm,
@@ -741,16 +741,17 @@ class ManyToOneRelation extends Relation
             $sm = SessionManager::getInstance();
 
             if ($this->m_destInstance->allowed('add') && !$this->m_destInstance->hasFlag(Node::NF_NO_ADD)) {
-                $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
-                    'atkpkret' => $id,
-                    'atkfilter' => ($filter ?: 'true'),
-                )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
+                $linkParams = ['atkpkret' => $id];
+                if ($filter) {
+                    $linkParams['atkfilter'] = $filter;
+                }
+                $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', $linkParams), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
             }
 
             if ($this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $record[$this->fieldName()] != null) {
                 //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
                 //de app crasht als er geen waarde is ingevuld.
-                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => 'true')),
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
                 $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
             }
@@ -988,7 +989,11 @@ class ManyToOneRelation extends Relation
             $linkname = Tools::atktext('select_a');
         }
 
-        $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', ['atkfilter' => $filter ?: 'true', 'atktarget' => $atktarget]),
+        $linkParams = ['atktarget' => $atktarget];
+        if ($filter) {
+            $linkParams['atkfilter'] = $filter;
+        }
+        $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', $linkParams),
             $linkname, SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
 
         return $result;
@@ -1013,15 +1018,16 @@ class ManyToOneRelation extends Relation
             $sm = SessionManager::getInstance();
 
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $this->m_destInstance->allowed('view')) {
-                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME', 'atkfilter' => 'true')),
+                $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
                 $autolink['view'] = " <a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
             }
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
-                $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', array(
-                        'atkpkret' => $name,
-                        'atkfilter' => ($this->m_useFilterForAddLink && $filter != '' ? $filter : 'true'),
-                    )), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
+                $linkParams = ['atkpkret' => $name];
+                if ($this->m_useFilterForAddLink && $filter != '' ? $filter : 'true') {
+                    $linkParams['atkfilter'] = $filter;
+                }
+                $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', $linkParams), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
             }
         }
 

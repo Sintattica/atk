@@ -67,7 +67,7 @@ class SqliteDb extends Db
             }
             if ($field['pk'] == 1) {
                 $result[$key]['flags'] |= self::MF_PRIMARY | self::MF_PRIMARY;
-                if ($field['type'] == 'INTEGER') {
+                if ($result[$key]['gentype'] == Db::FT_NUMBER) {
                     // « a column with type INTEGER PRIMARY KEY is an alias for the ROWID »
                     // (source : https://sqlite.org/autoinc.html)
                     $result[$key]['flags'] |= self::MF_AUTO_INCREMENT;
