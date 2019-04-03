@@ -211,9 +211,9 @@ class ManyToManyRelation extends Relation
         if (isset($record[$this->fieldName()])) {
             for ($i = 0; $i < Tools::count($record[$this->fieldName()]); ++$i) {
                 if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
-                    $key = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
+                    $key = $this->m_destInstance->primaryKeyString($record[$this->fieldName()][$i][$this->getRemoteKey()]);
                 } else {
-                    $key = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()][$i][$this->getRemoteKey()]));
+                    $key = $this->m_destInstance->primaryKeyString(array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()][$i][$this->getRemoteKey()]));
                 }
 
                 $keys[] = $key;

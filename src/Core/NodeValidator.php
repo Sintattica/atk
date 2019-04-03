@@ -122,7 +122,7 @@ class NodeValidator
 
                 if ($p_attrib->hasFlag(Attribute::AF_PRIMARY) && !$p_attrib->hasFlag(Attribute::AF_AUTO_INCREMENT)) {
                     $atkorgkey = $record['atkprimkey'];
-                    if ($atkorgkey == '' || $atkorgkey != $this->m_nodeObj->primaryKey($record)) {
+                    if ($atkorgkey == '' || $this->primaryKeyStringEqual($atkorgkey, $this->m_nodeObj->primaryKeyString($record))) {
                         $cnt = $this->m_nodeObj->select($this->m_nodeObj->primaryKey($record))->ignoreDefaultFilters(true)->ignorePostvars(true)->getRowCount();
                         if ($cnt > 0) {
                             Tools::atkTriggerError($record, $p_attrib, 'error_primarykey_exists');
@@ -146,7 +146,8 @@ class NodeValidator
                             [':value' => [$p_attrib->value2db($record)]]
                         );
                         if ($this->m_mode != 'add') {
-                            $condition->appendSql(' AND NOT ('.$this->m_nodeObj->primaryKey($record).')');
+                            $condition->appendSql('AND ');
+                            $condition->append($this->m_nodeObj->primaryKey($record, true));
                         }
                         $cnt = $this->m_nodeObj->select($condition)->ignoreDefaultFilters(true)->ignorePostvars(true)->getRowCount();
                         if ($cnt > 0) {
@@ -232,7 +233,7 @@ class NodeValidator
             }
 
             if ($this->m_mode != 'add') {
-                $query->addCondition('NOT ('.$this->m_nodeObj->primaryKey($record).')');
+                $query->addCondition($this->m_nodeObj->primaryKey($record, true));
             }
 
             if ($query->executeCount() > 0) {

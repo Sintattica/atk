@@ -208,7 +208,7 @@ class AdminHandler extends ActionHandler
             $grid->setPostvar('atksearch', array());
             $sm = SessionManager::getInstance();
 
-            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeUri(), $action, array('atkselector' => $node->primaryKey($records[0]))),
+            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeUri(), $action, array('atkselector' => $node->primaryKeyString($records[0]))),
                 SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {

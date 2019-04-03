@@ -669,7 +669,7 @@ class DataGridList extends DataGridComponent
                 'record' => &$recordset[$i],
                 'data' => [],
             );
-            $result['rows'][$i]['selector'] = $grid->getNode()->primaryKey($recordset[$i]);
+            $result['rows'][$i]['selector'] = $grid->getNode()->primaryKeyString($recordset[$i]);
             $result['rows'][$i]['type'] = 'data';
             $row = &$result['rows'][$i];
 

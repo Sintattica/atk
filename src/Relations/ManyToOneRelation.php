@@ -537,42 +537,26 @@ class ManyToOneRelation extends Relation
 
     public function fetchValue($postvars)
     {
-        if ($this->isPosted($postvars)) {
-            $result = [];
-
-            // support specifying the value as a single number if the
-            // destination's primary key consists of a single field
-            if (is_numeric($postvars[$this->fieldName()])) {
-                $result[$this->getDestination()->primaryKeyField()] = $postvars[$this->fieldName()];
-            } else {
-                // Split the primary key of the selected record into its
-                // referential key elements.
-                $keyelements = Tools::decodeKeyValueSet($postvars[$this->fieldName()]);
-                foreach ($keyelements as $key => $value) {
-                    // Tablename must be stripped out because it is in the way..
-                    if (strpos($key, '.') > 0) {
-                        $field = substr($key, strrpos($key, '.') + 1);
-                    } else {
-                        $field = $key;
-                    }
-                    $result[$field] = $value;
-                }
-            }
-
-            if (Tools::count($result) == 0) {
-                return;
-            }
-
-            // add descriptor fields, this means they can be shown in the title
-            // bar etc. when updating failed for example
-            $record = array($this->fieldName() => $result);
-            $this->populate($record);
-            $result = $record[$this->fieldName()];
-
-            return $result;
+        if (!$this->isPosted($postvars)) {
+            return;
         }
 
-        return;
+        $result = json_decode($postvars[$this->fieldName()]);
+        if (!is_array($result)) {
+            $result = [$result];
+        }
+        if (count($result) != count($this->getDestination()->m_primaryKeys)) {
+            return;
+        }
+        $result = array_combine($this->getDestination()->m_primaryKeys, $result);
+
+        // add descriptor fields, this means they can be shown in the title
+        // bar etc. when updating failed for example
+        $record = array($this->fieldName() => $result);
+        $this->populate($record);
+        $result = $record[$this->fieldName()];
+
+        return $result;
     }
 
     public function db2value($rec)
@@ -670,7 +654,7 @@ class ManyToOneRelation extends Relation
                     if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
                         $saveForm = $mode == 'add' || $mode == 'edit';
                         $url = Tools::dispatch_url($this->m_destination, 'view',
-                            ['atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
+                            ['atkselector' => $this->m_destInstance->primaryKeyString($record[$this->fieldName()])]);
 
                         if ($mode != 'list') {
                             $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm,
@@ -749,8 +733,8 @@ class ManyToOneRelation extends Relation
             }
 
             if ($this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $record[$this->fieldName()] != null) {
-                //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
-                //de app crasht als er geen waarde is ingevuld.
+                // we now always show the edit link, but actually that is not allowed, because
+                // the app crashes if no value is entered.
                 $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
                 $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
@@ -801,10 +785,10 @@ class ManyToOneRelation extends Relation
                     if (!$this->_isSelectableRecord($record, $mode)) {
                         $record[$this->fieldName()] = $this->m_selectableRecords[0];
                     } else {
-                        $current = $this->getDestination()->primaryKey($record[$this->fieldName()]);
+                        $current = $this->getDestination()->primaryKeyString($record[$this->fieldName()]);
                         $record[$this->fieldName()] = null;
                         foreach ($this->m_selectableRecords as $selectable) {
-                            if ($this->getDestination()->primaryKey($selectable) == $current) {
+                            if ($this->getDestination()->primaryKeyString($selectable) == $current) {
                                 $record[$this->fieldName()] = $selectable;
                                 break;
                             }
@@ -870,7 +854,7 @@ class ManyToOneRelation extends Relation
         }
 
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
-        $currentPk = ($value != null) ? $this->getDestination()->primaryKey($value) : null;
+        $currentPk = ($value != null) ? $this->getDestination()->primaryKeyString($value) : null;
         $selValues = ($currentPk != null) ? [$currentPk] : [];
 
         if ($this->hasFlag(self::AF_LARGE)) {
@@ -883,7 +867,7 @@ class ManyToOneRelation extends Relation
                 $result .= '<span id="'.$id.'_current">';
 
                 if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && $this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
-                    $url = Tools::dispatch_url($this->m_destination, 'view', ['atkselector' => $this->m_destInstance->primaryKey($record[$this->fieldName()])]);
+                    $url = Tools::dispatch_url($this->m_destination, 'view', ['atkselector' => $this->m_destInstance->primaryKeyString($record[$this->fieldName()])]);
                     $descriptor = $this->m_destInstance->descriptor($destrecord);
                     $result .= $descriptor.' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, true,
                             'class="atkmanytoonerelation-link"');
@@ -931,7 +915,7 @@ class ManyToOneRelation extends Relation
                 }
 
                 foreach ($recordset as $selectable) {
-                    $pk = $this->getDestination()->primaryKey($selectable);
+                    $pk = $this->getDestination()->primaryKeyString($selectable);
                     $options[$pk] = $this->m_destInstance->descriptor($selectable);
                 }
 
@@ -1043,7 +1027,7 @@ class ManyToOneRelation extends Relation
         $currentPk = '';
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != null) {
             $this->fixDestinationRecord($record);
-            $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+            $currentPk = $this->m_destInstance->primaryKeyString($record[$this->fieldName()]);
         }
 
         $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.$currentPk.'">';
@@ -1669,9 +1653,10 @@ EOF;
         $method = $this->fieldName().'_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
             $rows = $this->m_ownerInstance->$method($record, $mode);
+            $selectedKeyStr = $this->m_destInstance->primaryKeyString($record[$this->fieldName()]);
             foreach ($rows as $row) {
-                $key = $this->m_destInstance->primaryKey($row);
-                if ($key == $selectedKey) {
+                $key = $this->m_destInstance->primaryKeyString($row);
+                if ($key == $selectedKeyStr) {
                     return true;
                 }
             }
@@ -1681,8 +1666,11 @@ EOF;
 
         // No selection override exists, simply add the record key to the selector.
         $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        $selector = "($selectedKey)".($filter != '' ? " AND ($filter)" : '');
-
+        if ($filter == '') {
+            $selector = $selectedKey;
+        } else {
+            $selector = QueryPart::implode('AND', [$selectedKey, new QueryPart($filter)]);
+        }
         return $this->m_destInstance->select($selector)->getRowCount() > 0;
     }
 
@@ -2100,7 +2088,7 @@ EOF;
         if ($this->_isSelectableRecord($record, $mode)) {
             $currentValue = $record[$this->fieldName()];
             $label = $this->m_destInstance->descriptor($record[$this->fieldName()]);
-            $value = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+            $value = $this->m_destInstance->primaryKeyString($record[$this->fieldName()]);
         }
 
         // create the widget
@@ -2224,7 +2212,7 @@ EOF;
             if ($mode == 'search') {
                 $value = $option;
             } else {
-                $value = $this->m_destInstance->primaryKey($rec);
+                $value = $this->m_destInstance->primaryKeyString($rec);
             }
             $result .= '
           <li value="'.htmlentities($value).'">'.htmlentities($option).'</li>';

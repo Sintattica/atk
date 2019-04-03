@@ -235,7 +235,7 @@ class FileEditor extends Node
 
             // we must store original filename as primaryKey, for
             // atknode uses the value in some places.
-            $record['atkprimkey'] = $this->primaryKey($record);
+            $record['atkprimkey'] = $this->primaryKeyEncode($record);
             if (is_file($this->m_dir.$filename)) {
                 $record['filecontent'] = implode('', file($this->m_dir.$filename));
             } else {

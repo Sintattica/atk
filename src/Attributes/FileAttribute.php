@@ -695,7 +695,7 @@ class FileAttribute extends Attribute
             "{$fieldnameSql}= :filename OR {$fieldnameSql} LIKE :name",
             [':filename' => [$filename], ':name' => $name.'-%'.$ext]);
         if ($rec[$owner->primaryKeyField()] != '') {
-            $query->addCondition('NOT ('.$owner->primaryKey($rec).')');
+            $query->addCondition($owner->primaryKey($rec, true));
         }
 
         $records = $query->executeSelect();

@@ -70,14 +70,8 @@ class DeleteHandler extends ActionHandler
      */
     public function _checkAllowed()
     {
-        $atkselector = $this->m_postvars['atkselector'];
-        if (is_array($atkselector)) {
-            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
-        } else {
-            $atkselector_str = $atkselector;
-        }
-
-        $recordset = $this->m_node->select($atkselector_str)->mode('delete')->fetchAll();
+        $selector = $this->m_node->primaryKeyCondition($this->m_postvars['atkselector']);
+        $recordset = $this->m_node->select($atkselector)->mode('delete')->fetchAll();
         foreach ($recordset as $record) {
             if (!$this->allowed($record)) {
                 return false;

@@ -73,7 +73,7 @@ class ManyBoolRelation extends ManyToManyRelation
                 $onchange = '';
                 $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
 
-                if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk)) {
+                if (in_array($this->m_destInstance->primaryKeyString($recordset[$i]), $selectedPk)) {
                     $sel = 'checked';
                     if ($this->getShowDetailsLink() && !$this->m_linkInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_linkInstance->allowed('edit')) {
                         $localPkAttr = $this->getOwnerInstance()->getAttribute($this->getOwnerInstance()->primaryKeyField());

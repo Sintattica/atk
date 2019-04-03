@@ -92,9 +92,9 @@ class ShuttleRelation extends ManyToManyRelation
         // first the selected records..
         for ($i = 0; $i < Tools::count($record[$this->m_name]); ++$i) {
             if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
-                $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->getRemoteKey()]);
+                $newselected = $this->m_destInstance->primaryKeyString($record[$this->m_name][$i][$this->getRemoteKey()]);
             } else {
-                $newselected = $this->m_destInstance->primaryKey(array(
+                $newselected = $this->m_destInstance->primaryKeyString(array(
                     $this->m_destInstance->primaryKeyField() => $record[$this->m_name][$i][$this->getRemoteKey()],
                 ));
             }
@@ -108,7 +108,7 @@ class ShuttleRelation extends ManyToManyRelation
         $width = 100;
 
         for ($i = 0; $i < Tools::count($recordset); ++$i) {
-            if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()],
+            if (in_array($this->m_destInstance->primaryKeyString($recordset[$i]), $selectedPk) || (in_array($recordset[$i][$this->m_destInstance->primaryKeyField()],
                         $this->initialValue()) && $mode == 'add')
             ) {
                 $right[] = $recordset[$i];

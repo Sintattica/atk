@@ -1244,25 +1244,111 @@ class Node
     }
 
     /**
-     * Returns the primary key sql expression of a record.
+     * Returns the serialization of an encoded array concatenating all primary
+     * key values
+     *
+     * This is the value stored in $record['atkprimkey'] and may appear in HTML
+     * pages displayed to clients.
      *
      * @param array $rec The record for which the primary key is calculated.
      *
-     * @return string the primary key of the record.
+     * @return string The serialized value
      */
-    public function primaryKey($rec)
+    public function primaryKeyString(array $rec) : string
     {
-        $primKey = '';
-        $nrOfElements = Tools::count($this->m_primaryKey);
-        for ($i = 0; $i < $nrOfElements; ++$i) {
-            $p_attrib = $this->m_attribList[$this->m_primaryKey[$i]];
-            $primKey .= $this->m_table.'.'.$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
-            if ($i < ($nrOfElements - 1)) {
-                $primKey .= ' AND ';
+        $res = [];
+        // Case we have only one value : encode it directly.
+        if (count($this->m_primaryKey) == 1) {
+            return json_encode($rec[$this->m_primaryKey[0]]);
+        }
+        foreach ($this->m_primaryKey as $key) {
+            $res[] = $rec[$key];
+        }
+        return json_encode($res);
+    }
+
+    /**
+     * Compares to premaryKeyStrings and tells if they are equal
+     *
+     * Strings can't be compared directly because, for example :
+     * '{"k1":25,"k2":6}' != '{"k2":6,"k1":25}'
+     * ["k1" => 25, "k2" => 6] == ["k2" => 6, "k1" => 25]
+     *
+     * @param string $enc1 first value
+     * @param string $enc2 second value
+     *
+     * @return boolean true if equals, false if not
+     */
+    public function primaryKeyStringEqual(string $enc1, string $enc2) : boolean
+    {
+        return json_decode($enc1) == json_decode($enc2);
+    }
+
+    /**
+     * Returns Primary Key SQL condition from values encoded with primaryKeyString
+     *
+     * If several strings are passed as an array, they are joined with OR
+     * condition.
+     *
+     * Examples :
+     * '45' or '[45]' => QueryPart('"table"."id"=:id', [':id' => [45]])
+     * '[2,"txtval"]' => QueryPart('"table"."k1" = :k1 AND "table"."k2" = :k2', [':k1' => [2], ':k2' => ["txtval"]])
+     * ['2', '45'] or ['[2]','[45]'] => QueryPart('"table"."id" = :id1 OR "table"."id" = :id2', [':id1' => [2], ':id2' => [45]])
+     *
+     * @param string|array $selectors The encoded values.
+     *
+     * @return QueryPart SQL condition
+     *                '0' if the parameter can't be decoded
+     */
+    public function primaryKeyCondition($selectors) : QueryPart
+    {
+        if (is_string($selectors)) {
+            $selectors = [$selectors];
+        }
+        if (!is_array($selectors)) {
+            return new QueryPart('0');
+        }
+        $conditions = [];
+        foreach ($selectors as $selector) {
+            // building the ['k1' => value, 'k2' => value] array for the record :
+            $record = json_decode($selector, true);
+            if (!is_array($record)) {
+                $record = [$record];
             }
+            if (count($record) != count($this->m_primaryKey)) {
+                continue;
+            }
+            $record = array_combine($this->m_primaryKey, $record);
+            $conditions[] = $this->primaryKey($record);
+        }
+        return QueryPart::implode('OR', $conditions, true);
+    }
+
+    /**
+     * Returns the primary key sql condition for ONE record.
+     *
+     * @param array $rec The record for which the primary key condition
+     * @param boolean $negate return NOT (condition) rather than condition.
+     *
+     * @return QueryPart the primary key SQL condition
+     */
+    public function primaryKey($rec, $negate = false)
+    {
+        $conditions = [];
+        foreach ($this->m_primaryKey as $field) {
+            $placeholder = QueryPart::placeholder($field);
+            $conditions[] = new QueryPart(
+                Db::quoteIdentifier($this->m_table, $field).'='.$placeholder,
+                [$placeholder => [$this->m_attribList[$field]->fetchValue($rec)]]);
         }
 
-        return $primKey;
+        if (!$negate) {
+            return QueryPart::implode('AND', $conditions, true);
+        }
+        // $negate :
+        $condition = new QueryPart('NOT ');
+        $condition->append(QueryPart::implode('AND', $conditions, true));
+        return $condition;
     }
 
     /**
@@ -2186,7 +2272,7 @@ class Node
         // extra submission data
         $result['hide'][] = '<input type="hidden" name="atkfieldprefix" value="'.$this->getEditFieldPrefix(false).'">';
         $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atknodeuri" value="'.$this->atkNodeUri().'">';
-        $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.Tools::atkArrayNvl($record, 'atkprimkey', '').'">';
+        $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.htmlspecialchars(Tools::atkArrayNvl($record, 'atkprimkey', '')).'">';
 
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]['name'];
@@ -2679,12 +2765,6 @@ class Node
 
         $ui = $this->getUi();
 
-        if (is_array($atkselector)) {
-            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
-        } else {
-            $atkselector_str = $atkselector;
-        }
-
         $sm = SessionManager::getInstance();
 
         $formstart = '<form action="'.Config::getGlobal('dispatcher').'" method="post">';
@@ -2697,15 +2777,11 @@ class Node
             $formstart .= '<input type="hidden" name="atkcsrftoken" value="'.$csrfToken.'">';
         }
 
-        if ($mergeSelectors) {
-            $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';
+        if (!is_array($atkselector)) {
+            $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector.'">';
         } else {
-            if (!is_array($atkselector)) {
-                $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector.'">';
-            } else {
-                foreach ($atkselector as $selector) {
-                    $formstart .= '<input type="hidden" name="atkselector[]" value="'.$selector.'">';
-                }
+            foreach ($atkselector as $selector) {
+                $formstart .= '<input type="hidden" name="atkselector[]" value="'.$selector.'">';
             }
         }
 
@@ -2717,7 +2793,7 @@ class Node
 
         $content = '';
         $record = null;
-        $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->fetchAll();
+        $recs = $this->select($this->primaryKeyCondition($atkselector))->includes($this->descriptorFields())->fetchAll();
         if (Tools::count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
@@ -3008,7 +3084,7 @@ class Node
 
         if (Tools::count($record)) {
             if (isset($this->m_postvars['atkpkret'])) {
-                $location .= '&'.$this->m_postvars['atkpkret'].'='.rawurlencode($this->primaryKey($record));
+                $location .= '&'.$this->m_postvars['atkpkret'].'='.rawurlencode($this->primaryKeyString($record));
             }
         }
 
@@ -3254,7 +3330,7 @@ class Node
 
         $this->addFlag(self::NF_NO_FILTER);
 
-        $record['atkorgrec'] = $this->select()->where($record['atkprimkey'])->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
+        $record['atkorgrec'] = $this->select()->where($this->primaryKeyCondition($record['atkprimkey']))->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
 
         // Need to restore the NO_FILTER bit back to its original value.
         $this->m_flags = $flags;
@@ -3464,7 +3540,7 @@ class Node
      */
     public function fetchByPk($pk)
     {
-        return $this->select($this->getTable().'.'.$this->primaryKeyField().'= ?', array($pk))->getFirstRow();
+        return $this->select($this->primaryKeyCondition($pk))->getFirstRow();
     }
 
     /**
@@ -3692,7 +3768,7 @@ class Node
         }
 
         // new primary key
-        $record['atkprimkey'] = $this->primaryKey($record);
+        $record['atkprimkey'] = $this->primaryKeyString($record);
 
         if (!$this->_storeAttributes($storelist['post'], $record, $mode)) {
             Tools::atkdebug('_storeAttributes failed..');

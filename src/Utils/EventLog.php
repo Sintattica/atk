@@ -62,7 +62,7 @@ class EventLog extends ActionListener
         } // probably administrator
         $node = $this->m_node->atkNodeUri();
         $db = $this->m_node->getDb();
-        $primarykey = $db->escapeSQL($this->m_node->primaryKey($record));
+        $primarykey = $db->escapeSQL($this->m_node->primaryKeyString($record));
 
         $db->query('INSERT INTO atkeventlog (id, userid, stamp, node, action, primarykey)
                     VALUES('.$db->nextid('atkeventlog').", $userid, ".$db->func_now().", '$node', '$action', '$primarykey')");

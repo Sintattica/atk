@@ -571,7 +571,7 @@ class Selector implements \ArrayAccess, \Countable
         }
 
         if (!$this->m_ignorePrimaryKey) {
-            $result['atkprimkey'] = $this->_getNode()->primaryKey($result);
+            $result['atkprimkey'] = $this->_getNode()->primaryKeyString($result);
         }
 
         foreach ($attrsByLoadType[Attribute::POSTLOAD] as $attr) {

@@ -79,8 +79,6 @@ class MultiselectHandler extends AdminHandler
     {
         $parser = new StringParser($string);
 
-        // for backwardscompatibility reasons, we also support the '[pk]' var.
-        $recordset['pk'] = $this->getNode()->primaryKey($recordset);
         $output = $parser->parse($recordset, true);
 
         return $output;

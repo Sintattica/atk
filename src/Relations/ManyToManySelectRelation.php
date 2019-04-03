@@ -108,7 +108,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         foreach ($selectedKeys as $key) {
             foreach ($selectedRecords as $record) {
-                if ($key == $this->getDestination()->primaryKey($record)) {
+                if ($key == $this->getDestination()->primaryKeyString($record)) {
                     $orderedRecords[] = $record;
                 }
             }
@@ -206,7 +206,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         // Get records added this time
         if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()])) {
-            $selectedKeys[] = $this->getDestination()->primaryKey($record[$this->getManyToOneRelation()->fieldName()]);
+            $selectedKeys[] = $this->getDestination()->primaryKeyString($record[$this->getManyToOneRelation()->fieldName()]);
         }
 
         // Get New Selection records
@@ -401,7 +401,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getEditActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'edit',
-            array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
+            array('atkselector' => $this->getDestination()->primaryKeyString($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
     }
 
@@ -415,7 +415,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getViewActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'view',
-            array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
+            array('atkselector' => $this->getDestination()->primaryKeyString($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
     }
 

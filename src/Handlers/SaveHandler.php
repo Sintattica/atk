@@ -177,7 +177,7 @@ class SaveHandler extends ActionHandler
 
             $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri();
             $url .= '&atkaction=edit';
-            $url .= '&atkselector='.rawurlencode($this->m_node->primaryKey($record));
+            $url .= '&atkselector='.rawurlencode($this->m_node->primaryKeyString($record));
             $location = $sm->sessionUrl($url.$extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
             if ($this->m_node->hasFlag(Node::NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {

@@ -557,9 +557,9 @@ class TreeNode extends Node
                             $url = str_replace('_1'.'5D', ']', $url);
 
                             if ($atkencoded) {
-                                $url = str_replace('[pk]', Tools::atkurlencode(rawurlencode($this->primaryKey($this->m_tree[$cnt]['label'])), false), $url);
+                                $url = str_replace('[pk]', Tools::atkurlencode(rawurlencode($this->primaryKeyString($this->m_tree[$cnt]['label'])), false), $url);
                             } else {
-                                $url = str_replace('[pk]', rawurlencode($this->primaryKey($this->m_tree[$cnt]['label'])), $url);
+                                $url = str_replace('[pk]', rawurlencode($this->primaryKeyString($this->m_tree[$cnt]['label'])), $url);
                             }
 
                             $stringparser = new StringParser($url);
