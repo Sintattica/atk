@@ -122,7 +122,7 @@ class NodeValidator
 
                 if ($p_attrib->hasFlag(Attribute::AF_PRIMARY) && !$p_attrib->hasFlag(Attribute::AF_AUTO_INCREMENT)) {
                     $atkorgkey = $record['atkprimkey'];
-                    if ($atkorgkey == '' || $this->primaryKeyStringEqual($atkorgkey, $this->m_nodeObj->primaryKeyString($record))) {
+                    if ($atkorgkey == '' || !$this->m_nodeObj->primaryKeyStringEqual($atkorgkey, $this->m_nodeObj->primaryKeyString($record))) {
                         $cnt = $this->m_nodeObj->select($this->m_nodeObj->primaryKey($record))->ignoreDefaultFilters(true)->ignorePostvars(true)->getRowCount();
                         if ($cnt > 0) {
                             Tools::atkTriggerError($record, $p_attrib, 'error_primarykey_exists');

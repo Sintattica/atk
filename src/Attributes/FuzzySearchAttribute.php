@@ -211,7 +211,7 @@ class FuzzySearchAttribute extends Attribute
                     $selects = [];
                     foreach ($this->m_matches as $keyword => $matches) {
                         for ($i = 0, $_i = Tools::count($matches); $i < $_i; ++$i) {
-                            $item = '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKeyString($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
+                            $item = '<OPTION VALUE="'.htmlspecialchars($this->m_searchnodeInstance->primaryKeyString($matches[$i])).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
                             if (!in_array($item, $selects)) {
                                 $selects[] = $item;
                             }
@@ -228,7 +228,7 @@ class FuzzySearchAttribute extends Attribute
                                 $res .= '<tr><td>\''.$keyword.'\': </td><td><SELECT NAME="'.$this->getHtmlName($fieldprefix).'[]" class="form-control select-standard">';
                                 $res .= '<OPTION VALUE="">'.Tools::atktext('select_none');
                                 for ($i = 0, $_i = Tools::count($matches); $i < $_i; ++$i) {
-                                    $res .= '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKeyString($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
+                                    $res .= '<OPTION VALUE="'.htmlspecialchars($this->m_searchnodeInstance->primaryKeyString($matches[$i])).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
                                 }
                                 $res .= '</SELECT></td></tr>';
                             }

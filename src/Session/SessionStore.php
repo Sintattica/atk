@@ -262,7 +262,7 @@ class SessionStore
      */
     private static function getRowKeyFromSelector($selector)
     {
-        $selector = Tools::decodeKeyValuePair($selector);
+        $selector = json_decode($selector, true);
         $selector_values = array_values($selector);
 
         if (Tools::count($selector_values) === 1 && is_numeric($selector_values[0]) && $selector_values[0] <= 0) {

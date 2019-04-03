@@ -147,8 +147,8 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $selectedKeys = $this->getSelectedKeys($record, $id);
 
         $selectedRecords = [];
-        if (Tools::count($selectedKeys) > 0) {
-            $selector = '('.implode(') OR (', $selectedKeys).')';
+        if (!empty($selectedKeys)) {
+            $selector = $this->getDestination()->primaryKeyCondition($selectedKeys);
             $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->fetchAll();
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
         }
@@ -215,7 +215,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         // Ensure we're only adding an item once
-        if ($enforceUnique && is_array($selectedKeys) && Tools::count($selectedKeys)) {
+        if ($enforceUnique && is_array($selectedKeys) && !empty($selectedKeys)) {
             $selectedKeys = array_unique($selectedKeys);
         }
 
@@ -486,7 +486,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $this->createLink();
 
         $fieldprefix = $this->getOwnerInstance()->m_postvars['fieldprefix'];
-        $selector = $this->getOwnerInstance()->m_postvars['selector'];
+        $selector = $this->getDestination()->primaryKeyCondition($this->getOwnerInstance()->m_postvars['selector']);
 
         if (empty($selector)) {
             return '';

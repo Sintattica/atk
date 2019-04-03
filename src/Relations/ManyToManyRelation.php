@@ -7,8 +7,9 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 
 /**
  * Many to many relation. Should not be used directly.
@@ -325,7 +326,7 @@ class ManyToManyRelation extends Relation
      */
     public function getOwnerFields()
     {
-        if (is_array($this->m_ownerFields) && Tools::count($this->m_ownerFields) > 0) {
+        if (is_array($this->m_ownerFields) && !empty($this->m_ownerFields)) {
             return $this->m_ownerFields;
         }
 
@@ -396,7 +397,7 @@ class ManyToManyRelation extends Relation
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
                 if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
-                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getDestination()->primaryKey($rec))),
+                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getDestination()->primaryKeyString($rec))),
                         $descr, SessionManager::SESSION_NESTED);
                 }
                 $recordset[] = $descr;
@@ -456,7 +457,7 @@ class ManyToManyRelation extends Relation
     }
 
     /**
-     * Get where clause for loading the record.
+     * Get where clause for loading the record from the linkInstance table
      *
      * @param array $record The record
      *
@@ -476,15 +477,18 @@ class ManyToManyRelation extends Relation
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
-                $whereelems[] = $this->m_linkInstance->m_table.'.'.$localkey[$i]."='".$primkeyattr->value2db($record)."'";
+                $placeholder = QueryPart::placeholder($localkey[$i]);
+                $whereelems[] = new QueryPart(
+                    Db::quoteIdentifier($this->m_linkInstance->m_table, $localkey[$i]).'='.$placeholder,
+                    [$placeholder => [$primkeyattr->value2db($record)]]);
             }
         }
 
         if ($this->m_localFilter != null) {
-            $whereelems[] = $this->m_localFilter;
+            $whereelems[] = new QueryPart($this->m_localFilter);
         }
 
-        return '('.implode(') AND (', $whereelems).')';
+        return QueryPart::implode('AND', $whereelems);
     }
 
     /**
@@ -545,7 +549,6 @@ class ManyToManyRelation extends Relation
         if (isset($record[$this->fieldName()])) {
             foreach ($record[$this->fieldName()] as $selectedRecord) {
                 $selectedKey = is_array($selectedRecord[$this->getRemoteKey()]) ? $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] : $selectedRecord[$this->getRemoteKey()];
-
                 $selectedRecordsByKey[$selectedKey] = $selectedRecord;
             }
         }
@@ -572,7 +575,7 @@ class ManyToManyRelation extends Relation
 
         // append the store deletion filter (if set)
         if (!empty($this->m_store_deletion_filter)) {
-            $selector = "({$selector}) AND ({$this->m_store_deletion_filter})";
+            $selector = QueryPart::implode('AND', [$selector, new QueryPart($this->m_store_deletion_filter)]);
         }
 
         return $this->getLink()->deleteDb($selector);

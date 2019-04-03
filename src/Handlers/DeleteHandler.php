@@ -119,7 +119,7 @@ class DeleteHandler extends ActionHandler
     protected function _doDeleteDb()
     {
         $db = $this->m_node->getDb();
-        if ($this->m_node->deleteDb($this->m_postvars['atkselector'])) {
+        if ($this->m_node->deleteDb($this->m_node->primaryKeyCondition($this->m_postvars['atkselector']))) {
             $db->commit();
             $this->clearCache();
 

@@ -1279,9 +1279,9 @@ class Node
      *
      * @return boolean true if equals, false if not
      */
-    public function primaryKeyStringEqual(string $enc1, string $enc2) : boolean
+    public function primaryKeyStringEqual(string $enc1, string $enc2)
     {
-        return json_decode($enc1) == json_decode($enc2);
+        return json_decode($enc1, true) == json_decode($enc2, true);
     }
 
     /**
@@ -1321,13 +1321,16 @@ class Node
             $record = array_combine($this->m_primaryKey, $record);
             $conditions[] = $this->primaryKey($record);
         }
+        if (empty($conditions)) {
+            return new QueryPart('0');
+        }
         return QueryPart::implode('OR', $conditions, true);
     }
 
     /**
      * Returns the primary key sql condition for ONE record.
      *
-     * @param array $rec The record for which the primary key condition
+     * @param array $rec The record for which the primary key condition is computed
      * @param boolean $negate return NOT (condition) rather than condition.
      *
      * @return QueryPart the primary key SQL condition
@@ -1339,7 +1342,7 @@ class Node
             $placeholder = QueryPart::placeholder($field);
             $conditions[] = new QueryPart(
                 Db::quoteIdentifier($this->m_table, $field).'='.$placeholder,
-                [$placeholder => [$this->m_attribList[$field]->fetchValue($rec)]]);
+                [$placeholder => [$this->m_attribList[$field]->value2db($rec)]]);
         }
 
         if (!$negate) {
@@ -2778,10 +2781,10 @@ class Node
         }
 
         if (!is_array($atkselector)) {
-            $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector.'">';
+            $formstart .= '<input type="hidden" name="atkselector" value="'.htmlspecialchars($atkselector).'">';
         } else {
             foreach ($atkselector as $selector) {
-                $formstart .= '<input type="hidden" name="atkselector[]" value="'.$selector.'">';
+                $formstart .= '<input type="hidden" name="atkselector[]" value="'.htmlspecialchars($selector).'">';
             }
         }
 
@@ -3369,7 +3372,7 @@ class Node
             }
 
             $pk = $record['atkprimkey'];
-            $query->addCondition($pk);
+            $query->addCondition($this->primaryKeyCondition($pk));
 
             $storelist = array('pre' => [], 'post' => [], 'query' => array());
 

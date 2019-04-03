@@ -64,7 +64,7 @@ class ViewHandler extends ViewEditBase
         $sm = SessionManager::getInstance();
         $formstart = '<form id="entryform" name="entryform" action="'.Config::getGlobal('dispatcher').'" method="get" onsubmit="return ATK.globalSubmit(this,false)">';
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
-        $formstart .= '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKeyString($record).'">';
+        $formstart .= '<input type="hidden" name="atkselector" value="'.htmlspecialchars($this->getNode()->primaryKeyString($record)).'">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
 
         return $formstart;

@@ -540,15 +540,18 @@ class ManyToOneRelation extends Relation
         if (!$this->isPosted($postvars)) {
             return;
         }
+        if(empty($postvars[$this->fieldName()])) {
+            return;
+        }
 
         $result = json_decode($postvars[$this->fieldName()]);
         if (!is_array($result)) {
             $result = [$result];
         }
-        if (count($result) != count($this->getDestination()->m_primaryKeys)) {
+        if (count($result) != count($this->getDestination()->m_primaryKey)) {
             return;
         }
-        $result = array_combine($this->getDestination()->m_primaryKeys, $result);
+        $result = array_combine($this->getDestination()->m_primaryKey, $result);
 
         // add descriptor fields, this means they can be shown in the title
         // bar etc. when updating failed for example
@@ -737,7 +740,7 @@ class ManyToOneRelation extends Relation
                 // the app crashes if no value is entered.
                 $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
-                $links[] = '<span id="'.$id."_view\" style=\"\"><a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value), true)' class=\"atkmanytoonerelation atkmanytoonerelation-link\">".Tools::atktext('view').'</a></span>';
+                $links[] = '<span id="'.$id.'_view" style=""><a href=\'javascript:ATK.FormSubmit.atkSubmit("'.Tools::atkurlencode($viewUrl).'".replace("REPLACEME", document.entryform.'.$id.'.value), true)\' class="atkmanytoonerelation atkmanytoonerelation-link">'.Tools::atktext('view').'</a></span>';
             }
         }
 
@@ -1004,7 +1007,7 @@ class ManyToOneRelation extends Relation
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $this->m_destInstance->allowed('view')) {
                 $viewUrl = $sm->sessionUrl(Tools::dispatch_url($this->getAutoLinkDestination(), 'view', array('atkselector' => 'REPLACEME')),
                     SessionManager::SESSION_NESTED);
-                $autolink['view'] = " <a href='javascript:ATK.FormSubmit.atkSubmit(ATK.ManyToOneRelation.parse(\"".Tools::atkurlencode($viewUrl).'", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
+                $autolink['view'] = " <a href='javascript:ATK.FormSubmit.atkSubmit(\"".Tools::atkurlencode($viewUrl).'".replace("REPLACEME", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
             }
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
                 $linkParams = ['atkpkret' => $name];
@@ -1030,7 +1033,7 @@ class ManyToOneRelation extends Relation
             $currentPk = $this->m_destInstance->primaryKeyString($record[$this->fieldName()]);
         }
 
-        $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.$currentPk.'">';
+        $result = '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($currentPk).'">';
 
         return $result;
     }
