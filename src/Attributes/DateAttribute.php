@@ -1002,7 +1002,7 @@ class DateAttribute extends Attribute
                     $fromval = $toval;
                     $toval = $tmp;
                 }
-                return $query->betweenCondition($fieldname, $fromval, $toval, $this->dbFieldType());
+                return $query->betweenCondition($fieldname, $fromval, $toval);
             }
             break;
         }

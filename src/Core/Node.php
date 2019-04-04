@@ -4489,8 +4489,7 @@ class Node
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
             // Only search in fields that aren't explicitly hidden from search
-            if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && (in_array($p_attrib->dbFieldType(),
-                        array('string', 'text')) || $p_attrib->hasFlag(Attribute::AF_SEARCHABLE))
+            if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && ($p_attrib->dbFieldType() == Db::FT_STRING || $p_attrib->hasFlag(Attribute::AF_SEARCHABLE))
             ) {
                 $this->m_postvars['atksearch'][$attribname] = $expression;
             }

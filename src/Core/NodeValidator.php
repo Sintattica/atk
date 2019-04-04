@@ -4,7 +4,7 @@ namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Db\Db;
-use Sintattica\Atk\Db\QueryPart;
+use Sintattica\Atk\Db\Query;
 
 /**
  * Validator for records, based on node definition.
@@ -141,7 +141,7 @@ class NodeValidator
                 } // if flag is primary
                 else {
                     if ($p_attrib->hasFlag(Attribute::AF_UNIQUE) && !$p_attrib->hasFlag(Attribute::AF_PRIMARY) && !$p_attrib->isEmpty($record)) {
-                        $condition = Query::simpleValueCondition($this->m_nodeObj->getTable(), $attribname, $p_attrib->value2db($record)]);
+                        $condition = Query::simpleValueCondition($this->m_nodeObj->getTable(), $attribname, $p_attrib->value2db($record));
                         if ($this->m_mode != 'add') {
                             $condition->appendSql('AND ');
                             $condition->append($this->m_nodeObj->primaryKey($record, true));

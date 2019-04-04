@@ -509,7 +509,7 @@ class Query
         $placeholder = QueryPart::placeholder($field);
         return new QueryPart(
             Db::quoteIdentifier($table, $field).'='.$placeholder,
-            [$placeholder => [$value]]
+            [$placeholder => $value]
         );
     }
 
@@ -545,10 +545,7 @@ class Query
     private function limiterClause()
     {
         if ($this->m_offset >= 0 && $this->m_limit > 0) {
-            return new QueryPart(
-                'LIMIT :limit OFFSET :offset',
-                [':limit' => [(int) $this->m_limit, \PDO::PARAM_INT], ':offset' => [(int) $this->m_offset, \PDO::PARAM_INT]]
-                );
+            return new QueryPart('LIMIT :limit OFFSET :offset', [':limit' => (int) $this->m_limit, ':offset' => (int) $this->m_offset]);
         }
     }
 
@@ -667,7 +664,7 @@ class Query
         $updateFieldFn = function($field) {
             $placeholder = QueryPart::placeholder($field);
             $value = $this->m_values[$field];
-            return new QueryPart("{$field}={$placeholder}", [$placeholder => [$value]]);
+            return new QueryPart("{$field}={$placeholder}", [$placeholder => $value]);
         };
         $query->append(QueryPart::implode(', ', array_map($updateFieldFn, $this->m_fields)));
 
@@ -691,7 +688,7 @@ class Query
         $query->appendSql('('.implode(', ', $this->m_fields).') VALUES (');
         foreach ($this->m_fields as $field) {
             $placeholder = QueryPart::placeholder($field);
-            $parameters[$placeholder] = [$this->m_values[$field]];
+            $parameters[$placeholder] = $this->m_values[$field];
         }
         $query->append(new QueryPart(implode(', ', array_keys($parameters)), $parameters));
         $query->appendSql(')');
@@ -800,7 +797,7 @@ class Query
         if ($value[0] == '!') {
             $value = substr($value, 1);
         }
-        $parameter = [$placeholder => [$value]];
+        $parameter = [$placeholder => $value];
         
         if ($this->m_db->getForceCaseInsensitive()) {
             return new QueryPart("LOWER({$field}) {$operator} LOWER({$placeholder})", $parameter);
@@ -937,14 +934,13 @@ class Query
      * @param string $field The database field
      * @param mixed $value1 The first value
      * @param mixed $value2 The second value
-     * @param int $dbfieldtype from Db::FT_ constants
      *
      * @return QueryPart
      */
-    public function betweenCondition($field, $value1, $value2, $dbfieldtype)
+    public function betweenCondition($field, $value1, $value2)
     {
         $placeholder = QueryPart::placeholder($field);
-        $parameters = [$placeholder.'_min' => [$value1], $placeholder.'_max' => [$value2]];
+        $parameters = [$placeholder.'_min' => $value1, $placeholder.'_max' => $value2];
 
         return new QueryPart("{$field} BETWEEN {$placeholder}_min AND {$placeholder}_max", $parameters);
     }
@@ -968,11 +964,10 @@ class Query
      *
      * @param string $field The database field
      * @param array[] $values Possible values
-     * @param int $dbfieldtype from Db::FT_ constants
      *
      * @return QueryPart
      */
-    public function inCondition($field, $values, $dbfieldtype = Db::FT_STRING)
+    public function inCondition($field, $values)
     {
         if (empty($values)) {
             return null;
@@ -980,7 +975,7 @@ class Query
         $placeholder = QueryPart::placeholder($field);
         $parameters = [];
         for ($i = 0; $i < count($values); $i++) {
-            $parameters["{$placeholder}_{$i}"]= [$values[$i], $dbfieldtype];
+            $parameters["{$placeholder}_{$i}"]= $values[$i];
         }
 
         $sql = $field.' IN ('.implode(', ', array_keys($parameters)).')';
@@ -992,11 +987,10 @@ class Query
      *
      * @param string $field The database field
      * @param array[] $values Impossible values
-     * @param int $dbfieldtype from Db::FT_ constants
      *
      * @return QueryPart
      */
-    public function notinCondition($field, $values, $dbfieldtype = Db::FT_STRING)
+    public function notinCondition($field, $values)
     {
         if (empty($values)) {
             return null;
@@ -1004,7 +998,7 @@ class Query
         $placeholder = QueryPart::placeholder($field);
         $parameters = [];
         for ($i = 0; $i < count($values); $i++) {
-            $parameters["{$placeholder}_{$i}"]= [$values[$i], $dbfieldtype];
+            $parameters["{$placeholder}_{$i}"]= $values[$i];
         }
 
         $sql = $field.' NOT IN ('.implode(', ', array_keys($parameters)).')';

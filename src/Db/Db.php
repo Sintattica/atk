@@ -669,7 +669,7 @@ class Db extends \PDO
         /* get meta information */
         $stmt = $this->queryP(
             'SELECT '.implode(',', $columns). ' FROM information_schema.columns WHERE table_name = :tablename;',
-            [':tablename' => [$table]]
+            [':tablename' => $table]
         );
 
         /* Transforming to our destination array */
@@ -885,26 +885,6 @@ class Db extends \PDO
     public function func_datetimetochar($fieldname)
     {
         return "TO_CHAR($fieldname, 'YYYY-MM-DD hh:mi')";
-    }
-
-    /**
-     * Get a regexp search condition for current database
-     *
-     * @param string $fieldname The field which will be matched
-     * @param string $value The regexp it will be matched against
-     *
-     * @return QueryPart Piece of SQL query
-     */
-    public function func_regexp($fieldname, $value)
-    {
-        $placeholder = QueryPart::placeholder($fieldname);
-        $negate = ($value[0] == '!') ? 'NOT ':'';
-        if ($value[0] == '!') {
-            $value = substr($value, 1);
-        }
-        $parameter = [$placeholder => [$value]];
-
-        return new QueryPart("{$fieldname} {$negate} REGEXP {$placeholder}", $parameter);
     }
 
     /******************************************** Escaping functions **********************************************************/

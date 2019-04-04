@@ -78,7 +78,7 @@ class DbAuth extends AuthInterface
         $db = Db::getInstance(Config::getGlobal('auth_database'));
         $query = $this->buildSelectUserQuery(Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_passwordfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
-        $recs = $db->getRows($query, [':user' => [$user]]);
+        $recs = $db->getRows($query, [':user' => $user]);
         if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
@@ -105,7 +105,7 @@ class DbAuth extends AuthInterface
             $sql .= " AND $enableexpression";
         }
 
-        if ($db->getValue($sql, [':user' => [$user]])) {
+        if ($db->getValue($sql, [':user' => $user])) {
             return true;
         };
 
@@ -181,7 +181,7 @@ class DbAuth extends AuthInterface
         $db = Db::getInstance(Config::getGlobal('auth_database'));
         $query = $db->createQuery($usertable);
         $query->addAllFields()
-            ->addCondition(Db::quoteIdentifier($usertable, $userfield).'=:user', [':user' => [$user]]);
+            ->addCondition(Db::quoteIdentifier($usertable, $userfield).'=:user', [':user' => $user]);
         if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one

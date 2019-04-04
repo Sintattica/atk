@@ -23,8 +23,8 @@ class QueryPart
     
     /**
      * array of ':parameter_name' => [value, type] wher type is one of
-     * \PDO::PARAM_ constant value (fallback to \PDO::PARAM_INT for int
-     * values and \PDO::PARAM_STR for other values if unspecified)
+     * \PDO::PARAM_ constant value
+     * In fact, only PARAM_INT and PARAM_STR are used.
      * 
      * @access readonly
      * @var array of string => [mixed $value, int $pdo_type]
@@ -42,18 +42,20 @@ class QueryPart
     
     /**
      * Initialize variables and fill types if not specified
+     *
+     * Values are passed as an array $placeholder => $value.
+     *
+     * @param string $sql query part that can contain placeholders
+     * @param array [string => mixed] $values indexed by strings (placeholders)
+     *              that are present in $sql.
      */
-    public function __construct(string $sql, array $parameters = [])
+    public function __construct(string $sql, array $values = [])
     {
         $this->sql = $sql;
         $this->parameters = [];
-        foreach($parameters as $name => $parameter) {
-            if (isset($parameter[1])) {
-                $type = $parameter[1];
-            } else {
-                $type = gettype($parameter[0])=='integer' ? \PDO::PARAM_INT:\PDO::PARAM_STR;
-            }
-            $this->parameters[$name] = [$parameter[0], $type];
+        foreach($values as $placeholder => $value) {
+            $type = is_int($value) ? \PDO::PARAM_INT:\PDO::PARAM_STR;
+            $this->parameters[$placeholder] = [$value, $type];
         }
     }
     

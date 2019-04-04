@@ -689,7 +689,7 @@ class NumberAttribute extends Attribute
                 $value['to'] = $tmp;
             }
 
-            return $query->betweenCondition($fieldname, $value['from'], $value['to'], $this->dbFieldType());
+            return $query->betweenCondition($fieldname, $value['from'], $value['to']);
         } elseif ($value['from'] != '' && $value['to'] == '') {
             return $query->greaterthanequalCondition($fieldname, $value['from']);
         } elseif ($value['from'] == '' && $value['to'] != '') {

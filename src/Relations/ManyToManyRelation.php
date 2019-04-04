@@ -838,7 +838,7 @@ class ManyToManyRelation extends Relation
         $query->setDistinct(true);
 
         if (Tools::count($value) == 1) { // exactly one value
-            return $query->exactCondition(Db::quoteIdentifier($this->fieldName(), $this->getRemoteKey()), $value[0], $this->dbFieldType());
+            return $query->exactCondition(Db::quoteIdentifier($this->fieldName(), $this->getRemoteKey()), $value[0]);
         } else { // search for more values using IN()
             return $query->inCondition(Db::quoteIdentifier($this->fieldName(), $this->getRemoteKey()), $value);
         }

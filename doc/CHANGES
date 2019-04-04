@@ -65,7 +65,8 @@ WIP Changes
     m_collate variable, getRowsAssoc, getInsertId (use lastInsertId if needed),
     setSequenceValue, (use|get|clear)Mapping, (get|set|reset)query_id,
     getQueryMode, (do)connect, getDbStatus, newInstance,
-    database mode (ro/rw) and reset option in Db::getInstance.
+    database mode (ro/rw) and reset option in Db::getInstance, dbFieldType
+    argument in Query->*Condition.
 * Replaced Db->func_concat_ws by Db->func_concat_coalesce (no more separator).
 * Changed Db->metadata format
 * moving field types from strings ('number', 'string') to constants (defined as

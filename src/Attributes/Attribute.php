@@ -1732,7 +1732,7 @@ class Attribute
 
         $func = $searchmode.'Condition';
         if (method_exists($query, $func) && ($value || ($value == 0))) {
-            return $query->$func(Db::quoteIdentifier($table, $this->fieldName()), $value, $this->dbFieldType());
+            return $query->$func(Db::quoteIdentifier($table, $this->fieldName()), $value);
         } elseif (!method_exists($query, $func)) {
             Tools::atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().', ignoring condition.');
         }

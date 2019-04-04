@@ -505,7 +505,7 @@ EOF;
             if ($value[0] == '__NONE__') {
                 return $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
             } else {
-                return $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0], $this->dbFieldType());
+                return $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
             }
         }
         // search for more values
@@ -513,10 +513,10 @@ EOF;
             unset($value[array_search('__NONE__', $value)]);
 
             $nullCondition = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
-            $inCondition = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value, $this->dbFieldType());
+            $inCondition = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
             return QueryPart::implode('OR', [$nullCondition, $inCondition], true);
         }
-        return $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value, $this->dbFieldType());
+        return $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
     }
 
     /**

@@ -1346,7 +1346,7 @@ EOF;
                 if ($value[0] == '__NONE__') {
                     $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
                 } elseif ($value[0] != '') {
-                    $searchConditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0], $this->dbFieldType());
+                    $searchConditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
                 } else {
                     return null;
                 }

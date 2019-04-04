@@ -83,4 +83,24 @@ class MysqlDb extends Db
         }
         return "CONCAT_WS('', ".implode(',', $fields).')';
     }
+
+    /**
+     * Get a regexp search condition for Mysql
+     *
+     * @param string $fieldname The field which will be matched
+     * @param string $value The regexp it will be matched against
+     *
+     * @return QueryPart Piece of SQL query
+     */
+    public function func_regexp($fieldname, $value)
+    {
+        $placeholder = QueryPart::placeholder($fieldname);
+        $negate = ($value[0] == '!') ? 'NOT ':'';
+        if ($value[0] == '!') {
+            $value = substr($value, 1);
+        }
+        $parameter = [$placeholder => $value];
+
+        return new QueryPart("{$fieldname} {$negate} REGEXP {$placeholder}", $parameter);
+    }
 }
