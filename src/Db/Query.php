@@ -496,6 +496,24 @@ class Query
     }
 
     /**
+     * Generate a properly escaped condition for table.field = value
+     *
+     * @param string $table which holds the field
+     * @param string $field to search for value
+     * @param mixed $value to search for
+     *
+     * @return QueryPart condition
+     */
+    public static function simpleValueCondition(string $table, string $field, $value) : QueryPart
+    {
+        $placeholder = QueryPart::placeholder($field);
+        return new QueryPart(
+            Db::quoteIdentifier($table, $field).'='.$placeholder,
+            [$placeholder => [$value]]
+        );
+    }
+
+    /**
      * build the WHERE part of the query with conditions and searchconditions
      *
      * @return QueryPart to append to current query

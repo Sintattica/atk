@@ -199,16 +199,11 @@ class OneToOneRelation extends Relation
         if ($this->createDestination()) {
             if ($this->m_refKey == '') {
                 // Foreign key in owner
-                $condition = new QueryPart(
-                    Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_destInstance->m_primaryKey[0]).'=:key',
-                    [':key' => [$record[$this->fieldName()]]]
-                );
+                $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->m_primaryKey[0], $record[$this->fieldName()]);
             } else {
                 // Foreign key in destination
-                $condition = new QueryPart(
-                    Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_refKey).'=:key',
-                    [':key' => [$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record)]]
-                );
+                $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_refKey,
+                    $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
 
                 $destfilter = $this->getDestinationFilter();
                 if (is_string($destfilter) && $destfilter != '') {
@@ -264,10 +259,10 @@ class OneToOneRelation extends Relation
 
         if ($this->m_refKey != '') {
             // Foreign key is in the destination node
-            $condition = $rel->m_table.'.'.$this->m_refKey.'='.$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+            $condition = Query::simpleValueCondition($rel->m_table, $this->m_refKey, $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
         } else {
             // Foreign key is in the source node.
-            $condition = $rel->m_table.'.'.$rel->m_primaryKey[0].'='.$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
+            $condition = Query::simpleValueCondition($rel->m_table, $rel->m_primaryKey[0], $record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()]);
         }
 
         return $rel->deleteDb($condition);

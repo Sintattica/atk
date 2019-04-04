@@ -1345,10 +1345,7 @@ class Node
     {
         $conditions = [];
         foreach ($this->m_primaryKey as $field) {
-            $placeholder = QueryPart::placeholder($field);
-            $conditions[] = new QueryPart(
-                Db::quoteIdentifier($this->m_table, $field).'='.$placeholder,
-                [$placeholder => [$this->m_attribList[$field]->value2db($rec)]]);
+            $conditions[] = Query::simpleValueCondition($this->m_table, $field, $this->m_attribList[$field]->value2db($rec));
         }
 
         if (!$negate) {

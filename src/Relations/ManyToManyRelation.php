@@ -393,10 +393,7 @@ class ManyToManyRelation extends Relation
                     if (empty($rec)) {
                         continue;
                     }
-                    $selector = new QueryPart(
-                        Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField()).'= :id',
-                        [':id' => [$rec]]
-                    );
+                    $selector = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField(), $rec);
                     $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
                     $descr = $this->m_destInstance->descriptor($rec);
                 } else {
@@ -483,10 +480,7 @@ class ManyToManyRelation extends Relation
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
-                $placeholder = QueryPart::placeholder($localkey[$i]);
-                $whereelems[] = new QueryPart(
-                    Db::quoteIdentifier($this->m_linkInstance->m_table, $localkey[$i]).'='.$placeholder,
-                    [$placeholder => [$primkeyattr->value2db($record)]]);
+                $whereelems[] = Query::simpleValueCondition($this->m_linkInstance->m_table, $localkey[$i], $primkeyattr->value2db($record));
             }
         }
 
