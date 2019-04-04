@@ -390,7 +390,13 @@ class ManyToManyRelation extends Relation
             for ($i = 0; $i < Tools::count($record[$this->fieldName()]); ++$i) {
                 $rec = $record[$this->fieldName()][$i][$remotekey];
                 if (!is_array($rec)) {
-                    $selector = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField()."= '$rec'";
+                    if (empty($rec)) {
+                        continue;
+                    }
+                    $selector = new QueryPart(
+                        Db::quoteIdentifier($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField()).'= :id',
+                        [':id' => [$rec]]
+                    );
                     $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
                     $descr = $this->m_destInstance->descriptor($rec);
                 } else {

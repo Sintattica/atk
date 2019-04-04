@@ -1259,6 +1259,10 @@ class Node
         $res = [];
         // Case we have only one value : encode it directly.
         if (count($this->m_primaryKey) == 1) {
+            if (is_numeric($rec[$this->m_primaryKey[0]])) {
+                // casting strings to numeric values when they are numeric :
+                return json_encode($rec[$this->m_primaryKey[0]] + 0);
+            }
             return json_encode($rec[$this->m_primaryKey[0]]);
         }
         foreach ($this->m_primaryKey as $key) {
@@ -1279,7 +1283,7 @@ class Node
      *
      * @return boolean true if equals, false if not
      */
-    public function primaryKeyStringEqual(string $enc1, string $enc2)
+    public static function primaryKeyStringEqual(string $enc1, string $enc2)
     {
         return json_decode($enc1, true) == json_decode($enc2, true);
     }
@@ -1289,6 +1293,7 @@ class Node
      *
      * If several strings are passed as an array, they are joined with OR
      * condition.
+     * It is NOT the reverse of primaryKeyString.
      *
      * Examples :
      * '45' or '[45]' => QueryPart('"table"."id"=:id', [':id' => [45]])
@@ -1300,7 +1305,7 @@ class Node
      * @return QueryPart SQL condition
      *                '0' if the parameter can't be decoded
      */
-    public function primaryKeyCondition($selectors) : QueryPart
+    public function primaryKeyFromString($selectors) : QueryPart
     {
         if (is_string($selectors)) {
             $selectors = [$selectors];
@@ -1319,6 +1324,7 @@ class Node
                 continue;
             }
             $record = array_combine($this->m_primaryKey, $record);
+            // Computing the primary key SQL condition :
             $conditions[] = $this->primaryKey($record);
         }
         if (empty($conditions)) {
@@ -2747,7 +2753,6 @@ class Node
      *                               "confirm".$action."()" (e.g.
      *                               confirmDelete() and call that method
      *                               instead.
-     * @param bool $mergeSelectors Merge all selectors to one selector string (if more then one)?
      * @param string $csrfToken
      *
      * @return string Complete html fragment containing a box with the
@@ -2758,7 +2763,6 @@ class Node
         $atkselector,
         $action,
         $checkoverride = true,
-        $mergeSelectors = true,
         $csrfToken = null
     ) {
         $method = 'confirm'.$action;
@@ -2781,11 +2785,10 @@ class Node
         }
 
         if (!is_array($atkselector)) {
-            $formstart .= '<input type="hidden" name="atkselector" value="'.htmlspecialchars($atkselector).'">';
-        } else {
-            foreach ($atkselector as $selector) {
-                $formstart .= '<input type="hidden" name="atkselector[]" value="'.htmlspecialchars($selector).'">';
-            }
+            $atkselector = [$atkselector];
+        }
+        foreach ($atkselector as $selector) {
+            $formstart .= '<input type="hidden" name="atkselector[]" value="'.htmlspecialchars($selector).'">';
         }
 
         $buttons = $this->getFormButtons($action, array());
@@ -2796,7 +2799,7 @@ class Node
 
         $content = '';
         $record = null;
-        $recs = $this->select($this->primaryKeyCondition($atkselector))->includes($this->descriptorFields())->fetchAll();
+        $recs = $this->select($this->primaryKeyFromString($atkselector))->includes($this->descriptorFields())->fetchAll();
         if (Tools::count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
@@ -2846,7 +2849,7 @@ class Node
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector);
         } else {
-            return $this->text("confirm_$action".(is_array($atkselector) && Tools::count($atkselector) > 1 ? '_multi' : ''));
+            return $this->text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''));
         }
     }
 
@@ -3333,7 +3336,7 @@ class Node
 
         $this->addFlag(self::NF_NO_FILTER);
 
-        $record['atkorgrec'] = $this->select()->where($this->primaryKeyCondition($record['atkprimkey']))->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
+        $record['atkorgrec'] = $this->select()->where($this->primaryKeyFromString($record['atkprimkey']))->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
 
         // Need to restore the NO_FILTER bit back to its original value.
         $this->m_flags = $flags;
@@ -3371,8 +3374,7 @@ class Node
                 $this->executeTrigger('preUpdate', $record);
             }
 
-            $pk = $record['atkprimkey'];
-            $query->addCondition($this->primaryKeyCondition($pk));
+            $query->addCondition($this->primaryKeyFromString($record['atkprimkey']));
 
             $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
@@ -3543,7 +3545,7 @@ class Node
      */
     public function fetchByPk($pk)
     {
-        return $this->select($this->primaryKeyCondition($pk))->getFirstRow();
+        return $this->select($this->primaryKeyFromString($pk))->getFirstRow();
     }
 
     /**
@@ -3867,7 +3869,7 @@ class Node
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
         if (Tools::count($recordset) == 0) {
-            Tools::atkwarning($this->atkNodeUri()."->deleteDb($selector): 0 records found, not deleting anything.");
+            Tools::atkwarning($this->atkNodeUri()."->deleteDb({$selector->sql}): 0 records found, not deleting anything.");
 
             return !$failwhenempty;
         }

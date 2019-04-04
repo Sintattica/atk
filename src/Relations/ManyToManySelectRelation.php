@@ -148,7 +148,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         $selectedRecords = [];
         if (!empty($selectedKeys)) {
-            $selector = $this->getDestination()->primaryKeyCondition($selectedKeys);
+            $selector = $this->getDestination()->primaryKeyFromString($selectedKeys);
             $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->fetchAll();
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
         }
@@ -486,7 +486,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $this->createLink();
 
         $fieldprefix = $this->getOwnerInstance()->m_postvars['fieldprefix'];
-        $selector = $this->getDestination()->primaryKeyCondition($this->getOwnerInstance()->m_postvars['selector']);
+        $selector = $this->getDestination()->primaryKeyFromString($this->getOwnerInstance()->m_postvars['selector']);
 
         if (empty($selector)) {
             return '';

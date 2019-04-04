@@ -579,7 +579,7 @@ class OneToOneRelation extends Relation
                     $mode = 'add';
                 } else {
                     $mode = 'edit';
-                    $myrecord['atkprimkey'] = $this->m_destInstance->primaryKey($myrecord);
+                    $myrecord['atkprimkey'] = $this->m_destInstance->primaryKeyString($myrecord);
                 }
             } else {
                 $mode = 'add';

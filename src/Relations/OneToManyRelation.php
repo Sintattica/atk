@@ -1057,12 +1057,6 @@ class OneToManyRelation extends Relation
             if (!empty($searchcondition)) {
                 $query->addSearchCondition($searchcondition);
                 $query->setDistinct(true);
-
-                // @todo: is this still needed?
-                if ($this->m_ownerInstance->m_postvars['atkselector']) {
-                    $query->setTable($this->m_destInstance->m_table);
-                    $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
-                }
             }
         }
     }
@@ -1136,80 +1130,16 @@ class OneToManyRelation extends Relation
     public function deleteAllowed()
     {
         if ($this->hasFlag(self::AF_RESTRICTED_DELETE)) {
-            // Get the destination node
-            $classname = $this->m_destination;
-            $cache_id = $this->m_owner.'.'.$this->m_name;
-            $atk = Atk::getInstance();
-            $rel = $atk->atkGetNode($classname, $cache_id);
-            // Get the current atkselector
-            $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
-            if ($where) {
-                $childrecords = $rel->select($where)->fetchAll();
-                if (!empty($childrecords)) {
+            $selector = $this->m_ownerInstance->primaryKeyFromString($this->m_ownerInstance->m_postvars['atkselector']);
+            $records = $this->m_ownerInstance->select($selector)->fetchAll();
+            foreach ($records as $record) {
+                if (!$this->isEmpty($record)) {
                     return Tools::atktext('restricted_delete_error');
                 }
-            } else {
-                return false;
             }
         }
 
         return true;
-    }
-
-    /**
-     * Here we check if the selector is on the owner or on the destination
-     * if it's on the destination, we leave it alone.
-     * Otherwise we translate it back to the destination.
-     *
-     * @todo when we translate the selector, we get the last used refKey
-     *       but how do we know what is the right one?
-     *
-     * @param string $selector the selector we have to translate
-     *
-     * @return string the new selector
-     */
-    public function translateSelector($selector)
-    {
-        // All standard SQL operators
-        $sqloperators = array(
-            '=',
-            '<>',
-            '>',
-            '<',
-            '>=',
-            '<=',
-            'BETWEEN',
-            'LIKE',
-            'IN',
-        );
-        $this->createDestination();
-
-        // Check the filter for every SQL operators
-        for ($counter = 0; $counter < Tools::count($sqloperators); ++$counter) {
-            if ($sqloperators[$counter]) {
-                list($key, $value) = explode($sqloperators[$counter], $selector);
-
-                // if the operator is in the filter
-                if ($value) {
-                    // check if it's on the destination
-                    $destinationkey = '';
-                    for ($refkeycount = 0; $refkeycount < Tools::count($this->m_refKey); ++$refkeycount) {
-                        $destinationkey = $this->m_destInstance->m_table.'.'.$this->m_refKey[$refkeycount];
-
-                        // if the selector is on the destination, we pass it back
-                        if ($key == $destinationkey || $key == $this->m_refKey[$refkeycount]) {
-                            return $selector;
-                        }
-                    }
-
-                    // otherwise we set it on the destination
-                    return $destinationkey.$sqloperators[$counter].$value;
-                }
-            }
-        }
-
-        // We never found a value, something is wrong with the filter
-        return '';
     }
 
     /**

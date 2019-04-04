@@ -50,7 +50,7 @@ class DeleteHandler extends ActionHandler
             // confirmation page yet, so we display it
             $page = $this->getPage();
             $page->addContent($this->m_node->renderActionPage('delete',
-                $this->m_node->confirmAction($this->m_postvars['atkselector'], 'delete', true, true, $this->getCSRFToken())));
+                $this->m_node->confirmAction($this->m_postvars['atkselector'], 'delete', true, $this->getCSRFToken())));
         } else {
             $this->_handleCancelAction();
         }
@@ -70,7 +70,7 @@ class DeleteHandler extends ActionHandler
      */
     public function _checkAllowed()
     {
-        $selector = $this->m_node->primaryKeyCondition($this->m_postvars['atkselector']);
+        $selector = $this->m_node->primaryKeyFromString($this->m_postvars['atkselector']);
         $recordset = $this->m_node->select($atkselector)->mode('delete')->fetchAll();
         foreach ($recordset as $record) {
             if (!$this->allowed($record)) {
@@ -119,7 +119,7 @@ class DeleteHandler extends ActionHandler
     protected function _doDeleteDb()
     {
         $db = $this->m_node->getDb();
-        if ($this->m_node->deleteDb($this->m_node->primaryKeyCondition($this->m_postvars['atkselector']))) {
+        if ($this->m_node->deleteDb($this->m_node->primaryKeyFromString($this->m_postvars['atkselector']))) {
             $db->commit();
             $this->clearCache();
 

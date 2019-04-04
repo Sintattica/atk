@@ -50,7 +50,7 @@ class ViewHandler extends ViewEditBase
      */
     public function getRecordFromDb()
     {
-        $selector = $this->m_node->primaryKeyCondition($this->m_postvars['atkselector'] ?? '');
+        $selector = $this->m_node->primaryKeyFromString($this->m_postvars['atkselector'] ?? '');
         return $this->m_node->select($selector)->excludes($this->m_node->m_viewExcludes)->mode('view')->getFirstRow();
     }
 

@@ -59,7 +59,6 @@ class Atk
         }
 
         // Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
-        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
         SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
 
         // set locale

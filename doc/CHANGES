@@ -14,9 +14,11 @@ Issue numbers are references to issues in the ATK project issue tracker
 
 WIP Changes
 -----------
+- Removed OneToManyRelation->translateSelector().
 * Node->primaryKey now returns a QueryPart condition. Use primaryKeyString
     to get a JSON-encoded string suitable for use in HTML parts. Decode this
-    string with primaryKeyCondition which gives you a QueryPart condition.
+    string with primaryKeyFromString which gives you a QueryPart condition.
+* Removed $mergeSelectors argument for Node->confirmAction.
 - Removed the '[pk]' tag for delete/multiselect operation (was marked as
     "for backwardscompatibility")
 + Sqlite driver added.
