@@ -3700,7 +3700,7 @@ class Node
                 }
             }
         }
-        $expression = $db->func_concat_ws($parts, '');
+        $expression = $db->func_concat_coalesce($parts);
         $func = $searchmode.'Condition';
         $sc = $query->$func($expression, $value);
         if (!is_null($sc)) {

@@ -563,7 +563,7 @@ class Query
         $query = new QueryPart('');
         if (($distinct || $this->m_distinct) && !empty($this->m_fields)) {
             $query->appendSql('SELECT COUNT(DISTINCT(');
-            $query->appendSql($this->m_db->func_concat_ws($this->m_fields, ''));
+            $query->appendSql($this->m_db->func_concat_coalesce($this->m_fields));
             $query->appendSql(')) as count FROM');
         } else {
             $query->appendSql('SELECT COUNT(*) AS count FROM');

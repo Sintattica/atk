@@ -827,22 +827,26 @@ class Db extends \PDO
      */
     public function func_concat_ws(array $fields, string $separator, bool $remove_all_spaces = false)
     {
-        if (Tools::count($fields) == 0) {
+        Tools::atkwarning('DEPRECATED : use func_concat_coalesce() or ad-hoc functions if you need a separator');
+        return $this->func_concat_coalesce();
+    }
+
+    /**
+     * Concat all fields/expressions and coalesce to empty string null values.
+     *
+     * The main interest is to concat strings together without a null string making
+     * the generated expression null.
+     *
+     * @param array $fields (quoted)
+     *
+     * @return string $query_part
+     */
+    public function func_concat_coalesce(array $fields) : string
+    {
+        if (empty($fields)) {
             return '';
-        } elseif (Tools::count($fields) == 1) {
-            return $fields[0];
         }
-
-        if ($separator == '') {
-            $separator = '||';
-        } else {
-            $separator = '||'.$this->quote($separator).'||';
-        }
-
-        if ($remove_all_spaces) {
-            return 'REPLACE(COALESCE('.implode(",''){$separator}COALESCE(", $fields).",''), ' ', '')";
-        }
-        return 'COALESCE('.implode(",''){$separator}COALESCE(", $fields).",'')";
+        return 'COALESCE('.implode(",'')||COALESCE(", $fields).",'')";
     }
 
     /**
