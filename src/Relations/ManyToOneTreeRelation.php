@@ -17,9 +17,6 @@ use Sintattica\Atk\Utils\StringParser;
  */
 class ManyToOneTreeRelation extends ManyToOneRelation
 {
-    public $m_current = '';
-    public $m_level = '';
-
     /**
      * Constructor.
      *
@@ -53,15 +50,16 @@ class ManyToOneTreeRelation extends ManyToOneRelation
             $sp = new StringParser($this->m_destinationFilter);
             $this->m_destInstance->addFilter($sp->parse($record));
         }
-        $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->getAllRows();
-        $this->m_current = $this->m_ownerInstance->primaryKey($record);
+        $recordset = $this->m_destInstance->select()->includes($tmp2)->getAllRows();
         $result = '<select class="form-control" name="'.$this->getHtmlName($fieldprefix).'">';
 
         if ($this->hasFlag(self::AF_OBLIGATORY) == false) {
             // Relation may be empty, so we must provide an empty selectable..
             $result .= '<option value="0">'.Tools::atktext('select_none');
         }
-        $result .= $this->createdd($recordset);
+        $parent = $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] ?? '';
+        $currentid = $record[$this->m_ownerInstance->m_primaryKey[0]];
+        $result .= $this->createdd($recordset, $parent, $currentid);
         $result .= '</select>';
 
         return $result;
@@ -89,53 +87,54 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * Create all the options.
      *
      * @param array $recordset
+     * @param int $parent of owner's node
+     * @param int $currentid of this node
      *
      * @return string The HTML code for the options
      */
-    public function createdd($recordset)
+    public function createdd($recordset, $parent = '', $currentid = '')
     {
         $t = new TreeToolsTree();
-        for ($i = 0; $i < Tools::count($recordset); ++$i) {
-            $group = $recordset[$i];
-            $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($group),
-                $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
+        foreach ($recordset as $record) {
+            $t->addNode($record[$this->m_destInstance->m_primaryKey[0]], $this->m_destInstance->descriptor($record),
+                $record[$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
         }
-        $tmp = $this->render($t->m_tree);
-
-        return $tmp;
+        return $this->render($t->m_tree, $parent, $currentid);
     }
 
     /**
      * Render the tree.
      *
      * @param array $tree Array of tree nodes
+     * @param int $currentid : owner node's id
      * @param int $level
      *
      * @return string The rendered tree
      */
-    public function render($tree = [], $level = 0)
+    public function render($tree = [], $parent, $currentid, $level = 0)
     {
         $res = '';
-        $i = 0;
         while (list(, $objarr) = each($tree)) {
-            ++$i;
-            if ($this->m_current != $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") {
-                $this->m_level = $level;
-                $sel = '';
-            } else {
-                // if equal, select the option it and do not render childs (parent cannot be moved to a childnode of its own)
-                $sel = 'SELECTED';
-            }
+            switch($objarr->m_id) {
+            case $parent:
+                $opt = ' SELECTED';
+                break;
+            case $currentid:
+                // Disable the option it and do not render childs (parent cannot be moved to a childnode of its own)
+                $opt = ' DISABLED';
+                break;
+            default:
+                $opt = '';
+                break;
+             }
 
-            $res .= '<option value="'.$this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$sel.'>'.str_repeat('-',
+            $res .= '<option value="'.$objarr->m_id.'" '.$opt.'>'.str_repeat('-',
                     (2 * $level)).' '.$objarr->m_label;
 
-            if (Tools::count($objarr->m_sub) > 0 && $sel == '') {
-                $res .= $this->render($objarr->m_sub, $level + 1);
+            if (count($objarr->m_sub) > 0 && $opt != ' DISABLED') {
+                $res .= $this->render($objarr->m_sub, $parent, $currentid, $level + 1);
             }
         }
-        $this->m_level = 0;
-
         return $res;
     }
 }

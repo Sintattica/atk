@@ -127,12 +127,13 @@ class TreeNode extends Node
             $addurl = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=add&atkfilter='.rawurlencode($this->m_parent.'.'.$this->m_primaryKey[0]."='0'");
             if (Tools::atktext('txt_link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module, '', '', '', true) != '') {
                 // specific text
-                $label = Tools::atktext('link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module);
+                $label = Tools::atktext('txt_link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module);
             } else {
                 // generic text
-                $label = Tools::atktext(Tools::getNodeType($this->m_type), $this->m_module).' '.Tools::atktext('add', 'atk');
+                $label = Tools::atktext('add', 'atk');
             }
-            $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED).'<br><br>';
+            $cssClass = 'class="btn btn-default admin_link admin_link_add"';
+            $content .= Tools::href($addurl, $label, SessionManager::SESSION_NESTED, false, $cssClass).'<br><br>';
         }
 
         $content .= $this->GraphTreeRender();
@@ -230,23 +231,12 @@ class TreeNode extends Node
             return '';
         }
 
-        $img_expand = $this->getIcon('expand');
-        $img_collapse = $this->getIcon('collapse');
-        $img_line = $this->getIcon('vertline');
-        $img_split = $this->getIcon('split');
-        $img_plus = $this->getIcon('split_plus');
-        $img_minus = $this->getIcon('split_minus');
-        $img_end = $this->getIcon('end');
-        $img_end_plus = $this->getIcon('end_plus');
-        $img_end_minus = $this->getIcon('end_minus');
-        $img_leaf = $this->getIcon('leaf');
-        $img_leaflink = $this->getIcon('leaf_link');
-        $img_spc = $this->getIcon('space');
-        $img_extfile = $this->getIcon('extfile');
+        $img_expand = Config::getGlobal('icon_expand');
+        $img_collapse = Config::getGlobal('icon_collapse');
+        $img_leaf = Config::getGlobal('icon_leaf');
 
         $res = '';
         $lastlevel = 0;
-        //echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
         $explevels = [];
         if ($this->m_tree[0]['expand'] != 1 && $this->m_tree[0]['colapse'] != 1) { // normal operation
             for ($i = 0; $i < Tools::count($this->m_tree); ++$i) {
@@ -262,7 +252,6 @@ class TreeNode extends Node
                     $expand[$i] = 0;
                     $visible[$i] = 0;
                 }
-                $levels[$i] = 0;
             }
             if ($this->m_postvars['atktree'] != '') {
                 $explevels = explode('|', $this->m_postvars['atktree']);
@@ -271,7 +260,6 @@ class TreeNode extends Node
             for ($i = 0; $i < Tools::count($this->m_tree); ++$i) {
                 $expand[$i] = 1;
                 $visible[$i] = 1;
-                $levels[$i] = 0;
             }
             $this->m_tree[0]['expand'] = 0; // next time we are back in normal view mode!
         } elseif ($this->m_tree[0]['colapse'] == 1) { //  colapse all mode!
@@ -285,47 +273,24 @@ class TreeNode extends Node
                         $visible[$i] = 1;
                     }
                 }
-                $levels[$i] = 0;
             }
             $this->m_tree[0]['colapse'] = 0; // next time we are back in normal view mode!
         }
         /*         * ****************************************** */
         /*  Get Node numbers to expand               */
         /*         * ****************************************** */
-        $i = 0;
-        while ($i < Tools::count($explevels)) {
-            //$expand[$explevels[$i]]=1;
-            $expand[$exp_index[$explevels[$i]]] = 1;
-
-            ++$i;
+        foreach ($explevels as $explevel)
+        {
+            $expand[$exp_index[$explevel]] = 1;
         }
-        /*         * ****************************************** */
-        /*  Find last nodes of subtrees              */
-        /*         * ****************************************** */
 
-        $lastlevel = $g_maxlevel;
-
-        for ($i = Tools::count($this->m_tree) - 1; $i >= 0; --$i) {
-            if ($this->m_tree[$i]['level'] < $lastlevel) {
-                for ($j = $this->m_tree[$i]['level'] + 1; $j <= $g_maxlevel; ++$j) {
-                    $levels[$j] = 0;
-                }
-            }
-            if ($levels[$this->m_tree[$i]['level']] == 0) {
-                $levels[$this->m_tree[$i]['level']] = 1;
-                $this->m_tree[$i]['isleaf'] = 1;
-            } else {
-                $this->m_tree[$i]['isleaf'] = 0;
-            }
-            $lastlevel = $this->m_tree[$i]['level'];
-        }
         /*         * ****************************************** */
         /*  Determine visible nodes                  */
         /*         * ****************************************** */
 
         $visible[0] = 1;   // root is always visible
-        for ($i = 0; $i < Tools::count($explevels); ++$i) {
-            $n = $exp_index[$explevels[$i]];
+        foreach ($explevels as $explevel) {
+            $n = $exp_index[$explevel];
             if (($visible[$n] == 1) && ($expand[$n] == 1)) {
                 $j = $n + 1;
                 while ($this->m_tree[$j]['level'] > $this->m_tree[$n]['level']) {
@@ -337,15 +302,9 @@ class TreeNode extends Node
             }
         }
 
-        for ($i = 0; $i < $g_maxlevel; ++$i) {
-            $levels[$i] = 1;
-        }
-
         $res .= '<tr>';
         // Make cols for max level
-        for ($i = 0; $i < $g_maxlevel; ++$i) {
-            $res .= "<td width=16>&nbsp;</td>\n";
-        }
+        $res .= str_repeat("<td width=23>&nbsp;</td>\n", $g_maxlevel);
         // Make the last text column
         $res .= '<td width=300>&nbsp;</td>';
         // Column for the functions
@@ -367,102 +326,12 @@ class TreeNode extends Node
                 /****************************************/
                 /* vertical lines from higher levels    */
                 /****************************************/
-                $i = 0;
-                while ($i < $this->m_tree[$cnt]['level'] - 1) {
-                    if ($levels[$i] == 1) {
-                        $res .= '<td><img src="'.$img_line."\" border=0></td>\n";
-                    } else {
-                        $res .= '<td><img src="'.$img_spc."\" border=0></td>\n";
-                    }
-                    ++$i;
+                if ($cnt != 0) {
+                   $res .= "<td style='text-align:center'> │ </td>\n";
                 }
 
-                /***************************************/
-                /* corner at end of subtree or t-split */
-                /***************************************/
-                if ($this->m_tree[$cnt]['isleaf'] == 1 && $nextlevel < $currentlevel) {
-                    if ($cnt != 0) {
-                        $res .= '<td><img src="'.$img_end."\" border=0></td>\n";
-                    }
-                    $levels[$this->m_tree[$cnt]['level'] - 1] = 0;
-                } else {
-                    if ($expand[$cnt] == 0) {
-                        if ($nextlevel > $currentlevel) {
-                            /*                             * ************************************* */
-                            /* Create expand/collapse parameters    */
-                            /*                             * ************************************* */
-                            $i = 0;
-                            $params = 'atktree=';
-                            while ($i < Tools::count($expand)) {
-                                if (($expand[$i] == 1) && ($cnt != $i) || ($expand[$i] == 0 && $cnt == $i)) {
-                                    $params = $params.$this->m_tree[$i]['id'];
-                                    $params = $params.'|';
-                                }
-                                ++$i;
-                            }
-                            if ($this->extraparams) {
-                                $params = $params.$this->extraparams;
-                            }
-
-                            if ($this->m_tree[$cnt]['isleaf'] == 1) {
-                                if ($cnt != 0) {
-                                    $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                            '<img src="'.$img_end_plus.'" border=0>')."</td>\n";
-                                }
-                            } else {
-                                if ($cnt != 0) {
-                                    $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                            '<img src="'.$img_plus.'" border=0>')."</td>\n";
-                                }
-                            }
-                        } else {
-                            $res .= '<td><img src="'.$img_split."\" border=0></td>\n";
-                        }
-                    } else {
-                        if ($nextlevel > $currentlevel) {
-                            /*                             * ************************************* */
-                            /* Create expand/collapse parameters    */
-                            /*                             * ************************************* */
-                            $i = 0;
-                            $params = 'atktree=';
-                            while ($i < Tools::count($expand)) {
-                                if (($expand[$i] == 1) && ($cnt != $i) || ($expand[$i] == 0 && $cnt == $i)) {
-                                    $params = $params.$this->m_tree[$i]['id'];
-                                    $params = $params.'|';
-                                }
-                                ++$i;
-                            }
-                            if (isset($this->extraparams)) {
-                                $params = $params.$this->extraparams;
-                            }
-                            if ($this->m_tree[$cnt]['isleaf'] == 1) {
-                                if ($cnt != 0) {
-                                    if ($foldable) {
-                                        $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                                '<img src="'.$img_end_minus.'" border=0>')."</td>\n";
-                                    } else {
-                                        $res .= '<td><img src="'.$img_end."\" border=0></td>\n";
-                                    }
-                                }
-                            } else {
-                                if ($cnt != 0) {
-                                    if ($foldable) {
-                                        $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&'.$params,
-                                                '<img src="'.$img_minus.'" border=0>')."</td>\n";
-                                    } else {
-                                        $res .= '<td><img src="'.$img_split."\" border=0></td>\n";
-                                    }
-                                }
-                            }
-                        } else {
-                            $res .= '<td><img src="'.$img_split."\" border=0></td>\n";
-                        }
-                    }
-                    if ($this->m_tree[$cnt]['isleaf'] == 1) {
-                        $levels[$this->m_tree[$cnt]['level'] - 1] = 0;
-                    } else {
-                        $levels[$this->m_tree[$cnt]['level'] - 1] = 1;
-                    }
+                if ($this->m_tree[$cnt]['level'] - 1 >= 1) {
+                    $res .= str_repeat("<td style='text-align:center'> │ </td>\n", $this->m_tree[$cnt]['level'] - 1);
                 }
 
                 /*                 * ***************************************** */
@@ -486,12 +355,12 @@ class TreeNode extends Node
                             $params = $params.$this->extraparams;
                         }
                         if ($expand[$cnt] == 0) {
-                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<img src="'.$img_expand.'" border=0>')."</td>\n";
+                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<i class="fa fa-'.$img_expand.'"></i>', SessionManager::SESSION_DEFAULT, false, 'class="btn btn-default"')."</td>\n";
                         } else {
-                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<img src="'.$img_collapse.'" border=0>')."</td>\n";
+                            $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<i class="fa fa-'.$img_collapse.'"></i>', SessionManager::SESSION_DEFAULT, false, 'class="btn btn-default"')."</td>\n";
                         }
                     } else {
-                        $res .= '<td><img src="'.$img_collapse."\" border=0></td>\n";
+                        $res .= '<td><i class="fa fa-'.$img_collapse."\"></i></td>\n";
                     }
                 } else {
                     /*                     * ********************** */
@@ -503,7 +372,7 @@ class TreeNode extends Node
                         $imgname = $this->m_tree[$cnt]['img'];
                         $img = $$imgname;
                     }
-                    $res .= '<td><img src="'.$img."\"></td>\n";
+                    $res .= '<td style="text-align:center"><i class="fa fa-'.$img."\"></i></td>\n";
                 }
 
                 /*                 * ************************************* */
@@ -585,7 +454,7 @@ class TreeNode extends Node
      * @param array $record The record to copy
      * @param string $mode The mode we're in (usually "copy")
      */
-    public function copyDb($record, $mode = 'copy')
+    public function copyDb(&$record, $mode = 'copy')
     {
         $oldparent = $record[$this->m_primaryKey[0]];
 
@@ -633,76 +502,41 @@ class TreeNode extends Node
     }
 
     /**
-     * delete record from the database also the childrecords.
-     * todo: instead of delete, set the deleted flag.
+     * Delete record(s) and childrecord from the database.
      *
-     * @param string $selector Selector
-     */
-    public function deleteDb($selector)
+     * After deletion, the postDel() trigger in the node method is called, and
+     * on any attribute that has the Attribute::AF_CASCADE_DELETE flag set, the delete()
+     * method is invoked.
+     *
+     * NOTE: Does not commit your transaction! If you are using a database that uses
+     * transactions you will need to call 'Db::getInstance()->commit()' manually.
+     *
+     * @todo There's a discrepancy between updateDb, addDb and deleteDb:
+     *       There should be a deleteDb which accepts a record, instead
+     *       of a selector.
+     *
+     * @param string $selector SQL expression used as where-clause that
+     *                              indicates which records to delete.
+     * @param bool $exectrigger wether to execute the pre/post triggers. Note that the preDelete
+     *        trigger is execute after the deletion of all children nodes and before the deletion
+     *        of selected nodes.
+     * @param bool $failwhenempty determine whether to throw an error if there is nothing to delete
+     * @returns boolean True if successful, false if not.
+      */
+    public function deleteDb($selector, $exectrigger = true, $failwhenempty = false)
     {
         Tools::atkdebug('Retrieve record');
         $recordset = $this->select($selector)->mode('delete')->getAllRows();
-        for ($i = 0; $i < Tools::count($recordset); ++$i) {
-            foreach (array_keys($this->m_attribList) as $attribname) {
-                $p_attrib = $this->m_attribList[$attribname];
-                if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
-                    $p_attrib->delete($recordset[$i]);
-                }
-            }
-        }
-        $parent = $recordset[0][$this->m_primaryKey[0]];
+        // First, recursively deleting children (and stopping if it fails) :
         if ($this->m_parent != '') {
-            Tools::atkdebug('Check for child records');
-            $children = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
-
-            if (Tools::count($children) > 0) {
-                Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
-                $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent, $parent);
-            }
-        }
-
-        $db = $this->getDb();
-        $query = 'DELETE FROM '.$this->m_table.' WHERE '.$selector;
-        $db->query($query);
-
-        for ($i = 0; $i < Tools::count($recordset); ++$i) {
-            $this->postDel($recordset[$i]);
-            $this->postDelete($recordset[$i]);
-        }
-
-        return $recordset;
-        // todo: instead of delete, set the deleted flag.
-    }
-
-    /**
-     * Recursive function whitch deletes all the child records of a parent.
-     *
-     * @param string $selector Selector
-     * @param int $parent Id of the parent
-     */
-    public function deleteChildren($selector, $parent)
-    {
-        Tools::atkdebug('Check for child records of the Child');
-        $recordset = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();
-        for ($i = 0; $i < Tools::count($recordset); ++$i) {
-            foreach (array_keys($this->m_attribList) as $attribname) {
-                $p_attrib = $this->m_attribList[$attribname];
-                if ($p_attrib->hasFlag(Attribute::AF_CASCADE_DELETE)) {
-                    $p_attrib->delete($recordset[$i]);
+            foreach ($recordset as $record) {
+                $parent = $record[$this->m_primaryKey[0]];
+                if (!$this->deleteDb($this->m_table.'.'.$this->m_parent.'='.$parent, $exectrigger, false)) {
+                    return false;
                 }
             }
         }
-
-        if (Tools::count($recordset) > 0) {
-            for ($i = 0; $i < Tools::count($recordset); ++$i) {
-                $parent = $recordset[$i][$this->m_primaryKey[0]];
-                Tools::atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]].','.$parent.')');
-                $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]], $parent);
-            }
-        }
-
-        $db = $this->getDb();
-        $query = 'DELETE FROM '.$this->m_table.' WHERE '.$selector;
-        $db->query($query);
+        // Then deleting records :
+        return parent::deleteDb($selector, $exectrigger, $failwhenempty);
     }
 }
