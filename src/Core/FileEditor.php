@@ -444,7 +444,7 @@ class FileEditor extends Node
     {
         // in the fileeditor, the selector is always '["name"]' or '"name"'
         $decoded = json_decode($atkprimkey, true);
-        if (is_string(($decoded))
+        if (is_string(($decoded))) {
             return $decoded;
         } elseif (is_array($selector)) {
             return $decoded[0];
