@@ -756,9 +756,11 @@ class Query
      */
     public function exactBoolCondition($field, $value)
     {
-        $value = $value ? 'true' : 'false';
-
-        return new QueryPart("$field = $value");
+        if ($value) {
+            return new QueryPart($field);
+        } else {
+            return new QueryPart("NOT({$field})");
+        }
     }
 
     /**

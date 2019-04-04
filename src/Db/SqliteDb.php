@@ -80,6 +80,20 @@ class SqliteDb extends Db
     }
 
     /**
+     * This function checks if the table exists in the database
+     *
+     * @param string $tableName the table to find
+     *
+     * @return bool true if found, false if not found
+     */
+    public function tableExists($tableName)
+    {
+        $stmt = $this->prepare('SELECT COUNT(*) FROM sqlite_master WHERE type = \'table\' AND name = :tableName');
+        $stmt->execute([':tableName' => $tableName]);
+        return $stmt->fetch(\PDO::FETCH_NUM)[0];
+    }
+
+    /**
      * Sqlite does not support regex searches natively.
      *
      * @return array with search modes
