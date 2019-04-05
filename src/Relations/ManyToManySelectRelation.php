@@ -381,10 +381,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
     }
 
-    protected function getAddActionLink($record, $fieldprefix, $params = array())
+    protected function getAddActionLink($record, $fieldprefix, $params = [])
     {
-        $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
-        $params = array_merge($params, array('atkfilter' => $filter, 'atkpkret' => $this->getHtmlId($fieldprefix).'_newsel'));
+        $params['atkpkret'] = $this->getHtmlId($fieldprefix).'_newsel';
         $link = Tools::href(Tools::dispatch_url($this->m_destination, 'add', $params), $this->getAddLabel(), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
 

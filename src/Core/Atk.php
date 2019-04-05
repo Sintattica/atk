@@ -58,9 +58,6 @@ class Atk
             register_shutdown_function('Sintattica\Atk\Core\Tools::atkFatalHandler');
         }
 
-        // Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
-        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
-
         // set locale
         $locale = Tools::atktext('locale', 'atk', '', '', true);
         if ($locale) {

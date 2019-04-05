@@ -1600,7 +1600,7 @@ class DataGrid
         $this->notify(DataGridEvent::PRE_LOAD);
 
         // temporarily overwrite the node postvars so that select and count
-        // have access to the atksearch, atkfilter, atklimit etc. parameters
+        // have access to the atksearch, atklimit etc. parameters
         $this->overrideNodePostvars();
 
         // retrieve records using the default implementation
@@ -1793,7 +1793,7 @@ class DataGrid
         }
 
         // temporarily overwrite the node postvars so that select and count
-        // have access to the atksearch, atkfilter, atklimit etc. parameters
+        // have access to the atksearch, atklimit etc. parameters
         $this->overrideNodePostvars();
 
         // load records from database

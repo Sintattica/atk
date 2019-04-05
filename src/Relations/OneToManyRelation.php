@@ -86,22 +86,6 @@ class OneToManyRelation extends Relation
      */
     public $m_ownerFields = [];
 
-    /*
-     * Use destination filter for autolink add link?
-     *
-     * @access private
-     * @var boolean
-     */
-    public $m_useFilterForAddLink = true;
-
-    /*
-     * Use destination filter for edit link (edit button)?
-     *
-     * @access private
-     * @var boolean
-     */
-    public $m_useFilterForEditLink = true;
-
     /**
      * Use referential key for load filter?
      *
@@ -199,26 +183,6 @@ class OneToManyRelation extends Relation
         }
 
         return $this->m_ownerInstance->m_primaryKey;
-    }
-
-    /**
-     * Use destination filter for auto add link?
-     *
-     * @param bool $useFilter use destination filter for add link?
-     */
-    public function setUseFilterForAddLink($useFilter)
-    {
-        $this->m_useFilterForAddLink = $useFilter;
-    }
-
-    /**
-     * Use destination filter for edit link (edit button)?
-     *
-     * @param bool $useFilter use destnation filter for edit link (edit button)?
-     */
-    public function setUseFilterForEditLink($useFilter)
-    {
-        $this->m_useFilterForEditLink = $useFilter;
     }
 
     /**
@@ -352,7 +316,7 @@ class OneToManyRelation extends Relation
 
             $actions = [];
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
-                $actions['view'] = Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => '[pk]', 'atkfilter' => $this->m_destinationFilter));
+                $actions['view'] = Tools::dispatch_url($this->m_destination, 'view', ['atkselector' => '[pk]']);
             }
 
             $grid->setDefaultActions($actions);
@@ -397,10 +361,6 @@ class OneToManyRelation extends Relation
         $grid = $this->createGrid($record, 'admin', $mode);
 
         $params = [];
-        if ($this->m_useFilterForEditLink && $this->m_destinationFilter != '') {
-            $params['atkfilter'] = $this->m_destinationFilter;
-        }
-
         if ($mode === 'add') {
             //All actions in the grid should be done in session store mode
             $params['atkstore'] = 'session';
@@ -540,24 +500,6 @@ class OneToManyRelation extends Relation
     }
 
     /**
-     * Uses the given record to create an add filter string.
-     *
-     * @param array $record
-     *
-     * @return string filter string
-     */
-    public function getAddFilterString($record)
-    {
-        $filterelems = $this->_getFilterElements($record);
-        $strfilter = implode(' AND ', $filterelems);
-        if ($this->m_useFilterForAddLink && $this->m_destinationFilter != '') {
-            $strfilter .= ' AND '.$this->parseFilter($this->m_destinationFilter, $record);
-        }
-
-        return $strfilter;
-    }
-
-    /**
      * Internal function to get the add link for a atkOneToManyRelation.
      *
      * @param array $myrecords The load of all attributes (see comment in edit() code)
@@ -581,9 +523,9 @@ class OneToManyRelation extends Relation
             return $url;
         }
 
-        $filter = $this->getAddFilterString($record);
-        if (!empty($filter)) {
-            $params['atkfilter'] = $filter;
+        $forceValues = $this->_getForcedValueString($record);
+        if (!empty($forceValues)) {
+            $params['atkforce'] = $forceValues;
         }
 
         $onchange = '';
@@ -599,44 +541,23 @@ class OneToManyRelation extends Relation
     }
 
     /**
-     * Get filter elements.
+     * Get a string for destination node with primary key of $record
+     *
+     * With this string, destination node will set correct values when adding a record.
      *
      * @param array $record
      *
      * @return array Array with filter elements
      */
-    public function _getFilterElements($record)
+    private function _getForcedValueString($record) : string
     {
-        $filterelems = [];
+        $forcedValues = [];
 
         $ownerfields = $this->getOwnerFields();
-        if ($this->destinationHasRelation()) {
-            // we need to set the filter of the record we are going to add.
-            // The referential key must be set to the value of the current
-            // primary key.
-            $this->createDestination();
-            for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-                $value = $primkeyattr->value2db($record);
-                if (!strlen($value)) {
-                    continue;
-                }
-
-                $filterelems[] = $this->m_refKey[0].'.'.$ownerfields[$i]."='".$this->escapeSQL($value)."'";
-            }
-        } else {
-            for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                $value = $record[$ownerfields[$i]];
-                if (!strlen($value)) {
-                    continue;
-                }
-
-                $filterelems[] = Db::quoteIdentifier($this->m_destInstance->getTable(), $this->m_refKey[$i])."='".
-                    $this->escapeSQL($value)."'";
-            }
+        foreach ($ownerfields as $index => $keyName) {
+            $forcedValues[$this->m_refKey[$index]] = $record[$keyName];
         }
-
-        return $filterelems;
+        return json_encode($forcedValues);
     }
 
     protected function getAddURL($params = array())

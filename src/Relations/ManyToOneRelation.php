@@ -197,14 +197,6 @@ class ManyToOneRelation extends Relation
     protected $m_autolink_destination = '';
 
     /*
-     * Use destination filter for autolink add link?
-     *
-     * @access private
-     * @var boolean
-     */
-    public $m_useFilterForAddLink = true;
-
-    /*
      * Set a function to use for determining the descriptor in the getSearchFilterByTargetDescriptor function
      *
      * @access private
@@ -392,16 +384,6 @@ class ManyToOneRelation extends Relation
     public function setAutoCompleteSize($size)
     {
         $this->m_autocomplete_size = $size;
-    }
-
-    /**
-     * Use destination filter for auto add link?
-     *
-     * @param bool $useFilter use destnation filter for add link?
-     */
-    public function setUseFilterForAddLink($useFilter)
-    {
-        $this->m_useFilterForAddLink = $useFilter;
     }
 
     /**
@@ -722,17 +704,12 @@ class ManyToOneRelation extends Relation
     public function createSelectAndAutoLinks($id, $record)
     {
         $links = [];
-        $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        $links[] = $this->_getSelectLink($id, $filter);
+        $links[] = $this->_getSelectLink($id);
         if ($this->hasFlag(self::AF_RELATION_AUTOLINK)) { // auto edit/view link
             $sm = SessionManager::getInstance();
 
             if ($this->m_destInstance->allowed('add') && !$this->m_destInstance->hasFlag(Node::NF_NO_ADD)) {
-                $linkParams = ['atkpkret' => $id];
-                if ($filter) {
-                    $linkParams['atkfilter'] = $filter;
-                }
-                $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', $linkParams), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
+                $links[] = Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', ['atkpkret' => $id]), Tools::atktext('new'), SessionManager::SESSION_NESTED, true);
             }
 
             if ($this->m_destInstance->allowed('view') && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $record[$this->fieldName()] != null) {
@@ -887,7 +864,7 @@ class ManyToOneRelation extends Relation
             }
 
             $result .= $this->hide($record, $fieldprefix, $mode);
-            $result .= $this->_getSelectLink($name, $this->parseFilter($this->m_destinationFilter, $record));
+            $result .= $this->_getSelectLink($name);
         } else {
             //normal dropdown
             if ($recordset == null) {
@@ -940,7 +917,7 @@ class ManyToOneRelation extends Relation
             }
         }
 
-        $autolink = $this->getRelationAutolink($id, $name, $this->parseFilter($this->m_destinationFilter, $record));
+        $autolink = $this->getRelationAutolink($id, $name);
         $result .= $linkview && isset($autolink['view']) ? $autolink['view'] : '';
         $result .= isset($autolink['add']) ? $autolink['add'] : '';
 
@@ -955,11 +932,10 @@ class ManyToOneRelation extends Relation
      * Get the select link to select the value using a select action on the destination node.
      *
      * @param string $selname
-     * @param string $filter
      *
      * @return string HTML-code with the select link
      */
-    public function _getSelectLink($selname, $filter)
+    public function _getSelectLink($selname)
     {
         $result = '';
         // we use the current level to automatically return to this page
@@ -976,11 +952,7 @@ class ManyToOneRelation extends Relation
             $linkname = Tools::atktext('select_a');
         }
 
-        $linkParams = ['atktarget' => $atktarget];
-        if ($filter) {
-            $linkParams['atkfilter'] = $filter;
-        }
-        $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', $linkParams),
+        $result .= Tools::href(Tools::dispatch_url($this->m_destination, 'select', ['atktarget' => $atktarget]),
             $linkname, SessionManager::SESSION_NESTED, $this->m_autocomplete_saveform, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
 
         return $result;
@@ -995,7 +967,7 @@ class ManyToOneRelation extends Relation
      *
      * @return array The HTML code for the autolink links
      */
-    public function getRelationAutolink($id, $name, $filter)
+    public function getRelationAutolink($id, $name)
     {
         $autolink = [];
 
@@ -1010,11 +982,7 @@ class ManyToOneRelation extends Relation
                 $autolink['view'] = " <a href='javascript:ATK.FormSubmit.atkSubmit(\"".Tools::atkurlencode($viewUrl).'".replace("REPLACEME", document.entryform.'.$id.".value),true)' class='atkmanytoonerelation atkmanytoonerelation-link'>".Tools::atktext('view').'</a>';
             }
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_ADD) && $this->m_destInstance->allowed('add')) {
-                $linkParams = ['atkpkret' => $name];
-                if ($this->m_useFilterForAddLink && $filter != '' ? $filter : 'true') {
-                    $linkParams['atkfilter'] = $filter;
-                }
-                $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', $linkParams), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
+                $autolink['add'] = ' '.Tools::href(Tools::dispatch_url($this->getAutoLinkDestination(), 'add', ['atkpkret' => $name]), Tools::atktext('new'), SessionManager::SESSION_NESTED, true, 'class="atkmanytoonerelation atkmanytoonerelation-link"');
             }
         }
 
@@ -2106,10 +2074,9 @@ EOF;
             $selValues[] = $value;
         }
 
-
         $ajaxUrlParams = [];
-        if($this->m_destinationFilter && ($mode == 'edit' || $mode == 'add')) {
-            $ajaxUrlParams['atkfilter'] =  $this->parseFilter($this->m_destinationFilter, $record);
+        if ($mode == 'edit') {
+            $ajaxUrlParams = ['atkselector' => $this->m_ownerInstance->primaryKeyString($record)];
         }
 
         $selectOptions = [];
@@ -2158,8 +2125,11 @@ EOF;
      */
     public function partial_autocomplete($mode)
     {
-        $this->createDestination();
-        $record = $this->m_ownerInstance->updateRecord();
+        if ($mode == 'edit') {
+            $record = $this->m_ownerInstance->fetchByPk($this->m_ownerInstance->m_postvars['atkselector']);
+        } else {
+            $record = [];
+        }
         return $this->autocompleteList($record, $mode);
     }
 
@@ -2199,6 +2169,10 @@ EOF;
         $query = $selector->buildQuery();
         $searchvalue = $this->m_ownerInstance->m_postvars['value'];
         $this->addAutocompleteSearchFilter($query, $searchvalue);
+        if ($mode != 'search') {
+            Tools::atk_var_dump($record);
+            $query->addCondition($this->parseFilter($this->m_destinationFilter, $record));
+        }
 
         // Returning the list :
         $count = $query->executeCount();

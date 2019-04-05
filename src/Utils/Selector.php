@@ -299,21 +299,6 @@ class Selector implements \ArrayAccess, \Countable
     }
 
     /**
-     * Apply posted filter to query.
-     *
-     * @param Query $query query object
-     */
-    protected function _applyPostedFilterToQuery($query)
-    {
-        $filter = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atkfilter', '');
-        if (empty($filter)) {
-            return;
-        }
-
-        $query->addCondition($filter);
-    }
-
-    /**
      * Apply posted index value to query.
      *
      * @param Query $query query object
@@ -421,7 +406,6 @@ class Selector implements \ArrayAccess, \Countable
     protected function _applyPostvarsToQuery(Query $query, array $attrsByLoadType)
     {
         if (!$this->m_ignorePostvars) {
-            $this->_applyPostedFilterToQuery($query);
             $this->_applyPostedIndexValueToQuery($query);
             $this->_applyPostedSearchMethodToQuery($query);
             $this->_applyPostedSearchCriteriaToQuery($query, $attrsByLoadType);

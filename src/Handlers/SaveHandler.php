@@ -182,8 +182,8 @@ class SaveHandler extends ActionHandler
         } else {
             if ($this->m_node->hasFlag(Node::NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
                 $filter = '';
-                if (isset($this->m_node->m_postvars['atkfilter'])) {
-                    $filter = '&atkfilter='.rawurlencode($this->m_node->m_postvars['atkfilter']);
+                if (isset($this->m_node->m_postvars['atkforce'])) {
+                    $filter = '&atkforce='.rawurlencode($this->m_node->m_postvars['atkforce']);
                 }
                 $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri().'&atkaction='.$this->getAddAction();
                 $location = $sm->sessionUrl($url.$filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);

@@ -195,8 +195,8 @@ class EditHandler extends ViewEditBase
         $node = $this->m_node;
 
         $forceList = [];
-        if (isset($node->m_postvars['atkfilter'])) {
-            $forceList = Tools::decodeKeyValueSet($node->m_postvars['atkfilter']);
+        if (isset($node->m_postvars['atkforce'])) {
+            $forceList = json_decode($node->m_postvars['atkforce']);
         }
 
         $suppressList = [];
