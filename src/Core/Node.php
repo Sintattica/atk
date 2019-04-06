@@ -2639,9 +2639,7 @@ class Node
      *                       might want to override this behaviour in derived
      *                       classes.
      * @param array $params An array of extra parameters to add to all the
-     *                       action urls. You can use this to pass things like
-     *                       an atkfilter for example. The array should be
-     *                       key/value based.
+     *                       action urls. The array should be key/value based.
      *
      * @return array List of actions in the form array($action=>$actionurl)
      */
