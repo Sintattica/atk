@@ -404,18 +404,11 @@ class Node
     public $m_default_expanded_sections = [];
 
     /*
-     * Record filters, in attributename/required value pairs.
+     * Record filters, as QueryParts conditions
      * @access private
-     * @var array
+     * @var array of QueryParts
      */
     public $m_filters = [];
-
-    /*
-     * Record filters, as a list of sql statements.
-     * @access private
-     * @var array
-     */
-    public $m_fuzzyFilters = [];
 
     /*
      * For speed, we keep track of a list of attributes that we don't have to
@@ -1773,51 +1766,42 @@ class Node
     /**
      * Add a recordset filter.
      *
-     * @param string $filter The fieldname you want to filter OR a SQL where
-     *                       clause expression.
-     * @param string $value Required value. (Ommit this parameter if you pass
-     *                       an SQL expression for $filter.)
+     * You can add 3 kinds of filters :
+     * - field, value filter : will filter on table.field = value
+     * - a SQL expression that may contain '[table]' : will filter on this
+     *      expression, replacing [table] with table name.
+     * - a QueryPart condition (with parameters).
+     *
+     * @param string $filter a QueryPart expression or the fieldname you want 
+     *                       to filter OR a SQL where clause expression.
+     * @param mixed $value Required value. (Ommit this parameter if you pass
+     *                       au QueryPart or an SQL expression for $filter.)
      */
     public function addFilter($filter, $value = '')
     {
+        if ($filter instanceof QueryPart) {
+            // QueryPart case :
+            $this->m_filters[] = $filter;
+        }
         if ($value == '') {
-            // $key is a where clause kind of thing
-            $this->m_fuzzyFilters[] = $filter;
+            // $filter is a where clause kind of thing
+            $this->m_filters[] = new QueryPart(str_replace('[table]', Db::quoteIdentifier($this->m_table), $filter), []);
         } else {
-            // $key is a $key, $value is a value
-            $this->m_filters[$filter] = $value;
+            // $field, $value case :
+            $this->m_filters[] = Query::simpleValueCondition($this->m_table, $filter, $value);
         }
     }
 
     /**
      * Search and remove a recordset filter.
      *
-     * @param string $filter The filter to search for
-     * @param string $value The value to search for in case it is not a fuzzy filter
+     *  DEPRECATED.
      *
-     * @return true if the given filter was found and removed, FALSE otherwise.
+     * @return false
      */
     public function removeFilter($filter, $value = '')
     {
-        if ($value == '') {
-            // fuzzy
-            $key = array_search($filter, $this->m_fuzzyFilters);
-            if (is_numeric($key)) {
-                unset($this->m_fuzzyFilters[$key]);
-                $this->m_fuzzyFilters = array_values($this->m_fuzzyFilters);
-
-                return true;
-            }
-        } else {
-            // not fuzzy
-            foreach (array_keys($this->m_filters) as $key) {
-                if ($filter == $key && $value == $this->m_filters[$key]) {
-                    unset($this->m_filters[$key]);
-
-                    return true;
-                }
-            }
-        }
+        Tools::atkwarning('Function removeFilter is deprecated and no longer works.');
 
         return false;
     }

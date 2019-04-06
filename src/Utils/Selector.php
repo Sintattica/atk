@@ -423,18 +423,8 @@ class Selector implements \ArrayAccess, \Countable
         if ($this->m_ignoreDefaultFilters) {
             return;
         }
-
-        // key/value filters
-        foreach ($this->_getNode()->m_filters as $key => $value) {
-            $placeholder = QueryPart::placeholder($key);
-            $query->addCondition(Db::quoteIdentifier($key).'='.$placeholder, [$placeholder => $value]);
-        }
-
-        // fuzzy filters
-        foreach ($this->_getNode()->m_fuzzyFilters as $filter) {
-            $parser = new StringParser($filter);
-            $filter = $parser->parse(array('table' => $this->_getNode()->getTable()));
-            $query->addCondition($filter);
+        foreach ($this->_getNode()->m_filters as $condition) {
+            $query->addCondition($condition);
         }
     }
 

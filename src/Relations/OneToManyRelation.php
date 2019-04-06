@@ -621,7 +621,7 @@ class OneToManyRelation extends Relation
      *
      * @param array $record The master record
      *
-     * @return string SQL where clause
+     * @return QueryPart SQL where clause
      */
     public function _getLoadWhereClause($record)
     {
@@ -640,13 +640,13 @@ class OneToManyRelation extends Relation
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
-                $whereelems[] = Db::quoteIdentifier($this->m_destInstance->getTable(), $this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
+                $whereelems[] = Query::simpleValueCondition($this->m_destInstance->getTable(), $this->m_refKey[$i], $primkeyattr->value2db($record));;
             }
         }
 
-        $result = implode(' AND ', $whereelems);
+        $result = QueryPart::implode('AND', $whereelems, true);
 
-        return $result == '' ? '1=0' : $result;
+        return $result == null ? new QueryPart('1=0') : $result;
     }
 
     /**

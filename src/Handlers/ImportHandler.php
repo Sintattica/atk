@@ -1602,7 +1602,6 @@ class ImportHandler extends ActionHandler
         }
 
         $this->m_importNode->m_postvars['atksearchmode'] = 'exact';
-//      if (!in_array($allFieldValue)) $this->m_importNode->m_fuzzyFilters[] = $allFieldValue;
 
         $dbrec = $this->m_importNode->searchDb(array($updatekey1 => $updatekey1val));
 
