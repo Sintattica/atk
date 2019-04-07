@@ -14,13 +14,18 @@ Issue numbers are references to issues in the ATK project issue tracker
 
 WIP Changes
 -----------
-- Removed ManyToOneRelation->filterToArray (not used).
++ Relation->(set|add)DestinationFilter now accepts named parameters
+    for queries. But :
+    * [attributes] should not be inside quotes anymore.
+    * Relation->parseFilter now returns a QueryPart object.
+    - O2O : The Relation destination filter is not applied on select query,
+    only on edit queries.
+    - They are not used to preset values in target nodes ("Add" link)
+    - Removed : M2M->parseDestinationFilter (use to Relation->parseFilter),
+    M2O->createFilter (idem), M2O->filterToArray (was not used),
+    *Relation->setUseFilterFor(Add|Edit)Link().
 - Deprecated Node->removeFilter function (no longer work).
 - Removed atkfilter and associated functions.
-- Relation destination filters are not used anymore when you add a new
-    target from a origin node (in some cases, the target node had preset
-    values coming from destination filters, it is no longer the case).
-    Deprecated : *Relation->setUseFilterFor(Add|Edit)Link()
 - Removed OneToManyRelation->translateSelector().
 * Node->primaryKey now returns a QueryPart condition. Use primaryKeyString
     to get a JSON-encoded string suitable for use in HTML parts. Decode this
@@ -30,12 +35,11 @@ WIP Changes
     "for backwardscompatibility")
 + Sqlite driver added.
 * Pgsql driver now works.
-* Query->clearFields now also clears relations, orderbys and groupbys.
+* Query->clearFields now also clears expressions, orderbys and groupbys.
     Query->clearExpressions now removed.
 * Attributes::AF_NO_QUOTES is useless (as values are passed as parameters).
 + Added Query->startswithCondition.
 * ManyToOneRelation :
-    createFilter removed in favor of Relation->parseFilter.
     setAutoCompleteSearchFields deprecated in favor of
     setAutoCompleteSearchTemplate (more generic).
 * Selector->buildQuery() is now a public function.

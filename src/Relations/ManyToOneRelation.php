@@ -1492,14 +1492,12 @@ EOF;
     {
         $this->createDestination();
 
-        $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField()."='".$record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]."'";
+        $conditions = [];
+        $conditions[] = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField(), $record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
 
-        $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        if (!empty($filter)) {
-            $condition = $condition.' AND '.$filter;
-        }
+        $conditions[] = $this->parseFilter($record);
 
-        $record = $this->m_destInstance->select($condition)->getFirstRow();
+        $record = $this->m_destInstance->select(QueryPart::implode('AND', $conditions))->getFirstRow();
 
         return $record;
     }
@@ -1610,12 +1608,8 @@ EOF;
         }
 
         // No selection override exists, simply add the record key to the selector.
-        $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        if ($filter == '') {
-            $selector = $selectedKey;
-        } else {
-            $selector = QueryPart::implode('AND', [$selectedKey, new QueryPart($filter)]);
-        }
+        $filter = $this->parseFilter($record);
+        $selector = QueryPart::implode('AND', [$selectedKey, $filter]);
         return $this->m_destInstance->select($selector)->getRowCount() > 0;
     }
 
@@ -1638,7 +1632,7 @@ EOF;
     {
         $this->createDestination();
 
-        $selector = $this->parseFilter($this->m_destinationFilter, $record);
+        $selector = $this->parseFilter($record);
         $result = $this->m_destInstance->select($selector)->orderBy($this->getDestination()->getOrder())->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey));
 
@@ -2145,7 +2139,7 @@ EOF;
         $this->addAutocompleteSearchFilter($query, $searchvalue);
         if ($mode != 'search') {
             Tools::atk_var_dump($record);
-            $query->addCondition($this->parseFilter($this->m_destinationFilter, $record));
+            $query->addCondition($this->parseFilter($record));
         }
 
         // Returning the list :

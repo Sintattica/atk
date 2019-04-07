@@ -8,6 +8,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Db\Db;
 
 /**
@@ -27,9 +28,15 @@ class Relation extends Attribute
     public $m_destInstance;
 
     /**
-     * @var String Filter for destination records.
+     * Filters for destination records.
+     *
+     * These filters may include [attribute] placeholders that will be replaced in
+     * query by current record (from  owner's node) 'attribute' value (in a
+     * parametrized form).
+     *
+     * @var array of QueryParts
      */
-    public $m_destinationFilter = '';
+    public $m_destinationFilters = [];
 
     /**
      * Descriptor template for destination node.
@@ -67,82 +74,50 @@ class Relation extends Attribute
     }
 
     /**
-     * Returns the destination filter.
+     * Returns the destination filters.
      *
-     * @return string The destination filter.
+     * Note : if you want the condition to add to a SQL query, use
+     * parseFilter($record).
+     *
+     * @return array of strings The destination filters.
      */
     public function getDestinationFilter()
     {
-        return $this->m_destinationFilter;
+        return $this->m_destinationFilters;
     }
 
     /**
      * Sets the destination filter.
      *
-     * @param string $filter The destination filter.
+     * The $filter SQL expression (either as a string or as a QueryPart object) may
+     * contain [attribute] placeholders.
+     *
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      */
-    public function setDestinationFilter($filter)
+    public function setDestinationFilter($filter, $params = [])
     {
-        $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
-    }
-
-    /**
-     * Remove redundant (more than 1 subsequently) spaces from the filter string.
-     *
-     * This prevents the filter from rapidly becoming too long to be passed in the URL if
-     * enters are used in code to make the filter readable.
-     *
-     * @param string $filter
-     *
-     * @return string
-     */
-    public function _cleanupDestinationFilter($filter)
-    {
-        $result = '';
-        $filter_length = strlen($filter);
-        $quotes = array("'", '"', '`');
-        $quoteStack = [];
-        $lastChar = '';
-
-        for ($i = 0; $i < $filter_length; ++$i) {
-            $currentChar = $filter[$i];
-
-            if (in_array($currentChar, $quotes)) {
-                if (sizeof($quoteStack) > 0 && $currentChar == $quoteStack[sizeof($quoteStack) - 1]) {
-                    array_pop($quoteStack);
-                } else {
-                    array_push($quoteStack, $currentChar);
-                }
-            }
-
-            // not between quotes
-            if (!($currentChar === ' ' && $lastChar === ' ' && sizeof($quoteStack) == 0)) {
-                if ($currentChar != "\n") {
-                    $result .= $currentChar;
-                }
-            }
-            $lastChar = $currentChar;
-        }
-
-        return $result;
+        $this->m_destinationFilters = [];
+        $this->addDestinationFilter($filter, $params);
     }
 
     /**
      * Adds a filter value to the destination filter.
      *
-     * @param string $filter Filter to be added to the destination filter.
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      *
      * @return $this
      */
-    public function addDestinationFilter($filter)
+    public function addDestinationFilter($filter, $params = [])
     {
-        $filter = $this->_cleanupDestinationFilter($filter);
-        if ($this->m_destinationFilter != '') {
-            $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
-        } else {
-            $this->m_destinationFilter = $filter;
+        if ($filter instanceof QueryPart) {
+            $this->m_destinationFilters[] = $filter;
+        } elseif (is_string($filter) and !empty($filter)) {
+            $this->m_destinationFilters[] = new QueryPart($filter, $params);
         }
-
         return $this;
     }
 
@@ -385,21 +360,25 @@ class Relation extends Attribute
     }
 
     /**
-     * Parses the destination filter.
+     * Parses the destination filter into a QueryPart condition
      *
-     * @param string $destFilter filter to parse
      * @param array $record the current record
      *
-     * @return string $filter
+     * @return QueryPart $filter condition
      */
-    public function parseFilter($destFilter, $record)
+    public function parseFilter($record)
     {
-        if ($destFilter != '') {
-            $parser = new StringParser($destFilter);
-
-            return $parser->parse($record);
+        $conditions = [];
+        foreach ($this->m_destinationFilters as $filter) {
+            $filter->parse($record);
+            $conditions[] = $filter;
         }
 
-        return '';
+        if (empty($conditions)) {
+            // The 'always-true' condition
+            return new QueryPart('1');
+        } else {
+            return QueryPart::implode('AND', $conditions, true);
+        }
     }
 }

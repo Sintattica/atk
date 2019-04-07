@@ -531,11 +531,13 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Adds a filter value to the destination filter.
      *
-     * @param string $filter
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      *
      * @return ManyToOneRelation
      */
-    public function addDestinationFilter($filter)
+    public function addDestinationFilter($filter, $params = [])
     {
         return $this->getManyToOneRelation()->addDestinationFilter($filter);
     }
@@ -543,11 +545,13 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Sets the destination filter.
      *
-     * @param string $filter
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      */
-    public function setDestinationFilter($filter)
+    public function setDestinationFilter($filter, $params = [])
     {
-        return $this->getManyToOneRelation()->setDestinationFilter($filter);
+        return $this->getManyToOneRelation()->setDestinationFilter($filter, $params);
     }
 
     /**

@@ -172,7 +172,6 @@ class OneToOneRelation extends Relation
             $condition = Db::quoteIdentifier($tablename, $this->fieldName()).'='.
                 Db::quoteIdentifier($fieldaliasprefix.$this->fieldName(), $this->m_destInstance->m_primaryKey[0]);
         }
-        $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
         $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true);
 
         // we pass true as the last param to addToQuery, because we need all fields..
@@ -205,36 +204,13 @@ class OneToOneRelation extends Relation
                 $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_refKey,
                     $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
 
-                $destfilter = $this->getDestinationFilter();
-                if (is_string($destfilter) && $destfilter != '') {
-                    $condition->appendSql(' AND '.Db::quoteIdentifier($this->m_destInstance->m_table).'.'.$destfilter);
+                if (!empty($this->m_destinationFilters)) {
+                    $condition = QueryPart::implode('AND', [$condition, $this->parseFilter($record)]);
                 }
             }
 
             return $this->m_destInstance->select($condition)->mode($mode)->getFirstRow();
         }
-    }
-
-    /**
-     * Construct the filter statement for filters that are set for the
-     * destination node (m_destinationFilter).
-     *
-     * @param string $fieldaliasprefix
-     *
-     * @return string A where clause condition.
-     */
-    public function getDestinationFilterCondition($fieldaliasprefix = '')
-    {
-        $condition = '';
-        if (is_array($this->m_destinationFilter)) {
-            for ($i = 0, $_i = Tools::count($this->m_destinationFilter); $i < $_i; ++$i) {
-                $condition .= ' AND '.$fieldaliasprefix.$this->m_name.'.'.$this->m_destinationFilter[$i];
-            }
-        } elseif ($this->m_destinationFilter != '') {
-            $condition .= ' AND '.$fieldaliasprefix.$this->m_name.'.'.$this->m_destinationFilter;
-        }
-
-        return $condition;
     }
 
     /**

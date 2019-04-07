@@ -116,6 +116,55 @@ class QueryPart
     }
 
     /**
+     * Replaces [___] in SQL expression by values from $values
+     *
+     * [___] are replaced by placeholders and values from $values are put
+     * in $this->parameters.
+     * The replacement is similar to StringParser : [xx.yy.zz] is replaced
+     * by $values['xx']['yy']['zz'] value.
+     *
+     * If a [____] does not correspond to a value in $value, it is replaced
+     * by the empty string ''.
+     *
+     * Warning : it does not work for [___] inside quotes.
+     *
+     * @param array $values to replace values with.
+     * @param boolean $asParameters put values in Parameters (true) or
+     *                              directly in $this->sql (false)
+     */
+    public function parse($values, $asParameters = true)
+    {
+        // Extracting [xxx] parts from Sql expression :
+        $fields = [];
+        preg_match_all("/\[([^\]]*)\]+/", $this->sql, $fields);
+        $fields = $fields[1];
+
+        foreach ($fields as $field) {
+            $localValues = $values;
+            $localField = $field;
+            // Resolving '.' sections :
+            for ($dotPos = strpos($localField, '.'); $dotPos !== false; $dotPos = strpos($localField, '.')) {
+                $beforeDot = substr($localField, 0, $dotPos);
+                if (!isset($localValues[$beforeDot])) {
+                    break;
+                }
+                $localValues = $localValues[$beforeDot];
+                $localField = substr($field, $dotPos + 1);
+            }
+
+            $value = $localValues[$localField] ?? '';
+            $placeholder = self::placeholder($field);
+            if (in_array($placeholder, array_keys($this->parameters))) {
+                // In case we already have a parameter with the same name...
+                $placeholder .= '_al'.($this->parameterCounter[$placeholder]++);
+            }
+
+            $this->sql = str_replace("[{$field}]", $placeholder, $this->sql);
+            $this->parameters[$placeholder] = [$value, \PDO::PARAM_STR];
+        }
+    }
+
+    /**
      * Like implode on strings, but for QueryParts
      *
      * @param string $glue to put between sql parts (no parameters in it, just plain string)

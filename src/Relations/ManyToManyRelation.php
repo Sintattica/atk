@@ -100,24 +100,6 @@ class ManyToManyRelation extends Relation
     }
 
     /**
-     * Parse destination filter and return the result.
-     *
-     * @param array $record record
-     *
-     * @return string parsed filter
-     */
-    private function parseDestinationFilter($record)
-    {
-        $filter = '';
-
-        if ($this->m_destinationFilter != '') {
-            $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        }
-
-        return $filter;
-    }
-
-    /**
      * Returns the selectable record count.
      *
      * @param array $record
@@ -151,9 +133,9 @@ class ManyToManyRelation extends Relation
             return 0;
         }
 
-        $filter = $this->parseDestinationFilter($record);
+        $filter = $this->parseFilter($record);
 
-        $cacheKey = md5($filter);
+        $cacheKey = md5(serialize($filter));
         if (!array_key_exists($cacheKey, $this->m_selectableRecordCountCache) || $force) {
             $this->m_selectableRecordCountCache[$cacheKey] = $this->getDestination()->select($filter)->getRowCount();
         }
@@ -177,9 +159,9 @@ class ManyToManyRelation extends Relation
             return [];
         }
 
-        $filter = $this->parseDestinationFilter($record);
+        $filter = $this->parseFilter($record);
 
-        $cacheKey = md5($filter);
+        $cacheKey = md5(serialize($filter));
         if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force) {
             $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()->select($filter)->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
                 $this->m_destInstance->m_primaryKey))->fetchAll();

@@ -232,8 +232,8 @@ class OneToManyRelation extends Relation
         $grid->setExcludes($this->getGridExcludes());
 
         $grid->addFilter($this->_getLoadWhereClause($record));
-        if ($this->m_destinationFilter != '') {
-            $grid->addFilter($this->parseFilter($this->m_destinationFilter, $record));
+        if (!empty($this->m_destinationFilters)) {
+            $grid->addFilter($this->parseFilter($record));
         }
 
         $this->modifyDataGrid($grid, DataGrid::CREATE);
