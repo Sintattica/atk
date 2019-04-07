@@ -14,6 +14,7 @@ Issue numbers are references to issues in the ATK project issue tracker
 
 WIP Changes
 -----------
+- Removed ManyToOneRelation->filterToArray (not used).
 - Deprecated Node->removeFilter function (no longer work).
 - Removed atkfilter and associated functions.
 - Relation destination filters are not used anymore when you add a new

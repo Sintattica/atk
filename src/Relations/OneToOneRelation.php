@@ -581,8 +581,7 @@ class OneToOneRelation extends Relation
             }
 
             $output = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[mode]" value="'.$mode.'">';
-            $forceList = Tools::decodeKeyValueSet($this->getFilter());
-            $output .= $this->m_destInstance->hideForm($mode, $myrecord, $forceList, $this->getHtmlName($fieldprefix).'_AE_');
+            $output .= $this->m_destInstance->hideForm($mode, $myrecord, [], $this->getHtmlName($fieldprefix).'_AE_');
 
             return $output;
         }
@@ -656,8 +655,7 @@ class OneToOneRelation extends Relation
                 $arr['hide'][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
 
                 /* add fields */
-
-                $forceList = Tools::decodeKeyValueSet($this->m_destinationFilter);
+                $forceList = [];
                 if ($this->m_refKey != '') {
                     if ($this->destinationHasRelation()) {
                         $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
@@ -837,27 +835,6 @@ class OneToOneRelation extends Relation
                 $error['tab'] = $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS) ? $this->m_tabs[0] : $error['tab'];
                 $record['atkerror'][] = $error;
             }
-        }
-    }
-
-    /**
-     * @deprecated Use getDestinationFilterCondition() instead.
-     */
-    public function getFilter()
-    {
-        $filter = $this->m_destinationFilter;
-        if (is_array($filter)) {
-            $tmp_filter = '';
-            for ($i = 0, $_i = Tools::count($filter); $i < $_i; ++$i) {
-                if ($tmp_filter != '') {
-                    $tmp_filter .= ' AND ';
-                }
-                $tmp_filter .= $filter[$i];
-            }
-
-            return $tmp_filter;
-        } else {
-            return $filter;
         }
     }
 

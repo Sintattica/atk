@@ -1026,32 +1026,6 @@ class ManyToOneRelation extends Relation
         return parent::getEdit($mode, $record, $fieldprefix);
     }
 
-    /**
-     * Converts a record filter to a record array.
-     *
-     * @param string $filter filter string
-     *
-     * @return array record
-     */
-    protected function filterToArray($filter)
-    {
-        $result = [];
-
-        $values = Tools::decodeKeyValueSet($filter);
-        foreach ($values as $field => $value) {
-            $parts = explode('.', $field);
-            $ref = &$result;
-
-            foreach ($parts as $part) {
-                $ref = &$ref[$part];
-            }
-
-            $ref = $value;
-        }
-
-        return $result;
-    }
-
     public function drawSelect($id, $name, $options = [], $selected = [], $selectOptions = [], $htmlAttributes = [])
     {
         $page = $this->m_ownerInstance->getPage();
