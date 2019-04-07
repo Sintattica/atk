@@ -199,15 +199,4 @@ class AggregatedColumn extends Attribute
     {
         return array('exact', 'substring', 'wildcard', 'regexp');
     }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return Db::FT_UNSUPPORTED;
-    }
 }
