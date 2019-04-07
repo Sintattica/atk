@@ -63,7 +63,7 @@ class ProfileAttribute extends Attribute
         $query->addField('node')->addField('action');
         $query->addCondition(
             Db::quoteIdentifier($this->m_accessField).'=:id',
-            [':id' => [$record[$this->m_ownerInstance->primaryKeyField()]]]
+            [':id' => $record[$this->m_ownerInstance->primaryKeyField()]]
         );
 
         $result = [];
@@ -94,7 +94,7 @@ class ProfileAttribute extends Attribute
         $delquery = $db->createQuery(Config::getGlobal('auth_accesstable'));
         $delquery->addCondition(
             Db::quoteIdentifier($this->m_accessField).'= :id',
-            [':id' => [$record[$this->m_ownerInstance->primaryKeyField()]]]
+            [':id' => $record[$this->m_ownerInstance->primaryKeyField()]]
         );
 
         if ($delquery->executeDelete()) {
@@ -140,7 +140,7 @@ class ProfileAttribute extends Attribute
                 if (Tools::count($children) > 0 && Tools::count($validActions) > 0) {
                     $query = $db->createQuery(Config::getGlobal('auth_accesstable'));
                     $query->addCondition($query->inCondition(Db::quoteIdentifier($this->m_accessField), $children));
-                    $query->addCondition('node = :node', [':node' => [$node]]);
+                    $query->addCondition('node = :node', [':node' => $node]);
                     $query->addCondition($query->notinCondition('action', $validActions));
 
                     if (!$query->executeDelete()) {
@@ -196,7 +196,7 @@ class ProfileAttribute extends Attribute
             $query = $this->getDb()->createQuery(Config::getGlobal('auth_accesstable'));
             $query->setDistinct(true);
             $query->addField('node')->addField('action');
-            $query->addCondition(Db::quoteIdentifier($this->m_accessField).'=:id', [':id' => [$record[$parentAttr]]]);
+            $query->addCondition(Db::quoteIdentifier($this->m_accessField).'=:id', [':id' => $record[$parentAttr]]);
             $rows = $query->executeSelect();
 
             foreach ($rows as $row) {
@@ -291,7 +291,7 @@ class ProfileAttribute extends Attribute
 
         $query = $db->createQuery($this->m_ownerInstance->m_table);
         $query->addField($this->m_ownerInstance->primaryKeyField());
-        $query->addCondition(Db::quoteIdentifier($this->m_parentAttrName) . ' = :id', [':id' => [$id]]);
+        $query->addCondition(Db::quoteIdentifier($this->m_parentAttrName) . ' = :id', [':id' => $id]);
 
         foreach ($query->executeSelect() as $row) {
             $id = $row[$this->m_ownerInstance->primaryKeyField()];

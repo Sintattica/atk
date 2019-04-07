@@ -215,13 +215,13 @@ class NodeValidator
                     if (method_exists($attrib, 'createDestination') && isset($attrib->m_refKey) && is_array($attrib->m_refKey) && Tools::count($attrib->m_refKey) > 1) {
                         $attrib->createDestination();
                         foreach ($attrib->m_refKey as $refkey) {
-                            $query->addCondition(Db::quoteIdentifier($refkey).' = :refkey', [':refkey' => [$record[$attrib->fieldName()][$refkey]]]);
+                            $query->addCondition(Db::quoteIdentifier($refkey).' = :refkey', [':refkey' => $record[$attrib->fieldName()][$refkey]]);
                         }
                     } else {
                         if (!$attrib->isNotNullInDb() && $attrib->isEmpty($record)) {
                             $query->addCondition(Db::quoteIdentifier($field).' IS NULL');
                         } else {
-                            $query->addCondition(Db::quoteIdentifier($field).' = :value', [':value' => [$attrib->value2db($record)]]);
+                            $query->addCondition(Db::quoteIdentifier($field).' = :value', [':value' => $attrib->value2db($record)]);
                         }
                     }
                 } else {

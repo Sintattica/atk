@@ -91,7 +91,7 @@ class SspiAuth extends DbAuth
         $query = $this->buildSelectUserQuery(Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_sspi_accountfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
 
-        $recs = $db->getRows($query, [':sspiaccount' => [$user]]);
+        $recs = $db->getRows($query, [':sspiaccount' => $user]);
         if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }

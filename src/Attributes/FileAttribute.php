@@ -693,7 +693,7 @@ class FileAttribute extends Attribute
         $fieldnameSql = Db::quoteIdentifier($this->fieldName());
         $query->addCondition(
             "{$fieldnameSql}= :filename OR {$fieldnameSql} LIKE :name",
-            [':filename' => [$filename], ':name' => $name.'-%'.$ext]);
+            [':filename' => $filename, ':name' => $name.'-%'.$ext]);
         if ($rec[$owner->primaryKeyField()] != '') {
             $query->addCondition($owner->primaryKey($rec, true));
         }

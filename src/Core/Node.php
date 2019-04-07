@@ -1289,9 +1289,9 @@ class Node
      * It is NOT the reverse of primaryKeyString.
      *
      * Examples :
-     * '45' or '[45]' => QueryPart('"table"."id"=:id', [':id' => [45]])
-     * '[2,"txtval"]' => QueryPart('"table"."k1" = :k1 AND "table"."k2" = :k2', [':k1' => [2], ':k2' => ["txtval"]])
-     * ['2', '45'] or ['[2]','[45]'] => QueryPart('"table"."id" = :id1 OR "table"."id" = :id2', [':id1' => [2], ':id2' => [45]])
+     * '45' or '[45]' => QueryPart('"table"."id"=:id', [':id' => 45])
+     * '[2,"txtval"]' => QueryPart('"table"."k1" = :k1 AND "table"."k2" = :k2', [':k1' => 2, ':k2' => "txtval"])
+     * ['2', '45'] or ['[2]','[45]'] => QueryPart('"table"."id" = :id1 OR "table"."id" = :id2', [':id1' => 2, ':id2' => 45])
      *
      * @param string|array $selectors The encoded values.
      *

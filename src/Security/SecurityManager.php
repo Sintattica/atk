@@ -697,7 +697,7 @@ class SecurityManager
         //get the current tokenId
         $tokenId = $db->getValue(
             "SELECT id FROM ".Db::quoteIdentifier($dbTable)." WHERE selector = :selector",
-            [':selector' => [$selector]]
+            [':selector' => $selector]
         );
 
         //create the cookie
@@ -734,7 +734,7 @@ class SecurityManager
 
         $db = Db::getInstance();
         $sql = 'SELECT * FROM '.Db::quoteIdentifier($dbTable)." WHERE selector = :selector";
-        $row = $db->getRow($sql, [':selector' => [$selector]]);
+        $row = $db->getRow($sql, [':selector' => $selector]);
 
         //token found?
         if (!$row) {
