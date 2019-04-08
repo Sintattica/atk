@@ -376,7 +376,7 @@ class Relation extends Attribute
 
         if (empty($conditions)) {
             // The 'always-true' condition
-            return new QueryPart('1');
+            return new QueryPart('1=1');
         } else {
             return QueryPart::implode('AND', $conditions, true);
         }

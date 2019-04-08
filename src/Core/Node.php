@@ -1301,7 +1301,7 @@ class Node
      * @param string|array $selectors The encoded values.
      *
      * @return QueryPart SQL condition
-     *                '0' if the parameter can't be decoded
+     *                '0=1' (false) if the parameter can't be decoded
      */
     public function primaryKeyFromString($selectors) : QueryPart
     {
@@ -1309,7 +1309,7 @@ class Node
             $selectors = [$selectors];
         }
         if (!is_array($selectors)) {
-            return new QueryPart('0');
+            return new QueryPart('0=1');
         }
         $conditions = [];
         foreach ($selectors as $selector) {
@@ -1326,7 +1326,7 @@ class Node
             $conditions[] = $this->primaryKey($record);
         }
         if (empty($conditions)) {
-            return new QueryPart('0');
+            return new QueryPart('0=1');
         }
         return QueryPart::implode('OR', $conditions, true);
     }
