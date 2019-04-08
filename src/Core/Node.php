@@ -1259,7 +1259,12 @@ class Node
             return json_encode($rec[$this->m_primaryKey[0]]);
         }
         foreach ($this->m_primaryKey as $key) {
-            $res[] = $rec[$key];
+            $keyAttr = $this->getAttribute($key);
+            if ($keyAttr instanceof Relation) {
+                $res[] = $keyAttr->value2db($rec);
+            } else {
+                $res[] = $rec[$key];
+            }
         }
         return json_encode($res);
     }
