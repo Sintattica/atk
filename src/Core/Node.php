@@ -4619,10 +4619,10 @@ class Node
     {
         $listener->setNode($this);
 
-        if (is_a($listener, 'ActionListener')) {
+        if ($listener instanceof ActionListener) {
             $this->m_actionListeners[] = $listener;
         } else {
-            if (is_a($listener, 'TriggerListener')) {
+            if ($listener instanceof TriggerListener) {
                 $this->m_triggerListeners[] = $listener;
             } else {
                 Tools::atkdebug('self::addListener: Unknown listener base class '.get_class($listener));
