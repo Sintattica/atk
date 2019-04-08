@@ -577,11 +577,8 @@ class ExportHandler extends ActionHandler
             $node_bk->m_postvars['atksearchmode'] = $session_back['atkdg']['admin']['atksearchmode'];
         }
 
-        $atkfilter = Tools::atkArrayNvl($source, 'atkfilter', '');
-
-        $atkselector = isset($session_back['atkselector'])?$session_back['atkselector']:'';
-        $condition = $atkselector.($atkselector != '' && $atkfilter != '' ? ' AND ' : '').$atkfilter;
-        $recordset = $node_bk->select($condition)->orderBy($atkorderby)->includes($list_includes)->mode('export')->fetchAll();
+        $condition = isset($session_back['atkselector'])?$node_bk->primaryKeyFromString($session_back['atkselector']):'1';
+        $recordset = $node_bk->select($atkselector)->orderBy($atkorderby)->includes($list_includes)->mode('export')->fetchAll();
         if (method_exists($this->m_node, 'assignExportData')) {
             $this->m_node->assignExportData($list_includes, $recordset);
         }
