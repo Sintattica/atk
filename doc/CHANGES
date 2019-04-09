@@ -14,6 +14,8 @@ Issue numbers are references to issues in the ATK project issue tracker
 
 WIP Changes
 -----------
+- Removed escapeSQL functions from Node, Attribute and Db.
+- Removed decodeKeyValue*, encodeKeyValueSet and stripQuotes from Tools.
 + Relation->(set|add)DestinationFilter now accepts named parameters
     for queries. But :
     * [attributes] should not be inside quotes anymore.
@@ -59,7 +61,7 @@ WIP Changes
 - Removed Query->build* functions in favor of execute* ones.
 - Selector does not implement IteratorAggregate anymore, SelectorIterator is
     removed.
-+ Added Query->executeCount() functions (returns an int).
++ Added Query->executeCount() function (returns an int).
 + added Query->addAllFields to add a '*' to a select query.
 + Added Query->betweenCondition, Query->bitmaskCondition, Query->inCondition,
     Query->notinCondition
@@ -77,7 +79,7 @@ WIP Changes
     setSequenceValue, (use|get|clear)Mapping, (get|set|reset)query_id,
     getQueryMode, (do)connect, getDbStatus, newInstance,
     database mode (ro/rw) and reset option in Db::getInstance, dbFieldType
-    argument in Query->*Condition.
+    argument in Query->*Condition
 * Replaced Db->func_concat_ws by Db->func_concat_coalesce (no more separator).
 * Changed Db->metadata format
 * moving field types from strings ('number', 'string') to constants (defined as

@@ -627,96 +627,6 @@ class Tools
     }
 
     /**
-     * Strips ' or  " from the begin and end of a string (only if they are
-     * on both sides, e.g. foo' remains foo' but 'bar' becomes bar.
-     *
-     * @param string $string the string we need to strip
-     *
-     * @return string the stripped string
-     */
-    public static function stripQuotes($string)
-    {
-        $temp = trim($string);
-        if (substr($temp, 0, 1) == "'" && substr($temp, -1) == "'") {
-            return substr($temp, 1, -1);
-        }
-        if (substr($temp, 0, 1) == '"' && substr($temp, -1) == '"') {
-            return substr($temp, 1, -1);
-        }
-
-        return $string;
-    }
-
-    /**
-     * Translates a string like id='3' into Array("id"=>3).
-     *
-     * @param string $pair the string which is to be decoded
-     *
-     * @return array the decoded array
-     */
-    public static function decodeKeyValuePair($pair)
-    {
-        $operators = array('==', '!=', '<>', '>=', '<=', '=', '<', '>');
-
-        static $s_regex = null;
-        if ($s_regex === null) {
-            $s_regex = '/'.implode('|', array_map('preg_quote', $operators)).'/';
-        }
-
-        list($key, $value) = preg_split($s_regex, $pair);
-
-        return array($key => self::stripQuotes($value));
-    }
-
-    /**
-     * Translates a string like id=3 AND name='joe' into Array("id"=>3,"name"=>"joe").
-     *
-     * @todo we should also support <=>, >=, >, <=, <, <>
-     *
-     * @param string $set the string to decode
-     *
-     * @return array the decoded array
-     */
-    public static function decodeKeyValueSet($set)
-    {
-        $result = [];
-        $items = explode(' AND ', $set);
-        for ($i = 0; $i < Tools::count($items); ++$i) {
-            $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
-            if (strstr($items[$i], '!=') !== false) {
-                list($key, $value) = explode('!=', $items[$i]);
-                $result[trim($key)] = self::stripQuotes($value);
-            } elseif (strstr($items[$i], '=') !== false) {
-                list($key, $value) = explode('=', $items[$i]);
-                $result[trim($key)] = self::stripQuotes($value);
-            } elseif (stristr($items[$i], 'IS NULL') !== false) {
-                list($key) = preg_split('/IS NULL/i', $items[$i]);
-                $result[trim($key)] = null;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Translates Array("id"=>3,"name"=>"joe") into a string like id='3 AND name='joe''.
-     *
-     * @param array $set the array to be encoded
-     *
-     * @return string the encoded string
-     */
-    public static function encodeKeyValueSet($set)
-    {
-        reset($set);
-        $items = [];
-        while (list($key, $value) = each($set)) {
-            $items[] = $key.'='.$value;
-        }
-
-        return implode(' AND ', $items);
-    }
-
-    /**
      * Same as strip_slashes from php, but if the passed value is an array,
      * all elements of the array are stripped. Recursive function.
      *
@@ -839,22 +749,6 @@ class Tools
 
             return rawurldecode($string);
         }
-    }
-
-    /**
-     * Wrapper for escapeSQL function.
-     *
-     * @param string $string The string to escape.
-     * @param bool $wildcard Set to true to convert wildcard chars ('%').
-     *                         False (default) will leave them unescaped.
-     *
-     * @return string A SQL compatible version of the input string.
-     */
-    public static function escapeSQL($string, $wildcard = false)
-    {
-        $db = Db::getInstance();
-
-        return $db->escapeSQL($string, $wildcard);
     }
 
     /**

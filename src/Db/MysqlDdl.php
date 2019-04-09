@@ -168,9 +168,9 @@ class MysqlDdl extends Ddl
      */
     public function dropSequence($name)
     {
-        $table = $this->m_db->quoteIdentifier($this->m_db->m_seq_table);
+        $table = Db::quoteIdentifier($this->m_db->m_seq_table);
 
-        return $this->m_db->query("DELETE FROM $table WHERE ".$this->m_db->quoteIdentifier($this->m_db->m_seq_namefield)." = '".$this->m_db->escapeSQL($name)."'");
+        return $this->m_db->query("DELETE FROM $table WHERE ".Db::quoteIdentifier($this->m_db->m_seq_namefield).' = :name', [':name' => $name]);
     }
 
     /**
@@ -183,10 +183,8 @@ class MysqlDdl extends Ddl
      */
     public function renameSequence($name, $new_name)
     {
-        $name = $this->m_db->escapeSQL($name);
-        $new_name = $this->m_db->escapeSQL($new_name);
-
-        return $this->m_db->query("UPDATE db_sequence SET seq_name='$new_name' WHERE seq_name='$name'");
+        return $this->m_db->query('UPDATE db_sequence SET seq_name=:new_name WHERE seq_name=:name',
+            [':new_name' => $new_name, ':name' => $name]);
     }
 
     /**

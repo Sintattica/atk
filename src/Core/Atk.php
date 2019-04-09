@@ -5,7 +5,6 @@ namespace Sintattica\Atk\Core;
 use Dotenv\Dotenv;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\IndexPage;
 

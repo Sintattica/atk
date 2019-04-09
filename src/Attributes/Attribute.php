@@ -2857,21 +2857,6 @@ class Attribute
     }
 
     /**
-     * Escape string for use in a query.
-     *
-     * @param string $value value to escape
-     * @param bool $wildcards escape wildcards too?
-     *
-     * @return string The escaped value.
-     */
-    public function escapeSQL($value, $wildcards = false)
-    {
-        $db = $this->getDb();
-
-        return $db->escapeSQL($value, $wildcards);
-    }
-
-    /**
      * Handle a partial request for this attribute, different attributes
      * support different partials.
      *

@@ -4732,18 +4732,6 @@ class Node
     }
 
     /**
-     * Escape SQL string, uses the node's database to do the escaping.
-     *
-     * @param string $string string to escape
-     *
-     * @return string escaped string
-     */
-    public function escapeSQL($string)
-    {
-        return $this->getDb()->escapeSQL($string);
-    }
-
-    /**
      * Row CSS class.
      *
      * Used to determine the CSS class(s) for rows in the datagrid list.

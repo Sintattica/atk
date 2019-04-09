@@ -891,7 +891,7 @@ class Db extends \PDO
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%).
      *
-     * Don't use this function ! Prefer prepared queries. See 
+     * DEPRECATED. Use prepared queries. See
      * http://php.net/manual/en/pdo.quote.php
      *
      * @param string $string The string to escape
@@ -901,13 +901,7 @@ class Db extends \PDO
      */
     public function escapeSQL($string, $wildcard = false)
     {
-        $result = str_replace("'", "''", $string);
-        $result = str_replace('\\', '\\\\', $result);
-        if ($wildcard == true) {
-            $result = str_replace('%', '%%', $result);
-        }
-
-        return $result;
+        Tools::atkerror('escapeSQL function is deprecated and not safe. Don\'t use it.', 'critical');
     }
 
     /**
