@@ -175,7 +175,6 @@ abstract class AbstractSearchHandler extends ActionHandler
         if (empty($rows)) {
             return null;
         }
-        Tools::atk_var_dump($rows[0]['criteria']);
         return unserialize($rows[0]['criteria']);
     }
 
