@@ -205,21 +205,19 @@ class DataNode extends Node
             return $criteria;
         }
 
-        $selectors = explode(') OR (', $selector);
+        if (!is_array($selectors)) {
+            $selectors = [$selectors];
+        }
         foreach ($selectors as $selector) {
-            $keyValueSet = Tools::decodeKeyValueSet($selector);
-            foreach ($keyValueSet as $column => $value) {
-                $column = trim($column, ' ()');
-                $value = trim($value, ' ()');
-
+            $selector = json_decode($selector, true);
+            $options = array_merge($this->m_primaryKey, $selector);
+            foreach ($options as $column => $value) {
                 if (strpos($column, '.') !== false) {
                     list($table, $column) = explode('.', $column);
                     if ($table != $this->getTable()) {
                         continue;
                     }
                 }
-
-                $value = stripslashes(Tools::stripQuotes($value));
 
                 if (isset($criteria[$column]) && $criteria[$column] != $value) {
                     $criteria[$column] = array_merge((array)$criteria[$column], (array)$value);
