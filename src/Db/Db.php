@@ -405,6 +405,18 @@ class Db extends \PDO
 
     /*********************************************** Helper functions *************************************************/
     /**
+     * Create an Query object for constructing queries.
+     *
+     * @param string $table the query will run on.
+     *
+     * @return Query Query class.
+     */
+    public function createQuery($table = '')
+    {
+        return new Query($table, $this);
+    }
+
+    /**
      * Rollback the current transaction.
      *
      * DEPRECATED in favor of standard PDO::rollBack.
@@ -924,31 +936,5 @@ class Db extends \PDO
             return self::quoteIdentifier($identifier).'.'.self::quoteIdentifier($secondIdentifier);
         }
         return '"'.str_replace('"', '""', $identifier).'"';
-    }
-
-    /******************************************** Other Db object creators **********************************************************/
-    /**
-     * Create an Query object for constructing queries.
-     *
-     * @param string $table the query will run on.
-     *
-     * @return Query Query class.
-     */
-    public function createQuery($table = '')
-    {
-        return new Query($table, $this);
-    }
-
-    /**
-     * Create an Ddl object for constructing ddl queries.
-     *
-     * @return Ddl Ddl object
-     */
-    public function createDdl()
-    {
-        $ddl = Ddl::create($this->m_type);
-        $ddl->m_db = $this;
-
-        return $ddl;
     }
 }
