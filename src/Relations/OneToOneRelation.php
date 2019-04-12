@@ -969,14 +969,16 @@ class OneToOneRelation extends Relation
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->createDestination) {
+        if (!$this->createDestination()) {
             return null;
         }
         if (!is_array($value)) {
             // we were passed a value that is not an array, so appearantly the function calling us
             // does not know we are a relation, not just another attrib
             // so we assume that it is looking for something in the descriptor def of the destination
-            return $this->m_destInstance->getSeachCondition($query, $table, $value, $searchmode, $fieldname);
+            $alias = $fieldname.$this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition('', $alias), false);
+            return $this->m_destInstance->getTemplateSearchCondition($query, $alias, $this->m_destInstance->getDescriptorTemplate(), $value, $searchmode, $fieldname);
         }
         // we are a relation, so instead of hooking ourselves into the
         // query, hook the attributes in the destination node onto the query

@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Db\Db;
 
 /**
@@ -100,11 +101,19 @@ class FlagAttribute extends MultiSelectAttribute
         if (!is_array($value) || empty($value) || $value[0] == '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             return null;
         }
+        $conditions = [];
         $bitmask = 0;
         foreach($value as $v) {
-            $bitmask |= $v;
+            if ($v == '__NONE__') {
+                $conditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), 0);
+            } else {
+                $bitmask |= $v;
+            }
         }
-        return $query->bitmaskCondition(Db::quoteIdentifier($table, $this->fieldName()), $bitmask);
+        if ($bitmask != 0) {
+            $conditions[] = $query->bitmaskCondition(Db::quoteIdentifier($table, $this->fieldName()), $bitmask);
+        }
+        return QueryPart::implode('OR', $conditions, true);
     }
 
     /**
@@ -121,7 +130,7 @@ class FlagAttribute extends MultiSelectAttribute
      */
     public function fetchValue($postvars)
     {
-        $vars = Tools::atkArrayNvl($postvars, $this->fieldName());
+        $vars = Tools::atkArrayNvl($postvars, $this->getHtmlName());
         if (!is_array($vars)) {
             $result = [];
             foreach ($this->m_values as $value) {

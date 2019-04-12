@@ -1286,7 +1286,7 @@ EOF;
             if (count($value) == 1) { // exactly one value
 
                 if ($value[0] == '__NONE__') {
-                    $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
+                    $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()));
                 } elseif ($value[0] != '') {
                     $searchConditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
                 } else {

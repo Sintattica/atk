@@ -924,8 +924,8 @@ class Query
      */
     public function bitmaskCondition($field, $value)
     {
-        // There is no negative operator for this one.
-        return $this->simpleCondition($field, (int) $value, '&', '');
+        $placeholder = QueryPart::placeholder($field);
+        return new QueryPart("{$field} & {$placeholder} != 0", [$placeholder => (int) $value]);
     }
 
     /**
