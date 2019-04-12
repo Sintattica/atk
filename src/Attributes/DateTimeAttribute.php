@@ -365,7 +365,7 @@ class DateTimeAttribute extends Attribute
      * Returns a piece of html code that can be used to get search terms input
      * from the user.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -377,11 +377,11 @@ class DateTimeAttribute extends Attribute
      * @param DataGrid $grid
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->m_date->m_searchsize = 10;
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;
-        return $this->m_date->search($record, $extended, $fieldprefix);
+        return $this->m_date->search($atksearch, $extended, $fieldprefix);
     }
 
     /**

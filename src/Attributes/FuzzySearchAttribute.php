@@ -380,7 +380,7 @@ class FuzzySearchAttribute extends Attribute
         //noop
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         //noop
     }

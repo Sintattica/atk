@@ -233,7 +233,7 @@ class Query
 
         $this->m_seqValue = &$value;
         $this->m_seqValue = -1;
-        $this->m_seqName = $this->m_table.'_'.$fieldName.'_seq';
+        $this->m_seqName = Db::quoteIdentifier($this->m_table.'_'.$fieldName.'_seq');
         $this->m_returnSeqValue = true;
 
         return $this;

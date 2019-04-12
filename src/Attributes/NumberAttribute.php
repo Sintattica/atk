@@ -339,9 +339,7 @@ class NumberAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        if ($this->isPosted($postvars)) {
-            return $this->removeSeparators(Tools::atkArrayNvl($postvars, $this->fieldName(), ''));
-        }
+        return $this->removeSeparators(parent::fetchValue($postvars));
     }
 
     /**
@@ -558,12 +556,9 @@ class NumberAttribute extends Attribute
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        $value = '';
-        if (isset($record[$this->fieldName()])) {
-            $value = $record[$this->fieldName()];
-        }
+        $value = $atksearch[$this->getHtmlName()] ?? '';
 
         $searchsize = $this->m_searchsize;
         if ($this->m_decimals > 0) { // (don't use getDecimals to avoid fatal error when called from ExpressionAttribute)

@@ -2279,8 +2279,8 @@ class Node
                 }
 
                 /* fields that have not yet been initialised may be overriden in the url */
-                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars)) {
-                    $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
+                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->getHtmlName(), $this->m_postvars)) {
+                    $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->getHtmlName()];
                 }
 
                 if (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList)) {
@@ -2453,14 +2453,8 @@ class Node
     {
         $record = [];
 
-        foreach (array_keys($this->m_attribList) as $attrName) {
-            $attr = $this->getAttribute($attrName);
-
-            if (is_array($this->m_postvars) && isset($this->m_postvars[$attrName])) {
-                $value = $attr->fetchValue($this->m_postvars);
-            } else {
-                $value = $attr->initialValue();
-            }
+        foreach ($this->m_attribList as $attr) {
+            $value = $attr->fetchValue($this->m_postvars) ?? $attr->initialValue();
 
             if ($value !== null) {
                 $record[$attr->fieldName()] = $value;

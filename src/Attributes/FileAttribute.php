@@ -548,31 +548,32 @@ class FileAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $del = isset($postvars[$this->fieldName()]['del']) ? $postvars[$this->fieldName()]['del'] : null;
+        $pvName = $this->getHtmlName();
+        $del = $postvars[$pvName]['del'] ?? null;
 
         $basename = $this->fieldName();
 
-        if (is_array($postvars['atkfiles']) || ($postvars[$this->fieldName()]['select'] != '') || ($postvars[$this->fieldName()]['filename'] != '')) { // php4
+        if (is_array($postvars['atkfiles']) || ($postvars[$pvName]['select'] != '') || ($postvars[$pvName]['filename'] != '')) { // php4
             // if an error occured during the upload process
             // and the error is not 'no file' while the field isn't obligatory or a file was already selected
-            $fileselected = isset($postvars[$this->fieldName()]['select']) && $postvars[$this->fieldName()]['select'] != '';
+            $fileselected = isset($postvars[$pvName]['select']) && $postvars[$pvName]['select'] != '';
             if (isset($postvars['atkfiles'][$basename]) && $postvars['atkfiles'][$basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $postvars['atkfiles'][$basename]['error'] == UPLOAD_ERR_NO_FILE)) {
                 return array(
-                    'filename' => $postvars['atkfiles'][$this->fieldName()]['name'],
-                    'error' => $postvars['atkfiles'][$this->fieldName()]['error'],
+                    'filename' => $postvars['atkfiles'][$pvName]['name'],
+                    'error' => $postvars['atkfiles'][$pvName]['error'],
                 );
             } // if no new file has been uploaded..
             elseif (Tools::count($postvars['atkfiles']) == 0 || $postvars['atkfiles'][$basename]['tmp_name'] == 'none' || $postvars['atkfiles'][$basename]['tmp_name'] == '') {
                 // No file to upload, then check if the select box is filled
                 if ($fileselected) {
                     Tools::atkdebug('file selected!');
-                    $filename = $postvars[$this->fieldName()]['select'];
+                    $filename = $postvars[$pvName]['select'];
                     $orgfilename = $filename;
                     $postdel = '';
                     if (isset($del) && $del == 'on') {
                         $filename = '';
                         $orgfilename = '';
-                        $postdel = $postvars[$this->fieldName()]['select'];
+                        $postdel = $postvars[$pvName]['select'];
                     }
                     $result = array(
                         'tmpfile' => '',
@@ -582,8 +583,8 @@ class FileAttribute extends Attribute
                         'postdel' => $postdel,
                     );
                 }  // maybe we atk restored data from session
-                elseif (isset($postvars[$this->fieldName()]['filename']) && $postvars[$this->fieldName()]['filename'] != '') {
-                    $result = $postvars[$this->fieldName()];
+                elseif (isset($postvars[$pvName]['filename']) && $postvars[$pvName]['filename'] != '') {
+                    $result = $postvars[$pvName];
                 } else {
                     $filename = (isset($postvars[$basename.'_orgfilename'])) ? $postvars[$basename.'_orgfilename'] : '';
 

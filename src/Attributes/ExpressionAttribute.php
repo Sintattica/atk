@@ -124,21 +124,21 @@ class ExpressionAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         if ($this->getSearchType() == Db::FT_NUMBER) {
             $attr = new NumberAttribute($this->fieldName());
             $attr->m_searchsize = $this->m_searchsize;
 
-            return $attr->search($record, $extended, $fieldprefix);
+            return $attr->search($atksearch, $extended, $fieldprefix);
         } else {
             if ($this->getSearchType() == Db::FT_DATE) {
                 $attr = new DateAttribute($this->fieldName());
                 $attr->m_searchsize = 10;
 
-                return $attr->search($record, $extended, $fieldprefix);
+                return $attr->search($atksearch, $extended, $fieldprefix);
             } else {
-                return parent::search($record, $extended, $fieldprefix);
+                return parent::search($atksearch, $extended, $fieldprefix);
             }
         }
     }

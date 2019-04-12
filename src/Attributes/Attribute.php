@@ -417,6 +417,12 @@ class Attribute
     public $m_htmlid;
 
     /*
+     * The name of the attribute in the HTML
+     * @var String
+     */
+    public $m_htmlname;
+
+    /*
      * The css classes of the attribute
      * @var array
      */
@@ -868,7 +874,7 @@ class Attribute
      */
     public function isPosted($postvars)
     {
-        return is_array($postvars) && isset($postvars[$this->fieldName()]);
+        return is_array($postvars) && isset($postvars[$this->getHtmlName()]);
     }
 
     /**
@@ -914,7 +920,7 @@ class Attribute
     public function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
-            return $postvars[$this->fieldName()];
+            return $postvars[$this->getHtmlName()];
         }
 
         return;
@@ -1056,7 +1062,7 @@ class Attribute
             if ($this->getOwnerInstance()) {
                 $uri = str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()).'_';
             }
-            $this->m_htmlid = $uri.$fieldprefix.$this->fieldName();
+            $this->m_htmlid = $uri.$this->getHtmlName($fieldprefix);
         }
 
         return $this->m_htmlid;
@@ -1065,13 +1071,38 @@ class Attribute
     /**
      * Return the name identifier (name="") of the attribute.
      *
-     * @param string $fieldprefix The fieldprefix to put in front of the name of any html form element for this attribute.
+     * constraints : « begin with a letter ([A-Za-z]) and may be followed by any
+     * number of letters, digits ([0-9]), hyphens ("-"), underscores ("_"),
+     * colons (":") » (https://www.w3.org/TR/html4/types.html#type-id)
+     * periods are excluded because PHP replace them with underscores.
+     *
+     * Note: Without $fieldprefix argument, you get get the index in decoded
+     * postvars arrays.
+     *
+     * @param string $fieldprefix The fieldprefix to put in front of the name of
+     *                            any html form element for this attribute. We assume
+     *                            that it respects constraints.
      *
      * @return string the HTML identifier.
      */
-    public function getHtmlName($fieldprefix)
+    public function getHtmlName(string $fieldprefix = '') : string
     {
-        return $fieldprefix.$this->fieldName();
+        if (!isset($this->m_htmlname)) {
+            // Valid characters constraints :
+            $newName = preg_replace('/[^A-Za-z0-9_:\-]/', '_', $this->m_name);
+            // If we replaced some characters, then we append a checksum part to it
+            // to avoid that '首页' and '典范' return the same name.
+            if ($newName != $this->m_name) {
+                $newName .= '_'.substr(md5($this->m_name), 0, 8);
+            }
+            // "Begin with a letter" constraints :
+            $firstChar = substr($newName, 0, 1);
+            if (!(($firstChar >= 'a' and $firstChar <= 'z') or ($firstChar >= 'A' and $firstChar <= 'Z'))) {
+                $newName = 'a'.$newName;
+            }
+            $this->m_htmlname = $newName;
+        }
+        return $fieldprefix.$this->m_htmlname;
     }
 
     /**
@@ -1463,7 +1494,7 @@ class Attribute
         }
 
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
-            $key = $fieldprefix.$this->fieldName();
+            $key = $this->getHtmlName($fieldprefix);
 
             $arr['heading'][$key]['title'] = $this->label();
 
@@ -1546,7 +1577,7 @@ class Attribute
      * @todo  find a better way to search on onetomanys that does not require
      *        something evil in Attribute
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -1559,15 +1590,12 @@ class Attribute
      *
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
 
-        $value = '';
-        if (is_array($record) && isset($record[$this->fieldName()])) {
-            $value = $record[$this->fieldName()];
-        }
+        $value = $atksearch[$this->getHtmlName()] ?? '';
 
         $style = '';
         $type = $extended ? 'extended_search':'search';
@@ -2654,7 +2682,7 @@ class Attribute
      */
     public function getSearchFieldName($prefix)
     {
-        return 'atksearch_AE_'.$prefix.$this->fieldName();
+        return 'atksearch_AE_'.$this->getHtmlName($prefix);
     }
 
     /**
@@ -2666,7 +2694,7 @@ class Attribute
      */
     public function getSearchModeFieldname($prefix)
     {
-        return 'atksearchmode_AE_'.$prefix.$this->fieldName();
+        return 'atksearchmode_AE_'.$this->getHtmlName($prefix);
     }
 
     /**

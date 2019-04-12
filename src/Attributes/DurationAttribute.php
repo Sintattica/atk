@@ -151,7 +151,7 @@ class DurationAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         return ''; // currently not searchable.
     }
@@ -277,10 +277,11 @@ class DurationAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($postvars[$this->fieldName()])) {
-            return self::_string2minutes($postvars[$this->fieldName()]);
+        $value = parent::fetchValue($postvars);
+        if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($value)) {
+            return self::_string2minutes($value);
         } else {
-            return $postvars[$this->fieldName()]['hours'] * 60 + $postvars[$this->fieldName()]['minutes'];
+            return $value['hours'] * 60 + $value['minutes'];
         }
     }
 

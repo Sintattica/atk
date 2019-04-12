@@ -724,7 +724,7 @@ class ManyToManyRelation extends Relation
     /**
      * Returns a piece of html code that can be used in a form to search.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -737,7 +737,7 @@ class ManyToManyRelation extends Relation
      *
      * @return string Piece of html code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->createDestination();
 
@@ -780,7 +780,7 @@ class ManyToManyRelation extends Relation
 
         for ($i = 0; $i < Tools::count($recordset); ++$i) {
             $pk = $recordset[$i][$pkfield];
-            if (!empty($record[$this->fieldName()]) && Tools::atk_in_array($pk, $record[$this->fieldName()])) {
+            if (!empty($atksearch[$this->getHtmlName()]) && Tools::atk_in_array($pk, $atksearch[$this->getHtmlName()])) {
                 $sel = ' selected="selected"';
             } else {
                 $sel = '';

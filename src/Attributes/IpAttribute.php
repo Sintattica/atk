@@ -52,7 +52,7 @@ class IpAttribute extends Attribute
 
         $parts = [];
         for ($i = 0; $i < 4; ++$i) {
-            $parts[$i] = $postvars[$this->fieldName()][$i];
+            $parts[$i] = $postvars[$this->getHtmlName()][$i];
         }
 
         return implode('.', $parts);

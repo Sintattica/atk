@@ -14,6 +14,11 @@ Issue numbers are references to issues in the ATK project issue tracker
 
 WIP Changes
 -----------
++ Attributes names and node table can hold any UTF-8 character supported
+    by your driver (for MySQL, it means 3-bytes or less characters / for sqlite
+    or postgresql, every utf-8 character is allowed)
+- Removed the possibility to search with fields present in the database table
+    but which are not listed in the node attributes.
 - Removed escapeSQL functions from Node, Attribute and Db.
 - Removed decodeKeyValue*, encodeKeyValueSet and stripQuotes from Tools.
 + Relation->(set|add)DestinationFilter now accepts named parameters

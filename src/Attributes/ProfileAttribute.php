@@ -629,9 +629,9 @@ class ProfileAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $checkboxes = [];
-        if (isset($postvars[$this->fieldName()])) {
-            $checkboxes = $postvars[$this->fieldName()];
+        $checkboxes = parent::fetchValue($postvars);
+        if (is_null($checkboxes)) {
+            $checkboxes = [];
         }
 
         $actions = [];

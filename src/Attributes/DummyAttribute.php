@@ -104,7 +104,7 @@ class DummyAttribute extends Attribute
      * from the user.
      * VOID implementation, dummy attributes cannot be searched.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -117,7 +117,7 @@ class DummyAttribute extends Attribute
      *
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         return '&nbsp;';
     }

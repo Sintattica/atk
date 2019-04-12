@@ -973,8 +973,8 @@ class DateAttribute extends Attribute
             }
         }
 
-        $valueFrom = $this->fetchValue(array($this->fieldName() => $value['from']));
-        $valueTo = $this->fetchValue(array($this->fieldName() => $value['to']));
+        $valueFrom = $this->fetchValue(array($this->getHtmlName() => $value['from']));
+        $valueTo = $this->fetchValue(array($this->getHtmlName() => $value['to']));
 
         $fromval = $this->value2db(array($this->fieldName() => $valueFrom));
         $toval = $this->value2db(array($this->fieldName() => $valueTo));
@@ -1068,15 +1068,14 @@ class DateAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        if (!is_array($postvars) || !isset($postvars[$this->fieldName()])) {
+        $value = parent::fetchValue($postvars);
+        if (is_null($value)) {
             return null;
         }
 
-        $value = $postvars[$this->fieldName()];
-
         // edit in text mode
         if (is_array($value) && array_key_exists('date', $value)) {
-            $value = $postvars[$this->fieldName()]['date'];
+            $value = $value['date'];
         }
 
         // array with year / month / day

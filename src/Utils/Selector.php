@@ -340,34 +340,23 @@ class Selector implements \ArrayAccess, \Countable
             return;
         }
 
-        foreach ($searchCriteria as $key => $value) {
+        foreach ($this->_getNode()->getAttributes() as $attribName => $attrib) {
+            $value = $searchCriteria[$attrib->getHtmlName()] ?? null;
             if ($value === null || $value === '' || ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
                         $attrsByLoadType[Attribute::ADDTOQUERY]))
             ) {
                 continue;
             }
 
-            $attr = $this->_getNode()->getAttribute($key);
-            if (is_object($attr)) {
-                if (is_array($value) && isset($value[$key]) && Tools::count($value) == 1) {
-                    $value = $value[$key];
-                }
-
-                $searchMode = $this->_getNode()->getSearchMode();
-                if (is_array($searchMode)) {
-                    $searchMode = $searchMode[$key];
-                }
-
-                if ($searchMode == null) {
-                    $searchMode = Config::getGlobal('search_defaultmode');
-                }
-
-                $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
-            } else {
-                Tools::atkdebug("Using default search method for $key");
-                $condition = $query->substringCondition(Db::quoteIdentifier($this->_getNode()->getTable(), $key), $value);
-                $query->addSearchCondition($condition);
+            $searchMode = $this->_getNode()->getSearchMode();
+            if (is_array($searchMode)) {
+                $searchMode = $searchMode[$attrib->getHtmlName()];
             }
+
+            if ($searchMode == null) {
+                $searchMode = Config::getGlobal('search_defaultmode');
+            }
+            $attrib->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
         }
     }
 

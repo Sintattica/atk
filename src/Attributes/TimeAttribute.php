@@ -139,7 +139,7 @@ class TimeAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $result = $postvars[$this->fieldName()];
+        $result = parent::fetchValue($postvars);
 
         if (!is_array($result)) {
             $result = trim($result);
@@ -340,27 +340,6 @@ class TimeAttribute extends Attribute
         }
 
         return $retval;
-    }
-
-    /**
-     * Returns a piece of html code that can be used in a form to search values.
-     *
-     * @param array $record Array with fields
-     * @param bool $extended if set to false, a simple search input is
-     *                            returned for use in the searchbar of the
-     *                            recordlist. If set to true, a more extended
-     *                            search may be returned for the 'extended'
-     *                            search page. The Attribute does not
-     *                            make a difference for $extended is true, but
-     *                            derived attributes may reimplement this.
-     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @param DataGrid $grid
-     *
-     * @return string piece of html code with a checkbox
-     */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
-    {
-        return parent::search($record, $extended, $fieldprefix);
     }
 
     /**

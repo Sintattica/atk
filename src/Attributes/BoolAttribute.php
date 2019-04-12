@@ -158,7 +158,7 @@ class BoolAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used in a form to search for values.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -171,7 +171,7 @@ class BoolAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
@@ -189,12 +189,12 @@ class BoolAttribute extends Attribute
         $result .= '>';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         $result .= '<option value="0" ';
-        if (is_array($record) && $record[$this->fieldName()] === '0') {
+        if (is_array($atksearch) && $atksearch[$this->getHtmlName()] === '0') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('no', 'atk').'</option>';
         $result .= '<option value="1" ';
-        if (is_array($record) && $record[$this->fieldName()] === '1') {
+        if (is_array($atksearch) && $atksearch[$this->getHtmlName()] === '1') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('yes', 'atk').'</option>';
@@ -270,11 +270,11 @@ class BoolAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        if (is_array($postvars) && isset($postvars[$this->fieldName()])) {
-            return $postvars[$this->fieldName()];
-        } else {
-            return 0;
+        $value = parent::fetchValue($postvars);
+        if (is_null($value)) {
+            return false;
         }
+        return $value;
     }
 
     /**

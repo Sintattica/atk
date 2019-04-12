@@ -365,7 +365,7 @@ class ListAttribute extends Attribute
      *
      * @todo Configurable rows
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -378,7 +378,7 @@ class ListAttribute extends Attribute
      *
      * @return string A piece of html-code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $values = $this->getValues();
         $id = $this->getHtmlId($fieldprefix);
@@ -414,7 +414,7 @@ class ListAttribute extends Attribute
         $result .= $style != '' ? ' style="'.$style.'"': '';
         $result .= ' >';
 
-        $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+        $selValues = $atksearch[$this->getHtmlName()] ?? null;
         if (!is_array($selValues)) {
             $selValues = [$selValues];
         }

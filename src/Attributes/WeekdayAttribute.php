@@ -69,13 +69,11 @@ class WeekdayAttribute extends NumberAttribute
      */
     public function fetchValue($postvars)
     {
-        if(!isset($postvars[$this->fieldName()])){
-            return null;
-        }
-        if (!is_array($postvars) || !is_array($postvars[$this->fieldName()])) {
+        $result = parent::fetchValue();
+        if (!is_array($result)) {
             return 0;
         } else {
-            return array_sum($postvars[$this->fieldName()]);
+            return array_sum($result);
         }
     }
 

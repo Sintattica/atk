@@ -302,22 +302,20 @@ class OneToOneRelation extends Relation
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return array The internal value
      */
     public function fetchValue($postvars)
     {
         // we need to pass all values to the destination node, so it can
         // run it's fetchValue stuff over it..
-        if ($this->createDestination()) {
-            if ($postvars[$this->fieldName()] != null) {
-                foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
-                    $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-                    $postvars[$this->fieldName()][$attribname] = $p_attrib->fetchValue($postvars[$this->fieldName()]);
-                }
-
-                return $postvars[$this->fieldName()];
-            }
+        if (!$this->createDestination() or !isset($postvars[$this->getHtmlName()])) {
+            return null;
         }
+        $result = $postvars[$this->getHtmlName()];
+        foreach ($this->m_destInstance->m_attribList as $attribname => $p_attrib) {
+            $result[$attribname] = $p_attrib->fetchValue($postvars[$this->getHtmlName()]);
+        }
+        return $result;
     }
 
     /**
@@ -628,7 +626,7 @@ class OneToOneRelation extends Relation
                 }
 
                 /* mode */
-                $arr['hide'][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
+                $arr['hide'][] = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[mode]" value="'.$mode.'">';
 
                 /* add fields */
                 $forceList = [];
@@ -641,7 +639,7 @@ class OneToOneRelation extends Relation
                     }
                 }
 
-                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, [], $fieldprefix.$this->fieldName().'_AE_', false, false);
+                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, [], $this->getHtmlName($fieldprefix).'_AE_', false, false);
 
                 /* hidden fields */
                 $arr['hide'] = array_merge($arr['hide'], $a['hide']);
@@ -895,7 +893,7 @@ class OneToOneRelation extends Relation
         }
 
         // integrated version, don't add ourselves, but add all columns from the destination.
-        $prefix = $fieldprefix.$this->fieldName().'_AE_';
+        $prefix = $this->getHtmlName($fieldprefix).'_AE_';
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
             if ($column != '*' && $column != $attribname) {
                 continue;
@@ -938,7 +936,7 @@ class OneToOneRelation extends Relation
         $oldrecord = $arr['rows'][$nr]['record'];
         $arr['rows'][$nr]['record'] = $arr['rows'][$nr]['record'][$this->fieldName()];
 
-        $prefix = $fieldprefix.$this->fieldName().'_AE_';
+        $prefix = $this->getHtmlName($fieldprefix).'_AE_';
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
             if ($column != '*' && $column != $attribname) {
                 continue;
@@ -1048,7 +1046,7 @@ class OneToOneRelation extends Relation
     public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
-            $prefix = $fieldprefix.$this->fieldName().'_AE_';
+            $prefix = $this->getHtmlName($fieldprefix).'_AE_';
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
 

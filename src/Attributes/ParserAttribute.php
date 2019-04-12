@@ -52,7 +52,7 @@ class ParserAttribute extends Attribute
         return $this->display($record, $mode);
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         // VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
         return '';

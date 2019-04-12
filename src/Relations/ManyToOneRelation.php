@@ -519,19 +519,16 @@ class ManyToOneRelation extends Relation
 
     public function fetchValue($postvars)
     {
-        if (!$this->isPosted($postvars)) {
-            return;
-        }
-        if(empty($postvars[$this->fieldName()])) {
-            return;
+        $result = json_decode(parent::fetchValue($postvars));
+        if (is_null($result)) {
+            return null;
         }
 
-        $result = json_decode($postvars[$this->fieldName()]);
         if (!is_array($result)) {
             $result = [$result];
         }
         if (count($result) != count($this->getDestination()->m_primaryKey)) {
-            return;
+            return null;
         }
         $result = array_combine($this->getDestination()->m_primaryKey, $result);
 
@@ -1054,7 +1051,7 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
         $id = $this->getHtmlId($fieldprefix);
@@ -1088,8 +1085,8 @@ class ManyToOneRelation extends Relation
 
             $recordset = $this->_getSelectableRecords($record, 'search');
 
-            if (isset($record[$this->fieldName()][$this->fieldName()])) {
-                $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
+            if (isset($atksearch[$this->getHtmlName()][$this->getHtmlName()])) {
+                $atksearch[$this->getHtmlName()] = $atksearch[$this->getHtmlName()][$this->getHtmlName()];
             }
 
             // options and values
@@ -1103,7 +1100,7 @@ class ManyToOneRelation extends Relation
             }
 
             // selected values
-            $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : [];
+            $selValues = $atksearch[$this->getHtmlName()] ?? [];
             if($isMultiple && $selValues[0] == ''){
                 unset($selValues[0]);
             }
@@ -1145,13 +1142,13 @@ EOF;
 
         } else {
             //Autocomplete search
-            if (isset($record[$this->fieldName()][$this->fieldName()])) {
-                $record[$this->fieldName()] = $record[$this->fieldName()][$this->fieldName()];
+            if (isset($atksearch[$this->getHtmlName()][$this->getHtmlName()])) {
+                $atksearch[$this->getHtmlName()] = $atksearch[$this->getHtmlName()][$this->getHtmlName()];
             }
 
 
             if ($useautocompletion) {
-                $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+                $selValues = $atksearch[$this->getHtmlName()] ?? null;
                 if (!is_array($selValues)) {
                     $selValues = [$selValues];
                 }
@@ -1203,7 +1200,7 @@ EOF;
                 return $result;
 
             } else {
-                $current = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+                $current = $atksearch[$this->getHtmlName()] ?? null;
                 if(is_array($current)){
                     $current = implode(' ', $current);
                 }
@@ -1265,8 +1262,8 @@ EOF;
                 }
             }
 
-            if (isset($value[$this->fieldName()])) {
-                $value = $value[$this->fieldName()];
+            if (isset($value[$this->getHtmlName()])) {
+                $value = $value[$this->getHtmlName()];
             }
         }
 
@@ -1782,8 +1779,8 @@ EOF;
         $column = '*'
     ) {
         if ($column == null || $column == '*') {
-            $prefix = $fieldprefix.$this->fieldName().'_AE_';
-            parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $columnConfig, $grid, null);
+            $prefix = $this->getHtmlName($fieldprefix).'_AE_';
+            parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->getHtmlName()], $columnConfig, $grid, null);
         }
 
         if ($column == '*') {
@@ -1830,7 +1827,7 @@ EOF;
         $columnConfig,
         DataGrid $grid = null
     ) {
-        $prefix = $fieldprefix.$this->fieldName().'_AE_';
+        $prefix = $this->getHtmlName($fieldprefix).'_AE_';
 
         $p_attrib = $this->m_destInstance->getAttribute($column);
         if ($p_attrib == null) {
@@ -1876,7 +1873,7 @@ EOF;
         $column = '*'
     ) {
         if ($column == null || $column == '*') {
-            $prefix = $fieldprefix.$this->fieldName().'_AE_';
+            $prefix = $fieldprefix.$this->getHtmlName().'_AE_';
             parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
         }
 
@@ -1922,7 +1919,7 @@ EOF;
         $edit = false,
         DataGrid $grid = null
     ) {
-        $prefix = $fieldprefix.$this->fieldName().'_AE_';
+        $prefix = $this->getHtmlName($fieldprefix).'_AE_';
 
         // small trick, the destination record is in a subarray. The destination
         // addToListArrayRow will not expect this though, so we have to modify the
@@ -1945,7 +1942,7 @@ EOF;
 
     public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
-        $prefix = $fieldprefix.$this->fieldName().'_AE_';
+        $prefix = $this->getHtmlName($fieldprefix).'_AE_';
 
         parent::addToSearchformFields($fields, $node, $record, $prefix, $extended);
 
@@ -2138,7 +2135,6 @@ EOF;
         $searchvalue = $this->m_ownerInstance->m_postvars['value'];
         $this->addAutocompleteSearchFilter($query, $searchvalue);
         if ($mode != 'search') {
-            Tools::atk_var_dump($record);
             $query->addCondition($this->parseFilter($record));
         }
 
