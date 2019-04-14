@@ -660,7 +660,10 @@ class Selector implements \ArrayAccess, \Countable
         $query->addGroupBy($expression);
         $query->addOrderBy($expression);
 
-        $this->m_indices = $query->executeSelect();
+        $this->m_indices = [];
+        foreach ($query->executeSelect() as $row) {
+            $this->m_indices[] = $row['index'];
+        }
 
         return $this->m_indices;
     }
