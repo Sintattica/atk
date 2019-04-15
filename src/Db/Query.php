@@ -202,11 +202,8 @@ class Query
      */
     public function addAllFields($table = null)
     {
-        if ($table) {
-            $this->m_fields[] = Db::quoteIdentifier($table).'.*';
-        } else {
-            $this->m_fields[] = '*';
-        }
+        $table = $table ?? $this->m_table;
+        $this->m_fields[] = Db::quoteIdentifier($table).'.*';
         return $this;
     }
 
@@ -520,20 +517,21 @@ class Query
      */
     private function whereClause()
     {
-        $query = new QueryPart('');
-        if (!empty($this->m_conditions)) {
-            $query->appendSql(' WHERE (');
-            $query->append(QueryPart::implode(') AND (', $this->m_conditions));
-            $query->appendSql(')');
-        }
-
+        // Adding search conditions :
         if (!empty($this->m_searchconditions)) {
-            $query->appendSql(empty($this->m_conditions) ? 'WHERE (':'AND (');
             $searchOperator = ($this->m_searchmethod == '' || $this->m_searchmethod == 'AND') ? 'AND':'OR';
-            $query->append(QueryPart::implode($searchOperator, $this->m_searchconditions));
-            $query->appendSql(')');
+            $this->m_conditions[] = QueryPart::implode($searchOperator, $this->m_searchconditions, true);
         }
 
+        // Adding conditions only if there are some:
+        if (empty($this->m_conditions)) {
+            return new QueryPart('');
+        }
+
+        if (!empty($this->m_conditions)) {
+            $query = new QueryPart('WHERE');
+            $query->append(QueryPart::implode('AND', $this->m_conditions, true));
+        }
         return $query;
     }
 
@@ -590,7 +588,7 @@ class Query
         $query->append($this->whereClause());
 
         if (!empty($this->m_groupbys)) {
-           $query->appendSql(' GROUP BY '.implode(', ', $this->m_groupbys));
+           $query->appendSql('GROUP BY '.implode(', ', $this->m_groupbys));
         }
 
         return $this->m_db->getValue($query);
@@ -635,7 +633,7 @@ class Query
         $query->append($this->whereClause());
 
         if (!empty($this->m_groupbys)) {
-           $query->appendSql(' GROUP BY '.implode(', ', $this->m_groupbys));
+           $query->appendSql('GROUP BY '.implode(', ', $this->m_groupbys));
         }
 
         if (!empty($this->m_orderbys)) {
