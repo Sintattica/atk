@@ -722,7 +722,7 @@ class DataGridList extends DataGridComponent
         if (!Config::getGlobal('datagrid_total_paginate') && is_array($result['total']) && Tools::count($result['total']) > 0) {
             $selector = $grid->getNode()->select()->ignoreDefaultFilters();
             foreach ($grid->getFilters() as $filter) {
-                $selector->where($filter['filter'], $filter['params']);
+                $selector->where($filter);
             }
             $result['totalraw'] = $selector->getTotals(array_keys($result['total']));
             foreach ($result['totalraw'] as $attrName => $value) {
