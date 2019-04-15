@@ -52,7 +52,7 @@ class ExpressionAttribute extends Attribute
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-        $expression = str_replace('[table]', $tablename, $this->m_expression);
+        $expression = str_replace('[table]', Db::quoteIdentifier($tablename), $this->m_expression);
         $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);
     }
 
@@ -72,7 +72,7 @@ class ExpressionAttribute extends Attribute
             $table = $this->m_ownerInstance->m_table;
         }
 
-        $expression = str_replace('[table]', $table, $this->m_expression);
+        $expression = str_replace('[table]', Db::quoteIdentifier($table), $this->m_expression);
 
         $result = "($expression)";
 

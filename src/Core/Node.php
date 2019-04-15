@@ -1417,7 +1417,7 @@ class Node
      */
     public function getOrder()
     {
-        return str_replace('[table]', $this->getTable(), $this->m_default_order);
+        return str_replace('[table]', Db::quoteIdentifier($this->getTable()), $this->m_default_order);
     }
 
     /**
