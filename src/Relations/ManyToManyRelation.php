@@ -853,9 +853,7 @@ class ManyToManyRelation extends Relation
      */
     public function fetchValue($postvars)
     {
-        $value = parent::fetchValue($postvars);
-
-        return $value == null ? [] : $value;
+        return parent::fetchValue($postvars) ?? [];
     }
 
     /**

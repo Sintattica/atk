@@ -1270,10 +1270,10 @@ class Node
     }
 
     /**
-     * Compares to premaryKeyStrings and tells if they are equal
+     * Compare two primaryKeyStrings and tell if they are equal
      *
      * Strings can't be compared directly because, for example :
-     * '{"k1":25,"k2":6}' != '{"k2":6,"k1":25}'
+     * '{"k1":25,"k2":6}' != '{"k2":6,"k1":25}' but :
      * ["k1" => 25, "k2" => 6] == ["k2" => 6, "k1" => 25]
      *
      * @param string $enc1 first value
@@ -1777,7 +1777,7 @@ class Node
      *      expression, replacing [table] with table name.
      * - a QueryPart condition (with parameters).
      *
-     * @param string $filter a QueryPart expression or the fieldname you want 
+     * @param string $filter a QueryPart expression or the fieldname you want
      *                       to filter OR a SQL where clause expression.
      * @param mixed $value Required value. (Ommit this parameter if you pass
      *                       au QueryPart or an SQL expression for $filter.)
@@ -3638,7 +3638,7 @@ class Node
             if (method_exists($this, $methodName)) {
                 $sc = $this->$methodName($query, $table, $value, $searchmode);
                 if (!is_null($sc)) {
-                    $sc[] = $sc;
+                    $searchConditions[] = $sc;
                 }
             } else {
                 Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");

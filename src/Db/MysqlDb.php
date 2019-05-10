@@ -8,7 +8,7 @@ namespace Sintattica\Atk\Db;
  */
 class MysqlDb extends Db
 {
-    public $m_type = 'mysql';    
+    public $m_type = 'mysql';
 
 
     /**

@@ -23,7 +23,7 @@ class Relation extends Attribute
      * @var String Destination node.
      */
     public $m_destination;
-    
+
     /** @var Node $m_destInstance Destination instance */
     public $m_destInstance;
 
@@ -53,7 +53,7 @@ class Relation extends Attribute
 
     /**
      * Since most relations do not store anything in a field, the default
-     * fieldtype for relations is FT_UNSUPPORTED. Exceptions (like the 
+     * fieldtype for relations is FT_UNSUPPORTED. Exceptions (like the
      * many2oone relation, which stores a foreign key) can implement their
      * own dbFieldType().
      * @var int

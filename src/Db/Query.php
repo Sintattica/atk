@@ -528,10 +528,8 @@ class Query
             return new QueryPart('');
         }
 
-        if (!empty($this->m_conditions)) {
-            $query = new QueryPart('WHERE');
-            $query->append(QueryPart::implode('AND', $this->m_conditions, true));
-        }
+        $query = new QueryPart('WHERE');
+        $query->append(QueryPart::implode('AND', $this->m_conditions, true));
         return $query;
     }
 
@@ -558,7 +556,6 @@ class Query
             return new QueryPart('');
         }
         return new QueryPart('ORDER BY ' . implode(', ', $this->m_orderbys));
-        
     }
 
     /************************************** Execute functions *****************************/
@@ -608,7 +605,7 @@ class Query
             return false;
         }
         $query = new QueryPart('SELECT'.($distinct || $this->m_distinct ? ' DISTINCT' : ''));
-        
+
         // Fields and expressions
         $fieldAndAliasFn = function ($field) {
             if (isset($this->m_fieldaliases[$field])) {
@@ -618,13 +615,13 @@ class Query
             }
         };
         $fieldsAndAlias = array_map($fieldAndAliasFn, $this->m_fields);
-        
+
         $exprAndAliasFn = function($expression) {
             return "({$expression['expression']}) AS ".
                 ($this->m_fieldaliases[$expression['name']] ?? Db::quoteIdentifier($expression['name']));
         };
         $exprsAndAlias = array_map($exprAndAliasFn, $this->m_expressions);
-        
+
         $query->appendSql(implode(', ', array_merge($fieldsAndAlias, $exprsAndAlias)));
 
         $query->appendSql('FROM '.Db::quoteIdentifier($this->m_table));
@@ -796,7 +793,7 @@ class Query
             $value = substr($value, 1);
         }
         $parameter = [$placeholder => $value];
-        
+
         if ($this->m_db->getForceCaseInsensitive()) {
             return new QueryPart("LOWER({$field}) {$operator} LOWER({$placeholder})", $parameter);
         } else {

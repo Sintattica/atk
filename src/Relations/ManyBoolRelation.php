@@ -75,7 +75,6 @@ class ManyBoolRelation extends ManyToManyRelation
 
                 if (in_array($this->m_destInstance->primaryKeyString($recordset[$i]), $selectedPk)) {
                     $sel = 'checked';
-                    Tools::atk_var_dump($this->getShowDetailsLink());
                     if ($this->getShowDetailsLink() && !$this->m_linkInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_linkInstance->allowed('edit')) {
                         $linkRecord[$this->getLocalKey()] = $record;
                         $linkRecord[$this->getRemoteKey()] = $recordset[$i];

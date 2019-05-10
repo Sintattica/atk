@@ -923,7 +923,7 @@ class Attribute
             return $postvars[$this->getHtmlName()];
         }
 
-        return;
+        return null;
     }
 
 
@@ -1076,7 +1076,7 @@ class Attribute
      * colons (":") » (https://www.w3.org/TR/html4/types.html#type-id)
      * periods are excluded because PHP replace them with underscores.
      *
-     * Note: Without $fieldprefix argument, you get get the index in decoded
+     * Note: Without $fieldprefix argument, you get the index in decoded
      * postvars arrays.
      *
      * @param string $fieldprefix The fieldprefix to put in front of the name of
@@ -2826,6 +2826,7 @@ class Attribute
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
         }
+        $direction = ($direction ? " {$direction}" : '');
 
         // check for a schema name in $table
         if (strpos($table, '.') !== false) {
@@ -2837,17 +2838,17 @@ class Attribute
             }
 
             if ($this->dbFieldType() == Db::FT_STRING && $this->getDb()->getForceCaseInsensitive()) {
-                return 'LOWER('.$tableIdentifier.Db::quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+                return 'LOWER('.$tableIdentifier.Db::quoteIdentifier($this->fieldName()).')'.$direction;
             }
 
-            return $tableIdentifier.Db::quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+            return $tableIdentifier.Db::quoteIdentifier($this->fieldName()).$direction;
 
         } else {
             if ($this->dbFieldType() == Db::FT_STRING && $this->getDb()->getForceCaseInsensitive()) {
-                return 'LOWER('.Db::quoteIdentifier($table).'.'.Db::quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+                return 'LOWER('.Db::quoteIdentifier($table, $this->fieldName()).')'.$direction;
             }
 
-            return Db::quoteIdentifier($table).'.'.Db::quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+            return Db::quoteIdentifier($table, $this->fieldName()).$direction;
         }
     }
 

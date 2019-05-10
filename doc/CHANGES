@@ -55,7 +55,7 @@ WIP Changes
 * Query->clearFields now also clears expressions, orderbys and groupbys.
     Query->clearExpressions now removed.
 + Added Query->startswithCondition.
-+ Query->isExpression($field) tells wether $field is an expression (true) or 
++ Query->isExpression($field) tells wether $field is an expression (true) or
     a regular field (false). If field does not exist, returns false.
 * Query object members are now private.
 - Removed Query->build* functions in favor of execute* ones.
@@ -110,7 +110,7 @@ WIP Changes
     - O2O : The Relation destination filter is not applied on select query,
     only on edit queries.
     - They are not used to preset values in target nodes ("Add" link)
-    - Removed : M2M->parseDestinationFilter (use to Relation->parseFilter),
+    - Removed : M2M->parseDestinationFilter (use Relation->parseFilter),
     M2O->createFilter (idem), M2O->filterToArray (was not used),
     *Relation->setUseFilterFor(Add|Edit)Link().
 - Removed OneToManyRelation->translateSelector().

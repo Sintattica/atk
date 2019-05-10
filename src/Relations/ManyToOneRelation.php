@@ -1873,7 +1873,7 @@ EOF;
         $column = '*'
     ) {
         if ($column == null || $column == '*') {
-            $prefix = $fieldprefix.$this->getHtmlName().'_AE_';
+            $prefix = $this->getHtmlName($fieldprefix).'_AE_';
             parent::addToListArrayRow($action, $arr, $nr, $prefix, $flags, $edit, $grid, null);
         }
 

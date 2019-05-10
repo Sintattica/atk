@@ -270,11 +270,7 @@ class BoolAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $value = parent::fetchValue($postvars);
-        if (is_null($value)) {
-            return false;
-        }
-        return $value;
+        return parent::fetchValue($postvars) ?? false;
     }
 
     /**

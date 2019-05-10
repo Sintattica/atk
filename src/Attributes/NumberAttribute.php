@@ -666,7 +666,7 @@ class NumberAttribute extends Attribute
      * Get the between search condition
      *
      * This function checks the nullity of one attribute (which leads to greaterthan or
-     * lessthan condition) and the order of value*
+     * lessthan condition) and reorder the values if needed.
      *
      * @param Query $query The query object where the search condition should be placed on
      * @param string $fieldname The name of the field in the database (quoted)

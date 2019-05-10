@@ -8,7 +8,7 @@ use Sintattica\Atk\Session\SessionManager;
 /**
  * Abstract class for implementing an atkSearchHandler.
  *
- * To allow for registering sets of criteria, you need to create 
+ * To allow for registering sets of criteria, you need to create
  * a table in your database with columns like :
  *
  * CREATE TABLE atk_searchcriteria (

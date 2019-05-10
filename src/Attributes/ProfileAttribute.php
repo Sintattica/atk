@@ -291,7 +291,7 @@ class ProfileAttribute extends Attribute
 
         $query = $db->createQuery($this->m_ownerInstance->m_table);
         $query->addField($this->m_ownerInstance->primaryKeyField());
-        $query->addCondition(Db::quoteIdentifier($this->m_parentAttrName) . ' = :id', [':id' => $id]);
+        $query->addCondition(Db::quoteIdentifier($this->m_parentAttrName).'=:id', [':id' => $id]);
 
         foreach ($query->executeSelect() as $row) {
             $id = $row[$this->m_ownerInstance->primaryKeyField()];
@@ -629,10 +629,7 @@ class ProfileAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $checkboxes = parent::fetchValue($postvars);
-        if (is_null($checkboxes)) {
-            $checkboxes = [];
-        }
+        $checkboxes = parent::fetchValue($postvars) ?? [];
 
         $actions = [];
         for ($i = 0; $i < Tools::count($checkboxes); ++$i) {

@@ -15,31 +15,31 @@ class QueryPart
 {
     /**
      * string containing the SQL expression
-     * 
+     *
      * @access readonly
      * @var string
      */
     protected $sql;
-    
+
     /**
      * array of ':parameter_name' => [value, type] wher type is one of
      * \PDO::PARAM_ constant value
      * In fact, only PARAM_INT and PARAM_STR are used.
-     * 
+     *
      * @access readonly
      * @var array of string => [mixed $value, int $pdo_type]
      */
     protected $parameters = [];
-    
+
     /**
-     * array of int, used to alias parameters by appending numbers when 
+     * array of int, used to alias parameters by appending numbers when
      * parameters are added several times in the same query
-     * 
+     *
      * @access protected
      * @var array of string => int
      */
     protected $parameterCounter = [];
-    
+
     /**
      * Initialize variables and fill types if not specified
      *
@@ -58,7 +58,7 @@ class QueryPart
             $this->parameters[$placeholder] = [$value, $type];
         }
     }
-    
+
     /**
      * getter for $sql and $parameters
      */
@@ -70,7 +70,7 @@ class QueryPart
             case 'parameters':
                 return $this->parameters;
             default:
-                throw new \Exception( "Cannot find or access property {$name} of QueryPart." );
+                throw new \Exception("Cannot find or access property {$name} of QueryPart.");
         }
     }
 
@@ -98,7 +98,7 @@ class QueryPart
             $this->parameters[$newName] = $param;
         }
         $this->sql .= ' '.$sql2;
-        
+
         return $this;
     }
 
@@ -170,12 +170,13 @@ class QueryPart
      * @param string $glue to put between sql parts (no parameters in it, just plain string)
      * @param array $pieces of QueryParts
      * @param bool $wrap resulting SQL query into parenthesis if more than one part is present
-    *                    (default false)
+     *                   (default false)
      *
      * @return QueryPart with all parameters and glue, null if no pieces given
      */
     public static function implode(string $glue, array $pieces, $wrap = false)
     {
+        // Removing null pieces :
         $pieces = array_filter($pieces, function($x) { return !is_null($x); });
         if (empty($pieces)) {
             return null;

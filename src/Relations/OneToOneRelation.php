@@ -195,22 +195,23 @@ class OneToOneRelation extends Relation
      */
     public function load($db, $record, $mode)
     {
-        if ($this->createDestination()) {
-            if ($this->m_refKey == '') {
-                // Foreign key in owner
-                $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->m_primaryKey[0], $record[$this->fieldName()]);
-            } else {
-                // Foreign key in destination
-                $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_refKey,
-                    $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
-
-                if (!empty($this->m_destinationFilters)) {
-                    $condition = QueryPart::implode('AND', [$condition, $this->parseFilter($record)]);
-                }
-            }
-
-            return $this->m_destInstance->select($condition)->mode($mode)->getFirstRow();
+        if (!$this->createDestination()) {
+            return null;
         }
+        if ($this->m_refKey == '') {
+            // Foreign key in owner
+            $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->m_primaryKey[0], $record[$this->fieldName()]);
+        } else {
+            // Foreign key in destination
+            $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_refKey,
+                $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
+
+            if (!empty($this->m_destinationFilters)) {
+                $condition = QueryPart::implode('AND', [$condition, $this->parseFilter($record)]);
+            }
+        }
+
+        return $this->m_destInstance->select($condition)->mode($mode)->getFirstRow();
     }
 
     /**

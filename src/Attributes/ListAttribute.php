@@ -496,27 +496,25 @@ EOF;
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        if (!is_array($value) || empty($value) > 0 || $value[0] == '') {
+        if (!is_array($value) || empty($value) || $value[0] == '') {
             // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
             return null;
         }
 
-        if (count($value) == 1 && $value[0] != '') { // exactly one value
-            if ($value[0] == '__NONE__') {
-                return $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
-            } else {
-                return $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
-            }
-        }
-        // search for more values
+        $conditions = [];
+
         if (in_array('__NONE__', $value)) {
             unset($value[array_search('__NONE__', $value)]);
-
-            $nullCondition = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
-            $inCondition = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
-            return QueryPart::implode('OR', [$nullCondition, $inCondition], true);
+            $conditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
         }
-        return $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
+
+        if (count($value) == 1) {
+            $conditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
+        } elseif (count($value) > 1) {
+            $conditions[] = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
+        }
+
+        return QueryPart::implode('OR', $conditions, true);
     }
 
     /**

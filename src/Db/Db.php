@@ -13,7 +13,7 @@ use Sintattica\Atk\Utils\Debugger;
  * Notes:
  *  - it autostarts a transaction on initialization, so don't forget to commit
  * when you need it.
- *  - query and prepare will halt() on error (unless $m_haltonerror set to 
+ *  - query and prepare will halt() on error (unless $m_haltonerror set to
  * false), so you can expect a valid result from them.
  *
  * @author Peter Verhage <peter@achievo.org>
@@ -97,6 +97,8 @@ class Db extends \PDO
 
     /**
      * sequence table. Used for AUTO_INCREMENT attributes
+     * that are not defined as AUTO_INCREMENT in database,
+     * or for custom calls of 'nextid()'
      *
      * @var string
      */
@@ -232,7 +234,7 @@ class Db extends \PDO
 
         return $dbInstance;
     }
-    
+
     /**
      * Computes DSN string from the config array as defined in config/parameters.ENV.php
      *
@@ -263,7 +265,7 @@ class Db extends \PDO
             default:
                 Tools::atkhalt(sprintf(Tools::atktext('db_unsupported_driver', 'atk'), $driver));
         }
-        
+
         $options = [];
         if (isset($config['host'])) {
             $options[] = "host={$config['host']}";
@@ -281,10 +283,10 @@ class Db extends \PDO
         if ($driver == 'sqlite') {
             $options = [$config['file']];
         }
-        
+
         return $driver.':'.implode(';', $options);
     }
-    
+
     /**
      * Intialize some default options and start the first transaction
      *
@@ -464,9 +466,6 @@ class Db extends \PDO
     /**
      * Execute a query.
      *
-     * If the query is a select query, the rows can be retrieved using the
-     * next_record() method.
-     *
      * @param string $query The SQL query to execute
      *
      * @return \PDOStatement
@@ -483,9 +482,6 @@ class Db extends \PDO
 
     /**
      * Prepare & execute a query with a prepared statement.
-     *
-     * If the query is a select query, the rows can be retrieved using the
-     * next_record() method.
      *
      * @param QueryPart|string $query to prepare and execute
      * @param array $parameters for the query (only if $query is not already au QueryPart)
@@ -508,7 +504,6 @@ class Db extends \PDO
             // Error handling already have been done in $this->prepare.
             return null;
         }
-        Tools::atkdebug("Binding params");
         foreach ($query->parameters as $placeholder => $parameter) {
             $stmt->bindValue($placeholder, $parameter[0], $parameter[1]);
         }
@@ -530,11 +525,10 @@ class Db extends \PDO
      */
     public function nextid($sequence)
     {
-        /* get sequence number (locked) and increment */
-        $this->prepare('SELECT '.self::quoteIdentifier($this->m_seq_field).' FROM '.self::quoteIdentifier($this->m_seq_table).
-            ' WHERE '.self::quoteIdentifier($this->m_seq_namefield).' = :sequence_name')
-            ->execute([':sequence_name' => $sequence]);
-        $result = $stmt->fetch();
+        $result = $this->getValue(
+            'SELECT '.self::quoteIdentifier($this->m_seq_field).' FROM '.self::quoteIdentifier($this->m_seq_table).
+            ' WHERE '.self::quoteIdentifier($this->m_seq_namefield).' = :sequence_name',
+            [':sequence_name' => $sequence]);
         /* no current value, make one */
         if (!$result) {
             $this->prepare('INSERT INTO '.self::quoteIdentifier($this->m_seq_table)." VALUES(:sequence_name, 1)")
@@ -717,7 +711,7 @@ class Db extends \PDO
     protected function getGenericType($type) {
         // Make the string more generic :
         $type = strtolower($type);
-        // Fast-tracks : '*int*' types, '*char*' types :
+        // Fast-tracks : '*int*', '*char*' and timestamp types :
         if (strpos($type, 'int') !== false) {
             return self::FT_NUMBER;
         }
@@ -769,9 +763,8 @@ class Db extends \PDO
      */
     public function tableExists($tableName)
     {
-        $stmt = $this->prepare('select COUNT(*) from information_schema.tables WHERE table_name = :tableName');
-        $stmt->execute([':tableName' => $tableName]);
-        return $stmt->fetch(\PDO::FETCH_NUM)[0];
+        return $this->getValue('select COUNT(*) from information_schema.tables WHERE table_name = :table', [':table' => $tableName]
+        );
     }
 
     /*********************************************** SQL functions *************************************************/
@@ -831,6 +824,8 @@ class Db extends \PDO
      * The main interest is to concat strings together without a null string making
      * the generated expression null : null strings are replaced by ''.
      *
+     * @DEPRECATED
+     *
      * @param array $fields (quoted)
      * @param string $separator (unquoted)
      * @param bool $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
@@ -840,7 +835,7 @@ class Db extends \PDO
     public function func_concat_ws(array $fields, string $separator, bool $remove_all_spaces = false)
     {
         Tools::atkwarning('DEPRECATED : use func_concat_coalesce() or ad-hoc functions if you need a separator');
-        return $this->func_concat_coalesce();
+        return $this->func_concat_coalesce($fields);
     }
 
     /**
@@ -913,7 +908,7 @@ class Db extends \PDO
      */
     public function escapeSQL($string, $wildcard = false)
     {
-        Tools::atkerror('escapeSQL function is deprecated and not safe. Don\'t use it.', 'critical');
+        Tools::atkerror('escapeSQL function is deprecated and not safe. Don\'t use it.');
     }
 
     /**

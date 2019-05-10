@@ -88,9 +88,7 @@ class SqliteDb extends Db
      */
     public function tableExists($tableName)
     {
-        $stmt = $this->prepare('SELECT COUNT(*) FROM sqlite_master WHERE type = \'table\' AND name = :tableName');
-        $stmt->execute([':tableName' => $tableName]);
-        return $stmt->fetch(\PDO::FETCH_NUM)[0];
+        return $this->getValue('SELECT COUNT(*) FROM sqlite_master WHERE type = \'table\' AND name = :tableName', [':tableName' => $tableName]);
     }
 
     /**

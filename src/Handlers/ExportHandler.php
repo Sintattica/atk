@@ -14,8 +14,8 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Ui;
 
 /**
- * Handler for the 'import' action of a node. The import action is a
- * generic tool for importing CSV files into a table.
+ * Handler for the 'export' action of a node. The export action is a
+ * generic tool for exporting table data into CSV files.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  */

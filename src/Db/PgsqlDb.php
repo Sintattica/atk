@@ -16,7 +16,7 @@ class PgsqlDb extends Db
      * @var string
      */
     public $m_type = 'postgresql';
-    
+
     /**
      * Intialize some default options and start the first transaction
      *
@@ -55,7 +55,7 @@ class PgsqlDb extends Db
             Tools::atkdebug("Metadata query failed for supplementary flags for table {$table}.");
             return $meta;
         }
-        
+
         while ($row = $stmt->fetch()) {
             switch ($row['constraint_type']) {
                 case 'UNIQUE':
@@ -80,11 +80,11 @@ class PgsqlDb extends Db
     public function nextid($sequence)
     {
         $sequence = Config::getGlobal('database_sequenceprefix').$sequence.Config::getGlobal('database_sequencesuffix');
-        
+
         /* get sequence number and increment */
         $stmt = $this->prepare('SELECT nextval(:sequence)');
         $stmt->execute([':sequence' => $sequence]);
-        
+
         if (!$stmt and $this->errorCode() == '42P01') {
             // Creating the sequence when the error is 'this sequence does not exists'
             $this->query('CREATE SEQUENCE '.self::quoteIdentifier($sequence));
