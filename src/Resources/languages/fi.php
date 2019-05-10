@@ -21,24 +21,32 @@ return [
     'access_denied' => 'Access denied',
     // Missing string!!!
     'add' => 'Lisää',
+    'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
     'admin' => 'Ylläpito',
+    'administration_application' => 'Administration application',
     // Missing string!!!
     'all' => 'All',
     // Missing string!!!
+    'alphabeticchars' => 'alphabetic characters',
     // Missing string!!!
+    'apply' => 'Apply',
     // Missing string!!!
+    'app_close' => 'Close',
     // Missing string!!!
     'app_description' => 'Tervetuloa ATK-Ohjelmistoon.',
+    'app_launcher' => 'ATK Application Launcher',
     // Missing string!!!
+    'app_reopen' => 'Restart',
     // Missing string!!!
     'app_shorttitle' => 'ATKApp',
     'app_title' => 'ATK-Ohjelmisto',
     'apr' => 'Apr',
     // Missing string!!!
     'april' => 'April',
+    'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted. (%s)'",
     // Missing string!!!
@@ -51,32 +59,52 @@ return [
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
     'auth_no_server' => 'No server specified. No authentication possible (please consult your system administrator).',
+    'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
+    'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
+    'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
     'auth_unable_to_connect' => 'Unable to connect to server for authentication (please consult your system administrator).',
+    'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
+    'autocomplete_no_results' => 'No results found for the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_contains' => 'No results found that contain the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_exact' => 'No results found that exactly match the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_startswith' => 'No results found that start with the given search value.',
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
     'back' => 'Takaisin',
+    'back_to' => 'Back to',
+    'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
     'cancel' => 'Peruuta',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
+    'cannot create directory' => 'Cannot create directory: ',
     // Missing string!!!
+    'cannot make file' => 'Cannot create file: ',
     // Missing string!!!
+    'cannot_remove_file' => 'Tiedostoa ei voi poistaa!',
+    'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
     'charset' => 'UTF-8',
+    'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
     'check_all' => 'Select all',
     'check_none' => 'Select none',
+    'clickheretoadd_postfix' => '.',
+    'clickheretoadd_prefix' => 'Paina tästä lisääksesi uuden ',
     'close' => 'Sulje',
+    'color' => 'Color',
     // Missing string!!!
+    'colorcode' => 'Color code',
     // Missing string!!!
+    'colorpicker_selectcolor' => 'Select a color',
     'column' => 'column',
     // Missing string!!!
     'column_asc' => 'Up',
@@ -88,7 +116,9 @@ return [
     'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
     'confirm_delete' => 'Oletko varma että haluat poistaa?',
+    'confirm_delete_multi' => 'Are you sure you want to delete these items?',
     // Missing string!!!
+    'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
     'copy' => 'Copy',
     'criterium_field' => 'Field',
@@ -126,6 +156,7 @@ return [
     'delimiter' => 'Delimiter',
     // Missing string!!!
     'deselect_all' => 'Deselect all',
+    'document' => 'Open document',
     // Missing string!!!
     'edit' => 'Muokkaa',
     'editcopy' => 'Edit copy',
@@ -135,14 +166,21 @@ return [
     'enclosure' => 'Enclosure',
     // Missing string!!!
     'error' => 'Virhe',
+    'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
+    'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     // Missing string!!!
+    'error_attributeedit_update' => 'An error occured when updating the selected records.',
     // Missing string!!!
+    'error_attributeedit_validationfailed' => 'This value is not allowed.',
     // Missing string!!!
+    'error_captchafield' => 'The given code is invalid, please try again',
     // Missing string!!!
+    'error_copy_record' => 'Unknown error copying record',
     // Missing string!!!
     'error_date_invalid' => 'Invalid date',
     // Missing string!!!
+    'error_fileexists' => 'File already exists on server. Please rename the file.',
     // Missing string!!!
     'error_file_mime_type' => 'Unsupported file uploaded please check your filetype or extension',
     // Missing string!!!
@@ -166,11 +204,13 @@ return [
     'error_obligatoryfield' => 'Tämä kenttä tarvitaan',
     'error_password_incorrect' => 'The password you entered is incorrect!',
     // Missing string!!!
+    'error_password_invalid' => 'The password you entered is not a valid password!',
     // Missing string!!!
     'error_password_nomatch' => 'Salasanat eivät täsmää.',
     'error_primarykey_exists' => 'A record with this key already exists',
     'error_tab' => 'see',
     // Missing string!!!
+    'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
     'error_uniquefield' => 'Tämän kentän arvo tulee olla ainutlaatuinen',
     'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
@@ -217,11 +257,13 @@ return [
     // Missing string!!!
     'feedback_update_success' => 'The changes have been saved.',
     // Missing string!!!
+    'field_obligatory' => 'This field is a required field',
     'filecontent' => 'Content',
     'filename' => 'Filename',
     'filename_invalid' => 'This filename is invalid',
     'file_exists' => 'A file with this name already exists',
     'file_not_exist' => 'Tiedostoa ei ole',
+    'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
@@ -279,6 +321,7 @@ return [
     // Missing string!!!
     'import_validatefirst' => 'Do not validate before importing',
     // Missing string!!!
+    'intro_addorcopy' => 'Do you want to create a new record or copy an existing record?',
     // Missing string!!!
     'invalid_relative_url' => "Invalid relative URL, please use this format: '/mysite/guestbook'",
     // Missing string!!!
@@ -312,16 +355,22 @@ return [
     // Missing string!!!
     'load_criteria' => 'Load saved search',
     // Missing string!!!
+    'lock_expired' => 'The items you have opened are no longer exclusively accessible by you. This can have various causes, the most common is that you have not saved for a too long period of time. You can try to save your work, but it is possible that the items are currently locked by another user.',
     // Missing string!!!
     'lock_info_line' => '[user_id] (ip: [user_ip]) since [lock_date]',
     // Missing string!!!
+    'lock_locked' => 'The selected items are not accessible because another user has locked them.',
     // Missing string!!!
+    'logged_in_as' => 'Logged in as',
     // Missing string!!!
     'login' => 'Login',
+    'login_failed' => 'Login failed',
     'login_form' => 'Login',
+    'logout' => 'Log out',
     // Missing string!!!
     'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
     // Missing string!!!
+    'lowerchars' => 'lowercase characters',
     // Missing string!!!
     'mar' => 'Mar',
     // Missing string!!!
@@ -332,6 +381,7 @@ return [
     'mon' => 'Mon',
     'monday' => 'Monday',
     // Missing string!!!
+    'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'New',
     // Missing string!!!
@@ -342,7 +392,9 @@ return [
     'nov' => 'Nov',
     // Missing string!!!
     'november' => 'November',
+    'no_color_selected' => 'No color selected',
     // Missing string!!!
+    'no_copyable_records' => 'no copyable records',
     // Missing string!!!
     'no_records_to_import' => 'No records found that needed to be imported.',
     // Missing string!!!
@@ -361,10 +413,14 @@ return [
     'password' => 'Password',
     'password_again' => 'Uudelleen',
     'password_current' => 'Nykyinen',
+    'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
     'password_incorrect' => 'Antamasi salasana on väärä!',
+    'password_invalid' => 'Antamasi salasana ei ole kelvollinen.',
     'password_new' => 'Uusi',
+    'permission_denied' => "Sorry, you don't have permission to perform this action",
+    'previous' => 'Edellinen',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
     'relogin' => 'Log in again',
@@ -372,6 +428,7 @@ return [
     'remove_criterium' => 'Remove',
     // Missing string!!!
     'remove_current_file' => 'Poista kyseinen tiedosto',
+    'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
     // Missing string!!!
@@ -440,7 +497,9 @@ return [
     // Missing string!!!
     'sort' => 'Sort',
     // Missing string!!!
+    'specialchars' => 'special characters',
     // Missing string!!!
+    'steelblue' => 'SteelBlue',
     // Missing string!!!
     'submit' => 'Go',
     'successfully_imported_one_record' => 'Successfully imported 1 record.',
@@ -519,6 +578,7 @@ return [
     'title_select' => 'Select',
     // Missing string!!!
     'title_session_expired' => 'Session expired',
+    'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Today',
     // Missing string!!!
@@ -542,14 +602,27 @@ return [
     'wednesday' => 'Wednesday',
     // Missing string!!!
     'with_selected' => 'With selected',
+    'ww_sourcemode' => 'Source mode',
+    'ww_visualmode' => 'Visual mode',
+    'wysiwyg_delete_cell' => 'Delete cell',
     // Missing string!!!
+    'wysiwyg_delete_col' => 'Delete column',
     // Missing string!!!
+    'wysiwyg_delete_row' => 'Delete row',
     // Missing string!!!
+    'wysiwyg_fontface' => 'Font',
+    'wysiwyg_fontsize' => 'Pt',
+    'wysiwyg_insert_cell' => 'Insert cell',
     // Missing string!!!
+    'wysiwyg_insert_col' => 'Insert column',
     // Missing string!!!
+    'wysiwyg_insert_row' => 'Insert row',
     // Missing string!!!
+    'wysiwyg_insert_table' => 'Insert table',
     // Missing string!!!
+    'wysiwyg_merge_cell' => 'Merge cells',
     // Missing string!!!
+    'wysiwyg_split_cell' => 'Split cells',
     // Missing string!!!
     'yes' => 'Kyllä',
 ];

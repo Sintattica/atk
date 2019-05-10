@@ -19,18 +19,26 @@ return [
     'above_maximum_value' => 'Över max tillåtet värde',
     'access_denied' => 'Nekad åtkomst',
     'add' => 'Lägg till',
+    'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
     'admin' => 'Administration',
+    'administration_application' => 'Applikationsadministration',
     'all' => 'All',
     // Missing string!!!
+    'alphabeticchars' => 'alphabetic characters',
     // Missing string!!!
+    'apply' => 'Verkställ',
+    'app_close' => 'Stäng',
     'app_description' => 'Välkommer till denna ATK-applikation.',
+    'app_launcher' => 'ATK Applikationsstartare',
+    'app_reopen' => 'Starta om',
     'app_shorttitle' => 'ATKApp',
     'app_title' => 'ATK-Applikation',
     'apr' => 'Apr',
     'april' => 'April',
+    'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "Fältet '%s' tillåter inte att posten raderas. '(%s)'",
     'aug' => 'Aug',
@@ -41,33 +49,55 @@ return [
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
     'auth_no_server' => 'Ingen server specificerad. Ingen autenticering är möjlig (kontakta systemadministratören).',
+    'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
+    'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
+    'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
     'auth_unable_to_connect' => 'Kunde inte kontakta server för autenticering (kontakta systemadministratören).',
+    'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
+    'autocomplete_no_results' => 'No results found for the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_contains' => 'No results found that contain the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_exact' => 'No results found that exactly match the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_startswith' => 'No results found that start with the given search value.',
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
     'back' => 'Tillbaka',
+    'back_to' => 'Tillbaka till',
+    'below_minimum_value' => 'Under minsta tillåtna värde',
     'cancel' => 'Avbryt',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
+    'cannot create directory' => 'Kan inte skapa katalog: ',
+    'cannot make file' => 'Kan inte skapa fil: ',
+    'cannot_remove_file' => 'Kan inte radera fil!',
+    'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
     'charset' => 'UTF-8',
+    'check rights to' => 'Kolla att du rätt rättigheter att ',
     'check_all' => 'Välj alla',
     'check_none' => 'Välj ingen',
+    'clickheretoadd_postfix' => '.',
+    'clickheretoadd_prefix' => 'Klicka här för att lägga till ny ',
     'close' => 'Stäng',
+    'color' => 'Color',
     // Missing string!!!
+    'colorcode' => 'Färgkod',
+    'colorpicker_selectcolor' => 'Välj en färg',
     'column' => 'kolumn',
     'column_asc' => 'Upp',
     'column_desc' => 'Ner',
     'column_subtotal' => 'Deltotal',
     'column_unsubtotal' => 'Ingen deltot.',
     'confirm_delete' => 'Vill du verligen radera denna post?',
+    'confirm_delete_multi' => 'Vill du verkligen radera dessa poster?',
+    'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
     'copy' => 'Kopiera',
     'criterium_field' => 'Field',
@@ -96,6 +126,7 @@ return [
     'delimiter' => 'Delimiter',
     // Missing string!!!
     'deselect_all' => 'Avmarkera allt',
+    'document' => 'Open document',
     // Missing string!!!
     'edit' => 'Ändra',
     'editcopy' => 'Ändra kopia',
@@ -104,13 +135,20 @@ return [
     'enclosure' => 'Enclosure',
     // Missing string!!!
     'error' => 'Fel',
+    'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
+    'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     // Missing string!!!
+    'error_attributeedit_update' => 'An error occured when updating the selected records.',
     // Missing string!!!
+    'error_attributeedit_validationfailed' => 'This value is not allowed.',
     // Missing string!!!
+    'error_captchafield' => 'The given code is invalid, please try again',
     // Missing string!!!
+    'error_copy_record' => 'Unknown error copying record',
     // Missing string!!!
     'error_date_invalid' => 'Felaktigt datum',
+    'error_fileexists' => 'Filen finns redan på servern. Byt filnamn.',
     'error_file_mime_type' => 'Unsupported file uploaded please check your filetype or extension',
     // Missing string!!!
     'error_file_size' => 'Filen är för stor',
@@ -126,9 +164,11 @@ return [
     // Missing string!!!
     'error_obligatoryfield' => 'Detta fält krävs',
     'error_password_incorrect' => 'Lösenordet du matade in är fel!',
+    'error_password_invalid' => 'Lösenordet du matade in är inte ett korrekt lösenord!',
     'error_password_nomatch' => 'Medskickat lösenord stämmer inte.',
     'error_primarykey_exists' => 'En post med denna nyckel finns redan',
     'error_tab' => 'se',
+    'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
     'error_uniquefield' => 'Värdet i detta fält måse vara unikt',
     'error_uniquefieldset' => 'Värdeskombinationen för dessa fält måste vara unik',
@@ -157,11 +197,13 @@ return [
     'feedback_update_cancelled' => 'Ändringarna har inte sparats.',
     'feedback_update_failed' => 'Ändringarna kunde inte sparas.',
     'feedback_update_success' => 'Ändringarna har sparats.',
+    'field_obligatory' => 'Fältet är obligatoriskt',
     'filecontent' => 'Innehåll',
     'filename' => 'Filnamn',
     'filename_invalid' => 'Filnamnet är felaktigt',
     'file_exists' => 'En fil med detta namn finns redan',
     'file_not_exist' => 'Filen finns inte',
+    'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
@@ -193,6 +235,7 @@ return [
     'import_upload' => 'Ladda upp',
     'import_upload_explanation' => 'Ladda upp en textfil med data för import till databas.',
     'import_validatefirst' => 'Validera inte före import',
+    'intro_addorcopy' => 'Do you want to create a new record or copy an existing record?',
     // Missing string!!!
     'invalid_relative_url' => "Invalid relative URL, please use this format: '/mysite/guestbook'",
     // Missing string!!!
@@ -220,12 +263,18 @@ return [
     // Missing string!!!
     'load_criteria' => 'Load saved search',
     // Missing string!!!
+    'lock_expired' => 'Posterna du öppnat är inte längre exklusivt öppnade för dig. Detta kan ha flera orsaker, störst sannolikhet är att du inte sparat på lång tid. Du kan prova att spara, men det är möjligt att posterna är låsta av en annan användare.',
     'lock_info_line' => '[user_id] (ip: [user_ip]) since [lock_date]',
     // Missing string!!!
+    'lock_locked' => 'De valda posterna är inte nåbara för att en annan användare har låst dom.',
+    'logged_in_as' => 'Inloggad som',
     'login' => 'Logga in',
+    'login_failed' => 'Inloggning misslyckades',
     'login_form' => 'Logga in',
+    'logout' => 'Logga ut',
     'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
     // Missing string!!!
+    'lowerchars' => 'lowercase characters',
     // Missing string!!!
     'mar' => 'Mar',
     'march' => 'Mars',
@@ -234,6 +283,7 @@ return [
     'menu_main' => 'Huvudmeny',
     'mon' => 'Mån',
     'monday' => 'Måndag',
+    'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'Ny',
     'next' => 'Nästa',
@@ -241,7 +291,9 @@ return [
     'none' => 'Ingen',
     'nov' => 'Nov',
     'november' => 'November',
+    'no_color_selected' => 'No color selected',
     // Missing string!!!
+    'no_copyable_records' => 'no copyable records',
     // Missing string!!!
     'no_records_to_import' => 'No records found that needed to be imported.',
     // Missing string!!!
@@ -257,16 +309,21 @@ return [
     'password' => 'Lösenord',
     'password_again' => 'Nytt lösenord igen',
     'password_current' => 'Nuvarande lösenord',
+    'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
     'password_incorrect' => 'Lösenordet du skrev var inte korrekt!',
+    'password_invalid' => 'Lösenordet du skrev var inte ett korrekt lösernod.',
     'password_new' => 'Nytt lösenord',
+    'permission_denied' => 'Ledsen, du har inte rättigheter att göra detta',
+    'previous' => 'Föregående',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
     'relogin' => 'Logga in igen',
     'remove_criterium' => 'Remove',
     // Missing string!!!
     'remove_current_file' => 'Ta bort nuvarande fil',
+    'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
     // Missing string!!!
@@ -320,7 +377,9 @@ return [
     'smartsearch' => 'Smart search',
     // Missing string!!!
     'sort' => 'Sortera',
+    'specialchars' => 'special characters',
     // Missing string!!!
+    'steelblue' => 'SteelBlue',
     // Missing string!!!
     'submit' => 'Ok',
     'successfully_imported_one_record' => 'Successfully imported 1 record.',
@@ -394,6 +453,7 @@ return [
     // Missing string!!!
     'title_select' => 'Välj',
     'title_session_expired' => 'Sessionen föfallit',
+    'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Idag',
     'tue' => 'Tis',
@@ -411,5 +471,18 @@ return [
     'wed' => 'Ons',
     'wednesday' => 'Onsdag',
     'with_selected' => 'Med valda',
+    'ww_sourcemode' => 'Källäge',
+    'ww_visualmode' => 'Visuellt läge',
+    'wysiwyg_delete_cell' => 'Radera cell',
+    'wysiwyg_delete_col' => 'Radera kolumn',
+    'wysiwyg_delete_row' => 'Radera rad',
+    'wysiwyg_fontface' => 'Teckensnitt',
+    'wysiwyg_fontsize' => 'Pt',
+    'wysiwyg_insert_cell' => 'Lägg till cell',
+    'wysiwyg_insert_col' => 'Lägg till kolumn',
+    'wysiwyg_insert_row' => 'Lägg till rad',
+    'wysiwyg_insert_table' => 'Lägg till tabell',
+    'wysiwyg_merge_cell' => 'Slå ihop celler',
+    'wysiwyg_split_cell' => 'Dela celler',
     'yes' => 'Ja',
 ];

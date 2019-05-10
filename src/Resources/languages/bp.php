@@ -19,15 +19,23 @@ return [
     'above_maximum_value' => 'Acima do valor máximo permitido',
     'access_denied' => 'Acesso negado',
     'add' => 'Adicionar',
+    'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Adicionar',
     'admin' => 'Administração',
+    'administration_application' => 'Aplicativo de Administração',
     'all' => 'Tudo',
+    'alphabeticchars' => 'Caracteres alfabéticos',
+    'apply' => 'Aplicar',
+    'app_close' => 'Fechar',
     'app_description' => 'Bem-vindo a este aplicativo ATK.',
+    'app_launcher' => 'Lançador de aplicativo ATK',
+    'app_reopen' => 'Reiniciar',
     'app_shorttitle' => 'ATKApp',
     'app_title' => 'Aplicativo ATK',
     'apr' => 'Abr',
     'april' => 'Abril',
+    'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "O campo '%s' não permite que o registro seja deletado. (%s)'",
     'aug' => 'Ago',
@@ -37,29 +45,51 @@ return [
     'auth_mismatch' => 'Usuário e/ou senha está(ão) incorreto(s). Por favor tente novamente.',
     'auth_missingusername' => 'Por favor, entre com um nome de usuário primeiro.',
     'auth_no_server' => 'Servidor não especificado. Não é possível altenticar (por favor consulte o administrador do sistema).',
+    'auth_passwordmail_explanation' => 'Você recebeu este e-mail porque esqueceu sua senha. Abaixo estão seus dados de logion:',
+    'auth_passwordmail_sent' => 'Se o nome de usuário já existir, uma nova senha ser&aacute; enviada para o e-mail correspondente.',
+    'auth_passwordmail_subjectnew_password' => 'Nova senha',
     'auth_unable_to_connect' => 'Não foi possível conectar ao servidor para autenticação (por favor consulte o administrador do sistema).',
+    'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
+    'autocomplete_no_results' => 'No results found for the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_contains' => 'No results found that contain the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_exact' => 'No results found that exactly match the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_startswith' => 'No results found that start with the given search value.',
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
     'back' => 'Voltar',
+    'back_to' => 'Voltar para',
+    'below_minimum_value' => 'Abaixo do valor mínimo permitido',
     'cancel' => 'Cancelar',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
+    'cannot create directory' => 'Não foi possível criar diretório: ',
+    'cannot make file' => 'Não foi possível criar arquivo: ',
+    'cannot_remove_file' => 'Não foi possível remover arquivo!',
+    'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
     'charset' => 'UTF-8',
+    'check rights to' => 'Por favor verifique se voê tem os direitos apropriados para ',
     'check_all' => 'Selecionar todos',
     'check_none' => 'Não selecionar nenhum',
+    'clickheretoadd_postfix' => '.',
+    'clickheretoadd_prefix' => 'Clique para adicionar um novo ',
     'close' => 'Fechar',
+    'color' => 'Cor',
+    'colorcode' => 'Código da cor',
+    'colorpicker_selectcolor' => 'Selecionar uma cor',
     'column' => 'coluna',
     'column_asc' => 'Ascendente',
     'column_desc' => 'Descendente',
     'column_subtotal' => 'Subtotal',
     'column_unsubtotal' => 'Sem Subtotal',
     'confirm_delete' => 'Você está certo de que quer remover este ítem?',
+    'confirm_delete_multi' => 'Você está certo de que quer remover estes ítens?',
+    'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
     'copy' => 'Copiar',
     'criterium_field' => 'Campo',
@@ -84,18 +114,26 @@ return [
     'delete' => 'Remover',
     'delimiter' => 'Separador',
     'deselect_all' => 'Desfazer seleção',
+    'document' => 'Abrir documento',
     'edit' => 'Editar',
     'editcopy' => 'Editar cópia',
     'email' => 'Email',
     'enclosure' => 'Delimitado por',
     'error' => 'Erro',
+    'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
+    'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     // Missing string!!!
+    'error_attributeedit_update' => 'An error occured when updating the selected records.',
     // Missing string!!!
+    'error_attributeedit_validationfailed' => 'This value is not allowed.',
     // Missing string!!!
+    'error_captchafield' => 'The given code is invalid, please try again',
     // Missing string!!!
+    'error_copy_record' => 'Unknown error copying record',
     // Missing string!!!
     'error_date_invalid' => 'Data inválida',
+    'error_fileexists' => 'Arquivo já existe no servidor. Por favor renomeie o arquivo.',
     'error_file_mime_type' => 'Unsupported file uploaded please check your filetype or extension',
     // Missing string!!!
     'error_file_size' => 'Arquivo muito grande',
@@ -111,9 +149,11 @@ return [
     // Missing string!!!
     'error_obligatoryfield' => 'Este campo é obrigatório',
     'error_password_incorrect' => 'A senha que você digitou está errada!',
+    'error_password_invalid' => 'A senha que você digitou não é uma senha válida!',
     'error_password_nomatch' => 'As senhas fornecidas não parecem ser a mesm.',
     'error_primarykey_exists' => 'Já existe um registro com esta chave',
     'error_tab' => 'ver',
+    'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
     'error_uniquefield' => 'O valor para este campo precisa ser único',
     'error_uniquefieldset' => 'O valor para a combinação desses campos deve ser único',
@@ -142,11 +182,13 @@ return [
     'feedback_update_cancelled' => 'As mudanças não foram gravadas.',
     'feedback_update_failed' => 'As mudanças não puderam ser gravadas.',
     'feedback_update_success' => 'As mudanças foram aplicadas com sucesso.',
+    'field_obligatory' => 'Este campo é obrigatório',
     'filecontent' => 'Conteúdo',
     'filename' => 'Nome do arquivo',
     'filename_invalid' => 'Esse nome de arquivo não é válido',
     'file_exists' => 'Já existe um arquivo com este nome',
     'file_not_exist' => 'O arquivo não existe',
+    'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remover a pesquisa selecionada',
     'fri' => 'Sex',
@@ -177,6 +219,7 @@ return [
     'import_upload' => 'Enviar arquivo',
     'import_upload_explanation' => 'Enviar um arquivo de texto com dados a importar para o banco de dados.',
     'import_validatefirst' => 'Não validar antes de importar',
+    'intro_addorcopy' => 'Do you want to create a new record or copy an existing record?',
     // Missing string!!!
     'invalid_relative_url' => "Invalid relative URL, please use this format: '/mysite/guestbook'",
     // Missing string!!!
@@ -203,12 +246,18 @@ return [
     'list_null_value_obligatory' => '(Select a value...)',
     // Missing string!!!
     'load_criteria' => 'Ler pesquisa gravada',
+    'lock_expired' => 'Os ítens que você abriu não estão acessíveis por você exclusivamente. Isso pode ter várias razões, a mais comum é que você não o tenha salvo por um longo período de tempo. Você pode salvar seu trabalho, mas é possível que os ítens estejam atualmente bloqueados por um outro usuário.',
     'lock_info_line' => '[user_id] (ip: [user_ip]) since [lock_date]',
     // Missing string!!!
+    'lock_locked' => 'Os ítens selecionados não estão acessíveis porque outro usuário os bloqueou.',
+    'logged_in_as' => 'No sistema como',
     'login' => 'Entrar',
+    'login_failed' => 'Entrada no sistema falhou',
     'login_form' => 'Entrar no Sistema',
+    'logout' => 'Sair',
     'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
     // Missing string!!!
+    'lowerchars' => 'caracteres minúsculos',
     'mar' => 'Mar',
     'march' => 'Março',
     'may' => 'Maio',
@@ -216,6 +265,7 @@ return [
     'menu_main' => 'Principal',
     'mon' => 'Seg',
     'monday' => 'Segunda-feira',
+    'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'Novo',
     'next' => 'Próximo',
@@ -223,6 +273,8 @@ return [
     'none' => 'Nenhum',
     'nov' => 'Nov',
     'november' => 'Novembro',
+    'no_color_selected' => 'Cor não selecionada',
+    'no_copyable_records' => 'no copyable records',
     // Missing string!!!
     'no_records_to_import' => 'No records found that needed to be imported.',
     // Missing string!!!
@@ -236,14 +288,19 @@ return [
     'password' => 'Senha',
     'password_again' => 'Novamente',
     'password_current' => 'Atual',
+    'password_forgotten' => 'Esqueceu a senha',
     'password_hidden' => '*****',
     'password_incorrect' => 'A senha que você digitou não estava correta!',
+    'password_invalid' => 'A senha fornecida não é uma senha válida.',
     'password_new' => 'Nova',
+    'permission_denied' => 'Desculpe, Você não tem permissão para realizar esta ação',
+    'previous' => 'Anterior',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
     'relogin' => 'Entrar novamente',
     'remove_criterium' => 'Remover',
     'remove_current_file' => 'Remover arquivo atual',
+    'replace_by' => 'Substituir por',
     'reset_criteria' => 'Nova pesquisa',
     'restricted_delete_error' => 'Há informações detalhadas abaixo deste registro que precisam ser removidas primeiro.',
     'sat' => 'Sáb',
@@ -292,6 +349,8 @@ return [
     // Missing string!!!
     'smartsearch' => 'Pesquisa inteligente',
     'sort' => 'Ordem',
+    'specialchars' => 'caracteres especiais',
+    'steelblue' => 'SteelBlue',
     // Missing string!!!
     'submit' => 'Enviar',
     'successfully_imported_one_record' => 'Successfully imported 1 record.',
@@ -363,6 +422,7 @@ return [
     // Missing string!!!
     'title_select' => 'Seleção',
     'title_session_expired' => 'Sessão expirou',
+    'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Hoje',
     'tue' => 'Ter',
@@ -378,5 +438,18 @@ return [
     'wed' => 'Qua',
     'wednesday' => 'Quarta-feira',
     'with_selected' => 'Com os selecionados',
+    'ww_sourcemode' => 'Modo código-fonte',
+    'ww_visualmode' => 'Modo visual',
+    'wysiwyg_delete_cell' => 'Remover célula',
+    'wysiwyg_delete_col' => 'Remover coluna',
+    'wysiwyg_delete_row' => 'Remover linha',
+    'wysiwyg_fontface' => 'Fonte',
+    'wysiwyg_fontsize' => 'Pt',
+    'wysiwyg_insert_cell' => 'Inserir célula',
+    'wysiwyg_insert_col' => 'Inserir coluna',
+    'wysiwyg_insert_row' => 'Inserir linha',
+    'wysiwyg_insert_table' => 'Inserir tabela',
+    'wysiwyg_merge_cell' => 'Mesclar células',
+    'wysiwyg_split_cell' => 'Dividir células',
     'yes' => 'Sim',
 ];

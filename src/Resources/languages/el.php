@@ -19,18 +19,26 @@ return [
     'above_maximum_value' => 'Πάνω από την μέγιστη επιτρεπόμενη τιμή',
     'access_denied' => 'Αρνηση πρόσβασης',
     'add' => 'Δημιουργία',
+    'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
     'admin' => 'Διαχείριση',
+    'administration_application' => 'Εφαρμογή διαχείρισης',
     'all' => 'All',
     // Missing string!!!
+    'alphabeticchars' => 'alphabetic characters',
     // Missing string!!!
+    'apply' => 'Εφαρμογή',
+    'app_close' => 'Κλείσε',
     'app_description' => 'Καλώς ήλθατε σε αυτήν την εφαρμογή ATK.',
+    'app_launcher' => 'Εκκινητής εφαρμογών ATK',
+    'app_reopen' => 'Επανεκκίνηση',
     'app_shorttitle' => 'ΕφATK',
     'app_title' => 'Εφαρμογή ATK',
     'apr' => 'Απρ',
     'april' => 'Απρίλιος',
+    'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "Το πεδίο '%s' δεν επιτρέπει την διαγραφή της εγγραφής. (%s)'",
     'aug' => 'Αυγ',
@@ -41,33 +49,55 @@ return [
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
     'auth_no_server' => 'Δεν προσδιορίστηκε σέρβερ. Δεν είναι δυνατή η εξακρίβωση του χρήστη (παρακαλώ συμβουλευτείτε τον διαχειριστή του συστήματός σας).',
+    'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
+    'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
+    'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
     'auth_unable_to_connect' => 'Δεν ήταν δυνατή η σύνδεση με τον σέρβερ για την εξακρίβωση του χρήστη (παρακαλώ συμβουλευτείτε τον διαχειριστή του συστήματός σας).',
+    'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
+    'autocomplete_no_results' => 'No results found for the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_contains' => 'No results found that contain the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_exact' => 'No results found that exactly match the given search value.',
     // Missing string!!!
+    'autocomplete_no_results_startswith' => 'No results found that start with the given search value.',
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
     'back' => 'Πίσω',
+    'back_to' => 'Πίσω σε',
+    'below_minimum_value' => 'Κάτω από την ελάχιστη επιτρεπτή τιμή',
     'cancel' => 'Ακυρο',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
+    'cannot create directory' => 'Αδύνατη η δημιουργία του φακέλου: ',
+    'cannot make file' => 'Αδύνατη η δημιουργία του αρχείου: ',
+    'cannot_remove_file' => 'Αδύνατη η διαγραφή του αρχείου!',
+    'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
     'charset' => 'UTF-8',
+    'check rights to' => 'Παρακαλώ ελέγξτε ότι έχετε τα δικαιώματα για νά ',
     'check_all' => 'Επιλογή όλων',
     'check_none' => 'Επιλογή κανενός',
+    'clickheretoadd_postfix' => '.',
+    'clickheretoadd_prefix' => 'Πατήστε εδώ για να ποσθέσετε ένα νέο ',
     'close' => 'Κλείσε',
+    'color' => 'Color',
     // Missing string!!!
+    'colorcode' => 'Κωδικός χρώματος',
+    'colorpicker_selectcolor' => 'Επιλέξτε χρώμα',
     'column' => 'στήλη',
     'column_asc' => 'Πάνω',
     'column_desc' => 'Κάτω',
     'column_subtotal' => 'Υποσύνολο',
     'column_unsubtotal' => 'Οχι Υποσ.',
     'confirm_delete' => 'Θέλετε σίγουρα να διαγράψετε αυτή την γραμμή ;',
+    'confirm_delete_multi' => 'Θέλετε σίγουρα να διαγράψετε αυτές τις γραμμές ;',
+    'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
     'copy' => 'Αντιγραφή',
     'criterium_field' => 'Field',
@@ -96,6 +126,7 @@ return [
     'delimiter' => 'Delimiter',
     // Missing string!!!
     'deselect_all' => 'Αποεπιλογή όλων',
+    'document' => 'Open document',
     // Missing string!!!
     'edit' => 'Επεξεργασία',
     'editcopy' => 'Επεξεργασία αντιγραφή',
@@ -104,13 +135,20 @@ return [
     'enclosure' => 'Enclosure',
     // Missing string!!!
     'error' => 'Σφάλμα',
+    'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
+    'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     // Missing string!!!
+    'error_attributeedit_update' => 'An error occured when updating the selected records.',
     // Missing string!!!
+    'error_attributeedit_validationfailed' => 'This value is not allowed.',
     // Missing string!!!
+    'error_captchafield' => 'The given code is invalid, please try again',
     // Missing string!!!
+    'error_copy_record' => 'Unknown error copying record',
     // Missing string!!!
     'error_date_invalid' => 'Λάθος ημερομηνία',
+    'error_fileexists' => 'Το αρχείο υπάρχει ήδη στον σέρβερ. Παρακαλώ αλλάξτε του όνομα.',
     'error_file_mime_type' => 'Unsupported file uploaded please check your filetype or extension',
     // Missing string!!!
     'error_file_size' => 'Το αρχείο είναι υπερβολικά μεγάλο',
@@ -126,9 +164,11 @@ return [
     // Missing string!!!
     'error_obligatoryfield' => 'Αυτό το πεδίο είναι υποχρεωτικό',
     'error_password_incorrect' => 'Ο κωδικός που δώσατε είναι λανθασμένος!',
+    'error_password_invalid' => 'Ο κωδικός που δώσατε δεν είναι ένας σωστός κωδικός!',
     'error_password_nomatch' => 'Οι δοθέντες κωδικοί διαφέρουν.',
     'error_primarykey_exists' => 'Υπάρχει ήδη εγγραφή με αυτό το κλειδί',
     'error_tab' => 'βλέπε',
+    'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
     'error_uniquefield' => "Η τιμή γι'αυτό το πεδίο πρέπει να είναι μοναδική",
     'error_uniquefieldset' => 'Η τιμή για τον συνδιασμό αυτών των πεδίων πρέπει να είναι μοναδική',
@@ -157,11 +197,13 @@ return [
     'feedback_update_cancelled' => 'Οι αλλάγές δεν αποθηκεύτηκαν.',
     'feedback_update_failed' => 'Οι αλλάγές δεν μπόρεσαν να αποθηκευτούν.',
     'feedback_update_success' => 'Οι αλλάγές αποθηκεύτηκαν.',
+    'field_obligatory' => 'Το πεδίο είναι υποχρεωτικό',
     'filecontent' => 'Περιεχόμενο',
     'filename' => 'Ονομα αρχείου',
     'filename_invalid' => 'Αυτό το όνομα αρχείου είναι λανθασμένο',
     'file_exists' => 'Υπάρχει ήδη αρχείο με το ίδιο όν όνομα',
     'file_not_exist' => 'Το αρχείο δεν υπάρχει',
+    'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
@@ -193,6 +235,7 @@ return [
     'import_upload' => 'Ανέβασμα',
     'import_upload_explanation' => 'Ανέβασμα αρχείου κειμένου με δεδομένα για εισαγωγή στην βάση δεδομένων.',
     'import_validatefirst' => 'Μην κάνεις έλεγχο πριν την εισαγωγή',
+    'intro_addorcopy' => 'Do you want to create a new record or copy an existing record?',
     // Missing string!!!
     'invalid_relative_url' => "Invalid relative URL, please use this format: '/mysite/guestbook'",
     // Missing string!!!
@@ -220,12 +263,18 @@ return [
     // Missing string!!!
     'load_criteria' => 'Load saved search',
     // Missing string!!!
+    'lock_expired' => 'Οι εγγραφές που έχετε ανοίξει δεν είναι πιά αποκλειστικά προσβάσιμες από εσάς. Αυτό μπορεί να έχει διάφορες αιτίες, η πιο συνηθισμένη είναι ότι δεν αποθηκεύσατε για πάρα πολύ ώρα. Μπορείτε να δοκιμάσετε να αποθηκεύσετε την εργασία σας, αλλά είναι πιθανόν οι εγγραφές να είναι κλειδωμένες από άλλον χρήστη.',
     'lock_info_line' => '[user_id] (ip: [user_ip]) since [lock_date]',
     // Missing string!!!
+    'lock_locked' => 'Οι επιλεγμένες εγγραφές δεν είναι διαθέσιμες γιατί κάποιος άλλος χρήστης τις κλείδωσε.',
+    'logged_in_as' => 'Εχετε συνδεθεί σαν',
     'login' => 'Σύνδεση',
+    'login_failed' => 'Η σύνδεση απέτυχε',
     'login_form' => 'Σύνδεση',
+    'logout' => 'Αποσύνδεση',
     'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
     // Missing string!!!
+    'lowerchars' => 'lowercase characters',
     // Missing string!!!
     'mar' => 'Μαρ',
     'march' => 'Mάρτιος',
@@ -234,6 +283,7 @@ return [
     'menu_main' => 'Κεντρικό μενού',
     'mon' => 'Δευ',
     'monday' => 'Δευτέρα',
+    'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'Νέο',
     'next' => 'Επόμενο',
@@ -241,7 +291,9 @@ return [
     'none' => 'Κανένα',
     'nov' => 'Νοε',
     'november' => 'Νοέμβριος',
+    'no_color_selected' => 'No color selected',
     // Missing string!!!
+    'no_copyable_records' => 'no copyable records',
     // Missing string!!!
     'no_records_to_import' => 'No records found that needed to be imported.',
     // Missing string!!!
@@ -257,16 +309,21 @@ return [
     'password' => 'Κωδικός',
     'password_again' => 'Ξανά',
     'password_current' => 'Τρέχων',
+    'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
     'password_incorrect' => 'Ο κωδικός που δώσατε δεν ήταν σωστός!',
+    'password_invalid' => 'Ο κωδικός που δόθηκε δεν είναι ένας σωστός κωδικός.',
     'password_new' => 'Νέος',
+    'permission_denied' => 'Λυπάμαι, δεν έχετε άδεια εκτέλεσης αυτής της ενέργειας.',
+    'previous' => 'Προηγούμενο',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
     'relogin' => 'Συνδεθείτε ξανά',
     'remove_criterium' => 'Remove',
     // Missing string!!!
     'remove_current_file' => 'Διαγραφή τρέχοντος αρχείου',
+    'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
     // Missing string!!!
@@ -320,7 +377,9 @@ return [
     'smartsearch' => 'Smart search',
     // Missing string!!!
     'sort' => 'Ταξινόμιση',
+    'specialchars' => 'special characters',
     // Missing string!!!
+    'steelblue' => 'SteelBlue',
     // Missing string!!!
     'submit' => 'Προχώρα',
     'successfully_imported_one_record' => 'Successfully imported 1 record.',
@@ -394,6 +453,7 @@ return [
     // Missing string!!!
     'title_select' => 'Επιλογή',
     'title_session_expired' => 'Η σύνδεση έληξε',
+    'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Σήμερα',
     'tue' => 'Τρι',
@@ -411,5 +471,18 @@ return [
     'wed' => 'Τετ',
     'wednesday' => 'Τετάρτη',
     'with_selected' => 'Με επιλεγμένα',
+    'ww_sourcemode' => 'Λειτουργία πηγής',
+    'ww_visualmode' => 'Οπτική λειτουργία',
+    'wysiwyg_delete_cell' => 'Διαγραφή κελιού',
+    'wysiwyg_delete_col' => 'Διαγραφήη στήλης',
+    'wysiwyg_delete_row' => 'Διαγραφή γραμμής',
+    'wysiwyg_fontface' => 'Γραμματοσειρά',
+    'wysiwyg_fontsize' => 'Pt',
+    'wysiwyg_insert_cell' => 'Εισαγωγή κελιού',
+    'wysiwyg_insert_col' => 'Εισαγωγή στήλης',
+    'wysiwyg_insert_row' => 'Εισαγωγή γραμμής',
+    'wysiwyg_insert_table' => 'Εισαγωγή πίνακα',
+    'wysiwyg_merge_cell' => 'Συγχώνευση κελιών',
+    'wysiwyg_split_cell' => 'Διαχωρισμός κελιών',
     'yes' => 'Ναι',
 ];
