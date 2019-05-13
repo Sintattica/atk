@@ -1724,9 +1724,21 @@ EOF;
             $parts = explode(',', $order);
 
             foreach ($parts as $part) {
-                $split = preg_split('/\s+/', trim($part));
-                $field = isset($split[0]) ? $split[0] : null;
-                $fieldDirection = empty($split[1]) ? 'ASC' : strtoupper($split[1]);
+                // Check if $part ends with 'ASC' or 'DESC' and set $fieldDirection accordingly
+                $lastSpace = strrpos($part, ' ');
+                switch (strtoupper(substr($part, $lastSpace+1))) {
+                    case 'ASC':
+                        $fieldDirection = 'ASC';
+                        $field = substr($part, 0, $lastSpace);
+                        break;
+                    case 'DESC':
+                        $fieldDirection = 'DESC';
+                        $field = substr($part, 0, $lastSpace);
+                    default:
+                        $fieldDirection = 'ASC';
+                        $field = $part;
+                }
+                $fieldDirection = strtoupper(substr($part, $lastSpace+1)) == 'ASC' ? 'ASC' : 'DESC';
 
                 // if our default direction is DESC (the opposite of the default ASC)
                 // we always have to switch the given direction to be the opposite, e.g.
@@ -1738,17 +1750,13 @@ EOF;
                     $fieldDirection = $direction;
                 }
 
-                if (strpos($field, '.') !== false) {
-                    list(, $field) = explode('.', $field);
-                }
-
-                $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
-
                 // realias if destination order contains the wrong tablename.
-                if (strpos($newPart, $this->m_destInstance->m_table.'.') !== false) {
-                    $newPart = str_replace($this->m_destInstance->m_table.'.', $table.'.', $newPart);
+                $oldName = Db::quoteIdentifier($this->m_destInstance->m_table);
+                if (strpos($field, $oldName) !== false) {
+                    $field = str_replace($oldName, Db::quoteIdentifier($table), $field);
                 }
-                $newParts[] = $newPart;
+
+                $newParts[] = $field.' '.$direction;
             }
 
             return implode(', ', $newParts);
@@ -1760,7 +1768,7 @@ EOF;
 
             $order = '';
             foreach ($fields as $field) {
-                $order .= (empty($order) ? '' : ', ').$table.'.'.$field;
+                $order .= (empty($order) ? '' : ', ').Db::quoteIdentifier($table, $field).' '.$direction;
             }
 
             return $order;
