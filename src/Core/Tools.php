@@ -1948,6 +1948,38 @@ class Tools
     }
 
     /**
+     * Return an identifier suitable for html name attribute
+     *
+     * constraints : « begin with a letter ([A-Za-z]) and may be followed by
+     * any number of letters, digits ([0-9]), hyphens ("-"), underscores ("_"),
+     * colons (":") » (https://www.w3.org/TR/html4/types.html#type-id)
+     * periods are excluded because PHP replace them with underscores.
+     *
+     * Note : this encoding is not reversible.
+     *
+     * @param string $name The name you wish to convert. If it already fulfill
+     *                     constraints, the same string will be returned.
+     *
+     * @return string the HTML identifier.
+     */
+    public static function htmlName(string $name) : string
+    {
+        // Valid characters constraints :
+        $htmlName = preg_replace('/[^A-Za-z0-9_:\-]/', '_', $name);
+        // If we replaced some characters, then we append a checksum part to it
+        // to avoid that '首页' and '典范' return the same name.
+        if ($htmlName != $name) {
+            $htmlName .= '_'.substr(md5($name), 0, 8);
+        }
+        // "Begin with a letter" constraints :
+        $firstChar = substr($htmlName, 0, 1);
+        if (!(($firstChar >= 'a' and $firstChar <= 'z') or ($firstChar >= 'A' and $firstChar <= 'Z'))) {
+            $htmlName = 'a'.$htmlName;
+        }
+        return $htmlName;
+    }
+
+    /**
      * ATK version of the PHP html_entity_decode function. Works just like PHP's
      * html_entity_decode function, but falls back to Tools::atkGetCharset() instead of
      * PHP's default charset, if no charset is given.

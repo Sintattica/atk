@@ -1781,7 +1781,7 @@ class DataGrid
         // if we are not embedded in an edit form we generate
         // the form name based on the grid name
         if (!$this->isEmbedded()) {
-            $this->setFormName($this->getName().'_form');
+            $this->setFormName(Tools::htmlName($this->getName()).'_form');
         }
 
         // temporarily overwrite the node postvars so that select and count

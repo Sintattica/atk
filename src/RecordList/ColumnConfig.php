@@ -611,8 +611,9 @@ class ColumnConfig
         $expression = trim($orderby);
         $expressionParts = preg_split('/\\s+/', $expression);
 
-        if (Tools::count($expressionParts) == 2 && in_array(strtoupper($expressionParts[1]), ['DESC', 'ASC'])) {
-            list($column, $direction) = $expressionParts;
+        if (in_array(strtoupper($expressionParts[count($expressionParts)-1]), ['DESC', 'ASC'])) {
+            $direction = array_pop($expressionParts);
+            $column = implode(' ', $expressionParts);
         } else {
             $column = $expression;
             $direction = 'ASC';

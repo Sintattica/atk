@@ -1071,11 +1071,6 @@ class Attribute
     /**
      * Return the name identifier (name="") of the attribute.
      *
-     * constraints : « begin with a letter ([A-Za-z]) and may be followed by any
-     * number of letters, digits ([0-9]), hyphens ("-"), underscores ("_"),
-     * colons (":") » (https://www.w3.org/TR/html4/types.html#type-id)
-     * periods are excluded because PHP replace them with underscores.
-     *
      * Note: Without $fieldprefix argument, you get the index in decoded
      * postvars arrays.
      *
@@ -1088,19 +1083,7 @@ class Attribute
     public function getHtmlName(string $fieldprefix = '') : string
     {
         if (!isset($this->m_htmlname)) {
-            // Valid characters constraints :
-            $newName = preg_replace('/[^A-Za-z0-9_:\-]/', '_', $this->m_name);
-            // If we replaced some characters, then we append a checksum part to it
-            // to avoid that '首页' and '典范' return the same name.
-            if ($newName != $this->m_name) {
-                $newName .= '_'.substr(md5($this->m_name), 0, 8);
-            }
-            // "Begin with a letter" constraints :
-            $firstChar = substr($newName, 0, 1);
-            if (!(($firstChar >= 'a' and $firstChar <= 'z') or ($firstChar >= 'A' and $firstChar <= 'Z'))) {
-                $newName = 'a'.$newName;
-            }
-            $this->m_htmlname = $newName;
+            $this->m_htmlname = Tools::htmlName($this->m_name);
         }
         return $fieldprefix.$this->m_htmlname;
     }
