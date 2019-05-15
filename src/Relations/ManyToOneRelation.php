@@ -1280,16 +1280,18 @@ EOF;
                 $value = array($value);
             }
 
-            if (count($value) == 1) { // exactly one value
-
-                if ($value[0] == '__NONE__') {
-                    $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()));
-                } elseif ($value[0] != '') {
-                    $searchConditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
-                } else {
-                    return null;
-                }
-            } else { // search for more values using IN()
+            $keyNone = array_search('__NONE__', $value);
+            if ($keyNone !== FALSE) {
+                $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()));
+                // Removing '__NONE__' and reindexing $value :
+                unset($value[$keyNone]);
+                $value = array_values($value);
+            }
+            // If only one (other) value : searching with '='
+            if (count($value) == 1) {
+                $searchConditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
+            // If several (other) values : searching with 'IN()'
+            } elseif (!empty($value)) {
                 $searchConditions[] = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
             }
         } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
