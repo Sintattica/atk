@@ -1331,7 +1331,13 @@ EOF;
                         return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
                     }
                 } else { // search for more values using IN()
-                    return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
+                    $keyNone = array_search('__NONE__', $value);
+                    $condition = '';
+                    if ($keyNone !== FALSE) {
+                        $condition = $query->nullCondition($table.'.'.$this->fieldName(), true).' OR ';
+                        unset($value[$keyNone]);
+                    }
+                    return $condition.$table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
                 }
             } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
 
