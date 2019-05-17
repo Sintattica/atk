@@ -39,7 +39,7 @@ class MultiSelectAttribute extends ListAttribute
     public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
         parent::__construct($name, $flags, $optionArray, $valueArray);
-        
+
         $size = 0;
         $valueArray = $this->getValues();
         for ($i = 0, $_i = Tools::count($valueArray); $i < $_i; ++$i) {
@@ -203,7 +203,11 @@ class MultiSelectAttribute extends ListAttribute
         if (is_array($value) && $value[0] != '' && Tools::count($value) > 0) {
             $searchcondition = [];
             foreach ($value as $str) {
-                $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
+                if ($str == '__NONE__') {
+                    $searchcondition[] = $query->nullCondition($table.'.'.$this->fieldName(), true);
+                } else {
+                    $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
+                }
             }
             $searchcondition = implode(' OR ', $searchcondition);
         }
