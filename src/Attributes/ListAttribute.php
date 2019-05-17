@@ -503,14 +503,17 @@ EOF;
 
         $conditions = [];
 
-        if (in_array('__NONE__', $value)) {
-            unset($value[array_search('__NONE__', $value)]);
-            $conditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
+        $keyNone = array_search('__NONE__', $value);
+        if ($keyNone !== FALSE) {
+            $conditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()));
+            // Removing '__NONE__' and reindexing $value :
+            unset($value[$keyNone]);
+            $value = array_values($value);
         }
 
         if (count($value) == 1) {
             $conditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
-        } elseif (count($value) > 1) {
+        } elseif (!empty($value)) {
             $conditions[] = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
         }
 

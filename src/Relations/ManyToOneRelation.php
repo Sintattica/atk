@@ -1280,6 +1280,10 @@ EOF;
                 $value = array($value);
             }
 
+            if (empty($value) || $value[0] == '') {
+                return null;
+            }
+
             $keyNone = array_search('__NONE__', $value);
             if ($keyNone !== FALSE) {
                 $searchConditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()));
