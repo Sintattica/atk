@@ -18,26 +18,25 @@ ATK.Tabs = {
      * Toggle section visibility.
      */
     handleSectionToggle: function (element, expand, url) {
-        element = $(element);
-
 
         // automatically determine if we need to expand or collapse
         if (expand == null) {
             expand = ATK.Tabs.closedSections.indexOf(element.id) >= 0;
         }
 
-        $$('tr', 'div.atkSection', 'div.section-item').select(function (tr) {
-            return $(tr).hasClassName(element.id);
-        }).each(function (tr) {
+        $('div.section-item').filter(function (id, tr) {
+            return $(tr).hasClass(element.id);
+        }).each(function (id, tr) {
+            var $tr = $(tr);
             if (expand) {
-                Element.show(tr);
-                element.removeClassName('closedSection');
-                element.addClassName('openedSection');
-                ATK.Tabs.closedSections = ATK.Tabs.closedSections.without(element.id);
+                $tr.show();
+                $tr.removeClass('closedSection');
+                $tr.addClass('openedSection');
+                ATK.Tabs.closedSections = ATK.Tabs.closedSections.filter(id => id != element.id);
             } else {
-                Element.hide(tr);
-                element.removeClassName('openedSection');
-                element.addClassName('closedSection');
+                $tr.hide();
+                $tr.removeClass('openedSection');
+                $tr.addClass('closedSection');
                 ATK.Tabs.closedSections.push(element.id);
             }
         });
@@ -49,10 +48,7 @@ ATK.Tabs = {
             param = 'closed';
         }
 
-        new Ajax.Request(url, {
-            method: 'get',
-            parameters: 'atksectionstate=' + param
-        });
+        $.get(url+'&atksectionstate='+param);
     },
 
     /**
@@ -80,7 +76,12 @@ ATK.Tabs = {
         var sectionItems = jQuery('div.section-item');
         sectionItems.each(function (index, el) {
             var $el = jQuery(el);
-            var show = ($el.hasClass('section_' + tab) && ATK.Tabs.closedSections.indexOf($el.attr('id')) < 0);
+            var show = $el.attr('class').includes('section_'+tab);
+            ATK.Tabs.closedSections.forEach(function(section) {
+                if ($el.hasClass(section)) {
+                    show = false;
+                }
+            });
 
             if (show) {
                 $el.show();
