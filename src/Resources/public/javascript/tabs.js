@@ -27,25 +27,25 @@ ATK.Tabs = {
         $('div.section-item').filter(function (id, tr) {
             return $(tr).hasClass(element.id);
         }).each(function (id, tr) {
-            var $tr = $(tr);
             if (expand) {
-                $tr.show();
-                $tr.removeClass('closedSection');
-                $tr.addClass('openedSection');
-                ATK.Tabs.closedSections = ATK.Tabs.closedSections.filter(id => id != element.id);
+                $(tr).show();
             } else {
-                $tr.hide();
-                $tr.removeClass('openedSection');
-                $tr.addClass('closedSection');
-                ATK.Tabs.closedSections.push(element.id);
+                $(tr).hide();
             }
         });
 
         var param;
+        icon = $("img_"+element.id);
         if (expand) {
             param = 'opened';
+            icon.removeClass('fa-plus-square-o');
+            icon.addClass('fa-minus-square-o');
+            ATK.Tabs.closedSections = ATK.Tabs.closedSections.filter(id => id != element.id);
         } else {
             param = 'closed';
+            icon.removeClass('fa-minus-square-o');
+            icon.addClass('fa-plus-square-o');
+            ATK.Tabs.closedSections.push(element.id);
         }
 
         $.get(url+'&atksectionstate='+param);
