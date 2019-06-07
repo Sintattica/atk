@@ -624,39 +624,42 @@ class ManyToOneRelation extends Relation
 
     public function display($record, $mode)
     {
-        if ($this->createDestination()) {
-            $cnt = isset($record[$this->fieldName()]) ? Tools::count($record[$this->fieldName()]) : null;
-            if ($cnt === Tools::count($this->m_refKey)) {
-                $this->populate($record);
-            }
-
-            if (!$this->isEmpty($record)) {
-                $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
-                if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && (!in_array($mode, array('csv', 'plain')))) { // create link to edit/view screen
-                    if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
-                        $saveForm = $mode == 'add' || $mode == 'edit';
-                        $url = Tools::dispatch_url($this->m_destination, 'view',
-                            ['atkselector' => $this->m_destInstance->primaryKeyString($record[$this->fieldName()])]);
-
-                        if ($mode != 'list') {
-                            $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm,
-                                    'class="atkmanytoonerelation-link"');
-                        } else {
-                            $result = Tools::href($url, $result, SessionManager::SESSION_NESTED, $saveForm);
-                        }
-
-                    }
-                }
-            } else {
-                $result = !in_array($mode, array('csv', 'plain', 'list')) ? $this->getNoneLabel($mode) : ''; // no record
-            }
-
-            return $result;
-        } else {
+        if (!$this->createDestination()) {
             Tools::atkdebug("Can't create destination! ($this -> m_destination");
+            return '';
         }
 
-        return '';
+        $cnt = isset($record[$this->fieldName()]) ? Tools::count($record[$this->fieldName()]) : null;
+        if ($cnt === Tools::count($this->m_refKey)) {
+            $this->populate($record);
+        }
+
+        if ($this->isEmpty($record)) {
+            return !in_array($mode, array('csv', 'plain', 'list')) ? $this->getNoneLabel($mode) : ''; // no record
+        }
+
+        $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+        if (in_array($mode, array('csv', 'plain'))) {
+            return $result;
+        }
+
+        $result = htmlspecialchars($result);
+        if (!$this->hasFlag(self::AF_RELATION_AUTOLINK) || !$this->m_destInstance->allowed('view') || $this->m_destInstance->hasFlag(Node::NF_NO_VIEW) || $result == '') {
+            return $result;
+        }
+
+        // create link to edit/view screen
+        $saveForm = $mode == 'add' || $mode == 'edit';
+        $url = Tools::dispatch_url($this->m_destination, 'view',
+            ['atkselector' => $this->m_destInstance->primaryKeyString($record[$this->fieldName()])]);
+
+        if ($mode != 'list') {
+            $result .= ' '.Tools::href($url, Tools::atktext('view'), SessionManager::SESSION_NESTED, $saveForm,
+                    'class="atkmanytoonerelation-link"');
+        } else {
+            $result = Tools::href($url, $result, SessionManager::SESSION_NESTED, $saveForm);
+        }
+        return $result;
     }
 
     /**

@@ -366,38 +366,36 @@ class ManyToManyRelation extends Relation
     public function display($record, $mode)
     {
         $result = '';
-        if ($this->createDestination() && Tools::atk_value_in_array($record[$this->fieldName()])) {
-            $recordset = [];
-            $remotekey = $this->getRemoteKey();
-            for ($i = 0; $i < Tools::count($record[$this->fieldName()]); ++$i) {
-                $rec = $record[$this->fieldName()][$i][$remotekey];
-                if (!is_array($rec)) {
-                    if (empty($rec)) {
-                        continue;
-                    }
-                    $selector = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField(), $rec);
-                    $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
-                    $descr = $this->m_destInstance->descriptor($rec);
-                } else {
-                    $descr = $this->m_destInstance->descriptor($rec);
-                }
-                if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
-                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getDestination()->primaryKeyString($rec))),
-                        $descr, SessionManager::SESSION_NESTED);
-                }
-                $recordset[] = $descr;
-            }
-            if (!in_array($mode, array('csv', 'plain'))) {
-                $result = '<ul><li>'.implode('<li>', $recordset).'</ul>';
-            } else {
-                $result = implode(', ', $recordset);
-            }
-        } else {
-            if (!in_array($mode, array('csv', 'plain'))) {
-                $result = $this->text('none');
-            }
+        if (!$this->createDestination() || !Tools::atk_value_in_array($record[$this->fieldName()])) {
+            return in_array($mode, array('csv', 'plain')) ? '' : $this->text('none');
         }
 
+        $recordset = [];
+        $remotekey = $this->getRemoteKey();
+        foreach ($record[$this->fieldName()] as $dest) {
+            $rec = $dest[$remotekey];
+            if (!is_array($rec)) {
+                if (empty($rec)) {
+                    continue;
+                }
+                $selector = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField(), $rec);
+                $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
+            }
+            $descr = $this->m_destInstance->descriptor($rec);
+            if (!in_array($mode, array('csv', 'plain'))) {
+                $descr = htmlspecialchars($descr);
+            }
+            if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
+                $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getDestination()->primaryKeyString($rec))),
+                    $descr, SessionManager::SESSION_NESTED);
+            }
+            $recordset[] = $descr;
+        }
+        if (!in_array($mode, array('csv', 'plain'))) {
+            $result = '<ul><li>'.implode('<li>', $recordset).'</ul>';
+        } else {
+            $result = implode(', ', $recordset);
+        }
         return $result;
     }
 

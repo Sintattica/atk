@@ -85,39 +85,35 @@ class UrlAttribute extends Attribute
      */
     public function display($record, $mode)
     {
-        $output = '';
+        if (empty($record[$this->fieldName()])) {
+            return '';
+        }
+        $url = $record[$this->fieldName()];
 
-        if (!empty($record[$this->fieldName()])) {
-            $url = $record[$this->fieldName()];
-
-            $target = '';
-            if (true === $this->m_newWindow) {
-                $target = ' target="_new"';
-            }
-
-            /*
-             * prepend a custom hostname to make the link
-             * go to a custom domain. But only when you are using relative
-             * urls.
-             */
-            if (($this->getBaseUrl()) && (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE)) {
-                $base = $this->getBaseUrl();
-                $url = $base.$url;
-            }
-
-            $text = $record[$this->fieldName()];
-            if (true === $this->m_stripHttp) {
-                $text = preg_replace('/^http:\/\//', '', $text);
-            }
-            if (true === $this->m_allowWrap) {
-                $text = preg_replace('/([^\/?])\/([^\/?])/', '\1/ \2', $text);
-                $text = preg_replace('/([?&].)/', ' \1', $text);
-            }
-
-            $output = '<a href="'.$url.'"'.$target.'">'.$text.'</a>';
+        /*
+         * prepend a custom hostname to make the link
+         * go to a custom domain. But only when you are using relative
+         * urls.
+         */
+        if (($this->getBaseUrl()) && (($this->m_accepts_url_flag & self::RELATIVE) == self::RELATIVE)) {
+            $base = $this->getBaseUrl();
+            $url = $base.$url;
         }
 
-        return $output;
+        if (in_array($mode, array('csv', 'plain'))) {
+            return $url;
+        }
+
+        $target = $this->m_newWindow ? ' target="_new"' : '';
+        $text = $record[$this->fieldName()];
+        if (true === $this->m_stripHttp) {
+            $text = preg_replace('/^http:\/\//', '', $text);
+        }
+        if (true === $this->m_allowWrap) {
+            $text = preg_replace('/([^\/?])\/([^\/?])/', '\1/ \2', $text);
+            $text = preg_replace('/([?&].)/', ' \1', $text);
+        }
+        return '<a href="'.htmlspecialchars($url).'"'.$target.'">'.htmlspecialchars($text).'</a>';
     }
 
     /**
@@ -254,7 +250,7 @@ class UrlAttribute extends Attribute
                 Tools::triggerError($record, $this->fieldName(), 'invalid_relative_url', Tools::atktext('invalid_relative_url'));
             }
         }
-        
+
         if(!$result){
             parent::validate($record, $mode);
         }
