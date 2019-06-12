@@ -664,7 +664,7 @@ class Page
         $res = '';
         if ($this->m_hiddenvars) {
             foreach ($this->m_hiddenvars as $hiddenvarname => $hiddenvarvalue) {
-                $res .= "\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
+                $res .= "\n <span id='$hiddenvarname'>".htmlspecialchars($hiddenvarvalue).'</span>';
             }
         }
 
