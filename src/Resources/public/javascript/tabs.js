@@ -35,7 +35,7 @@ ATK.Tabs = {
         });
 
         var param;
-        icon = $("img_"+element.id);
+        icon = $(document.getElementById("img_"+element.id));
         if (expand) {
             param = 'opened';
             icon.removeClass('fa-plus-square-o');
