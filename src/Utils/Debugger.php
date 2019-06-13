@@ -169,7 +169,7 @@ class Debugger
 
         static $s_first = true;
         $res = '';
-        $url = './debugger.php?atkstackid='.$stackId.'&action='.$action.'&atkprevlevel='.$sm->atkLevel().$this->urlParams($params);
+        $url = './debugger.php?atkstackid='.urlencode($stackId).'&action='.urlencode($action).'&atkprevlevel='.$sm->atkLevel().$this->urlParams($params);
 
         if ($popup) {
             if ($s_first) {

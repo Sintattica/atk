@@ -322,7 +322,7 @@ class Tools
         }
 
         if (function_exists('debug_backtrace')) {
-            self::atkdebug('Trace:'.self::atkGetTrace(), self::DEBUG_ERROR);
+            self::atkdebug('Trace:'.self::atkGetTrace('html'), self::DEBUG_ERROR|self::DEBUG_ESCAPED);
         }
 
         $default_error_handlers = [];
@@ -1720,14 +1720,14 @@ class Tools
         if (Config::getGlobal('debug') >= 2) {
             $debugger = Debugger::getInstance();
             $debugger->setRedirectUrl($location);
-            self::atkdebug('Non-debug version would have redirected to <a href="'.$location.'">'.htmlspecialchars($location).'</a>', self::DEBUG_ESCAPED);
+            self::atkdebug('Non-debug version would have redirected to <a href="'.htmlspecialchars($location).'">'.htmlspecialchars($location).'</a>', self::DEBUG_ESCAPED);
             if ($exit) {
                 $output = Output::getInstance();
                 $output->outputFlush();
                 exit();
             }
         } else {
-            self::atkdebug('redirecting to: '.$location);
+            self::atkdebug('redirecting to: '.htmlspecialchars($location));
 
             if (substr($location, -1) == '&') {
                 $location = substr($location, 0, -1);

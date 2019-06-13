@@ -453,7 +453,7 @@ class ActionHandler
         $method = 'partial_'.$parts[0];
 
         if (!method_exists($this, $method)) {
-            $content = '<span style="color: red; font-weight: bold">Invalid partial \''.$this->m_partial.'\'!</span>';
+            $content = '<span style="color: red; font-weight: bold">Invalid partial \''.htmlspecialchars($this->m_partial).'\'!</span>';
         } else {
             $content = $this->$method($partial);
         }
