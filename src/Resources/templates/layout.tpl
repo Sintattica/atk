@@ -13,7 +13,6 @@
 
 {if isset($body)}
     <body{if $extrabodyprops} {$extrabodyprops}{/if}>{$body}
-        <div id="hiddenvars" style="display: none">{if isset($hiddenvars)}{$hiddenvars}{/if}</div>
     </body>
 {/if}
 

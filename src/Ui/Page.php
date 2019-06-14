@@ -89,13 +89,6 @@ class Page
      */
     public $m_content = '';
 
-    /*
-     * The hidden variables for the page
-     * @access private
-     * @var array
-     */
-    public $m_hiddenvars = [];
-
     /**
      * Page title.
      *
@@ -353,20 +346,6 @@ class Page
     public function getStyleCodes()
     {
         return $this->m_stylecode;
-    }
-
-    /**
-     * Register hidden variables. These will be accessible to javascript and DHTML functions/scripts
-     * but will not be shown to the user unless he/she has a very, very old browser
-     * that is not capable of rendering CSS.
-     *
-     * @param array $hiddenvars the hiddenvariables we want to register
-     */
-    public function register_hiddenvars($hiddenvars)
-    {
-        foreach ($hiddenvars as $hiddenvarname => $hiddenvarvalue) {
-            $this->m_hiddenvars[$hiddenvarname] = $hiddenvarvalue;
-        }
     }
 
     /**
@@ -634,7 +613,6 @@ class Page
             $layout['body'] = $this->m_content."\n";
         }
 
-        $layout['hiddenvars'] = $this->hiddenVars();
         $layout['atkversion'] = Atk::VERSION;
 
         return $ui->render('layout.tpl', $layout);
@@ -651,24 +629,6 @@ class Page
         $this->addStyles($result, true);
 
         return $result;
-    }
-
-    /**
-     * Here we render a hidden div in the page with hidden variables
-     * that we want to make accessible to client side scripts.
-     *
-     * @return string a hidden div with the selected ATK variabels
-     */
-    public function hiddenVars()
-    {
-        $res = '';
-        if ($this->m_hiddenvars) {
-            foreach ($this->m_hiddenvars as $hiddenvarname => $hiddenvarvalue) {
-                $res .= "\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
-            }
-        }
-
-        return $res;
     }
 
     /**
