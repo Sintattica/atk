@@ -92,7 +92,7 @@ ATK.Tabs = {
         });
 
         jQuery(tabs).each(function (index, label) {
-            var $tab = jQuery('#tab_' + label);
+            var $tab = $(document.getElementById('tab_' + label));
             if (label === tab) {
                 $tab.addClass('activetab active').removeClass('passivetab');
             } else {
