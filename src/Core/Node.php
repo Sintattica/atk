@@ -283,20 +283,6 @@ class Node
     public $m_sectionList = [];
 
     /*
-     * Keep track of tabs per attribute.
-     * @access private
-     * @var array
-     */
-    public $m_attributeTabs = [];
-
-    /*
-     * Keep track if a tab contains attribs (checkEmptyTabs function)
-     * @access private
-     * @var array
-     */
-    public $m_filledTabs = [];
-
-    /*
      * The type of the node.
      * @access protected
      * @var String
@@ -786,67 +772,28 @@ class Node
 
         $attribute->init();
 
-        $exist = false;
+        // If we've already registered an attribute with the same name, we just
+        // set the new $order if present and merge sections
         if (isset($this->m_attribList[$attribute->fieldName()]) && is_object($this->m_attribList[$attribute->fieldName()])) {
-            $exist = true;
-            // if order is set, overwrite it with new order, last order will count
             if ($order != 0) {
                 $this->m_attribIndexList[$this->m_attribList[$attribute->fieldName()]->m_index]['order'] = $order;
             }
             $attribute->m_index = $this->m_attribList[$attribute->fieldName()]->m_index;
-        }
-
-        if (!$exist) {
+        } else {
             if ($order == 0) {
                 $this->m_attribOrder += 100;
-                $order = $this->m_attribOrder;
+                $attribute->m_order = $this->m_attribOrder;
             }
 
-            // add new tab(s) to the tab list ("*" isn't a tab!)
-            if ($tabs != '*') {
-                if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
-                    $this->m_tabList['add'] = isset($this->m_tabList['add']) ? Tools::atk_array_merge($this->m_tabList['add'], $tabs) : $tabs;
-                }
-                if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
-                    $this->m_tabList['edit'] = isset($this->m_tabList['edit']) ? Tools::atk_array_merge($this->m_tabList['edit'], $tabs) : $tabs;
-                }
-                if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
-                    $this->m_tabList['view'] = isset($this->m_tabList['view']) ? Tools::atk_array_merge($this->m_tabList['view'], $tabs) : $tabs;
-                }
-            }
-
-            if ($sections != '*') {
-                if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
-                    $this->m_sectionList['add'] = isset($this->m_sectionList['add']) ? Tools::atk_array_merge($this->m_sectionList['add'],
-                        $sections) : $sections;
-                }
-                if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
-                    $this->m_sectionList['edit'] = isset($this->m_sectionList['edit']) ? Tools::atk_array_merge($this->m_sectionList['edit'],
-                        $sections) : $sections;
-                }
-                if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
-                    $this->m_sectionList['view'] = isset($this->m_sectionList['view']) ? Tools::atk_array_merge($this->m_sectionList['view'],
-                        $sections) : $sections;
-                }
-            }
-
-            $attribute->m_order = $order;
             $this->m_attribIndexList[] = array(
                 'name' => $attribute->fieldName(),
-                'tabs' => $tabs,
-                'sections' => $sections,
                 'order' => $attribute->m_order,
             );
             $attribute->m_index = max(array_keys($this->m_attribIndexList)); // might contain gaps
-            $attribute->setTabs($tabs);
-            $attribute->setSections($sections);
-            $this->m_attributeTabs[$attribute->fieldName()] = $tabs;
         }
 
-        // Order the tablist
+        $attribute->setSections($sections);
         $this->m_attribList[$attribute->fieldName()] = $attribute;
-        $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
-        $attribute->setSections($this->m_attribIndexList[$attribute->m_index]['sections']);
 
         return $attribute;
     }
@@ -873,6 +820,57 @@ class Node
     public function addFieldSet($name, $template, $flags = 0, $sections = null, $order = 0)
     {
         $this->add(new FieldSet($name, $template, $flags), $sections, $order);
+    }
+
+    /**
+     * Add sections to the node
+     *
+     * You should not need to call this function directly. attribute->setSections
+     * calls it.
+     *
+     * @param array $sections name
+     * @param book $view visible in view mode
+     * @param bool $add visible in add mode
+     * @param boole $edit visible in edit mode
+     */
+    public function addSections($sections, $view = true, $add = true, $edit = true)
+    {
+        if ($sections == '*') {
+            return;
+        }
+        if ($view) {
+            $this->m_sectionList['view'] = Tools::atk_array_merge($this->m_sectionList['view'] ?? [], $sections);
+        }
+        if ($add) {
+            $this->m_sectionList['add'] = Tools::atk_array_merge($this->m_sectionList['add'] ?? [], $sections);
+        }
+        if ($edit) {
+            $this->m_sectionList['edit'] = Tools::atk_array_merge($this->m_sectionList['edit'] ?? [], $sections);
+        }
+    }
+
+    /**
+     * Add a tabs to the node
+     *
+     * @param array $sections name
+     * @param book $view visible in view mode
+     * @param bool $add visible in add mode
+     * @param boole $edit visible in edit mode
+     */
+    public function addTabs($tabs, $view = true, $add = true, $edit = true)
+    {
+        if ($tabs == '*') {
+            return;
+        }
+        if ($view) {
+            $this->m_tabList['view'] = Tools::atk_array_merge($this->m_tabList['view'] ?? [], $tabs);
+        }
+        if ($add) {
+            $this->m_tabList['add'] = Tools::atk_array_merge($this->m_tabList['add'] ?? [], $tabs);
+        }
+        if ($edit) {
+            $this->m_tabList['edit'] = Tools::atk_array_merge($this->m_tabList['edit'] ?? [], $tabs);
+        }
     }
 
     /**
@@ -958,7 +956,6 @@ class Node
             }
 
             unset($this->m_attribIndexList[$listindex]);
-            unset($this->m_attributeTabs[$attribname]);
         }
     }
 
@@ -1392,7 +1389,7 @@ class Node
         }
 
         // Attributes can also add tabs to the tablist.
-        $this->m_filledTabs = [];
+        $filledTabs = [];
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = &$this->m_attribList[$attribname];
             if ($p_attrib->hasFlag(Attribute::AF_HIDE)) {
@@ -1411,23 +1408,29 @@ class Node
                 $additional = $p_attrib->getAdditionalTabs(null);
                 if (is_array($additional) && Tools::count($additional) > 0) {
                     $list = Tools::atk_array_merge($list, $additional);
-                    $this->m_filledTabs = Tools::atk_array_merge($this->m_filledTabs, $additional);
+                    $filledTabs = Tools::atk_array_merge($filledTabs, $additional);
                 }
 
                 // Keep track of the tabs that containg attribs
-                // so we only display none-empty tabs
-                $tabCode = $this->m_attributeTabs[$attribname][0];
-                if (!in_array($tabCode, $this->m_filledTabs)) {
-                    $this->m_filledTabs[] = $tabCode;
+                // so we only display non-empty tabs
+                foreach ($p_attrib->getTabs() as $tabCode) {
+                    if (!in_array($tabCode, $filledTabs)) {
+                        $filledTabs[] = $tabCode;
+                    }
                 }
             } else {
                 Tools::atkdebug("node::getTabs() Warning: $attribname is not an object!?");
             }
         }
 
-        // Check if the currently known tabs all containg attributes
-        // so we don't end up with empty tabs
-        return $this->checkEmptyTabs($list);
+        // Filter out empty tabs
+        foreach ($list as $index => $tab) {
+            if (!in_array($tab, $filledTabs)) {
+                unset($list[$i]);
+                Tools::atkdebug('Removing TAB '.$tabEntry.' because it had no attributes assigned');
+            }
+        }
+        return $list;
     }
 
     /**
@@ -1523,30 +1526,6 @@ class Node
         }
 
         return $disable;
-    }
-
-    /**
-     * Remove tabs without attribs from the tablist.
-     *
-     * @param array $list The list of tabnames
-     *
-     * @return array The list of tabnames without the empty tabs.
-     */
-    public function checkEmptyTabs($list)
-    {
-        $tabList = [];
-
-        if (is_array($list)) {
-            foreach ($list as $tabEntry) {
-                if (in_array($tabEntry, $this->m_filledTabs)) {
-                    $tabList[] = $tabEntry;
-                } else {
-                    Tools::atkdebug('Removing TAB '.$tabEntry.' because it had no attributes assigned');
-                }
-            }
-        }
-
-        return $tabList;
     }
 
     /**
@@ -1879,9 +1858,6 @@ class Node
         $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js');
 
         if ($tabs > 1) {
-            // Note : next line hides some attributes erroneously shown initially.
-            // @TODO : fix attributes erroneously showing up.
-            $page->register_loadscript('ATK.Tabs.showTab("'.$this->getActiveTab().'");');
             $ui = $this->getUi();
             if (is_object($ui)) {
                 return $ui->renderTabs(array(
@@ -2714,20 +2690,13 @@ class Node
 
         $this->_addListeners();
 
-        // We set the tabs for the attributes
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            $p_attrib->setTabs($this->m_attributeTabs[$attribname]);
-        }
-
         $this->attribSort();
         $this->setAttribSizes();
         $this->m_initialised = true;
 
         // Call the attributes postInit method to do some last time
         // initialization if necessary.
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
+        foreach ($this->m_attribList as $p_attrib) {
             $p_attrib->postInit();
         }
     }

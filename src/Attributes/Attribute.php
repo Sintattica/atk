@@ -1191,6 +1191,12 @@ class Attribute
         }
 
         $this->m_tabs = $tabs;
+        $this->m_ownerInstance->addTabs(
+            $tabs,
+            !$this->hasFlag(Attribute::AF_HIDE_VIEW),
+            !$this->hasFlag(Attribute::AF_HIDE_ADD),
+            !$this->hasFlag(Attribute::AF_HIDE_EDIT)
+        );
 
         return $this;
     }
@@ -1222,6 +1228,14 @@ class Attribute
             $this->m_sections = [];
         } else {
             $this->m_sections = $sections;
+            $this->m_ownerInstance->addSections(
+                $sections,
+                !$this->hasFlag(Attribute::AF_HIDE_VIEW),
+                !$this->hasFlag(Attribute::AF_HIDE_ADD),
+                !$this->hasFlag(Attribute::AF_HIDE_EDIT)
+            );
+            $tabs = $this->m_ownerInstance->getTabsFromSections($sections);
+            $this->setTabs($tabs);
         }
 
         return $this;
