@@ -1624,27 +1624,13 @@ class Node
     /**
      * Returns the currently active tab.
      *
-     * Note that in themes which use dhtml tabs (tabs without reloads), this
-     * method will always return the name of the first tab.
+     * @param string $action 'add', 'view', ...
      *
      * @return string The name of the currently visible tab.
      */
-    public function getActiveTab()
+    public function getActiveTab($action = '')
     {
-        global $ATK_VARS;
-        $tablist = $this->getTabs($ATK_VARS['atkaction']);
-
-        // Note: we may not read atktab from $this->m_postvars, because $this->m_postvars is not filled if this is
-        // a nested node (in a relation for example).
-        if (!empty($ATK_VARS['atktab']) && in_array($ATK_VARS['atktab'], $tablist)) {
-            $tab = $ATK_VARS['atktab'];
-        } elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $tablist)) {
-            $tab = $this->m_default_tab;
-        } else {
-            $tab = $tablist[0];
-        }
-
-        return $tab;
+        return State::get($this->atkNodeUri().'_tab', $this->getTabs($action)[0]);
     }
 
     /**
@@ -1957,27 +1943,23 @@ class Node
         $sections = $this->getSections($action);
         $tabs = Tools::count($list);
 
-        if (Tools::count($sections) > 0 || $tabs > 1) {
-            $page = $this->getPage();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js?stateful='.(Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
-
-            // Load default tab show script.
-            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab(\''.(isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '').'\');}');
-
-            $fulltabs = $this->buildTabs($action);
-            $tabscript = "var tabs = new Array();\n";
-            foreach ($fulltabs as $tab) {
-                $tabscript .= "tabs[tabs.length] = '".$tab['tab']."';\n";
-            }
-            $page->register_scriptcode($tabscript);
+        if (Tools::count($sections) == 0 && $tabs == 1) {
+            return $content;
         }
 
+        $page = $this->getPage();
+        $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js');
+
         if ($tabs > 1) {
+            // Note : next line hides some attributes erroneously shown initially.
+            // @TODO : fix attributes erroneously showing up.
+            $page->register_loadscript('ATK.Tabs.showTab("'.$this->getActiveTab().'");');
             $ui = $this->getUi();
             if (is_object($ui)) {
                 return $ui->renderTabs(array(
                     'tabs' => $this->buildTabs($action),
                     'content' => $content,
+                    'tabstateUrl' => Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$action.'&atkpartial=tabstate&atktab=',
                 ));
             }
         }
@@ -2482,8 +2464,7 @@ class Node
      * Builds a list of tabs.
      *
      * This doesn't generate the actual HTML code, but returns the data for
-     * the tabs (title, selected, urls that should be loaded upon click of the
-     * tab etc).
+     * the tabs (title, selected, etc).
      *
      * @param string $action The action for which the tabs should be generated.
      *
@@ -2508,16 +2489,9 @@ class Node
 
         if (is_array($list)) {
             $sm = SessionManager::getInstance();
-            $newtab['total'] = Tools::count($list);
             foreach ($list as $t) {
                 $newtab['title'] = $this->text(array("tab_$t", $t));
                 $newtab['tab'] = $t;
-                $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&atktab='.$t;
-                if ($this->m_action == 'view') {
-                    $newtab['link'] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
-                } else {
-                    $newtab['link'] = "javascript:ATK.FormSubmit.atkSubmit('".Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT))."')";
-                }
                 $newtab['selected'] = ($t == $tab);
                 $result[] = $newtab;
             }

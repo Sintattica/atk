@@ -341,4 +341,15 @@ class AddHandler extends ActionHandler
             'section' => $this->m_postvars['atksectionname'],
         ), $this->m_postvars['atksectionstate']);
     }
+
+    /**
+     * Partial handler for changing default tab
+     */
+    public function partial_tabstate()
+    {
+        if (Config::getGlobal('dhtml_tabs_stateful')) {
+            State::set($this->m_node->atkNodeUri().'_tab', $this->m_postvars['atktab']);
+        }
+        die;
+    }
 }

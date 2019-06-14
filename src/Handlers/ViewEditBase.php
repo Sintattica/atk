@@ -149,10 +149,7 @@ class ViewEditBase extends ActionHandler
         $initIcon = 'icon_minussquare';
 
         //if the section is not active, we close it on load.
-        $default = in_array($field['name'], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
-        $sectionstate = State::get(array('nodetype' => $this->m_node->atkNodeUri(), 'section' => $name), $default);
-
-        if ($sectionstate == 'closed') {
+        if (!in_array($field['name'], $this->m_node->getActiveSections($tab, $mode))) {
             $initIcon = 'icon_plussquare';
             $page = $this->getPage();
             $page->register_scriptcode("ATK.Tabs.addClosedSection('$name');");
@@ -225,6 +222,17 @@ class ViewEditBase extends ActionHandler
             'nodetype' => $this->m_node->atkNodeUri(),
             'section' => $this->m_postvars['atksectionname'],
         ), $this->m_postvars['atksectionstate']);
+        die;
+    }
+
+    /**
+     * Tab state handler.
+     */
+    public function partial_tabstate()
+    {
+        if (Config::getGlobal('dhtml_tabs_stateful')) {
+            State::set($this->m_node->atkNodeUri().'_tab', $this->m_postvars['atktab']);
+        }
         die;
     }
 

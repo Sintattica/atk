@@ -84,7 +84,7 @@ class ViewHandler extends ViewEditBase
 
         if (is_object($ui)) {
             $params = $node->getDefaultActionParams();
-            $tab = $node->getActiveTab();
+            $tab = $node->getActiveTab('view');
             $innerform = $this->viewForm($record, 'view');
 
             $params['activeTab'] = $tab;

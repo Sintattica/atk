@@ -464,7 +464,7 @@ class EditHandler extends ViewEditBase
         $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix, $ignoreTab);
         // Format some things for use in tpl.
         /* check for errors and display them */
-        $tab = $node->getActiveTab();
+        $tab = $node->getActiveTab($mode);
         $error_title = '';
         $pk_err_attrib = [];
         $tabs = $node->getTabs($node->m_action);
