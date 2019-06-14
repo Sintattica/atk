@@ -534,13 +534,6 @@ class Attribute
      */
     public $m_initialValue = null;
 
-    /**
-     * Column.
-     *
-     * @var string
-     */
-    private $m_column;
-
 
     /**
      * View callback.
@@ -1242,30 +1235,6 @@ class Attribute
     public function getSections()
     {
         return $this->m_sections;
-    }
-
-    /**
-     * Get column.
-     *
-     * @return string column name
-     */
-    public function getColumn()
-    {
-        return $this->m_column;
-    }
-
-    /**
-     * Set column.
-     *
-     * @param string $name column name
-     *
-     * @return Attribute The instance of this Attribute
-     */
-    public function setColumn($name)
-    {
-        $this->m_column = $name;
-
-        return $this;
     }
 
     /**

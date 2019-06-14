@@ -243,9 +243,6 @@ class ViewHandler extends ViewEditBase
                 $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
 
                 $tplfield['full'] = $editsrc;
-
-                $column = $field['attribute']->getColumn();
-                $tplfield['column'] = $column;
             }
             $fields[] = $tplfield; // make field available in numeric array
             $params[$field['name']] = $tplfield; // make field available in associative array

@@ -416,9 +416,6 @@ class EditHandler extends ViewEditBase
 
             $tplfield['full'] = $editsrc;
 
-            $column = $field['attribute']->getColumn();
-            $tplfield['column'] = $column;
-
             $tplfield['readonly'] = $field['attribute']->isReadonlyEdit($mode);
 
             $tplfield['help'] = $field['attribute']->getHelp();

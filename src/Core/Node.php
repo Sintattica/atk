@@ -619,13 +619,6 @@ class Node
     public $m_edit_fieldprefix = '';
 
     /**
-     * Default column name (null means across all columns).
-     *
-     * @var string
-     */
-    private $m_defaultColumn = null;
-
-    /**
      * Current maximum attribute order value.
      *
      * @var int
@@ -696,54 +689,6 @@ class Node
     }
 
     /**
-     * Returns the default column name.
-     *
-     * @return string default column name
-     */
-    public function getDefaultColumn()
-    {
-        return $this->m_defaultColumn;
-    }
-
-    /**
-     * Set default column name.
-     *
-     * @param string $name default column name
-     */
-    public function setDefaultColumn($name)
-    {
-        $this->m_defaultColumn = $name;
-    }
-
-    /**
-     * Resolve column for sections.
-     *
-     * If one of the sections contains something after a double
-     * colon (:) than that's used as column name, else the default
-     * column name will be used.
-     *
-     * @param array $sections sections
-     *
-     * @return string column name
-     */
-    protected function resolveColumn(&$sections)
-    {
-        $column = $this->getDefaultColumn();
-
-        if (!is_array($sections)) {
-            return $column;
-        }
-
-        foreach ($sections as &$section) {
-            if (strpos($section, ':') !== false) {
-                list($section, $column) = explode(':', $section);
-            }
-        }
-
-        return $column;
-    }
-
-    /**
      * Resolve sections, tabs and the order based on the given
      * argument to the attribute add method.
      *
@@ -751,7 +696,7 @@ class Node
      * @param mixed $tabs
      * @param mixed $order
      */
-    public function resolveSectionsTabsOrder(&$sections, &$tabs, &$column, &$order)
+    public function resolveSectionsTabsOrder(&$sections, &$tabs, &$order)
     {
         // Because sections/tabs will probably be used more than the order override option
         // the API for this method now favours the $sections argument. For backwards
@@ -771,8 +716,6 @@ class Node
                 $sections = array($sections);
             }
         }
-
-        $column = $this->resolveColumn($sections);
 
         if (is_array($sections)) {
             $sections = $this->resolveSections($sections);
@@ -800,43 +743,31 @@ class Node
     public function add($attribute, $sections = null, $order = 0)
     {
         $tabs = null;
-        $column = null;
 
         $attribute->m_owner = $this->m_type;
 
-        if (!$this->atkReadOptimizer()) {
-            $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
+        $this->resolveSectionsTabsOrder($sections, $tabs, $order);
 
-            // check for parent fieldname (treeview)
-            if ($attribute->hasFlag($attribute::AF_PARENT)) {
-                $this->m_parent = $attribute->fieldName();
-            }
+        // check for parent fieldname (treeview)
+        if ($attribute->hasFlag($attribute::AF_PARENT)) {
+            $this->m_parent = $attribute->fieldName();
+        }
 
-            // check for cascading delete flag
-            if ($attribute->hasFlag($attribute::AF_CASCADE_DELETE)) {
-                $this->m_cascadingAttribs[] = $attribute->fieldName();
-            }
+        // check for cascading delete flag
+        if ($attribute->hasFlag($attribute::AF_CASCADE_DELETE)) {
+            $this->m_cascadingAttribs[] = $attribute->fieldName();
+        }
 
-            if ($attribute->hasFlag($attribute::AF_HIDE_LIST) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
-                if (!in_array($attribute->fieldName(), $this->m_listExcludes)) {
-                    $this->m_listExcludes[] = $attribute->fieldName();
-                }
+        if ($attribute->hasFlag($attribute::AF_HIDE_LIST) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
+            if (!in_array($attribute->fieldName(), $this->m_listExcludes)) {
+                $this->m_listExcludes[] = $attribute->fieldName();
             }
+        }
 
-            if ($attribute->hasFlag($attribute::AF_HIDE_VIEW) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
-                if (!in_array($attribute->fieldName(), $this->m_viewExcludes)) {
-                    $this->m_viewExcludes[] = $attribute->fieldName();
-                }
+        if ($attribute->hasFlag($attribute::AF_HIDE_VIEW) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
+            if (!in_array($attribute->fieldName(), $this->m_viewExcludes)) {
+                $this->m_viewExcludes[] = $attribute->fieldName();
             }
-        } else {
-            // when the read optimizer is enabled there is no active tab
-            // we circument this by putting all attributes on all tabs
-            if ($sections !== null && is_int($sections)) {
-                $order = $sections;
-            }
-            $tabs = '*';
-            $sections = '*';
-            $column = $this->getDefaultColumn();
         }
 
         // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
@@ -871,33 +802,31 @@ class Node
                 $order = $this->m_attribOrder;
             }
 
-            if (!$this->atkReadOptimizer()) {
-                // add new tab(s) to the tab list ("*" isn't a tab!)
-                if ($tabs != '*') {
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
-                        $this->m_tabList['add'] = isset($this->m_tabList['add']) ? Tools::atk_array_merge($this->m_tabList['add'], $tabs) : $tabs;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
-                        $this->m_tabList['edit'] = isset($this->m_tabList['edit']) ? Tools::atk_array_merge($this->m_tabList['edit'], $tabs) : $tabs;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
-                        $this->m_tabList['view'] = isset($this->m_tabList['view']) ? Tools::atk_array_merge($this->m_tabList['view'], $tabs) : $tabs;
-                    }
+            // add new tab(s) to the tab list ("*" isn't a tab!)
+            if ($tabs != '*') {
+                if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
+                    $this->m_tabList['add'] = isset($this->m_tabList['add']) ? Tools::atk_array_merge($this->m_tabList['add'], $tabs) : $tabs;
                 }
+                if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
+                    $this->m_tabList['edit'] = isset($this->m_tabList['edit']) ? Tools::atk_array_merge($this->m_tabList['edit'], $tabs) : $tabs;
+                }
+                if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
+                    $this->m_tabList['view'] = isset($this->m_tabList['view']) ? Tools::atk_array_merge($this->m_tabList['view'], $tabs) : $tabs;
+                }
+            }
 
-                if ($sections != '*') {
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
-                        $this->m_sectionList['add'] = isset($this->m_sectionList['add']) ? Tools::atk_array_merge($this->m_sectionList['add'],
-                            $sections) : $sections;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
-                        $this->m_sectionList['edit'] = isset($this->m_sectionList['edit']) ? Tools::atk_array_merge($this->m_sectionList['edit'],
-                            $sections) : $sections;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
-                        $this->m_sectionList['view'] = isset($this->m_sectionList['view']) ? Tools::atk_array_merge($this->m_sectionList['view'],
-                            $sections) : $sections;
-                    }
+            if ($sections != '*') {
+                if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
+                    $this->m_sectionList['add'] = isset($this->m_sectionList['add']) ? Tools::atk_array_merge($this->m_sectionList['add'],
+                        $sections) : $sections;
+                }
+                if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
+                    $this->m_sectionList['edit'] = isset($this->m_sectionList['edit']) ? Tools::atk_array_merge($this->m_sectionList['edit'],
+                        $sections) : $sections;
+                }
+                if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
+                    $this->m_sectionList['view'] = isset($this->m_sectionList['view']) ? Tools::atk_array_merge($this->m_sectionList['view'],
+                        $sections) : $sections;
                 }
             }
 
@@ -918,7 +847,6 @@ class Node
         $this->m_attribList[$attribute->fieldName()] = $attribute;
         $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
         $attribute->setSections($this->m_attribIndexList[$attribute->m_index]['sections']);
-        $attribute->setColumn($column);
 
         return $attribute;
     }
@@ -3437,7 +3365,6 @@ class Node
     {
         $selector->orderBy($this->getOrder());
         $selector->ignoreDefaultFilters($this->hasFlag(self::NF_NO_FILTER));
-        $selector->ignorePostvars($this->atkReadOptimizer());
 
         if ($condition != null) {
             $selector->where($condition, $params);
@@ -4752,10 +4679,5 @@ class Node
                 $attr->removeFlag($flag);
             }
         }
-    }
-
-    public function atkReadOptimizer()
-    {
-        return false;
     }
 }
