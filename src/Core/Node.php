@@ -11,7 +11,6 @@ use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\Relation;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Session\State;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Ui\Ui;
@@ -267,20 +266,12 @@ class Node
     public $m_page = null;
 
     /*
-     * List of available tabs. Associative array structured like this:
-     * array($action=>$arrayOfTabnames)
+     * List of tab orders when defined with setTabOrder.
      * @access private
-     * @var array
+     * @var array['action']['tab'] = order.
+     * Ordered tabs come first.
      */
-    public $m_tabList = [];
-
-    /*
-     * List of available sections. Associative array structured like this:
-     * array($action=>$arrayOfSectionnames)
-     * @access private
-     * @var array
-     */
-    public $m_sectionList = [];
+    private $m_tabOrder = [];
 
     /*
      * The type of the node.
@@ -632,107 +623,34 @@ class Node
     }
 
     /**
-     * Resolve section. If a section is only prefixed by
-     * a dot this means we need to add the default tab
-     * before the dot.
-     *
-     * @param string $section section name
-     *
-     * @return string resolved section name
-     */
-    public function resolveSection($section)
-    {
-        list($part1, $part2) = (strpos($section, '.') !== false) ? explode('.', $section) : array($section, '');
-        if ($part2 != null && strlen($part2) > 0 && strlen($part1) == 0) {
-            return $this->m_default_tab.'.'.$part2;
-        } else {
-            if (strlen($part2) == 0 && strlen($part1) == 0) {
-                return $this->m_default_tab;
-            } else {
-                return $section;
-            }
-        }
-    }
-
-    /**
-     * Resolve sections.
-     *
-     * @param array $sections section list
-     *
-     * @return array resolved section list
-     *
-     * @see resolveSection
-     */
-    public function resolveSections($sections)
-    {
-        $result = [];
-
-        foreach ($sections as $section) {
-            $result[] = $this->resolveSection($section);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Resolve sections, tabs and the order based on the given
-     * argument to the attribute add method.
-     *
-     * @param mixed $sections
-     * @param mixed $tabs
-     * @param mixed $order
-     */
-    public function resolveSectionsTabsOrder(&$sections, &$tabs, &$order)
-    {
-        // Because sections/tabs will probably be used more than the order override option
-        // the API for this method now favours the $sections argument. For backwards
-        // compatibility we still support the old API ($attribute,$order=0).
-        if ($sections !== null && is_int($sections)) {
-            $order = $sections;
-            $sections = array($this->m_default_tab);
-        }
-
-        // If no section/tab is specified or tabs are disabled, we use the current default tab
-        // (specified with the setDefaultTab method, or "default" otherwise)
-        elseif ($sections === null || (is_string($sections) && strlen($sections) == 0) || !Config::getGlobal('tabs')) {
-            $sections = array($this->m_default_tab);
-        } // Sections should be an array.
-        else {
-            if ($sections != '*' && !is_array($sections)) {
-                $sections = array($sections);
-            }
-        }
-
-        if (is_array($sections)) {
-            $sections = $this->resolveSections($sections);
-        }
-
-        // Filter tabs from section names.
-        $tabs = $this->getTabsFromSections($sections);
-    }
-
-    /**
      * Add an Attribute (or one of its derivatives) to the node.
      *
      * @param Attribute $attribute The attribute you want to add
-     * @param mixed $sections The sections/tab(s) on which the attribute should be
-     *                             displayed. Can be a tabname (String) or a list of
-     *                             tabs (array) or "*" if the attribute should be
-     *                             displayed on all tabs.
+     * @param mixed $parts The section or tabs on which the attribute should be
+     *                     displayed. Can be
+     *                      - a tabname (string)
+     *                      - a list of tabs (array of string)
+     *                      - the string '*' (display on all tabs)
+     *                      - a section of a tab (string in the form 'tab.section')
+     *                      - a section of the default tab (string in the form '.section')
      * @param int $order The order at which the attribute should be displayed.
-     *                             If ommitted, this defaults to 100 for the first
-     *                             attribute, and 100 more for each next attribute that
-     *                             is added.
+     *                   If ommitted, this defaults to 100 for the first
+     *                   attribute, and 100 more for each next attribute that
+     *                   is added.
      *
      * @return Attribute the attribute just added
      */
-    public function add($attribute, $sections = null, $order = 0)
+    public function add($attribute, $parts = '', $order = null)
     {
-        $tabs = null;
-
         $attribute->m_owner = $this->m_type;
 
-        $this->resolveSectionsTabsOrder($sections, $tabs, $order);
+        // Because sections/tabs will probably be used more than the order override option
+        // the API for this method now favours the $sections argument. For backwards
+        // compatibility we still support the old API ($order as second argument).
+        if ($parts !== null && is_int($parts)) {
+            $order = $parts;
+            $parts = '';
+        }
 
         // check for parent fieldname (treeview)
         if ($attribute->hasFlag($attribute::AF_PARENT)) {
@@ -775,12 +693,12 @@ class Node
         // If we've already registered an attribute with the same name, we just
         // set the new $order if present and merge sections
         if (isset($this->m_attribList[$attribute->fieldName()]) && is_object($this->m_attribList[$attribute->fieldName()])) {
-            if ($order != 0) {
+            if ($order !== null) {
                 $this->m_attribIndexList[$this->m_attribList[$attribute->fieldName()]->m_index]['order'] = $order;
             }
             $attribute->m_index = $this->m_attribList[$attribute->fieldName()]->m_index;
         } else {
-            if ($order == 0) {
+            if ($order === null) {
                 $this->m_attribOrder += 100;
                 $attribute->m_order = $this->m_attribOrder;
             }
@@ -792,7 +710,7 @@ class Node
             $attribute->m_index = max(array_keys($this->m_attribIndexList)); // might contain gaps
         }
 
-        $attribute->setSections($sections);
+        $attribute->setParts($parts);
         $this->m_attribList[$attribute->fieldName()] = $attribute;
 
         return $attribute;
@@ -808,98 +726,12 @@ class Node
      * @param string $name name
      * @param string $template template string
      * @param int $flags attribute flags
-     * @param mixed $sections The sections/tab(s) on which the attribute should be
-     *                         displayed. Can be a tabname (String) or a list of
-     *                         tabs (array) or "*" if the attribute should be
-     *                         displayed on all tabs.
-     * @param int $order The order at which the attribute should be displayed.
-     *                         If ommitted, this defaults to 100 for the first
-     *                         attribute, and 100 more for each next attribute that
-     *                         is added.
+     * @param mixed $parts see add() description
+     * @param int $order see add() description
      */
-    public function addFieldSet($name, $template, $flags = 0, $sections = null, $order = 0)
+    public function addFieldSet($name, $template, $flags = 0, $parts = '', $order = null)
     {
-        $this->add(new FieldSet($name, $template, $flags), $sections, $order);
-    }
-
-    /**
-     * Add sections to the node
-     *
-     * You should not need to call this function directly. attribute->setSections
-     * calls it.
-     *
-     * @param array $sections name
-     * @param book $view visible in view mode
-     * @param bool $add visible in add mode
-     * @param boole $edit visible in edit mode
-     */
-    public function addSections($sections, $view = true, $add = true, $edit = true)
-    {
-        if ($sections == '*') {
-            return;
-        }
-        if ($view) {
-            $this->m_sectionList['view'] = Tools::atk_array_merge($this->m_sectionList['view'] ?? [], $sections);
-        }
-        if ($add) {
-            $this->m_sectionList['add'] = Tools::atk_array_merge($this->m_sectionList['add'] ?? [], $sections);
-        }
-        if ($edit) {
-            $this->m_sectionList['edit'] = Tools::atk_array_merge($this->m_sectionList['edit'] ?? [], $sections);
-        }
-    }
-
-    /**
-     * Add a tabs to the node
-     *
-     * @param array $sections name
-     * @param book $view visible in view mode
-     * @param bool $add visible in add mode
-     * @param boole $edit visible in edit mode
-     */
-    public function addTabs($tabs, $view = true, $add = true, $edit = true)
-    {
-        if ($tabs == '*') {
-            return;
-        }
-        if ($view) {
-            $this->m_tabList['view'] = Tools::atk_array_merge($this->m_tabList['view'] ?? [], $tabs);
-        }
-        if ($add) {
-            $this->m_tabList['add'] = Tools::atk_array_merge($this->m_tabList['add'] ?? [], $tabs);
-        }
-        if ($edit) {
-            $this->m_tabList['edit'] = Tools::atk_array_merge($this->m_tabList['edit'] ?? [], $tabs);
-        }
-    }
-
-    /**
-     * Retrieve the tabnames from the sections string (tab.section).
-     *
-     * @param mixed $sections An array with sections or a section string
-     *
-     * @return array
-     */
-    public function getTabsFromSections($sections)
-    {
-        if ($sections == '*' || $sections === null) {
-            return $sections;
-        }
-
-        $tabs = [];
-
-        if (!isset($sections)) {
-        } elseif (!is_array($sections)) {
-            $sections = array($sections);
-        }
-
-        foreach ($sections as $section) {
-            $tabs[] = $this->getTabFromSection($section);
-        }
-
-        //when using the tab.sections notation, we can have duplicate tabs
-        //strip them out.
-        return array_unique($tabs);
+        $this->add(new FieldSet($name, $template, $flags), $parts, $order);
     }
 
     /**
@@ -913,8 +745,9 @@ class Node
     {
         $tab = ($section == null) ? '' : $section;
 
-        if (strstr($tab, '.') !== false) {
-            list($tab) = explode('.', $tab);
+        $dotPos = strpos($tab, '.');
+        if ($dotPos !== false) {
+            $tab = substr($tab, 0, $dotPos);
         }
 
         return ($tab == '') ? $this->m_default_tab : $tab;
@@ -1324,42 +1157,43 @@ class Node
     }
 
     /**
-     * Set tab index.
+     * Set tab order
+     *
+     * Ordered tabs come before unordered tabs. By default, tabs get their order from
+     * the order of the attributes
      *
      * @param string $tabname Tabname
-     * @param int $index Index number
-     * @param string $action Action name (add,edit,view)
+     * @param int $order Index number
+     * @param string $action Action name (add,edit,view). If not set, the tab order
+     *                       is set for all actions.
      */
-    public function setTabIndex($tabname, $index, $action = '')
+    public function setTabOrder($tabname, $order, $action = '')
     {
         Tools::atkdebug("self::setTabIndex($tabname,$index,$action)");
         $actionList = array('add', 'edit', 'view');
-        if ($action != '') {
+        if ($action == '') {
             $actionList = array($action);
         }
         foreach ($actionList as $action) {
-            $new_index = $index;
-            $list = &$this->m_tabList[$action];
-            if ($new_index < 0) {
-                $new_index = 0;
+            if (!isset($this->m_tabOrder[$action])) {
+                $this->m_tabOrder[$action] = [];
             }
-            if ($new_index > Tools::count($list)) {
-                $new_index = Tools::count($list);
-            }
-            $current_index = array_search($tabname, $list);
-            if ($current_index !== null) {
-                $tmp = array_splice($list, $current_index, 1);
-                array_splice($list, $new_index, 0, $tmp);
-            }
+            $this->m_tabOrder[$action][$tabname] = $order;
         }
     }
 
     /**
-     * Set default tab being displayed in view/add/edit mode.
-     * After calling this method, all attributes which are added after the
-     * method call without specification of tab will be placed on the default
-     * tab. This means you should use this method before you add any
-     * attributes to the node.
+     * Set tab order (alias of setTabOrder, for compatibility reasons)
+     */
+    public function setTabIndex($tabname, $index, $action = '')
+    {
+        $this->setTabOrder($tabname, $index, $action);
+    }
+
+    /**
+     * Set default tab being displayed in view/add/edit mode. All attributes
+     * without a tab or a section are added to this tab.
+     *
      * If you accept the default name for the first tab ("default") you do not
      * need to call this method.
      *
@@ -1371,92 +1205,60 @@ class Node
     }
 
     /**
-     * Get a list of tabs for a certain action.
+     * Resolve tab name
      *
-     * @param string $action The action for which you want to retrieve the
-     *                       list of tabs.
+     * @param string $tab name
      *
-     * @return array The list of tabnames.
+     * @return $string $tab
      */
-    public function getTabs($action)
+    public function resolveTab($tab = '')
     {
-        $list = isset($this->m_tabList[$action]) ? $this->m_tabList[$action] : null;
-        $disable = $this->checkTabRights($list);
-
-        if (!is_array($list)) {
-            // fallback to view tabs.
-            $list = $this->m_tabList['view'];
+        if ($tab == '') {
+            return $this->m_default_tab;
         }
-
-        // Attributes can also add tabs to the tablist.
-        $filledTabs = [];
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = &$this->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(Attribute::AF_HIDE)) {
-                continue;
-            } // attributes to which we don't have access are explicitly hidden
-
-            // Only display the attribute if the attribute
-            // resides on at least on visible tab
-            for ($i = 0, $_i = sizeof($p_attrib->m_tabs); $i < $_i; ++$i) {
-                if ((is_array($list) && in_array($p_attrib->m_tabs[$i], $list)) || (!is_array($disable) || !in_array($p_attrib->m_tabs[$i], $disable))) {
-                    break;
-                }
-            }
-
-            if (is_object($p_attrib)) {
-                $additional = $p_attrib->getAdditionalTabs(null);
-                if (is_array($additional) && Tools::count($additional) > 0) {
-                    $list = Tools::atk_array_merge($list, $additional);
-                    $filledTabs = Tools::atk_array_merge($filledTabs, $additional);
-                }
-
-                // Keep track of the tabs that containg attribs
-                // so we only display non-empty tabs
-                foreach ($p_attrib->getTabs() as $tabCode) {
-                    if (!in_array($tabCode, $filledTabs)) {
-                        $filledTabs[] = $tabCode;
-                    }
-                }
-            } else {
-                Tools::atkdebug("node::getTabs() Warning: $attribname is not an object!?");
-            }
+        if ($tab == '*') {
+            return 'alltabs';
         }
-
-        // Filter out empty tabs
-        foreach ($list as $index => $tab) {
-            if (!in_array($tab, $filledTabs)) {
-                unset($list[$i]);
-                Tools::atkdebug('Removing TAB '.$tabEntry.' because it had no attributes assigned');
-            }
-        }
-        return $list;
+        return $tab;
     }
 
     /**
-     * Retrieve the sections for the active tab.
+     * Sort the list of $tabs according to self::m_tabOrder
      *
-     * @param string $action
+     * @param string $action we're in
+     * @param array $tabs list of $tabs collected
      *
-     * @return array The active sections.
+     * @return array $tabs ordered
      */
-    public function getSections($action)
+    public function sortTabs($action, $tabs)
     {
-        $sections = [];
-
-        if (is_array($this->m_sectionList[$action])) {
-            foreach ($this->m_sectionList[$action] as $element) {
-                list($tab, $sec) = (strpos($element, '.') !== false) ? explode('.', $element) : array($element, null);
-
-                //if this section is on an active tab, we return it.
-                if ($tab == $this->getActiveTab() && $sec !== null) {
-                    $sections[] = $sec;
-                }
-            }
+        if (empty($this->m_tabOrder)) {
+            return $tabs;
         }
+        // Then we reorder the tab list :
+        usort($tabs, function ($t1, $t2) {
+                $i1 = $this->m_tabOrder[$action][$t1] ?? PHP_INT_MAX;
+                $i2 = $this->m_tabOrder[$action][$t2] ?? PHP_INT_MAX;
+                return ($i1 == $i2) ? 0 : ($i1 > $i2 ? 1 : -1);
+            });
+        return $tabs;
+    }
 
-        //we do not want duplicate sections on the same tab.
-        return array_unique($sections);
+    /**
+     * Resolve section. If a section is only prefixed by
+     * a dot this means we need to add the default tab
+     * before the dot.
+     *
+     * @param string $section section name
+     *
+     * @return string resolved section name
+     */
+    public function resolveSection($section)
+    {
+        if (substr($section, 0, 1) == '.') {
+            return $this->m_default_tab . $section;
+        }
+        return $section;
     }
 
     /**
@@ -1465,8 +1267,12 @@ class Node
     public function addDefaultExpandedSections()
     {
         $sections = func_get_args();
-        $sections = $this->resolveSections($sections);
-        $this->m_default_expanded_sections = array_unique(array_merge($sections, $this->m_default_expanded_sections));
+        foreach ($sections as $section) {
+            $section = $this->resolveSection($section);
+            if (!in_array($section, $this->m_default_expanded_sections)) {
+                $this->m_default_expanded_sections[] = $section;
+            }
+        }
     }
 
     /**
@@ -1477,6 +1283,18 @@ class Node
         $sections = func_get_args();
 
         $this->m_default_expanded_sections = array_diff($this->m_default_expanded_sections, $sections);
+    }
+
+    /**
+     * Tell if a section is expanded by default or not
+     *
+     * @param $section name
+     *
+     * @return bool
+     */
+    public function isSectionDefaultExpanded($section)
+    {
+        return in_array($section, $this->m_default_expanded_sections);
     }
 
     /**
@@ -1526,48 +1344,6 @@ class Node
         }
 
         return $disable;
-    }
-
-    /**
-     * Returns the currently active tab.
-     *
-     * @param string $action 'add', 'view', ...
-     *
-     * @return string The name of the currently visible tab.
-     */
-    public function getActiveTab($action = '')
-    {
-        return State::get($this->atkNodeUri().'_tab', $this->getTabs($action)[0]);
-    }
-
-    /**
-     * Get the active sections.
-     *
-     * @param string $tab The currently active tab
-     * @param string $mode The current mode ("edit", "add", etc.)
-     *
-     * @return array active Sections
-     */
-    public function getActiveSections($tab, $mode)
-    {
-        $activeSections = [];
-        if (is_array($this->m_sectionList[$mode])) {
-            foreach ($this->m_sectionList[$mode] as $section) {
-                if (substr($section, 0, strlen($tab)) == $tab) {
-                    $sectionName = 'section_'.str_replace('.', '_', $section);
-                    $key = array(
-                        'nodetype' => $this->atkNodeUri(),
-                        'section' => $sectionName,
-                    );
-                    $defaultOpen = in_array($section, $this->m_default_expanded_sections);
-                    if (State::get($key, $defaultOpen ? 'opened' : 'closed') != 'closed') {
-                        $activeSections[] = $section;
-                    }
-                }
-            }
-        }
-
-        return $activeSections;
     }
 
     /**
@@ -1836,42 +1612,6 @@ class Node
     }
 
     /**
-     * Place a set of tabs around content.
-     *
-     * @param string $action The action for which the tabs are loaded.
-     * @param string $content The content that is to be displayed within the
-     *                        tabset.
-     *
-     * @return string The complete tabset with content.
-     */
-    public function tabulate($action, $content)
-    {
-        $list = $this->getTabs($action);
-        $sections = $this->getSections($action);
-        $tabs = Tools::count($list);
-
-        if (Tools::count($sections) == 0 && $tabs == 1) {
-            return $content;
-        }
-
-        $page = $this->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js');
-
-        if ($tabs > 1) {
-            $ui = $this->getUi();
-            if (is_object($ui)) {
-                return $ui->renderTabs(array(
-                    'tabs' => $this->buildTabs($action),
-                    'content' => $content,
-                    'tabstateUrl' => Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$action.'&atkpartial=tabstate&atktab=',
-                ));
-            }
-        }
-
-        return $content;
-    }
-
-    /**
      * Determine the default form parameters for an action template.
      *
      * @param bool $locked If the current record is locked, pass true, so
@@ -1962,8 +1702,6 @@ class Node
      * @param string $fieldprefix Of set, each form element is prefixed with
      *                               the specified prefix (used in embedded form
      *                               fields)
-     * @param bool $ignoreTab Ignore the tabs an attribute should be shown on.
-     * @param bool $injectSections Inject sections?
      *
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
@@ -1973,9 +1711,7 @@ class Node
         $record = null,
         $forceList = '',
         $suppressList = '',
-        $fieldprefix = '',
-        $ignoreTab = false,
-        $injectSections = true
+        $fieldprefix = ''
     ) {
         // update visibility of some attributes based on the current record
         $this->checkAttributeSecurity($mode, $record);
@@ -2098,10 +1834,6 @@ class Node
             }
         }
 
-        if ($injectSections) {
-            $this->injectSections($result['fields']);
-        }
-
         /* check for errors */
         $result['error'] = $record['atkerror'];
 
@@ -2156,90 +1888,9 @@ class Node
             }
         }
 
-        /* inject sections */
-        if ($injectSections) {
-            $this->injectSections($result['fields']);
-        }
-
         /* return the result array */
 
         return $result;
-    }
-
-    /**
-     * Add sections to the edit/view fields array.
-     *
-     * @param array $fields fields array (will be modified in-place)
-     */
-    public function injectSections(&$fields)
-    {
-        $this->groupFieldsBySection($fields);
-
-        $addedSections = [];
-        $result = [];
-        foreach ($fields as $field) {
-            /// we add the section link before the first attribute that is in it
-            $fieldSections = $field['sections'];
-            if (!is_array($fieldSections)) {
-                $fieldSections = array($fieldSections);
-            }
-
-            $newSections = array_diff($fieldSections, $addedSections);
-            if (Tools::count($newSections) > 0) {
-                foreach ($newSections as $section) {
-                    if (strpos($section, '.') !== false) {
-                        $result[] = array(
-                            'html' => 'section',
-                            'name' => $section,
-                            'tabs' => $field['tabs'],
-                        );
-                        $addedSections[] = $section;
-                    }
-                }
-            }
-
-            $result[] = $field;
-        }
-
-        $fields = $result;
-    }
-
-    /**
-     * Group fields by section.
-     *
-     * @param array $fields fields array (will be modified in-place)
-     */
-    public function groupFieldsBySection(&$fields)
-    {
-        $result = [];
-        $sections = [];
-
-        // first find sectionless fields and collect all sections
-        foreach ($fields as $field) {
-            if ($field['sections'] == '*' || (Tools::count($field['sections']) == 1 && $field['sections'][0] == $this->m_default_tab)) {
-                $result[] = $field;
-            } else {
-                if (is_array($field['sections'])) {
-                    $sections = array_merge($sections, $field['sections']);
-                }
-            }
-        }
-
-        $sections = array_unique($sections);
-
-        // loop through each section (except the default tab/section) of the mode we are currently in.
-        while (Tools::count($sections) > 0) {
-            $section = array_shift($sections);
-
-            // find fields for this section
-            foreach ($fields as $field) {
-                if (is_array($field['sections']) && in_array($section, $field['sections'])) {
-                    $result[] = $field;
-                }
-            }
-        }
-
-        $fields = $result;
     }
 
     /**
@@ -2362,46 +2013,6 @@ class Node
         }
 
         return $form;
-    }
-
-    /**
-     * Builds a list of tabs.
-     *
-     * This doesn't generate the actual HTML code, but returns the data for
-     * the tabs (title, selected, etc).
-     *
-     * @param string $action The action for which the tabs should be generated.
-     *
-     * @return array List of tabs
-     *
-     * @todo Make translation of tabs module aware
-     */
-    public function buildTabs($action = '')
-    {
-        if ($action == '') {
-            // assume active action
-            $action = $this->m_action;
-        }
-
-        $result = [];
-
-        // which tab is currently selected
-        $tab = $this->getActiveTab();
-
-        // build navigator
-        $list = $this->getTabs($action);
-
-        if (is_array($list)) {
-            $sm = SessionManager::getInstance();
-            foreach ($list as $t) {
-                $newtab['title'] = $this->text(array("tab_$t", $t));
-                $newtab['tab'] = $t;
-                $newtab['selected'] = ($t == $tab);
-                $result[] = $newtab;
-            }
-        }
-
-        return $result;
     }
 
     /**

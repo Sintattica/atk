@@ -65,7 +65,7 @@ ATK.Tabs = {
         var sectionItems = jQuery('div.section-item');
         sectionItems.each(function (index, el) {
             var $el = jQuery(el);
-            var show = $el.attr('class').includes('section_'+tab);
+            var show = $el.attr('class').includes('section_'+tab) || $el.attr('class').includes('alltabs');
             ATK.Tabs.closedSections.forEach(function(section) {
                 if ($el.hasClass(section)) {
                     show = false;

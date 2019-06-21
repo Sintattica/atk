@@ -204,9 +204,7 @@ class EditHandler extends ViewEditBase
             $suppressList = $node->m_postvars['atksuppress'];
         }
 
-        $form = $this->editForm('edit', $record, $forceList, $suppressList, $node->getEditFieldPrefix());
-
-        return $node->tabulate('edit', $form);
+        return $this->editForm('edit', $record, $forceList, $suppressList, $node->getEditFieldPrefix());
     }
 
     /**
@@ -307,130 +305,6 @@ class EditHandler extends ViewEditBase
     }
 
     /**
-     * Create template field array for the given edit field.
-     *
-     * @param array $fields all fields
-     * @param int $index field index
-     * @param string $mode mode (add/edit)
-     * @param string $tab active tab
-     *
-     * @return array template field
-     */
-    public function createTplField(&$fields, $index, $mode, $tab)
-    {
-        $field = &$fields[$index];
-
-        // visible sections, both the active sections and the tab names (attribute that are
-        // part of the anonymous section of the tab)
-        $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
-
-        $tplfield = [];
-
-        $classes = [];
-        if(isset($field['class'])){
-            $classes = is_array($field['class'])?$field['class']:explode(' ', $field['class']);
-        }
-
-        if ($field['sections'] == '*') {
-            $classes[] = 'alltabs';
-        } else {
-            if (isset($field['html']) && $field['html'] == 'section') {
-                // section should only have the tab section classes
-                foreach ($field['tabs'] as $section) {
-                    $classes[] = 'section_'.str_replace('.', '_', $section);
-                }
-                if ($this->isSectionInitialHidden($field['name'], $fields)) {
-                    $classes[] = 'atkAttrRowHidden';
-                }
-            } else {
-                if (is_array($field['sections'])) {
-                    foreach ($field['sections'] as $section) {
-                        $classes[] = 'section_'.str_replace('.', '_', $section);
-                    }
-                }
-            }
-        }
-
-        if (isset($field['initial_hidden']) && $field['initial_hidden']) {
-            $classes[] = 'atkAttrRowHidden';
-        }
-
-        $tplfield['class'] = implode(' ', $classes);
-        $tplfield['tab'] = $tplfield['class']; // for backwards compatibility
-        // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-        // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-        $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab,
-                    $field['tabs'])) && (!is_array($field['sections']) || Tools::count(array_intersect($field['sections'], $visibleSections)) > 0);
-
-        // ar_ stands for 'attribrow'.
-        $tplfield['rowid'] = 'ar_'.(!empty($field['id']) ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
-        // check for separator
-        if (isset($field['html']) && $field['html'] == '-' && $index > 0 && $fields[$index - 1]['html'] != '-') {
-            $tplfield['type'] = 'line';
-            $tplfield['line'] = '<hr>';
-        } /* double separator, ignore */ elseif (isset($field['html']) && $field['html'] == '-') {
-        } /* sections */ elseif (isset($field['html']) && $field['html'] == 'section') {
-            $tplfield['type'] = 'section';
-            list($tab, $section) = explode('.', $field['name']);
-            $tplfield['section_name'] = "section_{$tab}_{$section}";
-            $tplfield['line'] = $this->getSectionControl($field, $mode);
-        } /* only full HTML */ elseif (isset($field['line'])) {
-            $tplfield['type'] = 'custom';
-            $tplfield['line'] = $field['line'];
-        } /* edit field */ else {
-            $tplfield['type'] = 'attribute';
-
-            if ($field['attribute']->m_ownerInstance->getNumbering()) {
-                $this->_addNumbering($field, $tplfield, $index);
-            }
-
-            /* does the field have a label? */
-            if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') || !isset($field['label'])) {
-                if (!isset($field['label']) || empty($field['label'])) {
-                    $tplfield['label'] = '';
-                } else {
-                    $tplfield['label'] = $field['label'];
-                    if ($field['error']) { // TODO KEES
-                        $tplfield['error'] = $field['error'];
-                    }
-                }
-            } else {
-                $tplfield['label'] = 'AF_NO_LABEL';
-            }
-
-            /* obligatory indicator */
-            if ($field['obligatory']) {
-                $tplfield['obligatory'] = true;
-            }
-
-            // Make the attribute and node names available in the template.
-            $tplfield['attribute'] = $field['attribute']->fieldName();
-            $tplfield['node'] = $field['attribute']->m_ownerInstance->atkNodeUri();
-
-            /* html source */
-            $tplfield['widget'] = $field['html'];
-            $editsrc = $field['html'];
-
-            $tplfield['id'] = str_replace('.', '_', $this->m_node->atkNodeUri().'_'.$field['id']);
-            $tplfield['htmlid'] = $field['id'];
-
-            $tplfield['full'] = $editsrc;
-
-            $tplfield['readonly'] = $field['attribute']->isReadonlyEdit($mode);
-
-            $tplfield['help'] = $field['attribute']->getHelp();
-        }
-
-        // allow passing of extra arbitrary data, for example if a user overloads the editArray method
-        // to pass custom extra data per attribute to the template
-        if (isset($field['extra'])) {
-            $tplfield['extra'] = $field['extra'];
-        }
-
-        return $tplfield;
-    }
-
-    /**
      * Function returns a generic html form for editing a record.
      *
      * @param string $mode The edit mode ("add" or "edit").
@@ -442,7 +316,6 @@ class EditHandler extends ViewEditBase
      *                             the specified prefix (used in embedded
      *                             forms)
      * @param string $template The template to use for the edit form
-     * @param bool $ignoreTab Ignore the tabs an attribute should be shown on.
      *
      * @return string the edit form as a string
      */
@@ -452,19 +325,24 @@ class EditHandler extends ViewEditBase
         $forceList = '',
         $suppressList = '',
         $fieldprefix = '',
-        $template = '',
-        $ignoreTab = false
+        $template = ''
     ) {
         $node = $this->m_node;
 
         /* get data, transform into form, return */
-        $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix, $ignoreTab);
+        $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
+        $params = [];
+        $params['fields'] = $this->fieldsWithTabsAndSections($data['fields']); // add all fields as a numeric array.
+        $params['tabs'] = $this->getTabs($params['fields']);
+        $params['activeTab'] = $this->getActiveTab($mode);
+
         // Format some things for use in tpl.
         /* check for errors and display them */
-        $tab = $node->getActiveTab($mode);
+        $tab = $this->getActiveTab($mode);
         $error_title = '';
         $pk_err_attrib = [];
-        $tabs = $node->getTabs($node->m_action);
+        $tabs = $this->getTabs($params['fields']);
+        $errorFields = [];
 
         // Handle errors
         $errors = [];
@@ -528,17 +406,8 @@ class EditHandler extends ViewEditBase
         }
 
         /* display the edit fields */
-        $fields = [];
-        $errorFields = [];
-        $attributes = [];
 
-        for ($i = 0, $_i = Tools::count($data['fields']); $i < $_i; ++$i) {
-            $field = &$data['fields'][$i];
-            $tplfield = $this->createTplField($data['fields'], $i, $mode, $tab);
-            $fields[] = $tplfield; // make field available in numeric array
-            $params[isset($field['name'])?$field['name']:null] = $tplfield; // make field available in associative array
-            $attributes[isset($field['name'])?$field['name']:null] = $tplfield; // make field available in associative array
-
+        foreach ($data['fields'] as $field) {
             if (!empty($field['error'])) {
                 $errorFields[] = $field['id'];
             }
@@ -558,8 +427,7 @@ class EditHandler extends ViewEditBase
         }
 
         $params['activeTab'] = $tab;
-        $params['fields'] = $fields; // add all fields as a numeric array.
-        $params['attributes'] = $attributes; // add all fields as an associative array
+        $params['fields'] = $this->fieldsWithTabsAndSections($data['fields']); // add all fields as a numeric array.
 
         $params['errortitle'] = $error_title;
         $params['errors'] = $errors; // Add the list of errors.
@@ -568,11 +436,11 @@ class EditHandler extends ViewEditBase
             $result .= $ui->render($template, $params);
         } else {
             $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
-            $params['fieldspart'] = $this->_renderTabs($fields, $tabTpl);
+            $params['fieldspart'] = $this->_renderTabs($params['fields'], $tabTpl);
             $result .= $ui->render('editform_common.tpl', $params);
         }
 
-        return $result;
+        return $this->tabulate('edit', $params['fields'], $result);
     }
 
     /**
@@ -585,10 +453,6 @@ class EditHandler extends ViewEditBase
      */
     public function getTabLink($node, $error)
     {
-        if (Tools::count($node->getTabs($node->m_action)) < 2) {
-            return '';
-        }
-
         return '<a href="javascript:void(0)" onclick="ATK.Tabs.showTab(\''.$error['tab'].'\'); return false;">'.$this->getTabLabel($node, $error['tab']).'</a>';
     }
 

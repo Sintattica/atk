@@ -75,7 +75,7 @@ class TabbedPane extends Attribute
             if (is_object($p_attr)) {
                 $p_attr->addDisabledMode(self::DISABLED_VIEW | self::DISABLED_EDIT);
                 $p_attr->setTabs($this->getTabs());
-                $p_attr->setSections($this->getSections());
+                $p_attr->setSection($this->getSection());
             }
         }
     }
@@ -149,7 +149,7 @@ class TabbedPane extends Attribute
             $p_attr = $this->m_ownerInstance->getAttribute($attrib);
             $p_attr->addDisabledMode(self::DISABLED_VIEW | self::DISABLED_EDIT);
             $p_attr->setTabs($this->getTabs());
-            $p_attr->setSections($this->getSections());
+            $p_attr->setSection($this->getSection());
         }
     }
 
@@ -256,7 +256,7 @@ class TabbedPane extends Attribute
                         // on which tab? - from tabbedpane properties
                         $entry['tabs'] = $tab;
                         //on which sections?
-                        $entry['sections'] = $p_attrib->getSections();
+                        $entry['section'] = $p_attrib->getSection();
                         /* the actual edit contents */
                         $entry['html'] = $p_attrib->getView($mode, $defaults);
                         $arr['fields'][] = $entry;
