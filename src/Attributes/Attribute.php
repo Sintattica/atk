@@ -388,13 +388,6 @@ class Attribute
     public $m_order = 0;
 
     /*
-     * Index of the attribute within its node.
-     * @access private
-     * @var int
-     */
-    public $m_index = 0;
-
-    /*
      * The tabs on which the attribute lives. If section is set, this
      * value is ignored.
      * '' stands for default tab.
@@ -1301,9 +1294,33 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setTabs(array $tabs) {
+    public function setTabs(array $tabs)
+    {
         $this->m_tabs = $tabs;
         return $this;
+    }
+
+    /**
+     * Set the order of the attribute inside its section or tabs
+     *
+     * @param int $order
+     *
+     * @return Attribute The instance of this Attribute
+     */
+    public function setOrder(int $order)
+    {
+        $this->m_order = $order;
+        return $this;
+    }
+
+    /**
+     * Get the order of the attribute within its section or tabs
+     *
+     * @return int $order
+     */
+    public function getOrder()
+    {
+        return $this->m_order;
     }
 
     /**
@@ -1460,8 +1477,11 @@ class Attribute
      */
     public function getError($errors)
     {
-        for ($i = 0; $i < Tools::count($errors); ++$i) {
-            if ($errors[$i]['attrib_name'] == $this->fieldName() || Tools::atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])) {
+        if (!is_array($errors)) {
+            return false;
+        }
+        foreach ($errors as $error) {
+            if ($error['attrib_name'] == $this->fieldName() || Tools::atk_in_array($this->fieldName(), $error['attrib_name'])) {
                 return true;
             }
         }

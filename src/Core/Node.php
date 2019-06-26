@@ -251,14 +251,6 @@ class Node
     public $m_attribList = [];
 
     /*
-     * Index list containing the attributes in the order in which they will
-     * appear on screen.
-     * @access private
-     * @var array
-     */
-    public $m_attribIndexList = [];
-
-    /*
      * Reference to the page on which the node is rendering its output.
      * @access private
      * @var Page
@@ -691,23 +683,18 @@ class Node
         $attribute->init();
 
         // If we've already registered an attribute with the same name, we just
-        // set the new $order if present and merge sections
+        // set the new $order if present
         if (isset($this->m_attribList[$attribute->fieldName()]) && is_object($this->m_attribList[$attribute->fieldName()])) {
             if ($order !== null) {
-                $this->m_attribIndexList[$this->m_attribList[$attribute->fieldName()]->m_index]['order'] = $order;
+                $attribute->setOrder($order);
             }
-            $attribute->m_index = $this->m_attribList[$attribute->fieldName()]->m_index;
         } else {
             if ($order === null) {
                 $this->m_attribOrder += 100;
-                $attribute->m_order = $this->m_attribOrder;
+                $order = $this->m_attribOrder;
+                $attribute->setOrder($this->m_attribOrder);
             }
-
-            $this->m_attribIndexList[] = array(
-                'name' => $attribute->fieldName(),
-                'order' => $attribute->m_order,
-            );
-            $attribute->m_index = max(array_keys($this->m_attribIndexList)); // might contain gaps
+            $attribute->setOrder($order);
         }
 
         $attribute->setParts($parts);
@@ -768,8 +755,6 @@ class Node
         if (is_object($this->m_attribList[$attribname])) {
             Tools::atkdebug("removing attribute $attribname");
 
-            $listindex = $this->m_attribList[$attribname]->m_index;
-
             unset($this->m_attribList[$attribname]);
             foreach ($this->m_listExcludes as $i => $name) {
                 if ($name == $attribname) {
@@ -787,8 +772,6 @@ class Node
                     $this->m_cascadingAttribs = array_values($this->m_cascadingAttribs);
                 }
             }
-
-            unset($this->m_attribIndexList[$listindex]);
         }
     }
 
@@ -873,7 +856,7 @@ class Node
      */
     public function getAttributeOrder($name)
     {
-        return $this->m_attribIndexList[$this->m_attribList[$name]->m_index]['order'];
+        return $this->m_attribList[$name]->getOrder();
     }
 
     /**
@@ -884,8 +867,7 @@ class Node
      */
     public function setAttributeOrder($name, $order)
     {
-        $this->m_attribList[$name]->m_order = $order;
-        $this->m_attribIndexList[$this->m_attribList[$name]->m_index]['order'] = $order;
+        $this->m_attribList[$name]->setOrder($order);
     }
 
     /**
@@ -1809,29 +1791,22 @@ class Node
         $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atknodeuri" value="'.$this->atkNodeUri().'">';
         $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.Tools::atkArrayNvl($record, 'atkprimkey', '').'">';
 
-        foreach (array_keys($this->m_attribIndexList) as $r) {
-            $attribname = $this->m_attribIndexList[$r]['name'];
-            $p_attrib = $this->m_attribList[$attribname];
-
-            if ($p_attrib) {
-                if ($p_attrib->hasDisabledMode($p_attrib::DISABLED_EDIT)) {
-                    continue;
-                }
-
-                /* fields that have not yet been initialised may be overriden in the url */
-                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars)) {
-                    $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
-                }
-
-                if (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList)) {
-                    $p_attrib->m_flags |= ($mode == 'add' ? $p_attrib::AF_HIDE_ADD : $p_attrib::AF_HIDE_EDIT);
-                }
-
-                /* we let the attribute add itself to the edit array */
-                $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
-            } else {
-                Tools::atkerror("Attribute $attribname not found!");
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
+            if ($p_attrib->hasDisabledMode($p_attrib::DISABLED_EDIT)) {
+                continue;
             }
+
+            /* fields that have not yet been initialised may be overriden in the url */
+            if (!array_key_exists($attribname, $defaults) && array_key_exists($attribname, $this->m_postvars)) {
+                $defaults[$attribname] = $this->m_postvars[$attribname];
+            }
+
+            if (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList)) {
+                $p_attrib->m_flags |= ($mode == 'add' ? $p_attrib::AF_HIDE_ADD : $p_attrib::AF_HIDE_EDIT);
+            }
+
+            /* we let the attribute add itself to the edit array */
+            $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
 
         /* check for errors */
@@ -1872,20 +1847,13 @@ class Node
 
         $result = [];
 
-        foreach (array_keys($this->m_attribIndexList) as $r) {
-            $attribname = $this->m_attribIndexList[$r]['name'];
-
-            $p_attrib = $this->m_attribList[$attribname];
-            if ($p_attrib != null) {
-                if ($p_attrib->hasDisabledMode(Attribute::DISABLED_VIEW)) {
-                    continue;
-                }
-
-                /* we let the attribute add itself to the view array */
-                $p_attrib->addToViewArray($mode, $result, $record);
-            } else {
-                Tools::atkerror("Attribute $attribname not found!");
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
+            if ($p_attrib->hasDisabledMode(Attribute::DISABLED_VIEW)) {
+                continue;
             }
+
+            /* we let the attribute add itself to the view array */
+            $p_attrib->addToViewArray($mode, $result, $record);
         }
 
         /* return the result array */
@@ -1908,9 +1876,7 @@ class Node
     {
         $record = [];
 
-        foreach (array_keys($this->m_attribList) as $attrName) {
-            $attr = $this->getAttribute($attrName);
-
+        foreach ($this->m_attribList as $attribname => $attr) {
             if (is_array($this->m_postvars) && isset($this->m_postvars[$attrName])) {
                 $value = $attr->fetchValue($this->m_postvars);
             } else {
@@ -1918,7 +1884,7 @@ class Node
             }
 
             if ($value !== null) {
-                $record[$attr->fieldName()] = $value;
+                $record[$attribname] = $value;
             }
         }
 
@@ -2000,10 +1966,7 @@ class Node
     public function hideForm($mode = 'add', $record = null, $forceList = '', $fieldprefix = '')
     {
         /* suppress all */
-        $suppressList = [];
-        foreach (array_keys($this->m_attribIndexList) as $r) {
-            $suppressList[] = $this->m_attribIndexList[$r]['name'];
-        }
+        $suppressList = array_keys($this->m_attribList);
 
         /* get data, transform into "form", return */
         $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
@@ -2216,8 +2179,8 @@ class Node
             // descriptor_def method
             if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
                 $content .= '<ul>';
-                for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
-                    $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+                foreach ($recs as $record) {
+                    $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($record)));
                 }
                 $content .= '</ul>';
             }
@@ -2291,14 +2254,6 @@ class Node
             return;
         }
 
-        // We assign the $this reference to the attributes at this stage, since
-        // it fails when we do it in the add() function.
-        // See also the comments in the add() function.
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            $p_attrib->setOwnerInstance($this);
-        }
-
         $this->_addListeners();
 
         $this->attribSort();
@@ -2359,11 +2314,8 @@ class Node
         $db = $this->getDb();
         $metainfo = $db->tableMeta($this->m_table);
 
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            if (is_object($p_attrib)) {
-                $p_attrib->fetchMeta($metainfo);
-            }
+        foreach ($this->m_attribList as $p_attrib) {
+            $p_attrib->fetchMeta($metainfo);
         }
         $this->m_attribsizesset = true;
     }
@@ -2414,8 +2366,8 @@ class Node
     public function setFeedback($action, $statusmask)
     {
         if (is_array($action)) {
-            for ($i = 0, $_i = Tools::count($action); $i < $_i; ++$i) {
-                $this->m_feedback[$action[$i]] = $statusmask;
+            foreach ($action as $actionname) {
+                $this->m_feedback[$actionname] = $statusmask;
             }
         } else {
             $this->m_feedback[$action] = $statusmask;
@@ -2518,11 +2470,10 @@ class Node
         }
         $record = [];
 
-        foreach (array_keys($this->m_attribList) as $attribname) {
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
             if ((!is_array($includes) || in_array($attribname, $includes)) && (!is_array($excludes) || !in_array($attribname, $excludes))) {
-                $p_attrib = $this->m_attribList[$attribname];
                 if (!$postedOnly || $p_attrib->isPosted($vars)) {
-                    $record[$p_attrib->fieldName()] = $p_attrib->fetchValue($vars);
+                    $record[$attribname] = $p_attrib->fetchValue($vars);
                 }
             }
         }
@@ -2547,9 +2498,8 @@ class Node
      */
     public function modifyRecord(&$record, $vars)
     {
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            $record[$p_attrib->fieldName()] = $p_attrib->fetchValue($vars);
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
+            $record[$attribname] = $p_attrib->fetchValue($vars);
         }
     }
 
@@ -2801,9 +2751,8 @@ class Node
 
             $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
-            foreach (array_keys($this->m_attribList) as $attribname) {
+            foreach ($this->m_attribList as $attribname => $p_attrib) {
                 if ((!is_array($excludes) || !in_array($attribname, $excludes)) && (!is_array($includes) || in_array($attribname, $includes))) {
-                    $p_attrib = $this->m_attribList[$attribname];
                     if ($p_attrib->needsUpdate($record) || Tools::atk_in_array($attribname, $includes)) {
                         $storemode = $p_attrib->storageType('update');
                         if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
@@ -2823,8 +2772,8 @@ class Node
                 return false;
             }
 
-            for ($i = 0, $_i = Tools::count($storelist['query']); $i < $_i; ++$i) {
-                $p_attrib = $this->m_attribList[$storelist['query'][$i]];
+            foreach ($storelist['query'] as $attribname) {
+                $p_attrib = $this->m_attribList[$attribname];
                 $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'update'); // start at level 1
             }
 
@@ -2863,11 +2812,11 @@ class Node
     public function _storeAttributes($storelist, &$record, $mode)
     {
         // store special storage attributes.
-        for ($i = 0, $_i = Tools::count($storelist); $i < $_i; ++$i) {
-            $p_attrib = $this->m_attribList[$storelist[$i]];
+        foreach ($storelist as $attribnam) {
+            $p_attrib = $this->m_attribList[$attribname];
             if (!$p_attrib->store($this->getDb(), $record, $mode)) {
                 // something went wrong.
-                Tools::atkdebug("Store aborted. Attribute '".$storelist[$i]."' reported an error.");
+                Tools::atkdebug("Store aborted. Attribute '{$attribname}' reported an error.");
 
                 return false;
             }
@@ -3021,8 +2970,8 @@ class Node
             $usedFields = array_keys($this->m_attribList);
         } else {
             $usedFields = Tools::atk_array_merge($this->descriptorFields(), $this->m_primaryKey, $includes);
-            foreach (array_keys($this->m_attribList) as $name) {
-                if (is_object($this->m_attribList[$name]) && $this->m_attribList[$name]->hasFlag(Attribute::AF_FORCE_LOAD)) {
+            foreach ($this->m_attribList as $name => $attrib) {
+                if ($attrib->hasFlag(Attribute::AF_FORCE_LOAD)) {
                     $usedFields[] = $name;
                 }
             }
@@ -3152,8 +3101,7 @@ class Node
 
         $query->addTable($this->m_table);
 
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
             if (!Tools::atk_in_array($attribname, $excludelist) && ($mode != 'add' || $p_attrib->needsInsert($record))) {
                 $storemode = $p_attrib->storageType($mode);
                 if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
@@ -3172,8 +3120,8 @@ class Node
             return false;
         }
 
-        for ($i = 0, $_i = Tools::count($storelist['query']); $i < $_i; ++$i) {
-            $p_attrib = $this->m_attribList[$storelist['query'][$i]];
+        foreach ($storelist['query'] as $attribname) {
+            $p_attrib = $this->m_attribList[$attribname];
             $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'add'); // start at level 1
         }
 
@@ -3233,8 +3181,7 @@ class Node
                 return false;
             }
 
-            for ($i = 0, $_i = Tools::count($this->m_triggerListeners); $i < $_i; ++$i) {
-                $listener = $this->m_triggerListeners[$i];
+            foreach ($this->m_triggerListeners as $listener) {
                 $return = $listener->notify($trigger, $record, $mode);
 
                 if ($return === null) {
@@ -3286,8 +3233,8 @@ class Node
         }
 
         if ($exectrigger) {
-            for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                $return = $this->executeTrigger('preDelete', $recordset[$i]);
+            foreach ($recordset as $record) {
+                $return = $this->executeTrigger('preDelete', $record);
                 if (!$return) {
                     return false;
                 }
@@ -3295,15 +3242,13 @@ class Node
         }
 
         // delete on "cascading" attributes (like relations, file attribute) BEFORE the query execution
-        if (Tools::count($this->m_cascadingAttribs) > 0) {
-            for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                for ($j = 0, $_j = Tools::count($this->m_cascadingAttribs); $j < $_j; ++$j) {
-                    $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
-                    if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
-                        if (!$p_attrib->delete($recordset[$i])) {
-                            // error
-                            return false;
-                        }
+        foreach ($this->m_cascadingAttribs as $attribname) {
+            $p_attrib = $this->m_attribList[$attribname];
+            foreach ($recordset as $record) {
+                if (isset($record[$attribname]) && !$p_attrib->isEmpty($record)) {
+                    if (!$p_attrib->delete($record)) {
+                        // error
+                        return false;
                     }
                 }
             }
@@ -3312,36 +3257,33 @@ class Node
         $query = $this->getDb()->createQuery();
         $query->addTable($this->m_table);
         $query->addCondition($selector);
-        if ($query->executeDelete()) {
+        if (!$query->executeDelete()) {
+            return false;
+        }
 
-            // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
-            if (Tools::count($this->m_cascadingAttribs) > 0) {
-                for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                    for ($j = 0, $_j = Tools::count($this->m_cascadingAttribs); $j < $_j; ++$j) {
-                        $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
-                        if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
-                            if (!$p_attrib->postDelete($recordset[$i])) {
-                                // error
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($exectrigger) {
-                for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                    $return = ($this->executeTrigger('postDel', $recordset[$i]) && $this->executeTrigger('postDelete', $recordset[$i]));
-                    if (!$return) {
+        // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
+        foreach ($this->m_cascadingAttribs as $attribname) {
+            $p_attrib = $this->m_attribList[$attribname];
+            foreach ($recordset as $record) {
+                if (isset($record[$attribname]) && !$p_attrib->isEmpty($record)) {
+                    if (!$p_attrib->postDelete($record)) {
+                        // error
                         return false;
                     }
                 }
             }
-
-            return true;
-        } else {
-            return false;
         }
+
+        if ($exectrigger) {
+            foreach ($recordset as $record) {
+                $return = ($this->executeTrigger('postDel', $record) && $this->executeTrigger('postDelete', $record));
+                if (!$return) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -3860,17 +3802,9 @@ class Node
      */
     public function attribSort()
     {
-        usort($this->m_attribIndexList, array('self', 'attrib_cmp'));
-
-        // after sorting we need to update the attribute indices
-        $attrs = [];
-        foreach ($this->m_attribIndexList as $index => $info) {
-            $attr = $this->getAttribute($info['name']);
-            $attr->m_index = $index;
-            $attrs[$info['name']] = $attr;
-        }
-
-        $this->m_attribList = $attrs;
+        uasort($this->m_attribList, function ($attrib1, $attrib2) {
+                return $attrib1->getOrder() <=> $attrib2->getOrder();
+            });
     }
 
     /**
@@ -3901,8 +3835,7 @@ class Node
         $orgsearch = Tools::atkArrayNvl($this->m_postvars, 'atksearch');
 
         // Built whereclause.
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
             // Only search in fields that aren't explicitly hidden from search
             if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && (in_array($p_attrib->dbFieldType(),
                         array('string', 'text')) || $p_attrib->hasFlag(Attribute::AF_SEARCHABLE))
@@ -4067,8 +4000,8 @@ class Node
      */
     public function notify($action, $record)
     {
-        for ($i = 0, $_i = Tools::count($this->m_actionListeners); $i < $_i; ++$i) {
-            $this->m_actionListeners[$i]->notify($action, $record);
+        foreach ($this->m_actionListeners as $listener) {
+            $listener->notify($action, $record);
         }
     }
 
@@ -4080,8 +4013,8 @@ class Node
      */
     public function preNotify($action, &$record)
     {
-        for ($i = 0, $_i = Tools::count($this->m_actionListeners); $i < $_i; ++$i) {
-            $this->m_actionListeners[$i]->preNotify($action, $record);
+        foreach ($this->m_actionListeners as $listener) {
+            $listener->preNotify($action, $record);
         }
     }
 
