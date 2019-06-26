@@ -17,5 +17,4 @@
     {/section}
 </ul>
 
-<div class="tabsContent">{$content}</div>
 

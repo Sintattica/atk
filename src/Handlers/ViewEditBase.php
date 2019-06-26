@@ -419,16 +419,14 @@ class ViewEditBase extends ActionHandler
     }
 
     /**
-     * Place a set of tabs around content.
+     * Render tabs header with their links.
      *
      * @param string $action The action for which the tabs are loaded.
      * @param array $fields as returned by node->editArray of node->viewArray()
-     * @param string $content The content that is to be displayed within the
-     *                        tabset.
      *
      * @return string The complete tabset with content.
      */
-    public function tabulate($action, $fields, $content)
+    public function tabulate($action, $fields)
     {
         // Collect tabs from fields shown in the form :
         $tabs = $this->getTabs($fields);
@@ -436,18 +434,18 @@ class ViewEditBase extends ActionHandler
         $tabCount = Tools::count($tabs);
 
         if (!$this->m_hasSections && $tabCount == 1) {
-            return $content;
+            return '';
         }
 
         $page = $this->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js');
 
         if ($tabCount == 1) {
-            return $content;
+            return '';
         }
         $ui = $this->getUi();
         if (!is_object($ui)) {
-            return $content;
+            return '';
         }
 
         // which tab is currently selected
@@ -463,7 +461,6 @@ class ViewEditBase extends ActionHandler
         }
         return $ui->renderTabs([
             'tabs' => $tabList,
-            'content' => $content,
             'tabstateUrl' => Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri().'&atkaction='.$action.'&atkpartial=tabstate&atktab=',
         ]);
     }

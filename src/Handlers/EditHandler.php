@@ -428,6 +428,7 @@ class EditHandler extends ViewEditBase
 
         $params['activeTab'] = $tab;
         $params['fields'] = $this->fieldsWithTabsAndSections($data['fields']); // add all fields as a numeric array.
+        $result .= $this->tabulate('edit', $params['fields']);
 
         $params['errortitle'] = $error_title;
         $params['errors'] = $errors; // Add the list of errors.
@@ -440,7 +441,7 @@ class EditHandler extends ViewEditBase
             $result .= $ui->render('editform_common.tpl', $params);
         }
 
-        return $this->tabulate('edit', $params['fields'], $result);
+        return $result;
     }
 
     /**

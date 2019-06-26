@@ -154,6 +154,7 @@ class ViewHandler extends ViewEditBase
         $data = $node->viewArray($mode, $record);
 
         $fields = $this->fieldsWithTabsAndSections($data['fields']);
+        $tabHeader = $this->tabulate('view', $fields);
         // get active tab
         $tab = $this->getActiveTab();
         // get all tabs of current mode
@@ -164,16 +165,12 @@ class ViewHandler extends ViewEditBase
         $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
 
         if ($template) {
-            $innerform = $ui->render($template, ['fields' => $fields]);
-        } else {
-            if (Tools::count(array_unique($tabTpl)) > 1) {
-                $tabForm = $this->_renderTabs($fields, $tabTpl);
-                $innerform = implode(null, $tabForm);
-            } else {
-                $innerform = $ui->render($node->getTemplate('view', $record, $tab), ['fields' => $fields]);
-            }
+            return $tabHeader.$ui->render($template, ['fields' => $fields]);
         }
-
-        return $this->tabulate('view', $fields, $innerform);
+        if (Tools::count(array_unique($tabTpl)) > 1) {
+            $tabForm = $this->_renderTabs($fields, $tabTpl);
+            return $tabHeader.implode(null, $tabForm);
+        }
+        return $tabHeader.$ui->render($node->getTemplate('view', $record, $tab), ['fields' => $fields]);
     }
 }

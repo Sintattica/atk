@@ -7,5 +7,5 @@
             </li>
         {/foreach}
     </ul>
-    <div class="tabsContent">{$content}</div>
+    {$content}
 </div>
