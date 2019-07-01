@@ -283,58 +283,39 @@ class ViewEditBase extends ActionHandler
     {
         $tabTpl = [];
         foreach ($tabs as $t) {
-            $tabTpl['section_'.$t] = $node->getTemplate($mode, $record, $t);
+            $tabTpl[$t] = $node->getTemplate($mode, $record, $t);
         }
+        $tabTpl['alltabs'] = $node->getTemplate($mode, $record, 'alltabs');
 
         return $tabTpl;
     }
 
     /**
-     * Render tabs using templates.
+     * Render fields with the template corresponding to the record/tab/mode we're in
      *
-     * @todo this method seems broken by design, read comments for more info!
+     * @param array $fields from self::fieldsWithTabsAndSections
+     * @param array $tabTpl array [string $tab1 => string $template1, ...]
      *
-     * @param array $fields
-     * @param array $tabTpl
-     *
-     * @return array with already rendering tabs
+     * @return array with rendered tabs
      */
     public function _renderTabs($fields, $tabTpl)
     {
         $ui = $this->getUi();
         $tabs = [];
-        $perTpl = []; //per template array
+        $perTpl = []; //array [template1 => ['fields' => [$field1, $field2, ...]], ...]
 
-        for ($i = 0, $_i = Tools::count($fields); $i < $_i; ++$i) {
-            $allTabs = explode(' ',
-                $fields[$i]['tab']); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
-            $allMatchingTabs = array_values(array_intersect($allTabs,
-                array_keys($tabTpl))); // because of the CSS thingee above we search for the first matching tab
-            if (Tools::count($allMatchingTabs) == 0) {
-                $allMatchingTabs = array_keys($tabTpl);
-            } // again a workaround for this horribly broken method
-            $tab = $allMatchingTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
-            $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i]; //make field available in numeric array
-            $perTpl[$tabTpl[$tab]][isset($fields[$i]['attribute'])?$fields[$i]['attribute']:null] = $fields[$i]; //make field available in associative array
-            $perTpl[$tabTpl[$tab]]['attributes'][isset($fields[$i]['attribute'])?$fields[$i]['attribute']:null] = $fields[$i]; //make field available in associative array
-        }
-
-        // Add 'alltab' fields to all templates
         foreach ($fields as $field) {
-            if (in_array('alltabs', explode(' ', $field['tab']))) {
-                $templates = array_keys($perTpl);
-                foreach ($templates as $tpl) {
-                    if (!$perTpl[$tpl][$field['attribute']]) {
-                        $perTpl[$tpl]['fields'][] = $field;
-                        $perTpl[$tpl][$field['attribute']] = $field;
-                    }
-                }
+            // We render each field based on the first tab he's listed in :
+            $tab = $field['tabs'][0];
+            $template = $tabTpl[$tab];
+            if (!isset($perTpl[$template])) {
+                $perTpl[$template] = [];
             }
+            $perTpl[$template]['fields'][] = $field;
         }
 
-        $tpls = array_unique(array_values($tabTpl));
-        foreach ($tpls as $tpl) {
-            $tabs[] = $ui->render($tpl, $perTpl[$tpl]);
+        foreach ($perTpl as $tpl => $fieldsArray) {
+            $tabs[] = $ui->render($tpl, $fieldsArray);
         }
 
         return $tabs;

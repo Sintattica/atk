@@ -1083,6 +1083,7 @@ class Attribute
         if (!is_null($this->m_section)) {
             $section = $this->m_ownerInstance->resolveSection($this->m_section);
             $this->addRowCSSClass('section_'.str_replace('.', '_', $section));
+            $tabs = [$this->m_ownerInstance->getTabFromSection($section)];
         } else {
             foreach ($this->m_tabs as $tab) {
                 $tab = $this->m_ownerInstance->resolveTab($tab);
