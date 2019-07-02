@@ -176,14 +176,4 @@ class AggregatedColumn extends Attribute
 
         return QueryPart::implode('OR', $searchConditions, true);
     }
-
-    /**
-     * Retrieve the list of searchmodes supported by the attribute.
-     *
-     * @return array List of supported searchmodes
-     */
-    public function getSearchModes()
-    {
-        return array('exact', 'substring', 'wildcard', 'regexp');
-    }
 }
