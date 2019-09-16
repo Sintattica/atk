@@ -145,6 +145,9 @@ class NumberAttribute extends Attribute
      */
     public function removeSeparators($number, $decimal_separator = '', $thousands_separator = '')
     {
+        if (is_null($number)) {
+            return null;
+        }
         if (empty($decimal_separator)) {
             $decimal_separator = $this->m_decimalseparator;
         }

@@ -131,18 +131,17 @@ class FlagAttribute extends MultiSelectAttribute
     public function fetchValue($postvars)
     {
         $vars = Tools::atkArrayNvl($postvars, $this->getHtmlName());
-        if (!is_array($vars)) {
-            $result = [];
-            foreach ($this->m_values as $value) {
-                if (Tools::hasFlag($vars, $value)) {
-                    $result[] = $value;
-                }
-            }
-
-            return $result;
-        } else {
+        if (is_array($vars) || is_null($vars)) {
             return $vars;
         }
+        $result = [];
+        foreach ($this->m_values as $value) {
+            if (Tools::hasFlag($vars, $value)) {
+                $result[] = $value;
+            }
+        }
+
+        return $result;
     }
 
     /**
