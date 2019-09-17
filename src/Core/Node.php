@@ -2807,12 +2807,12 @@ class Node
      * @param array $record The master record being stored.
      * @param string $mode The storage mode ("add", "copy" or "update")
      *
-     * @return bool True if succesful, false if not.
+     * @return bool True if successful, false if not.
      */
     public function _storeAttributes($storelist, &$record, $mode)
     {
         // store special storage attributes.
-        foreach ($storelist as $attribnam) {
+        foreach ($storelist as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
             if (!$p_attrib->store($this->getDb(), $record, $mode)) {
                 // something went wrong.
