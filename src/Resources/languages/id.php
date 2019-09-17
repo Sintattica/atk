@@ -78,7 +78,7 @@ return [
     'cannot_remove_file' => 'Tidak dapat menyingkirkan file!',
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'iso-8859-1',
+    'charset' => 'UTF-8',
     'check rights to' => 'Coba periksa bahwa anda mempunyai hak-hak yang sesuai untuk',
     'check_all' => 'Centang semua',
     'check_none' => 'Tidak mencentang samasekali',

@@ -20,12 +20,12 @@ return [
     // Missing string!!!
     'access_denied' => 'Access denied',
     // Missing string!!!
-    'add' => 'Lis��',
+    'add' => 'Lisää',
     'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
-    'admin' => 'Yll�pito',
+    'admin' => 'Ylläpito',
     'administration_application' => 'Administration application',
     // Missing string!!!
     'all' => 'All',
@@ -92,13 +92,13 @@ return [
     'cannot_remove_file' => 'Tiedostoa ei voi poistaa!',
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'iso-8859-1',
+    'charset' => 'UTF-8',
     'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
     'check_all' => 'Select all',
     'check_none' => 'Select none',
     'clickheretoadd_postfix' => '.',
-    'clickheretoadd_prefix' => 'Paina t�st� lis��ksesi uuden ',
+    'clickheretoadd_prefix' => 'Paina tästä lisääksesi uuden ',
     'close' => 'Sulje',
     'color' => 'Color',
     // Missing string!!!
@@ -115,7 +115,7 @@ return [
     // Missing string!!!
     'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
-    'confirm_delete' => 'Oletko varma ett� haluat poistaa?',
+    'confirm_delete' => 'Oletko varma että haluat poistaa?',
     'confirm_delete_multi' => 'Are you sure you want to delete these items?',
     // Missing string!!!
     'content_wizard_finished' => 'Wizard was finished successfully!',
@@ -201,18 +201,18 @@ return [
     // Missing string!!!
     'error_not_a_valid_ip' => 'This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.',
     // Missing string!!!
-    'error_obligatoryfield' => 'T�m� kentt� tarvitaan',
+    'error_obligatoryfield' => 'Tämä kenttä tarvitaan',
     'error_password_incorrect' => 'The password you entered is incorrect!',
     // Missing string!!!
     'error_password_invalid' => 'The password you entered is not a valid password!',
     // Missing string!!!
-    'error_password_nomatch' => 'Salasanat eiv�t t�sm��.',
+    'error_password_nomatch' => 'Salasanat eivät täsmää.',
     'error_primarykey_exists' => 'A record with this key already exists',
     'error_tab' => 'see',
     // Missing string!!!
     'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
-    'error_uniquefield' => 'T�m�n kent�n arvo tulee olla ainutlaatuinen',
+    'error_uniquefield' => 'Tämän kentän arvo tulee olla ainutlaatuinen',
     'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
     // Missing string!!!
     'error_unkown_domain' => 'Unkown domain',
@@ -400,7 +400,7 @@ return [
     // Missing string!!!
     'no_results_found' => 'No results found',
     // Missing string!!!
-    'no_valid_directory' => 'Kyseist� hakemistoa ei ole',
+    'no_valid_directory' => 'Kyseistä hakemistoa ei ole',
     'numbers' => 'numbers',
     // Missing string!!!
     'oct' => 'Oct',
@@ -416,7 +416,7 @@ return [
     'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
-    'password_incorrect' => 'Antamasi salasana on v��r�!',
+    'password_incorrect' => 'Antamasi salasana on väärä!',
     'password_invalid' => 'Antamasi salasana ei ole kelvollinen.',
     'password_new' => 'Uusi',
     'permission_denied' => "Sorry, you don't have permission to perform this action",
@@ -595,7 +595,7 @@ return [
     'upperchars' => 'uppercase characters',
     // Missing string!!!
     'username' => 'Username',
-    'view' => 'N�yt�',
+    'view' => 'Näytä',
     'view_all' => 'View all',
     // Missing string!!!
     'wed' => 'Wed',
@@ -624,5 +624,5 @@ return [
     // Missing string!!!
     'wysiwyg_split_cell' => 'Split cells',
     // Missing string!!!
-    'yes' => 'Kyll�',
+    'yes' => 'Kyllä',
 ];

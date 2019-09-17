@@ -20,7 +20,7 @@ return [
     // Missing string!!!
     'access_denied' => 'Access denied',
     // Missing string!!!
-    'add' => '�ǉ�',
+    'add' => '追加',
     'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
@@ -35,7 +35,7 @@ return [
     // Missing string!!!
     'apply' => 'Apply',
     // Missing string!!!
-    'app_close' => '����',
+    'app_close' => '閉じる',
     'app_description' => 'Welcome to this ATK application.',
     'app_launcher' => 'ATK Application Launcher',
     'app_reopen' => 'Restart',
@@ -77,11 +77,11 @@ return [
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
-    'back' => '�߂�',
-    'back_to' => '�߂�',
+    'back' => '戻る',
+    'back_to' => '戻る',
     'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
-    'cancel' => '�L�����Z��',
+    'cancel' => 'キャンセル',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
     'cannot create directory' => 'Cannot create directory: ',
@@ -91,14 +91,14 @@ return [
     'cannot_remove_file' => "Can't remove file!",
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'shift_jis',
+    'charset' => 'UTF-8',
     'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
     'check_all' => 'Select all',
     'check_none' => 'Select none',
     'clickheretoadd_postfix' => '.',
     'clickheretoadd_prefix' => 'Click here to add a new ',
-    'close' => '����',
+    'close' => '閉じる',
     'color' => 'Color',
     // Missing string!!!
     'colorcode' => 'Color code',
@@ -139,13 +139,13 @@ return [
     'december' => '12',
     'decimal_separator' => '.',
     // Missing string!!!
-    'delete' => '?�?�',
+    'delete' => '削除',
     'delimiter' => 'Delimiter',
     // Missing string!!!
     'deselect_all' => 'Deselect all',
     'document' => 'Open document',
     // Missing string!!!
-    'edit' => '��?W',
+    'edit' => '編集',
     'editcopy' => 'Edit copy',
     'email' => 'E-mail',
     // Missing string!!!
@@ -184,7 +184,7 @@ return [
     'error_not_a_valid_ip' => 'This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.',
     // Missing string!!!
     'error_obligatoryfield' => 'This field is required',
-    'error_password_incorrect' => '��͂����p�X�??[�h��?������Ȃ��ł���!',
+    'error_password_incorrect' => '入力したパスワードは正しくないでした!',
     'error_password_invalid' => 'The password you entered is not a valid password!',
     'error_password_nomatch' => 'The supplied passwords do not match.',
     'error_primarykey_exists' => 'A record with this key already exists',
@@ -340,16 +340,16 @@ return [
     'march' => '03',
     'may' => '05',
     'menu' => 'Menu',
-    'menu_main' => '�?�C��',
+    'menu_main' => 'メイン',
     'mon' => 'Mon',
     'monday' => 'Monday',
     // Missing string!!!
     'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'New',
-    'next' => '����',
+    'next' => '次へ',
     'no' => 'No',
-    'none' => '�Ȃ�',
+    'none' => 'なし',
     'nov' => 'Nov',
     // Missing string!!!
     'november' => '11',
@@ -380,7 +380,7 @@ return [
     'password_incorrect' => 'The password you entered was not correct!',
     // Missing string!!!
     'password_invalid' => 'The supplied password is not a valid password.',
-    'password_new' => '?V�K',
+    'password_new' => '新規',
     'permission_denied' => "Sorry, you don't have permission to perform this action",
     'previous' => 'Previous',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
@@ -399,10 +399,10 @@ return [
     'sat' => 'Sat',
     'saturday' => 'Saturday',
     // Missing string!!!
-    'save' => '�ۑ�',
+    'save' => '保存',
     'saveandaddnew' => 'Save and add new',
     // Missing string!!!
-    'saveandclose' => '�ۑ��ƕ���',
+    'saveandclose' => '保存と閉じる',
     'saveandedit' => 'Save and edit',
     // Missing string!!!
     'saveandnext' => 'Save and next',
@@ -411,7 +411,7 @@ return [
     // Missing string!!!
     'save_export_selection' => 'Save selection',
     // Missing string!!!
-    'search' => '��?�',
+    'search' => '検索',
     'search_all' => 'Search all',
     'search_and' => 'Match all criteria',
     'search_between' => 'Search between two values',
@@ -429,7 +429,7 @@ return [
     'search_soundex' => 'Search for a string that sounds similar',
     'search_substring' => 'Search for a substring',
     'search_wildcard' => 'Search with wildcards (*)',
-    'select' => '�I��',
+    'select' => '選択',
     'selected' => 'Selected',
     // Missing string!!!
     'selection' => 'Selection',
@@ -438,7 +438,7 @@ return [
     // Missing string!!!
     'select_all' => 'Select all',
     'select_invert' => 'Invert selection',
-    'select_none' => '����',
+    'select_none' => '無し',
     'self' => 'Self',
     // Missing string!!!
     'sep' => 'Sep',
@@ -526,7 +526,7 @@ return [
     // Missing string!!!
     'timezone_utc_-1200' => '(UTC-12:00) International Date Line West',
     // Missing string!!!
-    'title_delete' => '?�?����m�F����',
+    'title_delete' => '削除を確認する',
     'title_multiselect' => 'Multiselect',
     // Missing string!!!
     'title_select' => 'Select',
@@ -550,7 +550,7 @@ return [
     // Missing string!!!
     'username' => 'Username',
     // Missing string!!!
-    'view' => '?�?�',
+    'view' => '詳細',
     'view_all' => 'View all',
     // Missing string!!!
     'wed' => 'Wed',
