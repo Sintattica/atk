@@ -1172,11 +1172,23 @@ class SessionManager
         return $this->atkprevlevel;
     }
 
+    /**
+     * Get javascript code to trigger autorefresh.
+     *
+     * Autorefresh prevent session or stack to be thrown away by garbage collectors.
+     *
+     * @return string
+     */
     public static function getSessionAutoRefreshJs()
     {
-        $url = Config::getGlobal('dispatcher').'?'.Config::getGlobal('session_autorefresh_key');
+        $sm = self::getInstance();
+        $url = Config::getGlobal('dispatcher').'?';
+        $url .= 'atkstackid='.urlencode($sm->atkStackID());
+        $url .= '&atkprevlevel='.urlencode($sm->atkLevel());
+        $url .= '&atklevel='.urlencode($sm->newLevel(self::SESSION_PARTIAL));
+        $url .= '&'.Config::getGlobal('session_autorefresh_key');
         $time = Config::getGlobal('session_autorefresh_time', 3600);
 
-        return 'jQuery(function($){window.setInterval(function(){$.ajax({cache:false,type:"GET",url:"'.$url.'"});},'.$time.');});';
+        return 'jQuery(function($){window.setInterval(function(){$.ajax({cache:false,type:"GET",url:'.json_encode($url).'});},'.$time.');});';
     }
 }
