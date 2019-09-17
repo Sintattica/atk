@@ -471,7 +471,7 @@ class DataGrid
         $this->addComponent('paginator', __NAMESPACE__.'\\DataGridPaginator');
 
         if (!empty($this->getNode()->m_index)) {
-            $this->addComponent('index', 'atk.datagrid.atkdgindex');
+            $this->addComponent('index', __NAMESPACE__.'\\DataGridIndex');
         }
 
         if (Tools::count($this->getNode()->m_editableListAttributes) > 0) {

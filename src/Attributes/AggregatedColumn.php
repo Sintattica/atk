@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\DataGrid\DataGrid as DataGrid;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Session\SessionManager;
@@ -103,37 +104,43 @@ class AggregatedColumn extends Attribute
     /**
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
+     * This function differs from regular attribute's function since it sorts the array based on fields 
+     * included in the template.
+     *
+     *
      * @param string $action the action that is being performed on the node
      * @param array $arr reference to the the recordlist array
      * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby Order by string
+     * @param ColumnConfig $columnConfig Column configuration object
+     * @param DataGrid $grid The DataGrid this attribute lives on.
+     * @param string $column child column (null for this attribute, * for this attribute and all childs)
      *
      * @see Node::listArray
      */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, DataGrid $grid = null, $column = '*')
     {
+        parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $columnConfig, $grid, $column);
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
-            $arr['heading'][$fieldprefix.$this->fieldName()]['title'] = $this->label();
-
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
                 $rec = [];
                 foreach ($this->m_displayfields as $field) {
                     $rec[] = $this->m_ownerInstance->m_table.'.'.$field;
                 }
-                $order = implode(', ', $rec);
-                if ($atkorderby == $order) {
-                    $order = implode(' DESC,', $rec);
-                    $order .= ' DESC';
+                // We use last field sorting to define the sorting on AggregatedColumn attribute
+                // (we could use any other field, but since we have this one right now ... let's use it)
+                if (isset($columnConfig->m_colcfg[$field])) {
+                    $direction = $columnConfig->getDirection($field);
+                    if ($direction == 'desc') {
+                        $direction = 'asc';
+                    } else {
+                        $direction = 'desc';
+                    }
                 }
-                $sm = SessionManager::getInstance();
-                $arr['heading'][$fieldprefix.$this->fieldName()]['url'] = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_ownerInstance->atkNodeUri().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
-            }
-
-            if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
-                $arr['search'][$fieldprefix.$this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr['search'][$fieldprefix.$this->fieldName()] .= '<input type="hidden" name="atksearchmode['.$this->fieldName().']" value="'.$this->getSearchMode().'">';
+                $order = implode(" $direction, ", $rec);
+                $order .= " $direction";
+                $arr['heading'][$fieldprefix.$this->fieldName()]['order'] = $order;
             }
         }
     }
