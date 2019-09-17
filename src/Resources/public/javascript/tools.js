@@ -92,41 +92,6 @@ ATK.Tools = {
         return (replaced + haystack);
     },
 
-    /**
-     * Gets the atkselector of the current node
-     */
-    getCurrentSelector: function () {
-        var selectorobj = ATK.Tools.get_object("atkselector");
-        var selector;
-        if (selectorobj) {
-            if (selectorobj.value) {
-                selector = selectorobj.value;
-            }
-            else if (selectorobj.innerHTML) {
-                selector = selectorobj.innerHTML;
-            }
-        }
-        return selector;
-    },
-
-    /**
-     * Gets the atknodetype of the current node
-     */
-    getCurrentNodetype: function () {
-        var nodetypeobj = ATK.Tools.get_object("atknodeuri");
-        var nodetype;
-        if (nodetypeobj) {
-            // IE works with .value, while the Gecko engine uses .innerHTML
-            if (nodetypeobj.value) {
-                nodetype = nodetypeobj.value;
-            }
-            else if (nodetypeobj.innerHTML) {
-                nodetype = nodetypeobj.innerHTML;
-            }
-        }
-        return nodetype;
-    },
-
     hideAttrib: function (attrib) {
         var el = document.getElementById('ar_' + attrib);
         el.style.display = "none";

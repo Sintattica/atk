@@ -1,8 +1,10 @@
 <script language="JavaScript" type="text/javascript">
-    var tabs = [];
+    ATK.Tabs.tabs = [
     {section name=i loop=$tabs}
-    tabs[tabs.length] = "{$tabs[i].tab}";
+    "{$tabs[i].tab}",
     {/section}
+    ];
+    ATK.Tabs.tabstateUrl = "{$tabstateUrl}";
 </script>
 
 
@@ -15,5 +17,4 @@
     {/section}
 </ul>
 
-<div class="tabsContent">{$content}</div>
 

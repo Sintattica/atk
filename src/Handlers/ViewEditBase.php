@@ -6,6 +6,7 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\State;
 use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionStore;
 
 /**
@@ -24,6 +25,13 @@ class ViewEditBase extends ActionHandler
      * @var array
      */
     private $m_record = null;
+
+    /**
+     * Does the current node has sections ?
+     *
+     * @var bool
+     */
+    private $m_hasSections = false;
 
     /**
      * Get the record to view/edit. It is cached as long as the instance
@@ -127,38 +135,35 @@ class ViewEditBase extends ActionHandler
     /**
      * Create the clickable label for the section.
      *
-     * @param array $field
+     * @param string $section name
      * @param string $mode
+     * @param bool $sectionIsOpen initially
      *
      * @return string Html
      */
-    public function getSectionControl($field, $mode)
+    public function getSectionControl($section, $mode, $sectionIsOpen = true)
     {
         // label
-        $label = self::getSectionLabel($this->m_node, $field['name']);
+        $label = self::getSectionLabel($this->m_node, $section);
 
         // our name
-        list($tab, $section) = explode('.', $field['name']);
-        $name = "section_{$tab}_{$section}";
+        $name = "section_".str_replace('.', '_', $section);
 
-        $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, 'sectionstate', array('atksectionname' => $name));
+        $url = Tools::partial_url($this->m_node->atkNodeUri(), $mode, 'sectionstate', array('atksectionname' => $section));
 
         // create onclick statement.
         $onClick = " onClick=\"javascript:ATK.Tabs.handleSectionToggle(this,null,'{$url}'); return false;\"";
-        $initClass = 'openedSection';
-
-        //if the section is not active, we close it on load.
-        $default = in_array($field['name'], $this->m_node->getActiveSections($tab, $mode)) ? 'opened' : 'closed';
-        $sectionstate = State::get(array('nodetype' => $this->m_node->atkNodeUri(), 'section' => $name), $default);
-
-        if ($sectionstate == 'closed') {
-            $initClass = 'closedSection';
+        if ($sectionIsOpen) {
+            $initIcon = 'icon_minussquare';
+        } else {
+            $initIcon = 'icon_plussquare';
+            //if the section is not active, we close it on load.
             $page = $this->getPage();
             $page->register_scriptcode("ATK.Tabs.addClosedSection('$name');");
         }
 
         // create the clickable link
-        return '<span class="atksectionwr"><a href="javascript:void(0)" id="'.$name.'" class="atksection '.$initClass.'"'.$onClick.'>'.$label.'</a></span>';
+        return '<span class="atksectionwr"><a href="javascript:void(0)" id="'.$name.'" class="atksection"'.$onClick.'><i class="'.Config::getGlobal($initIcon).'" id="img_'.$name.'"></i> '.$label.'</a></span>';
     }
 
     /**
@@ -228,6 +233,43 @@ class ViewEditBase extends ActionHandler
     }
 
     /**
+     * Get the state of a given section ('opened' or 'closed')
+     *
+     * @param string $section name
+     *
+     * @return bool
+     */
+    public function sectionIsOpen($section) {
+        $defaultState = $this->m_node->isSectionDefaultExpanded($section) ? 'opened' : 'closed';
+        $key = ['nodetype' => $this->m_node->atkNodeUri(), 'section' => $section];
+        $state = State::get($key, $defaultState);
+        return $state == 'opened';
+    }
+
+    /**
+     * Tab state handler.
+     */
+    public function partial_tabstate()
+    {
+        if (Config::getGlobal('dhtml_tabs_stateful')) {
+            State::set($this->m_node->atkNodeUri().'_tab', $this->m_postvars['atktab']);
+        }
+        die;
+    }
+
+    /**
+     * Returns the currently active tab. If none set, default tab is returned.
+     *
+     * @param string $action 'add', 'view', ...
+     *
+     * @return string The name of the currently visible tab.
+     */
+    public function getActiveTab($action = '')
+    {
+        return State::get($this->m_node->atkNodeUri().'_tab', $this->m_node->resolveTab(''));
+    }
+
+    /**
      * Get array with tab name as key and tab template as value.
      *
      * @param object $node
@@ -241,61 +283,167 @@ class ViewEditBase extends ActionHandler
     {
         $tabTpl = [];
         foreach ($tabs as $t) {
-            $tabTpl['section_'.$t] = $node->getTemplate($mode, $record, $t);
+            $tabTpl[$t] = $node->getTemplate($mode, $record, $t);
         }
+        $tabTpl['alltabs'] = $node->getTemplate($mode, $record, 'alltabs');
 
         return $tabTpl;
     }
 
     /**
-     * Render tabs using templates.
+     * Render fields with the template corresponding to the record/tab/mode we're in
      *
-     * @todo this method seems broken by design, read comments for more info!
+     * @param array $fields from self::fieldsWithTabsAndSections
+     * @param array $tabTpl array [string $tab1 => string $template1, ...]
      *
-     * @param array $fields
-     * @param array $tabTpl
-     *
-     * @return array with already rendering tabs
+     * @return array with rendered tabs
      */
     public function _renderTabs($fields, $tabTpl)
     {
         $ui = $this->getUi();
         $tabs = [];
-        $perTpl = []; //per template array
+        $perTpl = []; //array [template1 => ['fields' => [$field1, $field2, ...]], ...]
 
-        for ($i = 0, $_i = Tools::count($fields); $i < $_i; ++$i) {
-            $allTabs = explode(' ',
-                $fields[$i]['tab']); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
-            $allMatchingTabs = array_values(array_intersect($allTabs,
-                array_keys($tabTpl))); // because of the CSS thingee above we search for the first matching tab
-            if (Tools::count($allMatchingTabs) == 0) {
-                $allMatchingTabs = array_keys($tabTpl);
-            } // again a workaround for this horribly broken method
-            $tab = $allMatchingTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
-            $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i]; //make field available in numeric array
-            $perTpl[$tabTpl[$tab]][isset($fields[$i]['attribute'])?$fields[$i]['attribute']:null] = $fields[$i]; //make field available in associative array
-            $perTpl[$tabTpl[$tab]]['attributes'][isset($fields[$i]['attribute'])?$fields[$i]['attribute']:null] = $fields[$i]; //make field available in associative array
-        }
-
-        // Add 'alltab' fields to all templates
         foreach ($fields as $field) {
-            if (in_array('alltabs', explode(' ', $field['tab']))) {
-                $templates = array_keys($perTpl);
-                foreach ($templates as $tpl) {
-                    if (!$perTpl[$tpl][$field['attribute']]) {
-                        $perTpl[$tpl]['fields'][] = $field;
-                        $perTpl[$tpl][$field['attribute']] = $field;
-                    }
-                }
+            // We render each field based on the first tab he's listed in :
+            $tab = $field['tabs'][0];
+            $template = $tabTpl[$tab];
+            if (!isset($perTpl[$template])) {
+                $perTpl[$template] = [];
             }
+            $perTpl[$template]['fields'][] = $field;
         }
 
-        $tpls = array_unique(array_values($tabTpl));
-        foreach ($tpls as $tpl) {
-            $tabs[] = $ui->render($tpl, $perTpl[$tpl]);
+        foreach ($perTpl as $tpl => $fieldsArray) {
+            $tabs[] = $ui->render($tpl, $fieldsArray);
         }
 
         return $tabs;
+    }
+
+    /**
+     * Group fields by tabs and sections, add 'sections' controls and set
+     * initial visibility of fields ('initial_on_tab')
+     *
+     * @param $fields array returned by node::editArray
+     * @param $mode we're in (add or edit)
+     *
+     * @return $fields array with sections elements 'initial_on_tab' for each values
+     */
+    protected function fieldsWithTabsAndSections($fields, $mode = 'edit')
+    {
+        $activeTab = $this->getActiveTab();
+        // First, sort fields by section and set aside those who are not
+        // within a section (i.e. in the common part of the tab)
+        $fieldsBySection = [];
+        $fieldsWithoutSection = [];
+        foreach ($fields as $field) {
+            $section = $field['section'];
+            if ($section == null) {
+                $field['initial_on_tab'] = in_array($activeTab, $field['tabs']) || in_array('alltabs', $field['tabs']);
+                $fieldsWithoutSection[] = $field;
+            } else {
+                $section = $this->m_node->resolveSection($section);
+                if (!isset($fieldsBySection[$section])) {
+                    $fieldsBySection[$section] = [];
+                }
+                $fieldsBySection[$section][] = $field;
+            }
+        }
+
+        // We retain the information 'is there at least one section' (for tabulate function, later).
+        $this->m_hasSection = !empty($fieldsBySection);
+
+        // Let's put the fields outside sections in the beginning of the result
+        $result = $fieldsWithoutSection;
+        // Then, put the fields inside sections :
+        foreach ($fieldsBySection as $section => $fieldList) {
+            // Add 'section' element to the fields list :
+            $tab = $this->m_node->getTabFromSection($section);
+            $currentTabActive = ($tab == $activeTab);
+            $sectionIsOpen = $this->sectionIsOpen($section);
+            $result[] = [
+                'class' => 'section_'.$tab,
+                'initial_on_tab' => $currentTabActive,
+                'tabs' => [$tab],
+                'line' => $this->getSectionControl($section, $mode, $sectionIsOpen),
+            ];
+            $initial_on_tab = $currentTabActive && $sectionIsOpen;
+            // Add fields element belonging to the section :
+            foreach ($fieldList as $field) {
+                $field['initial_on_tab'] = $initial_on_tab;
+                $result[] = $field;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Get tabs from the fields list returned by fieldsWithTabsAndSections
+     *
+     * @param array of fields, each field having a 'tabs' attribute
+     *
+     * @return array of tabs (strings)
+     */
+    public function getTabs($fields)
+    {
+        $tabs = [];
+        foreach ($fields as $field) {
+            $tabs = Tools::atk_array_merge($tabs, $field['tabs']);
+            if (isset($field['section']) and !is_null($field['section'])) {
+                $sections[] = $section;
+            }
+        }
+        $tabs = array_unique($tabs);
+        // Exclude 'alltabs' which is not a real tab :
+        return array_filter($tabs, function($tab) { return $tab != 'alltabs'; });
+    }
+
+    /**
+     * Render tabs header with their links.
+     *
+     * @param string $action The action for which the tabs are loaded.
+     * @param array $fields as returned by node->editArray of node->viewArray()
+     *
+     * @return string The complete tabset with content.
+     */
+    public function tabulate($action, $fields)
+    {
+        // Collect tabs from fields shown in the form :
+        $tabs = $this->getTabs($fields);
+        $tabs = $this->m_node->sortTabs($action, $tabs);
+        $tabCount = Tools::count($tabs);
+
+        if (!$this->m_hasSections && $tabCount == 1) {
+            return '';
+        }
+
+        $page = $this->getPage();
+        $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js');
+
+        if ($tabCount == 1) {
+            return '';
+        }
+        $ui = $this->getUi();
+        if (!is_object($ui)) {
+            return '';
+        }
+
+        // which tab is currently selected
+        $activeTab = $this->getActiveTab();
+        // Building $tabList object for ui::renderTabs function:
+        $tabList = [];
+        foreach ($tabs as $tab) {
+            $tabList[] = [
+                'title' => $this->m_node->text(array("tab_{$tab}", $tab)),
+                'tab' => $tab,
+                'selected' => ($tab == $activeTab)
+            ];
+        }
+        return $ui->renderTabs([
+            'tabs' => $tabList,
+            'tabstateUrl' => Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri().'&atkaction='.$action.'&atkpartial=tabstate&atktab=',
+        ]);
     }
 
     /**

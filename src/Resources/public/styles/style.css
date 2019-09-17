@@ -3574,7 +3574,8 @@ tbody.collapse.in {
     max-width: none; }
 
 .nav-tabs {
-  border-bottom: 1px solid #ddd; }
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px; }
   .nav-tabs > li {
     float: left;
     margin-bottom: -1px; }
@@ -9382,16 +9383,10 @@ A.atksection {
   background-position: 2px 5px;
   background-repeat: no-repeat;
   padding: 2px;
-  padding-left: 16px;
+  padding-left: 4px;
   width: 1px;
   white-space: nowrap;
   color: #000; }
-
-A.openedSection {
-  background-image: url("../images/minus.gif"); }
-
-A.closedSection {
-  background-image: url("../images/plus.gif"); }
 
 .ShuttleRelation .shuttle-controls {
   vertical-align: middle; }
@@ -9586,9 +9581,6 @@ ul {
 
 .input-group-addon {
   min-width: 25px; }
-
-.tabsContent {
-  margin-top: 10px; }
 
 @media (min-width: 768px) {
   .min-width_50 {

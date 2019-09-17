@@ -17,6 +17,9 @@ WIP Changes
 * Several XSS fixes [samuel]
 * Debug messages now escaped by default (use DEBUG_ESCAPED flag if you
     already escaped message) [samuel]
+* Tab order should now be set with node->setTabOrder($tab, $order, $action) [samuel]
+- Removed \Ui\Page->register_hiddenvars and associated functions [samuel]
+* Fixed stateful tabs (per node, not per-selector) [samuel]
 
 DB Changes
 -----------

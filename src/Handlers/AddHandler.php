@@ -221,6 +221,19 @@ class AddHandler extends ActionHandler
         /** @var EditHandler $edithandler */
         $edithandler = $node->getHandler('edit');
 
+        $forceList = $this->invoke('createForceList');
+        return $edithandler->editForm('add', $record, $forceList, '', $node->getEditFieldPrefix());
+    }
+
+    /**
+     * Based on information provided in the url (atkfilter), this function creates an array with
+     * field values that are used as the initial values of a record in an add page.
+     *
+     * @return array Values of the newly created record.
+     */
+    public function createForceList()
+    {
+        $node = $this->m_node;
         $forceList = [];
         if (isset($node->m_postvars['atkforce'])) {
             $forceList = json_decode($node->m_postvars['atkforce'], true);
@@ -312,5 +325,16 @@ class AddHandler extends ActionHandler
             'nodetype' => $this->m_node->atkNodeUri(),
             'section' => $this->m_postvars['atksectionname'],
         ), $this->m_postvars['atksectionstate']);
+    }
+
+    /**
+     * Partial handler for changing default tab
+     */
+    public function partial_tabstate()
+    {
+        if (Config::getGlobal('dhtml_tabs_stateful')) {
+            State::set($this->m_node->atkNodeUri().'_tab', $this->m_postvars['atktab']);
+        }
+        die;
     }
 }

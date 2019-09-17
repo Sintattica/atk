@@ -85,13 +85,10 @@ class ViewHandler extends ViewEditBase
 
         if (is_object($ui)) {
             $params = $node->getDefaultActionParams();
-            $tab = $node->getActiveTab();
-            $innerform = $this->viewForm($record, 'view');
 
-            $params['activeTab'] = $tab;
             $params['header'] = $this->invoke('viewHeader', $record);
             $params['title'] = $node->actionTitle($this->m_action, $record);
-            $params['content'] = $node->tabulate('view', $innerform);
+            $params['content'] = $this->viewForm($record, 'view');
 
             $params['formstart'] = $this->getFormStart($record);
             $params['buttons'] = $this->getFormButtons($record);
@@ -157,116 +154,24 @@ class ViewHandler extends ViewEditBase
         // get data, transform into form, return
         $data = $node->viewArray($mode, $record);
 
+        $fields = $this->fieldsWithTabsAndSections($data['fields']);
+        $tabHeader = $this->tabulate('view', $fields);
         // get active tab
-        $tab = $node->getActiveTab();
+        $tab = $this->getActiveTab();
         // get all tabs of current mode
-        $tabs = $node->getTabs($mode);
+        $tabs = $this->getTabs($fields);
 
-        $fields = [];
-        $attributes = [];
-
-        // For all attributes we use the display() function to display the
-        // attributes current value. This may be overridden by supplying
-        // an <attributename>_display function in the derived classes.
-        for ($i = 0, $_i = Tools::count($data['fields']); $i < $_i; ++$i) {
-            $field = &$data['fields'][$i];
-            $tplfield = [];
-
-            $classes = [];
-            if ($field['sections'] == '*') {
-                $classes[] = 'alltabs';
-            } else {
-                if ($field['html'] == 'section') {
-                    // section should only have the tab section classes
-                    foreach ($field['tabs'] as $section) {
-                        $classes[] = 'section_'.str_replace('.', '_', $section);
-                    }
-                } else {
-                    if (is_array($field['sections'])) {
-                        foreach ($field['sections'] as $section) {
-                            $classes[] = 'section_'.str_replace('.', '_', $section);
-                        }
-                    }
-                }
-            }
-
-            $tplfield['class'] = implode(' ', $classes);
-            $tplfield['tab'] = $tplfield['class']; // for backwards compatibility
-            // visible sections, both the active sections and the tab names (attribute that are
-            // part of the anonymous section of the tab)
-            $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $tabs);
-
-            // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-            // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-            $tplfield['initial_on_tab'] = ($field['tabs'] == '*' || in_array($tab,
-                        $field['tabs'])) && (!is_array($field['sections']) || Tools::count(array_intersect($field['sections'], $visibleSections)) > 0);
-
-            // Give the row an id if it doesn't have one yet
-            if (!isset($field['id']) || empty($field['id'])) {
-                $field['id'] = Tools::getUniqueId('anonymousattribrows');
-            }
-
-            // ar_ stands voor 'attribrow'.
-            $tplfield['rowid'] = 'ar_'.$field['id']; // The id of the containing row
-
-            /* check for separator */
-            if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
-                $tplfield['line'] = '<hr>';
-            } /* double separator, ignore */ elseif ($field['html'] == '-') {
-            } /* sections */ elseif ($field['html'] == 'section') {
-                $tplfield['line'] = $this->getSectionControl($field, $mode);
-            } /* only full HTML */ elseif (isset($field['line'])) {
-                $tplfield['line'] = $field['line'];
-            } /* edit field */ else {
-                if ($field['attribute']->m_ownerInstance->getNumbering()) {
-                    $this->_addNumbering($field, $tplfield, $i);
-                }
-
-                /* does the field have a label? */
-                if ((isset($field['label']) && $field['label'] !== 'AF_NO_LABEL') || !isset($field['label'])) {
-                    if ($field['label'] == '') {
-                        $tplfield['label'] = '';
-                    } else {
-                        $tplfield['label'] = $field['label'];
-                    }
-                } else {
-                    $tplfield['label'] = 'AF_NO_LABEL';
-                }
-
-                // Make the attribute and node names available in the template.
-                $tplfield['attribute'] = $field['attribute']->fieldName();
-                $tplfield['node'] = $field['attribute']->m_ownerInstance->atkNodeUri();
-
-                /* html source */
-                $tplfield['widget'] = $field['html'];
-                $editsrc = $field['html'];
-
-                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
-
-                $tplfield['full'] = $editsrc;
-
-                $column = $field['attribute']->getColumn();
-                $tplfield['column'] = $column;
-            }
-            $fields[] = $tplfield; // make field available in numeric array
-            $params[$field['name']] = $tplfield; // make field available in associative array
-            $attributes[$field['name']] = $tplfield; // make field available in associative array
-        }
         $ui = $this->getUi();
 
         $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
 
         if ($template) {
-            $innerform = $ui->render($template, array('fields' => $fields, 'attributes' => $attributes));
-        } else {
-            if (Tools::count(array_unique($tabTpl)) > 1) {
-                $tabForm = $this->_renderTabs($fields, $tabTpl);
-                $innerform = implode(null, $tabForm);
-            } else {
-                $innerform = $ui->render($node->getTemplate('view', $record, $tab), array('fields' => $fields, 'attributes' => $attributes));
-            }
+            return $tabHeader.$ui->render($template, ['fields' => $fields]);
         }
-
-        return $innerform;
+        if (Tools::count(array_unique($tabTpl)) > 1) {
+            $tabForm = $this->_renderTabs($fields, $tabTpl);
+            return $tabHeader.implode(null, $tabForm);
+        }
+        return $tabHeader.$ui->render($node->getTemplate('view', $record, $tab), ['fields' => $fields]);
     }
 }
