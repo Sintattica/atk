@@ -20,6 +20,8 @@ WIP Changes
 * Tab order should now be set with node->setTabOrder($tab, $order, $action) [samuel]
 - Removed \Ui\Page->register_hiddenvars and associated functions [samuel]
 * Fixed stateful tabs (per node, not per-selector) [samuel]
+* Removed namespace from SessionManager (scripts/application isolation already provided by 'identifier') [samuel]
+* Renamed SessionManager::globalVar to setValue() [samuel]
 
 DB Changes
 -----------

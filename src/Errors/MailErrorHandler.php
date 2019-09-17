@@ -113,9 +113,8 @@ class MailErrorHandler extends ErrorHandlerBase
 
             if (is_object($sessionManager)) {
                 $body .= "\n\nATK SESSION\n".str_repeat('-', 70);
-                $body .= "\nNamespace: ".$sessionManager->getNameSpace()."\n";
-                if (isset($sessionData[$sessionManager->getNameSpace()]['stack'])) {
-                    $stack = $sessionData[$sessionManager->getNameSpace()]['stack'];
+                if (isset($sessionData['stack'])) {
+                    $stack = $sessionData['stack'];
                     for ($i = 0; $i < Tools::count($stack); ++$i) {
                         $body .= "\nStack level $i:\n";
                         $item = isset($stack[$i]) ? $stack[$i] : null;
@@ -126,20 +125,11 @@ class MailErrorHandler extends ErrorHandlerBase
                         }
                     }
                 }
-                if (isset($sessionData[$sessionManager->getNameSpace()]['globals'])) {
-                    $ns_globals = $sessionData[$sessionManager->getNameSpace()]['globals'];
+                if (isset($sessionData['globals'])) {
+                    $ns_globals = $sessionData['globals'];
                     if (Tools::count($ns_globals) > 0) {
                         $body .= "\nNamespace globals:\n";
                         foreach ($ns_globals as $key => $value) {
-                            $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
-                        }
-                    }
-                }
-                if (isset($sessionData['globals'])) {
-                    $globals = $sessionData['globals'];
-                    if (Tools::count($globals) > 0) {
-                        $body .= "\nGlobals:\n";
-                        foreach ($globals as $key => $value) {
                             $body .= $this->_wordwrap($key.str_repeat(' ', max(1, 30 - strlen($key))).' = '.var_export($value, 1))."\n";
                         }
                     }

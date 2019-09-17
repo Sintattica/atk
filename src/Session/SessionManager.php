@@ -20,11 +20,6 @@ class SessionManager
     const SESSION_PARTIAL = 5; // same as replace, but ignore atknodeuri and atkaction
 
     /**
-     * @var string
-     */
-    private $m_namespace;
-
-    /**
      * @var bool
      */
     private $m_escapemode = false; // are we escaping?
@@ -52,10 +47,6 @@ class SessionManager
     /**
      * Default constructor.
      *
-     * @param string $namespace If multiple scripts/applications are
-     *                          installed on thesame url, they can each use
-     *                          a different namespace to make sure they
-     *                          don't share session data.
      * @param bool $usestack Tell the sessionmanager to use the session
      *                          stack manager (back/forth navigation in
      *                          screens, remembering vars over multiple
@@ -63,13 +54,10 @@ class SessionManager
      *                          performance impact, so scripts not using
      *                          the stack should pass false here.
      */
-    public function __construct($namespace = 'default', $usestack = true)
+    public function __construct($usestack = true)
     {
-        $this->m_namespace = $namespace;
         $this->m_usestack = $usestack;
-        // added in 5.3 but not working
-        // session_regenerate_id();
-        Tools::atkdebug("creating sessionManager (namespace: $namespace)");
+        Tools::atkdebug("creating sessionManager");
     }
 
     /**
@@ -201,16 +189,6 @@ class SessionManager
     }
 
     /**
-     * Get the name of the current session (as was passed to atksession()).
-     *
-     * @return string namespace
-     */
-    public function getNameSpace()
-    {
-        return $this->m_namespace;
-    }
-
-    /**
      * Read session variables from the stack and the global scope.
      *
      * @param array $postvars Any variables passed in the http request.
@@ -226,58 +204,55 @@ class SessionManager
     /**
      * Register a global variable.
      *
-     * Saves a value in the current namespace.
+     * Saves a value for current session and retrieve from http request if value
+     * is not set.
+     * @DEPRECATED : Use setValue when you need.
      *
      * @param string $var The name of the variable to save.
      * @param mixed $value The value of the variable to save. If omitted,
      *                             the value is retrieved from the http request.
-     * @param bool $no_namespace If set to false, the variable is saved
-     *                             in the current namespace. If set to true,
-     *                             the variable is available in all
-     *                             namespaces.
      *
      * @return mixed
      */
-    public function globalVar($var, $value = '', $no_namespace = false)
+    public function globalVar($var, $value = '')
     {
-        $sessionData = &self::getSession();
-
         if ($value == '' && isset($_REQUEST[$var])) {
             $value = $_REQUEST[$var];
         }
+        return $this->setValue($var, $value);
+    }
 
-        if ($no_namespace) {
-            $sessionData['globals'][$var] = $value;
-        } else {
-            $sessionData[$this->m_namespace]['globals'][$var] = $value;
-        }
-
+    /**
+     * Register a global session variable.
+     *
+     * The value could then be retrieved on all pages within the same session
+     * with getValue() function;
+     *
+     * @param string $var The name of the variable to save.
+     * @param mixed $value The value of the variable to save.
+     *
+     * @return mixed
+     */
+    public function setValue($var, $value)
+    {
+        $sessionData = &self::getSession();
+        $sessionData['globals'][$var] = $value;
         return $value;
     }
 
     /**
-     * Retrieve the value of a session variable.
+     * Retrieve the value of a global session variable.
+     *
+     * Variable should have been set with setValue function.
      *
      * @param string $var The name of the variable to retrieve.
-     * @param string $namespace The namespace from which to retrieve the
-     *                          variable, or "globals" if the global value
-     *                          needs to be retrieved.
      *
      * @return mixed The retrieved value.
      */
-    public function getValue($var, $namespace = '')
+    public function getValue($var)
     {
         $sessionData = &self::getSession();
-
-        if ($namespace == 'globals') {
-            return isset($sessionData['globals'][$var]) ? $sessionData['globals'][$var] : null;
-        } else {
-            if ($namespace != '') {
-                return isset($sessionData[$namespace]['globals'][$var]) ? $sessionData[$namespace]['globals'][$var] : null;
-            } else {
-                return isset($sessionData[$this->m_namespace]['globals'][$var]) ? $sessionData[$this->m_namespace]['globals'][$var] : null;
-            }
-        }
+        return isset($sessionData['globals'][$var]) ? $sessionData['globals'][$var] : null;
     }
 
     /**
@@ -320,7 +295,7 @@ class SessionManager
         }
 
         $sessionData = &$this->getSession();
-        $currentitem = &$sessionData[$this->m_namespace]['stack'][$this->atkStackID()][$level];
+        $currentitem = &$sessionData['stack'][$this->atkStackID()][$level];
         if (!is_array($currentitem)) {
             return;
         }
@@ -369,7 +344,7 @@ class SessionManager
         }
 
         $sessionData = &$this->getSession();
-        $top_stack_level = &$sessionData[$this->m_namespace]['globals']['#STACK#'][$this->atkStackID()];
+        $top_stack_level = &$sessionData['globals']['#STACK#'][$this->atkStackID()];
         if (!is_array($top_stack_level)) {
             $top_stack_level = [];
         }
@@ -416,7 +391,7 @@ class SessionManager
         if (!$this->m_escapemode) {
             $sessionData = &self::getSession();
 
-            $currentitem = &$sessionData[$this->m_namespace]['stack'][$this->atkStackID()][$this->atkLevel()];
+            $currentitem = &$sessionData['stack'][$this->atkStackID()][$this->atkLevel()];
 
             if ($value == '') {
                 if (isset($_REQUEST[$var])) {
@@ -449,7 +424,7 @@ class SessionManager
     {
         $sessionData = &self::getSession();
 
-        $current = &$sessionData[$this->m_namespace]['globals'];
+        $current = &$sessionData['globals'];
         if (!is_array($current)) {
             $current = [];
         }
@@ -472,7 +447,7 @@ class SessionManager
     protected function _touchCurrentStack()
     {
         $sessionData = &self::getSession();
-        $sessionData[$this->m_namespace]['stack_stamp'][$this->atkStackID()] = time();
+        $sessionData['stack_stamp'][$this->atkStackID()] = time();
     }
 
     /**
@@ -491,8 +466,8 @@ class SessionManager
         }
 
         $now = time();
-        $stacks = &$sessionData[$this->m_namespace]['stack'];
-        $stackStamps = $sessionData[$this->m_namespace]['stack_stamp'];
+        $stacks = &$sessionData['stack'];
+        $stackStamps = &$sessionData['stack_stamp'];
         $stackIds = array_keys($stacks);
         $removed = false;
 
@@ -579,7 +554,7 @@ class SessionManager
             $stackid = $this->atkStackID();
         }
 
-        $stack = &$sessionData[$this->m_namespace]['stack'][$stackid];
+        $stack = &$sessionData['stack'][$stackid];
 
         // garbage collect
         $this->_touchCurrentStack();
@@ -785,7 +760,7 @@ class SessionManager
         $ui = Ui::getInstance();
 
         $res = [];
-        $stack = $sessionData[$this->m_namespace]['stack'][$this->atkStackID()];
+        $stack = $sessionData['stack'][$this->atkStackID()];
 
         for ($i = 0; $i < Tools::count($stack); ++$i) {
             if (!isset($stack[$i]['atknodeuri'])) {
@@ -833,7 +808,7 @@ class SessionManager
     {
         $sessionData = &self::getSession();
 
-        $stack = $sessionData[$this->m_namespace]['stack'][$this->atkStackID()];
+        $stack = $sessionData['stack'][$this->atkStackID()];
         $res = [];
         $node = null;
         $module = null;
@@ -878,8 +853,8 @@ class SessionManager
         $stack = '';
         $sessionData = &self::getSession();
 
-        if (isset($sessionData[$this->m_namespace]['stack'][$this->atkStackID()])) {
-            $stack = $sessionData[$this->m_namespace]['stack'][$this->atkStackID()];
+        if (isset($sessionData['stack'][$this->atkStackID()])) {
+            $stack = $sessionData['stack'][$this->atkStackID()];
         }
         if (!is_array($stack)) {
             $prevlevelfromstack = 0;
@@ -908,11 +883,11 @@ class SessionManager
                 array_pop($stack);
             }
 
-            $sessionData[$this->m_namespace]['stack'][$newid] = $stack;
+            $sessionData['stack'][$newid] = $stack;
 
             // Copy the global stackvars for the stack too.
-            if (isset($sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId])) {
-                $sessionData[$this->m_namespace]['globals']['#STACK#'][$newid] = $sessionData[$this->m_namespace]['globals']['#STACK#'][$oldStackId];
+            if (isset($sessionData['globals']['#STACK#'][$oldStackId])) {
+                $sessionData['globals']['#STACK#'][$newid] = $sessionData['globals']['#STACK#'][$oldStackId];
             }
 
             return false;
@@ -1207,11 +1182,23 @@ class SessionManager
         return $this->atkprevlevel;
     }
 
+    /**
+     * Get javascript code to trigger autorefresh.
+     *
+     * Autorefresh prevent session or stack to be thrown away by garbage collectors.
+     *
+     * @return string
+     */
     public static function getSessionAutoRefreshJs()
     {
-        $url = Config::getGlobal('dispatcher').'?'.Config::getGlobal('session_autorefresh_key');
+        $sm = self::getInstance();
+        $url = Config::getGlobal('dispatcher').'?';
+        $url .= 'atkstackid='.urlencode($sm->atkStackID());
+        $url .= '&atkprevlevel='.urlencode($sm->atkLevel());
+        $url .= '&atklevel='.urlencode($sm->newLevel(self::SESSION_PARTIAL));
+        $url .= '&'.Config::getGlobal('session_autorefresh_key');
         $time = Config::getGlobal('session_autorefresh_time', 3600);
 
-        return 'jQuery(function($){window.setInterval(function(){$.ajax({cache:false,type:"GET",url:"'.$url.'"});},'.$time.');});';
+        return 'jQuery(function($){window.setInterval(function(){$.ajax({cache:false,type:"GET",url:'.json_encode($url).'});},'.$time.');});';
     }
 }
