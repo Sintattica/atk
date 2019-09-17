@@ -337,7 +337,7 @@ class SecurityManager
     protected function sessionLogin()
     {
         $sessionManager = SessionManager::getInstance();
-        $session_auth = $sessionManager->getValue('authentication', 'globals');
+        $session_auth = $sessionManager->getValue('authentication');
         if (Config::getGlobal('authentication_session') && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])) {
             $this->m_user = &$session_auth['user'];
             Tools::atkdebug('SecurityManager: Using session for authentication / user = '.$this->m_user['name']);
@@ -394,7 +394,7 @@ class SecurityManager
         $this->m_user = $user;
         $GLOBALS['g_user'] = &$user;
         $sm = SessionManager::getInstance();
-        $sm->globalVar('authentication', ['authenticated' => 1, 'user' => $user], true);
+        $sm->setValue('authentication', ['authenticated' => 1, 'user' => $user]);
         if (!$isCli) {
             header('user: '.$user['name']);
         }
@@ -428,9 +428,9 @@ class SecurityManager
         $sessionManager = SessionManager::getInstance();
         $user = self::atkGetUser();
         $this->m_user = $this->m_authorization->getUser($user[Config::getGlobal('auth_userfield')]);
-        $old_auth = $sessionManager->getValue('authentication', 'globals');
+        $old_auth = $sessionManager->getValue('authentication');
         $old_auth['user'] = $this->m_user;
-        $sessionManager->globalVar('authentication', $old_auth, true);
+        $sessionManager->setValue('authentication', $old_auth);
     }
 
     /**
@@ -590,7 +590,7 @@ class SecurityManager
     {
         $user = null;
         $sm = SessionManager::getInstance();
-        $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : [];
+        $session_auth = is_object($sm) ? $sm->getValue('authentication') : [];
         if (Config::getGlobal('authentication_session') && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])
         ) {
             $user = $session_auth['user'];

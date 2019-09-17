@@ -15,7 +15,8 @@ Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
 
 WIP Changes
 -----------
-
+* Removed namespace from SessionManager (scripts/application isolation already provided by 'identifier') [samuel]
+* Renamed SessionManager::globalVar to setValue() [samuel]
 
 New Release ATK 9.0 (2016-03-09)
 ---------------------------------
