@@ -4,8 +4,8 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
-use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\DataGrid\DataGrid as DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Session\SessionManager;
@@ -102,47 +102,27 @@ class AggregatedColumn extends Attribute
     }
 
     /**
-     * Adds the attribute / field to the list header. This includes the column name and search field.
+     * Retrieves the ORDER BY statement for this attribute's node.
      *
-     * This function differs from regular attribute's function since it sorts the array based on fields 
-     * included in the template.
+     * We sort by each member field.
      *
+     * @param array $extra A list of attribute names to add to the order by
+     *                          statement
+     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param string $direction Sorting direction (ASC or DESC)
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
-     * @param ColumnConfig $columnConfig Column configuration object
-     * @param DataGrid $grid The DataGrid this attribute lives on.
-     * @param string $column child column (null for this attribute, * for this attribute and all childs)
-     *
-     * @see Node::listArray
+     * @return string The ORDER BY statement for this attribute
      */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, DataGrid $grid = null, $column = '*')
+    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
     {
-        parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $columnConfig, $grid, $column);
-        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
-            if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
-                $rec = [];
-                foreach ($this->m_displayfields as $field) {
-                    $rec[] = $this->m_ownerInstance->m_table.'.'.$field;
-                }
-                // We use last field sorting to define the sorting on AggregatedColumn attribute
-                // (we could use any other field, but since we have this one right now ... let's use it)
-                if (isset($columnConfig->m_colcfg[$field])) {
-                    $direction = $columnConfig->getDirection($field);
-                    if ($direction == 'desc') {
-                        $direction = 'asc';
-                    } else {
-                        $direction = 'desc';
-                    }
-                }
-                $order = implode(" $direction, ", $rec);
-                $order .= " $direction";
-                $arr['heading'][$fieldprefix.$this->fieldName()]['order'] = $order;
-            }
+        if (empty($table)) {
+            $table = $this->m_ownerInstance->m_table;
         }
+        $fields = [];
+        foreach ($this->m_displayfields as $field) {
+            $fields[] = Db::quoteIdentifier($table, $field);
+        }
+        return implode(" {$direction},", $fields)." {$direction}";
     }
 
     /**
@@ -195,15 +175,5 @@ class AggregatedColumn extends Attribute
         );
 
         return QueryPart::implode('OR', $searchConditions, true);
-    }
-
-    /**
-     * Retrieve the list of searchmodes supported by the attribute.
-     *
-     * @return array List of supported searchmodes
-     */
-    public function getSearchModes()
-    {
-        return array('exact', 'substring', 'wildcard', 'regexp');
     }
 }
