@@ -352,7 +352,7 @@ class ViewEditBase extends ActionHandler
         }
 
         // We retain the information 'is there at least one section' (for tabulate function, later).
-        $this->m_hasSection = !empty($fieldsBySection);
+        $this->m_hasSections = !empty($fieldsBySection);
 
         // Let's put the fields outside sections in the beginning of the result
         $result = $fieldsWithoutSection;
