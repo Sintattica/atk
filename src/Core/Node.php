@@ -1958,7 +1958,7 @@ class Node
     {
         $record = [];
 
-        foreach ($this->m_attribList as $attr) {
+        foreach ($this->m_attribList as $attribname => $attr) {
             $value = $attr->fetchValue($this->m_postvars) ?? $attr->initialValue();
 
             if ($value !== null) {

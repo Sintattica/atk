@@ -221,26 +221,11 @@ class AddHandler extends ActionHandler
         /** @var EditHandler $edithandler */
         $edithandler = $node->getHandler('edit');
 
-        $forceList = $this->invoke('createForceList');
-        return $edithandler->editForm('add', $record, $forceList, '', $node->getEditFieldPrefix());
-    }
-
-    /**
-     * Based on information provided in the url (atkfilter), this function creates an array with
-     * field values that are used as the initial values of a record in an add page.
-     *
-     * @return array Values of the newly created record.
-     */
-    public function createForceList()
-    {
-        $node = $this->m_node;
-        $forceList = [];
         if (isset($node->m_postvars['atkforce'])) {
             $forceList = json_decode($node->m_postvars['atkforce'], true);
         }
-        $form = $edithandler->editForm('add', $record, $forceList, '', $node->getEditFieldPrefix());
 
-        return $node->tabulate('add', $form);
+        return $edithandler->editForm('add', $record, $forceList, '', $node->getEditFieldPrefix());
     }
 
     /**
