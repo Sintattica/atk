@@ -206,7 +206,7 @@ class EditFormModifier
         $re = '/<script.*>(.*)<\/script>/iU';
 
         foreach ($editArray['fields'] as $field) {
-            $element = '#'.str_replace('.', '_', $this->getNode()->atkNodeUri().'_'.$field['id']);
+            $element = '#'.str_replace('.', '_', 'ac_'.$field['id']);
 
             $value = preg_replace($re, '', $field['html']);
             $value = str_replace("'", "\\'", $value);
