@@ -539,7 +539,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     public function addDestinationFilter($filter, $params = [])
     {
-        return $this->getManyToOneRelation()->addDestinationFilter($filter);
+        return $this->getManyToOneRelation()->addDestinationFilter($filter, $params);
     }
 
     /**
