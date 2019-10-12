@@ -1306,7 +1306,7 @@ EOF;
             // ask the destination node for it's search condition
             $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
             foreach($value as $v) {
-                $sc = $this->getSearchFilterByTargetDescriptor($query, $v, $searchmode, $fieldname);
+                $sc = $this->getSearchFilterByTargetDescriptor($query, $v, $table, $searchmode, $fieldname);
                 if($sc != null) {
                     $searchConditions[] = $sc;
                 }
@@ -2248,10 +2248,10 @@ EOF;
      *
      * @return QueryPart|null
      */
-    public function getSearchFilterByTargetDescriptor($query, $searchValue, $searchmode = 'substring', $fieldaliasprefix = '')
+    public function getSearchFilterByTargetDescriptor($query, $searchValue, $tablename, $searchmode = 'substring', $fieldaliasprefix = '')
     {
         $alias = $fieldaliasprefix.$this->fieldName().'_AE_'.$this->m_destInstance->m_table;
-        $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($this->m_destInstance->m_table, $alias), false);
+        $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($tablename, $alias), false);
 
         $function = $this->getConcatDescriptorFunction();
         if ($function != '' && method_exists($this->m_destInstance, $function)) {
