@@ -754,6 +754,7 @@ class ManyToOneRelation extends Relation
             // in this case we don't want that the destination filters are activated
             return;
         }
+        $this->fixDestinationRecord($record);
 
         if ((!$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && !$this->hasFlag(self::AF_LARGE)) || $this->m_autocomplete_minrecords > -1) {
             $this->m_selectableRecords = $this->_getSelectableRecords($record, $mode);
