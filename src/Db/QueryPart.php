@@ -126,7 +126,7 @@ class QueryPart
      * If a [____] does not correspond to a value in $value, it is replaced
      * by the empty string ''.
      *
-     * Warning : it does not work for [___] inside quotes.
+     * Warning : parameters do not work inside quotes.
      *
      * @param array $values to replace values with.
      * @param boolean $asParameters put values in Parameters (true) or
@@ -153,14 +153,18 @@ class QueryPart
             }
 
             $value = $localValues[$localField] ?? '';
-            $placeholder = self::placeholder($field);
-            if (in_array($placeholder, array_keys($this->parameters))) {
-                // In case we already have a parameter with the same name...
-                $placeholder .= '_al'.($this->parameterCounter[$placeholder]++);
-            }
+            if (!$asParameters) {
+                $this->sql = str_replace("[{$field}]", $value, $this->sql);
+            } else {
+                $placeholder = self::placeholder($field);
+                if (in_array($placeholder, array_keys($this->parameters))) {
+                    // In case we already have a parameter with the same name...
+                    $placeholder .= '_al'.($this->parameterCounter[$placeholder]++);
+                }
 
-            $this->sql = str_replace("[{$field}]", $placeholder, $this->sql);
-            $this->parameters[$placeholder] = [$value, \PDO::PARAM_STR];
+                $this->sql = str_replace("[{$field}]", $placeholder, $this->sql);
+                $this->parameters[$placeholder] = [$value, \PDO::PARAM_STR];
+            }
         }
     }
 

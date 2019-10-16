@@ -1775,7 +1775,7 @@ class Node
      * - field, value filter : will filter on table.field = value
      * - a SQL expression that may contain '[table]' : will filter on this
      *      expression, replacing [table] with table name.
-     * - a QueryPart condition (with parameters).
+     * - a QueryPart condition (with parameters), that may contain '[table]'.
      *
      * @param string $filter a QueryPart expression or the fieldname you want
      *                       to filter OR a SQL where clause expression.
@@ -1786,6 +1786,7 @@ class Node
     {
         if ($filter instanceof QueryPart) {
             // QueryPart case :
+            $filter->parse(['table' => Db::quoteIdentifier($this->m_table)], false);
             $this->m_filters[] = $filter;
         } elseif ($value == '') {
             // $filter is a where clause kind of thing
