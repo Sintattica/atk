@@ -1787,8 +1787,7 @@ class Node
         if ($filter instanceof QueryPart) {
             // QueryPart case :
             $this->m_filters[] = $filter;
-        }
-        if ($value == '') {
+        } elseif ($value == '') {
             // $filter is a where clause kind of thing
             $this->m_filters[] = new QueryPart(str_replace('[table]', Db::quoteIdentifier($this->m_table), $filter), []);
         } else {
