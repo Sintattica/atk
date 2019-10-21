@@ -17,6 +17,7 @@ WIP Changes
 * Several XSS fixes [samuel]
 * Debug messages now escaped by default (use DEBUG_ESCAPED flag if you
     already escaped message) [samuel]
+* replace nl2br option in HtmlAttribute constructor by AF_NL2BR flag [samuel]
 
 DB Changes
 -----------

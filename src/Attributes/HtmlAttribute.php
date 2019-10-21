@@ -9,15 +9,21 @@ namespace Sintattica\Atk\Attributes;
  *
  * There might me times where you want the user to be able to use html tags,
  * but you don't want to have the inconvenience of using br's for each line.
- * For this reason the constructor accepts a parameter which tells it to do
- * a newline-to-br conversion.
+ * The AF_NL2BR flag tells attribute to do a newline-to-br conversion.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  */
 class HtmlAttribute extends TextAttribute
 {
-    /*
+    /**
+     * Replace newlines by '<br/>' tags before displaying
+     */
+    const AF_NL2BR = 16777216;
+
+    /**
      * New line to BR boolean
+     *
+     * @DEPRECATED in favor of AF_NL2BR flag
      */
     public $nl2br = false;
 
@@ -30,8 +36,10 @@ class HtmlAttribute extends TextAttribute
      */
     public function __construct($name, $flags = 0, $nl2br = false)
     {
+        if ($nl2br) {
+            $flags |= self::AF_N2BR;
+        }
         parent::__construct($name, $flags);
-        $this->nl2br = $nl2br;
     }
 
     /**
@@ -44,7 +52,7 @@ class HtmlAttribute extends TextAttribute
      */
     public function display($record, $mode)
     {
-        if ($this->nl2br) {
+        if ($this->hasFlag(self::AF_NL2BR) || $this->nl2br) {
             return nl2br($record[$this->fieldName()]);
         } else {
             return $record[$this->fieldName()];
