@@ -67,12 +67,6 @@ class CkAttribute extends HtmlAttribute
         return $result;
     }
 
-    public function display($record, $mode)
-    {
-        return Tools::atkArrayNvl($record, $this->fieldName(), '');
-    }
-
-
     /**
      * Check if a record has an empty value for this attribute.
      *
