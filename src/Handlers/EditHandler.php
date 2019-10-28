@@ -334,14 +334,12 @@ class EditHandler extends ViewEditBase
         $params = [];
         $params['fields'] = $this->fieldsWithTabsAndSections($data['fields']); // add all fields as a numeric array.
         $params['tabs'] = $this->getTabs($params['fields']);
-        $params['activeTab'] = $this->getActiveTab($mode);
+        $params['activeTab'] = $this->getActiveTab($param['fields'], $mode);
 
         // Format some things for use in tpl.
         /* check for errors and display them */
-        $tab = $this->getActiveTab($mode);
         $error_title = '';
         $pk_err_attrib = [];
-        $tabs = $this->getTabs($params['fields']);
         $errorFields = [];
 
         // Handle errors
@@ -353,7 +351,7 @@ class EditHandler extends ViewEditBase
                 if ($error['err'] == 'error_primarykey_exists') {
                     $pk_err_attrib[] = $error['attrib_name'];
                 } else {
-                    if (Tools::count($tabs) > 1 && $error['tab']) {
+                    if (Tools::count($params['tabs']) > 1 && $error['tab']) {
                         $tabLink = $this->getTabLink($node, $error);
                         $error_tab = ' ('.Tools::atktext('error_tab').' '.$tabLink.' )';
                     } else {
@@ -426,8 +424,6 @@ class EditHandler extends ViewEditBase
             $result .= $hidden;
         }
 
-        $params['activeTab'] = $tab;
-        $params['fields'] = $this->fieldsWithTabsAndSections($data['fields']); // add all fields as a numeric array.
         $result .= $this->tabulate('edit', $params['fields']);
 
         $params['errortitle'] = $error_title;
@@ -436,7 +432,7 @@ class EditHandler extends ViewEditBase
         if ($template) {
             $result .= $ui->render($template, $params);
         } else {
-            $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
+            $tabTpl = $this->_getTabTpl($node, $params['tabs'], $mode, $record);
             $params['fieldspart'] = $this->_renderTabs($params['fields'], $tabTpl);
             $result .= $ui->render('editform_common.tpl', $params);
         }

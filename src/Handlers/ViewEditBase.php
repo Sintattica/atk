@@ -34,6 +34,13 @@ class ViewEditBase extends ActionHandler
     private $m_hasSections = false;
 
     /**
+     * Active tab (fetched from session by default, but fixed if needed)
+     *
+     * @var string
+     */
+    private $m_activeTab = null;
+
+    /**
      * Get the record to view/edit. It is cached as long as the instance
      * exists, unless we force a reload.
      *
@@ -258,15 +265,47 @@ class ViewEditBase extends ActionHandler
     }
 
     /**
-     * Returns the currently active tab. If none set, default tab is returned.
+     * Returns the currently active tab.
      *
+     * It tries to fetch one from Session. If not found or empty, it tries
+     * the default tab. If default tab is empty, it returns the first tab
+     * of the first field.
+     * The value is cached in $this->m_activeTab.
+     *
+     * @param array $fields with section/tabs information
      * @param string $action 'add', 'view', ...
      *
      * @return string The name of the currently visible tab.
      */
-    public function getActiveTab($action = '')
+    public function getActiveTab($fields, $action = '')
     {
-        return State::get($this->m_node->atkNodeUri().'_tab', $this->m_node->resolveTab(''));
+        if (!is_null($this->m_activeTab)) {
+            return $this->m_activeTab;
+        }
+
+        // Computing tab list from fields:
+        $tabList = [];
+        foreach ($fields as $field) {
+            $tabs = is_null($field['section']) ? $field['tabs'] :
+                [$this->m_node->getTabFromSection($field['section'])];
+            $tabList = array_merge($tabList, $tabs);
+        }
+        $tabList = array_filter($tabList, function($tab) { return $tab != 'alltabs'; });
+
+        $sessionTab = State::get($this->m_node->atkNodeUri().'_tab');
+        $defaultTab = $this->m_node->resolveTab('');
+        // Let's try tab from session :
+        if (in_array($sessionTab, $tabList)) {
+            $this->m_activeTab = $sessionTab;
+        // Let's try default tab :
+        } elseif (in_array($defaultTab, $tabList)) {
+            $this->m_activeTab = $defaultTab;
+        // Else, let's take the first tab from the first field
+        } elseif (count($tabList)) {
+            $this->m_activeTab = $tabList[0];
+            return $this->m_activeTab;
+        }
+        return $this->m_activeTab;
     }
 
     /**
@@ -332,7 +371,7 @@ class ViewEditBase extends ActionHandler
      */
     protected function fieldsWithTabsAndSections($fields, $mode = 'edit')
     {
-        $activeTab = $this->getActiveTab();
+        $activeTab = $this->getActiveTab($fields, $mode);
         // First, sort fields by section and set aside those who are not
         // within a section (i.e. in the common part of the tab)
         $fieldsBySection = [];
@@ -430,7 +469,7 @@ class ViewEditBase extends ActionHandler
         }
 
         // which tab is currently selected
-        $activeTab = $this->getActiveTab();
+        $activeTab = $this->getActiveTab($fields, $action);
         // Building $tabList object for ui::renderTabs function:
         $tabList = [];
         foreach ($tabs as $tab) {
