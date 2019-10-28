@@ -156,7 +156,7 @@ class ViewHandler extends ViewEditBase
         $fields = $this->fieldsWithTabsAndSections($data['fields']);
         $tabHeader = $this->tabulate('view', $fields);
         // get active tab
-        $tab = $this->getActiveTab();
+        $tab = $this->getActiveTab($fields, $mode);
         // get all tabs of current mode
         $tabs = $this->getTabs($fields);
 

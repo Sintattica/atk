@@ -334,11 +334,11 @@ class EditHandler extends ViewEditBase
         $params = [];
         $params['fields'] = $this->fieldsWithTabsAndSections($data['fields']); // add all fields as a numeric array.
         $params['tabs'] = $this->getTabs($params['fields']);
-        $params['activeTab'] = $this->getActiveTab($mode);
+        $params['activeTab'] = $this->getActiveTab($param['fields'], $mode);
 
         // Format some things for use in tpl.
         /* check for errors and display them */
-        $tab = $this->getActiveTab($mode);
+        $tab = $this->getActiveTab($param['fields'], $mode);
         $error_title = '';
         $pk_err_attrib = [];
         $tabs = $this->getTabs($params['fields']);
