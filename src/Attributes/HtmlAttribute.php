@@ -70,7 +70,7 @@ class HtmlAttribute extends TextAttribute
     protected function sanitize($text)
     {
         $purifierConfig = HTMLPurifier_Config::createDefault();
-        $purifierConfig->set('Core.encoding', Tools::atkGetCharset());
+        $purifierConfig->set('Core.Encoding', Tools::atkGetCharset());
         $purifier = new HTMLPurifier($purifierConfig);
         return $purifier->purify($text);
     }
