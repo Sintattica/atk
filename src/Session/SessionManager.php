@@ -1187,7 +1187,7 @@ class SessionManager
         $url .= '&atkprevlevel='.urlencode($sm->atkLevel());
         $url .= '&atklevel='.urlencode($sm->newLevel(self::SESSION_PARTIAL));
         $url .= '&'.Config::getGlobal('session_autorefresh_key');
-        $time = Config::getGlobal('session_autorefresh_time', 3600);
+        $time = Config::getGlobal('session_autorefresh_time', 300000);
 
         return 'jQuery(function($){window.setInterval(function(){$.ajax({cache:false,type:"GET",url:'.json_encode($url).'});},'.$time.');});';
     }
