@@ -720,7 +720,7 @@ class DataGridList extends DataGridComponent
 
         // override totals
         if (!Config::getGlobal('datagrid_total_paginate') && is_array($result['total']) && Tools::count($result['total']) > 0) {
-            $selector = $grid->getNode()->select()->ignoreDefaultFilters();
+            $selector = $grid->getNode()->select()->ignoreDefaultFilters()->mode($grid->getMode());
             foreach ($grid->getFilters() as $filter) {
                 $selector->where($filter);
             }
