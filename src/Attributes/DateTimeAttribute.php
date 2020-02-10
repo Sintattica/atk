@@ -414,11 +414,8 @@ class DateTimeAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        // we only need to return the date part, because the dateattribute also
-        // hides the other (time) elements that are present in the record (is that
-        // a bug of the dateattribute?)
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;
-        return $this->m_date->hide($record, $fieldprefix, $mode);
+        return $this->m_date->hide($record, $fieldprefix, $mode).$this->m_time->hide($record, $fieldprefix, $mode);
     }
 
     /**

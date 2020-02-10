@@ -62,31 +62,6 @@ class UpdateStampAttribute extends DateTimeAttribute
     }
 
     /**
-     * Returns a piece of html code for hiding this attribute in an HTML form,
-     * while still posting its value. (<input type="hidden">).
-     *
-     * @param array $record
-     * @param string $fieldprefix
-     * @param string $mode
-     *
-     * @return string html
-     */
-    public function hide($record, $fieldprefix, $mode)
-    {
-        $field = $record[$this->fieldName()];
-        $result = '';
-        if (is_array($field)) {
-            foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$value.'">';
-            }
-        } else {
-            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$field.'">';
-        }
-
-        return $result;
-    }
-
-    /**
      * We always have a value, even if we're not even in the record.
      * @param array $record The record that holds this attribute's value.
      * @return bool false
