@@ -851,11 +851,12 @@ class DateAttribute extends Attribute
         $field = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
 
         if (is_array($field)) {
-            foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$value.'">';
+            foreach (['year', 'month', 'day'] as $key) {
+                $value = filter_var($field[$key] ?? 0, FILTER_VALIDATE_INT);
+                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$fieldvalue.'">';
             }
         } else {
-            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$field.'">';
+            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($field).'">';
         }
 
         return $result;
