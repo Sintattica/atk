@@ -1702,7 +1702,7 @@ class Tools
         }
 
         /* get date string */
-        $str_date = adodb_date($format, $date[0]);
+        $str_date = date($format, $date[0]);
 
         $month = $date['month'];
         $shortmonth = substr(strtolower($date['month']), 0, 3);
