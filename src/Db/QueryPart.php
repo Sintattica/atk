@@ -149,7 +149,7 @@ class QueryPart
                     break;
                 }
                 $localValues = $localValues[$beforeDot];
-                $localField = substr($field, $dotPos + 1);
+                $localField = substr($localField, $dotPos + 1);
             }
 
             $value = $localValues[$localField] ?? '';
