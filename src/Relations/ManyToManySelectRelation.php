@@ -142,6 +142,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $page->register_script($assetUrl.'javascript/manytomanyselectrelation.js');
         $id = $this->getHtmlId($fieldprefix);
         $selectId = "{$id}_selection";
+        $this->_renderChangeHandler($fieldprefix);
         $addLink = '';
 
         $selectedKeys = $this->getSelectedKeys($record, $id);
@@ -312,7 +313,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
       <li class="atkmanytomanyselectrelation-selected">
       <input type="hidden" name="'.$name.'" value="'.htmlentities($key).'"/>
       <span>'.$descriptor.'</span>
-      '.$this->renderSelectedRecordActions($record).'
+      '.$this->renderSelectedRecordActions($record, $fieldprefix).'
       </li>
       ';
 
@@ -326,7 +327,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * @return string the actions in their html link form
      */
 
-    protected function renderSelectedRecordActions($record)
+    protected function renderSelectedRecordActions($record, $fieldprefix)
     {
         $actions = [];
 
@@ -348,7 +349,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $actionLinks = [];
         $actionLink = null;
         foreach ($actions as $action) {
-            $actionLink = $this->getActionLink($action, $record);
+            $actionLink = $this->getActionLink($action, $record, $fieldprefix);
             if ($actionLink != null) {
                 $actionLinks[] = $actionLink;
             }
@@ -370,12 +371,12 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @return string
      */
-    protected function getActionLink($action, $record)
+    protected function getActionLink($action, $record, $fieldprefix)
     {
         $actionMethod = "get{$action}ActionLink";
 
         if (method_exists($this, $actionMethod)) {
-            return $this->$actionMethod($record);
+            return $this->$actionMethod($record, $fieldprefix);
         } else {
             Tools::atkwarning('Missing '.$actionMethod.' method on manytomanyselectrelation. ');
         }
@@ -397,7 +398,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @return string
      */
-    protected function getEditActionLink($record)
+    protected function getEditActionLink($record, $fieldprefix)
     {
         return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'edit',
             array('atkselector' => $this->getDestination()->primaryKeyString($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
@@ -411,7 +412,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @return string
      */
-    protected function getViewActionLink($record)
+    protected function getViewActionLink($record, $fieldprefix)
     {
         return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'view',
             array('atkselector' => $this->getDestination()->primaryKeyString($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
@@ -425,9 +426,10 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @return string
      */
-    protected function getDeleteActionLink($record)
+    protected function getDeleteActionLink($record, $fieldprefix)
     {
-        return '<a href="javascript:void(0)" class="atkmanytomanyselectrelation-link" onclick="ATK.ManyToManySelectRelation.deleteItem(this); return false;">'.$this->text('remove').'</a>';
+        $id = $this->getHtmlId($fieldprefix);
+        return '<a href="javascript:void(0)" class="atkmanytomanyselectrelation-link" onclick="ATK.ManyToManySelectRelation.deleteItem(this); '.$id.'_onChange(document.getElementById(&quot;'.$id.'_selection&quot;)); return false;">'.$this->text('remove').'</a>';
     }
 
     /**
@@ -465,6 +467,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         $hasPositionAttribute = $this->hasPositionAttribute() ? 'true' : 'false';
         $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}', {$hasPositionAttribute});");
+        foreach ($this->m_onchangecode as $code) {
+            $relation->addOnChangeHandler($code);
+        }
 
         $relation->setNoneLabel($this->text('select_none_obligatory'));
         unset($record[$relation->fieldName()]);
