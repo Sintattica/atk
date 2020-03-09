@@ -14,6 +14,8 @@ Issue numbers are references to issues in the ATK project issue tracker
 
 WIP Changes
 -----------
+* New FuzzyDateAttribute, for when day or month is not mandatory [samuel]
+* Moved Date/Time attributes to date/time input types, deprecates some flags [samuel]
 * replace nl2br option in HtmlAttribute constructor by AF_NL2BR flag [samuel]
 * Several XSS fixes [samuel]
 * Debug messages now escaped by default (use DEBUG_ESCAPED flag if you
@@ -143,7 +145,6 @@ DB Changes
 * Selector->buildQuery() is now a public function.
 - Selector does not implement IteratorAggregate anymore, SelectorIterator is
     removed.
-
 
 New Release ATK 9.0 (2016-03-09)
 ---------------------------------
