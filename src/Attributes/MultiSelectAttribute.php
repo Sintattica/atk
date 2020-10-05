@@ -5,7 +5,9 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 
 /**
  * The MultiSelectAttribute class represents an attribute of a node
@@ -28,6 +30,13 @@ class MultiSelectAttribute extends ListAttribute
     protected $m_fieldSeparator = '|';
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_STRING;
+
+    /**
      * Constructor.
      *
      * @param string $name Name of the attribute
@@ -39,7 +48,7 @@ class MultiSelectAttribute extends ListAttribute
     public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
         parent::__construct($name, $flags, $optionArray, $valueArray);
-        
+
         $size = 0;
         $valueArray = $this->getValues();
         for ($i = 0, $_i = Tools::count($valueArray); $i < $_i; ++$i) {
@@ -81,7 +90,7 @@ class MultiSelectAttribute extends ListAttribute
     public function value2db($rec)
     {
         if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
-            return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
+            return implode($this->m_fieldSeparator, $rec[$this->fieldName()]);
         } else {
             return '';
         }
@@ -200,26 +209,24 @@ class MultiSelectAttribute extends ListAttribute
     {
         // Multiselect attribute has only 1 searchmode, and that is substring.
         $searchcondition = '';
-        if (is_array($value) && $value[0] != '' && Tools::count($value) > 0) {
-            $searchcondition = [];
-            foreach ($value as $str) {
-                $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
-            }
-            $searchcondition = implode(' OR ', $searchcondition);
+        if (!is_array($value) || $value[0] == '' || empty($value)) {
+            return null;
         }
 
-        return $searchcondition;
-    }
+        $searchconditions = [];
 
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'text' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return 'text';
+        $keyNone = array_search('__NONE__', $value);
+        if ($keyNone !== FALSE) {
+            $searchconditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()), true);
+            // Removing '__NONE__' and reindexing $value :
+            unset($value[$keyNone]);
+            $value = array_values($value);
+        }
+
+        foreach ($value as $str) {
+            $searchconditions[] = $query->substringCondition(Db::quoteIdentifier($table, $this->fieldName()), $str);
+        }
+        return QueryPart::implode('OR', $searchconditions, true);
     }
 
     /**

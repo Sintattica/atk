@@ -18,33 +18,40 @@ use Sintattica\Atk\Db\Query;
  */
 class FuzzySearchAttribute extends Attribute
 {
-    /*
+    /**
      * The node we are searching on
      * @var String
      * @access private
      */
     public $m_searchnode = '';
 
-    /*
+    /**
      * The function to call back with the record and results
      * @var String
      * @access private
      */
     public $m_callback = '';
 
-    /*
+    /**
      * The mode of the the fuzzy search
      * @var String
      * @access private
      */
     public $m_mode = 'all';
 
-    /*
+    /**
      * The matches we got from the search
      * @var array
      * @access private
      */
     public $m_matches = [];
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
 
     /** @var Node $m_searchnodeInstance An instance of the node we are searching on */
@@ -189,7 +196,7 @@ class FuzzySearchAttribute extends Attribute
                 foreach ($this->m_matches as $keyword => $matches) {
                     for ($i = 0, $_i = Tools::count($matches); $i < $_i; ++$i) {
                         $optionArray[] = $this->m_searchnodeInstance->descriptor($matches[$i]);
-                        $valueArray[] = $this->m_searchnodeInstance->primaryKey($matches[$i]);
+                        $valueArray[] = $this->m_searchnodeInstance->primaryKeyString($matches[$i]);
                     }
                 }
 
@@ -204,7 +211,7 @@ class FuzzySearchAttribute extends Attribute
                     $selects = [];
                     foreach ($this->m_matches as $keyword => $matches) {
                         for ($i = 0, $_i = Tools::count($matches); $i < $_i; ++$i) {
-                            $item = '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
+                            $item = '<OPTION VALUE="'.htmlspecialchars($this->m_searchnodeInstance->primaryKeyString($matches[$i])).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
                             if (!in_array($item, $selects)) {
                                 $selects[] = $item;
                             }
@@ -221,7 +228,7 @@ class FuzzySearchAttribute extends Attribute
                                 $res .= '<tr><td>\''.$keyword.'\': </td><td><SELECT NAME="'.$this->getHtmlName($fieldprefix).'[]" class="form-control select-standard">';
                                 $res .= '<OPTION VALUE="">'.Tools::atktext('select_none');
                                 for ($i = 0, $_i = Tools::count($matches); $i < $_i; ++$i) {
-                                    $res .= '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
+                                    $res .= '<OPTION VALUE="'.htmlspecialchars($this->m_searchnodeInstance->primaryKeyString($matches[$i])).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
                                 }
                                 $res .= '</SELECT></td></tr>';
                             }
@@ -290,7 +297,7 @@ class FuzzySearchAttribute extends Attribute
             if (Tools::count($wheres) && $this->createSearchNodeInstance()) {
                 $whereclause = '(('.implode(') OR (', $wheres).'))';
 
-                $resultset = $this->m_searchnodeInstance->select($whereclause)->excludes($this->m_searchnodeInstance->m_listExcludes)->mode('admin')->getAllRows();
+                $resultset = $this->m_searchnodeInstance->select($whereclause)->excludes($this->m_searchnodeInstance->m_listExcludes)->mode('admin')->fetchAll();
             }
         } else {
             if (Tools::count($this->m_matches) > 0) {
@@ -373,7 +380,7 @@ class FuzzySearchAttribute extends Attribute
         //noop
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         //noop
     }
@@ -406,11 +413,6 @@ class FuzzySearchAttribute extends Attribute
     public function dbFieldSize()
     {
         // Dummy method to prevent loading/storing of data.
-    }
-
-    public function dbFieldType()
-    {
-        //Dummy method to prevent loading/storing of data.
     }
 
     /**

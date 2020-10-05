@@ -227,15 +227,11 @@ class FileEditor extends Node
             }
         } else {
             // file selected, read file.
-            // in the fileeditor, the selector is always dummy.filename=name
-            // so we use the value of the decoded pair as a filename.
-            $decodedselector = Tools::decodeKeyValuePair($selector);
-            $filename = $decodedselector['dummy.filename'];
-            $record['filename'] = $filename;
+            $filename = $this->filenameFromPrimaryKey($selector);
 
             // we must store original filename as primaryKey, for
             // atknode uses the value in some places.
-            $record['atkprimkey'] = $this->primaryKey($record);
+            $record['atkprimkey'] = $this->primaryKeyString($record);
             if (is_file($this->m_dir.$filename)) {
                 $record['filecontent'] = implode('', file($this->m_dir.$filename));
             } else {
@@ -319,11 +315,8 @@ class FileEditor extends Node
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
 
         if ($record['atkprimkey'] != '') {
-            if ($record['atkprimkey'] != $this->primaryKey($record)) {
-                $decodedprimkey = Tools::decodeKeyValuePair($record['atkprimkey']);
-                $filename = $this->m_dir.$decodedprimkey['dummy.filename'];
-
-                unlink($filename);
+            if ($this->filenameFromPrimaryKey($record['atkprimkey']) != $record['filename']) {
+                unlink($this->filenameFromPrimaryKey($record['atkprimkey']));
                 Tools::atkdebug("Filename changed. Deleted original '$filename'.");
             }
             $fp = @fopen($this->m_dir.$record['filename'], 'wb');
@@ -356,8 +349,7 @@ class FileEditor extends Node
     {
         $sessmngr = SessionManager::getInstance();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
-        $decodedselector = Tools::decodeKeyValuePair($selector);
-        $filename = $decodedselector['dummy.filename'];
+        $filename = $this->filenameFromPrimaryKey($selector);
 
         Tools::atk_var_dump($this->m_dir, 'm_dir');
         Tools::atk_var_dump($filename, 'filename');
@@ -439,5 +431,26 @@ class FileEditor extends Node
     public function showDirs($bool)
     {
         $this->m_showdirs = (bool)$bool;
+    }
+
+    /**
+     * Get filename from atkprimkey/atkselector value
+     *
+     * @param string $selector value
+     *
+     * @return string $filename
+     */
+    private function filenameFromPrimaryKey($atkprimkey)
+    {
+        // in the fileeditor, the selector is always '["name"]' or '"name"'
+        $decoded = json_decode($atkprimkey, true);
+        if (is_string(($decoded))) {
+            return $decoded;
+        } elseif (is_array($selector)) {
+            return $decoded[0];
+        } else {
+            Tools::atkdebug('Could not understand '.$atkprimkey.' primary key.');
+            return '';
+        }
     }
 }

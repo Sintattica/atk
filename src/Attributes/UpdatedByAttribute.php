@@ -36,7 +36,7 @@ class UpdatedByAttribute extends ManyToOneRelation
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
-            $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
+            $query->addField($this->fieldName(), $this->value2db($record));
         } else {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
         }

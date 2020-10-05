@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
@@ -21,6 +22,12 @@ class DateTimeAttribute extends Attribute
     public $m_utcOffset = null;
     public $m_timezoneAttribute = null;
 
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_DATETIME;
     /**
      * Converts a date array to a timestamp
      * year, month, day are obligatory !!
@@ -354,34 +361,11 @@ class DateTimeAttribute extends Attribute
         }
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
-    {
-        if ($mode == 'add' || $mode == 'update') {
-            if ($this->value2db($record) == null) {
-                $query->addField($this->fieldName(), 'NULL', '', '', false);
-            } else {
-                $db = $this->m_ownerInstance->getDb();
-                if ($db->getType() != 'oci9') {
-                    $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES));
-                } else {
-                    $value = $this->value2db($record);
-                    $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
-                }
-            }
-        } else {
-            if (Config::getGlobal('database') != 'oci9') {
-                $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
-            } else {
-                $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
-            }
-        }
-    }
-
     /**
      * Returns a piece of html code that can be used to get search terms input
      * from the user.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -393,11 +377,11 @@ class DateTimeAttribute extends Attribute
      * @param DataGrid $grid
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->m_date->m_searchsize = 10;
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;
-        return $this->m_date->search($record, $extended, $fieldprefix);
+        return $this->m_date->search($atksearch, $extended, $fieldprefix);
     }
 
     /**
@@ -445,18 +429,6 @@ class DateTimeAttribute extends Attribute
     public function getSearchModes()
     {
         return $this->m_date->getSearchModes();
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        // TODO FIXME: Is this correct? Or does the datetimeattribute currently only support varchar fields?
-        return 'datetime';
     }
 
     /**

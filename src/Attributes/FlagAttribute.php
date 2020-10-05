@@ -4,6 +4,8 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The FlagAttribute class offers an way to edit bitmask flags.
@@ -12,6 +14,13 @@ use Sintattica\Atk\Db\Query;
  */
 class FlagAttribute extends MultiSelectAttribute
 {
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_NUMBER;
+
     /**
      * Constructor.
      *
@@ -24,7 +33,6 @@ class FlagAttribute extends MultiSelectAttribute
     public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
         parent::__construct($name, $flags, $optionArray, $valueArray);
-        $this->m_dbfieldtype = 'number';
     }
 
     /**
@@ -73,17 +81,6 @@ class FlagAttribute extends MultiSelectAttribute
     }
 
     /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return $this->m_dbfieldtype;
-    }
-
-    /**
      * Creates a searchcondition for the field,
      * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
@@ -97,22 +94,26 @@ class FlagAttribute extends MultiSelectAttribute
      *                           attribute's getSearchModes() method.
      * @param string $fieldname
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart The searchcondition to use.
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $searchcondition = '';
-        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-            $field = $table.'.'.$this->fieldName();
-            if (Tools::count($value) == 1) { // exactly one value
-                $query->addSearchCondition($field.' & '.$value[0]);
+        if (!is_array($value) || empty($value) || $value[0] == '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            return null;
+        }
+        $conditions = [];
+        $bitmask = 0;
+        foreach($value as $v) {
+            if ($v == '__NONE__') {
+                $conditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), 0);
             } else {
-                $mask = '('.implode('|', $value).')';
-                $searchcondition = $field.'&'.$mask.'='.$mask;
+                $bitmask |= $v;
             }
         }
-
-        return $searchcondition;
+        if ($bitmask != 0) {
+            $conditions[] = $query->bitmaskCondition(Db::quoteIdentifier($table, $this->fieldName()), $bitmask);
+        }
+        return QueryPart::implode('OR', $conditions, true);
     }
 
     /**
@@ -129,19 +130,18 @@ class FlagAttribute extends MultiSelectAttribute
      */
     public function fetchValue($postvars)
     {
-        $vars = Tools::atkArrayNvl($postvars, $this->fieldName());
-        if (!is_array($vars)) {
-            $result = [];
-            foreach ($this->m_values as $value) {
-                if (Tools::hasFlag($vars, $value)) {
-                    $result[] = $value;
-                }
-            }
-
-            return $result;
-        } else {
+        $vars = Tools::atkArrayNvl($postvars, $this->getHtmlName());
+        if (is_array($vars) || is_null($vars)) {
             return $vars;
         }
+        $result = [];
+        foreach ($this->m_values as $value) {
+            if (Tools::hasFlag($vars, $value)) {
+                $result[] = $value;
+            }
+        }
+
+        return $result;
     }
 
     /**

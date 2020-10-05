@@ -241,6 +241,8 @@ class Attribute
     /**
      * No quotes are used when adding to the database.
      *
+     * DEPRECATED : values are passed as parameters, quotes are not needed anymore.
+     *
      * miscellaneous processing flag
      */
     const AF_NO_QUOTES = 8388608;
@@ -373,12 +375,12 @@ class Attribute
      */
     public $m_maxsize = 0;
 
-    /*
+    /**
      * The database fieldtype.
      * @access private
-     * @var String
+     * @var int
      */
-    public $m_dbfieldtype = '';
+    public $m_dbfieldtype = null;
 
     /*
      * The order of the attribute within its node.
@@ -413,6 +415,12 @@ class Attribute
      * @var String
      */
     public $m_htmlid;
+
+    /*
+     * The name of the attribute in the HTML
+     * @var String
+     */
+    public $m_htmlname;
 
     /*
      * The css classes of the attribute
@@ -818,9 +826,8 @@ class Attribute
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * For the regular Attribute, this means escaping things like
-     * quotes and slashes. Derived attributes may reimplement this for their
-     * own conversion.
+     * For the regular Attribute, it's simply returning the value.
+     * Derived attributes may reimplement this for their own conversion.
      * This is the exact opposite of the db2value method.
      *
      * @param array $rec The record that holds this attribute's value.
@@ -830,7 +837,7 @@ class Attribute
     public function value2db($rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
-            return $this->escapeSQL($rec[$this->fieldName()]);
+            return $rec[$this->fieldName()];
         }
 
         return;
@@ -852,7 +859,7 @@ class Attribute
     public function db2value($rec)
     {
         if (isset($rec[$this->fieldName()])) {
-            return $rec[$this->fieldName()] === null ? null : $rec[$this->fieldName()];
+            return $rec[$this->fieldName()];
         }
 
         return;
@@ -867,7 +874,7 @@ class Attribute
      */
     public function isPosted($postvars)
     {
-        return is_array($postvars) && isset($postvars[$this->fieldName()]);
+        return is_array($postvars) && isset($postvars[$this->getHtmlName()]);
     }
 
     /**
@@ -913,10 +920,10 @@ class Attribute
     public function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
-            return $postvars[$this->fieldName()];
+            return $postvars[$this->getHtmlName()];
         }
 
-        return;
+        return null;
     }
 
 
@@ -1055,7 +1062,7 @@ class Attribute
             if ($this->getOwnerInstance()) {
                 $uri = str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()).'_';
             }
-            $this->m_htmlid = $uri.$fieldprefix.$this->fieldName();
+            $this->m_htmlid = $uri.$this->getHtmlName($fieldprefix);
         }
 
         return $this->m_htmlid;
@@ -1064,13 +1071,21 @@ class Attribute
     /**
      * Return the name identifier (name="") of the attribute.
      *
-     * @param string $fieldprefix The fieldprefix to put in front of the name of any html form element for this attribute.
+     * Note: Without $fieldprefix argument, you get the index in decoded
+     * postvars arrays.
+     *
+     * @param string $fieldprefix The fieldprefix to put in front of the name of
+     *                            any html form element for this attribute. We assume
+     *                            that it respects constraints.
      *
      * @return string the HTML identifier.
      */
-    public function getHtmlName($fieldprefix)
+    public function getHtmlName(string $fieldprefix = '') : string
     {
-        return $fieldprefix.$this->fieldName();
+        if (!isset($this->m_htmlname)) {
+            $this->m_htmlname = Tools::htmlName($this->m_name);
+        }
+        return $fieldprefix.$this->m_htmlname;
     }
 
     /**
@@ -1462,7 +1477,7 @@ class Attribute
         }
 
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
-            $key = $fieldprefix.$this->fieldName();
+            $key = $this->getHtmlName($fieldprefix);
 
             $arr['heading'][$key]['title'] = $this->label();
 
@@ -1545,7 +1560,7 @@ class Attribute
      * @todo  find a better way to search on onetomanys that does not require
      *        something evil in Attribute
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -1558,15 +1573,12 @@ class Attribute
      *
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
 
-        $value = '';
-        if (is_array($record) && isset($record[$this->fieldName()])) {
-            $value = $record[$this->fieldName()];
-        }
+        $value = $atksearch[$this->getHtmlName()] ?? '';
 
         $style = '';
         $type = $extended ? 'extended_search':'search';
@@ -1693,9 +1705,12 @@ class Attribute
     }
 
     /**
-     * Creates a searchcondition for the field,
-     * was once part of searchCondition, however,
+     * Creates a searchcondition for the field and returns it.
+     *
+     * Was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
+     *
+     * Side effect : it may add some joins into $query needed to perform searches.
      *
      * @param Query $query The query object where the search condition should be placed on
      * @param string $table The name of the table in which this attribute
@@ -1704,9 +1719,9 @@ class Attribute
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
-     * @param string $fieldname alias?
+     * @param string $fieldname prefix for joined tables.
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart the search condition or null if no condition was returned
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
@@ -1728,12 +1743,12 @@ class Attribute
 
         $func = $searchmode.'Condition';
         if (method_exists($query, $func) && ($value || ($value == 0))) {
-            return $query->$func($table.'.'.$this->fieldName(), $this->escapeSQL($value), $this->dbFieldType());
+            return $query->$func(Db::quoteIdentifier($table, $this->fieldName()), $value);
         } elseif (!method_exists($query, $func)) {
             Tools::atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().', ignoring condition.');
         }
 
-        return '';
+        return null;
     }
 
     /**
@@ -1857,12 +1872,12 @@ class Attribute
             }
 
             if ($this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
-                $query->addField($this->fieldName(), 'NULL', '', '', false, true);
+                $query->addField($this->fieldName(), null);
             } else {
-                $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
+                $query->addField($this->fieldName(), $this->value2db($record));
             }
         } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
+            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix);
         }
     }
 
@@ -1934,6 +1949,7 @@ class Attribute
      *
      * Lengths for the edit and searchboxes, and maximum lengths are retrieved
      * from the table metadata by this method.
+     * Db field type is alse retrieved from this method if not previously defined.
      *
      * @param array $metadata The table metadata from the table for this
      *                        attribute.
@@ -1951,6 +1967,10 @@ class Attribute
                 // no size explicitly set, so use the one we retrieved from the database
                 $this->m_maxsize = $metadata[$attribname]['len'];
             }
+            // Set dbfieldtype from metadata if not set from specific attribute definition.
+            if ($m_dbfieldtype == Db::FT_UNSUPPORTED) {
+                $this->m_dbfieldtype = $metadata[$attribname]['gentype'];
+            }
         }
 
         // size (the size of the input box in add/edit forms)
@@ -1962,10 +1982,6 @@ class Attribute
         if (!$this->m_searchsize) {
             $this->m_searchsize = min($this->m_maxsize, $this->maxSearchInputSize());
         }
-
-        // TODO FIXME: The metadata contains the real field type. $this->m_dbfieldtype should be
-        // set accordingly. Currently the metadata contains database specific types, so this
-        // feature is not yet implemented, until metadata contains generic field types.
     }
 
     /**
@@ -2190,27 +2206,25 @@ class Attribute
     /**
      * Return the database field type of the attribute.
      *
-     * Note that the type returned is a 'generic' type. Each database
-     * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $db->fieldType().
+     * Note that the type returned is a 'generic' type.
      *
      * If the type was read from the table metadata, that value will
      * be used. Else, the attribute will analyze its flags to guess
      * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
-     * Note: Derived attributes should override this method if they
+     * Note: Derived attributes should set m_dbfieldtype property if they
      *       use other field types than string or number. If the
      *       derived attribute is one that can not be stored in the
-     *       database, an empty string should be returned.
+     *       database, Db::FT_UNSUPPORTED should be returned.
      *
-     * @return string The 'generic' type of the database field for this
+     * @return int The 'generic' type of the database field for this
      *                attribute.
      */
     public function dbFieldType()
     {
-        if ($this->m_dbfieldtype == '') {
-            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? 'number' : 'string');
+        if (is_null($this->m_dbfieldtype)) {
+            $this->m_dbfieldtype = ($this->hasFlag(self::AF_AUTO_INCREMENT) ? Db::FT_NUMBER : Db::FT_STRING);
         }
 
         return $this->m_dbfieldtype;
@@ -2238,7 +2252,7 @@ class Attribute
         if ($this->m_maxsize != 0) {
             return $this->m_maxsize;
         } else {
-            if ($this->dbFieldType() == 'number') {
+            if ($this->dbFieldType() == Db::FT_NUMBER) {
                 return '10'; // default for numbers.
             } else {
                 return '100'; // default for strings.
@@ -2651,7 +2665,7 @@ class Attribute
      */
     public function getSearchFieldName($prefix)
     {
-        return 'atksearch_AE_'.$prefix.$this->fieldName();
+        return 'atksearch_AE_'.$this->getHtmlName($prefix);
     }
 
     /**
@@ -2663,7 +2677,7 @@ class Attribute
      */
     public function getSearchModeFieldname($prefix)
     {
-        return 'atksearchmode_AE_'.$prefix.$this->fieldName();
+        return 'atksearchmode_AE_'.$this->getHtmlName($prefix);
     }
 
     /**
@@ -2795,6 +2809,7 @@ class Attribute
         if (empty($table)) {
             $table = $this->m_ownerInstance->m_table;
         }
+        $direction = ($direction ? " {$direction}" : '');
 
         // check for a schema name in $table
         if (strpos($table, '.') !== false) {
@@ -2802,21 +2817,21 @@ class Attribute
 
             $tableIdentifier = '';
             foreach ($identifiers as $identifier) {
-                $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier).'.';
+                $tableIdentifier .= Db::quoteIdentifier($identifier).'.';
             }
 
-            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
-                return 'LOWER('.$tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            if ($this->dbFieldType() == Db::FT_STRING && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.$tableIdentifier.Db::quoteIdentifier($this->fieldName()).')'.$direction;
             }
 
-            return $tableIdentifier.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+            return $tableIdentifier.Db::quoteIdentifier($this->fieldName()).$direction;
 
         } else {
-            if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
-                return 'LOWER('.$this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).')'.($direction ? " {$direction}" : '');
+            if ($this->dbFieldType() == Db::FT_STRING && $this->getDb()->getForceCaseInsensitive()) {
+                return 'LOWER('.Db::quoteIdentifier($table, $this->fieldName()).')'.$direction;
             }
 
-            return $this->getDb()->quoteIdentifier($table).'.'.$this->getDb()->quoteIdentifier($this->fieldName()).($direction ? " $direction" : '');
+            return Db::quoteIdentifier($table, $this->fieldName()).$direction;
         }
     }
 
@@ -2851,21 +2866,6 @@ class Attribute
         }
 
         return Db::getInstance();
-    }
-
-    /**
-     * Escape string for use in a query.
-     *
-     * @param string $value value to escape
-     * @param bool $wildcards escape wildcards too?
-     *
-     * @return string The escaped value.
-     */
-    public function escapeSQL($value, $wildcards = false)
-    {
-        $db = $this->getDb();
-
-        return $db->escapeSQL($value, $wildcards);
     }
 
     /**

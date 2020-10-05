@@ -25,6 +25,13 @@ class DummyAttribute extends Attribute
     public $m_text;
 
     /**
+     * The database fieldtype : no store, type undefined.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+
+    /**
      * Constructor.
      *
      * @param string $name The name of the attribute
@@ -97,7 +104,7 @@ class DummyAttribute extends Attribute
      * from the user.
      * VOID implementation, dummy attributes cannot be searched.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -110,7 +117,7 @@ class DummyAttribute extends Attribute
      *
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         return '&nbsp;';
     }
@@ -186,16 +193,5 @@ class DummyAttribute extends Attribute
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return [];
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     * VOID implementation because dummy attributes are not stored in the database.
-     *
-     * @return string empty string
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 }

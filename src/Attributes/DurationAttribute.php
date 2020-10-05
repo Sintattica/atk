@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The DurationAttribute is an attribute for entering a length of time.
@@ -21,6 +22,13 @@ class DurationAttribute extends Attribute
     /* member vars * */
     public $m_resolution_min;
     public $m_maxtime_min;
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_NUMBER;
 
     /**
      * Default Constructor, sets up Attribute.
@@ -143,7 +151,7 @@ class DurationAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         return ''; // currently not searchable.
     }
@@ -176,17 +184,6 @@ class DurationAttribute extends Attribute
     public function getSearchModes()
     {
         return array('exact');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return 'number';
     }
 
     /**
@@ -280,10 +277,11 @@ class DurationAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($postvars[$this->fieldName()])) {
-            return self::_string2minutes($postvars[$this->fieldName()]);
+        $value = parent::fetchValue($postvars);
+        if ($this->hasFlag(self::AF_DURATION_STRING) || !is_array($value)) {
+            return self::_string2minutes($value);
         } else {
-            return $postvars[$this->fieldName()]['hours'] * 60 + $postvars[$this->fieldName()]['minutes'];
+            return $value['hours'] * 60 + $value['minutes'];
         }
     }
 

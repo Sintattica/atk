@@ -7,7 +7,6 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Utils\Json;
-use Sintattica\Atk\Utils\StringParser;
 
 /**
  * The data grid is a component based record list container.
@@ -215,7 +214,7 @@ class DataGrid
      * Node filters. Only used when the select handler and count
      * handlers are not overridden.
      *
-     * @var array
+     * @var array of QueryPart
      */
     private $m_filters = [];
 
@@ -460,13 +459,7 @@ class DataGrid
         $this->setDisplayBottomInfo(Config::getGlobal('datagrid_display_bottom_info'));
 
         if (!$this->getNode()->hasFlag(Node::NF_NO_FILTER)) {
-            foreach ($this->getNode()->m_filters as $key => $value) {
-                $this->addFilter($key."='".$value."'");
-            }
-
-            foreach ($this->getNode()->m_fuzzyFilters as $filter) {
-                $parser = new StringParser($filter);
-                $filter = $parser->parse(array('table' => $this->getNode()->getTable()));
+            foreach ($this->getNode()->m_filters as $filter) {
                 $this->addFilter($filter);
             }
         }
@@ -1315,11 +1308,10 @@ class DataGrid
      * Remove filter.
      *
      * @param string $filter
-     * @param array $params
      */
-    public function removeFilter($filter, $params = array())
+    public function removeFilter($filter)
     {
-        $key = array_search(array('filter' => $filter, 'params' => $params), $this->m_filters);
+        $key = array_search($filter, $this->m_filters);
 
         if ($key !== false) {
             unset($this->m_filters[$key]);
@@ -1331,13 +1323,13 @@ class DataGrid
      * Add node filter (only used if no custom select and
      * count handlers are used!).
      *
-     * @param string $filter filter / condition
+     * @param QueryPart $filter condition
      * @param array $params bind parameters
      */
-    public function addFilter($filter, $params = array())
+    public function addFilter($filter)
     {
         if (!empty($filter)) {
-            $this->m_filters[] = array('filter' => $filter, 'params' => $params);
+            $this->m_filters[] = $filter;
         }
     }
 
@@ -1548,10 +1540,10 @@ class DataGrid
             $this->getOffset())->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
-            $selector->where($filter['filter'], $filter['params']);
+            $selector->where($filter);
         }
 
-        return $selector->getAllRows();
+        return $selector->fetchAll();
     }
 
     /**
@@ -1569,7 +1561,7 @@ class DataGrid
         $selector = $this->getNode()->select()->excludes($excludes)->mode($this->getMode())->ignoreDefaultFilters();
 
         foreach ($this->m_filters as $filter) {
-            $selector->where($filter['filter'], $filter['params']);
+            $selector->where($filter);
         }
 
         return $selector->getRowCount();
@@ -1600,7 +1592,7 @@ class DataGrid
         $this->notify(DataGridEvent::PRE_LOAD);
 
         // temporarily overwrite the node postvars so that select and count
-        // have access to the atksearch, atkfilter, atklimit etc. parameters
+        // have access to the atksearch, atklimit etc. parameters
         $this->overrideNodePostvars();
 
         // retrieve records using the default implementation
@@ -1789,11 +1781,11 @@ class DataGrid
         // if we are not embedded in an edit form we generate
         // the form name based on the grid name
         if (!$this->isEmbedded()) {
-            $this->setFormName($this->getName().'_form');
+            $this->setFormName(Tools::htmlName($this->getName()).'_form');
         }
 
         // temporarily overwrite the node postvars so that select and count
-        // have access to the atksearch, atkfilter, atklimit etc. parameters
+        // have access to the atksearch, atklimit etc. parameters
         $this->overrideNodePostvars();
 
         // load records from database

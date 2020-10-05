@@ -37,7 +37,7 @@ class EditcopyHandler extends ActionHandler
             $db->commit();
             $this->clearCache();
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit', array('atkselector' => $this->m_node->primaryKey($record))),
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit', array('atkselector' => $this->m_node->primaryKeyString($record))),
                 SessionManager::SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
@@ -51,7 +51,7 @@ class EditcopyHandler extends ActionHandler
     protected function getCopyRecord()
     {
         $selector = $this->m_postvars['atkselector'];
-        $recordset = $this->m_node->select($selector)->mode('copy')->getAllRows();
+        $recordset = $this->m_node->select($selector)->mode('copy')->fetchAll();
         if (Tools::count($recordset) > 0) {
             return $recordset[0];
         } else {

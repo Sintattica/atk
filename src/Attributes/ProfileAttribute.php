@@ -22,6 +22,13 @@ class ProfileAttribute extends Attribute
     public $m_accessField;
 
     /**
+     * The database fieldtype: no storage, type undefined.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+
+    /**
      * Constructor.
      *
      * @param string $name The name of the attribute
@@ -52,14 +59,16 @@ class ProfileAttribute extends Attribute
      */
     public function load($db, $record, $mode)
     {
-        $query = 'SELECT *
-                FROM '.Config::getGlobal('auth_accesstable').'
-                WHERE '.$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+        $query = $db->createQuery(Config::getGlobal('auth_accesstable'));
+        $query->addField('node')->addField('action');
+        $query->addCondition(
+            Db::quoteIdentifier($this->m_accessField).'=:id',
+            [':id' => $record[$this->m_ownerInstance->primaryKeyField()]]
+        );
 
         $result = [];
-        $rows = $db->getRows($query);
-        for ($i = 0; $i < Tools::count($rows); ++$i) {
-            $result[$rows[$i]['node']][] = $rows[$i]['action'];
+        foreach($query->executeSelect() as $row) {
+            $result[$row['node']][] = $row['action'];
         }
 
         return $result;
@@ -82,10 +91,13 @@ class ProfileAttribute extends Attribute
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
 
-        $delquery = 'DELETE FROM '.Config::getGlobal('auth_accesstable').'
-                   WHERE '.$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+        $delquery = $db->createQuery(Config::getGlobal('auth_accesstable'));
+        $delquery->addCondition(
+            Db::quoteIdentifier($this->m_accessField).'= :id',
+            [':id' => $record[$this->m_ownerInstance->primaryKeyField()]]
+        );
 
-        if ($db->query($delquery)) {
+        if ($delquery->executeDelete()) {
             $checked = $record[$this->fieldName()];
 
             $children = [];
@@ -112,20 +124,26 @@ class ProfileAttribute extends Attribute
                 }
 
                 foreach ($validActions as $action) {
-                    $query = 'INSERT INTO '.Config::getGlobal('auth_accesstable').' (node, action, '.$this->m_accessField.') ';
-                    $query .= "VALUES ('".$db->escapeSQL($node)."','".$db->escapeSQL($action)."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
+                    $query = $db->createQuery(Config::getGlobal('auth_accesstable'));
+                    $query->addFields([
+                        'node' => $node,
+                        'action' => $action,
+                        $this->m_accessField => $record[$this->m_ownerInstance->primaryKeyField()]
+                    ]);
 
-                    if (!$db->query($query)) {
+                    if (!$query->executeInsert()) {
                         // error.
                         return false;
                     }
                 }
 
                 if (Tools::count($children) > 0 && Tools::count($validActions) > 0) {
-                    $query = 'DELETE FROM '.Config::getGlobal('auth_accesstable').' '.'WHERE '.$this->m_accessField.' IN ('.implode(',',
-                            $children).') '."AND node = '".$db->escapeSQL($node)."' "."AND action NOT IN ('".implode("','", $validActions)."')";
+                    $query = $db->createQuery(Config::getGlobal('auth_accesstable'));
+                    $query->addCondition($query->inCondition(Db::quoteIdentifier($this->m_accessField), $children));
+                    $query->addCondition('node = :node', [':node' => $node]);
+                    $query->addCondition($query->notinCondition('action', $validActions));
 
-                    if (!$db->query($query)) {
+                    if (!$query->executeDelete()) {
                         // error.
                         return false;
                     }
@@ -175,9 +193,11 @@ class ProfileAttribute extends Attribute
         // hierarchic groups, only return actions of parent (if this record has a parent)
         $parentAttr = $this->m_parentAttrName;
         if (!empty($parentAttr) && is_numeric($record[$parentAttr])) {
-            $db = $this->getDb();
-            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' '.'WHERE '.$this->m_accessField.' = '.$record[$parentAttr];
-            $rows = $db->getRows($query);
+            $query = $this->getDb()->createQuery(Config::getGlobal('auth_accesstable'));
+            $query->setDistinct(true);
+            $query->addField('node')->addField('action');
+            $query->addCondition(Db::quoteIdentifier($this->m_accessField).'=:id', [':id' => $record[$parentAttr]]);
+            $rows = $query->executeSelect();
 
             foreach ($rows as $row) {
                 $module = Tools::getNodeModule($row['node']);
@@ -234,18 +254,14 @@ class ProfileAttribute extends Attribute
             $levels = [$levels];
         }
 
-        $escapedLevels = [];
-        foreach ($levels as $currLevel) {
-            $escapedLevels[] = "'".$db->escapeSQL($currLevel)."'";
-        }
-        $levels = implode(',', $escapedLevels);
-
         // retrieve editable actions by user's levels
         $rows = [];
         if ($levels) {
-            $db = $this->getDb();
-            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' WHERE '.$this->m_accessField.' IN ('.$levels.')';
-            $rows = $db->getRows($query);
+            $query = $this->getDb()->createQuery(Config::getGlobal('auth_accesstable'));
+            $query->setDistinct(true);
+            $query->addField('node')->addField('action');
+            $query->addCondition($query->inCondition(Db::quoteIdentifier($this->m_accessField), $levels));
+            $rows = $query->executeSelect();
         }
 
         $result = [];
@@ -273,10 +289,11 @@ class ProfileAttribute extends Attribute
             return $result;
         }
 
-        $query = 'SELECT '.$this->m_ownerInstance->primaryKeyField().' '.'FROM '.$this->m_ownerInstance->m_table.' '.'WHERE '.$this->m_parentAttrName." = $id";
+        $query = $db->createQuery($this->m_ownerInstance->m_table);
+        $query->addField($this->m_ownerInstance->primaryKeyField());
+        $query->addCondition(Db::quoteIdentifier($this->m_parentAttrName).'=:id', [':id' => $id]);
 
-        $rows = $db->getRows($query);
-        foreach ($rows as $row) {
+        foreach ($query->executeSelect() as $row) {
             $id = $row[$this->m_ownerInstance->primaryKeyField()];
             $result = array_merge($result, array($id), $this->getChildGroups($db, $id));
         }
@@ -612,10 +629,7 @@ class ProfileAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $checkboxes = [];
-        if (isset($postvars[$this->fieldName()])) {
-            $checkboxes = $postvars[$this->fieldName()];
-        }
+        $checkboxes = parent::fetchValue($postvars) ?? [];
 
         $actions = [];
         for ($i = 0; $i < Tools::count($checkboxes); ++$i) {
@@ -658,25 +672,5 @@ class ProfileAttribute extends Attribute
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return [];
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * Note that the type returned is a 'generic' type. Each database
-     * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $db->fieldType().
-     *
-     * If the type was read from the table metadata, that value will
-     * be used. Else, the attribute will analyze its flags to guess
-     * what type it should be. If self::AF_AUTO_INCREMENT is set, the field
-     * is probaly "number". If not, it's probably "string".
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 }

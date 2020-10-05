@@ -124,12 +124,13 @@ class SearchHandler extends AbstractSearchHandler
     /**
      * This method returns an html page that can be used as a search form.
      *
-     * @param array $record A record containing default values that will be
-     *                      entered in the searchform.
+     * @param array $searcharray An array with conditions from a search form
+     *                           submission. Values will be entered in the
+     *                           searchform.
      *
      * @return string The html search page.
      */
-    public function searchPage($record = null)
+    public function searchPage($searcharray = null)
     {
         $node = $this->m_node;
         $ui = $this->getUi();
@@ -145,7 +146,7 @@ class SearchHandler extends AbstractSearchHandler
             $params['formstart'] .= '<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
             $params['formstart'] .= '<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
 
-            $params['content'] = $this->invoke('searchForm', $record);
+            $params['content'] = $this->invoke('searchForm', $searcharray);
 
             $params['buttons'] = $node->getFormButtons('search');
 
@@ -169,12 +170,12 @@ class SearchHandler extends AbstractSearchHandler
     /**
      * This method returns a form that the user can use to search records.
      *
-     * @param array $record A record containing default values to put into
+     * @param array $searcharray A record containing default values to put into
      *                      the search fields.
      *
      * @return string The searchform in html form.
      */
-    public function searchForm($record = null)
+    public function searchForm($searcharray = null)
     {
         $node = $this->m_node;
         $ui = $this->getUi();
@@ -197,11 +198,11 @@ class SearchHandler extends AbstractSearchHandler
                 $p_attrib = $node->m_attribList[$attribname];
 
                 if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH)) {
-                    $p_attrib->addToSearchformFields($params['fields'], $node, $record, '', true);
+                    $p_attrib->addToSearchformFields($params['fields'], $node, $searcharray, '', true);
                 }
             }
 
-            return $ui->render($node->getTemplate('search', $record), $params);
+            return $ui->render($node->getTemplate('search', $searcharray), $params);
         } else {
             Tools::atkerror('ui object error');
         }

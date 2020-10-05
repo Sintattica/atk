@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
@@ -50,13 +51,13 @@ class FileAttribute extends Attribute
      */
     const AF_FILE_POPUP = self::AF_POPUP;
 
-    /*
+    /**
      * Directory with images
      */
     public $m_dir = '';
     public $m_url = '';
 
-    /*
+    /**
      * Name mangle feature. If you set filename tpl, then uploaded files
      * are renamed to what you set in the template. You can use
      * fieldnames between brackets to have the filename determined by
@@ -74,7 +75,7 @@ class FileAttribute extends Attribute
      */
     public $m_filenameTpl = '';
 
-    /*
+    /**
      * When set to true, a file is auto-renumbered if another record exists with the
      * same filename.
      *
@@ -82,13 +83,20 @@ class FileAttribute extends Attribute
      */
     public $m_autonumbering = false;
 
-    /*
+    /**
      * List of mime types which a uses is allowed to upload
      * Example: array('image/jpeg');
      *
      * @var array
      */
     public $m_allowedFileTypes = [];
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_STRING;
 
     /**
      * Constructor.
@@ -540,31 +548,32 @@ class FileAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $del = isset($postvars[$this->fieldName()]['del']) ? $postvars[$this->fieldName()]['del'] : null;
+        $pvName = $this->getHtmlName();
+        $del = $postvars[$pvName]['del'] ?? null;
 
         $basename = $this->fieldName();
 
-        if (is_array($postvars['atkfiles']) || ($postvars[$this->fieldName()]['select'] != '') || ($postvars[$this->fieldName()]['filename'] != '')) { // php4
+        if (is_array($postvars['atkfiles']) || ($postvars[$pvName]['select'] != '') || ($postvars[$pvName]['filename'] != '')) { // php4
             // if an error occured during the upload process
             // and the error is not 'no file' while the field isn't obligatory or a file was already selected
-            $fileselected = isset($postvars[$this->fieldName()]['select']) && $postvars[$this->fieldName()]['select'] != '';
+            $fileselected = isset($postvars[$pvName]['select']) && $postvars[$pvName]['select'] != '';
             if (isset($postvars['atkfiles'][$basename]) && $postvars['atkfiles'][$basename]['error'] > 0 && !((!$this->hasFlag(self::AF_OBLIGATORY) || $fileselected) && $postvars['atkfiles'][$basename]['error'] == UPLOAD_ERR_NO_FILE)) {
                 return array(
-                    'filename' => $postvars['atkfiles'][$this->fieldName()]['name'],
-                    'error' => $postvars['atkfiles'][$this->fieldName()]['error'],
+                    'filename' => $postvars['atkfiles'][$pvName]['name'],
+                    'error' => $postvars['atkfiles'][$pvName]['error'],
                 );
             } // if no new file has been uploaded..
             elseif (Tools::count($postvars['atkfiles']) == 0 || $postvars['atkfiles'][$basename]['tmp_name'] == 'none' || $postvars['atkfiles'][$basename]['tmp_name'] == '') {
                 // No file to upload, then check if the select box is filled
                 if ($fileselected) {
                     Tools::atkdebug('file selected!');
-                    $filename = $postvars[$this->fieldName()]['select'];
+                    $filename = $postvars[$pvName]['select'];
                     $orgfilename = $filename;
                     $postdel = '';
                     if (isset($del) && $del == 'on') {
                         $filename = '';
                         $orgfilename = '';
-                        $postdel = $postvars[$this->fieldName()]['select'];
+                        $postdel = $postvars[$pvName]['select'];
                     }
                     $result = array(
                         'tmpfile' => '',
@@ -574,8 +583,8 @@ class FileAttribute extends Attribute
                         'postdel' => $postdel,
                     );
                 }  // maybe we atk restored data from session
-                elseif (isset($postvars[$this->fieldName()]['filename']) && $postvars[$this->fieldName()]['filename'] != '') {
-                    $result = $postvars[$this->fieldName()];
+                elseif (isset($postvars[$pvName]['filename']) && $postvars[$pvName]['filename'] != '') {
+                    $result = $postvars[$pvName];
                 } else {
                     $filename = (isset($postvars[$basename.'_orgfilename'])) ? $postvars[$basename.'_orgfilename'] : '';
 
@@ -679,21 +688,20 @@ class FileAttribute extends Attribute
         }
 
         $owner = $this->m_ownerInstance;
-        $db = $owner->getDb();
-        $tableSql = $db->escapeSQL($this->m_ownerInstance->getTable());
-        $fieldnameSql = $db->escapeSQL($this->fieldName());
-        $filenameSql = $db->escapeSQL($filename);
-        $nameSql = $db->escapeSQL($name);
-        $extSql = $db->escapeSQL($ext);
 
-        $sql = "SELECT `$fieldnameSql` AS filename FROM `$tableSql` WHERE `$fieldnameSql` = '$filenameSql' OR `$fieldnameSql` LIKE '$nameSql-%$extSql'";
+        $query = $owner->getDb()->createQuery($this->m_ownerInstance->getTable());
+        $query->addField($this->fieldName());
+        $fieldnameSql = Db::quoteIdentifier($this->fieldName());
+        $query->addCondition(
+            "{$fieldnameSql}= :filename OR {$fieldnameSql} LIKE :name",
+            [':filename' => $filename, ':name' => $name.'-%'.$ext]);
         if ($rec[$owner->primaryKeyField()] != '') {
-            $sql .= " AND NOT (".$owner->primaryKey($rec).")";
+            $query->addCondition($owner->primaryKey($rec, true));
         }
 
-        $records = $db->getRows($sql);
+        $records = $query->executeSelect();
 
-        if (Tools::count($records) > 0) {
+        if (!empty($records)) {
             // Check for the highest number
             $max_count = 0;
             foreach ($records as $record) {
@@ -805,16 +813,6 @@ class FileAttribute extends Attribute
         return $result;
     }
 
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string "string" which is the 'generic' type of the database field for this attribute.
-     */
-    public function dbFieldType()
-    {
-        return 'string';
-    }
-
     public function store($db, $record, $mode)
     {
         if ($mode == 'update' && !empty($record[$this->fieldName()]['postdel'])) {
@@ -837,7 +835,7 @@ class FileAttribute extends Attribute
                 if (@copy($record[$this->fieldName()]['tmpfile'], $this->m_dir.$filename)) {
                     $this->processFile($this->m_dir, $filename);
 
-                    return $this->escapeSQL($filename);
+                    return true;
                 } else {
                     Tools::atkerror("File could not be saved, unable to copy file '{$record[$this->fieldName()]['tmpfile']}' to destination '{$this->m_dir}{$filename}'");
 
@@ -891,19 +889,6 @@ class FileAttribute extends Attribute
     {
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
-    {
-        if ($mode == 'add' || $mode == 'update') {
-            if (empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {
-                $query->addField($this->fieldName(), 'NULL', '', '', false, true);
-            } else {
-                $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
-            }
-        } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
-        }
-    }
-
     /**
      * Check if the attribute is empty..
      *
@@ -928,13 +913,13 @@ class FileAttribute extends Attribute
         $del = isset($rec[$this->fieldName()]['postdel']) ? $rec[$this->fieldName()]['postdel'] : null;
 
         if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && ($del != null || $del != $rec[$this->fieldName()]['filename'])) {
-            return $this->escapeSQL($rec[$this->fieldName()]['filename']);
+            return $rec[$this->fieldName()]['filename'];
         }
 
         if ($del != null) {
             return '';
         }
 
-        return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
+        return $rec[$this->fieldName()]['orgfilename'];
     }
 }

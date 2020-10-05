@@ -259,7 +259,7 @@ class DataGridList extends DataGridComponent
 
             /* multi-record-priority-actions -> priority selection */
             if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-                $select = '<select name="'.$listName.'_atkselector[]" class="form-control select-standard">'.'<option value="'.htmlentities($list['rows'][$i]['selector']).'"></option>';
+                $select = '<select name="'.$listName.'_atkselector[]" class="form-control select-standard">'.'<option value="'.htmlspecialchars($list['rows'][$i]['selector']).'"></option>';
                 for ($j = $grid->getNode()->m_priority_min; $j <= $grid->getNode()->m_priority_max; ++$j) {
                     $select .= '<option value="'.$j.'">'.$j.'</option>';
                 }
@@ -270,14 +270,14 @@ class DataGridList extends DataGridComponent
                 if (Tools::count($list['rows'][$i]['mra']) > 0) {
                     switch ($grid->getMRASelectionMode()) {
                         case Node::MRA_SINGLE_SELECT:
-                            $inputHTML = '<input type="radio" name="'.$listName.'_atkselector[]" value="'.$list['rows'][$i]['selector'].'" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
+                            $inputHTML = '<input type="radio" name="'.$listName.'_atkselector[]" value="'.htmlspecialchars($list['rows'][$i]['selector']).'" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
                             break;
                         case Node::MRA_NO_SELECT:
-                            $inputHTML = '<input type="checkbox" disabled="disabled" checked="checked">'.'<input type="hidden" name="'.$listName.'_atkselector[]" value="'.$list['rows'][$i]['selector'].'">';
+                            $inputHTML = '<input type="checkbox" disabled="disabled" checked="checked">'.'<input type="hidden" name="'.$listName.'_atkselector[]" value="'.htmlspecialchars($list['rows'][$i]['selector']).'">';
                             break;
                         case Node::MRA_MULTI_SELECT:
                         default:
-                            $inputHTML = '<input type="checkbox" name="'.$listName.'_atkselector['.$i.']" value="'.$list['rows'][$i]['selector'].'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
+                            $inputHTML = '<input type="checkbox" name="'.$listName.'_atkselector['.$i.']" value="'.htmlspecialchars($list['rows'][$i]['selector']).'" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
                     }
 
                     $record['cols'][] = array(
@@ -292,7 +292,7 @@ class DataGridList extends DataGridComponent
                 }
             } elseif ($edit && $list['rows'][$i]['edit']) {
                 // editable row, add selector
-                $liststart .= '<input type="hidden" name="atkdatagriddata_AE_'.$i.'_AE_atkprimkey" value="'.htmlentities($list['rows'][$i]['selector']).'">';
+                $liststart .= '<input type="hidden" name="atkdatagriddata_AE_'.$i.'_AE_atkprimkey" value="'.htmlspecialchars($list['rows'][$i]['selector']).'">';
             }
 
             $str_actions = '<span class="actions">';
@@ -669,7 +669,7 @@ class DataGridList extends DataGridComponent
                 'record' => &$recordset[$i],
                 'data' => [],
             );
-            $result['rows'][$i]['selector'] = $grid->getNode()->primaryKey($recordset[$i]);
+            $result['rows'][$i]['selector'] = $grid->getNode()->primaryKeyString($recordset[$i]);
             $result['rows'][$i]['type'] = 'data';
             $row = &$result['rows'][$i];
 
@@ -720,9 +720,9 @@ class DataGridList extends DataGridComponent
 
         // override totals
         if (!Config::getGlobal('datagrid_total_paginate') && is_array($result['total']) && Tools::count($result['total']) > 0) {
-            $selector = $grid->getNode()->select()->ignoreDefaultFilters();
+            $selector = $grid->getNode()->select()->ignoreDefaultFilters()->mode($grid->getMode());
             foreach ($grid->getFilters() as $filter) {
-                $selector->where($filter['filter'], $filter['params']);
+                $selector->where($filter);
             }
             $result['totalraw'] = $selector->getTotals(array_keys($result['total']));
             foreach ($result['totalraw'] as $attrName => $value) {

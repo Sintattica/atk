@@ -203,10 +203,6 @@ class AddHandler extends ActionHandler
         $formstart .= '<input type="hidden" name="'.$this->getNode()->getEditFieldPrefix().'atkcsrftoken" value="'.$this->getCSRFToken().'" />';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
 
-        if (isset($node->m_postvars['atkfilter'])) {
-            $formstart .= '<input type="hidden" name="atkfilter" value="'.$node->m_postvars['atkfilter'].'">';
-        }
-
         return $formstart;
     }
 
@@ -225,37 +221,13 @@ class AddHandler extends ActionHandler
         /** @var EditHandler $edithandler */
         $edithandler = $node->getHandler('edit');
 
-        $forceList = $this->invoke('createForceList');
+        $forceList = [];
+        if (isset($node->m_postvars['atkforce'])) {
+            $forceList = json_decode($node->m_postvars['atkforce'], true);
+        }
         $form = $edithandler->editForm('add', $record, $forceList, '', $node->getEditFieldPrefix());
 
         return $node->tabulate('add', $form);
-    }
-
-    /**
-     * Based on information provided in the url (atkfilter), this function creates an array with
-     * field values that are used as the initial values of a record in an add page.
-     *
-     * @return array Values of the newly created record.
-     */
-    public function createForceList()
-    {
-        $node = $this->m_node;
-        $forceList = [];
-        $filterList = (isset($node->m_postvars['atkfilter'])) ? Tools::decodeKeyValueSet($node->m_postvars['atkfilter']) : [];
-        foreach ($filterList as $field => $value) {
-            list($table, $column) = explode('.', $field);
-            if ($column == null) {
-                $forceList[$table] = $value;
-            } else {
-                if ($table == $this->getNode()->getTable()) {
-                    $forceList[$column] = $value;
-                } else {
-                    $forceList[$table][$column] = $value;
-                }
-            }
-        }
-
-        return $forceList;
     }
 
     /**

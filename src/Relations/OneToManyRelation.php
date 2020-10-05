@@ -12,6 +12,7 @@ use Sintattica\Atk\Session\SessionStore;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Exception;
 
 /**
@@ -84,22 +85,6 @@ class OneToManyRelation extends Relation
      * @var array;
      */
     public $m_ownerFields = [];
-
-    /*
-     * Use destination filter for autolink add link?
-     *
-     * @access private
-     * @var boolean
-     */
-    public $m_useFilterForAddLink = true;
-
-    /*
-     * Use destination filter for edit link (edit button)?
-     *
-     * @access private
-     * @var boolean
-     */
-    public $m_useFilterForEditLink = true;
 
     /**
      * Use referential key for load filter?
@@ -201,26 +186,6 @@ class OneToManyRelation extends Relation
     }
 
     /**
-     * Use destination filter for auto add link?
-     *
-     * @param bool $useFilter use destination filter for add link?
-     */
-    public function setUseFilterForAddLink($useFilter)
-    {
-        $this->m_useFilterForAddLink = $useFilter;
-    }
-
-    /**
-     * Use destination filter for edit link (edit button)?
-     *
-     * @param bool $useFilter use destnation filter for edit link (edit button)?
-     */
-    public function setUseFilterForEditLink($useFilter)
-    {
-        $this->m_useFilterForEditLink = $useFilter;
-    }
-
-    /**
      * Use referential key for filtering the records. If you disable this only the
      * explicitly set destination filter will be used.
      *
@@ -249,7 +214,7 @@ class OneToManyRelation extends Relation
     {
         $this->createDestination();
 
-        $grid = DataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()).'_'.$this->fieldName().'_grid', null,
+        $grid = DataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()).'_'.$this->getHtmlName().'_grid', null,
             true, $useSession);
 
         $grid->setMode($mode);
@@ -267,8 +232,8 @@ class OneToManyRelation extends Relation
         $grid->setExcludes($this->getGridExcludes());
 
         $grid->addFilter($this->_getLoadWhereClause($record));
-        if ($this->m_destinationFilter != '') {
-            $grid->addFilter($this->parseFilter($this->m_destinationFilter, $record));
+        if (!empty($this->m_destinationFilters)) {
+            $grid->addFilter($this->parseFilter($record));
         }
 
         $this->modifyDataGrid($grid, DataGrid::CREATE);
@@ -351,7 +316,7 @@ class OneToManyRelation extends Relation
 
             $actions = [];
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
-                $actions['view'] = Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => '[pk]', 'atkfilter' => $this->m_destinationFilter));
+                $actions['view'] = Tools::dispatch_url($this->m_destination, 'view', ['atkselector' => '[pk]']);
             }
 
             $grid->setDefaultActions($actions);
@@ -396,10 +361,6 @@ class OneToManyRelation extends Relation
         $grid = $this->createGrid($record, 'admin', $mode);
 
         $params = [];
-        if ($this->m_useFilterForEditLink && $this->m_destinationFilter != '') {
-            $params['atkfilter'] = $this->m_destinationFilter;
-        }
-
         if ($mode === 'add') {
             //All actions in the grid should be done in session store mode
             $params['atkstore'] = 'session';
@@ -539,24 +500,6 @@ class OneToManyRelation extends Relation
     }
 
     /**
-     * Uses the given record to create an add filter string.
-     *
-     * @param array $record
-     *
-     * @return string filter string
-     */
-    public function getAddFilterString($record)
-    {
-        $filterelems = $this->_getFilterElements($record);
-        $strfilter = implode(' AND ', $filterelems);
-        if ($this->m_useFilterForAddLink && $this->m_destinationFilter != '') {
-            $strfilter .= ' AND '.$this->parseFilter($this->m_destinationFilter, $record);
-        }
-
-        return $strfilter;
-    }
-
-    /**
      * Internal function to get the add link for a atkOneToManyRelation.
      *
      * @param array $myrecords The load of all attributes (see comment in edit() code)
@@ -580,9 +523,9 @@ class OneToManyRelation extends Relation
             return $url;
         }
 
-        $filter = $this->getAddFilterString($record);
-        if (!empty($filter)) {
-            $params['atkfilter'] = $filter;
+        $forceValues = $this->_getForcedValueString($record);
+        if (!empty($forceValues)) {
+            $params['atkforce'] = $forceValues;
         }
 
         $onchange = '';
@@ -598,62 +541,23 @@ class OneToManyRelation extends Relation
     }
 
     /**
-     * Get filter elements.
+     * Get a string for destination node with primary key of $record
+     *
+     * With this string, destination node will set correct values when adding a record.
      *
      * @param array $record
      *
      * @return array Array with filter elements
      */
-    public function _getFilterElements($record)
+    private function _getForcedValueString($record) : string
     {
-        $filterelems = [];
+        $forcedValues = [];
 
         $ownerfields = $this->getOwnerFields();
-        if ($this->destinationHasRelation()) {
-            // we need to set the filter of the record we are going to add.
-            // The referential key must be set to the value of the current
-            // primary key.
-            $this->createDestination();
-            for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-                $value = $primkeyattr->value2db($record);
-                if (!strlen($value)) {
-                    continue;
-                }
-
-                $filterelems[] = $this->m_refKey[0].'.'.$ownerfields[$i]."='".$this->escapeSQL($value)."'";
-            }
-        } else {
-            for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                $value = $record[$ownerfields[$i]];
-                if (!strlen($value)) {
-                    continue;
-                }
-
-                $filterelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$this->escapeSQL($value)."'";
-            }
+        foreach ($ownerfields as $index => $keyName) {
+            $forcedValues[$this->m_refKey[$index]] = $record[$keyName];
         }
-
-        return $filterelems;
-    }
-
-    /**
-     * Prefix the passed column name with the table name if there is no prefix in the column name yet.
-     *
-     * @param string $columnName
-     * @param string $destAlias
-     *
-     * @return string
-     */
-    public function _addTablePrefix($columnName, $destAlias = '')
-    {
-        $prefix = '';
-        if (strpos($columnName, '.') === false) {
-            $prefix = $destAlias ? $destAlias : ($this->m_destInstance->getTable());
-            $prefix .= '.';
-        }
-
-        return $prefix.$columnName;
+        return json_encode($forcedValues);
     }
 
     protected function getAddURL($params = array())
@@ -717,7 +621,7 @@ class OneToManyRelation extends Relation
      *
      * @param array $record The master record
      *
-     * @return string SQL where clause
+     * @return QueryPart SQL where clause
      */
     public function _getLoadWhereClause($record)
     {
@@ -736,13 +640,13 @@ class OneToManyRelation extends Relation
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
-                $whereelems[] = $this->_addTablePrefix($this->m_refKey[$i])."='".$primkeyattr->value2db($record)."'";
+                $whereelems[] = Query::simpleValueCondition($this->m_destInstance->getTable(), $this->m_refKey[$i], $primkeyattr->value2db($record));;
             }
         }
 
-        $result = implode(' AND ', $whereelems);
+        $result = QueryPart::implode('AND', $whereelems, true);
 
-        return $result == '' ? '1=0' : $result;
+        return $result == null ? new QueryPart('1=0') : $result;
     }
 
     /**
@@ -983,34 +887,37 @@ class OneToManyRelation extends Relation
      */
     public function getSearchModes()
     {
-        return array('substring');
+        return array('substring', 'exact', 'wildcard', 'regexp');
     }
 
     /**
      * Returns the condition (SQL) that should be used when we want to join an owner
      * node with the destination node of the atkOneToManyRelation.
      *
-     * @param Query $query The query object.
      * @param string $ownerAlias The owner table alias.
      * @param string $destAlias The destination table alias.
      *
      * @return string SQL string for joining the owner with the destination.
      */
-    public function getJoinCondition($query, $ownerAlias = '', $destAlias = '')
+    public function getJoinCondition($ownerAlias = '', $destAlias = '')
     {
         if (!$this->createDestination()) {
             return false;
         }
 
         if ($ownerAlias == '') {
-            $ownerAlias = $this->m_ownerInstance->m_table;
+            $ownerAlias = $this->m_ownerInstance->getTable();
+        }
+        if ($destAlias == '') {
+            $destAlias = $this->m_destInstance->getTable();
         }
 
         $conditions = [];
         $ownerfields = $this->getOwnerFields();
 
         for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-            $conditions[] = $this->_addTablePrefix($this->m_refKey[$i], $destAlias).'='.$ownerAlias.'.'.$ownerfields[$i];
+            $conditions[] = Db::quoteIdentifier($destAlias, $this->m_refKey[$i]).'='.
+                Db::quoteIdentifier($ownerAlias, $ownerfields[$i]);
         }
 
         return implode(' AND ', $conditions);
@@ -1038,7 +945,7 @@ class OneToManyRelation extends Relation
 
             $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
 
-            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias), false);
+            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($ownerAlias, $destAlias), false);
 
             $attrName = array_shift($path);
             $attr = $this->m_destInstance->getAttribute($attrName);
@@ -1071,12 +978,6 @@ class OneToManyRelation extends Relation
             if (!empty($searchcondition)) {
                 $query->addSearchCondition($searchcondition);
                 $query->setDistinct(true);
-
-                // @todo: is this still needed?
-                if ($this->m_ownerInstance->m_postvars['atkselector']) {
-                    $query->addTable($this->m_destInstance->m_table);
-                    $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
-                }
             }
         }
     }
@@ -1089,72 +990,33 @@ class OneToManyRelation extends Relation
      * @param Query $query The query object where the search condition should be placed on
      * @param string $table The name of the table in which this attribute
      *                           is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param mixed $values The value the user has entered in the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                           of the supported modes, as returned by this
      *                           attribute's getSearchModes() method.
      * @param string $fieldname
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart The searchcondition to use.
      */
-    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $values, $searchmode, $fieldname = '')
     {
-        $usedfields = [];
-        $searchconditions = [];
-
-        if (!is_array($value)) {
-            foreach ($this->m_destInstance->descriptorFields() as $field) {
-                if (!in_array($field, $usedfields)) {
-                    $sc = $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $value, $searchmode, $field, $table);
-                    if (!empty($sc)) {
-                        $searchconditions[] = $sc;
-                    }
-                    $usedfields[] = $field;
-                }
-            }
-        } else {
-            foreach ($value as $key => $val) {
-                if ($val) {
-                    $sc = $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $val, $searchmode, $key, $table);
-                    if (!empty($sc)) {
-                        $searchconditions[] = $sc;
-                    }
-                }
-            }
+        if (!$this->createDestination() || empty($values)) {
+            return null;
+        }
+        $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+        $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition($table, $alias), false);
+        $searchConditions = [];
+        if(!is_array($values)) {
+            $values = [$values];
+        }
+        // Searching each value individually :
+        $descTemplate = $this->m_destInstance->getDescriptorTemplate();
+        foreach ($values as $value) {
+            $searchConditions[] =
+                $this->m_destInstance->getTemplateSearchCondition($query, $alias, $descTemplate, $value, $searchmode, $fieldname);
         }
 
-        if (Tools::count($searchconditions) > 0) {
-            return '('.implode(' OR ', $searchconditions).')';
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Calls searchCondition on an attribute in the destination
-     * To hook the destination attribute on the query.
-     *
-     * @param Query &$query The query object
-     * @param string $table The table to search on
-     * @param mixed $value The value to search
-     * @param mixed $searchmode The mode used when searching
-     * @param string $field The name of the attribute
-     * @param string $reftable
-     *
-     * @return string the search condition
-     */
-    public function _callSearchConditionOnDestField($query, $table, $value, $searchmode, $field, $reftable)
-    {
-        if ($this->createDestination()) {
-            $alias = $this->fieldName().'_AE_'.$this->m_destInstance->m_table;
-            $attr = $this->m_destInstance->getAttribute($field);
-
-            $query->addJoin($table, $alias, $this->getJoinCondition($query, $reftable, $alias), false);
-
-            return $attr->getSearchCondition($query, $alias, $value, $searchmode);
-        }
-
-        return '';
+        return QueryPart::implode('OR', $searchConditions, true);
     }
 
     /**
@@ -1189,80 +1051,16 @@ class OneToManyRelation extends Relation
     public function deleteAllowed()
     {
         if ($this->hasFlag(self::AF_RESTRICTED_DELETE)) {
-            // Get the destination node
-            $classname = $this->m_destination;
-            $cache_id = $this->m_owner.'.'.$this->m_name;
-            $atk = Atk::getInstance();
-            $rel = $atk->atkGetNode($classname, $cache_id);
-            // Get the current atkselector
-            $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
-            if ($where) {
-                $childrecords = $rel->select($where)->getAllRows();
-                if (!empty($childrecords)) {
+            $selector = $this->m_ownerInstance->primaryKeyFromString($this->m_ownerInstance->m_postvars['atkselector']);
+            $records = $this->m_ownerInstance->select($selector)->fetchAll();
+            foreach ($records as $record) {
+                if (!$this->isEmpty($record)) {
                     return Tools::atktext('restricted_delete_error');
                 }
-            } else {
-                return false;
             }
         }
 
         return true;
-    }
-
-    /**
-     * Here we check if the selector is on the owner or on the destination
-     * if it's on the destination, we leave it alone.
-     * Otherwise we translate it back to the destination.
-     *
-     * @todo when we translate the selector, we get the last used refKey
-     *       but how do we know what is the right one?
-     *
-     * @param string $selector the selector we have to translate
-     *
-     * @return string the new selector
-     */
-    public function translateSelector($selector)
-    {
-        // All standard SQL operators
-        $sqloperators = array(
-            '=',
-            '<>',
-            '>',
-            '<',
-            '>=',
-            '<=',
-            'BETWEEN',
-            'LIKE',
-            'IN',
-        );
-        $this->createDestination();
-
-        // Check the filter for every SQL operators
-        for ($counter = 0; $counter < Tools::count($sqloperators); ++$counter) {
-            if ($sqloperators[$counter]) {
-                list($key, $value) = explode($sqloperators[$counter], $selector);
-
-                // if the operator is in the filter
-                if ($value) {
-                    // check if it's on the destination
-                    $destinationkey = '';
-                    for ($refkeycount = 0; $refkeycount < Tools::count($this->m_refKey); ++$refkeycount) {
-                        $destinationkey = $this->m_destInstance->m_table.'.'.$this->m_refKey[$refkeycount];
-
-                        // if the selector is on the destination, we pass it back
-                        if ($key == $destinationkey || $key == $this->m_refKey[$refkeycount]) {
-                            return $selector;
-                        }
-                    }
-
-                    // otherwise we set it on the destination
-                    return $destinationkey.$sqloperators[$counter].$value;
-                }
-            }
-        }
-
-        // We never found a value, something is wrong with the filter
-        return '';
     }
 
     /**

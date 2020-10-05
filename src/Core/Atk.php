@@ -5,7 +5,6 @@ namespace Sintattica\Atk\Core;
 use Dotenv\Dotenv;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
-use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\IndexPage;
 
@@ -57,10 +56,6 @@ class Atk
             set_exception_handler('Sintattica\Atk\Core\Tools::atkExceptionHandler');
             register_shutdown_function('Sintattica\Atk\Core\Tools::atkFatalHandler');
         }
-
-        // Filter the atkselector REQUEST variable for blacklisted SQL (like UNIONs)
-        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkselector');
-        SqlWhereclauseBlacklistChecker::filter_request_where_clause('atkfilter');
 
         // set locale
         $locale = Tools::atktext('locale', 'atk', '', '', true);

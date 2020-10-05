@@ -50,7 +50,8 @@ class ViewHandler extends ViewEditBase
      */
     public function getRecordFromDb()
     {
-        return $this->m_node->select($this->m_postvars['atkselector'])->excludes($this->m_node->m_viewExcludes)->mode('view')->getFirstRow();
+        $selector = $this->m_node->primaryKeyFromString($this->m_postvars['atkselector'] ?? '');
+        return $this->m_node->select($selector)->excludes($this->m_node->m_viewExcludes)->mode('view')->getFirstRow();
     }
 
     /**
@@ -63,7 +64,7 @@ class ViewHandler extends ViewEditBase
         $sm = SessionManager::getInstance();
         $formstart = '<form id="entryform" name="entryform" action="'.Config::getGlobal('dispatcher').'" method="get" onsubmit="return ATK.globalSubmit(this,false)">';
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
-        $formstart .= '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKey($record).'">';
+        $formstart .= '<input type="hidden" name="atkselector" value="'.htmlspecialchars($this->getNode()->primaryKeyString($record)).'">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
 
         return $formstart;

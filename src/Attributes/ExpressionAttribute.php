@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * With the ExpressionAttribute class you can select arbitrary SQL expressions
@@ -15,6 +16,13 @@ class ExpressionAttribute extends Attribute
 {
     public $m_searchType = 'string';
     public $m_expression;
+
+    /**
+     * No storage and undefined Db type for expressions
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
     /**
      * Constructor.
@@ -44,7 +52,7 @@ class ExpressionAttribute extends Attribute
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-        $expression = str_replace('[table]', $tablename, $this->m_expression);
+        $expression = str_replace('[table]', Db::quoteIdentifier($tablename), $this->m_expression);
         $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);
     }
 
@@ -64,7 +72,7 @@ class ExpressionAttribute extends Attribute
             $table = $this->m_ownerInstance->m_table;
         }
 
-        $expression = str_replace('[table]', $table, $this->m_expression);
+        $expression = str_replace('[table]', Db::quoteIdentifier($table), $this->m_expression);
 
         $result = "($expression)";
 
@@ -98,27 +106,16 @@ class ExpressionAttribute extends Attribute
     }
 
     /**
-     * We don't know our field type plus we can't be stored anyways.
-     * So return an empty field type.
-     *
-     * @return string field type (empty string)
-     */
-    public function dbFieldType()
-    {
-        return '';
-    }
-
-    /**
      * Returns the search modes.
      *
      * @return array list of search modes
      */
     public function getSearchModes()
     {
-        if ($this->getSearchType() == 'number') {
+        if ($this->getSearchType() == Db::FT_NUMBER) {
             return NumberAttribute::getStaticSearchModes();
         } else {
-            if ($this->getSearchType() == 'date') {
+            if ($this->getSearchType() == Db::FT_DATE) {
                 return DateAttribute::getStaticSearchModes();
             } else {
                 return parent::getSearchModes();
@@ -127,21 +124,21 @@ class ExpressionAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        if ($this->getSearchType() == 'number') {
+        if ($this->getSearchType() == Db::FT_NUMBER) {
             $attr = new NumberAttribute($this->fieldName());
             $attr->m_searchsize = $this->m_searchsize;
 
-            return $attr->search($record, $extended, $fieldprefix);
+            return $attr->search($atksearch, $extended, $fieldprefix);
         } else {
-            if ($this->getSearchType() == 'date') {
+            if ($this->getSearchType() == Db::FT_DATE) {
                 $attr = new DateAttribute($this->fieldName());
                 $attr->m_searchsize = 10;
 
-                return $attr->search($record, $extended, $fieldprefix);
+                return $attr->search($atksearch, $extended, $fieldprefix);
             } else {
-                return parent::search($record, $extended, $fieldprefix);
+                return parent::search($atksearch, $extended, $fieldprefix);
             }
         }
     }
@@ -167,7 +164,7 @@ class ExpressionAttribute extends Attribute
             $searchmode = $this->m_searchmode;
         }
 
-        $expression = '('.str_replace('[table]', $table, $this->m_expression).')';
+        $expression = '('.str_replace('[table]', Db::quoteIdentifier($table), $this->m_expression).')';
 
         if ($this->getSearchType() == 'date') {
             $attr = new DateAttribute($this->fieldName());
@@ -189,16 +186,16 @@ class ExpressionAttribute extends Attribute
                 if (isset($value['to']) && $value['to'] != '') {
                     $value = $value['to'];
                 } else {
-                    return '';
+                    return null;
                 }
             }
         }
 
         $func = $searchmode.'Condition';
         if (method_exists($query, $func) && $value !== '' && $value !== null) {
-            return $query->$func($expression, $this->escapeSQL($value));
+            return $query->$func($expression, $value);
         }
 
-        return '';
+        return null;
     }
 }

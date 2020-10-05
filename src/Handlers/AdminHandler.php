@@ -208,7 +208,7 @@ class AdminHandler extends ActionHandler
             $grid->setPostvar('atksearch', array());
             $sm = SessionManager::getInstance();
 
-            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeUri(), $action, array('atkselector' => $node->primaryKey($records[0]))),
+            $url = $sm->sessionUrl(Tools::dispatch_url($node->atkNodeUri(), $action, array('atkselector' => $node->primaryKeyString($records[0]))),
                 SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
@@ -278,14 +278,9 @@ class AdminHandler extends ActionHandler
     {
         $link = '';
         if ($this->m_node->allowed('view') && $this->m_node->allowed('export') && $this->m_node->hasFlag(Node::NF_EXPORT)) {
-            $filter = '';
-            if (Tools::count($this->m_node->m_fuzzyFilters) > 0) {
-                $filter = implode(' AND ', str_replace('[table]', $this->m_node->getTable(), $this->m_node->m_fuzzyFilters));
-            }
-
             $cssClass = 'class="btn btn-default admin_link admin_link_export"';
 
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export', array('atkfilter' => $filter)),
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export'),
                 Tools::atktext('export', 'atk', $this->m_node->m_type), SessionManager::SESSION_NESTED, false, $cssClass);
         }
 

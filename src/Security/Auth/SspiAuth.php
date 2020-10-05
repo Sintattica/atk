@@ -46,7 +46,6 @@ class SspiAuth extends DbAuth
     }
 
     public function buildSelectUserQuery(
-        $sspiaccount,
         $usertable,
         $userfield,
         $sspiaccountfield,
@@ -58,7 +57,8 @@ class SspiAuth extends DbAuth
         if ($accountdisablefield) {
             $disableexpr = ", $accountdisablefield";
         }
-        $query = "SELECT $userfield $disableexpr FROM $usertable WHERE $sspiaccountfield ='".$sspiaccount."'";
+        $query = "SELECT ".Db::quoteIdentifier($userfield)." $disableexpr FROM ".
+            Db::quoteIdentifier($usertable)." WHERE ".Db::quoteIdentifier($sspiaccountfield).' =:sspiaccount';
         if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
         }
@@ -88,10 +88,10 @@ class SspiAuth extends DbAuth
         $_SERVER['PHP_AUTH_USER'] = '';
         $ATK_VARS['auth_user'] = '';
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $this->buildSelectUserQuery($user, Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
+        $query = $this->buildSelectUserQuery(Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_sspi_accountfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
 
-        $recs = $db->getRows($query);
+        $recs = $db->getRows($query, [':sspiaccount' => $user]);
         if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
@@ -129,30 +129,22 @@ class SspiAuth extends DbAuth
         $groupparentfield = Config::getGlobal('auth_groupparentfield');
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        if ($usertable == $leveltable || $leveltable == '') {
-            // Level and userid are stored in the same table.
-            // This means one user can only have one level.
-            $query = "SELECT * FROM $usertable WHERE $sspifield ='$user'";
-        } else {
+        $query = $db->createQuery($usertable);
+        $query->addAllFields($usertable)
+            ->addCondition(Db::quoteIdentifier($usertable, $sspifield).'=:user', [':user' => $user]);
+        if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one
             // level.
-            $qryobj = $db->createQuery();
-            $qryobj->addTable($usertable);
-            $qryobj->addField("$usertable.*");
-            $qryobj->addField('usergroup.*');
-            $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
-            $qryobj->addCondition("$usertable.$sspifield = '$user'");
+            $query->addJoin($leveltable, 'usergroup', [$userfk => [$usertable, $userpk]], true);
+            $query->addAllFields('usergroup');
 
             if (!empty($groupparentfield)) {
-                $qryobj->addField("grp.$groupparentfield");
-                $qryobj->addJoin($grouptable, 'grp', "usergroup.$levelfield = grp.$groupfield", true);
+                $query->addJoin($grouptable, 'grp', [$groupfield => ['usergroup', $levelfield]], true);
+                $query->addField($groupparentfield, '', 'grp');
             }
-            $query = $qryobj->buildSelect();
         }
-        $recs = $db->getRows($query);
-
-        return $recs;
+        return $query->executeSelect();
     }
 
     public function getUser(&$user)

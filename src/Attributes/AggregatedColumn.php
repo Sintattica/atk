@@ -4,7 +4,10 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
+use Sintattica\Atk\DataGrid\DataGrid as DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Core\Config;
@@ -20,26 +23,33 @@ use Sintattica\Atk\Core\Config;
  */
 class AggregatedColumn extends Attribute
 {
-    /*
+    /**
      * The display/sort template
      * @var String
      * @access private
      */
     public $m_template;
 
-    /*
+    /**
      * The array with searchs fileds
      * @var array
      * @access private
      */
     public $m_searchfields = [];
 
-    /*
+    /**
      * The array with displays fileds
      * @var array
      * @access private
      */
     public $m_displayfields = [];
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
     /**
      * Constructor.
@@ -92,41 +102,27 @@ class AggregatedColumn extends Attribute
     }
 
     /**
-     * Adds the attribute / field to the list header. This includes the column name and search field.
+     * Retrieves the ORDER BY statement for this attribute's node.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby Order by string
+     * We sort by each member field.
      *
-     * @see Node::listArray
+     * @param array $extra A list of attribute names to add to the order by
+     *                          statement
+     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param string $direction Sorting direction (ASC or DESC)
+     *
+     * @return string The ORDER BY statement for this attribute
      */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
     {
-        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
-            $arr['heading'][$fieldprefix.$this->fieldName()]['title'] = $this->label();
-
-            if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
-                $rec = [];
-                foreach ($this->m_displayfields as $field) {
-                    $rec[] = $this->m_ownerInstance->m_table.'.'.$field;
-                }
-                $order = implode(', ', $rec);
-                if ($atkorderby == $order) {
-                    $order = implode(' DESC,', $rec);
-                    $order .= ' DESC';
-                }
-                $sm = SessionManager::getInstance();
-                $arr['heading'][$fieldprefix.$this->fieldName()]['url'] = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_ownerInstance->atkNodeUri().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
-            }
-
-            if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
-                $arr['search'][$fieldprefix.$this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr['search'][$fieldprefix.$this->fieldName()] .= '<input type="hidden" name="atksearchmode['.$this->fieldName().']" value="'.$this->getSearchMode().'">';
-            }
+        if (empty($table)) {
+            $table = $this->m_ownerInstance->m_table;
         }
+        $fields = [];
+        foreach ($this->m_displayfields as $field) {
+            $fields[] = Db::quoteIdentifier($table, $field);
+        }
+        return implode(" {$direction},", $fields)." {$direction}";
     }
 
     /**
@@ -152,98 +148,32 @@ class AggregatedColumn extends Attribute
         }
     }
 
-    /**
-     * Creates a search condition for a given search value, and adds it to the
-     * query that will be used for performing the actual search.
-     *
-     * @param Query $query The query to which the condition will be added.
-     * @param string $table The name of the table in which this attribute
-     *                                 is stored
-     * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                                 of the supported modes, as returned by this
-     *                                 attribute's getSearchModes() method.
-     * @param string $fieldaliasprefix optional prefix for the fiedalias in the table
-     */
-    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
-    {
-        $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
-        if (!empty($searchcondition)) {
-            $query->addSearchCondition($searchcondition);
-        }
-    }
-
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $searchconditions = [];
+        $searchConditions = [];
         // Get search condition for all searchFields
         foreach ($this->m_searchfields as $field) {
             $p_attrib = $this->m_ownerInstance->getAttribute($field);
 
             if (is_object($p_attrib)) {
                 $condition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode);
-                if (!empty($condition)) {
-                    $searchconditions[] = $condition;
+                if (!is_null($condition)) {
+                    $searchConditions[] = $condition;
                 }
             }
         }
 
-        // When searchmode is substring also search the value in a concat of all searchfields
-        if ($searchmode == 'substring') {
-            $value = $this->escapeSQL(trim($value));
+        // we also search the value in a concat of all searchfields
+        $value = trim($value);
+        $searchConditions[] = $this->m_ownerInstance->getTemplateSearchCondition(
+            $query,
+            $tablename,
+            $this->m_template,
+            $value,
+            $searchmode,
+            $fieldname
+        );
 
-            $data = [];
-            foreach ($this->m_searchfields as $field) {
-                if (strpos($field, '.') == false) {
-                    $data[$field] = $table.'.'.$field;
-                } else {
-                    $data[$field] = $field;
-                }
-            }
-
-            $parser = new StringParser($this->m_template);
-            $concatFields = $parser->getAllParsedFieldsAsArray($data, true);
-            $concatTags = $concatFields['tags'];
-            $concatSeparators = $concatFields['separators'];
-
-            // to search independent of characters between tags, like spaces and comma's,
-            // we remove all these separators (defined in the node with new atkAggregatedColumn)
-            // so we can search for just the concatenated tags in concat_ws [Jeroen]
-            foreach ($concatSeparators as $separator) {
-                $value = str_replace($separator, '', $value);
-            }
-
-            $db = $this->getDb();
-            $condition = 'UPPER('.$db->func_concat_ws($concatTags, '', true).") LIKE UPPER('%".$value."%')";
-
-            $searchconditions[] = $condition;
-        }
-
-        if (Tools::count($searchconditions)) {
-            return '('.implode(' OR ', $searchconditions).')';
-        }
-
-        return '';
-    }
-
-    /**
-     * Retrieve the list of searchmodes supported by the attribute.
-     *
-     * @return array List of supported searchmodes
-     */
-    public function getSearchModes()
-    {
-        return array('exact', 'substring', 'wildcard', 'regexp');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return '';
+        return QueryPart::implode('OR', $searchConditions, true);
     }
 }

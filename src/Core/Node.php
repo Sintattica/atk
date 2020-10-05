@@ -6,6 +6,7 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\FieldSet;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\Relation;
@@ -403,18 +404,11 @@ class Node
     public $m_default_expanded_sections = [];
 
     /*
-     * Record filters, in attributename/required value pairs.
+     * Record filters, as QueryParts conditions
      * @access private
-     * @var array
+     * @var array of QueryParts
      */
     public $m_filters = [];
-
-    /*
-     * Record filters, as a list of sql statements.
-     * @access private
-     * @var array
-     */
-    public $m_fuzzyFilters = [];
 
     /*
      * For speed, we keep track of a list of attributes that we don't have to
@@ -1243,25 +1237,122 @@ class Node
     }
 
     /**
-     * Returns the primary key sql expression of a record.
+     * Returns the serialization of an encoded array concatenating all primary
+     * key values
+     *
+     * This is the value stored in $record['atkprimkey'] and may appear in HTML
+     * pages displayed to clients.
      *
      * @param array $rec The record for which the primary key is calculated.
      *
-     * @return string the primary key of the record.
+     * @return string The serialized value
      */
-    public function primaryKey($rec)
+    public function primaryKeyString(array $rec) : string
     {
-        $primKey = '';
-        $nrOfElements = Tools::count($this->m_primaryKey);
-        for ($i = 0; $i < $nrOfElements; ++$i) {
-            $p_attrib = $this->m_attribList[$this->m_primaryKey[$i]];
-            $primKey .= $this->m_table.'.'.$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
-            if ($i < ($nrOfElements - 1)) {
-                $primKey .= ' AND ';
+        $res = [];
+        // Case we have only one value : encode it directly.
+        if (count($this->m_primaryKey) == 1) {
+            if (is_numeric($rec[$this->m_primaryKey[0]])) {
+                // casting strings to numeric values when they are numeric :
+                return json_encode($rec[$this->m_primaryKey[0]] + 0);
+            }
+            return json_encode($rec[$this->m_primaryKey[0]]);
+        }
+        foreach ($this->m_primaryKey as $key) {
+            $keyAttr = $this->getAttribute($key);
+            if ($keyAttr instanceof Relation) {
+                $res[] = $keyAttr->value2db($rec);
+            } else {
+                $res[] = $rec[$key];
             }
         }
+        return json_encode($res);
+    }
 
-        return $primKey;
+    /**
+     * Compare two primaryKeyStrings and tell if they are equal
+     *
+     * Strings can't be compared directly because, for example :
+     * '{"k1":25,"k2":6}' != '{"k2":6,"k1":25}' but :
+     * ["k1" => 25, "k2" => 6] == ["k2" => 6, "k1" => 25]
+     *
+     * @param string $enc1 first value
+     * @param string $enc2 second value
+     *
+     * @return boolean true if equals, false if not
+     */
+    public static function primaryKeyStringEqual(string $enc1, string $enc2)
+    {
+        return json_decode($enc1, true) == json_decode($enc2, true);
+    }
+
+    /**
+     * Returns Primary Key SQL condition from values encoded with primaryKeyString
+     *
+     * If several strings are passed as an array, they are joined with OR
+     * condition.
+     * It is NOT the reverse of primaryKeyString.
+     *
+     * Examples :
+     * '45' or '[45]' => QueryPart('"table"."id"=:id', [':id' => 45])
+     * '[2,"txtval"]' => QueryPart('"table"."k1" = :k1 AND "table"."k2" = :k2', [':k1' => 2, ':k2' => "txtval"])
+     * ['2', '45'] or ['[2]','[45]'] => QueryPart('"table"."id" = :id1 OR "table"."id" = :id2', [':id1' => 2, ':id2' => 45])
+     *
+     * @param string|array $selectors The encoded values.
+     *
+     * @return QueryPart SQL condition
+     *                '0=1' (false) if the parameter can't be decoded
+     */
+    public function primaryKeyFromString($selectors) : QueryPart
+    {
+        if (is_string($selectors)) {
+            $selectors = [$selectors];
+        }
+        if (!is_array($selectors)) {
+            return new QueryPart('0=1');
+        }
+        $conditions = [];
+        foreach ($selectors as $selector) {
+            // building the ['k1' => value, 'k2' => value] array for the record :
+            $record = json_decode($selector, true);
+            if (!is_array($record)) {
+                $record = [$record];
+            }
+            if (count($record) != count($this->m_primaryKey)) {
+                continue;
+            }
+            $record = array_combine($this->m_primaryKey, $record);
+            // Computing the primary key SQL condition :
+            $conditions[] = $this->primaryKey($record);
+        }
+        if (empty($conditions)) {
+            return new QueryPart('0=1');
+        }
+        return QueryPart::implode('OR', $conditions, true);
+    }
+
+    /**
+     * Returns the primary key sql condition for ONE record.
+     *
+     * @param array $rec The record for which the primary key condition is computed
+     * @param boolean $negate return NOT (condition) rather than condition.
+     *
+     * @return QueryPart the primary key SQL condition
+     */
+    public function primaryKey($rec, $negate = false)
+    {
+        $conditions = [];
+        foreach ($this->m_primaryKey as $field) {
+            $conditions[] = Query::simpleValueCondition($this->m_table, $field, $this->m_attribList[$field]->value2db($rec));
+        }
+
+        if (!$negate) {
+            return QueryPart::implode('AND', $conditions, true);
+        }
+        // $negate :
+        $condition = new QueryPart('NOT ');
+        $condition->append(QueryPart::implode('AND', $conditions, true));
+        return $condition;
     }
 
     /**
@@ -1326,7 +1417,7 @@ class Node
      */
     public function getOrder()
     {
-        return str_replace('[table]', $this->getTable(), $this->m_default_order);
+        return str_replace('[table]', Db::quoteIdentifier($this->getTable()), $this->m_default_order);
     }
 
     /**
@@ -1680,51 +1771,42 @@ class Node
     /**
      * Add a recordset filter.
      *
-     * @param string $filter The fieldname you want to filter OR a SQL where
-     *                       clause expression.
-     * @param string $value Required value. (Ommit this parameter if you pass
-     *                       an SQL expression for $filter.)
+     * You can add 3 kinds of filters :
+     * - field, value filter : will filter on table.field = value
+     * - a SQL expression that may contain '[table]' : will filter on this
+     *      expression, replacing [table] with table name.
+     * - a QueryPart condition (with parameters), that may contain '[table]'.
+     *
+     * @param string $filter a QueryPart expression or the fieldname you want
+     *                       to filter OR a SQL where clause expression.
+     * @param mixed $value Required value. (Ommit this parameter if you pass
+     *                       au QueryPart or an SQL expression for $filter.)
      */
     public function addFilter($filter, $value = '')
     {
-        if ($value == '') {
-            // $key is a where clause kind of thing
-            $this->m_fuzzyFilters[] = $filter;
+        if ($filter instanceof QueryPart) {
+            // QueryPart case :
+            $filter->parse(['table' => Db::quoteIdentifier($this->m_table)], false);
+            $this->m_filters[] = $filter;
+        } elseif ($value == '') {
+            // $filter is a where clause kind of thing
+            $this->m_filters[] = new QueryPart(str_replace('[table]', Db::quoteIdentifier($this->m_table), $filter), []);
         } else {
-            // $key is a $key, $value is a value
-            $this->m_filters[$filter] = $value;
+            // $field, $value case :
+            $this->m_filters[] = Query::simpleValueCondition($this->m_table, $filter, $value);
         }
     }
 
     /**
      * Search and remove a recordset filter.
      *
-     * @param string $filter The filter to search for
-     * @param string $value The value to search for in case it is not a fuzzy filter
+     *  DEPRECATED.
      *
-     * @return true if the given filter was found and removed, FALSE otherwise.
+     * @return false
      */
     public function removeFilter($filter, $value = '')
     {
-        if ($value == '') {
-            // fuzzy
-            $key = array_search($filter, $this->m_fuzzyFilters);
-            if (is_numeric($key)) {
-                unset($this->m_fuzzyFilters[$key]);
-                $this->m_fuzzyFilters = array_values($this->m_fuzzyFilters);
-
-                return true;
-            }
-        } else {
-            // not fuzzy
-            foreach (array_keys($this->m_filters) as $key) {
-                if ($filter == $key && $value == $this->m_filters[$key]) {
-                    unset($this->m_filters[$key]);
-
-                    return true;
-                }
-            }
-        }
+        Tools::atkwarning('Function removeFilter is deprecated and no longer works.');
 
         return false;
     }
@@ -2185,7 +2267,7 @@ class Node
         // extra submission data
         $result['hide'][] = '<input type="hidden" name="atkfieldprefix" value="'.$this->getEditFieldPrefix(false).'">';
         $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atknodeuri" value="'.$this->atkNodeUri().'">';
-        $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.Tools::atkArrayNvl($record, 'atkprimkey', '').'">';
+        $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.htmlspecialchars(Tools::atkArrayNvl($record, 'atkprimkey', '')).'">';
 
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]['name'];
@@ -2197,8 +2279,8 @@ class Node
                 }
 
                 /* fields that have not yet been initialised may be overriden in the url */
-                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars)) {
-                    $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
+                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->getHtmlName(), $this->m_postvars)) {
+                    $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->getHtmlName()];
                 }
 
                 if (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList)) {
@@ -2371,14 +2453,8 @@ class Node
     {
         $record = [];
 
-        foreach (array_keys($this->m_attribList) as $attrName) {
-            $attr = $this->getAttribute($attrName);
-
-            if (is_array($this->m_postvars) && isset($this->m_postvars[$attrName])) {
-                $value = $attr->fetchValue($this->m_postvars);
-            } else {
-                $value = $attr->initialValue();
-            }
+        foreach ($this->m_attribList as $attr) {
+            $value = $attr->fetchValue($this->m_postvars) ?? $attr->initialValue();
 
             if ($value !== null) {
                 $record[$attr->fieldName()] = $value;
@@ -2546,9 +2622,7 @@ class Node
      *                       might want to override this behaviour in derived
      *                       classes.
      * @param array $params An array of extra parameters to add to all the
-     *                       action urls. You can use this to pass things like
-     *                       an atkfilter for example. The array should be
-     *                       key/value based.
+     *                       action urls. The array should be key/value based.
      *
      * @return array List of actions in the form array($action=>$actionurl)
      */
@@ -2657,7 +2731,6 @@ class Node
      *                               "confirm".$action."()" (e.g.
      *                               confirmDelete() and call that method
      *                               instead.
-     * @param bool $mergeSelectors Merge all selectors to one selector string (if more then one)?
      * @param string $csrfToken
      *
      * @return string Complete html fragment containing a box with the
@@ -2668,7 +2741,6 @@ class Node
         $atkselector,
         $action,
         $checkoverride = true,
-        $mergeSelectors = true,
         $csrfToken = null
     ) {
         $method = 'confirm'.$action;
@@ -2677,12 +2749,6 @@ class Node
         }
 
         $ui = $this->getUi();
-
-        if (is_array($atkselector)) {
-            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
-        } else {
-            $atkselector_str = $atkselector;
-        }
 
         $sm = SessionManager::getInstance();
 
@@ -2696,16 +2762,11 @@ class Node
             $formstart .= '<input type="hidden" name="atkcsrftoken" value="'.$csrfToken.'">';
         }
 
-        if ($mergeSelectors) {
-            $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';
-        } else {
-            if (!is_array($atkselector)) {
-                $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector.'">';
-            } else {
-                foreach ($atkselector as $selector) {
-                    $formstart .= '<input type="hidden" name="atkselector[]" value="'.$selector.'">';
-                }
-            }
+        if (!is_array($atkselector)) {
+            $atkselector = [$atkselector];
+        }
+        foreach ($atkselector as $selector) {
+            $formstart .= '<input type="hidden" name="atkselector[]" value="'.htmlspecialchars($selector).'">';
         }
 
         $buttons = $this->getFormButtons($action, array());
@@ -2716,7 +2777,7 @@ class Node
 
         $content = '';
         $record = null;
-        $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
+        $recs = $this->select($this->primaryKeyFromString($atkselector))->includes($this->descriptorFields())->fetchAll();
         if (Tools::count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
@@ -2766,7 +2827,7 @@ class Node
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector);
         } else {
-            return $this->text("confirm_$action".(is_array($atkselector) && Tools::count($atkselector) > 1 ? '_multi' : ''));
+            return $this->text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''));
         }
     }
 
@@ -3007,7 +3068,7 @@ class Node
 
         if (Tools::count($record)) {
             if (isset($this->m_postvars['atkpkret'])) {
-                $location .= '&'.$this->m_postvars['atkpkret'].'='.rawurlencode($this->primaryKey($record));
+                $location .= '&'.$this->m_postvars['atkpkret'].'='.rawurlencode($this->primaryKeyString($record));
             }
         }
 
@@ -3094,11 +3155,27 @@ class Node
     /**
      * Returns the descriptor template for this node.
      *
+     * It will return (by priority order) :
+     * $this->m_descTemplate;
+     * $this->descriptor_def();
+     * '['.name of the first attribute.']'
+     * ''
+     *
      * @return string The descriptor Template
      */
     public function getDescriptorTemplate()
     {
-        return $this->m_descTemplate;
+        if ($this->m_descTemplate != null) {
+            return $this->m_descTemplate;
+        }
+        if (method_exists($this, 'descriptor_def')) {
+            return $this->descriptor_def();
+        }
+        if (!empty($this->m_attribList)) {
+            // default descriptor : first attribute of a node
+            return '['.array_keys($this->m_attribList)[0].']';
+        }
+        return '';
     }
 
     /**
@@ -3121,33 +3198,19 @@ class Node
     {
         $fields = [];
 
-        // See if node has a custom descriptor definition.
-        if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
-            if ($this->m_descTemplate != null) {
-                $descriptordef = $this->m_descTemplate;
-            } else {
-                $descriptordef = $this->descriptor_def();
-            }
+        $parser = new StringParser($this->getDescriptorTemplate());
+        $fields = $parser->getFields();
 
-            // parse fields from descriptordef
-            $parser = new StringParser($descriptordef);
-            $fields = $parser->getFields();
-
-            // There might be fields that have a '.' in them. These fields are
-            // a concatenation of an attributename (probably a relation), and a subfield
-            // (a field of the destination node).
-            // The actual field is the one in front of the '.'.
-            for ($i = 0, $_i = Tools::count($fields); $i < $_i; ++$i) {
-                $elems = explode('.', $fields[$i]);
-                if (Tools::count($elems) > 1) {
-                    // dot found. attribute is the first item.
-                    $fields[$i] = $elems[0];
-                }
+        // There might be fields that have a '.' in them. These fields are
+        // a concatenation of an attributename (probably a relation), and a subfield
+        // (a field of the destination node).
+        // The actual field is the one in front of the '.'.
+        for ($i = 0, $_i = Tools::count($fields); $i < $_i; ++$i) {
+            $elems = explode('.', $fields[$i]);
+            if (Tools::count($elems) > 1) {
+                // dot found. attribute is the first item.
+                $fields[$i] = $elems[0];
             }
-        } else {
-            // default descriptor.. (default is first attribute of a node)
-            $keys = array_keys($this->m_attribList);
-            $fields[0] = $keys[0];
         }
 
         return $fields;
@@ -3183,28 +3246,8 @@ class Node
             return $this->m_descHandler->descriptor($record, $this);
         }
 
-        // Descriptor template is set?
-        if ($this->m_descTemplate != null) {
-            $parser = new StringParser($this->m_descTemplate);
-
-            return $parser->parse($record);
-        } // See if node has a custom descriptor definition.
-        else {
-            if (method_exists($this, 'descriptor_def')) {
-                $parser = new StringParser($this->descriptor_def());
-
-                return $parser->parse($record);
-            } else {
-                // default descriptor.. (default is first attribute of a node)
-                $keys = array_keys($this->m_attribList);
-                $ret = $record[$keys[0]];
-                if(is_array($ret)){
-                    return '';
-                }
-
-                return $ret;
-            }
-        }
+        $parser = new StringParser($this->getDescriptorTemplate());
+        return $parser->parse($record);
     }
 
     /**
@@ -3271,7 +3314,7 @@ class Node
 
         $this->addFlag(self::NF_NO_FILTER);
 
-        $record['atkorgrec'] = $this->select()->where($record['atkprimkey'])->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
+        $record['atkorgrec'] = $this->select()->where($this->primaryKeyFromString($record['atkprimkey']))->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
 
         // Need to restore the NO_FILTER bit back to its original value.
         $this->m_flags = $flags;
@@ -3296,9 +3339,7 @@ class Node
     public function updateDb(&$record, $exectrigger = true, $excludes = '', $includes = '')
     {
         $db = $this->getDb();
-        $query = $db->createQuery();
-
-        $query->addTable($this->m_table);
+        $query = $db->createQuery($this->m_table);
 
         // The record that must be updated is indicated by 'atkprimkey'
         // (not by atkselector, since the primary key might have
@@ -3314,8 +3355,7 @@ class Node
                 }
             }
 
-            $pk = $record['atkprimkey'];
-            $query->addCondition($pk);
+            $query->addCondition($this->primaryKeyFromString($record['atkprimkey']));
 
             $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
@@ -3346,7 +3386,7 @@ class Node
                 $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'update'); // start at level 1
             }
 
-            if (Tools::count($query->m_fields) && !$query->executeUpdate()) {
+            if (!$query->executeUpdate()) {
                 return false;
             }
 
@@ -3453,35 +3493,25 @@ class Node
     }
 
     /**
-     * Set some default for the selector.
+     * Retrieve records from the database using a handy helper class.
      *
-     * @param Selector $selector selector
-     * @param string $condition condition
-     * @param array $params condition bind parameters
+     * @param QueryPart|string $condition SQL condition
+     *
+     * @return Selector
      */
-    protected function _initSelector(Selector $selector, $condition = null, $params = array())
+    public function select($condition = null)
     {
+        $selector = new Selector($this);
+
         $selector->orderBy($this->getOrder());
         $selector->ignoreDefaultFilters($this->hasFlag(self::NF_NO_FILTER));
         $selector->ignorePostvars($this->atkReadOptimizer());
 
-        if ($condition != null) {
-            $selector->where($condition, $params);
+        if (is_string($condition) && !empty($condition)) {
+            $selector->where(new QueryPart($condition));
+        } elseif (!is_null($condition)) {
+            $selector->where($condition);
         }
-    }
-
-    /**
-     * Retrieve records from the database using a handy helper class.
-     *
-     * @param string $condition condition
-     * @param array $params condition bind parameters
-     *
-     * @return Selector
-     */
-    public function select($condition = null, array $params = array())
-    {
-        $selector = new Selector($this);
-        $this->_initSelector($selector, $condition, $params);
 
         return $selector;
     }
@@ -3496,7 +3526,7 @@ class Node
      */
     public function fetchByPk($pk)
     {
-        return $this->select($this->getTable().'.'.$this->primaryKeyField().'= ?', array($pk))->getFirstRow();
+        return $this->select($this->primaryKeyFromString($pk))->getFirstRow();
     }
 
     /**
@@ -3570,71 +3600,94 @@ class Node
     }
 
     /**
-     * Get search condition for this node.
+     * Get a search condition from a template string
+     *
+     * Used for searching by descriptor or by aggregated columns.
+     * For an expression like '[name] ([email])', it will perform the search
+     * on "table"."name", on "table"."email" and on the expression :
+     * CONCAT_WS('', "table".name", ' (', "table"."email", ')')
+     * (the use of CONCAT_WS permit that null fields are coalesced to '').
+     *
+     * For the last part (the expression), only 'exact', 'substring', 'wildcard'
+     * and 'regexp' modes' are allowed, and it will work with simple types, not
+     * with complex types (such as : relations, flags, list attributes, ...)
+     *
+     * TODO : handle relations (at least).
      *
      * @param Query $query
-     * @param string $table
-     * @param string $alias
-     * @param string $value
+     * @param string $table or alias used to identifiy this node's table
+     * @param string $expr to use for searching values
+     * @param string $value to search for
      * @param string $searchmode
-     *
-     * @return string The search condition
+     * @param string $fieldaliasprefix to prepend to joins if needed.
      */
-    public function getSearchCondition($query, $table, $alias, $value, $searchmode)
+    public function getTemplateSearchCondition($query, $table, $expr, $value, $searchmode, $fieldaliasprefix)
     {
-        $usefieldalias = false;
-
-        if ($alias == '') {
-            $alias = $this->m_table;
-        } else {
-            $usefieldalias = true;
+        if(empty($table)) {
+            $table = $this->m_table;
         }
-
         $searchConditions = [];
 
-        $attribs = $this->descriptorFields();
-        array_unique($attribs);
-
-        foreach ($attribs as $field) {
+        $parser = new StringParser($expr);
+        // Searching by individual fields :
+        foreach ($parser->getFields() as $field) {
             $p_attrib = $this->getAttribute($field);
             if (!is_object($p_attrib)) {
                 continue;
-            }
-            $fieldaliasprefix = '';
-
-            if ($usefieldalias) {
-                $fieldaliasprefix = $alias.'_AE_';
             }
 
             // check if the node has a searchcondition method defined for this attr
             $methodName = $field.'_searchcondition';
             if (method_exists($this, $methodName)) {
-                $searchCondition = $this->$methodName($query, $table, $value, $searchmode);
-                if ($searchCondition != '') {
-                    $searchConditions[] = $searchCondition;
+                $sc = $this->$methodName($query, $table, $value, $searchmode);
+                if (!is_null($sc)) {
+                    $searchConditions[] = $sc;
                 }
             } else {
-                // checking for the getSearchCondition for backwards compatibility
-                if (method_exists($p_attrib, 'getSearchCondition')) {
-
-                    Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
-                    $searchCondition = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
-                    if ($searchCondition != '') {
-                        $searchConditions[] = $searchCondition;
-                    }
-                } else {
-                    // if the attrib can't return it's searchcondition, we'll just add it to the query
-                    // and hope for the best
-                    $p_attrib->searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+                Tools::atkdebug("getSearchCondition: $table - $fieldaliasprefix");
+                $sc = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+                if (!is_null($sc)) {
+                    $searchConditions[] = $sc;
                 }
             }
         }
 
-        if (Tools::count($searchConditions)) {
-            return '('.implode(' OR ', $searchConditions).')';
-        } else {
-            return '';
+        if (!in_array($searchmode, ['exact', 'substring', 'wildcard', 'regexp'])) {
+            return QueryPart::implode('OR', $searchConditions, true);
         }
+
+        // Searching by the expression concatenating all fields :
+        $parts = [];
+        $db = $this->getDb();
+        foreach($parser->getAllFieldsAsArray() as $field) {
+            if($field[0] != '[' || $field[strlen($field)-1] != ']') {
+                // If it's a string part, just quote it and append it :
+                $parts[] = $db->quote($field);
+            } else {
+                // If it's an attribute, then add its name to query, after removing the []
+                $field = substr($field, 1, strlen($field) - 2);
+                if (strpos($field, '.') === false) {
+                    // Simple case : attribute from this node.
+                    $parts[] = Db::quoteIdentifier($table, $field);
+                } else {
+                    // Complex case : attribute from a relation :
+                    list($relationName, $attributeName) = explode('.', $field);
+                    $relation = $this->getAttribute($relationName);
+                    if ($relation instanceof Relation) {
+                        $alias = $table.'_AE_'.$relationName;
+                        $query->addJoin($relation->getDestination()->getTable(), $alias, $relation->getJoinCondition($table, $alias));
+                        $parts[] = Db::quoteIdentifier($alias, $attributeName);
+                    }
+                }
+            }
+        }
+        $expression = $db->func_concat_coalesce($parts);
+        $func = $searchmode.'Condition';
+        $sc = $query->$func($expression, $value);
+        if (!is_null($sc)) {
+            $searchConditions[] = $sc;
+        }
+        return QueryPart::implode('OR', $searchConditions, true);
     }
 
     /**
@@ -3665,11 +3718,9 @@ class Node
         }
 
         $db = $this->getDb();
-        $query = $db->createQuery();
+        $query = $db->createQuery($this->m_table);
 
         $storelist = array('pre' => [], 'post' => [], 'query' => array());
-
-        $query->addTable($this->m_table);
 
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
@@ -3703,7 +3754,7 @@ class Node
         }
 
         // new primary key
-        $record['atkprimkey'] = $this->primaryKey($record);
+        $record['atkprimkey'] = $this->primaryKeyString($record);
 
         if (!$this->_storeAttributes($storelist['post'], $record, $mode)) {
             Tools::atkdebug('_storeAttributes failed..');
@@ -3795,11 +3846,11 @@ class Node
      */
     public function deleteDb($selector, $exectrigger = true, $failwhenempty = false)
     {
-        $recordset = $this->select($selector)->mode('delete')->getAllRows();
+        $recordset = $this->select($selector)->mode('delete')->fetchAll();
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
         if (Tools::count($recordset) == 0) {
-            Tools::atkwarning($this->atkNodeUri()."->deleteDb($selector): 0 records found, not deleting anything.");
+            Tools::atkwarning($this->atkNodeUri()."->deleteDb({$selector->sql}): 0 records found, not deleting anything.");
 
             return !$failwhenempty;
         }
@@ -3828,8 +3879,7 @@ class Node
             }
         }
 
-        $query = $this->getDb()->createQuery();
-        $query->addTable($this->m_table);
+        $query = $this->getDb()->createQuery($this->m_table);
         $query->addCondition($selector);
         if ($query->executeDelete()) {
 
@@ -4423,15 +4473,14 @@ class Node
         foreach (array_keys($this->m_attribList) as $attribname) {
             $p_attrib = $this->m_attribList[$attribname];
             // Only search in fields that aren't explicitly hidden from search
-            if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && (in_array($p_attrib->dbFieldType(),
-                        array('string', 'text')) || $p_attrib->hasFlag(Attribute::AF_SEARCHABLE))
+            if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && ($p_attrib->dbFieldType() == Db::FT_STRING || $p_attrib->hasFlag(Attribute::AF_SEARCHABLE))
             ) {
                 $this->m_postvars['atksearch'][$attribname] = $expression;
             }
         }
 
         // We load records in admin mode, se we are certain that all fields are added.
-        $recs = $this->select()->excludes($this->m_listExcludes)->mode('admin')->getAllRows();
+        $recs = $this->select()->excludes($this->m_listExcludes)->mode('admin')->fetchAll();
 
         // Restore original atksearch
         $this->m_postvars['atksearch'] = $orgsearch;
@@ -4567,10 +4616,10 @@ class Node
     {
         $listener->setNode($this);
 
-        if (is_a($listener, 'ActionListener')) {
+        if ($listener instanceof ActionListener) {
             $this->m_actionListeners[] = $listener;
         } else {
-            if (is_a($listener, 'TriggerListener')) {
+            if ($listener instanceof TriggerListener) {
                 $this->m_triggerListeners[] = $listener;
             } else {
                 Tools::atkdebug('self::addListener: Unknown listener base class '.get_class($listener));
@@ -4677,18 +4726,6 @@ class Node
         } else {
             return $this->m_edit_fieldprefix.($atk_layout ? '_AE_' : '');
         }
-    }
-
-    /**
-     * Escape SQL string, uses the node's database to do the escaping.
-     *
-     * @param string $string string to escape
-     *
-     * @return string escaped string
-     */
-    public function escapeSQL($string)
-    {
-        return $this->getDb()->escapeSQL($string);
     }
 
     /**

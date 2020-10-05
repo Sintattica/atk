@@ -7,6 +7,18 @@ use Sintattica\Atk\Session\SessionManager;
 
 /**
  * Abstract class for implementing an atkSearchHandler.
+ *
+ * To allow for registering sets of criteria, you need to create
+ * a table in your database with columns like :
+ *
+ * CREATE TABLE atk_searchcriteria (
+ *  name varchar(100) NOT NULL,
+ *  nodetype varchar(100) NOT NULL,
+ *  handlertype varchar(100) NOT NULL,
+ *  criteria varchar(4096),
+ *  PRIMARY KEY (name)
+ * );
+ *
  */
 abstract class AbstractSearchHandler extends ActionHandler
 {
@@ -76,9 +88,12 @@ abstract class AbstractSearchHandler extends ActionHandler
             return [];
         }
 
-        $db = $this->m_node->getDb();
-        $query = "SELECT c.name FROM {$this->m_table} c WHERE c.nodetype = '%s' ORDER BY UPPER(c.name) AND handlertype = '%s'";
-        $rows = $db->getRows(sprintf($query, $this->m_node->atkNodeUri(), $this->getSearchHandlerType()));
+        $query = $this->m_node->getDb()->createQuery($this->m_table);
+        $query->addField('name');
+        $query->addCondition('nodetype = :nodetype', [':nodetype' => $this->m_node->atkNodeUri()]);
+        $query->addCondition('handlertype = :handlertype', [':handlertype' => $this->getSearchHandlerType()]);
+        $query->addOrderBy('name');
+        $rows = $query->executeSelect();
 
         $result = [];
         foreach ($rows as $row) {
@@ -100,9 +115,12 @@ abstract class AbstractSearchHandler extends ActionHandler
         }
 
         $db = $this->m_node->getDb();
-        $query = "DELETE FROM {$this->m_table} WHERE nodetype = '%s' AND UPPER(name) = UPPER('%s') AND handlertype = '%s'";
+        $query = $db->createQuery($this->m_table);
+        $query->addCondition('nodetype = :nodetype', [':nodetype' => $this->m_node->atkNodeUri()]);
+        $query->addCondition('name = :name', [':name' => $name]);
+        $query->addCondition('handlertype = :handlertype', [':handlertype' => $this->getSearchHandlerType()]);
 
-        $db->query(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name), $this->getSearchHandlerType()));
+        $query->executeDelete();
         $db->commit();
     }
 
@@ -123,9 +141,14 @@ abstract class AbstractSearchHandler extends ActionHandler
 
         $this->forgetCriteria($name);
         $db = $this->m_node->getDb();
-        $query = "INSERT INTO {$this->m_table} (nodetype, name, criteria, handlertype) VALUES('%s', '%s', '%s', '%s')";
-        $db->query(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name), Tools::escapeSQL(serialize($criteria)),
-            $this->getSearchHandlerType()));
+        $query = $db->createQuery($this->m_table);
+        $query->addFields([
+            'nodetype' => $this->m_node->atkNodeUri(),
+            'name' => $name,
+            'criteria' => serialize($criteria),
+            'handlertype' => $this->getSearchHandlerType()
+        ]);
+        $query->executeInsert();
         $db->commit();
     }
 
@@ -142,17 +165,17 @@ abstract class AbstractSearchHandler extends ActionHandler
             return [];
         }
 
-        $db = $this->m_node->getDb();
-        $query = "SELECT c.criteria FROM {$this->m_table} c WHERE c.nodetype = '%s' AND UPPER(c.name) = UPPER('%s') AND handlertype = '%s'";
+        $query = $this->m_node->getDb()->createQuery($this->m_table);
+        $query->addField('criteria');
+        $query->addCondition('nodetype = :nodetype', [':nodetype' => $this->m_node->atkNodeUri()]);
+        $query->addCondition('name = :name', [':name' => $name]);
+        $query->addCondition('handlertype = :handlertype', [':handlertype' => $this->getSearchHandlerType()]);
 
-        Tools::atk_var_dump(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name), $this->getSearchHandlerType()), 'loadCriteria query');
-
-        list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name), $this->getSearchHandlerType()));
-        $criteria = $row == null ? null : unserialize($row['criteria']);
-
-        Tools::atk_var_dump($criteria, 'loadCriteria criteria');
-
-        return $criteria;
+        $rows = $query->executeSelect();
+        if (empty($rows)) {
+            return null;
+        }
+        return unserialize($rows[0]['criteria']);
     }
 
     /**
@@ -275,7 +298,7 @@ abstract class AbstractSearchHandler extends ActionHandler
      */
     public function getToggleSaveCriteria()
     {
-        return '<input id="toggle_save_criteria" type="checkbox" class="atkcheckbox" onclick="$(save_criteria).disabled = !$(save_criteria).disabled">';
+        return '<input id="toggle_save_criteria" type="checkbox" class="atkcheckbox" onclick="$(save_criteria)[0].disabled = !$(save_criteria)[0].disabled">';
     }
 
     /**

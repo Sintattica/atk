@@ -6,9 +6,9 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Db\Statement\Statement;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Exception;
 
 /**
@@ -16,7 +16,7 @@ use Exception;
  *
  * @author Peter C. Verhage <peter@achievo.org>
  */
-class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
+class Selector implements \ArrayAccess, \Countable
 {
     /**
      * This selector's node.
@@ -63,34 +63,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected $m_indices = null;
 
     /**
-     * Current iterator instance (if iterator is used).
-     *
-     * @var SelectorIterator
-     */
-    private $m_iterator = null;
-
-    /**
-     * Current statement object (if iterator is used).
-     *
-     * @var Statement
-     */
-    private $m_stmt = null;
-
-    /**
-     * Current query object (if iterator is used).
-     *
-     * @var Query
-     */
-    private $m_query = null;
-
-    /**
-     * Current attributes by load type (if iterator is used).
-     *
-     * @var array
-     */
-    private $m_attrsByLoadType = null;
-
-    /**
      * Constructor.
      *
      * @param Node $node this selector's node
@@ -123,15 +95,17 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Adds a condition..
      *
-     * @param string $condition where clause
-     * @param array $params bind parameters
+     * @param string|QueryPart $condition where clause
+     * @param array $params bind parameters (if $condition not a QueryPart already)
      *
      * @return Selector
      */
     public function where($condition, $params = array())
     {
-        if (strlen(trim($condition)) > 0) {
-            $this->m_conditions[] = array('condition' => $condition, 'params' => $params);
+        if ($condition instanceof QueryPart) {
+            $this->m_conditions[] = $condition;
+        } elseif(strlen(trim($condition)) > 0) {
+            $this->m_conditions[] = new QueryPart($condition, $params);
         }
 
         return $this;
@@ -320,23 +294,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected function _applyConditionsToQuery($query)
     {
         foreach ($this->m_conditions as $condition) {
-            $query->addCondition($condition['condition']);
+            $query->addCondition($condition);
         }
-    }
-
-    /**
-     * Apply posted filter to query.
-     *
-     * @param Query $query query object
-     */
-    protected function _applyPostedFilterToQuery($query)
-    {
-        $filter = Tools::atkArrayNvl($this->_getNode()->m_postvars, 'atkfilter', '');
-        if (empty($filter)) {
-            return;
-        }
-
-        $query->addCondition($filter);
     }
 
     /**
@@ -381,35 +340,23 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             return;
         }
 
-        foreach ($searchCriteria as $key => $value) {
+        foreach ($this->_getNode()->getAttributes() as $attribName => $attrib) {
+            $value = $searchCriteria[$attrib->getHtmlName()] ?? null;
             if ($value === null || $value === '' || ($this->m_mode != 'admin' && $this->m_mode != 'export' && !array_key_exists($key,
                         $attrsByLoadType[Attribute::ADDTOQUERY]))
             ) {
                 continue;
             }
 
-            $attr = $this->_getNode()->getAttribute($key);
-            if (is_object($attr)) {
-                if (is_array($value) && isset($value[$key]) && Tools::count($value) == 1) {
-                    $value = $value[$key];
-                }
-
-                $searchMode = $this->_getNode()->getSearchMode();
-                if (is_array($searchMode)) {
-                    $searchMode = $searchMode[$key];
-                }
-
-                if ($searchMode == null) {
-                    $searchMode = Config::getGlobal('search_defaultmode');
-                }
-
-                $attr->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
-            } else {
-                Tools::atkdebug("Using default search method for $key");
-                //$condition = 'LOWER('.$this->_getNode()->getTable().'.'.$key.") LIKE LOWER('%".$this->_getDb()->escapeSQL($value, true)."%')";
-                $condition = $this->_getNode()->getTable().'.'.$key." LIKE '%".$this->_getDb()->escapeSQL($value, true)."%'";
-                $query->addSearchCondition($condition);
+            $searchMode = $this->_getNode()->getSearchMode();
+            if (is_array($searchMode)) {
+                $searchMode = $searchMode[$attrib->getHtmlName()];
             }
+
+            if ($searchMode == null) {
+                $searchMode = Config::getGlobal('search_defaultmode');
+            }
+            $attrib->searchCondition($query, $this->_getNode()->getTable(), $value, $searchMode, '');
         }
     }
 
@@ -448,7 +395,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     protected function _applyPostvarsToQuery(Query $query, array $attrsByLoadType)
     {
         if (!$this->m_ignorePostvars) {
-            $this->_applyPostedFilterToQuery($query);
             $this->_applyPostedIndexValueToQuery($query);
             $this->_applyPostedSearchMethodToQuery($query);
             $this->_applyPostedSearchCriteriaToQuery($query, $attrsByLoadType);
@@ -466,17 +412,8 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($this->m_ignoreDefaultFilters) {
             return;
         }
-
-        // key/value filters
-        foreach ($this->_getNode()->m_filters as $key => $value) {
-            $query->addCondition($key."='".$this->_getDb()->escapeSQL($value)."'");
-        }
-
-        // fuzzy filters
-        foreach ($this->_getNode()->m_fuzzyFilters as $filter) {
-            $parser = new StringParser($filter);
-            $filter = $parser->parse(array('table' => $this->_getNode()->getTable()));
-            $query->addCondition($filter);
+        foreach ($this->_getNode()->m_filters as $condition) {
+            $query->addCondition($condition);
         }
     }
 
@@ -551,34 +488,19 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Build base query object.
      *
-     * @param array $attrsByLoadType attributes by load type
-     *
      * @return Query query object
      */
-    protected function _buildQuery(array $attrsByLoadType)
+    public function buildQuery()
     {
-        $query = $this->_getNode()->getDb()->createQuery();
+        $query = $this->_getNode()->getDb()->createQuery($this->_getNode()->getTable());
         $query->setDistinct($this->m_distinct);
-        $query->addTable($this->_getNode()->getTable());
 
         $this->_applyConditionsToQuery($query);
         $this->_applyFiltersToQuery($query);
+
+        $attrsByLoadType = $this->_getAttributesByLoadType();
         $this->_applyPostvarsToQuery($query, $attrsByLoadType);
         $this->_applyAttributesToQuery($query, $attrsByLoadType);
-
-        return $query;
-    }
-
-    /**
-     * Build select query object.
-     *
-     * @param array $attrsByLoadType attributes by load type
-     *
-     * @return Query query object
-     */
-    protected function _buildSelectQuery(array $attrsByLoadType)
-    {
-        $query = $this->_buildQuery($attrsByLoadType);
 
         if (!empty($this->m_order)) {
             $query->addOrderBy($this->m_order);
@@ -592,34 +514,6 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Build count query object.
-     *
-     * @param array $attrsByLoadType attributes by load type
-     *
-     * @return Query query object
-     */
-    protected function _buildCountQuery(array $attrsByLoadType)
-    {
-        return $this->_buildQuery($attrsByLoadType);
-    }
-
-    /**
-     * Returns all bind parameters for all conditions.
-     *
-     * @return array bind parameters
-     */
-    protected function _getBindParameters()
-    {
-        $params = [];
-
-        foreach ($this->m_conditions as $condition) {
-            $params = array_merge($params, $condition['params']);
-        }
-
-        return $params;
-    }
-
-    /**
      * Transform raw database row to node compatible row.
      *
      * @param array $row raw database row
@@ -628,10 +522,11 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @return array node compatible row
      */
-    protected function _transformRow($row, Query $query, array $attrsByLoadType)
+    protected function _transformRow($row, Query $query)
     {
         $query->deAlias($row);
         Tools::atkDataDecode($row);
+        $attrsByLoadType = $this->_getAttributesByLoadType();
 
         $result = [];
         foreach ($attrsByLoadType[Attribute::ADDTOQUERY] as $attr) {
@@ -639,7 +534,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         if (!$this->m_ignorePrimaryKey) {
-            $result['atkprimkey'] = $this->_getNode()->primaryKey($result);
+            $result['atkprimkey'] = $this->_getNode()->primaryKeyString($result);
         }
 
         foreach ($attrsByLoadType[Attribute::POSTLOAD] as $attr) {
@@ -654,33 +549,16 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @param array $rows raw database rows
      * @param Query $query query object
-     * @param array $attrsByLoadType attributes by load type
      *
      * @return array node compatible rows
      */
-    protected function _transformRows($rows, Query $query, array $attrsByLoadType)
+    protected function _transformRows($rows, Query $query)
     {
         foreach ($rows as &$row) {
-            $row = $this->_transformRow($row, $query, $attrsByLoadType);
+            $row = $this->_transformRow($row, $query);
         }
 
         return $rows;
-    }
-
-    /**
-     * Transform raw database row to node compatible row for the current iterator.
-     *
-     * @param array $row raw database row
-     *
-     * @return array node compatible row
-     */
-    public function transformRow($row)
-    {
-        if ($this->m_iterator == null) {
-            throw new Exception(__METHOD__.' should only be called by the current atkSelectorIterator instance!');
-        }
-
-        return $this->_transformRow($row, $this->m_query, $this->m_attrsByLoadType);
     }
 
     /**
@@ -691,7 +569,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function getFirstRow()
     {
         $this->limit(1, $this->m_offset);
-        $rows = $this->getAllRows();
+        $rows = $this->fetchAll();
 
         return Tools::count($rows) == 1 ? $rows[0] : null;
     }
@@ -701,16 +579,12 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @return array all rows
      */
-    public function getAllRows()
+    public function fetchAll()
     {
         if ($this->m_rows === null) {
-            $attrsByLoadType = $this->_getAttributesByLoadType();
-            $query = $this->_buildSelectQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->prepare($query->buildSelect());
-            $stmt->execute($this->_getBindParameters());
-            $rows = $stmt->getAllRows();
-            $stmt->close();
-            $this->m_rows = $this->_transformRows($rows, $query, $attrsByLoadType);
+            $query = $this->buildQuery();
+            $rows = $query->executeSelect();
+            $this->m_rows = $this->_transformRows($rows, $query);
         }
 
         return $this->m_rows;
@@ -719,24 +593,20 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
 
     public function getTotals($fields = [])
     {
-        $attrsByLoadType = $this->_getAttributesByLoadType();
-        $query = $this->_buildQuery($attrsByLoadType);
+        $query = $this->buildQuery();
+        $query->clearFields();
         $prefix = '__sum__';
 
         foreach ($fields as $field) {
-            $i = array_search($field, array_column($query->m_expressions, 'name'));
-            if ($i !== false) {
+            if ($query->isExpression($field)) {
                 $expr = $query->m_expressions[$i]['expression'];
             } else {
-                $expr = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()) . '.' . $this->_getDb()->quoteIdentifier($field);
+                $expr = Db::quoteIdentifier($this->_getNode()->getTable(), $field);
             }
             $query->addExpression($field, 'SUM('.$expr.')', $prefix);
         }
 
-        $stmt = $this->_getDb()->prepare($query->buildSelect());
-        $stmt->execute($this->_getBindParameters());
-        $row = $stmt->getFirstRow();
-        $stmt->close();
+        $row = $query->executeSelect()[0];
 
         $query->deAlias($row);
         $res = [];
@@ -756,13 +626,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
     public function getRowCount()
     {
         if ($this->m_rowCount === null) {
-            $attrsByLoadType = $this->_getAttributesByLoadType();
-            $query = $this->_buildCountQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->prepare($query->buildCount());
-            $stmt->execute($this->_getBindParameters());
-            $rows = $stmt->getAllRows();
-            $stmt->close();
-            $this->m_rowCount = Tools::count($rows) == 1 ? $rows[0]['count'] : Tools::count($rows); // group by fix
+            $this->m_rowCount = $this->buildQuery()->executeCount();
         }
 
         return $this->m_rowCount;
@@ -783,26 +647,23 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
             }
         }
 
-        $attrsByLoadType = $this->_getAttributesByLoadType();
-
         $index = $this->_getNode()->m_index;
         $this->_getNode()->m_index = null;
-        $query = $this->_buildQuery($attrsByLoadType);
+        $query = $this->buildQuery();
         $this->_getNode()->m_index = $index;
 
         $query->clearFields();
-        $query->clearExpressions();
 
-        $indexColumn = $this->_getDb()->quoteIdentifier($this->_getNode()->getTable()).'.'.$this->_getDb()->quoteIdentifier($index);
+        $indexColumn = Db::quoteIdentifier($this->_getNode()->getTable(), $index);
         $expression = 'UPPER('.$this->_getDb()->func_substring($indexColumn, 1, 1).')';
         $query->addExpression('index', $expression);
         $query->addGroupBy($expression);
         $query->addOrderBy($expression);
 
-        $stmt = $this->_getDb()->prepare($query->buildSelect());
-        $stmt->execute($this->_getBindParameters());
-        $this->m_indices = $stmt->getAllValues();
-        $stmt->close();
+        $this->m_indices = [];
+        foreach ($query->executeSelect() as $row) {
+            $this->m_indices[] = $row['index'];
+        }
 
         return $this->m_indices;
     }
@@ -816,7 +677,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetExists($key)
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return isset($this->m_rows[$key]);
     }
@@ -830,7 +691,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetGet($key)
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return $this->m_rows[$key];
     }
@@ -845,7 +706,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetSet($key, $value)
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return $this->m_rows[$key] = $value;
     }
@@ -857,48 +718,15 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetUnset($key)
     {
-        $this->getAllRows();
+        $this->fetchAll();
         unset($this->m_rows[$key]);
     }
 
     /**
-     * Returns this selector's iterator.
-     *
-     * NOTE: if you call this method multiple times, the same iterator will
-     *       be returned, unless you have closed the selector first
-     */
-    public function getIterator()
-    {
-        if ($this->m_iterator == null) {
-            $attrsByLoadType = $this->_getAttributesByLoadType();
-            $query = $this->_buildSelectQuery($attrsByLoadType);
-            $stmt = $this->_getDb()->prepare($query->buildSelect());
-            $stmt->execute($this->_getBindParameters());
-
-            $this->m_attrsByLoadType = $attrsByLoadType;
-            $this->m_query = $query;
-            $this->m_stmt = $stmt;
-
-            $this->m_iterator = new SelectorIterator($this->m_stmt->getIterator(), $this);
-        }
-
-        return $this->m_iterator;
-    }
-
-    /**
-     * Closes the current statement used for this selector.
-     * Also clears the row and row count cache.
+     * Clears the row and row count cache.
      */
     public function close()
     {
-        if ($this->m_iterator != null) {
-            $this->m_iterator = null;
-            $this->m_stmt->close();
-            $this->m_stmt = null;
-            $this->m_query = null;
-            $this->m_attrsByLoadType = null;
-        }
-
         $this->m_rows = null;
         $this->m_rowCount = null;
         $this->m_indices = null;
@@ -913,7 +741,7 @@ class Selector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function count()
     {
-        $this->getAllRows();
+        $this->fetchAll();
 
         return Tools::count($this->m_rows);
     }

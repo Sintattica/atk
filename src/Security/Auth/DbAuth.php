@@ -31,7 +31,6 @@ class DbAuth extends AuthInterface
      * @return string which contains the query
      */
     public function buildSelectUserQuery(
-        $user,
         $usertable,
         $userfield,
         $passwordfield,
@@ -40,9 +39,10 @@ class DbAuth extends AuthInterface
     ) {
         $disableexpr = '';
         if ($accountdisablefield) {
-            $disableexpr = ", $accountdisablefield";
+            $disableexpr = ', '.Db::quoteIdentifier($accountdisablefield);
         }
-        $query = "SELECT $passwordfield $disableexpr FROM $usertable WHERE $userfield ='$user'";
+        $query = 'SELECT '.Db::quoteIdentifier($passwordfield)." $disableexpr FROM ".Db::QuoteIdentifier($usertable).
+            ' WHERE '.Db::quoteIdentifier($userfield)." =:user";
         if ($accountenbleexpression) {
             $query .= " AND $accountenbleexpression";
         }
@@ -76,9 +76,9 @@ class DbAuth extends AuthInterface
         } // can't verify if we have no userid
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = $this->buildSelectUserQuery($db->escapeSQL($user), Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
+        $query = $this->buildSelectUserQuery(Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'),
             Config::getGlobal('auth_passwordfield'), Config::getGlobal('auth_accountdisablefield'), Config::getGlobal('auth_accountenableexpression'));
-        $recs = $db->getRows($query);
+        $recs = $db->getRows($query, [':user' => $user]);
         if (Tools::count($recs) > 0 && $this->isLocked($recs[0])) {
             return SecurityManager::AUTH_LOCKED;
         }
@@ -91,21 +91,21 @@ class DbAuth extends AuthInterface
     public function isValidUser($user)
     {
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $usertable = Config::getGlobal('auth_usertable');
-        $userfield = Config::getGlobal('auth_userfield');
-        $disablefield = Config::getGlobal('auth_accountdisablefield');
+        $usertable = Db::quoteIdentifier(Config::getGlobal('auth_usertable'));
+        $userfield = Db::quoteIdentifier(Config::getGlobal('auth_userfield'));
+        $disablefield = Db::quoteIdentifier(Config::getGlobal('auth_accountdisablefield'));
         $enableexpression = Config::getGlobal('auth_accountenableexpression');
-        $sql = "SELECT COUNT(*) AS cnt FROM `$usertable` WHERE `$userfield` = '".$db->escapeSQL($user)."'";
+        $sql = "SELECT COUNT(*) AS cnt FROM {$usertable} WHERE {$userfield} = :user";
 
 
         if ($disablefield) {
-            $sql .= " AND `$disablefield` != 1";
+            $sql .= " AND NOT($disablefield)";
         }
         if ($enableexpression) {
             $sql .= " AND $enableexpression";
         }
 
-        if ($db->getValue($sql)) {
+        if ($db->getValue($sql, [':user' => $user])) {
             return true;
         };
 
@@ -179,34 +179,26 @@ class DbAuth extends AuthInterface
         $accountenableexpression = Config::getGlobal('auth_accountenableexpression');
 
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        if ($usertable == $leveltable || $leveltable == '') {
-            // Level and userid are stored in the same table.
-            // This means one user can only have one level.
-            $query = "SELECT * FROM $usertable WHERE $userfield ='$user'";
-        } else {
+        $query = $db->createQuery($usertable);
+        $query->addAllFields()
+            ->addCondition(Db::quoteIdentifier($usertable, $userfield).'=:user', [':user' => $user]);
+        if ($usertable != $leveltable && $leveltable != '') {
             // Level and userid are stored in two separate tables. This could
             // mean (but doesn't have to) that a user can have more than one
             // level.
-            $qryobj = $db->createQuery();
-            $qryobj->addTable($usertable);
-            $qryobj->addField("$usertable.*");
-            $qryobj->addField("usergroup.$levelfield");
-            $qryobj->addJoin($leveltable, 'usergroup', "$usertable.$userpk = usergroup.$userfk", true);
-            $qryobj->addCondition("$usertable.$userfield = '$user'");
+            $query->addJoin($leveltable, 'usergroup', [$userfk => [$usertable, $userpk]], true);
+            $query->addField($levelfield, '', 'usergroup');
 
             if (!empty($groupparentfield)) {
-                $qryobj->addField("grp.$groupparentfield");
-                $qryobj->addJoin($grouptable, 'grp', "usergroup.$levelfield = grp.$groupfield", true);
+                $query->addJoin($grouptable, 'grp', [$groupfield => ['usergroup', $levelfield]], true);
+                $query->addField("grp.$groupparentfield");
             }
-            $query = $qryobj->buildSelect();
         }
 
         if ($accountenableexpression) {
-            $query .= " AND $accountenableexpression";
+            $query->addCondition(" AND $accountenableexpression");
         }
-        $recs = $db->getRows($query);
-
-        return $recs;
+        return $query->executeSelect();
     }
 
     /**
@@ -224,13 +216,11 @@ class DbAuth extends AuthInterface
         $groupfield = Config::getGlobal('auth_groupfield');
         $groupparentfield = Config::getGlobal('auth_groupparentfield');
 
-        $query = $db->createQuery();
+        $query = $db->createQuery($grouptable);
         $query->addField($groupparentfield);
-        $query->addTable($grouptable);
         $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).')');
-        $recs = $db->getRows($query->buildSelect(true));
 
-        return $recs;
+        return $query->executeSelect(true);
     }
 
     /**
@@ -334,31 +324,34 @@ class DbAuth extends AuthInterface
      *                       the privilege. (modulename.nodename)
      * @param string $action The privilege to check.
      *
-     * @return mixed One (int) or more (array) entities that are allowed to
-     *               perform the action.
+     * @return array entities that are allowed to perform the action.
      */
     public function getEntity($node, $action)
     {
-        $db = Db::getInstance(Config::getGlobal('auth_database'));
 
         if (!isset($this->m_rightscache[$node]) || Tools::count($this->m_rightscache[$node]) == 0) {
-            $query = 'SELECT * FROM '.Config::getGlobal('auth_accesstable')." WHERE node='$node'";
+            $db = Db::getInstance(Config::getGlobal('auth_database'));
+            $accessTable = Config::getGlobal('auth_accesstable');
+            $query = $db->createQuery($accessTable);
+            $field = Config::getGlobal('auth_accessfield');
+            if (empty($field)) {
+                $field = Config::getGlobal('auth_levelfield');
+            }
+            $query->addExpression('entity', Db::quoteIdentifier($field));
+            $query->addField('action');
 
-            $this->m_rightscache[$node] = $db->getRows($query);
+            $query->addCondition($query->simpleValueCondition($accessTable, 'node', $node));
+
+            $this->m_rightscache[$node] = $query->executeSelect();
         }
 
         $result = [];
 
         $rights = $this->m_rightscache[$node];
 
-        $field = Config::getGlobal('auth_accessfield');
-        if (empty($field)) {
-            $field = Config::getGlobal('auth_levelfield');
-        }
-
-        for ($i = 0, $_i = Tools::count($rights); $i < $_i; ++$i) {
-            if ($rights[$i]['action'] == $action) {
-                $result[] = $rights[$i][$field];
+        foreach($rights as $right) {
+            if ($right['action'] == $action) {
+                $result[] = $right['entity'];
             }
         }
 
@@ -374,22 +367,25 @@ class DbAuth extends AuthInterface
      * @param string $attrib The name of the attribute to check
      * @param string $mode "view" or "edit"
      *
-     * @return array
+     * @return array entities that are allowed to perform the action.
      */
     public function getAttribEntity($node, $attrib, $mode)
     {
         $db = Db::getInstance(Config::getGlobal('auth_database'));
 
-        $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
+        $query = $db->createQuery('attribaccess');
+        $field = Config::getGlobal('auth_accessfield') ?? Config::getGlobal('auth_levelfield');
+        $query->addExpression('entity', $field);
+        $query->addCondition($query->simpleValueCondition('attribacess', 'node', $node));
+        $query->addCondition($query->simpleValueCondition('attribacess', 'attribute', $attrib));
+        $query->addCondition($query->simpleValueCondition('attribacess', 'mode', $mode));
+        $query->addCondition(Db::quoteIdentifier($field)." != ''");
 
         $rights = $db->getRows($query);
 
         $result = [];
-
-        for ($i = 0; $i < Tools::count($rights); ++$i) {
-            if ($rights[$i][Config::getGlobal('auth_levelfield')] != '') {
-                $result[] = $rights[$i][Config::getGlobal('auth_levelfield')];
-            }
+        foreach ($query->executeSelect() as $row) {
+            $result[] = $row[$field];
         }
 
         return $result;
@@ -418,31 +414,29 @@ class DbAuth extends AuthInterface
      */
     public function getUserList()
     {
+        $stringparser = new StringParser(Config::getGlobal('auth_userdescriptor'));
         $db = Db::getInstance(Config::getGlobal('auth_database'));
-        $query = 'SELECT * FROM '.Config::getGlobal('auth_usertable');
+        $query = $db->createQuery(Config::getGlobal('auth_usertable'));
+        $query->addField(Config::getGlobal('auth_userfield'));
+        foreach($stringparser->getFields() as $field) {
+            $query->addField($field);
+        }
 
         $accountdisablefield = Config::getGlobal('auth_accountdisablefield');
         $accountenableexpression = Config::getGlobal('auth_accountenableexpression');
         if ($accountenableexpression != '') {
-            $query .= " WHERE $accountenableexpression";
-            if ($accountdisablefield != '') {
-                $query .= " AND $accountdisablefield = 0";
-            }
-        } else {
-            if ($accountdisablefield != '') {
-                $query .= " WHERE $accountdisablefield = 0";
-            }
+            $query->addCondition($accountenableexpression);
+        }
+        if ($accountdisablefield != '') {
+            $query->addCondition('!'.Db::quoteIdentifier($accountdisablefield));
         }
 
-        $recs = $db->getRows($query);
-
         $userlist = [];
-        $stringparser = new StringParser(Config::getGlobal('auth_userdescriptor'));
-        for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
-            $userlist[] = array(
-                'userid' => $recs[$i][Config::getGlobal('auth_userfield')],
-                'username' => $stringparser->parse($recs[$i]),
-            );
+        foreach ($query->executeSelect() as $row) {
+            $userList = [
+                'userid' => $row[Config::getGlobal('auth_userfield')],
+                'username' => $stringparser->parse($row),
+            ];
         }
         usort($userlist, array('auth_db', 'userListCompare'));
 
@@ -471,12 +465,12 @@ class DbAuth extends AuthInterface
         // Query the database for user records having the given username and return if not found
         $atk = Atk::getInstance();
         $usernode = $atk->atkGetNode(Config::getGlobal('auth_usernode'));
-        $selector = sprintf("%s.%s = '%s'", Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'), $username);
+        $selector = Query::simpleValueCondition(Config::getGlobal('auth_usertable'), Config::getGlobal('auth_userfield'), $username);
         $userrecords = $usernode->select($selector)->mode('edit')->includes(array(
             Config::getGlobal('auth_userpk'),
             Config::getGlobal('auth_emailfield'),
             Config::getGlobal('auth_passwordfield'),
-        ))->getAllRows();
+        ))->fetchAll();
         if (Tools::count($userrecords) != 1) {
             Tools::atkdebug("User '$username' not found.");
 
