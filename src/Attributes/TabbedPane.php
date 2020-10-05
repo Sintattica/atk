@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Handlers\ViewEditBase;
 
 /**
@@ -15,19 +16,26 @@ class TabbedPane extends Attribute
 {
     const AF_TABBEDPANE_NO_AUTO_HIDE_LABEL = 33554432;
 
-    /*
+    /**
      * The tabs list
      * @var array
      * @access private
      */
     public $m_tabsList = [];
 
-    /*
+    /**
      * The list of "attribute"=>"tab
      * @var array
      * @access private
      */
     public $m_attribsList = [];
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
     private $m_defaultTab = '';
 
@@ -553,16 +561,6 @@ class TabbedPane extends Attribute
      * @return string html
      */
     public function hide($record, $fieldprefix, $mode)
-    {
-        return '';
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string empty string
-     */
-    public function dbFieldType()
     {
         return '';
     }

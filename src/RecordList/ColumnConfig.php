@@ -210,7 +210,7 @@ class ColumnConfig
      * @param string $extra
      * @param string $sortorder
      */
-    public function addOrderByField($field, $direction, $extra = '', $sortorder = null)
+    public function addOrderByField($field, $direction, $extra = null)
     {
         if (is_null($sortorder) && $this->getMinSort() <= 1) {
             foreach ($this->m_colcfg as $fld => $config) {
@@ -608,37 +608,34 @@ class ColumnConfig
             return; // can't do anything with complex order by's
         }
 
-        $i = 0;
-        $expressions = explode(',', $orderby);
-        foreach ($expressions as $expression) {
-            $expression = trim($expression);
-            $expressionParts = preg_split('/\\s+/', $expression);
+        $expression = trim($orderby);
+        $expressionParts = preg_split('/\\s+/', $expression);
 
-            if (Tools::count($expressionParts) == 2) {
-                list($column, $direction) = $expressionParts;
+        if (in_array(strtoupper($expressionParts[count($expressionParts)-1]), ['DESC', 'ASC'])) {
+            $direction = array_pop($expressionParts);
+            $column = implode(' ', $expressionParts);
+        } else {
+            $column = $expression;
+            $direction = 'ASC';
+        }
+
+        $direction = strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC';
+
+        $part1 = $column;
+        $part2 = null;
+
+        if (strpos($column, '.') !== false) {
+            list($part1, $part2) = explode('.', $column);
+        }
+
+        if ($this->getNode()->getAttribute($part1) != null) {
+            $this->addOrderByField($part1, $direction, $part2);
+        } else {
+            if ($part1 == $this->getNode()->getTable() && $this->getNode()->getAttribute($part2) != null) {
+                $this->addOrderByField($part2, $direction);
             } else {
-                $column = $expression;
-                $direction = 'ASC';
-            }
-
-            $direction = strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC';
-
-            $part1 = $column;
-            $part2 = null;
-
-            if (strpos($column, '.') !== false) {
-                list($part1, $part2) = explode('.', $column);
-            }
-
-            if ($this->getNode()->getAttribute($part1) != null) {
-                $this->addOrderByField($part1, $direction, $part2, ++$i);
-            } else {
-                if ($part1 == $this->getNode()->getTable() && $this->getNode()->getAttribute($part2) != null) {
-                    $this->addOrderByField($part2, $direction, null, ++$i);
-                } else {
-                    // custom order by
-                    $this->addOrderByField($column, $direction, '', ++$i);
-                }
+                // custom order by
+                $this->addOrderByField($column, $direction);
             }
         }
     }

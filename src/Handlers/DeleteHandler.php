@@ -43,14 +43,11 @@ class DeleteHandler extends ActionHandler
                 return;
             }
 
-            // Clear the atkfilter postvar, if we don't it will hold filters from previous actions and it will break stuff.
-            unset($this->m_postvars['atkfilter']);
-
             // If we got here, then the node is not locked and we haven't displayed the
             // confirmation page yet, so we display it
             $page = $this->getPage();
             $page->addContent($this->m_node->renderActionPage('delete',
-                $this->m_node->confirmAction($this->m_postvars['atkselector'], 'delete', true, true, $this->getCSRFToken())));
+                $this->m_node->confirmAction($this->m_postvars['atkselector'], 'delete', true, $this->getCSRFToken())));
         } else {
             $this->_handleCancelAction();
         }
@@ -70,14 +67,8 @@ class DeleteHandler extends ActionHandler
      */
     public function _checkAllowed()
     {
-        $atkselector = $this->m_postvars['atkselector'];
-        if (is_array($atkselector)) {
-            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
-        } else {
-            $atkselector_str = $atkselector;
-        }
-
-        $recordset = $this->m_node->select($atkselector_str)->mode('delete')->getAllRows();
+        $selector = $this->m_node->primaryKeyFromString($this->m_postvars['atkselector']);
+        $recordset = $this->m_node->select($atkselector)->mode('delete')->fetchAll();
         foreach ($recordset as $record) {
             if (!$this->allowed($record)) {
                 return false;
@@ -125,7 +116,7 @@ class DeleteHandler extends ActionHandler
     protected function _doDeleteDb()
     {
         $db = $this->m_node->getDb();
-        if ($this->m_node->deleteDb($this->m_postvars['atkselector'])) {
+        if ($this->m_node->deleteDb($this->m_node->primaryKeyFromString($this->m_postvars['atkselector']))) {
             $db->commit();
             $this->clearCache();
 

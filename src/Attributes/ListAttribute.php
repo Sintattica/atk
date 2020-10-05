@@ -5,7 +5,9 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 
 /**
  * The ListAttribute class represents an attribute of a node
@@ -104,10 +106,10 @@ class ListAttribute extends Attribute
 
         // If all values are numeric, we can use a numeric field to store the selected
         // value.
-        $this->m_dbfieldtype = 'number';
-        for ($i = 0, $_i = Tools::count($valueArray); $i < $_i && $this->m_dbfieldtype == 'number'; ++$i) {
+        $this->m_dbfieldtype = Db::FT_NUMBER;
+        for ($i = 0, $_i = Tools::count($valueArray); $i < $_i && $this->m_dbfieldtype == Db::FT_NUMBER; ++$i) {
             if (!is_numeric($valueArray[$i])) {
-                $this->m_dbfieldtype = 'string';
+                $this->m_dbfieldtype = Db::FT_STRING;
             }
             // if one of the values is not a number, the fieldtype must be string, and
             // the loop is stopped.
@@ -363,7 +365,7 @@ class ListAttribute extends Attribute
      *
      * @todo Configurable rows
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -376,7 +378,7 @@ class ListAttribute extends Attribute
      *
      * @return string A piece of html-code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $values = $this->getValues();
         $id = $this->getHtmlId($fieldprefix);
@@ -412,7 +414,7 @@ class ListAttribute extends Attribute
         $result .= $style != '' ? ' style="'.$style.'"': '';
         $result .= ' >';
 
-        $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+        $selValues = $atksearch[$this->getHtmlName()] ?? null;
         if (!is_array($selValues)) {
             $selValues = [$selValues];
         }
@@ -494,28 +496,28 @@ EOF;
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        $searchcondition = '';
-        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-
-            if (Tools::count($value) == 1 && $value[0] != '') { // exactly one value
-                if ($value[0] == '__NONE__') {
-                    return $query->nullCondition($table.'.'.$this->fieldName(), true);
-                } else {
-                    return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
-                }
-            } elseif (Tools::count($value) > 1) { // search for more values
-                if (in_array('__NONE__', $value)) {
-                    unset($value[array_search('__NONE__', $value)]);
-
-                    return sprintf('(%s OR %s)', $query->nullCondition($table.'.'.$this->fieldName(), true),
-                        $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')");
-                } else {
-                    return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
-                }
-            }
+        if (!is_array($value) || empty($value) || $value[0] == '') {
+            // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            return null;
         }
 
-        return $searchcondition;
+        $conditions = [];
+
+        $keyNone = array_search('__NONE__', $value);
+        if ($keyNone !== FALSE) {
+            $conditions[] = $query->nullCondition(Db::quoteIdentifier($table, $this->fieldName()));
+            // Removing '__NONE__' and reindexing $value :
+            unset($value[$keyNone]);
+            $value = array_values($value);
+        }
+
+        if (count($value) == 1) {
+            $conditions[] = $query->exactCondition(Db::quoteIdentifier($table, $this->fieldName()), $value[0]);
+        } elseif (!empty($value)) {
+            $conditions[] = $query->inCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
+        }
+
+        return QueryPart::implode('OR', $conditions, true);
     }
 
     /**
@@ -531,18 +533,6 @@ EOF;
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return array('exact');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        // Fieldtype was determined in the constructor.
-        return $this->m_dbfieldtype;
     }
 
     /**

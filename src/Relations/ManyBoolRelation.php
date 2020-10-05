@@ -76,14 +76,12 @@ class ManyBoolRelation extends ManyToManyRelation
                 $onchange = '';
                 $inputId = $this->getHtmlId($fieldprefix).'_'.$i;
 
-                if (in_array($this->m_destInstance->primaryKey($recordset[$i]), $selectedPk)) {
+                if (in_array($this->m_destInstance->primaryKeyString($recordset[$i]), $selectedPk)) {
                     $sel = 'checked';
                     if ($this->getShowDetailsLink() && !$this->m_linkInstance->hasFlag(Node::NF_NO_EDIT) && $this->m_linkInstance->allowed('edit')) {
-                        $localPkAttr = $this->getOwnerInstance()->getAttribute($this->getOwnerInstance()->primaryKeyField());
-                        $localValue = $localPkAttr->value2db($record);
-                        $remotePkAttr = $this->getDestination()->getAttribute($this->getDestination()->primaryKeyField());
-                        $remoteValue = $remotePkAttr->value2db($recordset[$i]);
-                        $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey().'='.$localValue.''.' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".$remoteValue."'";
+                        $linkRecord[$this->getLocalKey()] = $record;
+                        $linkRecord[$this->getRemoteKey()] = $recordset[$i];
+                        $selector = $this->m_linkInstance->primaryKeyString($linkRecord);
                         $detailLink = Tools::href(Tools::dispatch_url($this->m_link, 'edit', array('atkselector' => $selector)),
                             '['.Tools::atktext('edit', 'atk').']', SessionManager::SESSION_NESTED, true);
                     }

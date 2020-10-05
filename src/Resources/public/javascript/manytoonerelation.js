@@ -3,14 +3,6 @@ if (!window.ATK) {
 }
 
 ATK.ManyToOneRelation = {
-    parse: function (link, value) {
-        var value_array = value.split('=');
-        if (value_array[1] === '' || typeof value_array[1] === "undefined")
-            return -1;
-        var atkselector = value.replace("='", "_1253D_12527").replace("'", "_12527");
-        return link.replace('REPLACEME', atkselector);
-    },
-
     autocomplete: {
         ajax: {
             cache: true,

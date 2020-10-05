@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\IpUtils;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The IpAttribute can be used to let the user enter IP(v4) addresses.
@@ -51,7 +52,7 @@ class IpAttribute extends Attribute
 
         $parts = [];
         for ($i = 0; $i < 4; ++$i) {
-            $parts[$i] = $postvars[$this->fieldName()][$i];
+            $parts[$i] = $postvars[$this->getHtmlName()][$i];
         }
 
         return implode('.', $parts);
@@ -144,7 +145,7 @@ class IpAttribute extends Attribute
      */
     public function dbFieldType()
     {
-        return $this->hasFlag(self::AF_IP_STORENUMERIC) ? 'int' : 'string';
+        return $this->hasFlag(self::AF_IP_STORENUMERIC) ? Db::FT_NUMBER : Db::FT_STRING;
     }
 
     /**

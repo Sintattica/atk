@@ -14,8 +14,8 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Ui;
 
 /**
- * Handler for the 'import' action of a node. The import action is a
- * generic tool for importing CSV files into a table.
+ * Handler for the 'export' action of a node. The export action is a
+ * generic tool for exporting table data into CSV files.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  */
@@ -158,7 +158,7 @@ class ExportHandler extends ActionHandler
 
         if ($selected) {
             $db = Db::getInstance();
-            $rows = $db->getRows('SELECT name FROM atk_exportcriteria WHERE id = '.(int)$selected);
+            $rows = $db->getRows('SELECT name FROM atk_exportcriteria WHERE id = :id', [':id' => $selected]);
             if (Tools::count($rows) == 1) {
                 $value = htmlentities($rows[0]['name']);
             }
@@ -273,7 +273,7 @@ class ExportHandler extends ActionHandler
             $content .= $this->_getOptionsFormRow(
                 null,
                 Tools::atktext('export_selections', 'atk'),
-                $this->getExportSelectionDropdown().'&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">'.Tools::atktext('new', 'atk'));
+                $this->getExportSelectionDropdown().'&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">'.Tools::atktext('new', 'atk')).'</a>';
 
             $content .= $this->_getOptionsFormRow(null, '', '<div id="selection_interact"></div>');
 
@@ -320,7 +320,7 @@ class ExportHandler extends ActionHandler
     {
         $html = '
         <select name="export_selection_options" id="export_selection_options" onchange="toggleSelectionName();return false;" class="form-control select-standard">
-          <option value="none">'.Tools::atktext('none', 'atk');
+          <option value="none">'.Tools::atktext('none', 'atk').'</option>';
 
         $options = $this->getExportSelections();
         if (Tools::count($options)) {
@@ -341,7 +341,6 @@ class ExportHandler extends ActionHandler
     private function saveSelection()
     {
         $db = Db::getInstance();
-        $id = $db->nextid('exportcriteria');
 
         $user_id = 0;
         if ('none' !== strtolower(Config::getGlobal('authentication'))) {
@@ -350,19 +349,22 @@ class ExportHandler extends ActionHandler
         }
 
         // first check if the combination of node, name and user_id doesn't already exist
-        $rows = $db->getRows("SELECT id FROM atk_exportcriteria
-                            WHERE nodetype = '".$this->m_postvars['atknodeuri']."'
-                            AND name = '".$this->m_postvars['export_selection_name']."'
-                            AND user_id = ".$user_id);
-        if (Tools::count($rows)) {
+        $query = $db->createQuery('atk_exportcriteria');
+        $query->addCondition('nodetype = :nodetype', [':nodetype' => $this->m_postvars['atknodeuri']]);
+        $query->addCondition('name = :name', [':name' => $this->m_postvars['export_selection_name']]);
+        $query->addCondition('userid = :user', [':user' => $user_id]);
+        if ($query->executeCount()) {
             return;
         }
 
-        $query = 'INSERT INTO atk_exportcriteria ( id, nodetype, name, criteria, user_id )
-                VALUES ( '.$id.', "'.$this->m_postvars['atknodeuri'].'", "'.$db->escapeSQL($this->m_postvars['export_selection_name']).'",
-                         "'.addslashes(serialize($this->m_postvars)).'", '.$user_id.' )';
-
-        $db->query($query);
+        $query = $db->createQuery('atk_exportcriteria');
+        $query->addFields([
+            'nodetype' => $this->m_postvars['atknodeuri'],
+            'name' => $this->m_postvars['export_selection_name'],
+            'criteria' => serialize($this->m_postvars),
+            'userid' => $user_id
+        ]);
+        $query->executeInsert();
     }
 
     /**
@@ -379,24 +381,21 @@ class ExportHandler extends ActionHandler
         }
 
         // first check if the combination of node, name and user_id doesn't already exist
-        $rows = $db->getRows("SELECT id FROM atk_exportcriteria
-                            WHERE nodetype = '".$this->m_postvars['atknodeuri']."'
-                            AND name = '".$this->m_postvars['export_selection_name']."'
-                            AND user_id = ".$user_id.'
-                            AND id <> '.(int)$this->m_postvars['exportvalue']);
-        if (Tools::count($rows)) {
+        $query = $db->createQuery('atk_exportcriteria');
+        $query->addCondition('nodetype = :nodetype', [':nodetype' => $this->m_postvars['atknodeuri']]);
+        $query->addCondition('name = :name', [':name' => $this->m_postvars['export_selection_name']]);
+        $query->addCondition('userid = :user', [':user' => $user_id]);
+        $query->addCondition('id != :id', [':id' => $this->m_postvars['exportvalue']]);
+        if ($query->executeCount()) {
             return;
         }
 
-        $query = 'UPDATE
-                  atk_exportcriteria
-                SET
-                  name = "'.$db->escapeSQL($this->m_postvars['export_selection_name']).'",
-                  criteria = "'.addslashes(serialize($this->m_postvars)).'"
-                WHERE
-                  id = '.(int)$this->m_postvars['exportvalue'];
+        $query = $db->createQuery('atk_exportcriteria');
+        $query->addCondition('id = :id', [':id' => $this->m_postvars['exportvalue']]);
+        $query->addField('name', $this->m_postvars['export_selection_name']);
+        $query->addField('criteria', serialize($this->m_postvars));
 
-        $db->query($query);
+        $query->executeUpdate();
     }
 
     /**
@@ -406,8 +405,9 @@ class ExportHandler extends ActionHandler
      */
     private function deleteSelection($id)
     {
-        $db = Db::getInstance();
-        $db->query('DELETE FROM atk_exportcriteria WHERE id = '.(int)$id);
+        $query = Db::getInstance()->createQuery('atk_exportcriteria');
+        $query->addCondition('id = :id', [':id' => $id]);
+        $query->executeDelete();
     }
 
     /**
@@ -417,17 +417,21 @@ class ExportHandler extends ActionHandler
      */
     protected function getExportSelections()
     {
-        $where = ' nodetype = "'.$this->m_postvars['atknodeuri'].'"';
+        $query = Db::getInstance()->createQuery('atk_exportcriteria');
+        $query->addField('id');
+        $query->addField('name');
+        $query->addOrderBy('name');
+        $query->addCondition('nodetype = :nodetype', [':nodetype' => $this->m_postvars['atknodeuri']]);
+
+        // Filter by user if needed :
         if ('none' !== strtolower(Config::getGlobal('authentication'))) {
             $user = SecurityManager::atkGetUser();
             if (!SecurityManager::isUserAdmin($user)) {
-                $where .= ' AND user_id IN( 0, '.(int)$user[Config::getGlobal('auth_userpk')].' )';
+                $query->addCondition($query->inCondition('userid', [0, $user[Config::getGlobal('auth_userpk')]]));
             }
         }
 
-        $db = Db::getInstance();
-
-        return $db->getRows($query = 'SELECT id, name FROM atk_exportcriteria WHERE '.$where.' ORDER BY name');
+        return $query->executeSelect();
     }
 
     /**
@@ -465,7 +469,7 @@ class ExportHandler extends ActionHandler
     }
 
     /**
-     * Gives all the attributes that can be used for the import.
+     * Gives all the attributes that can be used for the export.
      * @param string $value
      * @return array the attributes
      */
@@ -475,9 +479,9 @@ class ExportHandler extends ActionHandler
 
         $criteria = [];
         if (!in_array($value, array('new', 'none', ''))) {
-            $db = Db::getInstance();
-            $rows = $db->getRows('SELECT * FROM atk_exportcriteria WHERE id = '.(int)$value);
-            $criteria = unserialize($rows[0]['criteria']);
+            $query = Db::getInstance();
+            $criteria = $db->getValue('SELECT criteria FROM atk_exportcriteria WHERE id = :id', [':id' => $value]);
+            $criteria = unserialize($criteria);
         }
 
         $atts = [];
@@ -485,8 +489,7 @@ class ExportHandler extends ActionHandler
         foreach ($attriblist as $key => $attr) {
             $flags = $attr->m_flags;
             $class = strtolower(get_class($attr));
-            if ($attr->hasFlag(Attribute::AF_AUTOKEY) || $attr->hasFlag(Attribute::AF_HIDE_VIEW) || !(strpos($class, 'dummy') === false) || !(strpos($class,
-                        'image') === false) || !(strpos($class, 'tabbedpane') === false)
+            if ($attr->hasFlag(Attribute::AF_AUTOKEY) || $attr->hasFlag(Attribute::AF_HIDE_VIEW) || !(strpos($class, 'dummy') === false) || !(strpos($class,'image') === false) || !(strpos($class, 'tabbedpane') === false)
             ) {
                 continue;
             }
@@ -577,11 +580,8 @@ class ExportHandler extends ActionHandler
             $node_bk->m_postvars['atksearchmode'] = $session_back['atkdg']['admin']['atksearchmode'];
         }
 
-        $atkfilter = Tools::atkArrayNvl($source, 'atkfilter', '');
-
-        $atkselector = isset($session_back['atkselector'])?$session_back['atkselector']:'';
-        $condition = $atkselector.($atkselector != '' && $atkfilter != '' ? ' AND ' : '').$atkfilter;
-        $recordset = $node_bk->select($condition)->orderBy($atkorderby)->includes($list_includes)->mode('export')->getAllRows();
+        $condition = isset($session_back['atkselector'])?$node_bk->primaryKeyFromString($session_back['atkselector']):'1';
+        $recordset = $node_bk->select($atkselector)->orderBy($atkorderby)->includes($list_includes)->mode('export')->fetchAll();
         if (method_exists($this->m_node, 'assignExportData')) {
             $this->m_node->assignExportData($list_includes, $recordset);
         }

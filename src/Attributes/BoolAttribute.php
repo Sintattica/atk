@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The atkBoolAttribute class represents an attribute of a node
@@ -31,6 +32,13 @@ class BoolAttribute extends Attribute
      * Display checkbox in view / list mode instead of "yes" or "no".
      */
     const AF_BOOL_DISPLAY_CHECKBOX = 134217728;
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_BOOLEAN;
 
     /**
      * Constructor.
@@ -150,7 +158,7 @@ class BoolAttribute extends Attribute
     /**
      * Returns a piece of html code that can be used in a form to search for values.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -163,7 +171,7 @@ class BoolAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
@@ -181,12 +189,12 @@ class BoolAttribute extends Attribute
         $result .= '>';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
         $result .= '<option value="0" ';
-        if (is_array($record) && $record[$this->fieldName()] === '0') {
+        if (is_array($atksearch) && $atksearch[$this->getHtmlName()] === '0') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('no', 'atk').'</option>';
         $result .= '<option value="1" ';
-        if (is_array($record) && $record[$this->fieldName()] === '1') {
+        if (is_array($atksearch) && $atksearch[$this->getHtmlName()] === '1') {
             $result .= 'selected';
         }
         $result .= '>'.Tools::atktext('yes', 'atk').'</option>';
@@ -201,7 +209,7 @@ class BoolAttribute extends Attribute
             $value = $value[$this->fieldName()];
         }
         if (isset($value)) {
-            return $query->exactBoolCondition($table.'.'.$this->fieldName(), $value);
+            return $query->exactBoolCondition(Db::quoteIdentifier($table, $this->fieldName()), $value);
         }
 
         return '';
@@ -258,15 +266,15 @@ class BoolAttribute extends Attribute
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return boolean The internal value
      */
     public function fetchValue($postvars)
     {
-        if (is_array($postvars) && isset($postvars[$this->fieldName()])) {
-            return $postvars[$this->fieldName()];
-        } else {
-            return 0;
+        $value = parent::fetchValue($postvars);
+        if (is_null($value)) {
+            return null;
         }
+        return ($value != false);
     }
 
     /**
@@ -282,17 +290,6 @@ class BoolAttribute extends Attribute
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return array('exact');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return 'number';
     }
     
     /**

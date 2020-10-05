@@ -176,7 +176,7 @@ class PasswordAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         // We don't support searching for passwords!
         return '';
@@ -471,19 +471,6 @@ class PasswordAttribute extends Attribute
 
         // Return the output
         return $out;
-    }
-
-    /**
-     * Overwriting the fetchValue to ensure all passwords are hashed.
-     *
-     * @param array $postvars The array with html posted values ($_POST, for
-     *                   example) that holds this attribute's value.
-     *
-     * @return string
-     */
-    public function fetchValue($postvars)
-    {
-        return $postvars[$this->fieldName()];
     }
 
     /** Due to the new storeType functions

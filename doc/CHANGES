@@ -3,9 +3,8 @@
 * : bugfix or changed code
 
 Issue numbers are references to issues in the ATK project issue tracker
-    on GitHub: https://github.com/atkphpframework/atk/issues
-Bug numbers are references to bugs in the ibuildings Bugzilla bug tracker:
-	http://bugzilla.achievo.org
+    on GitHub: https://github.com/sintattica/atk/issues
+    or the old one :  https://github.com/atkphpframework/atk/issues
 [names] are references to contributors listed in the AUTHORS file.
 
 * Please do not exceed 80 characters per line.
@@ -17,6 +16,122 @@ WIP Changes
 -----------
 * Removed namespace from SessionManager (scripts/application isolation already provided by 'identifier') [samuel]
 * Renamed SessionManager::globalVar to setValue() [samuel]
+* Db code updated to safer code. What you will probably need to change :
+    - backticks don't work anymore to escape fields, use double-quotes or call
+    Db::quoteIdentifier().
+    - in destination filters, attributes should not appear inside simple
+    quotes :
+     "department = '[department.id]'"  => "department = [department.id]"
+     "name LIKE 'Peter [firstname]'" => "name LIKE 'Peter '||[firstname]"
+    - escapeSQL function deprecated, used parametrized queries (see below).
+    - some other parts may not work as expected, check the full list of
+    changes below.
++ New functionnalities :
+    - Postgresql and Sqlite drivers
+    - Attributes names and node table can hold any UTF-8 character supported
+    by your driver (for MySQL, it means 3-bytes or less characters / for sqlite
+    or postgresql, every utf-8 character is allowed)
+    - parametrized queries : almost everywhere you used to put a chunk of SQL
+    with (possibly) unsafe values, you now can put a :
+     new QueryPart('your sql with :parameter', [':parameter' => $unsafe_var])
+    (QueryPart is under \Db).
+
+* Full list of changes :
+** Nodes :
+* Node->getDescriptorTemplate now uses descriptor_def function as a fallback
+    or, if none exists, uses first attribute.
+* Node->getSearchCondition is renamed Node->getTemplateSearchCondition and
+    can be used with templates like ones in AggregatedColumn (and not only
+    with descriptor templates).
+* Node->primaryKey now returns a QueryPart condition. Use primaryKeyString
+    to get a JSON-encoded string suitable for use in HTML parts. Decode this
+    string with primaryKeyFromString which gives you a QueryPart condition.
+* Removed $mergeSelectors argument for Node->confirmAction.
+- Deprecated Node->removeFilter function (no longer work).
+- Removed the possibility to search with fields present in the database table
+    but which are not listed in the node attributes.
+* Attributes::AF_NO_QUOTES is useless (as values are passed as parameters).
+- Node->initSelector removed. Node->select accepts QueryParts
+
+*** Db\Query code :
+* Query->clearFields now also clears expressions, orderbys and groupbys.
+    Query->clearExpressions now removed.
++ Added Query->startswithCondition.
++ Query->isExpression($field) tells wether $field is an expression (true) or
+    a regular field (false). If field does not exist, returns false.
+* Query object members are now private.
+- Removed Query->build* functions in favor of execute* ones.
++ Added Query->executeCount() function (returns an int).
++ added Query->addAllFields to add a '*' to a select query.
++ Added Query->betweenCondition, Query->bitmaskCondition, Query->inCondition,
+    Query->notinCondition
+* Query->addField automatically add quotes around field and, if present, table.
+* Removed per-database Query Object classes.
+- Query objects holds now only one table (for secondary tables, use joins).
+    addTable is deprecated, table should be set at Query initialization
+
+** Db code :
++ Sqlite driver added.
+* Pgsql driver now works.
++ Added regexp searches for PostgreSql.
+- Removed soundex search for MySQL
+- Db->createQuery now have a $table argument (mandatory).
+- Removed escapeSQL functions from Node, Attribute and Db.
+* Replaced Db->func_concat_ws by Db->func_concat_coalesce (no more separator).
+* Changed Db->metadata format
+* moving field types from strings ('number', 'string') to constants (defined as
+    Db::FT_ + STRING/NUMBER/...).
+    Note : it does not changeExpressionAttribute->m_searchType (still strings).
+* Set Mysql connection to ANSI mode : this implies escaping identifiers
+    (tables, columns, ...) with double quotes " or, better, use
+    Db::quoteIdentifier (which is now static). You can't use backticks anymore
+    (they only worked with mysql anyway).
+- Removed some functions/options from Db that where never used or became
+    pointless:
+    func_concat, savepoint, next_record, (un)lock, (delete|drop|clone)All,
+    m_collate variable, getRowsAssoc, getInsertId (use lastInsertId if needed),
+    setSequenceValue, (use|get|clear)Mapping, (get|set|reset)query_id,
+    getQueryMode, (do)connect, getDbStatus, newInstance,
+    database mode (ro/rw) and reset option in Db::getInstance, dbFieldType
+    argument in Query->*Condition
++ quoteIdentifier is now static and can take two parameters : it quotes both
+    and returns them joined with a '.'
+    (Db::quoteIdentifier('tbl', 'field') => '"tbl"."field"')
+* Switched Db drivers to PDO : Db class now extends PDO
+- Removed Statement classes in favor of \PDOStatement : getAllRows() no longer
+    exists, use fetchAll() which has the same use.
+- Stopped locking tables on Mysql->nextid() calls (isolation is provided by
+    transactions).
+- Removed Ddl classes (used for creating views, cloning databases...).
+
+** Relations :
++ Relation->(set|add)DestinationFilter now accepts named parameters
+    for queries. But :
+    * [attributes] should not be inside quotes anymore.
+    * Relation->parseFilter now returns a QueryPart object.
+    - O2O : The Relation destination filter is not applied on select query,
+    only on edit queries.
+    - They are not used to preset values in target nodes ("Add" link)
+    - Removed : M2M->parseDestinationFilter (use Relation->parseFilter),
+    M2O->createFilter (idem), M2O->filterToArray (was not used),
+    *Relation->setUseFilterFor(Add|Edit)Link().
+- Removed OneToManyRelation->translateSelector().
+* ManyToOneRelation :
+    setAutoCompleteSearchFields deprecated in favor of
+    setAutoCompleteSearchTemplate (more generic).
+- Removes Relation->getDescriptorTemplate (prefer
+    m_destInstance->getDescriptorTemplate()).
+* Relation->getJoinCondition does not take a $query argument anymore.
++ Added exact, wildcard and regex searches for OneToMany relations.
+
+** Miscellanous :
+- Removed decodeKeyValue*, encodeKeyValueSet and stripQuotes from Tools.
+- Removed atkfilter and associated functions.
+- Removed the '[pk]' tag for delete/multiselect operation (was marked as
+    "for backwardscompatibility")
+* Selector->buildQuery() is now a public function.
+- Selector does not implement IteratorAggregate anymore, SelectorIterator is
+    removed.
 
 New Release ATK 9.0 (2016-03-09)
 ---------------------------------

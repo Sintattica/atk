@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 
 /**
@@ -24,6 +25,13 @@ class TimeAttribute extends Attribute
     public $m_endTime = 23;
     public $m_steps = array('0', '30');
     public $m_default = '';
+
+    /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_TIME;
 
     /**
      * @param string $name Name of the attribute
@@ -131,7 +139,7 @@ class TimeAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        $result = $postvars[$this->fieldName()];
+        $result = parent::fetchValue($postvars);
 
         if (!is_array($result)) {
             $result = trim($result);
@@ -335,27 +343,6 @@ class TimeAttribute extends Attribute
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to search values.
-     *
-     * @param array $record Array with fields
-     * @param bool $extended if set to false, a simple search input is
-     *                            returned for use in the searchbar of the
-     *                            recordlist. If set to true, a more extended
-     *                            search may be returned for the 'extended'
-     *                            search page. The Attribute does not
-     *                            make a difference for $extended is true, but
-     *                            derived attributes may reimplement this.
-     * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @param DataGrid $grid
-     *
-     * @return string piece of html code with a checkbox
-     */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
-    {
-        return parent::search($record, $extended, $fieldprefix);
-    }
-
-    /**
      * Retrieve the list of searchmodes supported by the attribute.
      *
      * @return array List of supported searchmodes
@@ -385,31 +372,6 @@ class TimeAttribute extends Attribute
         if ($this->hasFlag(self::AF_OBLIGATORY) && ($value['hours'] == -1 || $value['minutes'] == -1)) {
             Tools::triggerError($rec, $this->fieldName(), 'error_obligatoryfield');
         }
-    }
-
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
-    {
-        if ($mode == 'add' || $mode == 'update') {
-            $value = $this->value2db($record);
-            if ($value == null) {
-                $query->addField($this->fieldName(), 'NULL', '', '', false);
-            } else {
-                $query->addField($this->fieldName(), $value, '', '', !$this->hasFlag(self::AF_NO_QUOTES));
-            }
-        } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES));
-        }
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return 'time';
     }
 
     /**
@@ -451,7 +413,7 @@ class TimeAttribute extends Attribute
      *                           attribute's getSearchModes() method.
      * @param string $fieldname
      *
-     * @return string The searchcondition to use.
+     * @return QueryPart The searchcondition to use.
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {

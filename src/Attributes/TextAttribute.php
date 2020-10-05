@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Core\Tools;
 
@@ -21,6 +22,7 @@ class TextAttribute extends Attribute
     public $m_cols;
     public $m_autoadjust;
     private $m_wrapMode = 'soft';
+    public $m_dbfieldtype = Db::FT_STRING;
 
     /**
      * @param string $name Name of the attribute
@@ -140,83 +142,6 @@ class TextAttribute extends Attribute
         $result .= ">".htmlspecialchars($text).'</textarea>';
 
         return $result;
-    }
-
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
-    {
-        if ($mode == 'add' || $mode == 'update') {
-            $query->addField($this->fieldName(), $this->value2db($record), '', '', !$this->hasFlag(self::AF_NO_QUOTES), true);
-        } else {
-            $query->addField($this->fieldName(), '', $tablename, $fieldaliasprefix, !$this->hasFlag(self::AF_NO_QUOTES), true);
-        }
-    }
-
-    /**
-     * Add's slashes to the string for the database.
-     *
-     * @param array $rec Array with values
-     *
-     * @return string with slashes
-     */
-    public function value2db($rec)
-    {
-        $db = $this->getDb();
-        if ($db->getType() != 'oci9' || $this->dbFieldType() != 'text') {
-            return $db->escapeSQL($rec[$this->fieldName()]);
-        } else {
-            return $rec[$this->fieldName()];
-        } //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
-    }
-
-    /**
-     * Removes slashes from the string.
-     *
-     * @param array $rec Array with values
-     *
-     * @return string without slashes
-     */
-    public function db2value($rec)
-    {
-        if (isset($rec[$this->fieldName()])) {
-            return $rec[$this->fieldName()];
-        }
-
-        return;
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        // make sure our metadata is set
-        if (is_object($this->m_ownerInstance)) {
-            $this->m_ownerInstance->setAttribSizes();
-        }
-
-        if ($this->m_dbfieldtype == '') {
-            return 'text';
-        }
-
-        return $this->m_dbfieldtype;
-    }
-
-    /**
-     * Fetch the metadata about this attrib from the table metadata, and
-     * process it.
-     *
-     * @param array $metadata The table metadata from the table for this
-     *                        attribute.
-     */
-    public function fetchMeta($metadata)
-    {
-        $this->m_dbfieldtype = isset($metadata[$this->fieldName()]['gentype'])?$metadata[$this->fieldName()]['gentype']:null;
-        if ($this->m_dbfieldtype == 'string') {
-            parent::fetchMeta($metadata);
-        }
     }
 
     /**

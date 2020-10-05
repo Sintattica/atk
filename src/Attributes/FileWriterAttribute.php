@@ -74,7 +74,7 @@ class FileWriterAttribute extends TextAttribute
             Tools::atkdebug('['.$this->fieldName()."] succesfully wrote $filename..");
         }
 
-        return $this->escapeSQL($contents);
+        return $contents;
     }
 
     /**

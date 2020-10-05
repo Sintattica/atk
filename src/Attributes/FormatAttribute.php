@@ -297,7 +297,7 @@ class FormatAttribute extends Attribute
     public function fetchValue($postvars)
     {
         $masks = $this->_breakDown();
-        $elems = isset($postvars[$this->fieldName()])?$postvars[$this->fieldName()]:null;
+        $elems = parent::fetchValue($postvars);
         $result = '';
 
         for ($i = 0, $_i = Tools::count($masks); $i < $_i; ++$i) {

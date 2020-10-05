@@ -495,7 +495,6 @@ class SessionManager
         // the next level will still contain these vars (unless overriden in the url)
         $sessionVars = array(
             'atknodeuri',
-            'atkfilter',
             'atkaction',
             'atkpkret',
             'atkstore',

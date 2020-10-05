@@ -108,29 +108,19 @@ class StringParser
 
     /**
      * Get the [ ] Fields out of a String.
+     *
+     * <b>Example:</b>
+     *        string: [firstname], [lastname] [city]
+     *        would return array('firstname','lastname','city')
+     *
+     * @return array
      */
     public function getFields()
     {
-        if (!Tools::count($this->m_fields)) {
-            $tmp = '';
-            $adding = false;
-
-            $strlen = strlen($this->m_string);
-            for ($i = 0; $i < $strlen; ++$i) {
-                if ($this->m_string[$i] == ']') {
-                    $adding = false;
-                    $this->m_fields[] = $tmp;
-                    $tmp = '';
-                } else {
-                    if ($this->m_string[$i] == '[') {
-                        $adding = true;
-                    } else {
-                        if ($adding) {
-                            $tmp .= $this->m_string[$i];
-                        }
-                    }
-                }
-            }
+        if (empty($this->m_fields)) {
+            $matches = [];
+            preg_match_all("/\[([^\]]*)\]+/", $this->m_string, $matches);
+            $this->m_fields = $matches[1];
         }
 
         return $this->m_fields;
@@ -150,7 +140,7 @@ class StringParser
         $matches = [];
         preg_match_all("/\[[^\]]*\]|[^[]+/", $this->m_string, $matches);
 
-        return $matches;
+        return $matches[0];
     }
 
     /**
@@ -168,7 +158,7 @@ class StringParser
 
         $fields = [];
         if (is_array($matches)) {
-            foreach ($matches[0] as $match) {
+            foreach ($matches as $match) {
                 // Check if need to parse the match
                 if (strpos($match, '[') !== false && strpos($match, ']') !== false) {
                     $parser = new self($match);

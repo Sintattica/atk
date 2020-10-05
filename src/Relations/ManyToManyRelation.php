@@ -7,8 +7,9 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 
 /**
  * Many to many relation. Should not be used directly.
@@ -99,24 +100,6 @@ class ManyToManyRelation extends Relation
     }
 
     /**
-     * Parse destination filter and return the result.
-     *
-     * @param array $record record
-     *
-     * @return string parsed filter
-     */
-    private function parseDestinationFilter($record)
-    {
-        $filter = '';
-
-        if ($this->m_destinationFilter != '') {
-            $filter = $this->parseFilter($this->m_destinationFilter, $record);
-        }
-
-        return $filter;
-    }
-
-    /**
      * Returns the selectable record count.
      *
      * @param array $record
@@ -150,9 +133,9 @@ class ManyToManyRelation extends Relation
             return 0;
         }
 
-        $filter = $this->parseDestinationFilter($record);
+        $filter = $this->parseFilter($record);
 
-        $cacheKey = md5($filter);
+        $cacheKey = md5(serialize($filter));
         if (!array_key_exists($cacheKey, $this->m_selectableRecordCountCache) || $force) {
             $this->m_selectableRecordCountCache[$cacheKey] = $this->getDestination()->select($filter)->getRowCount();
         }
@@ -176,12 +159,12 @@ class ManyToManyRelation extends Relation
             return [];
         }
 
-        $filter = $this->parseDestinationFilter($record);
+        $filter = $this->parseFilter($record);
 
-        $cacheKey = md5($filter);
+        $cacheKey = md5(serialize($filter));
         if (!array_key_exists($cacheKey, $this->m_selectableRecordsCache) || $force) {
             $this->m_selectableRecordsCache[$cacheKey] = $this->getDestination()->select($filter)->limit(is_numeric($this->m_limit) ? $this->m_limit : -1)->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-                $this->m_destInstance->m_primaryKey))->getAllRows();
+                $this->m_destInstance->m_primaryKey))->fetchAll();
         }
 
         return $this->m_selectableRecordsCache[$cacheKey];
@@ -211,9 +194,9 @@ class ManyToManyRelation extends Relation
         if (isset($record[$this->fieldName()])) {
             for ($i = 0; $i < Tools::count($record[$this->fieldName()]); ++$i) {
                 if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()])) {
-                    $key = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
+                    $key = $this->m_destInstance->primaryKeyString($record[$this->fieldName()][$i][$this->getRemoteKey()]);
                 } else {
-                    $key = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()][$i][$this->getRemoteKey()]));
+                    $key = $this->m_destInstance->primaryKeyString(array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()][$i][$this->getRemoteKey()]));
                 }
 
                 $keys[] = $key;
@@ -325,7 +308,7 @@ class ManyToManyRelation extends Relation
      */
     public function getOwnerFields()
     {
-        if (is_array($this->m_ownerFields) && Tools::count($this->m_ownerFields) > 0) {
+        if (is_array($this->m_ownerFields) && !empty($this->m_ownerFields)) {
             return $this->m_ownerFields;
         }
 
@@ -389,14 +372,17 @@ class ManyToManyRelation extends Relation
             for ($i = 0; $i < Tools::count($record[$this->fieldName()]); ++$i) {
                 $rec = $record[$this->fieldName()][$i][$remotekey];
                 if (!is_array($rec)) {
-                    $selector = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField()."= '$rec'";
+                    if (empty($rec)) {
+                        continue;
+                    }
+                    $selector = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->primaryKeyField(), $rec);
                     $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
                     $descr = $this->m_destInstance->descriptor($rec);
                 } else {
                     $descr = $this->m_destInstance->descriptor($rec);
                 }
                 if ($this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
-                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getDestination()->primaryKey($rec))),
+                    $descr = Tools::href(Tools::dispatch_url($this->m_destination, 'view', array('atkselector' => $this->getDestination()->primaryKeyString($rec))),
                         $descr, SessionManager::SESSION_NESTED);
                 }
                 $recordset[] = $descr;
@@ -449,14 +435,14 @@ class ManyToManyRelation extends Relation
             $where = $this->_getLoadWhereClause($record);
             $rel = $this->m_linkInstance;
 
-            return $rel->select($where)->getAllRows();
+            return $rel->select($where)->fetchAll();
         }
 
         return [];
     }
 
     /**
-     * Get where clause for loading the record.
+     * Get where clause for loading the record from the linkInstance table
      *
      * @param array $record The record
      *
@@ -476,15 +462,15 @@ class ManyToManyRelation extends Relation
             $primkeyattr = $this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
             if (!$primkeyattr->isEmpty($record)) {
-                $whereelems[] = $this->m_linkInstance->m_table.'.'.$localkey[$i]."='".$primkeyattr->value2db($record)."'";
+                $whereelems[] = Query::simpleValueCondition($this->m_linkInstance->m_table, $localkey[$i], $primkeyattr->value2db($record));
             }
         }
 
         if ($this->m_localFilter != null) {
-            $whereelems[] = $this->m_localFilter;
+            $whereelems[] = new QueryPart($this->m_localFilter);
         }
 
-        return '('.implode(') AND (', $whereelems).')';
+        return QueryPart::implode('AND', $whereelems);
     }
 
     /**
@@ -545,7 +531,6 @@ class ManyToManyRelation extends Relation
         if (isset($record[$this->fieldName()])) {
             foreach ($record[$this->fieldName()] as $selectedRecord) {
                 $selectedKey = is_array($selectedRecord[$this->getRemoteKey()]) ? $selectedRecord[$this->getRemoteKey()][$this->getDestination()->primaryKeyField()] : $selectedRecord[$this->getRemoteKey()];
-
                 $selectedRecordsByKey[$selectedKey] = $selectedRecord;
             }
         }
@@ -572,7 +557,7 @@ class ManyToManyRelation extends Relation
 
         // append the store deletion filter (if set)
         if (!empty($this->m_store_deletion_filter)) {
-            $selector = "({$selector}) AND ({$this->m_store_deletion_filter})";
+            $selector = QueryPart::implode('AND', [$selector, new QueryPart($this->m_store_deletion_filter)]);
         }
 
         return $this->getLink()->deleteDb($selector);
@@ -612,12 +597,10 @@ class ManyToManyRelation extends Relation
 
         if (is_array($localKey)) {
             for ($j = 0; $j < Tools::count($localKey); ++$j) {
-                $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[$j]]);
-                $record[$localKey[0]][$ownerFields[$j]] = $locKey;
+                $record[$localKey[0]][$ownerFields[$j]] = $ownerRecord[$ownerFields[$j]];
             }
         } else {
-            $locKey = $this->checkKeyDimension($ownerRecord[$ownerFields[0]]);
-            $record[$localKey] = $locKey;
+            $record[$localKey] = $ownerRecord[$ownerFields[$j]];
         }
 
         return $record;
@@ -739,7 +722,7 @@ class ManyToManyRelation extends Relation
     /**
      * Returns a piece of html code that can be used in a form to search.
      *
-     * @param array $record Array with values
+     * @param array $atksearch Array with values from POST request
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
      *                            recordlist. If set to true, a more extended
@@ -752,7 +735,7 @@ class ManyToManyRelation extends Relation
      *
      * @return string Piece of html code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->createDestination();
 
@@ -779,7 +762,7 @@ class ManyToManyRelation extends Relation
 
         // now select all records
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-            $this->m_destInstance->m_primaryKey))->getAllRows();
+            $this->m_destInstance->m_primaryKey))->fetchAll();
         $result = '<select class="form-control"'.$data;
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, Tools::count($recordset) + 1).'"';
@@ -795,7 +778,7 @@ class ManyToManyRelation extends Relation
 
         for ($i = 0; $i < Tools::count($recordset); ++$i) {
             $pk = $recordset[$i][$pkfield];
-            if (!empty($record[$this->fieldName()]) && Tools::atk_in_array($pk, $record[$this->fieldName()])) {
+            if (!empty($atksearch[$this->getHtmlName()]) && Tools::atk_in_array($pk, $atksearch[$this->getHtmlName()])) {
                 $sel = ' selected="selected"';
             } else {
                 $sel = '';
@@ -811,7 +794,7 @@ class ManyToManyRelation extends Relation
     /**
      * Creates an search condition for a given search value.
      *
-     * @param Query $query The query to which the condition will be added.
+     * @param Query $query  The query to which the condition will be added.
      * @param string $table The name of the table in which this attribute
      *                                 is stored
      * @param mixed $value The value the user has entered in the searchbox
@@ -820,23 +803,24 @@ class ManyToManyRelation extends Relation
      *                                 attribute's getSearchModes() method.
      * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
      */
-    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-        $ownerFields = $this->getOwnerFields();
-
+        if (!is_array($value) || empty($value) || $value[0] == '') {
+            // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+            return null;
+        }
         // We only support 'exact' matches.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
-        if (is_array($value) && Tools::count($value) > 0 && $value[0] != '') { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-            $this->createLink();
-            $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.'.'.$ownerFields[0].'='.$this->fieldName().'.'.$this->getLocalKey(), false);
-            $query->setDistinct(true);
+        $ownerFields = $this->getOwnerFields();
+        $this->createLink();
+        $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), [$this->getLocalKey() => [$table, $ownerFields[0]]], false);
+        $query->setDistinct(true);
 
-            if (Tools::count($value) == 1) { // exactly one value
-                $query->addSearchCondition($query->exactCondition($this->fieldName().'.'.$this->getRemoteKey(), $this->escapeSQL($value[0]), $this->dbFieldType()));
-            } else { // search for more values using IN()
-                $query->addSearchCondition($this->fieldName().'.'.$this->getRemoteKey()." IN ('".implode("','", $value)."')");
-            }
+        if (Tools::count($value) == 1) { // exactly one value
+            return $query->exactCondition(Db::quoteIdentifier($this->fieldName(), $this->getRemoteKey()), $value[0]);
+        } else { // search for more values using IN()
+            return $query->inCondition(Db::quoteIdentifier($this->fieldName(), $this->getRemoteKey()), $value);
         }
     }
 
@@ -867,9 +851,7 @@ class ManyToManyRelation extends Relation
      */
     public function fetchValue($postvars)
     {
-        $value = parent::fetchValue($postvars);
-
-        return $value == null ? [] : $value;
+        return parent::fetchValue($postvars) ?? [];
     }
 
     /**

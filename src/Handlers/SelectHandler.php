@@ -133,8 +133,6 @@ class SelectHandler extends ActionHandler
             // automatically go to the target.
             $parser = new StringParser(rawurldecode(Tools::atkurldecode($grid->getPostvar('atktarget'))));
 
-            // For backwardscompatibility reasons, we also support the '[pk]' var.
-            $records[0]['pk'] = $node->primaryKey($records[0]);
             $target = $parser->parse($records[0], true);
 
             $node->redirect($sm->sessionUrl($target, SessionManager::SESSION_NESTED));

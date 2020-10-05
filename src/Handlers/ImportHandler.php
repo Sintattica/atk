@@ -1250,7 +1250,7 @@ class ImportHandler extends ActionHandler
             // this check only works if either the primary key column is non-numeric or the given value is numeric
             if (!$isNumeric || is_numeric($value)) {
                 $db = $attr->m_destInstance->getDb();
-                $relationselect = $attr->m_destInstance->select($attr->m_destInstance->m_table.'.'.$attr->m_destInstance->primaryKeyField().' = \''.$db->escapeSQL($value)."'")->getAllRows();
+                $relationselect = $attr->m_destInstance->select($attr->m_destInstance->primaryKeyFromString($value))->fetchAll();
             }
 
             if (Tools::count($relationselect) == 0 || Tools::count($relationselect) > 1) {
@@ -1602,7 +1602,6 @@ class ImportHandler extends ActionHandler
         }
 
         $this->m_importNode->m_postvars['atksearchmode'] = 'exact';
-//      if (!in_array($allFieldValue)) $this->m_importNode->m_fuzzyFilters[] = $allFieldValue;
 
         $dbrec = $this->m_importNode->searchDb(array($updatekey1 => $updatekey1val));
 

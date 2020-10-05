@@ -5,85 +5,42 @@ namespace Sintattica\Atk\Db;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\TmpFile;
-use Sintattica\Atk\Db\Statement\Statement;
+use Sintattica\Atk\Utils\Debugger;
 
 /**
- * Abstract baseclass for ATK database drivers.
+ * Some helper classes around PDO and initialization functions.
  *
- * Implements some custom functionality and defines some methods that
- * derived classes should override.
+ * Notes:
+ *  - it autostarts a transaction on initialization, so don't forget to commit
+ * when you need it.
+ *  - query and prepare will halt() on error (unless $m_haltonerror set to
+ * false), so you can expect a valid result from them.
  *
  * @author Peter Verhage <peter@achievo.org>
  * @author Ivo Jansch <ivo@achievo.org>
+ * @author Samuel BF
  */
-class Db
+class Db extends \PDO
 {
     /**
-     * Some defines used for connection statusses, generic error messages, etc.
+     * Field types for database values
      */
-    const DB_SUCCESS = 0;
-    const DB_UNKNOWNERROR = 1;
-    const DB_UNKNOWNHOST = 2;
-    const DB_UNKNOWNDATABASE = 3;
-    const DB_ACCESSDENIED_USER = 4;
-    const DB_ACCESSDENIED_DB = 5;
+    const FT_UNSUPPORTED = 1;
+    const FT_BOOLEAN = 2;
+    const FT_NUMBER = 3;
+    const FT_DECIMAL = 4;
+    const FT_STRING = 5;
+    const FT_DATE = 6;
+    const FT_TIME = 7;
+    const FT_DATETIME = 8;
 
     /**
-     * Meta flags.
+     * Field flags
      */
     const MF_PRIMARY = 1;
     const MF_UNIQUE = 2;
     const MF_NOT_NULL = 4;
     const MF_AUTO_INCREMENT = 8;
-
-    /*
-     * The hostname/ip to connect to.
-     * @access private
-     * @var String
-     */
-    public $m_host = '';
-
-    /*
-     * The name of the database/schema to use.
-     * @access private
-     * @var String
-     */
-    public $m_database = '';
-
-    /*
-     * The username for the connection.
-     * @access private
-     * @var String
-     */
-    public $m_user = '';
-
-    /*
-     * The password for the connection.
-     * @access private
-     * @var String
-     */
-    public $m_password = '';
-
-    /*
-     * The port for the connection.
-     * @access private
-     * @var String
-     */
-    public $m_port = '';
-
-    /*
-     * The character set.
-     * @access private
-     * @var String
-     */
-    public $m_charset = '';
-
-    /*
-     * The collate.
-     * @access private
-     * @var String
-     */
-    public $m_collate = '';
 
     /*
      * Force case insensitive searching and ordering.
@@ -92,46 +49,11 @@ class Db
     protected $m_force_ci = false;
 
     /*
-     * The mode for the connection.
-     * @access private
-     * @var String
-     */
-    public $m_mode = '';
-
-    /*
      * The current connection name.
      * @access private
      * @var String
      */
     public $m_connection = '';
-
-    /*
-     * Contains the current record from the result set.
-     * @access private
-     * @var array
-     */
-    public $m_record = [];
-
-    /*
-     * Current row number
-     * @access private
-     * @var int
-     */
-    public $m_row = 0;
-
-    /*
-     * Contains error number, in case an error occurred.
-     * @access private
-     * @var int
-     */
-    public $m_errno = 0;
-
-    /*
-     * Contains textual error message, in case an error occurred.
-     * @access private
-     * @var String
-     */
-    public $m_error = '';
 
     /*
      * If true, an atkerror is raised when an error occurred.
@@ -157,53 +79,11 @@ class Db
     public $m_type = '';
 
     /*
-     * Vendor.
-     *
-     * This is mainly used to retrieve things like error messages that are
-     * common for a vendor (i.e., they do not differ between versions).
-     * @abstract
-     * @access private
-     * @var String
-     */
-    public $m_vendor = '';
-
-    /*
-     * number of affected rows after an update/delete/insert query
-     * @access private
-     * @var int
-     */
-    public $m_affected_rows = 0;
-
-    /*
      * array to cache meta-information about tables.
      * @access private
      * @var array
      */
-    public $m_tableMeta = [];
-
-    /**
-     * The connection is stored in this variable.
-     * @access private
-     * @var mixed $m_link_id
-     */
-    public $m_link_id;
-
-    /**
-     * The query statement is stored in this variable.
-     * @access private
-     * @var mixed $m_query_id
-     */
-    public $m_query_id;
-
-    /*
-     * Auto free result upon next query.
-     *
-     * When set to true, the previous results are cleared when a new query is
-     * executed. It should generally not be necessary to put this to false.
-     * @access private
-     * @var boolean
-     */
-    public $m_auto_free = true;
+    private $m_tableMeta = [];
 
     /*
      * List of error codes that could be caused by an end-user.
@@ -213,111 +93,32 @@ class Db
      * @access private
      * @var array
      */
-    public $m_user_error = [];
-
-    /*
-     * Internal use; error messages from language files are cached here
-     * @access private
-     */
-    public $m_errorLookup = [];
+    private $m_user_error = ['23000'];
 
     /**
-     * Indentifier Quoting.
+     * sequence table. Used for AUTO_INCREMENT attributes
+     * that are not defined as AUTO_INCREMENT in database,
+     * or for custom calls of 'nextid()'
      *
-     * @var array
+     * @var string
      */
-    protected $m_identifierQuoting = array('start' => '"', 'end' => '"', 'escape' => '"');
+    private $m_seq_table = 'db_sequence';
 
     /**
-     * Constructor.
+     * the field in the seq_table that contains the counter..
+     *
+     * @var string
      */
-    public function __construct()
-    {
-    }
+    public $m_seq_field = 'nextid';
 
     /**
-     * Set database sequence value.
+     * the field in the seq_table that countains the name of the sequence..
      *
-     * @param string $seqname sequence name
-     * @param int $value sequence value
-     *
-     * @abstract
+     * @var string
      */
-    public function setSequenceValue($seqname, $value)
-    {
-        Tools::atkerror('WARNING: '.get_class($this).'.setSequenceValue NOT IMPLEMENTED!');
-    }
+    public $m_seq_namefield = 'seq_name';
 
-    /**
-     * Use the given mapping to translate database requests
-     * from one database to another database. This can be
-     * used for test purposes.
-     *
-     * @param array $mapping database mapping
-     * @static
-     */
-    public function useMapping($mapping)
-    {
-        self::_getOrUseMapping($mapping);
-    }
-
-    /**
-     * Returns the current database mapping.
-     * NULL if no mapping is active.
-     *
-     * @return mixed current database mapping (null if inactive)
-     * @static
-     */
-    public static function getMapping()
-    {
-        return self::_getOrUseMapping();
-    }
-
-    /**
-     * Clear the current database mapping.
-     *
-     * @static
-     */
-    public function clearMapping()
-    {
-        self::_getOrUseMapping(null);
-    }
-
-    /**
-     * Returns the real database name. If a mapping
-     * exists the mapping is used to translate the
-     * database name to it's real database name. If
-     * the database name is not part of the mapping or
-     * no mapping is set the given name will be returned.
-     *
-     * @param string $name database name
-     * @return string
-     */
-    public static function getTranslatedDatabaseName($name)
-    {
-        $mapping = self::getMapping();
-
-        return $mapping === null || !isset($mapping[$name]) ? $name : $mapping[$name];
-    }
-
-    /**
-     * Get or set the database mapping.
-     *
-     * @param string $mapping database mapping
-     *
-     * @return mixed current database mapping (null if inactive)
-     * @static
-     */
-    protected static function _getOrUseMapping($mapping = 'get')
-    {
-        static $s_mapping = null;
-        if ($mapping !== 'get') {
-            $s_mapping = $mapping;
-        } else {
-            return $s_mapping;
-        }
-    }
-
+    /*********************************************** Getters / Setters *************************************************/
     /**
      * Get the database driver type.
      *
@@ -329,21 +130,195 @@ class Db
     }
 
     /**
-     * Get the current connection.
+     * Halt on error?
      *
-     * @return mixed Connection resource id
+     * @return bool halt on error?
      */
-    public function link_id()
+    public function getHaltOnError()
     {
-        return $this->m_link_id;
+        return $this->m_haltonerror;
     }
 
     /**
+     * Halt on error or not?
+     *
+     * @param bool $state
+     */
+    public function setHaltOnError($state = true)
+    {
+        $this->m_haltonerror = $state;
+    }
+
+    /**
+     * Force case-insensitive search ?
+     *
+     * @param bool $state
+     */
+    public function getForceCaseInsensitive()
+    {
+        return $this->m_force_ci;
+    }
+
+    /**
+     * This function indicates what searchmodes the database supports.
+     *
+     * @return array with search modes
+     */
+    public function getSearchModes()
+    {
+        // exact match and substring search should be supported by any database.
+        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+        // searches can be implemented using LIKE)
+        return array(
+            'exact',
+            'substring',
+            'wildcard',
+            'regexp',
+            'greaterthan',
+            'greaterthanequal',
+            'lessthan',
+            'lessthanequal',
+            'between',
+        );
+    }
+
+    /*********************************************** Class initialization *************************************************/
+    /**
+     * Get a database instance (singleton)
+     *
+     * This method instantiates and returns the correct (vendor specific)
+     * database instance, depending on the configuration.
+     *
+     * @static
+     *
+     * @param string $conn The name of the connection as defined in the
+     *                      config/parameters.ENV.php file (defaults to 'default')
+     *
+     * @return Db Instance of the database class
+     */
+    public static function getInstance($conn = 'default')
+    {
+        static $s_dbInstances = null;
+        if ($s_dbInstances == null) {
+            $s_dbInstances = [];
+            if (!Config::getGlobal('meta_caching')) {
+                Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
+            }
+        }
+
+        $dbInstance = $s_dbInstances[$conn]??null;
+
+        if (!$dbInstance) {
+            $dbconfig = Config::getGlobal('db');
+
+            try {
+                $dsn = self::dsnFromConfig($dbconfig[$conn]);
+                $driver = explode(':', $dsn)[0];
+                $driverClass = __NAMESPACE__.'\\'.ucfirst($driver).'Db';
+                Tools::atkdebug("Connecting to '{$conn}' with dsn '{$dsn}' and '{$driverClass}' driver");
+
+                /** @var Db $dbInstance */
+                $dbInstance = new $driverClass(
+                    $dsn,
+                    $dbconfig[$conn]['user'] ?? '',
+                    $dbconfig[$conn]['password'] ?? '',
+                    $dbconfig[$conn]['options'] ?? []
+                );
+            } catch (\PDOException $e) {
+                Tools::atkhalt(Tools::atktext('db_access_failed', 'atk'), 'critical');
+                return null;
+            }
+            $dbInstance->init($conn, $driver, $dbconfig[$conn]);
+            $s_dbInstances[$conn] = $dbInstance;
+        }
+
+        return $dbInstance;
+    }
+
+    /**
+     * Computes DSN string from the config array as defined in config/parameters.ENV.php
+     *
+     * @param array $config with values from ATK config
+     *
+     * @return $dsn string
+     */
+    private static function dsnFromConfig($config)
+    {
+        // User can supply dsn string directly
+        if (isset($config['dsn'])) {
+            return $config['dsn'];
+        }
+
+        $driver = strtolower($config['driver'])??'';
+        switch ($driver) {
+            case 'mysql':
+            case 'mysqli':
+                $driver = 'mysql';
+                break;
+            case 'pgsql':
+            case 'postgresql':
+                $driver = 'pgsql';
+                break;
+            case 'sqlite':
+                $driver = 'sqlite';
+                break;
+            default:
+                Tools::atkhalt(sprintf(Tools::atktext('db_unsupported_driver', 'atk'), $driver));
+        }
+
+        $options = [];
+        if (isset($config['host'])) {
+            $options[] = "host={$config['host']}";
+        }
+        if (isset($config['port'])) {
+            $options[] = "port={$config['port']}";
+        }
+        if (isset($config['db'])) {
+            $options[] = "dbname={$config['db']}";
+        }
+        if ($driver == 'mysql') {
+            $options[] = 'charset='.
+                ($config['charset'] ?? 'utf8mb4');
+        }
+        if ($driver == 'sqlite') {
+            $options = [$config['file']];
+        }
+
+        return $driver.':'.implode(';', $options);
+    }
+
+    /**
+     * Intialize some default options and start the first transaction
+     *
+     * @param string $connectionName    from the config files
+     * @param string $driver            used for the connection
+     * @param string $connectionOptions from the config files
+     */
+    protected function init($connectionName, $driver, $connectionOptions = [])
+    {
+        Tools::atkdebug("Initializing '{$connectionName}' database instance");
+        $this->m_type = $driver;
+        $this->m_connection = $connectionName;
+        $this->m_force_ci = $connectionOptions[$connectionName]['force_ci'] ?? false;
+        $this->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        if (!$this->beginTransaction()) {
+            $this->halt('Starting transaction failed');
+        }
+    }
+
+    /*********************************************** Error handling *************************************************/
+    /**
      * Has error?
+     *
+     * Relies on PDO::errorCode, which returns a SQLSTATE error code. See :
+     * https://en.wikipedia.org/wiki/SQLSTATE
+     *
+     * @return bool
      */
     public function hasError()
     {
-        return $this->m_errno != 0;
+        $errorCategory == substr($this->errorCode(), 0, 2);
+        return $errorCategory == '00' || $errorCategory == '02';
     }
 
     /**
@@ -354,7 +329,7 @@ class Db
      */
     public function getErrorType()
     {
-        if (in_array($this->m_errno, $this->m_user_error)) {
+        if (in_array($this->errorCode(), $this->m_user_error)) {
             return 'user';
         }
 
@@ -362,39 +337,25 @@ class Db
     }
 
     /**
-     * Get generic atk errorccode.
+     * Get SQLSTATE errorcode (the default one).
      *
-     * @return int One of the ATK self::DB_* codes.
-     */
-    public function getAtkDbErrno()
-    {
-        return $this->_translateError(null);
-    }
-
-    /**
-     * Get vendor-dependent database error number.
+     * DEPRECATED : use errorCode() in place.
      *
-     * Applications should not rely on this method, if they want to be
-     * database independent.
-     *
-     * @return mixed Database dependent error code.
+     * @return SQLSTATE error code.
      */
     public function getDbErrno()
     {
-        return $this->m_errno;
+        return $this->errorCode();
     }
 
     /**
-     * Get vendor-dependent database error message.
+     * Get error-info message returned by PDO.
      *
-     * Applications should not rely on this method, if they want to be
-     * database independent.
-     *
-     * @return string Database dependent error message.
+     * @return string error message.
      */
     public function getDbError()
     {
-        return $this->m_error;
+        return $this->errorInfo()[2];
     }
 
     /**
@@ -412,328 +373,145 @@ class Db
     }
 
     /**
-     * Returns the query mode.
-     *
-     * @param string $query
-     *
-     * @return string Return r or w mode
-     */
-    public function getQueryMode($query)
-    {
-        $query = strtolower($query);
-
-        $regexes = array('^\\s*select(?!\\s+into)', '^\\s*show');
-        foreach ($regexes as $regex) {
-            if (preg_match("/$regex/", $query)) {
-                return 'r';
-            }
-        }
-
-        Tools::atknotice('Query mode not detected! Using write mode.');
-
-        return 'w';
-    }
-
-    /**
-     * Looks up the error.
-     *
-     * @param int $errno Error number
-     *
-     * @return string The translation for the error
-     */
-    public function errorLookup($errno)
-    {
-        if (isset($this->m_errorLookup[$errno])) {
-            return $this->m_errorLookup[$errno];
-        }
-
-        return '';
-    }
-
-    /**
      * Get localized error message (for display in the application).
+     *
+     * @var \PDOStatement $stmt fetch error information from this statement.
+     *                          if not set, will fetch error info from $this.
      *
      * @return string Error message
      */
-    public function getErrorMsg()
+    public function getErrorMsg($stmt = null)
     {
-        $errno = $this->getAtkDbErrno();
-        if ($errno == self::DB_UNKNOWNERROR) {
-            $errstr = $this->errorLookup($this->getDbErrno());
-            if ($errstr == '') {
-                $this->m_error = Tools::atktext('unknown_error').': '.$this->getDbErrno().' ('.$this->getDbError().')';
-            } else {
-                $this->m_error = $errstr.($this->getErrorType() == 'system' ? ' ('.$this->getDbError().')' : '');
-            }
-
-            return $this->m_error;
-        } else {
-            $tmp_error = '';
-            switch ($errno) {
-                case self::DB_ACCESSDENIED_DB:
-                    $tmp_error = sprintf(Tools::atktext('db_access_denied_database', 'atk'), $this->m_user, $this->m_database);
-                    break;
-                case self::DB_ACCESSDENIED_USER:
-                    $tmp_error = sprintf(Tools::atktext('db_access_denied_user', 'atk'), $this->m_user, $this->m_database);
-                    break;
-                case self::DB_UNKNOWNDATABASE:
-                    $tmp_error = sprintf(Tools::atktext('db_unknown_database', 'atk'), $this->m_database);
-                    break;
-                case self::DB_UNKNOWNHOST:
-                    $tmp_error = sprintf(Tools::atktext('db_unknown_host', 'atk'), $this->m_host);
-                    break;
-            }
-            $this->m_error = $tmp_error;
-
-            return $this->m_error;
-        }
+        $errInfo = $stmt ? $stmt->errorInfo() : $this->errorInfo();
+        return Tools::atktext('unknown_error').": SQLSTATE:{$errInfo[0]} [{$errInfo[1]}] ({$errInfo[2]})";
     }
 
     /**
      * If haltonerror is set, this will raise an atkerror. If not, it will
      * place the error in atkdebug and continue.
      *
-     * @param string $message
+     * @param string $message     to print out to user
+     * @param \PDOStatement $stmt where to find error information (if not set : on self::)
      */
-    public function halt($message = '')
+    public function halt($message = '', $stmt = null)
     {
-        if ($this->m_haltonerror) {
-            if ($this->getErrorType() === 'system') {
-                Tools::atkdebug(__CLASS__.'::halt() on system error');
-                $level = 'warning';
-                if (!in_array($this->m_errno, $this->m_user_error)) {
-                    $level = 'critical';
-                }
-                Tools::atkerror($this->getErrorMsg());
-                Tools::atkhalt($this->getErrorMsg(), $level);
-            } else {
-                Tools::atkdebug(__CLASS__.'::halt() on user error (not halting)');
-            }
+        Tools::atkdebug($message . ' : ' . $this->getErrorMsg($stmt));
+        if (!$this->m_haltonerror or $this->getErrorType() == 'user') {
+            Tools::atkdebug(__CLASS__.'::halt() on user error (not halting)');
+            return;
         }
+        $this->rollBack();
+        Tools::atkdebug(__CLASS__.'::halt() on system error');
+        Tools::atkhalt($message, 'critical');
     }
 
+    /*********************************************** Helper functions *************************************************/
     /**
-     * Returns the current query resource.
+     * Create an Query object for constructing queries.
      *
-     * @return mixed query resource
+     * @param string $table the query will run on.
+     *
+     * @return Query Query class.
      */
-    public function getQueryId()
+    public function createQuery($table = '')
     {
-        return $this->m_query_id;
-    }
-
-    /**
-     * Sets the current query identifier used for next_record() etc.
-     *
-     * @param mixed $queryId query resource
-     */
-    public function setQueryId($queryId)
-    {
-        $this->m_query_id = $queryId;
-    }
-
-    /**
-     * Rests the query resource.
-     *
-     * NOTE: this doesn't close the query/statement!
-     */
-    public function resetQueryId()
-    {
-        $this->m_query_id = null;
-    }
-
-    /**
-     * Get the current query statement resource id.
-     *
-     * @return resource Query statement resource id.
-     */
-    public function query_id()
-    {
-        return $this->m_query_id;
-    }
-
-    /**
-     * Connect to the database.
-     *
-     * @return int Connection status
-     * @abstract
-     */
-    public function connect()
-    {
-        if ($this->m_link_id == null) {
-            Tools::atkdebug("db::connect -> Don't switch use current db");
-
-            return $this->doConnect($this->m_host, $this->m_user, $this->m_password, $this->m_database, $this->m_port, $this->m_charset);
-        }
-
-        return self::DB_SUCCESS;
-    }
-
-    /**
-     * Connect to the database.
-     *
-     * @param string $host The host to connect to
-     * @param string $user The user to connect with
-     * @param string $password The password to connect with
-     * @param string $database The database to connect to
-     * @param int $port The portnumber to use for connecting
-     * @param string $charset The charset to use
-     * @abstract
-     *
-     * @return int status
-     */
-    public function doConnect($host, $user, $password, $database, $port, $charset)
-    {
-        return self::DB_SUCCESS;
-    }
-
-    /**
-     * Translate database-vendor dependent error messages into an ATK generic
-     * error code.
-     *
-     * Derived classes should implement this method and translate their error
-     * codes.
-     *
-     * @param mixed $errno Vendor-dependent error code.
-     *
-     * @return int ATK error code
-     */
-    public function _translateError($errno = null)
-    {
-        return self::DB_UNKNOWNERROR;
-    }
-
-    /**
-     * Disconnect from database.
-     *
-     * @abstract
-     */
-    public function disconnect()
-    {
-    }
-
-    /**
-     * Commit the current transaction.
-     *
-     * @abstract
-     */
-    public function commit()
-    {
-    }
-
-    /**
-     * Set savepoint with the given name.
-     *
-     * @param string $name savepoint name
-     * @abstract
-     */
-    public function savepoint($name)
-    {
+        return new Query($table, $this);
     }
 
     /**
      * Rollback the current transaction.
-     * (If a savepoint is given to the given savepoint.).
      *
-     * @param string $savepoint savepoint name
+     * DEPRECATED in favor of standard PDO::rollBack.
      *
-     * @abstract
+     * @return bool
      */
-    public function rollback($savepoint = '')
+    public function rollback()
     {
+        return parent::rollBack();
+    }
+
+    /**
+     * Commit current transaction and start a new one.
+     *
+     * @return bool $succss
+     */
+    public function commit()
+    {
+        Tools::atkdebug('Committing');
+        $retVal = parent::commit();
+        if (!$this->beginTransaction()) {
+            $this->halt('Starting transaction failed');
+        }
+        return $retVal;
     }
 
     /**
      * Creates a new statement for the given query.
      *
-     * @see Statement
-     *
      * @param string $query SQL query
      *
-     * @return Statement statement
+     * @return \PDOStatement statement
      */
-    public function prepare($query)
+    public function prepare($query, $options = [])
     {
-        $class = __NAMESPACE__.'\\Statement\\'.$this->m_type.'Statement';
-        if (!class_exists($class)) {
-            $class = __NAMESPACE__.'\\Statement\\CompatStatement';
+        Tools::atkdebug("Preparing query : $query");
+        $stmt = parent::prepare($query, $options);
+        if (!$stmt) {
+            $this->halt('Query preparation failed');
         }
-
-        $stmt = new $class($this, $query);
 
         return $stmt;
     }
 
     /**
-     * Parse and execute a query.
-     *
-     * If the query is a select query, the rows can be retrieved using the
-     * next_record() method.
+     * Execute a query.
      *
      * @param string $query The SQL query to execute
-     * @param int $offset Retrieve the results starting at the specified
-     *                       record number. Pass -1 or 0 to start at the first
-     *                       record.
-     * @param int $limit Indicates how many rows to retrieve. Pass -1 to
-     *                       retrieve all rows.
-     * @abstract
      *
-     * @return bool
+     * @return \PDOStatement
      */
-    public function query($query, $offset = -1, $limit = -1)
+    public function query($query)
     {
-        return true;
+        Tools::atkdebug("Running query : $query");
+        $stmt = parent::query($query);
+        if (!$stmt) {
+            $this->halt('Query execution failed');
+        }
+        return $stmt;
     }
 
     /**
-     * Retrieve the next record in the resultset.
+     * Prepare & execute a query with a prepared statement.
      *
-     * @return mixed An array containing the record, or 0 if there are no more
-     *               records to retrieve.
-     * @abstract
+     * @param QueryPart|string $query to prepare and execute
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
+     *
+     * @return \PDOStatement
      */
-    public function next_record()
+    public function queryP($query, $parameters = [])
     {
-        return 0;
-    }
+        if (!$query instanceof QueryPart) {
+            $query = new QueryPart($query, $parameters);
+        }
 
-    /**
-     * Lock a table in the database.
-     *
-     * @param string $table The name of the table to lock.
-     * @param string $mode The lock type.
-     *
-     * @return bool True if succesful, false if not.
-     * @abstract
-     */
-    public function lock($table, $mode = 'write')
-    {
-        return 0;
-    }
+        // Fast-track : no parameters -> using \PDO::query
+        if (!count($query->parameters)) {
+            return $this->query($query->sql);
+        }
 
-    /**
-     * Relieve all locks.
-     *
-     * @return bool True if succesful, false if not.
-     * @abstract
-     */
-    public function unlock()
-    {
-        return 0;
-    }
-
-    /**
-     * Retrieve the number of rows affected by the last query.
-     *
-     * After calling query() to perform an update statement, this method will
-     * return the number of rows that was updated.
-     *
-     * @return int The number of affected rows
-     * @abstract
-     */
-    public function affected_rows()
-    {
-        return 0;
+        $stmt = $this->prepare($query->sql);
+        if (!$stmt) {
+            // Error handling already have been done in $this->prepare.
+            return null;
+        }
+        foreach ($query->parameters as $placeholder => $parameter) {
+            $stmt->bindValue($placeholder, $parameter[0], $parameter[1]);
+        }
+        Tools::atkdebug("Executing query");
+        if(!$stmt->execute()) {
+            $this->halt('Query execution failed', $stmt);
+        }
+        return $stmt;
     }
 
     /**
@@ -743,69 +521,27 @@ class Db
      *
      * @param string $sequence The sequence name
      *
-     * @return int The next sequence value
-     * @abstract
+     * @return int|bool The next sequence value or false on fail
      */
     public function nextid($sequence)
     {
-    }
-
-    /**
-     * Return the meta data of a certain table HIE GEBLEVEN.
-     *
-     * depending on $full, metadata returns the following values:
-     *  -full is false (default):
-     *   $result[]:
-     *     [0]["table"]  table name
-     *     [0]["name"]   field name
-     *     [0]["type"]   field type
-     *     [0]["len"]    field length
-     *     [0]["flags"]  field flags
-     *
-     *  -full is true:
-     *   $result[]:
-     *     ["num_fields"] number of metadata records
-     *     [0]["table"]  table name
-     *     [0]["name"]   field name
-     *     [0]["type"]   field type
-     *     [0]["len"]    field length
-     *     [0]["flags"]  field flags
-     *     ["meta"][field name] index of field named "field name"
-     *     The last one is used, if you have a field name, but no index.
-     *
-     * @param string $table the table name
-     * @param bool $full all meta data or not
-     *
-     * @return array with meta data
-     */
-    public function metadata($table, $full = false)
-    {
-        return [];
-    }
-
-    /**
-     * Return the available table names.
-     *
-     * @return array with table names etc.
-     *
-     * @param bool $includeViews include views?
-     */
-    public function table_names($includeViews = true)
-    {
-        return [];
-    }
-
-    /**
-     * This function checks the database for a table with
-     * the provide name.
-     *
-     * @param string $tableName the table to find
-     *
-     * @return bool true if found, false if not found
-     */
-    public function tableExists($tableName)
-    {
-        return false;
+        $result = $this->getValue(
+            'SELECT '.self::quoteIdentifier($this->m_seq_field).' FROM '.self::quoteIdentifier($this->m_seq_table).
+            ' WHERE '.self::quoteIdentifier($this->m_seq_namefield).' = :sequence_name',
+            [':sequence_name' => $sequence]);
+        /* no current value, make one */
+        if (!$result) {
+            $this->prepare('INSERT INTO '.self::quoteIdentifier($this->m_seq_table)." VALUES(:sequence_name, 1)")
+                ->execute([':sequence_name' => $sequence]);
+            $nextid = 1;
+        } else {
+           $nextid = $result[$this->m_seq_field] + 1;
+            $this->prepare('UPDATE '.self::quoteIdentifier($this->m_seq_table).' SET '.
+                self::quoteIdentifier($this->m_seq_field).' = :nextid WHERE '.
+                self::quoteIdentifier($this->m_seq_field).' = :sequence_name')
+                ->execute([':nextid' => $nextid, ':sequence_name' => ':sequence_name']);
+        }
+        return $nextid;
     }
 
     /**
@@ -813,16 +549,14 @@ class Db
      *
      * Please note: this method does *not* add a limit to the query
      *
-     * @param string $query query
-     * @param bool $useLimit add limit to the query (if you have your own limit specify false!)
+     * @param QueryPart|string $query query
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
      *
      * @return array row
      */
-    public function getRow($query, $useLimit = false)
+    public function getRow($query, $parameters = [])
     {
-        $rows = $this->getRows($query, $useLimit ? 0 : -1, $useLimit ? 1 : -1);
-
-        return Tools::count($rows) > 0 ? $rows[0] : null;
+        return $this->queryP($query, $parameters)->fetch();
     }
 
     /**
@@ -834,157 +568,34 @@ class Db
      * retrieve a lot of records, you might hit the memory_limit
      * and your script will die.
      *
-     * @param string $query query
-     * @param int $offset offset
-     * @param int $limit limit
+     * @param QueryPart|string $query query
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
      *
      * @return array rows
      */
-    public function getRows($query, $offset = -1, $limit = -1)
+    public function getRows($query, $parameters = [])
     {
-        return $this->getRowsAssoc($query, null, $offset, $limit);
+        return $this->queryP($query, $parameters)->fetchAll();
     }
 
     /**
-     * Get rows in an associative array with the given column used as key for the rows.
+     * Get the value of the first column of the first row returned by $query
      *
-     * NOTE:
-     * This is not an efficient way to retrieve records, as this
-     * will load all records into one array into memory. If you
-     * retrieve a lot of records, you might hit the memory_limit
-     * and your script will die.
+     * @param QueryPart|string $query query
+     * @param array $parameters for the query (only if $query is not already au QueryPart)
      *
-     * @param string $query query
-     * @param int|string $keyColumn column index / name (default first column) to be used as key
-     * @param int $offset offset
-     * @param int $limit limit
-     *
-     * @return array rows
+     * @return mixed value if found, null if not
      */
-    public function getRowsAssoc($query, $keyColumn = 0, $offset = -1, $limit = -1)
+    public function getValue($query, $parameters = [])
     {
-        $result = [];
-
-        $this->query($query, $offset, $limit);
-        for ($i = 0; $this->next_record(); ++$i) {
-            if ($keyColumn === null) {
-                $key = $i;
-            } else {
-                if (is_numeric($keyColumn)) {
-                    $key = Tools::atkArrayNvl(array_values($this->m_record), $keyColumn);
-                } else {
-                    $key = $this->m_record[$keyColumn];
-                }
-            }
-
-            $result[$key] = $this->m_record;
-        }
-
-        return $result;
+        $row =  $this->queryP($query, $parameters)->fetch(\PDO::FETCH_NUM);
+        return $row[0] ?? null;
     }
 
+    /*********************************************** Metadata computation *************************************************/
     /**
-     * Get a single value from a certain specified query.
-     *
-     * @param string $query query
-     * @param mixed $default fallback value if the query doesn't return a result
-     * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param bool $useLimit add limit to the query (if you have your own limit specify false!)
-     *
-     * @return mixed first value or default fallback value
-     */
-    public function getValue($query, $default = null, $valueColumn = 0, $useLimit = false)
-    {
-        $row = $this->getRow($query, $useLimit);
-
-        if ($row == null) {
-            return $default;
-        } else {
-            if (is_numeric($valueColumn)) {
-                return Tools::atkArrayNvl(array_values($row), $valueColumn);
-            } else {
-                return $row[$valueColumn];
-            }
-        }
-    }
-
-    /**
-     * Get an array with all the values in the specified column.
-     *
-     * NOTE:
-     * This is not an efficient way to retrieve records, as this
-     * will load all records into one array into memory. If you
-     * retrieve a lot of records, you might hit the memory_limit
-     * and your script will die.
-     *
-     * @param string $query query
-     * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param int $offset offset
-     * @param int $limit limit
-     *
-     * @return array with values
-     */
-    public function getValues($query, $valueColumn = 0, $offset = -1, $limit = -1)
-    {
-        return $this->getValuesAssoc($query, null, $valueColumn, $offset, $limit);
-    }
-
-    /**
-     * Get rows in an associative array with the given key column used as
-     * key and the given value column used as value.
-     *
-     * NOTE:
-     * This is not an efficient way to retrieve records, as this
-     * will load all records into one array into memory. If you
-     * retrieve a lot of records, you might hit the memory_limit
-     * and your script will die.
-     *
-     * @param string $query query
-     * @param int|string $keyColumn column index / name (default first column) to be used as key
-     * @param int|string $valueColumn column index / name (default first column) to be used as value
-     * @param int $offset offset
-     * @param int $limit limit
-     *
-     * @return array rows
-     */
-    public function getValuesAssoc($query, $keyColumn = 0, $valueColumn = 1, $offset = -1, $limit = -1)
-    {
-        $rows = $this->getRowsAssoc($query, $keyColumn, $offset, $limit);
-        foreach ($rows as $key => &$value) {
-            if (is_numeric($valueColumn)) {
-                $value = Tools::atkArrayNvl(array_values($value), $valueColumn);
-            } else {
-                $value = $value[$valueColumn];
-            }
-        }
-
-        return $rows;
-    }
-
-    /**
-     * This function indicates what searchmodes the database supports.
-     *
-     * @return array with search modes
-     */
-    public function getSearchModes()
-    {
-        // exact match and substring search should be supported by any database.
-        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-        // searches can be implemented using LIKE)
-        return array(
-            'exact',
-            'substring',
-            'wildcard',
-            'greaterthan',
-            'greaterthanequal',
-            'lessthan',
-            'lessthanequal',
-            'between',
-        );
-    }
-
-    /**
-     * Fetches table meta data from database.
+     * Fetches table meta data from memory if already loaded, from cache into file if present,
+     * from database if not.
      *
      * @param string $table
      *
@@ -999,7 +610,7 @@ class Db
         if (Config::getGlobal('meta_caching')) {
             $this->m_tableMeta[$table] = $this->_getTableMetaFromCache($table);
         } else {
-            $this->m_tableMeta[$table] = $this->_getTableMetaFromDb($table);
+            $this->m_tableMeta[$table] = $this->metadata($table);
         }
 
         return $this->m_tableMeta[$table];
@@ -1021,7 +632,7 @@ class Db
         if ($tmpfile->exists()) {
             include $tmpfile->getPath();
         } else {
-            $tablemeta = $this->_getTableMetaFromDb($table);
+            $tablemeta = $this->metadata($table);
             $tmpfile->writeAsPhp('tablemeta', $tablemeta);
         }
 
@@ -1029,29 +640,140 @@ class Db
     }
 
     /**
-     * Returns the tablemetadata directly from db.
+     * Retrieve the meta data of a certain table from the database
      *
-     * @param string $table
+     * Return an column name-indexed array of arrays containing :
+     *     "table"          table name
+     *     "name"           field name
+     *     "type"           field type (driver-specific)
+     *     "gentype"        field type (one of self::FT_* constants)
+     *     "len"            field length (for text and number fields)
+     *     "precision"      the numeric precision of this column for decimal types
+     *     "flags"          taken from self::MF_ list
      *
-     * @return array
+     * @param string $table     the table name
+     * @param array  $extraCols to add columns from information_schema query
+     *
+     * @return array with meta data
      */
-    protected function _getTableMetaFromDb($table)
+    protected function metadata($table, $extraCols = [])
     {
-        $meta = $this->metadata($table, false);
+        /* list fields */
+        Tools::atkdebug("Retrieving metadata for $table");
 
+        /* Array from our meta titles ton information_shema ones : */
+        $columns = array_merge([
+            'table_name',
+            'column_name',
+            'data_type',
+            'character_maximum_length',
+            'numeric_precision',
+            'numeric_scale',
+            'is_nullable',
+            ],
+            $extraCols);
+        /* get meta information */
+        $stmt = $this->queryP(
+            'SELECT '.implode(',', $columns). ' FROM information_schema.columns WHERE table_name = :tablename;',
+            [':tablename' => $table]
+        );
+
+        /* Transforming to our destination array */
         $result = [];
-        for ($i = 0, $_i = Tools::count($meta); $i < $_i; ++$i) {
-            $meta[$i]['num'] = $i;
-            $result[$meta[$i]['name']] = $meta[$i];
+        while ($field = $stmt->fetch()) {
+            $key = $field['column_name'];
+            $result[$key] = [
+                'table' => $field['table_name'],
+                'name' => $field['column_name'],
+                'type' => $field['data_type'],
+                'gentype' => $this->getGenericType($field['data_type']),
+                'len' => $field['character_maximum_length'] ?? $field['numeric_precision'],
+                'precision' => $field['numeric_scale'],
+                'flags' => ($field['is_nullable'] == 'NO') ? self::MF_NOT_NULL : 0,
+                ];
+            foreach ($extraCols as $column) {
+                $result[$key][$column] = $field[$column];
+            }
         }
+
+        Tools::atkdebug("Metadata for $table complete");
 
         return $result;
     }
 
     /**
+     * Get self::FT_ type from the type returned by the database driver
+     *
+     * @param string $type returned by the database driver
+     *
+     * @return int self::FT_type
+     */
+    protected function getGenericType($type) {
+        // Make the string more generic :
+        $type = strtolower($type);
+        // Fast-tracks : '*int*', '*char*' and timestamp types :
+        if (strpos($type, 'int') !== false) {
+            return self::FT_NUMBER;
+        }
+        if (strpos($type, 'char') !== false or strpos($type, 'blob') !== false) {
+            return self::FT_STRING;
+        }
+        if (strpos($type, 'timestamp') !== false) {
+            return self::FT_DATETIME;
+        }
+
+        switch (strtolower($type)) {
+            case 'boolean':
+                return self::FT_BOOLEAN;
+                break;
+            case 'varchar':
+            case 'text':
+            case 'character varying':
+            case 'enum':
+                return self::FT_STRING;
+                break;
+            case 'decimal':
+            case 'float':
+            case 'numeric':
+                return self::FT_DECIMAL;
+                break;
+            case 'datetime':
+                return self::FT_DATETIME;
+                break;
+            case 'date':
+                return self::FT_DATE;
+                break;
+            case 'time':
+                return self::FT_TIME;
+                break;
+            default:
+                Tools::atkwarning("Unsupported database type '{$type}'");
+                return self::FT_UNSUPPORTED; // NOT SUPPORTED FIELD TYPES 
+                break;
+        }
+    }
+
+    /**
+     * This function checks the database for a table with
+     * the provide name.
+     *
+     * @param string $tableName the table to find
+     *
+     * @return bool true if found, false if not found
+     */
+    public function tableExists($tableName)
+    {
+        return $this->getValue('select COUNT(*) from information_schema.tables WHERE table_name = :table', [':table' => $tableName]
+        );
+    }
+
+    /*********************************************** SQL functions *************************************************/
+    /**
      * get NOW() or SYSDATE() equivalent for the current database.
      *
      * Every database has it's own implementation to get the current date
+     *
+     * @return string
      */
     public function func_now()
     {
@@ -1061,9 +783,10 @@ class Db
     /**
      * get SUBSTRING() equivalent for the current database.
      *
-     * @param string $fieldname The database fieldname
+     * @param string $fieldname The database fieldname (already quoted)
      * @param int $startat The position to start from
      * @param int $length The number of characters
+     *
      * @return string
      */
     public function func_substring($fieldname, $startat = 0, $length = 0)
@@ -1076,7 +799,7 @@ class Db
      * Each database driver should override this method to perform vendor
      * specific conversion.
      *
-     * @param string $fieldname The field to generate the to_char for.
+     * @param string $fieldname The field to generate the to_char for (already quoted)
      * @param string $format Format specifier. The format is compatible with
      *                          php's date() function (http://www.php.net/date)
      *                          The default is what's specified by
@@ -1096,45 +819,41 @@ class Db
     }
 
     /**
-     * Get CONCAT() equivalent for the current database.
-     *
-     * @param array $fields
-     *
-     * @return string
-     */
-    public function func_concat($fields)
-    {
-        if (Tools::count($fields) == 0 or !is_array($fields)) {
-            return '';
-        } elseif (Tools::count($fields) == 1) {
-            return $fields[0];
-        }
-
-        return 'CONCAT('.implode(',', $fields).')';
-    }
-
-    /**
      * Get CONCAT_WS() equivalent for the current database.
      *
-     * @param array $fields
-     * @param string $separator
+     * The main interest is to concat strings together without a null string making
+     * the generated expression null : null strings are replaced by ''.
+     *
+     * @DEPRECATED
+     *
+     * @param array $fields (quoted)
+     * @param string $separator (unquoted)
      * @param bool $remove_all_spaces remove all spaces in result (atkAggrecatedColumns searches for string without spaces)
      *
      * @return string $query_part
      */
-    public function func_concat_ws($fields, $separator, $remove_all_spaces = false)
+    public function func_concat_ws(array $fields, string $separator, bool $remove_all_spaces = false)
     {
-        if (Tools::count($fields) == 0 or !is_array($fields)) {
-            return '';
-        } elseif (Tools::count($fields) == 1) {
-            return $fields[0];
-        }
+        Tools::atkwarning('DEPRECATED : use func_concat_coalesce() or ad-hoc functions if you need a separator');
+        return $this->func_concat_coalesce($fields);
+    }
 
-        if ($remove_all_spaces) {
-            return "REPLACE ( CONCAT_WS('$separator', ".implode(',', $fields)."), ' ', '') ";
-        } else {
-            return "CONCAT_WS('$separator', ".implode(',', $fields).')';
+    /**
+     * Concat all fields/expressions and coalesce to empty string null values.
+     *
+     * The main interest is to concat strings together without a null string making
+     * the generated expression null.
+     *
+     * @param array $fields (quoted)
+     *
+     * @return string $query_part
+     */
+    public function func_concat_coalesce(array $fields) : string
+    {
+        if (empty($fields)) {
+            return '';
         }
+        return 'COALESCE('.implode(",'')||COALESCE(", $fields).",'')";
     }
 
     /**
@@ -1165,7 +884,7 @@ class Db
      *
      * TODO/FIXME: add format parameter. Current format is always yyyy-mm-dd hh:mi.
      *
-     * @param string $fieldname The field to generate the to_char for.
+     * @param string $fieldname The field to generate the to_char for (quoted).
      *
      * @return string Piece of sql query that converts a datetime field to char
      *                for the current database
@@ -1175,321 +894,42 @@ class Db
         return "TO_CHAR($fieldname, 'YYYY-MM-DD hh:mi')";
     }
 
-    /**
-     * Returns the maximum length an identifier (tablename, columnname, etc) may have.
-     *
-     * @return int The maximum identifier length
-     */
-    public function maxIdentifierLength()
-    {
-        return 64;
-    }
-
+    /******************************************** Escaping functions **********************************************************/
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%).
      *
+     * DEPRECATED. Use prepared queries. See
+     * http://php.net/manual/en/pdo.quote.php
+     *
      * @param string $string The string to escape
-     * @param bool $wildcard Use wildcards?
+     * @param bool $wildcard also escape wildcards?
      *
      * @return string The escaped SQL string
      */
     public function escapeSQL($string, $wildcard = false)
     {
-        $result = str_replace("'", "''", $string);
-        $result = str_replace('\\', '\\\\', $result);
-        if ($wildcard == true) {
-            $result = str_replace('%', '%%', $result);
-        }
-
-        return $result;
+        Tools::atkerror('escapeSQL function is deprecated and not safe. Don\'t use it.');
     }
 
     /**
-     * Create an Query object for constructing queries.
+     * Quote Indentifier with " (which works on most DB vendor and on MySQL in ANSI mode)
      *
-     * @return Query Query class.
-     */
-    public function createQuery()
-    {
-        $class = __NAMESPACE__.'\\'.$this->m_type.'Query';
-        $query = new $class();
-        $query->m_db = $this;
-
-        return $query;
-    }
-
-    /**
-     * Enable/disable all foreign key constraints.
+     * This function should be applied to every field, table or sequence name which comes from 
+     * the framework user.
+     * examples :
+     *   Db::quoteIdentifier($field);
+     *   Db::quoteIdentifier($table, $field);
      *
-     * @param bool $enable enable/disable foreign keys?
-     */
-    public function toggleForeignKeys($enable)
-    {
-        Tools::atkdebug('WARNING: '.get_class($this).'::toggleForeignKeys not implemented!');
-    }
-
-    /**
-     * Empty all database tables.
-     */
-    public function deleteAll()
-    {
-        $tables = $this->table_names(false);
-        $count = Tools::count($tables);
-
-        do {
-            $prevCount = $count;
-            $count = 0;
-
-            foreach ($tables as $table) {
-                $query = $this->createQuery();
-                $query->addTable($table['table_name']);
-                if (!$query->executeDelete()) {
-                    ++$count;
-                }
-            }
-        } while ($count < $prevCount && $count > 0);
-
-        if ($count > 0) {
-            Tools::atkerror(__CLASS__.'::deleteAll failed, probably because of circular dependencies');
-        }
-    }
-
-    /**
-     * Drop all database tables.
-     */
-    public function dropAll()
-    {
-        $tables = $this->table_names();
-        foreach ($tables as $table) {
-            $this->query('DROP TABLE '.$table['table_name']);
-        }
-    }
-
-    /**
-     * Clones the database structure of the given database
-     * to this database. This also means the complete database
-     * is emptied beforehand.
-     *
-     * @param Db $otherDb other database instance
-     */
-    public function cloneAll($otherDb)
-    {
-        $this->dropAll();
-        $tables = $otherDb->table_names();
-        foreach ($tables as $table) {
-            $ddl = $this->createDdl();
-            $metadata = $otherDb->metadata($table['table_name']);
-            $ddl->loadMetaData($metadata);
-            $query = $ddl->buildCreate();
-            $this->query($query);
-        }
-    }
-
-    /**
-     * Create an atkDdl object for constructing ddl queries.
-     *
-     * @return Ddl Ddl object
-     */
-    public function createDdl()
-    {
-        $ddl = Ddl::create($this->m_type);
-        $ddl->m_db = $this;
-
-        return $ddl;
-    }
-
-    /**
-     * Get a new database instance
-     * @param $conn
-     * @param string $mode
-     * @return Db
-     */
-    public static function newInstance($conn = 'default', $mode = 'rw')
-    {
-        // Resolve any potential aliases
-        $conn = self::getTranslatedDatabaseName($conn);
-        $dbconfig = Config::getGlobal('db');
-        $driver = __NAMESPACE__.'\\'.$dbconfig[$conn]['driver'].'Db';
-        Tools::atkdebug("Creating new database instance with '{$driver}' driver");
-
-        /** @var Db $driverInstance */
-        $driverInstance = new $driver();
-
-        return $driverInstance->init($conn, $mode);
-    }
-
-    /**
-     * Get a database instance (singleton)
-     *
-     * This method instantiates and returns the correct (vendor specific)
-     * database instance, depending on the configuration.
-     *
-     * @static
-     *
-     * @param string $conn The name of the connection as defined in the
-     *                      config.inc.php file (defaults to 'default')
-     * @param bool $reset Reset the instance to force the creation of a new instance
-     * @param string $mode The mode to connect with the database
-     *
-     * @return Db Instance of the database class.
-     */
-    public static function getInstance($conn = 'default', $reset = false, $mode = 'rw')
-    {
-        static $s_dbInstances = null;
-        if ($s_dbInstances == null) {
-            $s_dbInstances = [];
-            if (!Config::getGlobal('meta_caching')) {
-                Tools::atkwarning("Table metadata caching is disabled. Turn on \$config_meta_caching to improve your application's performance!");
-            }
-        }
-
-        // Resolve any potential aliases
-        $conn = self::getTranslatedDatabaseName($conn);
-
-        $dbInstance = array_key_exists($conn,$s_dbInstances)?$s_dbInstances[$conn]:null;
-
-        if ($reset || !$dbInstance || !$dbInstance->hasMode($mode)) {
-            $dbconfig = Config::getGlobal('db');
-
-            $driver = __NAMESPACE__.'\\'.$dbconfig[$conn]['driver'].'Db';
-
-            Tools::atkdebug("Creating new database instance with '{$driver}' driver");
-
-            /** @var Db $driverInstance */
-            $driverInstance = new $driver();
-            $dbInstance = $driverInstance->init($conn, $mode);
-            $s_dbInstances[$conn] = $dbInstance;
-        }
-
-        return $dbInstance;
-    }
-
-    /**
-     * (Re)Initialise a database driver with a connection.
-     *
-     * @param string $connectionName The connectionName
-     * @param string $mode The mode to connect with
-     *
-     * @return Db
-     */
-    public function init($connectionName = 'default', $mode = 'r')
-    {
-        Tools::atkdebug("(Re)Initialising database instance with connection name '$connectionName' and mode '$mode'");
-
-        $config = Config::getGlobal('db');
-        $this->m_connection = $connectionName;
-        $this->m_mode = (isset($config[$connectionName]['mode']) ? $config[$connectionName]['mode'] : 'rw');
-        if (isset($config[$connectionName]['db'])) {
-            $this->m_database = $config[$connectionName]['db'];
-            $this->m_user = $config[$connectionName]['user'];
-            $this->m_password = $config[$connectionName]['password'];
-            $this->m_host = $config[$connectionName]['host'];
-            if (isset($config[$connectionName]['port'])) {
-                $this->m_port = $config[$connectionName]['port'];
-            }
-            if (isset($config[$connectionName]['charset'])) {
-                $this->m_charset = $config[$connectionName]['charset'];
-            }
-            if (isset($config[$connectionName]['collate'])) {
-                $this->m_collate = $config[$connectionName]['collate'];
-            }
-            if (isset($config[$connectionName]['force_ci'])) {
-                $this->m_force_ci = $config[$connectionName]['force_ci'];
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Check if the current instance has the given mode.
-     *
-     * @param string $mode The mode we want to check
-     *
-     * @return bool True or False
-     */
-    public function hasMode($mode)
-    {
-        if (strpos($this->m_mode, $mode) !== false) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Halt on error?
-     *
-     * @return bool halt on error?
-     */
-    public function getHaltOnError()
-    {
-        return $this->m_haltonerror;
-    }
-
-    /**
-     * Halt on error or not?
-     *
-     * @param bool $state
-     */
-    public function setHaltOnError($state = true)
-    {
-        $this->m_haltonerror = $state;
-    }
-
-    /**
-     * Check if current db is present and acceptable for current user.
-     *
-     * @return mixed
-     */
-    public function getDbStatus()
-    {
-        // We don't want the db class to display error messages, because
-        // we handle the error ourselves.
-        $curhaltval = $this->m_haltonerror;
-        $this->m_haltonerror = false;
-
-        $res = $this->connect();
-
-        if ($res === self::DB_SUCCESS && (strpos($this->m_type, 'mysql') === 0)) {
-            // This can't be trusted. Mysql returns self::DB_SUCCESS even
-            // if the user doesn't have access to the database. We only get an
-            // error for this after we performed the first query.
-            $this->table_names();  // this triggers a query
-            $res = $this->_translateError($this->getDbErrno());
-        }
-
-        $this->m_haltonerror = $curhaltval;
-
-        return $res;
-    }
-
-    /**
-     * Quote Indentifier.
-     *
-     * @param string $str
+     * @param string $identifier1 to escape
+     * @param string $identifier2 : if present, will return $identifier1.$identifier2 (both escaped).
      *
      * @return string
      */
-    public function quoteIdentifier($str)
+    public static function quoteIdentifier($identifier, $secondIdentifier = '')
     {
-        $str = str_replace($this->m_identifierQuoting['end'], $this->m_identifierQuoting['escape'].$this->m_identifierQuoting['end'], $str);
-
-        return $this->m_identifierQuoting['start'].$str.$this->m_identifierQuoting['end'];
-    }
-
-    /**
-     * Returns the last inserted auto increment value.
-     *
-     * @return int auto increment value of latest insert query
-     */
-    public function getInsertId()
-    {
-        return null;
-    }
-
-    public function getForceCaseInsensitive()
-    {
-        return $this->m_force_ci;
+        if ($secondIdentifier) {
+            return self::quoteIdentifier($identifier).'.'.self::quoteIdentifier($secondIdentifier);
+        }
+        return '"'.str_replace('"', '""', $identifier).'"';
     }
 }

@@ -49,11 +49,10 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         $this->createDestination();
         $tmp1 = Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey);
         $tmp2 = Tools::atk_array_merge($tmp1, [$this->m_destInstance->m_parent]);
-        if ($this->m_destinationFilter != '') {
-            $sp = new StringParser($this->m_destinationFilter);
-            $this->m_destInstance->addFilter($sp->parse($record));
+        if (!empty($this->m_destinationFilters)) {
+            $this->m_destInstance->addFilter($this->parseFilter($record));
         }
-        $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->getAllRows();
+        $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->fetchAll();
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
         $result = '<select class="form-control" name="'.$this->getHtmlName($fieldprefix).'">';
 
@@ -70,12 +69,11 @@ class ManyToOneTreeRelation extends ManyToOneRelation
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         $this->createDestination();
-        if ($this->m_destinationFilter != '') {
-            $sp = new StringParser($this->m_destinationFilter);
-            $this->m_destInstance->addFilter($sp->parse($record));
+        if (!empty($this->m_destinationFilters)) {
+            $this->m_destInstance->addFilter($this->parseFilter($record));
         }
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-                $this->m_destInstance->m_primaryKey))->getAllRows();
+                $this->m_destInstance->m_primaryKey))->fetchAll();
 
         $result = '<select class="form-control" name="atksearch['.$this->fieldName().']">';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk');

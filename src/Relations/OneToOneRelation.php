@@ -5,8 +5,9 @@ namespace Sintattica\Atk\Relations;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Core\Node;
 
 /**
@@ -144,43 +145,37 @@ class OneToOneRelation extends Relation
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-        if ($this->createDestination()) {
-            if ($mode != 'update' && $mode != 'add') {
-                if ($this->hasFlag(self::AF_ONETOONE_LAZY)) {
-                    if ($this->m_refKey == '') {
-                        parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
-
-                        return;
-                    }
-                }
-
-                if ($tablename != '') {
-                    $tablename .= '.';
-                }
-
-                if ($this->m_refKey != '') {
-                    // Foreign key is in the destination node.
-                    $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0].'='.$fieldaliasprefix.$this->fieldName().'.'.$this->m_refKey;
-                } else {
-                    // Foreign key is in the source node
-                    $condition = $tablename.$this->fieldName().'='.$fieldaliasprefix.$this->fieldName().'.'.$this->m_destInstance->m_primaryKey[0];
-                }
-
-                $condition .= $this->getDestinationFilterCondition($fieldaliasprefix);
-                $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true);
-
-                // we pass true as the last param to addToQuery, because we need all fields..
-                $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level + 1, true, $mode);
-            }
-
+        if (!$this->createDestination()) {
+            return;
+        }
+        if ($mode == 'add' || $mode == 'update') {
             // When storing, we don't add to the query.. we have our own store() method..
             // With one exception. If the foreign key is in the source node, we also need to update
             // the refkey value.
-            if ($this->m_refKey == '' && $mode == 'add') {
-                $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]], '', '',
-                    !$this->hasFlag(self::AF_NO_QUOTES));
+            if ($this->m_refKey == '' && ($mode == 'add'||$mode == 'update')) {
+                $query->addField($this->fieldName(), $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]]);
             }
+            return;
         }
+        // No add or update ... we're now in select mode :
+        if ($this->hasFlag(self::AF_ONETOONE_LAZY) && $this->m_refKey == '') {
+            parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
+            return;
+        }
+
+        if ($this->m_refKey != '') {
+            // Foreign key is in the destination node.
+            $condition = Db::quoteIdentifier($tablename, $this->m_ownerInstance->m_primaryKey[0]).'='.
+                Db::quoteIdentifier($fieldaliasprefix.$this->fieldName(), $this->m_refKey);
+        } else {
+            // Foreign key is in the source node
+            $condition = Db::quoteIdentifier($tablename, $this->fieldName()).'='.
+                Db::quoteIdentifier($fieldaliasprefix.$this->fieldName(), $this->m_destInstance->m_primaryKey[0]);
+        }
+        $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(), $condition, true);
+
+        // we pass true as the last param to addToQuery, because we need all fields..
+        $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level + 1, true, $mode);
     }
 
     /**
@@ -200,45 +195,23 @@ class OneToOneRelation extends Relation
      */
     public function load($db, $record, $mode)
     {
-        if ($this->createDestination()) {
-            if ($this->m_refKey == '') {
-                // Foreign key in owner
-                //$condition = $this->m_destInstance->m_primaryKey[0]."=".$record[$this->fieldName()];
-                $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0]."='".$record[$this->fieldName()]."'";
-            } else {
-                // Foreign key in destination
-                $condition = $this->m_destInstance->m_table.'.'.$this->m_refKey."='".$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record)."'";
-
-                $destfilter = $this->getDestinationFilter();
-                if (is_string($destfilter) && $destfilter != '') {
-                    $condition .= ' AND '.$this->m_destInstance->m_table.'.'.$destfilter;
-                }
-            }
-
-            return $this->m_destInstance->select($condition)->mode($mode)->getFirstRow();
+        if (!$this->createDestination()) {
+            return null;
         }
-    }
+        if ($this->m_refKey == '') {
+            // Foreign key in owner
+            $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_destInstance->m_primaryKey[0], $record[$this->fieldName()]);
+        } else {
+            // Foreign key in destination
+            $condition = Query::simpleValueCondition($this->m_destInstance->m_table, $this->m_refKey,
+                $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
 
-    /**
-     * Construct the filter statement for filters that are set for the
-     * destination node (m_destinationFilter).
-     *
-     * @param string $fieldaliasprefix
-     *
-     * @return string A where clause condition.
-     */
-    public function getDestinationFilterCondition($fieldaliasprefix = '')
-    {
-        $condition = '';
-        if (is_array($this->m_destinationFilter)) {
-            for ($i = 0, $_i = Tools::count($this->m_destinationFilter); $i < $_i; ++$i) {
-                $condition .= ' AND '.$fieldaliasprefix.$this->m_name.'.'.$this->m_destinationFilter[$i];
+            if (!empty($this->m_destinationFilters)) {
+                $condition = QueryPart::implode('AND', [$condition, $this->parseFilter($record)]);
             }
-        } elseif ($this->m_destinationFilter != '') {
-            $condition .= ' AND '.$fieldaliasprefix.$this->m_name.'.'.$this->m_destinationFilter;
         }
 
-        return $condition;
+        return $this->m_destInstance->select($condition)->mode($mode)->getFirstRow();
     }
 
     /**
@@ -263,10 +236,10 @@ class OneToOneRelation extends Relation
 
         if ($this->m_refKey != '') {
             // Foreign key is in the destination node
-            $condition = $rel->m_table.'.'.$this->m_refKey.'='.$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+            $condition = Query::simpleValueCondition($rel->m_table, $this->m_refKey, $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
         } else {
             // Foreign key is in the source node.
-            $condition = $rel->m_table.'.'.$rel->m_primaryKey[0].'='.$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
+            $condition = Query::simpleValueCondition($rel->m_table, $rel->m_primaryKey[0], $record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()]);
         }
 
         return $rel->deleteDb($condition);
@@ -330,22 +303,20 @@ class OneToOneRelation extends Relation
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return array The internal value
      */
     public function fetchValue($postvars)
     {
         // we need to pass all values to the destination node, so it can
         // run it's fetchValue stuff over it..
-        if ($this->createDestination()) {
-            if ($postvars[$this->fieldName()] != null) {
-                foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
-                    $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-                    $postvars[$this->fieldName()][$attribname] = $p_attrib->fetchValue($postvars[$this->fieldName()]);
-                }
-
-                return $postvars[$this->fieldName()];
-            }
+        if (!$this->createDestination() or !isset($postvars[$this->getHtmlName()])) {
+            return null;
         }
+        $result = $postvars[$this->getHtmlName()];
+        foreach ($this->m_destInstance->m_attribList as $attribname => $p_attrib) {
+            $result[$attribname] = $p_attrib->fetchValue($postvars[$this->getHtmlName()]);
+        }
+        return $result;
     }
 
     /**
@@ -578,15 +549,14 @@ class OneToOneRelation extends Relation
                     $mode = 'add';
                 } else {
                     $mode = 'edit';
-                    $myrecord['atkprimkey'] = $this->m_destInstance->primaryKey($myrecord);
+                    $myrecord['atkprimkey'] = $this->m_destInstance->primaryKeyString($myrecord);
                 }
             } else {
                 $mode = 'add';
             }
 
             $output = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[mode]" value="'.$mode.'">';
-            $forceList = Tools::decodeKeyValueSet($this->getFilter());
-            $output .= $this->m_destInstance->hideForm($mode, $myrecord, $forceList, $this->getHtmlName($fieldprefix).'_AE_');
+            $output .= $this->m_destInstance->hideForm($mode, $myrecord, [], $this->getHtmlName($fieldprefix).'_AE_');
 
             return $output;
         }
@@ -650,18 +620,17 @@ class OneToOneRelation extends Relation
                         $mode = 'add';
                     } /* record exists! */ else {
                         $mode = 'edit';
-                        $myrecord['atkprimkey'] = $this->m_destInstance->primaryKey($myrecord);
+                        $myrecord['atkprimkey'] = $this->m_destInstance->primaryKeyString($myrecord);
                     }
                 } /* record does not exist */ else {
                     $mode = 'add';
                 }
 
                 /* mode */
-                $arr['hide'][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
+                $arr['hide'][] = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[mode]" value="'.$mode.'">';
 
                 /* add fields */
-
-                $forceList = Tools::decodeKeyValueSet($this->m_destinationFilter);
+                $forceList = [];
                 if ($this->m_refKey != '') {
                     if ($this->destinationHasRelation()) {
                         $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
@@ -671,7 +640,7 @@ class OneToOneRelation extends Relation
                     }
                 }
 
-                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, [], $fieldprefix.$this->fieldName().'_AE_', false, false);
+                $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, [], $this->getHtmlName($fieldprefix).'_AE_', false, false);
 
                 /* hidden fields */
                 $arr['hide'] = array_merge($arr['hide'], $a['hide']);
@@ -845,27 +814,6 @@ class OneToOneRelation extends Relation
     }
 
     /**
-     * @deprecated Use getDestinationFilterCondition() instead.
-     */
-    public function getFilter()
-    {
-        $filter = $this->m_destinationFilter;
-        if (is_array($filter)) {
-            $tmp_filter = '';
-            for ($i = 0, $_i = Tools::count($filter); $i < $_i; ++$i) {
-                if ($tmp_filter != '') {
-                    $tmp_filter .= ' AND ';
-                }
-                $tmp_filter .= $filter[$i];
-            }
-
-            return $tmp_filter;
-        } else {
-            return $filter;
-        }
-    }
-
-    /**
      * Get list of additional tabs.
      *
      * Attributes can add new tabs to tabbed screens. This method will be
@@ -946,7 +894,7 @@ class OneToOneRelation extends Relation
         }
 
         // integrated version, don't add ourselves, but add all columns from the destination.
-        $prefix = $fieldprefix.$this->fieldName().'_AE_';
+        $prefix = $this->getHtmlName($fieldprefix).'_AE_';
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
             if ($column != '*' && $column != $attribname) {
                 continue;
@@ -989,7 +937,7 @@ class OneToOneRelation extends Relation
         $oldrecord = $arr['rows'][$nr]['record'];
         $arr['rows'][$nr]['record'] = $arr['rows'][$nr]['record'][$this->fieldName()];
 
-        $prefix = $fieldprefix.$this->fieldName().'_AE_';
+        $prefix = $this->getHtmlName($fieldprefix).'_AE_';
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
             if ($column != '*' && $column != $attribname) {
                 continue;
@@ -1020,85 +968,77 @@ class OneToOneRelation extends Relation
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if ($this->createDestination() && is_array($value)) {
-            // we are a relation, so instead of hooking ourselves into the
-            // query, hook the attributes in the destination node onto the query
-            foreach ($value as $key => $val) {
-                // if we aren't searching for anything in this field, there is no need
-                // to look any further:
-                if ($val === '' || $val === null) {
-                    continue;
-                }
-
-                $p_attrib = $this->m_destInstance->m_attribList[$key];
-
-                if (is_object($p_attrib)) {
-                    if ($this->m_refKey && $this->createDestination()) {
-                        // master mode
-                        $new_table = $this->fieldName();
-                    } else {
-                        // slave mode
-                        $new_table = $this->m_destInstance->m_table;
-
-                        // we need to left join the destination table into the query
-                        // (don't worry ATK won't add it when it's already there)
-                        $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
-                    }
-                    $p_attrib->searchCondition($query, $new_table, $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
-                } else {
-                    // attribute not found in destination, so it should
-                    // be in the owner (this is the case when extra fields
-                    // are in the relation
-                    $p_attrib = $this->m_ownerInstance->m_attribList[$key];
-                    if (is_object($p_attrib)) {
-                        $p_attrib->searchCondition($query, $p_attrib->getOwnerInstance()->getTable(), $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
-                    } else {
-                        Tools::atkdebug("Field $key was not found in this relation (this is very weird)");
-                    }
-                }
-            }
-        } else {
+        if (!$this->createDestination()) {
+            return null;
+        }
+        if (!is_array($value)) {
             // we were passed a value that is not an array, so appearantly the function calling us
             // does not know we are a relation, not just another attrib
             // so we assume that it is looking for something in the descriptor def of the destination
-            if ($this->createDestination()) {
-                $descfields = $this->m_destInstance->descriptorFields();
-                foreach ($descfields as $key) {
-                    $p_attrib = $this->m_destInstance->m_attribList[$key];
-                    if (is_object($p_attrib)) {
-                        if ($this->m_refKey && $this->createDestination()) {
-                            // master mode
-                            $new_table = $this->fieldName();
-                        } else {
-                            // slave mode
-                            $new_table = $this->m_destInstance->m_table;
+            $alias = $fieldname.$this->fieldName().'_AE_'.$this->m_destInstance->m_table;
+            $query->addJoin($this->m_destInstance->m_table, $alias, $this->getJoinCondition('', $alias), false);
+            return $this->m_destInstance->getTemplateSearchCondition($query, $alias, $this->m_destInstance->getDescriptorTemplate(), $value, $searchmode, $fieldname);
+        }
+        // we are a relation, so instead of hooking ourselves into the
+        // query, hook the attributes in the destination node onto the query
+        $conditions = [];
+        foreach ($value as $key => $val) {
+            // if we aren't searching for anything in this field, there is no need
+            // to look any further:
+            if ($val === '' || $val === null) {
+                continue;
+            }
 
-                            // we need to left join the destination table into the query
-                            // (don't worry ATK won't add it when it's already there)
-                            $query->addJoin($new_table, $new_table, ($this->getJoinCondition($query)), false);
-                        }
-                        $p_attrib->searchCondition($query, $new_table, $value, $searchmode);
-                    }
+            $p_attrib = $this->m_destInstance->m_attribList[$key];
+
+            if (is_object($p_attrib)) {
+                if ($this->m_refKey) {
+                    // master mode
+                    $new_table = $this->fieldName();
+                } else {
+                    // slave mode
+                    $new_table = $this->m_destInstance->m_table;
+
+                    // we need to left join the destination table into the query
+                    // (don't worry ATK won't add it when it's already there)
+                    $query->addJoin($new_table, $new_table, ($this->getJoinCondition()), false);
+                }
+                $conditions[] = $p_attrib->getSearchCondition($query, $new_table, $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
+            } else {
+                // attribute not found in destination, so it should
+                // be in the owner (this is the case when extra fields
+                // are in the relation
+                $p_attrib = $this->m_ownerInstance->m_attribList[$key];
+                if (is_object($p_attrib)) {
+                    $conditions[] = $p_attrib->getSearchCondition($query, $p_attrib->getOwnerInstance()->getTable(), $val, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
+                } else {
+                    Tools::atkdebug("Field $key was not found in this relation (this is very weird)");
                 }
             }
         }
+        return QueryPart::implode('OR', $conditions, true);
     }
 
     /**
      * Returns the condition which can be used when calling Query's addJoin() method
      * Joins the relation's owner with the destination.
      *
-     * @param Query $query The query object
      * @param string $tablename The name of the table
      * @param string $fieldalias The field alias
      *
      * @return string condition the condition that can be pasted into the query
      */
-    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
+    public function getJoinCondition($tablename = '', $fieldalias = '')
     {
-        $condition = $this->m_ownerInstance->m_table.'.'.$this->fieldName();
+        if ($tablename == '') {
+            $tablename = $this->m_ownerInstance->m_table;
+        }
+        if ($fieldalias == '') {
+            $fieldalias = $this->m_destInstance->m_table;
+        }
+        $condition = Db::quoteIdentifier($tablename, $this->fieldName());
         $condition .= '=';
-        $condition .= $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField();
+        $condition .= Db::quoteIdentifier($fieldalias, $this->m_destInstance->primaryKeyField());
 
         return $condition;
     }
@@ -1107,7 +1047,7 @@ class OneToOneRelation extends Relation
     public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
         if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
-            $prefix = $fieldprefix.$this->fieldName().'_AE_';
+            $prefix = $this->getHtmlName($fieldprefix).'_AE_';
             foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
 
@@ -1131,7 +1071,7 @@ class OneToOneRelation extends Relation
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
             if (is_array($rec[$this->fieldName()])) {
-                return $this->escapeSQL($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+                return $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
             } else {
                 return $rec[$this->fieldName()];
             }

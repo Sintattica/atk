@@ -108,7 +108,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         foreach ($selectedKeys as $key) {
             foreach ($selectedRecords as $record) {
-                if ($key == $this->getDestination()->primaryKey($record)) {
+                if ($key == $this->getDestination()->primaryKeyString($record)) {
                     $orderedRecords[] = $record;
                 }
             }
@@ -147,9 +147,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $selectedKeys = $this->getSelectedKeys($record, $id);
 
         $selectedRecords = [];
-        if (Tools::count($selectedKeys) > 0) {
-            $selector = '('.implode(') OR (', $selectedKeys).')';
-            $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->getAllRows();
+        if (!empty($selectedKeys)) {
+            $selector = $this->getDestination()->primaryKeyFromString($selectedKeys);
+            $selectedRecords = $this->getDestination()->select($selector)->includes($this->getDestination()->descriptorFields())->fetchAll();
             $this->orderSelectedRecords($selectedRecords, $selectedKeys);
         }
 
@@ -206,7 +206,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
 
         // Get records added this time
         if (isset($record[$this->getManyToOneRelation()->fieldName()]) && is_array($record[$this->getManyToOneRelation()->fieldName()])) {
-            $selectedKeys[] = $this->getDestination()->primaryKey($record[$this->getManyToOneRelation()->fieldName()]);
+            $selectedKeys[] = $this->getDestination()->primaryKeyString($record[$this->getManyToOneRelation()->fieldName()]);
         }
 
         // Get New Selection records
@@ -215,7 +215,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
 
         // Ensure we're only adding an item once
-        if ($enforceUnique && is_array($selectedKeys) && Tools::count($selectedKeys)) {
+        if ($enforceUnique && is_array($selectedKeys) && !empty($selectedKeys)) {
             $selectedKeys = array_unique($selectedKeys);
         }
 
@@ -241,7 +241,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $where = $this->_getLoadWhereClause($record);
         $link = $this->getLink();
 
-        return $link->select()->where($where)->orderBy($link->getTable().'.'.$this->getPositionAttribute())->getAllRows();
+        return $link->select()->where($where)->orderBy($link->getTable().'.'.$this->getPositionAttribute())->fetchAll();
     }
 
     /**
@@ -381,10 +381,9 @@ class ManyToManySelectRelation extends ManyToManyRelation
         }
     }
 
-    protected function getAddActionLink($record, $fieldprefix, $params = array())
+    protected function getAddActionLink($record, $fieldprefix, $params = [])
     {
-        $filter = $this->parseFilter($this->getManyToOneRelation()->m_destinationFilter, $record);
-        $params = array_merge($params, array('atkfilter' => $filter, 'atkpkret' => $this->getHtmlId($fieldprefix).'_newsel'));
+        $params['atkpkret'] = $this->getHtmlId($fieldprefix).'_newsel';
         $link = Tools::href(Tools::dispatch_url($this->m_destination, 'add', $params), $this->getAddLabel(), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
 
@@ -401,7 +400,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getEditActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'edit',
-            array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
+            array('atkselector' => $this->getDestination()->primaryKeyString($record))), $this->text('edit'), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
     }
 
@@ -415,7 +414,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     protected function getViewActionLink($record)
     {
         return Tools::href(Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'view',
-            array('atkselector' => $this->getDestination()->primaryKey($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
+            array('atkselector' => $this->getDestination()->primaryKeyString($record))), $this->text('view'), SessionManager::SESSION_NESTED, true,
             'class="atkmanytomanyselectrelation-link"');
     }
 
@@ -486,7 +485,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $this->createLink();
 
         $fieldprefix = $this->getOwnerInstance()->m_postvars['fieldprefix'];
-        $selector = $this->getOwnerInstance()->m_postvars['selector'];
+        $selector = $this->getDestination()->primaryKeyFromString($this->getOwnerInstance()->m_postvars['selector']);
 
         if (empty($selector)) {
             return '';
@@ -532,23 +531,27 @@ class ManyToManySelectRelation extends ManyToManyRelation
     /**
      * Adds a filter value to the destination filter.
      *
-     * @param string $filter
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      *
      * @return ManyToOneRelation
      */
-    public function addDestinationFilter($filter)
+    public function addDestinationFilter($filter, $params = [])
     {
-        return $this->getManyToOneRelation()->addDestinationFilter($filter);
+        return $this->getManyToOneRelation()->addDestinationFilter($filter, $params);
     }
 
     /**
      * Sets the destination filter.
      *
-     * @param string $filter
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      */
-    public function setDestinationFilter($filter)
+    public function setDestinationFilter($filter, $params = [])
     {
-        return $this->getManyToOneRelation()->setDestinationFilter($filter);
+        return $this->getManyToOneRelation()->setDestinationFilter($filter, $params);
     }
 
     /**

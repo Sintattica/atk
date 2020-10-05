@@ -71,7 +71,7 @@ class ViewEditBase extends ActionHandler
      */
     protected function getRecordFromDb()
     {
-        $selector = Tools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', '');
+        $selector = $this->m_node->primaryKeyFromString($this->m_node->m_postvars['atkselector'] ?? '');
         $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
 
         return $record;

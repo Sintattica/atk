@@ -17,6 +17,13 @@ class ParserAttribute extends Attribute
     public $m_text;
 
     /**
+     * The database fieldtype.
+     * @access private
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
+
+    /**
      * Constructor.
      *
      * @param string $name Name of the attribute
@@ -45,7 +52,7 @@ class ParserAttribute extends Attribute
         return $this->display($record, $mode);
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
         // VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
         return '';
@@ -82,15 +89,5 @@ class ParserAttribute extends Attribute
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
-    }
-
-    /**
-     * Dummy implementation.
-     *
-     * @return string Empty string
-     */
-    public function dbFieldType()
-    {
-        return '';
     }
 }

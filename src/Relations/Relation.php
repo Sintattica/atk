@@ -8,6 +8,8 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Db\QueryPart;
+use Sintattica\Atk\Db\Db;
 
 /**
  * The atkRelation class defines a relation to another node.
@@ -17,30 +19,46 @@ use Sintattica\Atk\Db\Query;
  */
 class Relation extends Attribute
 {
-    /*
+    /**
      * @var String Destination node.
      */
     public $m_destination;
-    
+
     /** @var Node $m_destInstance Destination instance */
     public $m_destInstance;
 
-    /*
-     * @var String Filter for destination records.
+    /**
+     * Filters for destination records.
+     *
+     * These filters may include [attribute] placeholders that will be replaced in
+     * query by current record (from  owner's node) 'attribute' value (in a
+     * parametrized form).
+     *
+     * @var array of QueryParts
      */
-    public $m_destinationFilter = '';
+    public $m_destinationFilters = [];
 
-    /*
+    /**
      * Descriptor template for destination node.
+     *
      * @var String
      */
     public $m_descTemplate = null;
 
-    /*
+    /**
      * Descriptor handler.
      * @var Object
      */
     public $m_descHandler = null;
+
+    /**
+     * Since most relations do not store anything in a field, the default
+     * fieldtype for relations is FT_UNSUPPORTED. Exceptions (like the
+     * many2oone relation, which stores a foreign key) can implement their
+     * own dbFieldType().
+     * @var int
+     */
+    public $m_dbfieldtype = Db::FT_UNSUPPORTED;
 
     /**
      * Constructor.
@@ -56,82 +74,50 @@ class Relation extends Attribute
     }
 
     /**
-     * Returns the destination filter.
+     * Returns the destination filters.
      *
-     * @return string The destination filter.
+     * Note : if you want the condition to add to a SQL query, use
+     * parseFilter($record).
+     *
+     * @return array of strings The destination filters.
      */
     public function getDestinationFilter()
     {
-        return $this->m_destinationFilter;
+        return $this->m_destinationFilters;
     }
 
     /**
      * Sets the destination filter.
      *
-     * @param string $filter The destination filter.
+     * The $filter SQL expression (either as a string or as a QueryPart object) may
+     * contain [attribute] placeholders.
+     *
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      */
-    public function setDestinationFilter($filter)
+    public function setDestinationFilter($filter, $params = [])
     {
-        $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
-    }
-
-    /**
-     * Remove redundant (more than 1 subsequently) spaces from the filter string.
-     *
-     * This prevents the filter from rapidly becoming too long to be passed in the URL if
-     * enters are used in code to make the filter readable.
-     *
-     * @param string $filter
-     *
-     * @return string
-     */
-    public function _cleanupDestinationFilter($filter)
-    {
-        $result = '';
-        $filter_length = strlen($filter);
-        $quotes = array("'", '"', '`');
-        $quoteStack = [];
-        $lastChar = '';
-
-        for ($i = 0; $i < $filter_length; ++$i) {
-            $currentChar = $filter[$i];
-
-            if (in_array($currentChar, $quotes)) {
-                if (sizeof($quoteStack) > 0 && $currentChar == $quoteStack[sizeof($quoteStack) - 1]) {
-                    array_pop($quoteStack);
-                } else {
-                    array_push($quoteStack, $currentChar);
-                }
-            }
-
-            // not between quotes
-            if (!($currentChar === ' ' && $lastChar === ' ' && sizeof($quoteStack) == 0)) {
-                if ($currentChar != "\n") {
-                    $result .= $currentChar;
-                }
-            }
-            $lastChar = $currentChar;
-        }
-
-        return $result;
+        $this->m_destinationFilters = [];
+        $this->addDestinationFilter($filter, $params);
     }
 
     /**
      * Adds a filter value to the destination filter.
      *
-     * @param string $filter Filter to be added to the destination filter.
+     * @param string|QueryPart $filter The destination filter.
+     * @param array $params if $filter is a SQL string with placeholders for parameters,
+     *                      this array contains parameters for $filter.
      *
      * @return $this
      */
-    public function addDestinationFilter($filter)
+    public function addDestinationFilter($filter, $params = [])
     {
-        $filter = $this->_cleanupDestinationFilter($filter);
-        if ($this->m_destinationFilter != '') {
-            $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
-        } else {
-            $this->m_destinationFilter = $filter;
+        if ($filter instanceof QueryPart) {
+            $this->m_destinationFilters[] = $filter;
+        } elseif (is_string($filter) and !empty($filter)) {
+            $this->m_destinationFilters[] = new QueryPart($filter, $params);
         }
-
         return $this;
     }
 
@@ -156,16 +142,6 @@ class Relation extends Attribute
     }
 
     /**
-     * Returns the descriptor template for the destination node.
-     *
-     * @return string The descriptor Template
-     */
-    public function getDescriptorTemplate()
-    {
-        return $this->m_descTemplate;
-    }
-
-    /**
      * Sets the descriptor template for the destination node.
      *
      * @param string $template The descriptor template.
@@ -176,8 +152,20 @@ class Relation extends Attribute
     }
 
     /**
-     * Descriptor handler. Forwards description handler calls
-     * to the real description handler.
+     * Forwards description handler calls to the real description handler.
+     *
+     * Never call this function directly:
+     * A. If $this->m_descHandler is set, then :
+     *  - createDestination will set m_destInstance descHandler to $this
+     *  - m_destInstance->descriptor() will call $this->descriptor (this function)
+     *  - this function will call $this->m_descHandler->[name]_descriptor (if exists)
+     *  - if above method does not exist, it will call $this->m_descHandler->descriptor.
+     * B. If $this->m_descHandler is not set and $this->m_descTemplate is set then :
+     *  - createDestination will set m_destInstance descTemplate to $this->m_descTemplate.
+     *  - m_destInstance->descriptor() will parse the common descTemplate.
+     * C. If neither $this->m_descHandler nor $this->m_descTemplate is set then :
+     *  - createDestination will not do anything
+     *  - m_destInstance->descriptor() will work as usual.
      *
      * @param array $record The record
      * @param Node $node The atknode object
@@ -319,20 +307,6 @@ class Relation extends Attribute
     }
 
     /**
-     * Since most relations do not store anything in a field, the default
-     * fieldtype for relations is "". Exceptions (like the many2oone relation,
-     * which stores a foreign key) can implement their own dbFieldType().
-     *
-     * @abstract
-     *
-     * @return string
-     */
-    public function dbFieldType()
-    {
-        return '';
-    }
-
-    /**
      * Returns the condition (SQL) that should be used when we want to join a relation's
      * owner node with the parent node.
      *
@@ -343,7 +317,7 @@ class Relation extends Attribute
      * @return string SQL string for joining the owner with the destination.
      *                Defaults to false.
      */
-    public function getJoinCondition($query, $tablename = '', $fieldalias = '')
+    public function getJoinCondition($tablename = '', $fieldalias = '')
     {
         return false;
     }
@@ -386,21 +360,25 @@ class Relation extends Attribute
     }
 
     /**
-     * Parses the destination filter.
+     * Parses the destination filter into a QueryPart condition
      *
-     * @param string $destFilter filter to parse
      * @param array $record the current record
      *
-     * @return string $filter
+     * @return QueryPart $filter condition
      */
-    public function parseFilter($destFilter, $record)
+    public function parseFilter($record)
     {
-        if ($destFilter != '') {
-            $parser = new StringParser($destFilter);
-
-            return $parser->parse($record);
+        $conditions = [];
+        foreach ($this->m_destinationFilters as $filter) {
+            $filter->parse($record);
+            $conditions[] = $filter;
         }
 
-        return '';
+        if (empty($conditions)) {
+            // The 'always-true' condition
+            return new QueryPart('1=1');
+        } else {
+            return QueryPart::implode('AND', $conditions, true);
+        }
     }
 }

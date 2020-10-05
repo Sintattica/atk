@@ -4,6 +4,7 @@ namespace Sintattica\Atk\DataGrid;
 
 use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 
 /**
@@ -25,7 +26,7 @@ class DataGridRenderer extends DataGridComponent
     protected function renderContainer($result)
     {
         if (!$this->getGrid()->isUpdate()) {
-            $result = '<div id="'.$this->getGrid()->getName().'_container" class="atkdatagrid-container">'.$result.'</div>';
+            $result = '<div id="'.Tools::htmlName($this->getGrid()->getName()).'_container" class="atkdatagrid-container">'.$result.'</div>';
         }
 
         return $result;

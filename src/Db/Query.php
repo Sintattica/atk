@@ -5,169 +5,161 @@ namespace Sintattica\Atk\Db;
 use Sintattica\Atk\Core\Tools;
 
 /**
- * Abstract baseclass for SQL query builder drivers.
- *
- * All db drivers should derive a class from this baseclass and implement
- * the necessary methods.
- *
+ * SQL query builder
  *
  * @author Ivo Jansch <ivo@achievo.org>
- * @abstract
+ * @author Samuel BF
  */
 class Query
 {
+    /*** variables for all queries ***/
     /*
-     * Array with Fieldnames
+     * The database that this query does it's thing on
+     *
+     * @var Db
      */
-    public $m_fields;
+    private $m_db;
+
+    /**
+     * Table name for current query (unquoted)
+     *
+     * @var string
+     */
+    private $m_table = [];
 
     /*
-     * Array with expressions.
+     * Array with conditions (quoted)
+     *
+     * @var QueryPart[]
      */
-    public $m_expressions;
-
-    /*
-     * Array with tables
-     */
-    public $m_tables;
-
-    /*
-     * Array with conditions
-     */
-    public $m_conditions;
-    public $m_searchconditions;
+    private $m_conditions;
+    private $m_searchconditions;
 
     /*
      * Var with AND or OR method
+     *
+     * @var string
      */
-    public $m_searchmethod;
+    private $m_searchmethod = 'AND';
+
+
+    /*** variables for UPDATE/DELETE queries ***/
+    /**
+     * Array with Fieldnames (quoted)
+     *
+     * for SELECT, UPDATE and INSERT queries
+     *
+     * @var array[] string
+     */
+    private $m_fields = [];
 
     /*
-     * Array with aliases
+     * Array with generated aliasses (quoted)
+     * Oracle has a problem when aliases are too long
+     *
+     * for SELECT, UPDATE and INSERT queries
+     *
+     * @var string
      */
-    public $m_aliases;
+    private $m_generatedAlias = 'a';
+
+    /**
+     * array with values
+     * These values are inserted as parameters in final query.
+     *
+     * for UPDATE and INSERT queries only
+     *
+     * @var array[] mixed
+     */
+    private $m_values = [];
+
+    /**
+     * Sequence stuff : for INSERT queries only
+     *
+     * Reference to the field where the new sequence
+     * value should be stored.
+     *
+     * @var int
+     */
+    private $m_seqValue;
+
+    /**
+     * Sequence name.
+     *
+     * @var string
+     */
+    private $m_seqName;
+
+    /**
+     * Should we return a sequence value by setting
+     * $this->m_seqValue?
+     *
+     * @var bool
+     */
+    private $m_returnSeqValue = false;
+
+    /*** variables for SELECT/COUNT queries only ***/
+    /*
+     * Array with expressions.
+     *
+     * for SELECT queries only
+     */
+    private $m_expressions = [];
 
     /*
-     * Array with field aliases
+     * Array with field aliases (unquoted, but no need to quote them)
+     *
+     * for SELECT/COUNT queries only
      */
-    public $m_fieldaliases;
+    private $m_fieldaliases = [];
 
     /*
-     * Array with aliases from joins
+     * Array with aliases from joins (quoted)
+     *
+     * for SELECT/COUNT queries only
      */
-    public $m_joinaliases;
+    private $m_joinaliases = [];
 
     /*
      * Array with Joins
+     *
+     * for SELECT/COUNT queries only
      */
-    public $m_joins;
+    private $m_joins = [];
 
-    /*
-     * Array with group by statements
+    /**
+     * Arrays with group by/order by statements (quoted)
+     *
+     * for SELECT/COUNT queries only
      */
-    public $m_groupbys;
-
-    /*
-     * Array with order by statements
-     */
-    public $m_orderbys;
+    public $m_groupbys = [];
+    private $m_orderbys = [];
 
     /*
      * Do we need to perform a DISTINCT query?
+     *
+     * for SELECT/COUNT queries only
      */
-    public $m_distinct = false;
+    private $m_distinct = false;
 
-    /*
+    /**
      * Do we need to fetch only a specific set of records?
-     */
-    public $m_offset = 0;
-    public $m_limit = 0;
-
-    /*
-     * Array with generated aliasses
-     * Oracle has a problem when aliases are too long
-     */
-    public $m_generatedAlias;
-
-    /*
-     * The database that this query does it's thing on
-     */
-    public $m_db;
-
-    /*
-     * The quote char to put around fields, for example `
-     * @var String
-     * @access private
-     */
-    public $m_fieldquote;
-
-    /*
-     * Wether or not a field should be quoted in a query
      *
-     * @var array
-     * @access private
+     * for SELECT queries only
      */
-    public $m_quotedfields = [];
-
-    /*
-     * Names reserved by the database,
-     * if any of these are used ATK MUST quote the fieldname
-     * or the database engine will not be able to make any sense of the queries.
-     *
-     * @var array
-     * @access private
-     */
-    public $m_reservedNames = array('from', 'select', 'order', 'group', 'release', 'index', 'table');
+    private $m_offset = 0;
+    private $m_limit = 0;
 
     /**
-     * Initialize all variables.
+     * Initialize read-only variables
      */
-    public function __construct()
+    public function __construct(string $table, Db $db)
     {
-        $this->m_fields = [];
-        $this->m_expressions = [];
-        $this->m_tables = [];
-        $this->m_conditions = [];
-        $this->m_searchconditions = [];
-        $this->m_aliases = [];
-        $this->m_values = [];
-        $this->m_fieldaliases = [];
-        $this->m_joinaliases = [];
-        $this->m_joins = [];
-        $this->m_orderbys = [];
-        $this->m_groupbys = [];
-        $this->m_searchmethod = '';
-
-        // start at 'a'.
-        $this->m_generatedAlias = 'a';
-
-        $this->m_aliasLookup = [];
-    }
-
-    /**
-     * Sets the database instance.
-     *
-     * @var Db database instance
-     */
-    public function setDb($db)
-    {
+        $this->m_table = $table;
         $this->m_db = $db;
     }
 
-    /**
-     * Returns the database instance.
-     *
-     * @return Db database instance
-     */
-    public function getDb()
-    {
-        if (!isset($this->m_db)) {
-            $this->m_db = Db::getInstance();
-        }
-
-        return $this->m_db;
-    }
-
+    /****************************** Getter / setters *****************************************/
     /**
      * Add's a field to the query.
      *
@@ -175,32 +167,18 @@ class Query
      * @param string $value Field value
      * @param string $table Table name
      * @param string $fieldaliasprefix Field alias prefix
-     * @param bool $quote If this parameter is true, stuff is inserted into the db
-     *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
-     *                                 done without quotes, e.d. SET number = 4.
-     * @param bool $quotefield Wether or not to quote the fieldname
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addField($name, $value = '', $table = '', $fieldaliasprefix = '', $quote = true, $quotefield = false)
+    public function addField($name, $value = '', $table = '', $fieldaliasprefix = '')
     {
         if ($table != '') {
-            $fieldname = $table.'.'.$name;
+            $fieldname = Db::quoteIdentifier($table, $name);
         } else {
-            $fieldname = $name;
+            $fieldname = Db::quoteIdentifier($name);
         }
         if (!in_array($fieldname, $this->m_fields)) {
             $this->m_fields[] = $fieldname;
-        }
-
-        if ($quotefield && !in_array($fieldname, $this->m_quotedfields)) {
-            $this->m_quotedfields[] = $fieldname;
-        }
-
-        if ($quote && !is_null($value)) {
-            $value = "'".$value."'";
-        } elseif ($value === null || $value === '') {
-            $value = 'NULL';
         }
 
         $this->m_values[$fieldname] = $value;
@@ -216,20 +194,44 @@ class Query
     }
 
     /**
+     * Add a * to the field list (select all fields)
+     *
+     * @param string $table of the fields. If not set, will select fields from table and all joins.
+     *
+     * @return Query the query object itself
+     */
+    public function addAllFields($table = null)
+    {
+        $table = $table ?? $this->m_table;
+        $this->m_fields[] = Db::quoteIdentifier($table).'.*';
+        return $this;
+    }
+
+    /**
      * Add's a sequence field to the query.
      *
      * @param string $fieldName field name
      * @param int $value field to store the new sequence value in, note certain drivers
      *                          might populate this field only after the insert query has been
      *                          executed
-     * @param string $seqName sequence name (optional for certain drivers)
+     * @param string $seqName sequence name to store the value if the DB does not autoincrement
+     *                         field by itself.
      *
      * @return Query
      */
     public function addSequenceField($fieldName, &$value, $seqName = null)
     {
-        $value = $this->getDb()->nextid($seqName);
-        $this->addField($fieldName, $value, null, null, false, true);
+        $meta = $this->m_db->tableMeta($this->m_table);
+        if (!Tools::hasFlag($meta[$fieldName]['flags'], Db::MF_AUTO_INCREMENT)) {
+            $value = $this->m_db->nextid($seqName);
+            $this->addField($fieldName, $value);
+            return $this;
+        }
+
+        $this->m_seqValue = &$value;
+        $this->m_seqValue = -1;
+        $this->m_seqName = Db::quoteIdentifier($this->m_table.'_'.$fieldName.'_seq');
+        $this->m_returnSeqValue = true;
 
         return $this;
     }
@@ -240,17 +242,13 @@ class Query
      * @param array $fields array with field value pairs
      * @param string $table Table name
      * @param string $fieldaliasprefix Field alias prefix
-     * @param bool $quote If this parameter is true, stuff is inserted into the db
-     *                                 using quotes, e.g. SET name = 'piet'. If it is false, it's
-     *                                 done without quotes, e.d. SET number = 4.
-     * @param bool $quotefield Wether or not to quote the fieldname
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addFields(array $fields, $table = '', $fieldaliasprefix = '', $quote = true, $quotefield = false)
+    public function addFields(array $fields, $table = '', $fieldaliasprefix = '')
     {
         foreach ($fields as $name => $value) {
-            $this->addField($name, $value, $table, $fieldaliasprefix, $quote, $quotefield);
+            $this->addField($name, $value, $table, $fieldaliasprefix);
         }
 
         return $this;
@@ -262,17 +260,12 @@ class Query
      * @param string $fieldName expression field name
      * @param string $expression expression value
      * @param string $fieldAliasPrefix field alias prefix
-     * @param bool $quoteFieldName wether or not to quote the expression field name
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addExpression($fieldName, $expression, $fieldAliasPrefix = '', $quoteFieldName = false)
+    public function addExpression($fieldName, $expression, $fieldAliasPrefix = '')
     {
-        if ($quoteFieldName) {
-            $this->m_quotedfields[] = $fieldName;
-        }
-
-        $this->m_expressions[] = array('name' => $fieldAliasPrefix.$fieldName, 'expression' => $expression);
+        $this->m_expressions[] = ['name' => $fieldAliasPrefix.$fieldName, 'expression' => $expression];
 
         if (!empty($fieldAliasPrefix)) {
             $this->m_aliasLookup['al_'.$this->m_generatedAlias] = $fieldAliasPrefix.$fieldName;
@@ -284,23 +277,35 @@ class Query
     }
 
     /**
-     * Clear field list.
+     * Tell if a field is an expression or a regular field
+     *
+     * @param string $fieldName
+     *
+     * @return boolean true if it is an expression, false otherwise
+     */
+    public function isExpression($fieldName) {
+       return (array_search($fieldName, array_column($this->m_expressions, 'name')) !== false);
+    }
+
+    /**
+     * Clear fields, expressions, group by and order by lists.
+     *
+     * It preserves table, joins, conditions and searchconditions.
+     * This is useful when you want to transform an initial query
+     * to a grouped one (such as SUM, COUNT, ...).
      */
     public function clearFields()
     {
         $this->m_fields = [];
-    }
-
-    /**
-     * Clear expression list.
-     */
-    public function clearExpressions()
-    {
         $this->m_expressions = [];
+        $this->m_orderbys = [];
+        $this->m_groupbys = [];
     }
 
     /**
-     * Add table to Tables array.
+     * Add a table to current query.
+     *
+     * @deprecated : use setTable
      *
      * @param string $name Table name
      * @param string $alias Alias of table
@@ -309,25 +314,42 @@ class Query
      */
     public function addTable($name, $alias = '')
     {
-        $this->m_tables[] = $name;
-        $this->m_aliases[Tools::count($this->m_tables) - 1] = $alias;
-
-        return $this;
+        Tools::atkwarning('Query->addTable deprecated. Set table at build time.');
+        return $this->m_table = $name;
     }
 
     /**
-     * Add join to Join Array.
+     * Add join to Join Array
      *
-     * @param string $table Table name
-     * @param string $alias Alias of table
-     * @param string $condition Condition for the Join
+     * $condition is either the (quoted) condition string, either an array :
+     * $fromField => [$targetTable, $targetColumn].
+     *
+     * example : addJoin('auth_groups', 'grp', ['id' => ['auth_users', 'group']]) will generate :
+     *  JOIN "auth_groups" "grp" ON ("grp"."id" = "auth_users"."group")
+     *
+     * @param string $table Table name (unquoted)
+     * @param string $alias Alias of table (unquoted)
+     * @param array|string $condition
      * @param bool $outer Wether to use an outer (left) join or an inner join
      *
      * @return Query The query object itself (for fluent usage)
      */
     public function addJoin($table, $alias, $condition, $outer = false)
     {
-        $join = ' '.($outer ? 'LEFT JOIN ' : 'JOIN ').$this->quoteField($table).' '.$this->quoteField($alias).' ON ('.$condition.') ';
+        if (is_array($condition)) {
+            // Building condition from array :
+            $conditionParts = [];
+            foreach($condition as $fromField => $toField) {
+                if (!is_array($toField)) {
+                    $toField = array($toField);
+                }
+                $conditionParts[] = Db::quoteIdentifier($alias, $fromField).'='.Db::quoteIdentifier($toField[0], $toField[1]);
+            }
+            $condition = implode(' AND ', $conditionParts);
+        }
+
+        // Adding the join :
+        $join = ($outer ? 'LEFT JOIN ' : 'JOIN ').Db::quoteIdentifier($table).' '.Db::quoteIdentifier($alias).' ON ('.$condition.')';
         if (!in_array($join, $this->m_joins)) {
             $this->m_joins[] = $join;
         }
@@ -364,24 +386,6 @@ class Query
     }
 
     /**
-     * Add a query condition (conditions are where-expressions that are AND-ed).
-     *
-     * @param string $condition Condition
-     *
-     * @return Query The query object itself (for fluent usage)
-     */
-    public function addCondition($condition)
-    {
-        if ($condition != '') {
-            // NOTE: previous code tried to make sure a condition wasn't added
-            // twice, however when supporting bind params you can't do this anymore
-            $this->m_conditions[] = $condition;
-        }
-
-        return $this;
-    }
-
-    /**
      * Sets this queries search method.
      *
      * @param string $searchMethod search method
@@ -396,20 +400,46 @@ class Query
     }
 
     /**
+     * Add a query condition (conditions are where-expressions that are AND-ed).
+     *
+     * @param QueryPart|string $query sql condition
+     * @param array $parameters for the condition (only if $query is not already au QueryPart)
+     *
+     * @return Query The query object itself (for fluent usage)
+     */
+    public function addCondition($query, $parameters = [])
+    {
+        if (!$query instanceof QueryPart) {
+            if ($query == '') {
+                return;
+            }
+            $query = new QueryPart($query, $parameters);
+        }
+
+        $this->m_conditions[] = $query;
+        return $this;
+    }
+
+    /**
      * Add search condition to the query. Basically similar to addCondition, but
      * searchconditions make use of the searchmode setting to determine whether the
      * different searchconditions should be and'ed or or'ed.
      *
-     * @param string $condition Condition
+     * @param QueryPart|string $query condition
+     * @param array $parameters for the condition (only if $query is not already a QueryPart)
      *
      * @return Query The query object itself (for fluent usage)
      */
-    public function addSearchCondition($condition)
+    public function addSearchCondition($query, $parameters = [])
     {
-        if ($condition != '') {
-            $this->m_searchconditions[] = $condition;
+        if (!$query instanceof QueryPart) {
+            if ($query == '') {
+                return;
+            }
+            $query = new QueryPart($query, $parameters);
         }
 
+        $this->m_searchconditions[] = $query;
         return $this;
     }
 
@@ -446,291 +476,7 @@ class Query
         return $this;
     }
 
-    /**
-     * Builds the SQL Select query.
-     *
-     * @param bool $distinct distinct records?
-     *
-     * @return string a SQL Select Query
-     */
-    public function buildSelect($distinct = false)
-    {
-        if (Tools::count($this->m_fields) < 1 && Tools::count($this->m_expressions) < 1) {
-            return false;
-        }
-        $result = 'SELECT '.($distinct || $this->m_distinct ? 'DISTINCT ' : '');
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->quoteField($this->m_fields[$i]);
-            $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]]) ? $this->m_fieldaliases[$this->m_fields[$i]] : '');
-            if ($fieldalias != '') {
-                $result .= ' AS '.$fieldalias;
-            }
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ', ';
-            }
-        }
-
-        foreach ($this->m_expressions as $i => $entry) {
-            if (Tools::count($this->m_fields) > 0 || $i > 0) {
-                $result .= ', ';
-            }
-            $fieldName = $entry['name'];
-            $expression = $entry['expression'];
-            $fieldAlias = isset($this->m_fieldaliases[$fieldName]) ? $this->m_fieldaliases[$fieldName] : $this->quoteField($fieldName);
-            $result .= "($expression) AS $fieldAlias";
-        }
-
-        $this->_addFrom($result);
-
-        for ($i = 0; $i < Tools::count($this->m_joins); ++$i) {
-            $result .= $this->m_joins[$i];
-        }
-
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE ('.implode(') AND (', $this->m_conditions).')';
-        }
-
-        if (Tools::count($this->m_searchconditions) > 0) {
-            if (Tools::count($this->m_conditions) == 0) {
-                $prefix = ' WHERE ';
-            } else {
-                $prefix = ' AND ';
-            }
-            if ($this->m_searchmethod == '' || $this->m_searchmethod == 'AND') {
-                $result .= $prefix.'('.implode(' AND ', $this->m_searchconditions).')';
-            } else {
-                $result .= $prefix.'('.implode(' OR ', $this->m_searchconditions).')';
-            }
-        }
-
-        if (Tools::count($this->m_groupbys) > 0) {
-            $result .= ' GROUP BY '.implode(', ', $this->m_groupbys);
-        }
-
-        if (Tools::count($this->m_orderbys) > 0) {
-            $this->_addOrderBy($result);
-        }
-
-        if ($this->m_limit > 0) {
-            $this->_addLimiter($result);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Add FROM clause to query.
-     *
-     * @param string $query The query
-     */
-    public function _addFrom(&$query)
-    {
-        $query .= ' FROM ';
-        for ($i = 0; $i < Tools::count($this->m_tables); ++$i) {
-            $query .= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != '') {
-                $query .= ' '.$this->m_aliases[$i];
-            }
-            if ($i < Tools::count($this->m_tables) - 1) {
-                $query .= ', ';
-            }
-        }
-        $query .= ' ';
-    }
-
-    /**
-     * Wrapper function to execute a select query.
-     *
-     * @param bool $distinct Set to true to perform a distinct select,
-     *                       false for a regular select.
-     *
-     * @return array The set of records returned by the database.
-     */
-    public function executeSelect($distinct = false)
-    {
-        $query = $this->buildSelect($distinct);
-
-        return $this->getDb()->getRows($query);
-    }
-
-    /**
-     * Add limiting clauses to the query.
-     * Default implementation: no limit supported. Derived classes should implement this.
-     *
-     * @param string $query The query to add the limiter to
-     */
-    public function _addLimiter(&$query)
-    {
-        // not supported..
-    }
-
-    /**
-     * Add the ORDER BY clause.
-     *
-     * @param string $query The query
-     */
-    public function _addOrderBy(&$query)
-    {
-        if (Tools::count($this->m_orderbys) > 0) {
-            $query .= ' ORDER BY '.implode(', ', $this->m_orderbys);
-        }
-    }
-
-    /**
-     * Builds the SQL Select COUNT(*) query. This is different from select,
-     * because we do joins, like in a select, but we don't really select the
-     * fields.
-     *
-     * @param bool $distinct distinct rows?
-     *
-     * @return string a SQL Select COUNT(*) Query
-     */
-    public function buildCount($distinct = false)
-    {
-        if (($distinct || $this->m_distinct) && Tools::count($this->m_fields) > 0) {
-            $result = 'SELECT COUNT(DISTINCT ';
-            $result .= implode($this->quoteFields($this->m_fields), ', ');
-            $result .= ') as count FROM ';
-        } else {
-            $result = 'SELECT COUNT(*) AS count FROM ';
-        }
-
-        for ($i = 0; $i < Tools::count($this->m_tables); ++$i) {
-            $result .= $this->quoteField($this->m_tables[$i]);
-            if ($this->m_aliases[$i] != '') {
-                $result .= ' '.$this->m_aliases[$i];
-            }
-            if ($i < Tools::count($this->m_tables) - 1) {
-                $result .= ', ';
-            }
-        }
-
-        for ($i = 0; $i < Tools::count($this->m_joins); ++$i) {
-            $result .= $this->m_joins[$i];
-        }
-
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE ('.implode(') AND (', $this->m_conditions).')';
-        }
-
-        if (Tools::count($this->m_searchconditions) > 0) {
-            if (Tools::count($this->m_conditions) == 0) {
-                $prefix = ' WHERE ';
-            } else {
-                $prefix = ' AND ';
-            };
-            if ($this->m_searchmethod == '' || $this->m_searchmethod == 'AND') {
-                $result .= $prefix.'('.implode(' AND ', $this->m_searchconditions).')';
-            } else {
-                $result .= $prefix.'('.implode(' OR ', $this->m_searchconditions).')';
-            }
-        }
-
-        if (Tools::count($this->m_groupbys) > 0) {
-            $result .= ' GROUP BY '.implode(', ', $this->m_groupbys);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Builds the SQL Update query.
-     *
-     * @return string a SQL Update Query
-     */
-    public function buildUpdate()
-    {
-        $result = 'UPDATE '.$this->quoteField($this->m_tables[0]).' SET ';
-
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->quoteField($this->m_fields[$i]).'='.$this->m_values[$this->m_fields[$i]];
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ',';
-            }
-        }
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE '.implode(' AND ', $this->m_conditions);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Wrapper function to execute an update query.
-     */
-    public function executeUpdate()
-    {
-        $query = $this->buildUpdate();
-
-        return $this->getDb()->query($query);
-    }
-
-    /**
-     * Wrapper function to execute an insert query.
-     */
-    public function executeInsert()
-    {
-        $query = $this->buildInsert();
-
-        return $this->getDb()->query($query);
-    }
-
-    /**
-     * Builds the SQL Insert query.
-     *
-     * @return string a SQL Insert Query
-     */
-    public function buildInsert()
-    {
-        $result = 'INSERT INTO '.$this->quoteField($this->m_tables[0]).' (';
-
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->quoteField($this->m_fields[$i]);
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ',';
-            }
-        }
-
-        $result .= ') VALUES (';
-
-        for ($i = 0; $i < Tools::count($this->m_fields); ++$i) {
-            $result .= $this->m_values[$this->m_fields[$i]];
-            if ($i < Tools::count($this->m_fields) - 1) {
-                $result .= ',';
-            }
-        }
-
-        $result .= ')';
-
-        return $result;
-    }
-
-    /**
-     * Builds the SQL Delete query.
-     *
-     * @return string a SQL Delete Query
-     */
-    public function buildDelete()
-    {
-        $result = 'DELETE FROM '.$this->quoteField($this->m_tables[0]);
-
-        if (Tools::count($this->m_conditions) > 0) {
-            $result .= ' WHERE '.implode(' AND ', $this->m_conditions);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Wrapper function to execute a delete query.
-     */
-    public function executeDelete()
-    {
-        $query = $this->buildDelete();
-
-        return $this->getDb()->query($query);
-    }
-
+    /******************************** Helper functions ****************************************/
     /**
      * Search Alias in alias array.
      *
@@ -740,11 +486,239 @@ class Query
     {
         foreach ($record as $name => $value) {
             if (isset($this->m_aliasLookup[$name])) {
-                $record[$this->m_aliasLookup[strtolower($name)]] = $value;
-                unset($record[strtolower($name)]);
+                $record[$this->m_aliasLookup[$name]] = $value;
+                unset($record[$name]);
             }
         }
     }
+
+    /**
+     * Generate a properly escaped condition for table.field = value
+     *
+     * @param string $table which holds the field
+     * @param string $field to search for value
+     * @param mixed $value to search for
+     *
+     * @return QueryPart condition
+     */
+    public static function simpleValueCondition(string $table, string $field, $value) : QueryPart
+    {
+        $placeholder = QueryPart::placeholder($field);
+        return new QueryPart(
+            Db::quoteIdentifier($table, $field).'='.$placeholder,
+            [$placeholder => $value]
+        );
+    }
+
+    /**
+     * build the WHERE part of the query with conditions and searchconditions
+     *
+     * @return QueryPart to append to current query
+     */
+    private function whereClause()
+    {
+        // Adding search conditions :
+        if (!empty($this->m_searchconditions)) {
+            $searchOperator = ($this->m_searchmethod == '' || $this->m_searchmethod == 'AND') ? 'AND':'OR';
+            $this->m_conditions[] = QueryPart::implode($searchOperator, $this->m_searchconditions, true);
+        }
+
+        // Adding conditions only if there are some:
+        if (empty($this->m_conditions)) {
+            return new QueryPart('');
+        }
+
+        $query = new QueryPart('WHERE');
+        $query->append(QueryPart::implode('AND', $this->m_conditions, true));
+        return $query;
+    }
+
+    /**
+     * Add limiting clauses to the query.
+     *
+     * @return QueryPart limiter clause (which can be appended)
+     */
+    private function limiterClause()
+    {
+        if ($this->m_offset >= 0 && $this->m_limit > 0) {
+            return new QueryPart('LIMIT :limit OFFSET :offset', [':limit' => (int) $this->m_limit, ':offset' => (int) $this->m_offset]);
+        }
+    }
+
+    /**
+     * Add the ORDER BY clause.
+     *
+     * @return QueryPart order clause (which can be appended)
+     */
+    private function orderByClause()
+    {
+        if (empty($this->m_orderbys)) {
+            return new QueryPart('');
+        }
+        return new QueryPart('ORDER BY ' . implode(', ', $this->m_orderbys));
+    }
+
+    /************************************** Execute functions *****************************/
+    /**
+     * Builds and execute the SQL Select COUNT(*) query.
+     *
+     * This is different from select,
+     * because we do joins, like in a select, but we don't really select the
+     * fields.
+     *
+     * @return int $count
+     */
+    public function executeCount($distinct = false)
+    {
+        $query = new QueryPart('');
+        if (($distinct || $this->m_distinct) && !empty($this->m_fields)) {
+            $query->appendSql('SELECT COUNT(DISTINCT(');
+            $query->appendSql($this->m_db->func_concat_coalesce($this->m_fields));
+            $query->appendSql(')) as count FROM');
+        } else {
+            $query->appendSql('SELECT COUNT(*) AS count FROM');
+        }
+
+        $query->appendSql(Db::quoteIdentifier($this->m_table));
+        $query->appendSql(implode(' ', $this->m_joins));
+
+        $query->append($this->whereClause());
+
+        if (!empty($this->m_groupbys)) {
+           $query->appendSql('GROUP BY '.implode(', ', $this->m_groupbys));
+        }
+
+        return $this->m_db->getValue($query);
+    }
+
+    /**
+     * Builds and execute a select query.
+     *
+     * @param bool $distinct Set to true to perform a distinct select,
+     *                       false for a regular select.
+     *
+     * @return records[] array
+     */
+    public function executeSelect($distinct = false)
+    {
+        if (empty($this->m_fields) && empty($this->m_expressions)) {
+            return false;
+        }
+        $query = new QueryPart('SELECT'.($distinct || $this->m_distinct ? ' DISTINCT' : ''));
+
+        // Fields and expressions
+        $fieldAndAliasFn = function ($field) {
+            if (isset($this->m_fieldaliases[$field])) {
+                return "{$field} AS {$this->m_fieldaliases[$field]}";
+            } else {
+                return $field;
+            }
+        };
+        $fieldsAndAlias = array_map($fieldAndAliasFn, $this->m_fields);
+
+        $exprAndAliasFn = function($expression) {
+            return "({$expression['expression']}) AS ".
+                ($this->m_fieldaliases[$expression['name']] ?? Db::quoteIdentifier($expression['name']));
+        };
+        $exprsAndAlias = array_map($exprAndAliasFn, $this->m_expressions);
+
+        $query->appendSql(implode(', ', array_merge($fieldsAndAlias, $exprsAndAlias)));
+
+        $query->appendSql('FROM '.Db::quoteIdentifier($this->m_table));
+        $query->appendSql(implode(' ', $this->m_joins));
+
+        $query->append($this->whereClause());
+
+        if (!empty($this->m_groupbys)) {
+           $query->appendSql('GROUP BY '.implode(', ', $this->m_groupbys));
+        }
+
+        if (!empty($this->m_orderbys)) {
+            $query->append($this->orderByClause());
+        }
+
+        if ($this->m_limit > 0) {
+            $query->append($this->limiterClause());
+        }
+
+        return $this->m_db->queryP($query)->fetchAll();
+    }
+
+    /**
+     * Builds and execute the SQL Update query.
+     *
+     * @return bool $success
+     */
+    public function executeUpdate($distinct = false)
+    {
+        if(!count($this->m_fields)) {
+            return false;
+        }
+        $query = new QueryPart('UPDATE '.Db::quoteIdentifier($this->m_table).' SET');
+
+        $updateFieldFn = function($field) {
+            $placeholder = QueryPart::placeholder($field);
+            $value = $this->m_values[$field];
+            return new QueryPart("{$field}={$placeholder}", [$placeholder => $value]);
+        };
+        $query->append(QueryPart::implode(', ', array_map($updateFieldFn, $this->m_fields)));
+
+        $query->append($this->whereClause());
+
+        return ($this->m_db->queryP($query) != false);
+    }
+
+    /**
+     * Builds & execute the SQL Insert query.
+     *
+     * @return bool $success
+     */
+    public function executeInsert($distinct = false)
+    {
+        if(!count($this->m_fields)) {
+            return false;
+        }
+        $query = new QueryPart('INSERT INTO '.Db::quoteIdentifier($this->m_table).'');
+
+        $query->appendSql('('.implode(', ', $this->m_fields).') VALUES (');
+        foreach ($this->m_fields as $field) {
+            $placeholder = QueryPart::placeholder($field);
+            $parameters[$placeholder] = $this->m_values[$field];
+        }
+        $query->append(new QueryPart(implode(', ', array_keys($parameters)), $parameters));
+        $query->appendSql(')');
+
+        $result = $this->m_db->queryP($query);
+        if ($result && $this->m_returnSeqValue) {
+            $this->m_seqValue = $this->m_db->lastInsertId($this->m_seqName);
+            Tools::atkdebug("Value for sequence {$this->m_seqName}: {$this->m_seqValue}");
+        }
+
+        return ($result != false);
+    }
+
+    /**
+     * Execute a SQL delete query
+     *
+     * @return bool $success
+     */
+    public function executeDelete($distinct = false)
+    {
+        $query = new QueryPart('DELETE FROM '.Db::quoteIdentifier($this->m_table));
+        $query->append($this->whereClause());
+
+        return ($this->m_db->queryP($query) != false);
+    }
+
+    /**************************** Search functions **********************************************
+     * General form :
+     * public function myCondition(string $field, mixed $value)
+     *
+     * @param string $field name that should be quoted BEFORE calling this function
+     * @param mixed $value (0 to 2 values depending the search function)
+     *
+     * @return QueryPart
+     ********************************************************************************************/
 
     /**
      * Generate a searchcondition that checks if the field is null.
@@ -752,7 +726,7 @@ class Query
      * @param string $field
      * @param bool $emptyStringIsNull
      *
-     * @return string
+     * @return QueryPart
      */
     public function nullCondition($field, $emptyStringIsNull = false)
     {
@@ -761,7 +735,7 @@ class Query
             $result = "($result OR $field = '')";
         }
 
-        return $result;
+        return new QueryPart($result);
     }
 
     /**
@@ -770,16 +744,61 @@ class Query
      * @param string $field
      * @param bool $emptyStringIsNull
      *
-     * @return string
+     * @return QueryPart
      */
     public function notNullCondition($field, $emptyStringIsNull = false)
     {
         $result = "$field IS NOT NULL";
         if ($emptyStringIsNull) {
-            $result = "($result AND $field <> '')";
+            $result = "($result AND $field != '')";
         }
 
-        return $result;
+        return new QueryPart($result);
+    }
+
+    /**
+     * Generate a searchcondition that check boolean value
+     *
+     * @param string $field full qualified table column
+     * @param mixed $value integer/float/double etc.
+     *
+     * @return QueryPart
+     */
+    public function exactBoolCondition($field, $value)
+    {
+        if ($value) {
+            return new QueryPart($field);
+        } else {
+            return new QueryPart("NOT({$field})");
+        }
+    }
+
+    /**
+     * Conditions of type "field [OPERATOR] value" (OPERATOR like '<', '>', 'LIKE'...)
+     *
+     * this is the meta for (greater|lower)than(equal)?Condition functions
+     *
+     * @param string $field The database field
+     * @param string $value The value
+     * @param string $positiveOp ('>', '<',...) when value does not start with '!'
+     * @param string $negativeOp ('>', '<',...) when value starts with '!'
+     *
+     * @return QueryPart
+     */
+    private function simpleCondition($field, $value, $positiveOp, $negativeOp)
+    {
+        $placeholder = QueryPart::placeholder($field);
+        $operator = ($value[0] == '!') ? $negativeOp:$positiveOp;
+        if ($value[0] == '!') {
+            $value = substr($value, 1);
+        }
+        $parameter = [$placeholder => $value];
+
+        if ($this->m_db->getForceCaseInsensitive()) {
+            return new QueryPart("LOWER({$field}) {$operator} LOWER({$placeholder})", $parameter);
+        } else {
+            return new QueryPart("{$field} {$operator} {$placeholder}", $parameter);
+        }
     }
 
     /**
@@ -789,73 +808,14 @@ class Query
      * @param mixed $value string/number/decimal expected column value
      * @param string $dbFieldType help determine exact search method
      *
-     * @return string piece of where clause to use in your SQL statement
+     * @return QueryPart
      */
     public function exactCondition($field, $value, $dbFieldType = null)
     {
-        if (in_array($dbFieldType, array('decimal', 'number'))) {
-            return self::exactNumberCondition($field, $value);
+        if ($dbFieldType == Db::FT_NUMBER) {
+            $value = (int) $value;
         }
-
-        if ($this->getDb()->getForceCaseInsensitive()) {
-            if ($value[0] == '!') {
-                return 'LOWER('.$field.")!=LOWER('".substr($value, 1, Tools::atk_strlen($value))."')";
-            }
-
-            return 'LOWER('.$field.")=LOWER('".$value."')";
-        } else {
-            if ($value[0] == '!') {
-                return $field."!='".substr($value, 1, Tools::atk_strlen($value))."'";
-            }
-
-            return $field."='".$value."'";
-        }
-    }
-
-    /**
-     * Generate a searchcondition that check number/decimal literal values.
-     *
-     * @param string $field full qualified table column
-     * @param mixed $value integer/float/double etc.
-     *
-     * @return string piece of where clause to use in your SQL statement
-     */
-    public static function exactNumberCondition($field, $value)
-    {
-        return "$field = $value";
-    }
-
-
-    public function exactBoolCondition($field, $value)
-    {
-        $value = $value ? '1' : '0';
-
-        return "$field = $value";
-    }
-
-    /**
-     * Generate a searchcondition that checks whether $field contains $value .
-     *
-     * @param string $field The field
-     * @param string $value The value
-     *
-     * @return string The substring condition
-     */
-    public function substringCondition($field, $value)
-    {
-        if ($this->getDb()->getForceCaseInsensitive()) {
-            if ($value[0] == '!') {
-                return 'LOWER('.$field.") NOT LIKE LOWER('%".substr($value, 1, Tools::atk_strlen($value))."%')";
-            }
-
-            return 'LOWER('.$field.") LIKE LOWER('%".$value."%')";
-        } else {
-            if ($value[0] == '!') {
-                return $field." NOT LIKE '%".substr($value, 1, Tools::atk_strlen($value))."%'";
-            }
-
-            return $field." LIKE '%".$value."%'";
-        }
+        return $this->simpleCondition($field, $value, '=', '!=');
     }
 
     /**
@@ -868,19 +828,33 @@ class Query
      */
     public function wildcardCondition($field, $value)
     {
-        if ($this->getDb()->getForceCaseInsensitive()) {
-            if ($value[0] == '!') {
-                return 'LOWER('.$field.") NOT LIKE LOWER('".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."')";
-            }
+        return $this->simpleCondition($field, str_replace('*', '%', $value), 'LIKE', 'NOT LIKE');
+    }
 
-            return 'LOWER('.$field.") LIKE LOWER('".str_replace('*', '%', $value)."')";
-        } else {
-            if ($value[0] == '!') {
-                return $field." NOT LIKE '".str_replace('*', '%', substr($value, 1, Tools::atk_strlen($value)))."'";
-            }
+    /**
+     * Generate a searchcondition that checks whether $field contains $value .
+     *
+     * @param string $field The field
+     * @param string $value The value
+     *
+     * @return QueryPart
+     */
+    public function substringCondition($field, $value)
+    {
+        return $this->simpleCondition($field, '%'.str_replace('%', '%%', $value).'%', 'LIKE', 'NOT LIKE');
+    }
 
-            return $field." LIKE '".str_replace('*', '%', $value)."'";
-        }
+    /**
+     * Generate a searchcondition that checks whether $field starts with $value .
+     *
+     * @param string $field The field
+     * @param string $value The value
+     *
+     * @return QueryPart
+     */
+    public function startswithCondition($field, $value)
+    {
+        return $this->simpleCondition($field, str_replace('%', '%%', $value).'%', 'LIKE', 'NOT LIKE');
     }
 
     /**
@@ -889,15 +863,11 @@ class Query
      * @param string $field The database field
      * @param string $value The value
      *
-     * @return string
+     * @return QueryPart
      */
     public function greaterthanCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." < '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." > '".$value."'";
-        }
+        return simpleCondition($field, $value, '>', '<=');
     }
 
     /**
@@ -910,11 +880,7 @@ class Query
      */
     public function greaterthanequalCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." < '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." >= '".$value."'";
-        }
+        return $this->simpleCondition($field, $value, '>=', '<');
     }
 
     /**
@@ -923,15 +889,11 @@ class Query
      * @param string $field The database field
      * @param string $value The value
      *
-     * @return string
+     * @return QueryPart
      */
     public function lessthanCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." > '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." < '".$value."'";
-        }
+        return $this->simpleCondition($field, $value, '<=', '>');
     }
 
     /**
@@ -940,15 +902,25 @@ class Query
      * @param string $field The database field
      * @param string $value The value
      *
-     * @return string
+     * @return QueryPart
      */
     public function lessthanequalCondition($field, $value)
     {
-        if ($value[0] == '!') {
-            return $field." > '".substr($value, 1, Tools::atk_strlen($value))."'";
-        } else {
-            return $field." <= '".$value."'";
-        }
+        return $this->simpleCondition($field, $value, '<=', '>');
+    }
+
+    /**
+     * Generate searchcondition with bitmask
+     *
+     * @param string $field The database field
+     * @param int $value The value
+     *
+     * @return QueryPart
+     */
+    public function bitmaskCondition($field, $value)
+    {
+        $placeholder = QueryPart::placeholder($field);
+        return new QueryPart("{$field} & {$placeholder} != 0", [$placeholder => (int) $value]);
     }
 
     /**
@@ -957,66 +929,74 @@ class Query
      * @param string $field The database field
      * @param mixed $value1 The first value
      * @param mixed $value2 The second value
-     * @param bool $quote Add quotes?
      *
-     * @return string
+     * @return QueryPart
      */
-    public function betweenCondition($field, $value1, $value2, $quote = true)
+    public function betweenCondition($field, $value1, $value2)
     {
-        if ($quote) {
-            return $field." BETWEEN '".$value1."' AND '".$value2."'";
-        } else {
-            return $field.' BETWEEN '.$value1.' AND '.$value2;
-        }
+        $placeholder = QueryPart::placeholder($field);
+        $parameters = [$placeholder.'_min' => $value1, $placeholder.'_max' => $value2];
+
+        return new QueryPart("{$field} BETWEEN {$placeholder}_min AND {$placeholder}_max", $parameters);
     }
 
     /**
-     * If we set a m_fieldquote you can pass a field to this function and it will
-     * quote all the identifiers (db, table, column, etc...) in the field.
+     * Generate an SQL searchcondition for a regular expression match.
      *
-     * @param string $field The field to add quotes too
+     * @param string $field The fieldname on which the regular expression
+     *                        match will be performed.
+     * @param string $value The regular expression to search for.
      *
-     * @return string The quoted field, if we have a fieldquote
+     * @return QueryPart
      */
-    public function quoteField($field)
+    public function regexpCondition($field, $value)
     {
-        $quotefield = false;
-        if ((in_array($field, $this->m_quotedfields) || in_array($field, $this->m_tables)) && preg_match('/(^[\w\.]+)/', $field)."'") {
-            $quotefield = true;
-        }
-
-        $exploded = explode('.', $field);
-        $identifiers = [];
-        foreach ($exploded as $identifier) {
-            if ($quotefield || in_array($identifier, $this->m_reservedNames)) {
-                $identifiers[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
-            } else {
-                $identifiers[] = $identifier;
-            }
-        }
-        $field = implode('.', $identifiers);
-
-        return $field;
+        return $this->m_db->func_regexp($field, $value); 
     }
 
     /**
-     * Quote an array of fields if m_fieldquote is set.
-     * Uses $this->quoteField($field).
+     * Get the IN condition (field in a list of possible values)
      *
-     * @param array $fields The fields to add quotes to
+     * @param string $field The database field
+     * @param array[] $values Possible values
      *
-     * @return array The quoted fields
+     * @return QueryPart
      */
-    public function quoteFields($fields)
+    public function inCondition($field, $values)
     {
-        if ($this->m_fieldquote) {
-            $quoted = [];
-            foreach ($fields as $key => $field) {
-                $quoted[$key] = $this->quoteField($field);
-            }
-            $fields = $quoted;
+        if (empty($values)) {
+            return null;
+        }
+        $placeholder = QueryPart::placeholder($field);
+        $parameters = [];
+        for ($i = 0; $i < count($values); $i++) {
+            $parameters["{$placeholder}_{$i}"]= $values[$i];
         }
 
-        return $fields;
+        $sql = $field.' IN ('.implode(', ', array_keys($parameters)).')';
+        return new QueryPart($sql, $parameters);
+    }
+
+    /**
+     * Get the NOT IN condition (field not in a list of possible values)
+     *
+     * @param string $field The database field
+     * @param array[] $values Impossible values
+     *
+     * @return QueryPart
+     */
+    public function notinCondition($field, $values)
+    {
+        if (empty($values)) {
+            return null;
+        }
+        $placeholder = QueryPart::placeholder($field);
+        $parameters = [];
+        for ($i = 0; $i < count($values); $i++) {
+            $parameters["{$placeholder}_{$i}"]= $values[$i];
+        }
+
+        $sql = $field.' NOT IN ('.implode(', ', array_keys($parameters)).')';
+        return new QueryPart($sql, $parameters);
     }
 }

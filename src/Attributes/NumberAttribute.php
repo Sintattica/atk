@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
+use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Ui\Page;
 
@@ -24,6 +25,7 @@ class NumberAttribute extends Attribute
     public $m_decimalseparator;
     public $m_thousandsseparator;
     public $m_trailingzeros = false; // Show trailing zeros
+    public $m_dbfieldtype = Db::FT_NUMBER; // By default, without decimals, store as an NUMBER
 
     protected $touchspin;
 
@@ -42,7 +44,6 @@ class NumberAttribute extends Attribute
      */
     public function __construct($name, $flags = 0, $decimals = null)
     {
-        $flags = $flags | self::AF_NO_QUOTES;
         parent::__construct($name, $flags);
 
         $this->m_decimals = $decimals;
@@ -68,6 +69,7 @@ class NumberAttribute extends Attribute
     public function setDecimals($decimals)
     {
         $this->m_decimals = $decimals;
+        $this->m_dbfieldtype = $this->getDecimals() > 0 ? Db::FT_DECIMAL : Db::FT_NUMBER;
     }
 
     /**
@@ -143,6 +145,9 @@ class NumberAttribute extends Attribute
      */
     public function removeSeparators($number, $decimal_separator = '', $thousands_separator = '')
     {
+        if (is_null($number)) {
+            return null;
+        }
         if (empty($decimal_separator)) {
             $decimal_separator = $this->m_decimalseparator;
         }
@@ -337,9 +342,7 @@ class NumberAttribute extends Attribute
      */
     public function fetchValue($postvars)
     {
-        if ($this->isPosted($postvars)) {
-            return $this->removeSeparators(Tools::atkArrayNvl($postvars, $this->fieldName(), ''));
-        }
+        return $this->removeSeparators(parent::fetchValue($postvars));
     }
 
     /**
@@ -389,21 +392,6 @@ class NumberAttribute extends Attribute
     public static function getStaticSearchModes()
     {
         return array('exact', 'between', 'greaterthan', 'greaterthanequal', 'lessthan', 'lessthanequal');
-    }
-
-    /**
-     * Return the database field type of the attribute.
-     *
-     * Note that the type returned is a 'generic' type. Each database
-     * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $db->fieldType().
-     *
-     * @return string The 'generic' type of the database field for this
-     *                attribute.
-     */
-    public function dbFieldType()
-    {
-        return $this->getDecimals() > 0 ? 'decimal' : 'number';
     }
 
     /**
@@ -571,12 +559,9 @@ class NumberAttribute extends Attribute
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        $value = '';
-        if (isset($record[$this->fieldName()])) {
-            $value = $record[$this->fieldName()];
-        }
+        $value = $atksearch[$this->getHtmlName()] ?? '';
 
         $searchsize = $this->m_searchsize;
         if ($this->m_decimals > 0) { // (don't use getDecimals to avoid fatal error when called from ExpressionAttribute)
@@ -681,13 +666,16 @@ class NumberAttribute extends Attribute
     }
 
     /**
-     * Get the between search condition.
+     * Get the between search condition
+     *
+     * This function checks the nullity of one attribute (which leads to greaterthan or
+     * lessthan condition) and reorder the values if needed.
      *
      * @param Query $query The query object where the search condition should be placed on
-     * @param string $fieldname The name of the field in the database
-     * @param array $value The processed search value
+     * @param string $fieldname The name of the field in the database (quoted)
+     * @param array $value The processed search values indexed by 'from' and 'to'
      *
-     * @return string query where clause for searching
+     * @return QueryPart where clause for searching
      */
     public function getBetweenCondition($query, $fieldname, $value)
     {
@@ -699,14 +687,14 @@ class NumberAttribute extends Attribute
                 $value['to'] = $tmp;
             }
 
-            return $query->betweenCondition($fieldname, $this->escapeSQL($value['from']), $this->escapeSQL($value['to']));
+            return $query->betweenCondition($fieldname, $value['from'], $value['to']);
         } elseif ($value['from'] != '' && $value['to'] == '') {
             return $query->greaterthanequalCondition($fieldname, $value['from']);
         } elseif ($value['from'] == '' && $value['to'] != '') {
             return $query->lessthanequalCondition($fieldname, $value['to']);
         }
 
-        return '';
+        return null;
     }
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
@@ -719,14 +707,12 @@ class NumberAttribute extends Attribute
             } elseif ($value['to'] != '') {
                 $value = $value['to'];
             } else {
-                return '';
+                return null;
             }
 
             return parent::getSearchCondition($query, $table, $value, $searchmode);
         }
 
-        $fieldname = $table.'.'.$this->fieldName();
-
-        return $this->getBetweenCondition($query, $fieldname, $value);
+        return $this->getBetweenCondition($query, Db::quoteIdentifier($table, $this->fieldName()), $value);
     }
 }
