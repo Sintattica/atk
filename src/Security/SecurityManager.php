@@ -165,7 +165,7 @@ class SecurityManager
                 $location = Config::getGlobal('auth_loginpage', '');
                 if ($location) {
                     $location .= (strpos($location, '?') === false) ? '?' : '&';
-                    $location .= 'login='.$auth_user.'&error='.$this->auth_response;
+                    $location .= 'login='.urlencode($auth_user).'&error='.$this->auth_response;
 
                     if (Config::getGlobal('debug') >= 2) {
                         $debugger = Debugger::getInstance();

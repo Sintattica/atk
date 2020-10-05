@@ -112,6 +112,9 @@ class OneToOneRelation extends Relation
 
         if ($this->createDestination() && is_array($myrecord)) {
             $result = $this->m_destInstance->descriptor($myrecord);
+            if (!in_array($mode, array('csv', 'plain'))) {
+                $result = htmlspecialchars($result);
+            }
         } else {
             $result = $this->text('none');
         }

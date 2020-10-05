@@ -29,8 +29,19 @@ class SessionManager
      */
     private $m_usestack = true; // should we use a session stack
 
+    /**
+     * @var int
+     */
     public $atklevel;
+    
+    /**
+     * @var int
+     */
     public $atkprevlevel;
+
+    /**
+     * @var string returned by uniqid (hexadecimal number)
+     */
     public $atkstackid;
 
     /**
@@ -63,13 +74,13 @@ class SessionManager
         }
 
         if (isset($_REQUEST['atklevel'])) {
-            $this->atklevel = trim($_REQUEST['atklevel']);
+            $this->atklevel = (int) trim($_REQUEST['atklevel']);
         }
         if (isset($_REQUEST['atkprevlevel'])) {
-            $this->atkprevlevel = trim($_REQUEST['atkprevlevel']);
+            $this->atkprevlevel = (int) trim($_REQUEST['atkprevlevel']);
         }
         if (isset($_REQUEST['atkstackid'])) {
-            $this->atkstackid = trim($_REQUEST['atkstackid']);
+            $this->atkstackid = preg_replace('/[^0-9A-Fa-f]/', '', trim($_REQUEST['atkstackid']));
         }
 
         //session init
@@ -986,11 +997,11 @@ class SessionManager
         $res .= '<input type="hidden" name="atkprevlevel" value="'.$this->atkLevel().'" />';
 
         if ($sessionstatus != self::SESSION_NEW) {
-            $res .= '<input type="hidden" name="atkstackid" value="'.$this->atkStackID().'" />';
+            $res .= '<input type="hidden" name="atkstackid" value="'.htmlspecialchars($this->atkStackID()).'" />';
         }
 
         if (!is_null($returnbehaviour)) {
-            $res .= '<input type="hidden" name="'.$fieldprefix.'atkreturnbehaviour" value="'.$returnbehaviour.'" />';
+            $res .= '<input type="hidden" name="'.$fieldprefix.'atkreturnbehaviour" value="'.htmlspecialchars($returnbehaviour).'" />';
         }
 
         $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'" />';

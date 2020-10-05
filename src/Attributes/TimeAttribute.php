@@ -389,11 +389,12 @@ class TimeAttribute extends Attribute
         $field = $record[$this->fieldName()];
         $result = '';
         if (is_array($field)) {
-            foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$value.'">';
+            foreach (['hours', 'minutes', 'seconds'] as $key) {
+                $value = filter_var($field[$key] ?? 0, FILTER_VALIDATE_INT);
+                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$fieldvalue.'">';
             }
         } else {
-            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$field.'">';
+            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($field).'">';
         }
 
         return $result;

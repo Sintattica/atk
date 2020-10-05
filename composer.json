@@ -14,6 +14,7 @@
     "php": ">=5.5.9",
     "fightbulc/moment": "^1.13",
     "smarty/smarty": "^3.1",
-    "vlucas/phpdotenv": "^2.2"
+    "vlucas/phpdotenv": "^2.2",
+    "ezyang/htmlpurifier": "^4.11"
   }
 }

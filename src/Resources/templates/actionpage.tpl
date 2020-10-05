@@ -13,7 +13,7 @@
             <ol class="breadcrumb">
                 {foreach $stacktrace as $item}
                     {if !$item@last}
-                        <li class="active"><a href="{$item.url}" data-toggle="tooltip" data-placement="bottom" title="{$item.descriptor}">{$item.title}</a></li>
+                        <li class="active"><a href="{$item.url}" data-toggle="tooltip" data-placement="bottom" title="{$item.descriptor|escape}">{$item.title}</a></li>
                     {else}
                         <li>{$item.title}</li>
                     {/if}

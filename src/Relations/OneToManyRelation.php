@@ -336,13 +336,13 @@ class OneToManyRelation extends Relation
             $result = '<ul '.$this->getCSSClassAttribute().'>';
 
             foreach ($records as $current) {
-                $result .= sprintf('<li>%s</li>', $this->m_destInstance->descriptor($current));
+                $result .= sprintf('<li>%s</li>', htmlspecialchars($this->m_destInstance->descriptor($current)));
             }
 
             $result .= '</ul>';
 
             return $result;
-        } else { // cvs / plain mode
+        } else { // csv / plain mode
             $result = '';
 
             foreach ($records as $i => $current) {

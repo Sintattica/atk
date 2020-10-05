@@ -2044,7 +2044,7 @@ class Node
             $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js?stateful='.(Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
 
             // Load default tab show script.
-            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab(\''.(isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '').'\');}');
+            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab('.(isset($this->m_postvars['atktab']) ? json_encode($this->m_postvars['atktab']) : '').');}');
 
             $fulltabs = $this->buildTabs($action);
             $tabscript = "var tabs = new Array();\n";
