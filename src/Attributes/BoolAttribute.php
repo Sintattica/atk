@@ -266,11 +266,15 @@ class BoolAttribute extends Attribute
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return boolean The internal value
      */
     public function fetchValue($postvars)
     {
-        return parent::fetchValue($postvars) ?? false;
+        $value = parent::fetchValue($postvars);
+        if (is_null($value)) {
+            return null;
+        }
+        return ($value != false);
     }
 
     /**

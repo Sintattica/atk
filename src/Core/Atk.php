@@ -10,7 +10,7 @@ use Sintattica\Atk\Ui\IndexPage;
 
 class Atk
 {
-    const VERSION = 'v9.1.9-dev';
+    const VERSION = 'v9.1.10-dev';
 
     public $g_nodes = [];
     public $g_nodesClasses = [];

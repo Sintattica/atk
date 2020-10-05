@@ -1775,7 +1775,7 @@ class Node
      * - field, value filter : will filter on table.field = value
      * - a SQL expression that may contain '[table]' : will filter on this
      *      expression, replacing [table] with table name.
-     * - a QueryPart condition (with parameters).
+     * - a QueryPart condition (with parameters), that may contain '[table]'.
      *
      * @param string $filter a QueryPart expression or the fieldname you want
      *                       to filter OR a SQL where clause expression.
@@ -1786,9 +1786,9 @@ class Node
     {
         if ($filter instanceof QueryPart) {
             // QueryPart case :
+            $filter->parse(['table' => Db::quoteIdentifier($this->m_table)], false);
             $this->m_filters[] = $filter;
-        }
-        if ($value == '') {
+        } elseif ($value == '') {
             // $filter is a where clause kind of thing
             $this->m_filters[] = new QueryPart(str_replace('[table]', Db::quoteIdentifier($this->m_table), $filter), []);
         } else {
@@ -3349,7 +3349,10 @@ class Node
             $this->trackChangesIfNeeded($record, $excludes, $includes);
 
             if ($exectrigger) {
-                $this->executeTrigger('preUpdate', $record);
+                if (!$this->executeTrigger('preUpdate', $record)) {
+                    Tools::atkerror('preUpdate() failed!');
+                    return false;
+                }
             }
 
             $query->addCondition($this->primaryKeyFromString($record['atkprimkey']));

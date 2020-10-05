@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
+use Sintattica\Atk\DataGrid\DataGrid as DataGrid;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Db\QueryPart;
@@ -101,41 +102,27 @@ class AggregatedColumn extends Attribute
     }
 
     /**
-     * Adds the attribute / field to the list header. This includes the column name and search field.
+     * Retrieves the ORDER BY statement for this attribute's node.
      *
-     * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
-     * @param string $fieldprefix the fieldprefix
-     * @param int $flags the recordlist flags
-     * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby Order by string
+     * We sort by each member field.
      *
-     * @see Node::listArray
+     * @param array $extra A list of attribute names to add to the order by
+     *                          statement
+     * @param string $table The table name (if not given uses the owner node's table name)
+     * @param string $direction Sorting direction (ASC or DESC)
+     *
+     * @return string The ORDER BY statement for this attribute
      */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
     {
-        if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
-            $arr['heading'][$fieldprefix.$this->fieldName()]['title'] = $this->label();
-
-            if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
-                $rec = [];
-                foreach ($this->m_displayfields as $field) {
-                    $rec[] = $this->m_ownerInstance->m_table.'.'.$field;
-                }
-                $order = implode(', ', $rec);
-                if ($atkorderby == $order) {
-                    $order = implode(' DESC,', $rec);
-                    $order .= ' DESC';
-                }
-                $sm = SessionManager::getInstance();
-                $arr['heading'][$fieldprefix.$this->fieldName()]['url'] = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_ownerInstance->atkNodeUri().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
-            }
-
-            if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
-                $arr['search'][$fieldprefix.$this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr['search'][$fieldprefix.$this->fieldName()] .= '<input type="hidden" name="atksearchmode['.$this->fieldName().']" value="'.$this->getSearchMode().'">';
-            }
+        if (empty($table)) {
+            $table = $this->m_ownerInstance->m_table;
         }
+        $fields = [];
+        foreach ($this->m_displayfields as $field) {
+            $fields[] = Db::quoteIdentifier($table, $field);
+        }
+        return implode(" {$direction},", $fields)." {$direction}";
     }
 
     /**
@@ -188,15 +175,5 @@ class AggregatedColumn extends Attribute
         );
 
         return QueryPart::implode('OR', $searchConditions, true);
-    }
-
-    /**
-     * Retrieve the list of searchmodes supported by the attribute.
-     *
-     * @return array List of supported searchmodes
-     */
-    public function getSearchModes()
-    {
-        return array('exact', 'substring', 'wildcard', 'regexp');
     }
 }

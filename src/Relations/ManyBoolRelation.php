@@ -51,6 +51,9 @@ class ManyBoolRelation extends ManyToManyRelation
         $this->createLink();
         $result = '';
 
+        $page = Page::getInstance();
+        $page->register_script(Config::getGlobal('assets_url').'javascript/profileattribute.js');
+
         $selectedPk = $this->getSelectedRecords($record);
 
         $recordset = $this->_getSelectableRecords($record, $mode);
@@ -60,9 +63,9 @@ class ManyBoolRelation extends ManyToManyRelation
             $page->register_script(Config::getGlobal('assets_url').'javascript/profileattribute.js');
 
             if (!$this->hasFlag(self::AF_MANYBOOL_NO_TOOLBAR)) {
-                $result .= '<div align="left">[<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('check_all',
-                        'atk').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('check_none',
-                        'atk').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.Tools::atktext('invert_selection',
+                $result .= '<div align="left">[<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all',
+                        'atk').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none',
+                        'atk').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection',
                         'atk').'</a>]</div>';
             }
 

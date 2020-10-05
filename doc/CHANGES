@@ -22,6 +22,8 @@ WIP Changes
 DB Changes
 -----------
 
+* Removed namespace from SessionManager (scripts/application isolation already provided by 'identifier') [samuel]
+* Renamed SessionManager::globalVar to setValue() [samuel]
 * Db code updated to safer code. What you will probably need to change :
     - backticks don't work anymore to escape fields, use double-quotes or call
     Db::quoteIdentifier().
@@ -138,7 +140,6 @@ DB Changes
 * Selector->buildQuery() is now a public function.
 - Selector does not implement IteratorAggregate anymore, SelectorIterator is
     removed.
-
 
 New Release ATK 9.0 (2016-03-09)
 ---------------------------------
