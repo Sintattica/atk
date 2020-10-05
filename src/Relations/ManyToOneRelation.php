@@ -1093,6 +1093,7 @@ class ManyToOneRelation extends Relation
         }
         $result .= '</select>';
         $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
+        $result .= "<script>jQuery('#$id').on('select2:close',function(){jQuery(this).focus();});</script>";
 
         return $result;
     }
