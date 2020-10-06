@@ -48,19 +48,14 @@ This is a deeply refactored version that's not backward compatible. It's been de
 
 ### 9.1
 
-Version like 9.0, but with jQuery only
+Version like 9.0, but with jQuery only. No PRs accepted to avoid breaking legacy projects.
 
 ### 10.0
 
-Contributions and advancements
+Contributions and advancements. PRs welcome!
 
-### master
-
-This is the head of development. Currently it points to 10.0
 
 ## Contributions
-
-Since we use both branches in production projects, pull requests for bug fixes are welcome. New features are also welcome!
 
 We kindly ask you to:
 
@@ -79,4 +74,4 @@ Thanks!
 The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica and to give us the sources of two historically valuable resources for ATK: the [forum](http://atk-framework.com/forum/) and the [wiki](http://atk-framework.com/wiki/).
 
 ### 9.0, 9.1 and 10.0
-Currently there's no documentation for v. 9 and above. If you have some, please contribute to the wiki.
+Currently there's no documentation for v. 9 and above. If you have some, please contribute directly to Github's wiki.
