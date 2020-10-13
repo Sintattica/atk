@@ -21,7 +21,7 @@ use Sintattica\Atk\Utils\StringParser;
  * </code>
  *
  * @todo Documentation is outdated, and this class has not been ported yet
- *       to ATK5's new action handler mechanism, so it may not work.
+ *       to ATK5's new action handler mechanism, so it does not work.
  *
  * @author Martin Roest <martin@ibuildings.nl>
  * @author Sandy Pleyte <sandy@achievo.org>
@@ -395,46 +395,20 @@ class TreeNode extends Node
                     $actions = [];
 
                     if (!$this->hasFlag(self::NF_NO_ADD) && !($this->hasFlag(self::NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]['level'] == 0)) {
-                        $actions['add'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=add&atkfilter='.$this->m_parent.'.'.$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]['id']."'");
+			$presetForm = '{'.json_encode($this->m_parent).':'.$this->primaryKeyString($this->m_tree[$cnt]).'}';
+                        $actions['add'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=add&atkforce='.urlencode($presetForm);
                     }
                     if ($cnt > 0) {
                         if (!$this->hasFlag(self::NF_NO_EDIT)) {
-                            $actions['edit'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=edit&atkselector='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
+                            $actions['edit'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=edit&atkselector='.urlencode($this->primaryKeyString($this->m_tree[$cnt]));
                         }
                         if (($this->hasFlag(self::NF_COPY) && $this->allowed('add') && !$this->hasFlag(self::NF_TREE_NO_ROOT_COPY)) || ($this->m_tree[$cnt]['level'] != 1 && $this->hasFlag(self::NF_COPY) && $this->allowed('add'))) {
-                            $actions['copy'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=copy&atkselector='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
+                            $actions['copy'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=copy&atkselector='.urlencode($this->primaryKeyString($this->m_tree[$cnt]));
                         }
                         if ($this->hasFlag(self::NF_NO_DELETE) || ($this->hasFlag(self::NF_TREE_NO_ROOT_DELETE) && $this->m_tree[$cnt]['level'] == 1)) {
                             // Do nothing
                         } else {
-                            $actions['delete'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=delete&atkselector='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
-                        }
-                    }
-
-                    // Look for custom record actions.
-                    $recordactions = $actions;
-                    $this->collectRecordActions($this->m_tree[$cnt]['label'], $recordactions, $dummy);
-
-                    foreach ($recordactions as $name => $url) {
-                        if (!empty($url)) {
-                            /* dirty hack */
-                            $atkencoded = strpos($url, '_1') > 0;
-
-                            $url = str_replace('%5B', '[', $url);
-                            $url = str_replace('%5D', ']', $url);
-                            $url = str_replace('_1'.'5B', '[', $url);
-                            $url = str_replace('_1'.'5D', ']', $url);
-
-                            if ($atkencoded) {
-                                $url = str_replace('[pk]', Tools::atkurlencode(rawurlencode($this->primaryKeyString($this->m_tree[$cnt]['label'])), false), $url);
-                            } else {
-                                $url = str_replace('[pk]', rawurlencode($this->primaryKeyString($this->m_tree[$cnt]['label'])), $url);
-                            }
-
-                            $stringparser = new StringParser($url);
-                            $url = $stringparser->parse($this->m_tree[$cnt]['label'], true);
-
-                            $res .= Tools::href($url, Tools::atktext($name), SessionManager::SESSION_NESTED).'&nbsp;';
+                            $actions['delete'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=delete&atkselector='.urlencode($this->primaryKeyString($this->m_tree[$cnt]));
                         }
                     }
 
