@@ -18,52 +18,52 @@
 return [
     'above_maximum_value' => 'Above the maximum allowed value',
     // Missing string!!!
-    'access_denied' => '������ ��������',
-    'add' => '����������',
+    'access_denied' => 'Доступ запрещен',
+    'add' => 'Добавление',
     'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
-    'admin' => '�����������������',
+    'admin' => 'Администрирование',
     'administration_application' => 'Administration application',
     // Missing string!!!
     'all' => 'All',
     // Missing string!!!
     'alphabeticchars' => 'alphabetic characters',
     // Missing string!!!
-    'apply' => '���������',
+    'apply' => 'Применить',
     'app_close' => 'Close',
     // Missing string!!!
-    'app_description' => '����� ���������� � ATK ����������.',
+    'app_description' => 'Добро пожаловать в ATK приложение.',
     'app_launcher' => 'ATK Application Launcher',
     // Missing string!!!
     'app_reopen' => 'Restart',
     // Missing string!!!
     'app_shorttitle' => 'ATKApp',
-    'app_title' => 'ATK ����������',
+    'app_title' => 'ATK Приложение',
     'apr' => 'Apr',
     // Missing string!!!
-    'april' => '������',
+    'april' => 'Апрель',
     'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted. (%s)'",
     // Missing string!!!
     'aug' => 'Aug',
     // Missing string!!!
-    'august' => '������',
-    'auth_account_locked' => '��� ������� ������������. �������� ������ �������, ���� ��������, ��� ��������� � ����� ��������� ���������������.',
-    'auth_max_loginattempts_exceeded' => '������� ����� ����������. ����� �������������. ����������, ��������� � ����� ��������� ���������������.',
-    'auth_mismatch' => '��� ������������ �/��� �� �����. ����������, ���������� ��� ���.',
+    'august' => 'Август',
+    'auth_account_locked' => 'Ваш профиль заблокирован. Выберите другой профиль, если возможно, или свяжитесь с Вашим системным администратором.',
+    'auth_max_loginattempts_exceeded' => 'Слишком много повторений. Логин деактивирован. Пожалуйста, свяжитесь с Вашим системным администратором.',
+    'auth_mismatch' => 'Имя пользователя и/или не верны. Пожалуйста, попробуйте еще раз.',
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
-    'auth_no_server' => '�� ������ ������. �������������� ���������� (���������� � ���������� ��������������).',
+    'auth_no_server' => 'Не указан сервер. Аутентификация невозможна (обратитесь к системному администратору).',
     'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
     'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
     'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
-    'auth_unable_to_connect' => '���������� ����������� � �������� ��� �������������� (���������� � ���������� ��������������).',
+    'auth_unable_to_connect' => 'Невозможно соединиться с сервером для аутентификации (обратитесь к системному администратору).',
     'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
     'autocomplete_no_results' => 'No results found for the given search value.',
@@ -76,32 +76,32 @@ return [
     // Missing string!!!
     'available' => 'Available',
     // Missing string!!!
-    'back' => '�����',
-    'back_to' => '����� �',
+    'back' => 'Назад',
+    'back_to' => 'Назад к',
     'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
-    'cancel' => '��������',
+    'cancel' => 'Отменить',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
     'cannot create directory' => 'Cannot create directory: ',
     // Missing string!!!
     'cannot make file' => 'Cannot create file: ',
     // Missing string!!!
-    'cannot_remove_file' => '���������� ������� ����!',
+    'cannot_remove_file' => 'Невозможно удалить файл!',
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'windows-1251',
+    'charset' => 'UTF-8',
     'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
-    'check_all' => '�������� ���',
-    'check_none' => '�������� ���',
+    'check_all' => 'Отметить все',
+    'check_none' => 'Очистить все',
     'clickheretoadd_postfix' => '.',
-    'clickheretoadd_prefix' => '������ ����� ����� �������� ����� ',
-    'close' => '�������',
+    'clickheretoadd_prefix' => 'Кликни здесь чтобы добавить новый ',
+    'close' => 'Закрыть',
     'color' => 'Color',
     // Missing string!!!
-    'colorcode' => '���� ����',
-    'colorpicker_selectcolor' => '������� ����',
+    'colorcode' => 'Цвет кода',
+    'colorpicker_selectcolor' => 'Выбрать цвет',
     'column' => 'column',
     // Missing string!!!
     'column_asc' => 'Up',
@@ -112,11 +112,11 @@ return [
     // Missing string!!!
     'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
-    'confirm_delete' => '�� �������, ��� ������ ������� ���� �����?',
-    'confirm_delete_multi' => '�� ������ ������� ��� ��������?',
+    'confirm_delete' => 'Вы уверены, что хотите удалить этот пункт?',
+    'confirm_delete_multi' => 'Вы хотите удалить эти значения?',
     'content_wizard_finished' => 'Wizard was finished successfully!',
     // Missing string!!!
-    'copy' => '����������',
+    'copy' => 'Копировать',
     'criterium_field' => 'Field',
     // Missing string!!!
     'criterium_mode' => 'Mode',
@@ -146,22 +146,22 @@ return [
     // Missing string!!!
     'dec' => 'Dec',
     // Missing string!!!
-    'december' => '�������',
+    'december' => 'Декабрь',
     'decimal_separator' => '.',
     // Missing string!!!
-    'delete' => '��������',
+    'delete' => 'Удаление',
     'delimiter' => 'Delimiter',
     // Missing string!!!
-    'deselect_all' => '�������� ���������',
+    'deselect_all' => 'Отменить выделение',
     'document' => 'Open document',
     // Missing string!!!
-    'edit' => '������',
-    'editcopy' => '������������� �����',
+    'edit' => 'Правка',
+    'editcopy' => 'Редактировать копию',
     'email' => 'E-mail',
     // Missing string!!!
     'enclosure' => 'Enclosure',
     // Missing string!!!
-    'error' => '������',
+    'error' => 'Ошибка',
     'error_attributeedit_default' => 'An unknown error has occurred.',
     // Missing string!!!
     'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
@@ -186,30 +186,30 @@ return [
     // Missing string!!!
     'error_format_mismatch' => 'The element at position %d does not match the desired format (%s)',
     // Missing string!!!
-    'error_formdataerror' => '�� ������� ��������� ��-��: ',
+    'error_formdataerror' => 'Не удалось сохранить из-за: ',
     'error_iconv_not_install' => "iconv module don't install in your system, but it needs for right functionality",
     // Missing string!!!
-    'error_invalid_email' => '�������� e-mail �����',
-    'error_node_action_access_denied' => '��������, �� �� ������ ���� ��� ������������ ����� ��������.',
-    'error_notnumeric' => '�������� �� �������� ������',
+    'error_invalid_email' => 'Неверный e-mail адрес',
+    'error_node_action_access_denied' => 'Извините, вы не имеете прав для выполненения этого действия.',
+    'error_notnumeric' => 'Значение не является числом',
     'error_not_a_valid_ip' => 'This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.',
     // Missing string!!!
-    'error_obligatoryfield' => '��� ���� �������� ������������ ��� �����',
+    'error_obligatoryfield' => 'Это поле является обязательным для ввода',
     'error_password_incorrect' => 'The password you entered is incorrect!',
     // Missing string!!!
     'error_password_invalid' => 'The password you entered is not a valid password!',
     // Missing string!!!
-    'error_password_nomatch' => '������� ������ ������.',
-    'error_primarykey_exists' => '������ � ����� ������ ��� ����������',
-    'error_tab' => '������',
+    'error_password_nomatch' => 'Введены разные пароли.',
+    'error_primarykey_exists' => 'Запись с таким ключом уже существует',
+    'error_tab' => 'смотри',
     'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
-    'error_uniquefield' => '�������� ����� ���� ������ ���� ����������',
+    'error_uniquefield' => 'Значение этого поля должно быть уникальным',
     'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
     // Missing string!!!
-    'error_unkown_domain' => '����������� �����',
-    'explain_session_expired' => '������ ���������. ��� ���������� � ��� �������, ����� ���������� ���� ���������� � ������� ������������� �������. �� ������ ���������� ������, ����� � ������� ��� ���.',
-    'export' => '�������',
+    'error_unkown_domain' => 'Неизвестный домен',
+    'explain_session_expired' => 'Сессия завершена. Это происходит в тех случаях, когда приложение было неактивным в течение определенного времени. Вы можете продолжить работу, войдя в систему еще раз.',
+    'export' => 'Экспорт',
     'export_config_explanation' => 'Please select the options for the CSV export.',
     // Missing string!!!
     'export_generatetitlerow' => 'Include a title row',
@@ -222,8 +222,8 @@ return [
     // Missing string!!!
     'feb' => 'Feb',
     // Missing string!!!
-    'february' => '�������',
-    'feedback' => '�������� �����',
+    'february' => 'Февраль',
+    'feedback' => 'Обратная связь',
     'feedback_delete_cancelled' => 'The item has not been deleted.',
     // Missing string!!!
     'feedback_delete_failed' => 'The item could not be deleted.',
@@ -246,21 +246,21 @@ return [
     // Missing string!!!
     'feedback_update_success' => 'The changes have been saved.',
     // Missing string!!!
-    'field_obligatory' => '��� ���� �������� ������������ ��� ����������',
-    'filecontent' => '����������',
-    'filename' => '��� �����',
-    'filename_invalid' => '�������� ��� �����',
-    'file_exists' => '���� � ����� ������ ��� ����������',
-    'file_not_exist' => '���� �� ����������',
+    'field_obligatory' => 'Это поле является обязательным для заполнения',
+    'filecontent' => 'Содержимое',
+    'filename' => 'Имя файла',
+    'filename_invalid' => 'Неверное имя файла',
+    'file_exists' => 'Файл с таким именем уже существует',
+    'file_not_exist' => 'Файл не существует',
     'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
-    'fri' => '���',
+    'fri' => 'Пят',
     'friday' => 'Friday',
     // Missing string!!!
-    'fsa_pleasemakeselection' => '������� ��������� ������. ����������, �������� ������.',
-    'help' => '������',
+    'fsa_pleasemakeselection' => 'Найдено несколько запись. Пожалуйста, выберите нужную.',
+    'help' => 'Помощь',
     'import' => 'Import data',
     // Missing string!!!
     'import_allfield' => 'Use default value for one of the attributes (e.g. if the column is absent in the CSV file)',
@@ -315,24 +315,24 @@ return [
     // Missing string!!!
     'invalid_url_anchor' => "Invalid URL anchor, please use this format: '#internal_bookmark'",
     // Missing string!!!
-    'invert_selection' => '�������� ��������',
+    'invert_selection' => 'Отметить наоборот',
     'in_use_by' => 'In use by',
     // Missing string!!!
     'jan' => 'Jan',
     // Missing string!!!
-    'january' => '������',
+    'january' => 'Январь',
     'jul' => 'Jul',
     // Missing string!!!
-    'july' => '����',
+    'july' => 'Июль',
     'jun' => 'Jun',
     // Missing string!!!
-    'june' => '����',
-    'language_de' => '��������',
+    'june' => 'Июнь',
+    'language_de' => 'Немецкий',
     'language_en' => 'English',
     // Missing string!!!
     'language_fr' => 'French',
     // Missing string!!!
-    'language_nl' => '�����������',
+    'language_nl' => 'Голландский',
     'language_pl' => 'Polish',
     // Missing string!!!
     'language_sp' => 'Spanish',
@@ -352,9 +352,9 @@ return [
     // Missing string!!!
     'logged_in_as' => 'Logged in as',
     // Missing string!!!
-    'login' => '�����',
-    'login_failed' => '�������� �����',
-    'login_form' => '�����',
+    'login' => 'Войти',
+    'login_failed' => 'Неверный Логин',
+    'login_form' => 'Логин',
     'logout' => 'Log out',
     // Missing string!!!
     'lose_changes_warning' => 'If you navigate away from this page, all your changes will be lost.',
@@ -363,23 +363,23 @@ return [
     // Missing string!!!
     'mar' => 'Mar',
     // Missing string!!!
-    'march' => '����',
-    'may' => '���',
-    'menu' => '����',
-    'menu_main' => '��������',
-    'mon' => '���',
+    'march' => 'Март',
+    'may' => 'Май',
+    'menu' => 'Меню',
+    'menu_main' => 'главному',
+    'mon' => 'Пон',
     'monday' => 'Monday',
     'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'New',
     // Missing string!!!
-    'next' => '���������',
-    'no' => '���',
+    'next' => 'Следующий',
+    'no' => 'Нет',
     'none' => 'None',
     // Missing string!!!
     'nov' => 'Nov',
     // Missing string!!!
-    'november' => '������',
+    'november' => 'Ноябрь',
     'no_color_selected' => 'No color selected',
     // Missing string!!!
     'no_copyable_records' => 'no copyable records',
@@ -388,47 +388,47 @@ return [
     // Missing string!!!
     'no_results_found' => 'No results found',
     // Missing string!!!
-    'no_valid_directory' => '��� ������������ ����������',
+    'no_valid_directory' => 'Это неправильный директорий',
     'numbers' => 'numbers',
     // Missing string!!!
     'oct' => 'Oct',
     // Missing string!!!
-    'october' => '�������',
+    'october' => 'Октябрь',
     'open' => 'Open',
     // Missing string!!!
     'or' => 'Or',
     // Missing string!!!
-    'password' => '������',
-    'password_again' => '�����',
-    'password_current' => '�������',
+    'password' => 'Пароль',
+    'password_again' => 'Опять',
+    'password_current' => 'Текущий',
     'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
-    'password_incorrect' => '������ �������� ������!',
-    'password_invalid' => '��������� ������ �������� ������������.',
-    'password_new' => '�����',
-    'permission_denied' => '��������, �� �� ������ ���� ��������� ��� ��������',
-    'previous' => '����������',
+    'password_incorrect' => 'Введен неверный пароль!',
+    'password_invalid' => 'Введенный пароль является неправильным.',
+    'password_new' => 'Новый',
+    'permission_denied' => 'Извините, вы не имеете прав выполнить это действие',
+    'previous' => 'Предыдущий',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
     'relogin' => 'Log in again',
     // Missing string!!!
     'remove_criterium' => 'Remove',
     // Missing string!!!
-    'remove_current_file' => '������� ������� ����',
+    'remove_current_file' => 'Удалить текущий файл',
     'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
     // Missing string!!!
     'restricted_delete_error' => 'There is detail information below this record that needs to be deleted first.',
     // Missing string!!!
-    'sat' => '���',
+    'sat' => 'Суб',
     'saturday' => 'Saturday',
     // Missing string!!!
-    'save' => '���������',
+    'save' => 'Сохранить',
     'saveandaddnew' => 'Save and add new',
     // Missing string!!!
-    'saveandclose' => '��������� � �������',
+    'saveandclose' => 'Сохранить и закрыть',
     'saveandedit' => 'Save and edit',
     // Missing string!!!
     'saveandnext' => 'Save and next',
@@ -437,14 +437,14 @@ return [
     // Missing string!!!
     'save_export_selection' => 'Save selection',
     // Missing string!!!
-    'search' => '�����',
-    'search_all' => '����� ���',
+    'search' => 'Найти',
+    'search_all' => 'Найти все',
     'search_and' => 'Match all criteria',
     // Missing string!!!
     'search_between' => 'Search between two values',
     // Missing string!!!
-    'search_exact' => '����� ������ ����������',
-    'search_extended' => '�����������',
+    'search_exact' => 'Найти точное совпадение',
+    'search_extended' => 'Расширенный',
     'search_greaterthan' => 'Search for value bigger than',
     // Missing string!!!
     'search_greaterthanequal' => 'Search for value bigger than or equal to',
@@ -453,30 +453,30 @@ return [
     // Missing string!!!
     'search_lessthanequal' => 'Search for value smaller than or equal to',
     // Missing string!!!
-    'search_mode' => '����� ������',
+    'search_mode' => 'Режим поиска',
     'search_none' => 'Nothing selected',
     // Missing string!!!
     'search_or' => 'Match any criteria',
     // Missing string!!!
-    'search_regexp' => '����� � �������������� ����������� ��������� (�����������)',
-    'search_soundex' => '����� ������, ������� ������ ������',
-    'search_substring' => '����� ���������',
-    'search_wildcard' => '����� � �������� ������ (*)',
-    'select' => '�������',
+    'search_regexp' => 'Найти с использованием регулярного выражения (расширенный)',
+    'search_soundex' => 'Найти строку, которая звучит похоже',
+    'search_substring' => 'Найти подстроку',
+    'search_wildcard' => 'Найти с символом группы (*)',
+    'select' => 'Выбрать',
     'selected' => 'Selected',
     // Missing string!!!
     'selection' => 'Selection',
     // Missing string!!!
     'select_a' => 'Select',
     // Missing string!!!
-    'select_all' => '�������� ���',
-    'select_invert' => '������������� ���������',
-    'select_none' => '�����',
+    'select_all' => 'Выделить все',
+    'select_invert' => 'Инвертировать выделение',
+    'select_none' => 'Пусто',
     'self' => 'Self',
     // Missing string!!!
     'sep' => 'Sep',
     // Missing string!!!
-    'september' => '��������',
+    'september' => 'Сентябрь',
     'settings' => 'Settings',
     // Missing string!!!
     'show' => 'Show',
@@ -489,12 +489,12 @@ return [
     // Missing string!!!
     'steelblue' => 'SteelBlue',
     // Missing string!!!
-    'submit' => '�������',
+    'submit' => 'Перейти',
     'successfully_imported_one_record' => 'Successfully imported 1 record.',
     // Missing string!!!
     'successfully_imported_x_records' => 'Successfully imported %d records.',
     // Missing string!!!
-    'sun' => '���',
+    'sun' => 'Вос',
     'sunday' => 'Sunday',
     // Missing string!!!
     'tab_default' => 'General',
@@ -505,7 +505,7 @@ return [
     // Missing string!!!
     'thousands_separator' => ',',
     // Missing string!!!
-    'thu' => '���',
+    'thu' => 'Чет',
     'thursday' => 'Thursday',
     // Missing string!!!
     'timezone_utc_+0000' => '(UTC) Casablanca, Greenwich Mean Time, London',
@@ -560,46 +560,46 @@ return [
     // Missing string!!!
     'timezone_utc_-1200' => '(UTC-12:00) International Date Line West',
     // Missing string!!!
-    'title_delete' => '����������� ��������',
+    'title_delete' => 'Подтвердите удаление',
     'title_multiselect' => 'Multiselect',
     // Missing string!!!
     'title_select' => 'Select',
     // Missing string!!!
-    'title_session_expired' => '����� ������ �������',
+    'title_session_expired' => 'Время сессии истекло',
     'title_wizard_finished' => 'Wizard finished',
     // Missing string!!!
     'today' => 'Today',
     // Missing string!!!
-    'tue' => '���',
+    'tue' => 'Вто',
     'tuesday' => 'Tuesday',
     // Missing string!!!
     'unknown_error' => 'Unknown error',
     // Missing string!!!
     'unselect' => 'Deselect',
     // Missing string!!!
-    'until' => '��',
+    'until' => 'по',
     'update' => 'Update',
     // Missing string!!!
     'upperchars' => 'uppercase characters',
     // Missing string!!!
-    'username' => '�����',
-    'view' => '���',
+    'username' => 'Логин',
+    'view' => 'Вид',
     'view_all' => 'View all',
     // Missing string!!!
-    'wed' => '���',
+    'wed' => 'Сре',
     'wednesday' => 'Wednesday',
     // Missing string!!!
-    'with_selected' => '� ����������',
-    'ww_sourcemode' => '�������� �����',
-    'ww_visualmode' => '���������� �����',
+    'with_selected' => 'С выделенным',
+    'ww_sourcemode' => 'Исходный режим',
+    'ww_visualmode' => 'Визуальный режим',
     'wysiwyg_delete_cell' => 'Delete cell',
     // Missing string!!!
     'wysiwyg_delete_col' => 'Delete column',
     // Missing string!!!
     'wysiwyg_delete_row' => 'Delete row',
     // Missing string!!!
-    'wysiwyg_fontface' => '�����',
-    'wysiwyg_fontsize' => '�������',
+    'wysiwyg_fontface' => 'Шрифт',
+    'wysiwyg_fontsize' => 'пунктов',
     'wysiwyg_insert_cell' => 'Insert cell',
     // Missing string!!!
     'wysiwyg_insert_col' => 'Insert column',
@@ -612,5 +612,5 @@ return [
     // Missing string!!!
     'wysiwyg_split_cell' => 'Split cells',
     // Missing string!!!
-    'yes' => '��',
+    'yes' => 'Да',
 ];

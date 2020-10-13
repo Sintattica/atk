@@ -43,8 +43,6 @@ class Atk
             $dotEnv->load();
         }
 
-        require_once 'adodb-time.php';
-
         Config::init();
 
         if (Config::getGlobal('debug') > 0) {

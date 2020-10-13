@@ -20,12 +20,12 @@ return [
     // Missing string!!!
     'access_denied' => 'Access denied',
     // Missing string!!!
-    'add' => 'Hozz�ad',
+    'add' => 'Hozzáad',
     'addorcopy' => 'Add or copy',
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
-    'admin' => 'Adminisztr�ci�',
+    'admin' => 'Adminisztráció',
     'administration_application' => 'Administration application',
     // Missing string!!!
     'all' => 'All',
@@ -45,7 +45,7 @@ return [
     'app_title' => 'ATK Applikacio',
     'apr' => 'Apr',
     // Missing string!!!
-    'april' => '�prilis',
+    'april' => 'Április',
     'attributeedit' => 'Update value',
     // Missing string!!!
     'attrib_delete_not_allowed' => "Field '%s' does not allow the record to be deleted. (%s)'",
@@ -58,14 +58,14 @@ return [
     'auth_mismatch' => 'Username and/or password are incorrect. Please try again.',
     'auth_missingusername' => 'Please enter a username first.',
     // Missing string!!!
-    'auth_no_server' => 'Nincs szerver megadva. Az azonos�t�s nem lehets�ges (l�pjen kapcsolatba egy adminisztr�torral).',
+    'auth_no_server' => 'Nincs szerver megadva. Az azonosítás nem lehetséges (lépjen kapcsolatba egy adminisztrátorral).',
     'auth_passwordmail_explanation' => 'You receive this e-mail because you used the password forgotten function. Below are your new login data:',
     // Missing string!!!
     'auth_passwordmail_sent' => 'If the given username exists, a new password is sent to the corresponding e-mail address.',
     // Missing string!!!
     'auth_passwordmail_subjectnew_password' => 'New password',
     // Missing string!!!
-    'auth_unable_to_connect' => 'Az azonos�t� szerverhez t�rt�noo kapcsol�d�s sikertelen (l�pjen kapcsolatba egy adminisztr�torral).',
+    'auth_unable_to_connect' => 'Az azonosító szerverhez történoo kapcsolódás sikertelen (lépjen kapcsolatba egy adminisztrátorral).',
     'autocomplete_minimum_chars' => 'Enter a minimum of %d characters.',
     // Missing string!!!
     'autocomplete_no_results' => 'No results found for the given search value.',
@@ -83,30 +83,30 @@ return [
     // Missing string!!!
     'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
-    'cancel' => 'M�gsem',
+    'cancel' => 'Mégsem',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
     'cannot create directory' => 'Cannot create directory: ',
     // Missing string!!!
     'cannot make file' => 'Cannot create file: ',
     // Missing string!!!
-    'cannot_remove_file' => 'Az �llomany nem t�r�lheto!',
+    'cannot_remove_file' => 'Az állomany nem törölheto!',
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'iso-8859-1',
+    'charset' => 'UTF-8',
     'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
-    'check_all' => 'Mindet kijel�li',
-    'check_none' => 'Semmit sem jel�l ki',
+    'check_all' => 'Mindet kijelöli',
+    'check_none' => 'Semmit sem jelöl ki',
     'clickheretoadd_postfix' => '.',
-    'clickheretoadd_prefix' => '�j hozz�ad�sa ',
+    'clickheretoadd_prefix' => 'Új hozzáadása ',
     'close' => 'Close',
     // Missing string!!!
     'color' => 'Color',
     // Missing string!!!
     'colorcode' => 'Color code',
     // Missing string!!!
-    'colorpicker_selectcolor' => 'V�lasszon sz�nt',
+    'colorpicker_selectcolor' => 'Válasszon színt',
     'column' => 'column',
     // Missing string!!!
     'column_asc' => 'Up',
@@ -117,7 +117,7 @@ return [
     // Missing string!!!
     'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
-    'confirm_delete' => 'Biztos, hogy t�r�lni k�v�nja?',
+    'confirm_delete' => 'Biztos, hogy törölni kívánja?',
     'confirm_delete_multi' => 'Are you sure you want to delete these items?',
     // Missing string!!!
     'content_wizard_finished' => 'Wizard was finished successfully!',
@@ -154,7 +154,7 @@ return [
     'december' => 'December',
     'decimal_separator' => '.',
     // Missing string!!!
-    'delete' => 'T�r�l',
+    'delete' => 'Töröl',
     'delimiter' => 'Delimiter',
     // Missing string!!!
     'deselect_all' => 'Deselect all',
@@ -192,27 +192,27 @@ return [
     // Missing string!!!
     'error_format_mismatch' => 'The element at position %d does not match the desired format (%s)',
     // Missing string!!!
-    'error_formdataerror' => 'A ment�s nem siker�lt, mert: ',
+    'error_formdataerror' => 'A mentés nem sikerült, mert: ',
     'error_iconv_not_install' => "iconv module don't install in your system, but it needs for right functionality",
     // Missing string!!!
-    'error_invalid_email' => 'Hib�s e-mail c�m',
+    'error_invalid_email' => 'Hibás e-mail cím',
     'error_node_action_access_denied' => 'Sorry, you do not have permission to perform this action.',
     // Missing string!!!
-    'error_notnumeric' => 'Az �rt�k nem sz�m',
+    'error_notnumeric' => 'Az érték nem szám',
     'error_not_a_valid_ip' => 'This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.',
     // Missing string!!!
-    'error_obligatoryfield' => 'Ez a mezo sz�ks�ges',
+    'error_obligatoryfield' => 'Ez a mezo szükséges',
     'error_password_incorrect' => 'The password you entered is incorrect!',
     // Missing string!!!
     'error_password_invalid' => 'The password you entered is not a valid password!',
     // Missing string!!!
-    'error_password_nomatch' => 'A be�rt jelszavak nem egyeznek.',
-    'error_primarykey_exists' => 'Ezzel a kulcsal m�r l�tezik egy rekord',
+    'error_password_nomatch' => 'A beírt jelszavak nem egyeznek.',
+    'error_primarykey_exists' => 'Ezzel a kulcsal már létezik egy rekord',
     'error_tab' => 'see',
     // Missing string!!!
     'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
-    'error_uniquefield' => 'Ennek a mezonek az �rteke p�ratlan kell, hogy legyen',
+    'error_uniquefield' => 'Ennek a mezonek az érteke páratlan kell, hogy legyen',
     'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
     // Missing string!!!
     'error_unkown_domain' => 'Ismeretlen domain',
@@ -231,7 +231,7 @@ return [
     // Missing string!!!
     'feb' => 'Feb',
     // Missing string!!!
-    'february' => 'Febru�r',
+    'february' => 'Február',
     'feedback' => 'Feedback',
     // Missing string!!!
     'feedback_delete_cancelled' => 'The item has not been deleted.',
@@ -259,20 +259,20 @@ return [
     'field_obligatory' => 'This field is a required field',
     // Missing string!!!
     'filecontent' => 'Tartalom',
-    'filename' => '�llom�nyn�v',
-    'filename_invalid' => 'Helytelen az �llom�ny neve',
-    'file_exists' => 'Ilyen n�vvel m�r l�tezik �llom�ny',
-    'file_not_exist' => 'Nincs ilyen �llomany',
+    'filename' => 'Állománynév',
+    'filename_invalid' => 'Helytelen az állomány neve',
+    'file_exists' => 'Ilyen névvel már létezik állomány',
+    'file_not_exist' => 'Nincs ilyen állomany',
     'finish' => 'Finish',
     // Missing string!!!
     'forget_criteria' => 'Remove selected search',
     // Missing string!!!
-    'fri' => 'P�ntek',
+    'fri' => 'Péntek',
     'friday' => 'Friday',
     // Missing string!!!
     'fsa_pleasemakeselection' => 'More than one match was found. Please make a selection.',
     // Missing string!!!
-    'help' => 'S�g�',
+    'help' => 'Súgó',
     'import' => 'Import data',
     // Missing string!!!
     'import_allfield' => 'Use default value for one of the attributes (e.g. if the column is absent in the CSV file)',
@@ -327,19 +327,19 @@ return [
     // Missing string!!!
     'invalid_url_anchor' => "Invalid URL anchor, please use this format: '#internal_bookmark'",
     // Missing string!!!
-    'invert_selection' => 'Inverz kijel�l�s',
+    'invert_selection' => 'Inverz kijelölés',
     'in_use_by' => 'In use by',
     // Missing string!!!
     'jan' => 'Jan',
     // Missing string!!!
-    'january' => 'Janu�r',
+    'january' => 'Január',
     'jul' => 'Jul',
     // Missing string!!!
-    'july' => 'J�lius',
+    'july' => 'Július',
     'jun' => 'Jun',
     // Missing string!!!
-    'june' => 'J�nius',
-    'language_de' => 'N�met',
+    'june' => 'Június',
+    'language_de' => 'Német',
     'language_en' => 'English',
     // Missing string!!!
     'language_fr' => 'French',
@@ -364,7 +364,7 @@ return [
     'logged_in_as' => 'Logged in as',
     // Missing string!!!
     'login' => 'Login',
-    'login_failed' => 'Siekrtelen bel�p�s',
+    'login_failed' => 'Siekrtelen belépés',
     'login_form' => 'Login',
     'logout' => 'Log out',
     // Missing string!!!
@@ -374,19 +374,19 @@ return [
     // Missing string!!!
     'mar' => 'Mar',
     // Missing string!!!
-    'march' => 'M�rcius',
-    'may' => 'M�jus',
-    'menu' => 'Men�',
+    'march' => 'Március',
+    'may' => 'Május',
+    'menu' => 'Menü',
     'menu_main' => 'Main',
     // Missing string!!!
-    'mon' => 'H�tfo',
+    'mon' => 'Hétfo',
     'monday' => 'Monday',
     // Missing string!!!
     'multiselect' => 'Multiselect',
     // Missing string!!!
     'new' => 'New',
     // Missing string!!!
-    'next' => 'K�vetkezo',
+    'next' => 'Következo',
     'no' => 'Nem',
     'none' => 'None',
     // Missing string!!!
@@ -406,21 +406,21 @@ return [
     // Missing string!!!
     'oct' => 'Oct',
     // Missing string!!!
-    'october' => 'Okt�ber',
+    'october' => 'Október',
     'open' => 'Open',
     // Missing string!!!
     'or' => 'Or',
     // Missing string!!!
     'password' => 'Password',
-    'password_again' => '�jra',
+    'password_again' => 'Újra',
     'password_current' => 'Jelenlegi',
     'password_forgotten' => 'Password forgotten',
     // Missing string!!!
     'password_hidden' => '*****',
-    'password_incorrect' => 'Hib�s jelsz�t adott meg!',
-    'password_invalid' => 'A megadott jelsz� nem val�s.',
-    'password_new' => '�j',
-    'permission_denied' => 'Sajn�lom, de ide nincs hozzaf�r�se, k�rem lepjen kapcsolatba egy adminsztr�torral!',
+    'password_incorrect' => 'Hibás jelszót adott meg!',
+    'password_invalid' => 'A megadott jelszó nem valós.',
+    'password_new' => 'Új',
+    'permission_denied' => 'Sajnálom, de ide nincs hozzaférése, kérem lepjen kapcsolatba egy adminsztrátorral!',
     'previous' => 'Elozo',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
@@ -428,7 +428,7 @@ return [
     // Missing string!!!
     'remove_criterium' => 'Remove',
     // Missing string!!!
-    'remove_current_file' => '�llom�ny t�rl�se',
+    'remove_current_file' => 'Állomány törlése',
     'replace_by' => 'Replace by',
     // Missing string!!!
     'reset_criteria' => 'New search',
@@ -438,10 +438,10 @@ return [
     'sat' => 'Szombat',
     'saturday' => 'Saturday',
     // Missing string!!!
-    'save' => 'Ment�s',
+    'save' => 'Mentés',
     'saveandaddnew' => 'Save and add new',
     // Missing string!!!
-    'saveandclose' => 'Ment�s �s bez�r�s',
+    'saveandclose' => 'Mentés és bezárás',
     'saveandedit' => 'Save and edit',
     // Missing string!!!
     'saveandnext' => 'Save and next',
@@ -450,13 +450,13 @@ return [
     // Missing string!!!
     'save_export_selection' => 'Save selection',
     // Missing string!!!
-    'search' => 'Keres�s',
+    'search' => 'Keresés',
     'search_all' => 'Keress mindben',
     'search_and' => 'Match all criteria',
     // Missing string!!!
     'search_between' => 'Search between two values',
     // Missing string!!!
-    'search_exact' => 'Pontos tal�latra keres',
+    'search_exact' => 'Pontos találatra keres',
     'search_extended' => 'Kiterjedt',
     'search_greaterthan' => 'Search for value bigger than',
     // Missing string!!!
@@ -466,16 +466,16 @@ return [
     // Missing string!!!
     'search_lessthanequal' => 'Search for value smaller than or equal to',
     // Missing string!!!
-    'search_mode' => 'Keres�s m�dja',
+    'search_mode' => 'Keresés módja',
     'search_none' => 'Nothing selected',
     // Missing string!!!
     'search_or' => 'Match any criteria',
     // Missing string!!!
-    'search_regexp' => 'Norm�l kifejez�ssel keres (halad�knak)',
-    'search_soundex' => 'Hasonl�ra keres',
-    'search_substring' => 'R�szre keres',
-    'search_wildcard' => 'Helyettes�to karakterrel keres (*)',
-    'select' => 'Kiv�laszt',
+    'search_regexp' => 'Normál kifejezéssel keres (haladóknak)',
+    'search_soundex' => 'Hasonlóra keres',
+    'search_substring' => 'Részre keres',
+    'search_wildcard' => 'Helyettesíto karakterrel keres (*)',
+    'select' => 'Kiválaszt',
     'selected' => 'Selected',
     // Missing string!!!
     'selection' => 'Selection',
@@ -507,7 +507,7 @@ return [
     // Missing string!!!
     'successfully_imported_x_records' => 'Successfully imported %d records.',
     // Missing string!!!
-    'sun' => 'Vas�rnap',
+    'sun' => 'Vasárnap',
     'sunday' => 'Sunday',
     // Missing string!!!
     'tab_default' => 'General',
@@ -518,7 +518,7 @@ return [
     // Missing string!!!
     'thousands_separator' => ',',
     // Missing string!!!
-    'thu' => 'Cs�r�rt�k',
+    'thu' => 'Csürörtök',
     'thursday' => 'Thursday',
     // Missing string!!!
     'timezone_utc_+0000' => '(UTC) Casablanca, Greenwich Mean Time, London',
@@ -573,7 +573,7 @@ return [
     // Missing string!!!
     'timezone_utc_-1200' => '(UTC-12:00) International Date Line West',
     // Missing string!!!
-    'title_delete' => 'T�rl�s megeros�t�se',
+    'title_delete' => 'Törlés megerosítése',
     'title_multiselect' => 'Multiselect',
     // Missing string!!!
     'title_select' => 'Select',

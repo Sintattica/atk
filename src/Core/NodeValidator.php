@@ -113,8 +113,7 @@ class NodeValidator
 
         // Check flags and values
         $db = $this->m_nodeObj->getDb();
-        foreach ($this->m_nodeObj->m_attribIndexList as $attribdata) {
-            $attribname = $attribdata['name'];
+        foreach (array_keys($this->m_nodeObj->getAttributes()) as $attribname) {
             if (!Tools::atk_in_array($attribname, $this->m_ignoreList)) {
                 $p_attrib = $this->m_nodeObj->m_attribList[$attribname];
 

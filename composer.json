@@ -11,8 +11,7 @@
     "psr-4": {"Sintattica\\Atk\\": "src/"}
   },
   "require": {
-    "php": ">=5.5.9",
-    "fightbulc/moment": "^1.13",
+    "php": ">=7.0",
     "smarty/smarty": "^3.1",
     "vlucas/phpdotenv": "^2.2",
     "ezyang/htmlpurifier": "^4.11"

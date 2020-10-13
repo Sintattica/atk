@@ -795,18 +795,19 @@ class Tools
                 $label[$i] = $attrib[$i]->label();
             }
 
-            $tab = $attrib[0]->m_tabs[0];
+            $tab = $attrib[0]->getTabs()[0];
             if (!$message) {
                 $message = $attrib[0]->text($error);
             }
         } else {
             $attribName = $attrib->fieldName();
             $label = $attrib->label();
-            $tab = $attrib->m_tabs[0];
+            $tab = $attrib->getTabs()[0];
             if (!$message) {
                 $message = $attrib->text($error);
             }
         }
+        $tab = $attrib->getOwnerInstance()->resolveTab($tab);
 
         self::triggerError($record, $attribName, $error, $message, $tab, $label);
     }
@@ -1598,7 +1599,7 @@ class Tools
         }
 
         /* get date string */
-        $str_date = adodb_date($format, $date[0]);
+        $str_date = date($format, $date[0]);
 
         $month = $date['month'];
         $shortmonth = substr(strtolower($date['month']), 0, 3);

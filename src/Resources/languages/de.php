@@ -87,7 +87,7 @@ return [
     'cannot_remove_file' => 'Die Datei kann nicht gel&ouml;scht werden!',
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'iso-8859-1',
+    'charset' => 'UTF-8',
     'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
     'check_all' => 'Alles ausw&auml;hlen',
@@ -231,7 +231,7 @@ return [
     // Missing string!!!
     'fri' => 'Fre',
     'friday' => 'Freitag',
-    'fsa_pleasemakeselection' => 'Es wurden mehrere Treffer gefunden. Bitte w�hlen Sie einen aus.',
+    'fsa_pleasemakeselection' => 'Es wurden mehrere Treffer gefunden. Bitte wÃ¤hlen Sie einen aus.',
     'help' => 'Hilfe',
     'import' => 'Import data',
     // Missing string!!!

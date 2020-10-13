@@ -870,6 +870,9 @@ return [
     'icon_print' => 'fa fa-print',
     'icon_plussquare' => 'fa fa-plus-square-o',
     'icon_minussquare' => 'fa fa-minus-square-o',
+    'icon_expand' => 'angle-down',
+    'icon_collapse' => 'angle-up',
+    'icon_leaf' => 'angle-right',
 
     /****************** CACHING ********************/
 

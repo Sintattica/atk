@@ -32,7 +32,6 @@ class UpdateStampAttribute extends DateTimeAttribute
         
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
-        $this->setInitialValue(self::datetimeArray());
     }
 
     /**
@@ -58,7 +57,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      */
     public function initialValue()
     {
-        return self::datetimeArray();
+        return self::fromTimestamp(time());
     }
 
     /**

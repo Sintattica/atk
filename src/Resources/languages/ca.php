@@ -25,7 +25,7 @@ return [
     // Missing string!!!
     'add_criterium' => 'Add',
     // Missing string!!!
-    'admin' => 'Administraci�',
+    'admin' => 'Administració',
     'administration_application' => 'Administration application',
     // Missing string!!!
     'all' => 'All',
@@ -36,13 +36,13 @@ return [
     // Missing string!!!
     'app_close' => 'Close',
     // Missing string!!!
-    'app_description' => 'Benvingut a aquesta aplicaci� ATK.',
+    'app_description' => 'Benvingut a aquesta aplicació ATK.',
     'app_launcher' => 'ATK Application Launcher',
     // Missing string!!!
     'app_reopen' => 'Restart',
     // Missing string!!!
     'app_shorttitle' => 'ATKApp',
-    'app_title' => 'Aplicaci� ATK ',
+    'app_title' => 'Aplicació ATK ',
     'apr' => 'Apr',
     // Missing string!!!
     'april' => 'Abril',
@@ -85,7 +85,7 @@ return [
     'back_to' => 'Tornar a',
     'below_minimum_value' => 'Below the minimum allowed value',
     // Missing string!!!
-    'cancel' => 'Cancel�lar',
+    'cancel' => 'Cancel·lar',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
     'cannot create directory' => 'Cannot create directory: ',
@@ -95,13 +95,13 @@ return [
     'cannot_remove_file' => 'No es pot eliminar el arxiu!',
     'captcha_explain' => 'Please fill in the displayed code',
     // Missing string!!!
-    'charset' => 'iso-8859-1',
+    'charset' => 'UTF-8',
     'check rights to' => 'Please check that you have the appropriate rights to ',
     // Missing string!!!
     'check_all' => 'Seleccionar tot',
     'check_none' => 'Seleccionar cap',
     'clickheretoadd_postfix' => '.',
-    'clickheretoadd_prefix' => 'Faci clic aqu� per afegir un nou ',
+    'clickheretoadd_prefix' => 'Faci clic aquí per afegir un nou ',
     'close' => 'Tancar',
     'color' => 'Color',
     // Missing string!!!
@@ -118,7 +118,7 @@ return [
     // Missing string!!!
     'column_unsubtotal' => 'No Subt.',
     // Missing string!!!
-    'confirm_delete' => '�Est� segur que vol esborrar aquest element?',
+    'confirm_delete' => '¿Està segur que vol esborrar aquest element?',
     'confirm_delete_multi' => 'Are you sure you want to delete these items?',
     // Missing string!!!
     'content_wizard_finished' => 'Wizard was finished successfully!',
@@ -195,13 +195,13 @@ return [
     // Missing string!!!
     'error_format_mismatch' => 'The element at position %d does not match the desired format (%s)',
     // Missing string!!!
-    'error_formdataerror' => "No s'ha pogut guardar degut a la seg�ent causa: ",
+    'error_formdataerror' => "No s'ha pogut guardar degut a la següent causa: ",
     'error_iconv_not_install' => "iconv module don't install in your system, but it needs for right functionality",
     // Missing string!!!
-    'error_invalid_email' => 'Direcci� de e-mail no v�lida',
+    'error_invalid_email' => 'Direcció de e-mail no vàlida',
     'error_node_action_access_denied' => 'Sorry, you do not have permission to perform this action.',
     // Missing string!!!
-    'error_notnumeric' => 'El valor no es un n�mero',
+    'error_notnumeric' => 'El valor no es un número',
     'error_not_a_valid_ip' => 'This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.',
     // Missing string!!!
     'error_obligatoryfield' => 'aquest camp es obligatori',
@@ -216,7 +216,7 @@ return [
     // Missing string!!!
     'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     // Missing string!!!
-    'error_uniquefield' => "El valor per aquest camp ha d'�sser �nic",
+    'error_uniquefield' => "El valor per aquest camp ha d'ésser únic",
     'error_uniquefieldset' => 'The values for the combination of these fields must be unique',
     // Missing string!!!
     'error_unkown_domain' => 'Domini desconegut',
@@ -264,7 +264,7 @@ return [
     'field_obligatory' => 'aquest camp es obligatori',
     'filecontent' => 'Contingut',
     'filename' => "Nom d'arxiu",
-    'filename_invalid' => 'El nom del arxiu no es v�lid',
+    'filename_invalid' => 'El nom del arxiu no es vàlid',
     'file_exists' => 'Ja existeix un arxiu amb aquest nom',
     'file_not_exist' => 'El arxiu no existeix',
     'finish' => 'Finish',
@@ -274,7 +274,7 @@ return [
     'fri' => 'Div',
     'friday' => 'Friday',
     // Missing string!!!
-    'fsa_pleasemakeselection' => "s'ha trobat mes d'una coincid�ncia. Per favor faci una selecci�.",
+    'fsa_pleasemakeselection' => "s'ha trobat mes d'una coincidència. Per favor faci una selecció.",
     'help' => 'Ajuda',
     'import' => 'Import data',
     // Missing string!!!
@@ -330,7 +330,7 @@ return [
     // Missing string!!!
     'invalid_url_anchor' => "Invalid URL anchor, please use this format: '#internal_bookmark'",
     // Missing string!!!
-    'invert_selection' => 'Invertir selecci�',
+    'invert_selection' => 'Invertir selecció',
     'in_use_by' => 'In use by',
     // Missing string!!!
     'jan' => 'Jan',
@@ -347,7 +347,7 @@ return [
     // Missing string!!!
     'language_fr' => 'French',
     // Missing string!!!
-    'language_nl' => 'Holand�s',
+    'language_nl' => 'Holandès',
     'language_pl' => 'Polish',
     // Missing string!!!
     'language_sp' => 'Spanish',
@@ -368,7 +368,7 @@ return [
     // Missing string!!!
     'login' => 'Login',
     // Missing string!!!
-    'login_failed' => "No s'ha pogut iniciar la sessi�",
+    'login_failed' => "No s'ha pogut iniciar la sessió",
     'login_form' => 'Login',
     // Missing string!!!
     'logout' => 'Log out',
@@ -379,9 +379,9 @@ return [
     // Missing string!!!
     'mar' => 'Mar',
     // Missing string!!!
-    'march' => 'Mar�',
+    'march' => 'Març',
     'may' => 'Maig',
-    'menu' => 'Men�',
+    'menu' => 'Menú',
     'menu_main' => 'Principal',
     'mon' => 'Dil',
     'monday' => 'Monday',
@@ -390,7 +390,7 @@ return [
     // Missing string!!!
     'new' => 'New',
     // Missing string!!!
-    'next' => 'Seg�ent',
+    'next' => 'Següent',
     'no' => 'No',
     'none' => 'None',
     // Missing string!!!
@@ -405,7 +405,7 @@ return [
     // Missing string!!!
     'no_results_found' => 'No results found',
     // Missing string!!!
-    'no_valid_directory' => 'No hi ha un directori v�lid',
+    'no_valid_directory' => 'No hi ha un directori vàlid',
     'numbers' => 'numbers',
     // Missing string!!!
     'oct' => 'Oct',
@@ -423,9 +423,9 @@ return [
     // Missing string!!!
     'password_hidden' => '*****',
     'password_incorrect' => 'La contrasenya ingressada no es correcta!',
-    'password_invalid' => 'La contrasenya proporcionada no es v�lida.',
+    'password_invalid' => 'La contrasenya proporcionada no es vàlida.',
     'password_new' => 'Nova',
-    'permission_denied' => 'Ho sento, per� no est� autoritzat per a realitzar aquesta acci�',
+    'permission_denied' => 'Ho sento, però no està autoritzat per a realitzar aquesta acció',
     'previous' => 'Anterior',
     'recordlistsummary' => 'Record [start]-[end] out of [count]',
     // Missing string!!!
@@ -461,8 +461,8 @@ return [
     // Missing string!!!
     'search_between' => 'Search between two values',
     // Missing string!!!
-    'search_exact' => 'Buscar coincid�ncia exacta',
-    'search_extended' => 'Est�s',
+    'search_exact' => 'Buscar coincidència exacta',
+    'search_extended' => 'Estés',
     'search_greaterthan' => 'Search for value bigger than',
     // Missing string!!!
     'search_greaterthanequal' => 'Search for value bigger than or equal to',
@@ -476,10 +476,10 @@ return [
     // Missing string!!!
     'search_or' => 'Match any criteria',
     // Missing string!!!
-    'search_regexp' => 'Buscar amb expressions regulars (avan�at)',
+    'search_regexp' => 'Buscar amb expressions regulars (avançat)',
     'search_soundex' => 'Buscar un text que soni similar',
     'search_substring' => 'Buscar text dins de las paraules',
-    'search_wildcard' => 'Buscar amb comod� (*)',
+    'search_wildcard' => 'Buscar amb comodí (*)',
     'select' => 'Seleccionar',
     'selected' => 'Selected',
     // Missing string!!!
@@ -640,5 +640,5 @@ return [
     // Missing string!!!
     'wysiwyg_split_cell' => 'Split cells',
     // Missing string!!!
-    'yes' => 'S�',
+    'yes' => 'Sí',
 ];

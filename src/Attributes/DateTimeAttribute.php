@@ -2,79 +2,43 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Relations\ManyToOneRelation;
 
 /**
  * The DateTimeAttribute class can be used for date and time entry.
  * It corresponds to a DATETIME field in the database.
  *
+ * Internally, it uses 2 attributes (m_time and m_date), and the record
+ * value is represented as null (empty datetime) or an array: 
+ *   ['date' => dateval, 'time' => timeval]
+ * where dateval is a valid array for DateAttribute (['year', 'month', 'day'])
+ * and timeval is a valid array for TimeAttribute (['hour', 'minutes', seconds'])
+ *
  * @author Sandy Pleyte <sandy@achievo.org>
+ * @author Samuel BF
  */
 class DateTimeAttribute extends Attribute
 {
-    public $m_time;
-    public $m_date;
-    public $m_utcOffset = null;
-    public $m_timezoneAttribute = null;
-
     /**
      * The database fieldtype.
      * @access private
      * @var int
      */
     public $m_dbfieldtype = Db::FT_DATETIME;
+
     /**
-     * Converts a date array to a timestamp
-     * year, month, day are obligatory !!
-     *
-     * @param array $dateArray Date Array
-     *
-     * @return int Timestamp
+     * Date/Time sub-attributes
+     * @private DateAttribute, TimeAttribute
      */
-    public static function arrayToDateTime($dateArray)
-    {
-        $hour = 0;
-        $min = 0;
-        $sec = 0;
-        $dateValid = true;
-        $month = $day = $year = null;
-
-        if (!empty($dateArray['hours'])) {
-            $hour = $dateArray['hours'];
-        }
-        if (!empty($dateArray['minutes'])) {
-            $min = $dateArray['minutes'];
-        }
-        if (!empty($dateArray['seconds'])) {
-            $sec = $dateArray['seconds'];
-        }
-        if (!empty($dateArray['day'])) {
-            $day = $dateArray['day'];
-        } else {
-            $dateValid = false;
-        }
-        if (!empty($dateArray['month'])) {
-            $month = $dateArray['month'];
-        } else {
-            $dateValid = false;
-        }
-        if (!empty($dateArray['year'])) {
-            $year = $dateArray['year'];
-        } else {
-            $dateValid = false;
-        }
-
-        if ($dateValid) {
-            return adodb_mktime($hour, $min, $sec, $month, $day, $year);
-        } else {
-            return adodb_mktime(0, 0, 0);
-        }
-    }
+    public $m_time = null;
+    public $m_date = null;
+    
+    public $m_utcOffset = null;
+    public $m_timezoneAttribute = null;
 
     /**
      * Constructor.
@@ -84,15 +48,9 @@ class DateTimeAttribute extends Attribute
      */
     public function __construct($name, $flags = 0)
     {
-        $default_steps = [];
-        for ($i = 0; $i < 60; ++$i) {
-            $default_steps[$i] = $i;
-        }
-
-        $this->m_date = new DateAttribute($name, $flags);
-        $this->m_time = new TimeAttribute($name, $flags, 0, 23, $default_steps);
-
         parent::__construct($name, $flags); // base class constructor
+        $this->m_date = new DateAttribute($name.'_AE_date', $flags);
+        $this->m_time = new TimeAttribute($name.'_AE_time', $flags);
     }
 
     /**
@@ -104,7 +62,7 @@ class DateTimeAttribute extends Attribute
      *
      * @param mixed $min The minimum date that may be selected.
      */
-    public function setDateMin($min = 0)
+    public function setDateMin($min = null)
     {
         $this->m_date->setDateMin($min);
     }
@@ -118,7 +76,7 @@ class DateTimeAttribute extends Attribute
      *
      * @param mixed $max The maximum date that may be selected.
      */
-    public function setDateMax($max = 0)
+    public function setDateMax($max = null)
     {
         $this->m_date->setDateMax($max);
     }
@@ -134,36 +92,8 @@ class DateTimeAttribute extends Attribute
      */
     public function validate(&$record, $mode)
     {
-        //if the datetime string is not an array, make it one to make sure the
-        //validation functions of atkDateAttribute and atkTimeAttribute do not
-        //cripple the data.
-        if (!is_array($record[$this->fieldName()])) {
-            $stamp = strtotime($record[$this->fieldName()]);
-            $record[$this->fieldName()] = $this->datetimeArray(date('YmdHi', $stamp));
-        }
-
         $this->m_date->validate($record, $mode);
         $this->m_time->validate($record, $mode);
-    }
-
-    /**
-     * Converts a date/time string (YYYYMMDDHHMISS) to an
-     * array with 5 fields (day, month, year, hours, minutes, seconds).
-     * Defaults to current date/time.
-     *
-     * @param string $datetime the time string
-     *
-     * @return array with 6 fields (day, month, year, hours, minutes, seconds)
-     */
-    public static function datetimeArray($datetime = null)
-    {
-        if ($datetime == null) {
-            $datetime = date('YmdHis');
-        }
-        $date = substr($datetime, 0, 8);
-        $time = substr($datetime, 8, 6);
-
-        return array_merge(DateAttribute::dateArray($date), TimeAttribute::timeArray($time));
     }
 
     /**
@@ -190,8 +120,9 @@ class DateTimeAttribute extends Attribute
      */
     public function fetchMeta($metadata)
     {
-        $this->m_date->fetchMeta($metadata);
-        $this->m_time->fetchMeta($metadata);
+        parent::fetchMeta($metadata);
+        $this->m_date->setAttribSize([$this->m_maxsize, $this->m_size, 10]);
+        $this->m_time->setAttribSize([$this->m_maxsize, $this->m_size, $this->m_searchsize]);
     }
 
     /**
@@ -208,6 +139,7 @@ class DateTimeAttribute extends Attribute
      */
     public function display($record, $mode)
     {
+        $this->setDateTimeValues($record);
         $date = $this->m_date->display($record, $mode);
         $time = $this->m_time->display($record, $mode);
         if ($date != '' && $time != '') {
@@ -215,6 +147,26 @@ class DateTimeAttribute extends Attribute
         } else {
             return '';
         }
+    }
+
+    /**
+     * Set _date and _time values in $record for processing by corresponding attributes
+     *
+     * $record[$fieldName] is expected to be a valid internal value (array or null)
+     *
+     * @param &array $record to append '_time' and '_value' to,
+     *                       $record[$fieldName] can be a string, an array ['date', 'value'] or null.
+     */
+    private function setDateTimeValues(&$record)
+    {
+        $fieldName = $this->fieldName();
+        if (is_null($record[$fieldName])) {
+            $record[$fieldName.'_AE_time'] = $record[$fieldName.'_AE_date'] = null;
+            return;
+        }
+        $record[$fieldName.'_AE_date'] = $record[$fieldName]['date'];
+        $record[$fieldName.'_AE_time'] = $record[$fieldName]['time'];
+        return;
     }
 
     /**
@@ -227,21 +179,23 @@ class DateTimeAttribute extends Attribute
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return null|array the internal value
      */
     public function fetchValue($postvars)
     {
+        $postvars[$this->fieldName().'_AE_date'] = $postvars[$this->fieldName()]['date'] ?? null;
+        $postvars[$this->fieldName().'_AE_time'] = $postvars[$this->fieldName()]['time'] ?? null;
         $date = $this->m_date->fetchValue($postvars);
         if ($date == null) {
-            return;
+            return null;
         }
 
         $time = $this->m_time->fetchValue($postvars);
         if ($time == null) {
-            $time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
+            $time = ['hours' => '00', 'minutes' => '00', 'seconds' => '00'];
         }
 
-        return array_merge($date, $time);
+        return ['date' => $date, 'time' => $time];
     }
 
     public function addDependency($callback)
@@ -274,8 +228,8 @@ class DateTimeAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
+        $this->setDateTimeValues($record);
         $dateEdit = $this->m_date->edit($record, $fieldprefix, $mode);
-        $this->m_time->m_htmlid = $this->m_date->m_htmlid;
         $timeEdit = $this->m_time->edit($record, $fieldprefix, $mode);
 
         return '<div class="DateTimeAttribute">'.$dateEdit.'<span> - </span>'.$timeEdit.'</div>';
@@ -285,33 +239,25 @@ class DateTimeAttribute extends Attribute
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param null|array $rec The record that holds this attribute's value.
      *
      * @return string The database compatible value
      */
     public function value2db($rec)
     {
-        if (is_array($rec[$this->fieldName()])) {
-            $value = $rec[$this->fieldName()];
-            $value = $this->toUTC($value, $rec);
-            $rec[$this->fieldName()] = $value;
-
-            $date = $this->m_date->value2db($rec);
-            $time = $this->m_time->value2db($rec);
-
-            if ($date != null && $time != null) {
-                return $date.' '.$time;
-            }
-        } else {
-            if (!empty($rec[$this->fieldName()])) {
-                $stamp = strtotime($rec[$this->fieldName()]);
-                $stamp = $this->toUTC($stamp, $rec);
-
-                return date('Y-m-d H:i:s', $stamp);
-            }
+        if (empty($rec[$this->fieldName()])) {
+            return null;
         }
+        $rec[$this->fieldName()] = $this->toUTC($rec[$this->fieldName()], $rec);
 
-        return;
+        $this->setDateTimeValues($rec);
+        $date = $this->m_date->value2db($rec);
+        $time = $this->m_time->value2db($rec);
+
+        if ($date == null || $time == null) {
+            return null;
+        }
+        return $date.' '.$time;
     }
 
     /**
@@ -323,42 +269,18 @@ class DateTimeAttribute extends Attribute
      */
     public function db2value($rec)
     {
-        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] != null) {
-            /*
-             * @todo Fix handling of 0 and NULL db values in the date, time and datetime attributes
-             * Currently the date attribute gives an empty string when parsing 0000-00-00,
-             * the time attribute gives an array with all three values set to 00,
-             * and the datetimeattribute gives an empty string now (previously it gave a php warning
-             * because it was trying to array_merge the empty string from the date attribute with the
-             * array of the time attribute).
-             */
-            if ($rec[$this->fieldName()] == '0000-00-00 00:00:00') {
-                return '';
-            }
-
-            $datetime = explode(' ', $rec[$this->fieldName()]);
-
-            $tmp_rec = $rec;
-            $tmp_rec[$this->fieldName()] = $datetime[0];
-            $result_date = $this->m_date->db2value($tmp_rec);
-            if ($result_date == null) {
-                return null;
-            }
-
-            $tmp_rec = $rec;
-            $tmp_rec[$this->fieldName()] = isset($datetime[1]) ? $datetime[1] : null;
-            $result_time = $this->m_time->db2value($tmp_rec);
-            if ($result_time == null) {
-                $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
-            }
-
-            $value = array_merge((array)$result_date, (array)$result_time);
-            $value = $this->fromUTC($value, $tmp_rec);
-
-            return $value;
-        } else {
+        if (!isset($rec[$this->fieldName()]) or is_null($rec[$this->fieldName()] or $rec[$this->fieldName()] == '0000-00-00 00:00:00')) {
             return null;
         }
+        list($rec[$this->fieldName().'_AE_date'], $rec[$this->fieldName().'_AE_time']) = explode(' ', $rec[$this->fieldName()]);
+        $value = ['date' => $this->m_date->db2value($rec), 'time' => $this->m_time->db2value($rec)];
+        if (is_null($value['date'])) {
+            return null;
+        }
+        if (is_null($value['time'])) {
+            $value['time'] = ['hours' => '00', 'minutes' => '00', 'seconds' => '00'];
+        }
+        return $this->fromUTC($value, $rec);
     }
 
     /**
@@ -379,27 +301,27 @@ class DateTimeAttribute extends Attribute
      */
     public function search($atksearch, $extended = false, $fieldprefix = '', DataGrid $grid = null)
     {
-        $this->m_date->m_searchsize = 10;
-        $this->m_time->m_htmlid = $this->m_date->m_htmlid;
-        return $this->m_date->search($atksearch, $extended, $fieldprefix);
+        $record[$this->fieldName().'_AE_date'] = $record[$this->fieldName()]['date'];
+        return $this->m_date->search($record, $extended, $fieldprefix);
     }
 
     /**
-     * Creates a search condition for a given search value, and adds it to the
-     * query that will be used for performing the actual search.
+     * Creates a searchcondition for the field
      *
-     * @param Query $query The query to which the condition will be added.
-     * @param string $table The name of the table in which this attribute
-     *                                 is stored
+     * We use m_date getSearchCondition, but overriding fieldName
+     *
+     * @param Query $query The query object where the search condition should be placed on
+     * @param string $table The name of the table in which this attribute is stored
      * @param mixed $value The value the user has entered in the searchbox
-     * @param string $searchmode The searchmode to use. This can be any one
-     *                                 of the supported modes, as returned by this
-     *                                 attribute's getSearchModes() method.
-     * @param string $fieldaliasprefix optional prefix for the fieldalias in the table
+     * @param string $searchmode The searchmode to use. This can be any one of the supported modes,
+     *                           as returned by this attribute's getSearchModes() method.
+     * @param string $fieldname The name of the field in the database (used by atkExpressionAttribute)
+     *
+     * @return string The searchcondition to use.
      */
-    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        $this->m_date->searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+        return $this->m_date->getSearchCondition($query, $table, $value['date'], $searchmode, $this->fieldName());
     }
 
     /**
@@ -414,7 +336,8 @@ class DateTimeAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        $this->m_time->m_htmlid = $this->m_date->m_htmlid;
+        $record[$this->fieldName().'_AE_date'] = $record[$this->fieldName()]['date'];
+        $record[$this->fieldName().'_AE_time'] = $record[$this->fieldName()]['time'];
         return $this->m_date->hide($record, $fieldprefix, $mode).$this->m_time->hide($record, $fieldprefix, $mode);
     }
 
@@ -426,32 +349,6 @@ class DateTimeAttribute extends Attribute
     public function getSearchModes()
     {
         return $this->m_date->getSearchModes();
-    }
-
-    /**
-     * Parse the string to convert a datetime string to an array.
-     *
-     * @param string $stringvalue
-     *
-     * @return array with date and time information
-     */
-    public function parseStringValue($stringvalue)
-    {
-        $datetime = explode(' ', $stringvalue);
-        $formatsdate = array(
-            'dd-mm-yyyy',
-            'dd-mm-yy',
-            'd-mm-yyyy',
-            'dd-m-yyyy',
-            'd-m-yyyy',
-            'yyyy-mm-dd',
-            'yyyy-mm-d',
-            'yyyy-m-dd',
-            'yyyy-m-d',
-        );
-        $retval = array_merge(DateAttribute::parseDate($datetime[0], $formatsdate), TimeAttribute::parseTime($datetime[1]));
-
-        return $retval;
     }
 
     /**
@@ -520,79 +417,115 @@ class DateTimeAttribute extends Attribute
     {
         if ($this->m_utcOffset !== null) {
             return $this->m_utcOffset;
-        } else {
-            if ($this->m_timezoneAttribute !== null) {
-                $parts = explode('.', $this->m_timezoneAttribute);
-                $node = $this->getOwnerInstance();
+        }
+        if ($this->m_timezoneAttribute === null) {
+            return 0;
+        }
+        $parts = explode('.', $this->m_timezoneAttribute);
+        $node = $this->getOwnerInstance();
 
-                while (Tools::count($parts) > 0) {
-                    $part = array_shift($parts);
-                    $attr = $node->getAttribute($part);
+        while (Tools::count($parts) > 0) {
+            $part = array_shift($parts);
+            $attr = $node->getAttribute($part);
 
-                    // relation, prepare for next iteration
-                    if (is_a($attr, 'ManyToOneRelation')) {
-                        if (Tools::count($parts) > 0 && !isset($record[$part][$parts[0]])) {
-                            /** @var ManyToOneRelation $attr */
-                            $attr->populate($record, array($parts[0]));
-                        }
-
-                        $record = $record[$attr->fieldName()];
-                        $node = $attr->m_destInstance;
-                    } // timezone attribute, calculate and return offset
-                    else {
-                        if (is_a($attr, 'TimezoneAttribute')) {
-                            /** @var TimezoneAttribute $attr */
-                            return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
-                        } // assume the attribute in question already has the offset saved in seconds
-                        else {
-                            return (int)$record[$attr->fieldName()];
-                        }
-                    }
+            // relation, prepare for next iteration
+            if ($attr instanceof ManyToOneRelation) {
+                if (Tools::count($parts) > 0 && !isset($record[$part][$parts[0]])) {
+                    /** @var ManyToOneRelation $attr */
+                    $attr->populate($record, array($parts[0]));
                 }
 
-                Tools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "'.$this->fieldName().'"!');
-
-                return 0;
-            } else {
-                return 0;
+                $record = $record[$attr->fieldName()];
+                $node = $attr->m_destInstance;
+            } // timezone attribute, calculate and return offset
+            else {
+                if ($attr instanceof TimezoneAttribute) {
+                    /** @var TimezoneAttribute $attr */
+                    return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
+                } // assume the attribute in question already has the offset saved in seconds
+                else {
+                    return (int)$record[$attr->fieldName()];
+                }
             }
         }
+
+        Tools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "'.$this->fieldName().'"!');
+
+        return 0;
     }
 
     /**
-     * Convert the given ATK date/time array to a UTC date/time array.
+     * Converts a date array to a timestamp
      *
-     * @param mixed $value UNIX timestamp or ATK date/time array
+     * @param array $internalValue (we expect a valid internal value, as described in the intro of this document)
+     *
+     * @return int Timestamp
+     */
+    public static function toTimestamp(array $internalValue) : int
+    {
+        $date = $internalValue['date'];
+        $time = $internalValue['time'] ?? ['hours' => 0, 'minutes' => 0, 'seconds' => 0];
+        return mktime($time['hours'] ?? 0, $time['minutes'] ?? 0, $time['seconds'] ?? 0,
+            $internalValue['date']['month'], $internalValue['date']['day'], $internalValue['date']['year']);
+    }
+
+    /**
+     * Converts a timestamp to a valid internal value for date/time :
+     * array ['date' => ['year', 'month', 'day'], 'time' => ['hours', 'minutes', 'seconds']]
+     *
+     * @param int $stamp UNIX timestamp
+     *
+     * @return array
+     */
+    public static function fromTimestamp(int $stamp) : array
+    {
+        return [
+            'date' => [
+                'year' => date('Y', $stamp),
+                'month' => date('m', $stamp),
+                'day' => date('d', $stamp)
+            ],
+            'time' => [
+                'hours' => date('H', $stamp),
+                'minutes' => date('i', $stamp),
+                'seconds' => date('s', $stamp)
+            ]
+        ];
+    }
+
+    /**
+     * Convert the given date/time array with offset to a UTC date/time array.
+     *
+     * @param mixed $value initial date/time array
      * @param array $record record
      *
-     * @return int|array UNIX timestamp or ATK date/time array (depending on input)
+     * @return null|array date/time array without offset
      */
     public function toUTC($value, &$record)
     {
-        $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
+        if (is_null($value)) {
+            return null;
+        }
+        $stamp = self::toTimestamp($value);
         $offset = $this->_getUTCOffset($record, $stamp);
         $stamp = $stamp - $offset;
-        $value = is_int($value) ? $stamp : $this->datetimeArray(date('YmdHis', $stamp));
-
-        return $value;
+        return self::fromTimestamp($stamp);
     }
 
     /**
-     * Convert the given UTC ATK date/time array to a date/time array in a certain timezone.
+     * Convert the UTC date/time array a date/time array without offset.
      *
      * @param mixed $value UNIX timestamp or ATK date/time array
      * @param array $record record
      *
-     * @return int|array UNIX timestamp or ATK date/time array (depending on input)
+     * @return null|array date/time array without offset
      */
     public function fromUTC($value, &$record)
     {
-        $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
+        $stamp = self::toTimestamp($value);
         $offset = $this->_getUTCOffset($record, $stamp);
         $stamp = $stamp + $offset;
-        $value = is_int($value) ? $stamp : $this->datetimeArray(date('YmdHis', $stamp));
-
-        return $value;
+        return self::fromTimestamp($stamp);
     }
 
     /**

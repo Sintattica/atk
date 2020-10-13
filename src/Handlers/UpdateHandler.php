@@ -107,7 +107,6 @@ class UpdateHandler extends ActionHandler
                 // something other than one of the three buttons was pressed. Let's just refresh.
                 $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), array(
                     'atkselector' => $this->m_node->primaryKeyString($record),
-                    'atktab' => $this->m_node->getActiveTab(),
                 )), SessionManager::SESSION_REPLACE);
                 $this->m_node->redirect($location);
             }
@@ -322,7 +321,6 @@ class UpdateHandler extends ActionHandler
             // 'save' was clicked
             $params = array(
                 'atkselector' => $this->m_node->primaryKeyString($record),
-                'atktab' => $this->m_node->getActiveTab(),
             );
             $sm = SessionManager::getInstance();
             $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), $params), SessionManager::SESSION_REPLACE, 1);

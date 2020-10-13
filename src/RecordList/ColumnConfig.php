@@ -145,10 +145,8 @@ class ColumnConfig
      */
     public function init()
     {
-        foreach (array_keys($this->m_node->m_attribIndexList) as $i) {
-            if (isset($this->m_node->m_attribIndexList[$i]['name']) && ($this->m_node->m_attribIndexList[$i]['name'] != '')) {
-                $this->m_colcfg[$this->m_node->m_attribIndexList[$i]['name']] = [];
-            }
+        foreach (array_keys($this->m_node->getAttributes()) as $attribname) {
+            $this->m_colcfg[$attribname] = [];
         }
 
         if ($this->m_node->getOrder() != '') {

@@ -644,6 +644,7 @@ class OneToOneRelation extends Relation
                 }
 
                 $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, [], $this->getHtmlName($fieldprefix).'_AE_', false, false);
+                $entry = $this->sectionTabClassArray();
 
                 /* hidden fields */
                 $arr['hide'] = array_merge($arr['hide'], $a['hide']);
@@ -658,25 +659,30 @@ class OneToOneRelation extends Relation
                 if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                     /* separator and name */
                     if ($arr['fields'][Tools::count($arr['fields']) - 1]['html'] !== '-') {
-                        $arr['fields'][] = array(
+                        $arr['fields'][] = [
                             'html' => '-',
-                            'tabs' => $this->m_tabs,
-                            'sections' => $this->getSections(),
-                        );
+                            'line' => '<hr/>',
+                            'class' => $entry['class'],
+                            'tabs' => $entry['tabs'],
+                            'section' => $entry['section'],
+                        ];
                     }
-                    $arr['fields'][] = array(
+
+                    $arr['fields'][] = [
                         'line' => '<b>'.Tools::atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type).'</b>',
-                        'tabs' => $this->m_tabs,
-                        'sections' => $this->getSections(),
-                    );
+                        'class' => $entry['class'],
+                        'tabs' => $entry['tabs'],
+                        'section' => $entry['section'],
+                    ];
                 }
 
                 if (is_array($a['fields'])) {
                     // in non-integration mode we move all the fields to the one-to-one relations tabs/sections
                     if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS)) {
                         foreach (array_keys($a['fields']) as $key) {
-                            $a['fields'][$key]['tabs'] = $this->m_tabs;
-                            $a['fields'][$key]['sections'] = $this->getSections();
+                            $a['fields'][$key]['tabs'] = $entry['tabs'];
+                            $a['fields'][$key]['section'] = $entry['section'];
+                            $a['fields'][$key]['class'] .= ' '.$entry['class'];
                         }
                     }
 
@@ -685,16 +691,13 @@ class OneToOneRelation extends Relation
 
                 if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                     /* separator */
-                    $arr['fields'][] = array(
+                    $arr['fields'][] = [
                         'html' => '-',
-                        'tabs' => $this->m_tabs,
-                        'sections' => $this->getSections(),
-                    );
-                }
-
-                $fields = $arr['fields'];
-                foreach ($fields as &$field) {
-                    $field['attribute'] = '';
+                        'line' => '<hr/>',
+                        'class' => $entry['class'],
+                        'tabs' => $entry['tabs'],
+                        'section' => $entry['section'],
+                    ];
                 }
             }
         }
@@ -730,6 +733,7 @@ class OneToOneRelation extends Relation
 
             $record = $defaults[$this->fieldName()];
             $a = $this->m_destInstance->viewArray($mode, $record, false);
+            $entry = $this->sectionTabClassArray();
 
             /* editable fields, if self::AF_NOLABEL is specified or if there is just 1 field with the
              * same name as the relation we don't display a label
@@ -741,24 +745,29 @@ class OneToOneRelation extends Relation
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                 /* separator and name */
                 if ($arr['fields'][Tools::count($arr['fields']) - 1]['html'] !== '-') {
-                    $arr['fields'][] = array(
+                    $arr['fields'][] = [
                         'html' => '-',
-                        'tabs' => $this->m_tabs,
-                        'sections' => $this->getSections(),
-                    );
+                        'line' => '<hr/>',
+                        'class' => $entry['class'],
+                        'tabs' => $entry['tabs'],
+                        'section' => $entry['section'],
+
+                    ];
                 }
-                $arr['fields'][] = array(
+                $arr['fields'][] = [
                     'line' => '<b>'.Tools::atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type).'</b>',
-                    'tabs' => $this->m_tabs,
-                    'sections' => $this->getSections(),
-                );
+                    'class' => $entry['class'],
+                    'tabs' => $entry['tabs'],
+                    'section' => $entry['section'],
+                ];
             }
 
             if (is_array($a['fields'])) {
                 if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) || $this->hasFlag(self::AF_ONETOONE_RESPECT_TABS)) {
                     foreach (array_keys($a['fields']) as $key) {
-                        $a['fields'][$key]['tabs'] = $this->m_tabs;
-                        $a['fields'][$key]['sections'] = $this->getSections();
+                        $a['fields'][$key]['tabs'] = $entry['tabs'];
+                        $a['fields'][$key]['section'] = $entry['section'];
+                        $a['fields'][$key]['class'] .= ' '.$entry['class'];
                     }
                 }
                 $arr['fields'] = array_merge($arr['fields'], $a['fields']);
@@ -766,7 +775,12 @@ class OneToOneRelation extends Relation
 
             if (!$this->hasFlag(self::AF_ONETOONE_INTEGRATE) && !$this->hasFlag(self::AF_NOLABEL) && !(Tools::count($a['fields']) == 1 && $a['fields'][0]['name'] == $this->m_name)) {
                 /* separator */
-                $arr['fields'][] = array('html' => '-', 'tabs' => $this->m_tabs, 'sections' => $this->getSections());
+                $arr['fields'][] = [
+                        'line' => '<hr/>',
+                        'class' => $entry['class'],
+                        'tabs' => $entry['tabs'],
+                        'section' => $entry['section'],
+                ];
             }
         }
     }
@@ -817,32 +831,24 @@ class OneToOneRelation extends Relation
     }
 
     /**
-     * Get list of additional tabs.
-     *
-     * Attributes can add new tabs to tabbed screens. This method will be
-     * called to retrieve the tabs. When self::AF_ONETOONE_INTEGRATE is set, the
-     * atkOneToOneRelation adds tabs from the destination node to the tab
-     * screen, so the attributes are seamlessly integrated but still on their
-     * own tabs.
-     *
-     * @param string $action The action for which additional tabs should be loaded.
-     *
-     * @return array The list of tabs to add to the screen.
+     * @deprecated Use getDestinationFilterCondition() instead.
      */
-    public function getAdditionalTabs($action = null)
+    public function getFilter()
     {
-        if ($this->hasFlag(self::AF_ONETOONE_INTEGRATE) && $this->createDestination()) {
-            $detailtabs = $this->m_destInstance->getTabs($action);
-            if (Tools::count($detailtabs) == 1 && $detailtabs[0] == 'default') {
-                // All elements in the relation are on the default tab. That means we should
-                // inherit the tab from the onetoonerelation itself.
-                return parent::getAdditionalTabs($action);
+        $filter = $this->m_destinationFilter;
+        if (is_array($filter)) {
+            $tmp_filter = '';
+            for ($i = 0, $_i = Tools::count($filter); $i < $_i; ++$i) {
+                if ($tmp_filter != '') {
+                    $tmp_filter .= ' AND ';
+                }
+                $tmp_filter .= $filter[$i];
             }
 
-            return $detailtabs;
+            return $tmp_filter;
+        } else {
+            return $filter;
         }
-
-        return parent::getAdditionalTabs($action);
     }
 
     /**

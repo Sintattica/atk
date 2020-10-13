@@ -26,12 +26,12 @@ class FieldSet extends Attribute
     {
         $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH;
         parent::__construct($name, $flags);
-        
+
         $this->setTemplate($template);
         $this->setLoadType(self::NOLOAD);
         $this->setStorageType(self::NOSTORE);
     }
-    
+
     public function isEmpty($record)
     {
         // always return false, this way you can mark a field-set as obligatory
@@ -110,7 +110,7 @@ class FieldSet extends Attribute
             $attr = $this->getOwnerInstance()->getAttribute($attrName);
             $attr->addDisabledMode(self::DISABLED_VIEW | self::DISABLED_EDIT);
             $attr->setTabs($this->getTabs());
-            $attr->setSections($this->getSections());
+            $attr->setSection($this->getSection());
         }
     }
 

@@ -261,24 +261,6 @@ class IndexPage
             $secMgr = SecurityManager::getInstance();
             $secMgr->logAction($node->m_type, $node->m_action);
             $node->callHandler($node->m_action);
-            $id = '';
-
-            if (isset($node->m_postvars['atkselector']) && is_array($node->m_postvars['atkselector'])) {
-                $atkSelectorDecoded = [];
-
-                foreach ($node->m_postvars['atkselector'] as $rowIndex => $selector) {
-                    list(, $pk) = explode('=', $selector);
-                    $atkSelectorDecoded[] = $pk;
-                    $id = implode(',', $atkSelectorDecoded);
-                }
-            } else {
-                list(, $id) = explode('=', Tools::atkArrayNvl($node->m_postvars, 'atkselector', '='));
-            }
-
-            $page->register_hiddenvars(array(
-                'atknodeuri' => $node->m_module.'.'.$node->m_type,
-                'atkselector' => str_replace("'", '', $id),
-            ));
         } else {
             $page->addContent($this->accessDeniedPage($node->getType()));
         }

@@ -12,16 +12,22 @@ Issue numbers are references to issues in the ATK project issue tracker
 * LATEST CHANGES GO ON TOP, different types of changes may be mixed.
 
 
-WIP Changes
------------
+Changes in ATK 10.0
+-------------------
+* New FuzzyDateAttribute, for when day or month is not mandatory [samuel]
+* Moved Date/Time attributes to date/time input types, deprecates some flags [samuel]
+* replace nl2br option in HtmlAttribute constructor by AF_NL2BR flag [samuel]
 * Several XSS fixes [samuel]
 * Debug messages now escaped by default (use DEBUG_ESCAPED flag if you
     already escaped message) [samuel]
-* replace nl2br option in HtmlAttribute constructor by AF_NL2BR flag [samuel]
+* Tab order should now be set with node->setTabOrder($tab, $order, $action) [samuel]
+- Removed \Ui\Page->register_hiddenvars and associated functions [samuel]
+* Fixed stateful tabs (per node, not per-selector) [samuel]
+* Removed namespace from SessionManager (scripts/application isolation already provided by 'identifier') [samuel]
+* Renamed SessionManager::globalVar to setValue() [samuel]
 
-DB Changes
------------
-
+DB Changes in ATK 10.0
+----------------------
 * Removed namespace from SessionManager (scripts/application isolation already provided by 'identifier') [samuel]
 * Renamed SessionManager::globalVar to setValue() [samuel]
 * Db code updated to safer code. What you will probably need to change :

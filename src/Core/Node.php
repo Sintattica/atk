@@ -12,7 +12,6 @@ use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\Relation;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\Session\State;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Ui\Ui;
@@ -253,14 +252,6 @@ class Node
     public $m_attribList = [];
 
     /*
-     * Index list containing the attributes in the order in which they will
-     * appear on screen.
-     * @access private
-     * @var array
-     */
-    public $m_attribIndexList = [];
-
-    /*
      * Reference to the page on which the node is rendering its output.
      * @access private
      * @var Page
@@ -268,34 +259,12 @@ class Node
     public $m_page = null;
 
     /*
-     * List of available tabs. Associative array structured like this:
-     * array($action=>$arrayOfTabnames)
+     * List of tab orders when defined with setTabOrder.
      * @access private
-     * @var array
+     * @var array['action']['tab'] = order.
+     * Ordered tabs come first.
      */
-    public $m_tabList = [];
-
-    /*
-     * List of available sections. Associative array structured like this:
-     * array($action=>$arrayOfSectionnames)
-     * @access private
-     * @var array
-     */
-    public $m_sectionList = [];
-
-    /*
-     * Keep track of tabs per attribute.
-     * @access private
-     * @var array
-     */
-    public $m_attributeTabs = [];
-
-    /*
-     * Keep track if a tab contains attribs (checkEmptyTabs function)
-     * @access private
-     * @var array
-     */
-    public $m_filledTabs = [];
+    private $m_tabOrder = [];
 
     /*
      * The type of the node.
@@ -613,13 +582,6 @@ class Node
     public $m_edit_fieldprefix = '';
 
     /**
-     * Default column name (null means across all columns).
-     *
-     * @var string
-     */
-    private $m_defaultColumn = null;
-
-    /**
      * Current maximum attribute order value.
      *
      * @var int
@@ -647,190 +609,55 @@ class Node
     }
 
     /**
-     * Resolve section. If a section is only prefixed by
-     * a dot this means we need to add the default tab
-     * before the dot.
-     *
-     * @param string $section section name
-     *
-     * @return string resolved section name
-     */
-    public function resolveSection($section)
-    {
-        list($part1, $part2) = (strpos($section, '.') !== false) ? explode('.', $section) : array($section, '');
-        if ($part2 != null && strlen($part2) > 0 && strlen($part1) == 0) {
-            return $this->m_default_tab.'.'.$part2;
-        } else {
-            if (strlen($part2) == 0 && strlen($part1) == 0) {
-                return $this->m_default_tab;
-            } else {
-                return $section;
-            }
-        }
-    }
-
-    /**
-     * Resolve sections.
-     *
-     * @param array $sections section list
-     *
-     * @return array resolved section list
-     *
-     * @see resolveSection
-     */
-    public function resolveSections($sections)
-    {
-        $result = [];
-
-        foreach ($sections as $section) {
-            $result[] = $this->resolveSection($section);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the default column name.
-     *
-     * @return string default column name
-     */
-    public function getDefaultColumn()
-    {
-        return $this->m_defaultColumn;
-    }
-
-    /**
-     * Set default column name.
-     *
-     * @param string $name default column name
-     */
-    public function setDefaultColumn($name)
-    {
-        $this->m_defaultColumn = $name;
-    }
-
-    /**
-     * Resolve column for sections.
-     *
-     * If one of the sections contains something after a double
-     * colon (:) than that's used as column name, else the default
-     * column name will be used.
-     *
-     * @param array $sections sections
-     *
-     * @return string column name
-     */
-    protected function resolveColumn(&$sections)
-    {
-        $column = $this->getDefaultColumn();
-
-        if (!is_array($sections)) {
-            return $column;
-        }
-
-        foreach ($sections as &$section) {
-            if (strpos($section, ':') !== false) {
-                list($section, $column) = explode(':', $section);
-            }
-        }
-
-        return $column;
-    }
-
-    /**
-     * Resolve sections, tabs and the order based on the given
-     * argument to the attribute add method.
-     *
-     * @param mixed $sections
-     * @param mixed $tabs
-     * @param mixed $order
-     */
-    public function resolveSectionsTabsOrder(&$sections, &$tabs, &$column, &$order)
-    {
-        // Because sections/tabs will probably be used more than the order override option
-        // the API for this method now favours the $sections argument. For backwards
-        // compatibility we still support the old API ($attribute,$order=0).
-        if ($sections !== null && is_int($sections)) {
-            $order = $sections;
-            $sections = array($this->m_default_tab);
-        }
-
-        // If no section/tab is specified or tabs are disabled, we use the current default tab
-        // (specified with the setDefaultTab method, or "default" otherwise)
-        elseif ($sections === null || (is_string($sections) && strlen($sections) == 0) || !Config::getGlobal('tabs')) {
-            $sections = array($this->m_default_tab);
-        } // Sections should be an array.
-        else {
-            if ($sections != '*' && !is_array($sections)) {
-                $sections = array($sections);
-            }
-        }
-
-        $column = $this->resolveColumn($sections);
-
-        if (is_array($sections)) {
-            $sections = $this->resolveSections($sections);
-        }
-
-        // Filter tabs from section names.
-        $tabs = $this->getTabsFromSections($sections);
-    }
-
-    /**
      * Add an Attribute (or one of its derivatives) to the node.
      *
      * @param Attribute $attribute The attribute you want to add
-     * @param mixed $sections The sections/tab(s) on which the attribute should be
-     *                             displayed. Can be a tabname (String) or a list of
-     *                             tabs (array) or "*" if the attribute should be
-     *                             displayed on all tabs.
+     * @param mixed $parts The section or tabs on which the attribute should be
+     *                     displayed. Can be
+     *                      - a tabname (string)
+     *                      - a list of tabs (array of string)
+     *                      - the string '*' (display on all tabs)
+     *                      - a section of a tab (string in the form 'tab.section')
+     *                      - a section of the default tab (string in the form '.section')
      * @param int $order The order at which the attribute should be displayed.
-     *                             If ommitted, this defaults to 100 for the first
-     *                             attribute, and 100 more for each next attribute that
-     *                             is added.
+     *                   If ommitted, this defaults to 100 for the first
+     *                   attribute, and 100 more for each next attribute that
+     *                   is added.
      *
      * @return Attribute the attribute just added
      */
-    public function add($attribute, $sections = null, $order = 0)
+    public function add($attribute, $parts = '', $order = null)
     {
-        $tabs = null;
-        $column = null;
-
         $attribute->m_owner = $this->m_type;
 
-        if (!$this->atkReadOptimizer()) {
-            $this->resolveSectionsTabsOrder($sections, $tabs, $column, $order);
+        // Because sections/tabs will probably be used more than the order override option
+        // the API for this method now favours the $sections argument. For backwards
+        // compatibility we still support the old API ($order as second argument).
+        if ($parts !== null && is_int($parts)) {
+            $order = $parts;
+            $parts = '';
+        }
 
-            // check for parent fieldname (treeview)
-            if ($attribute->hasFlag($attribute::AF_PARENT)) {
-                $this->m_parent = $attribute->fieldName();
-            }
+        // check for parent fieldname (treeview)
+        if ($attribute->hasFlag($attribute::AF_PARENT)) {
+            $this->m_parent = $attribute->fieldName();
+        }
 
-            // check for cascading delete flag
-            if ($attribute->hasFlag($attribute::AF_CASCADE_DELETE)) {
-                $this->m_cascadingAttribs[] = $attribute->fieldName();
-            }
+        // check for cascading delete flag
+        if ($attribute->hasFlag($attribute::AF_CASCADE_DELETE)) {
+            $this->m_cascadingAttribs[] = $attribute->fieldName();
+        }
 
-            if ($attribute->hasFlag($attribute::AF_HIDE_LIST) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
-                if (!in_array($attribute->fieldName(), $this->m_listExcludes)) {
-                    $this->m_listExcludes[] = $attribute->fieldName();
-                }
+        if ($attribute->hasFlag($attribute::AF_HIDE_LIST) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
+            if (!in_array($attribute->fieldName(), $this->m_listExcludes)) {
+                $this->m_listExcludes[] = $attribute->fieldName();
             }
+        }
 
-            if ($attribute->hasFlag($attribute::AF_HIDE_VIEW) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
-                if (!in_array($attribute->fieldName(), $this->m_viewExcludes)) {
-                    $this->m_viewExcludes[] = $attribute->fieldName();
-                }
+        if ($attribute->hasFlag($attribute::AF_HIDE_VIEW) && !$attribute->hasFlag($attribute::AF_PRIMARY)) {
+            if (!in_array($attribute->fieldName(), $this->m_viewExcludes)) {
+                $this->m_viewExcludes[] = $attribute->fieldName();
             }
-        } else {
-            // when the read optimizer is enabled there is no active tab
-            // we circument this by putting all attributes on all tabs
-            if ($sections !== null && is_int($sections)) {
-                $order = $sections;
-            }
-            $tabs = '*';
-            $sections = '*';
-            $column = $this->getDefaultColumn();
         }
 
         // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
@@ -849,70 +676,23 @@ class Node
 
         $attribute->init();
 
-        $exist = false;
+        // If we've already registered an attribute with the same name, we just
+        // set the new $order if present
         if (isset($this->m_attribList[$attribute->fieldName()]) && is_object($this->m_attribList[$attribute->fieldName()])) {
-            $exist = true;
-            // if order is set, overwrite it with new order, last order will count
-            if ($order != 0) {
-                $this->m_attribIndexList[$this->m_attribList[$attribute->fieldName()]->m_index]['order'] = $order;
+            if ($order !== null) {
+                $attribute->setOrder($order);
             }
-            $attribute->m_index = $this->m_attribList[$attribute->fieldName()]->m_index;
-        }
-
-        if (!$exist) {
-            if ($order == 0) {
+        } else {
+            if ($order === null) {
                 $this->m_attribOrder += 100;
                 $order = $this->m_attribOrder;
+                $attribute->setOrder($this->m_attribOrder);
             }
-
-            if (!$this->atkReadOptimizer()) {
-                // add new tab(s) to the tab list ("*" isn't a tab!)
-                if ($tabs != '*') {
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
-                        $this->m_tabList['add'] = isset($this->m_tabList['add']) ? Tools::atk_array_merge($this->m_tabList['add'], $tabs) : $tabs;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
-                        $this->m_tabList['edit'] = isset($this->m_tabList['edit']) ? Tools::atk_array_merge($this->m_tabList['edit'], $tabs) : $tabs;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
-                        $this->m_tabList['view'] = isset($this->m_tabList['view']) ? Tools::atk_array_merge($this->m_tabList['view'], $tabs) : $tabs;
-                    }
-                }
-
-                if ($sections != '*') {
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_ADD)) {
-                        $this->m_sectionList['add'] = isset($this->m_sectionList['add']) ? Tools::atk_array_merge($this->m_sectionList['add'],
-                            $sections) : $sections;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_EDIT)) {
-                        $this->m_sectionList['edit'] = isset($this->m_sectionList['edit']) ? Tools::atk_array_merge($this->m_sectionList['edit'],
-                            $sections) : $sections;
-                    }
-                    if (!$attribute->hasFlag(Attribute::AF_HIDE_VIEW)) {
-                        $this->m_sectionList['view'] = isset($this->m_sectionList['view']) ? Tools::atk_array_merge($this->m_sectionList['view'],
-                            $sections) : $sections;
-                    }
-                }
-            }
-
-            $attribute->m_order = $order;
-            $this->m_attribIndexList[] = array(
-                'name' => $attribute->fieldName(),
-                'tabs' => $tabs,
-                'sections' => $sections,
-                'order' => $attribute->m_order,
-            );
-            $attribute->m_index = max(array_keys($this->m_attribIndexList)); // might contain gaps
-            $attribute->setTabs($tabs);
-            $attribute->setSections($sections);
-            $this->m_attributeTabs[$attribute->fieldName()] = $tabs;
+            $attribute->setOrder($order);
         }
 
-        // Order the tablist
+        $attribute->setParts($parts);
         $this->m_attribList[$attribute->fieldName()] = $attribute;
-        $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
-        $attribute->setSections($this->m_attribIndexList[$attribute->m_index]['sections']);
-        $attribute->setColumn($column);
 
         return $attribute;
     }
@@ -927,47 +707,12 @@ class Node
      * @param string $name name
      * @param string $template template string
      * @param int $flags attribute flags
-     * @param mixed $sections The sections/tab(s) on which the attribute should be
-     *                         displayed. Can be a tabname (String) or a list of
-     *                         tabs (array) or "*" if the attribute should be
-     *                         displayed on all tabs.
-     * @param int $order The order at which the attribute should be displayed.
-     *                         If ommitted, this defaults to 100 for the first
-     *                         attribute, and 100 more for each next attribute that
-     *                         is added.
+     * @param mixed $parts see add() description
+     * @param int $order see add() description
      */
-    public function addFieldSet($name, $template, $flags = 0, $sections = null, $order = 0)
+    public function addFieldSet($name, $template, $flags = 0, $parts = '', $order = null)
     {
-        $this->add(new FieldSet($name, $template, $flags), $sections, $order);
-    }
-
-    /**
-     * Retrieve the tabnames from the sections string (tab.section).
-     *
-     * @param mixed $sections An array with sections or a section string
-     *
-     * @return array
-     */
-    public function getTabsFromSections($sections)
-    {
-        if ($sections == '*' || $sections === null) {
-            return $sections;
-        }
-
-        $tabs = [];
-
-        if (!isset($sections)) {
-        } elseif (!is_array($sections)) {
-            $sections = array($sections);
-        }
-
-        foreach ($sections as $section) {
-            $tabs[] = $this->getTabFromSection($section);
-        }
-
-        //when using the tab.sections notation, we can have duplicate tabs
-        //strip them out.
-        return array_unique($tabs);
+        $this->add(new FieldSet($name, $template, $flags), $parts, $order);
     }
 
     /**
@@ -981,8 +726,9 @@ class Node
     {
         $tab = ($section == null) ? '' : $section;
 
-        if (strstr($tab, '.') !== false) {
-            list($tab) = explode('.', $tab);
+        $dotPos = strpos($tab, '.');
+        if ($dotPos !== false) {
+            $tab = substr($tab, 0, $dotPos);
         }
 
         return ($tab == '') ? $this->m_default_tab : $tab;
@@ -1003,8 +749,6 @@ class Node
         if (is_object($this->m_attribList[$attribname])) {
             Tools::atkdebug("removing attribute $attribname");
 
-            $listindex = $this->m_attribList[$attribname]->m_index;
-
             unset($this->m_attribList[$attribname]);
             foreach ($this->m_listExcludes as $i => $name) {
                 if ($name == $attribname) {
@@ -1022,9 +766,6 @@ class Node
                     $this->m_cascadingAttribs = array_values($this->m_cascadingAttribs);
                 }
             }
-
-            unset($this->m_attribIndexList[$listindex]);
-            unset($this->m_attributeTabs[$attribname]);
         }
     }
 
@@ -1109,7 +850,7 @@ class Node
      */
     public function getAttributeOrder($name)
     {
-        return $this->m_attribIndexList[$this->m_attribList[$name]->m_index]['order'];
+        return $this->m_attribList[$name]->getOrder();
     }
 
     /**
@@ -1120,8 +861,7 @@ class Node
      */
     public function setAttributeOrder($name, $order)
     {
-        $this->m_attribList[$name]->m_order = $order;
-        $this->m_attribIndexList[$this->m_attribList[$name]->m_index]['order'] = $order;
+        $this->m_attribList[$name]->setOrder($order);
     }
 
     /**
@@ -1490,42 +1230,43 @@ class Node
     }
 
     /**
-     * Set tab index.
+     * Set tab order
+     *
+     * Ordered tabs come before unordered tabs. By default, tabs get their order from
+     * the order of the attributes
      *
      * @param string $tabname Tabname
-     * @param int $index Index number
-     * @param string $action Action name (add,edit,view)
+     * @param int $order Index number
+     * @param string $action Action name (add,edit,view). If not set, the tab order
+     *                       is set for all actions.
      */
-    public function setTabIndex($tabname, $index, $action = '')
+    public function setTabOrder($tabname, $order, $action = '')
     {
         Tools::atkdebug("self::setTabIndex($tabname,$index,$action)");
         $actionList = array('add', 'edit', 'view');
-        if ($action != '') {
+        if ($action == '') {
             $actionList = array($action);
         }
         foreach ($actionList as $action) {
-            $new_index = $index;
-            $list = &$this->m_tabList[$action];
-            if ($new_index < 0) {
-                $new_index = 0;
+            if (!isset($this->m_tabOrder[$action])) {
+                $this->m_tabOrder[$action] = [];
             }
-            if ($new_index > Tools::count($list)) {
-                $new_index = Tools::count($list);
-            }
-            $current_index = array_search($tabname, $list);
-            if ($current_index !== null) {
-                $tmp = array_splice($list, $current_index, 1);
-                array_splice($list, $new_index, 0, $tmp);
-            }
+            $this->m_tabOrder[$action][$tabname] = $order;
         }
     }
 
     /**
-     * Set default tab being displayed in view/add/edit mode.
-     * After calling this method, all attributes which are added after the
-     * method call without specification of tab will be placed on the default
-     * tab. This means you should use this method before you add any
-     * attributes to the node.
+     * Set tab order (alias of setTabOrder, for compatibility reasons)
+     */
+    public function setTabIndex($tabname, $index, $action = '')
+    {
+        $this->setTabOrder($tabname, $index, $action);
+    }
+
+    /**
+     * Set default tab being displayed in view/add/edit mode. All attributes
+     * without a tab or a section are added to this tab.
+     *
      * If you accept the default name for the first tab ("default") you do not
      * need to call this method.
      *
@@ -1537,86 +1278,60 @@ class Node
     }
 
     /**
-     * Get a list of tabs for a certain action.
+     * Resolve tab name
      *
-     * @param string $action The action for which you want to retrieve the
-     *                       list of tabs.
+     * @param string $tab name
      *
-     * @return array The list of tabnames.
+     * @return $string $tab
      */
-    public function getTabs($action)
+    public function resolveTab($tab = '')
     {
-        $list = isset($this->m_tabList[$action]) ? $this->m_tabList[$action] : null;
-        $disable = $this->checkTabRights($list);
-
-        if (!is_array($list)) {
-            // fallback to view tabs.
-            $list = $this->m_tabList['view'];
+        if ($tab == '') {
+            return $this->m_default_tab;
         }
-
-        // Attributes can also add tabs to the tablist.
-        $this->m_filledTabs = [];
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = &$this->m_attribList[$attribname];
-            if ($p_attrib->hasFlag(Attribute::AF_HIDE)) {
-                continue;
-            } // attributes to which we don't have access are explicitly hidden
-
-            // Only display the attribute if the attribute
-            // resides on at least on visible tab
-            for ($i = 0, $_i = sizeof($p_attrib->m_tabs); $i < $_i; ++$i) {
-                if ((is_array($list) && in_array($p_attrib->m_tabs[$i], $list)) || (!is_array($disable) || !in_array($p_attrib->m_tabs[$i], $disable))) {
-                    break;
-                }
-            }
-
-            if (is_object($p_attrib)) {
-                $additional = $p_attrib->getAdditionalTabs(null);
-                if (is_array($additional) && Tools::count($additional) > 0) {
-                    $list = Tools::atk_array_merge($list, $additional);
-                    $this->m_filledTabs = Tools::atk_array_merge($this->m_filledTabs, $additional);
-                }
-
-                // Keep track of the tabs that containg attribs
-                // so we only display none-empty tabs
-                $tabCode = $this->m_attributeTabs[$attribname][0];
-                if (!in_array($tabCode, $this->m_filledTabs)) {
-                    $this->m_filledTabs[] = $tabCode;
-                }
-            } else {
-                Tools::atkdebug("node::getTabs() Warning: $attribname is not an object!?");
-            }
+        if ($tab == '*') {
+            return 'alltabs';
         }
-
-        // Check if the currently known tabs all containg attributes
-        // so we don't end up with empty tabs
-        return $this->checkEmptyTabs($list);
+        return $tab;
     }
 
     /**
-     * Retrieve the sections for the active tab.
+     * Sort the list of $tabs according to self::m_tabOrder
      *
-     * @param string $action
+     * @param string $action we're in
+     * @param array $tabs list of $tabs collected
      *
-     * @return array The active sections.
+     * @return array $tabs ordered
      */
-    public function getSections($action)
+    public function sortTabs($action, $tabs)
     {
-        $sections = [];
-
-        if (is_array($this->m_sectionList[$action])) {
-            foreach ($this->m_sectionList[$action] as $element) {
-                list($tab, $sec) = (strpos($element, '.') !== false) ? explode('.', $element) : array($element, null);
-
-                //if this section is on an active tab, we return it.
-                if ($tab == $this->getActiveTab() && $sec !== null) {
-                    $sections[] = $sec;
-                }
-            }
+        if (empty($this->m_tabOrder)) {
+            return $tabs;
         }
+        // Then we reorder the tab list :
+        usort($tabs, function ($t1, $t2) {
+                $i1 = $this->m_tabOrder[$action][$t1] ?? PHP_INT_MAX;
+                $i2 = $this->m_tabOrder[$action][$t2] ?? PHP_INT_MAX;
+                return ($i1 == $i2) ? 0 : ($i1 > $i2 ? 1 : -1);
+            });
+        return $tabs;
+    }
 
-        //we do not want duplicate sections on the same tab.
-        return array_unique($sections);
+    /**
+     * Resolve section. If a section is only prefixed by
+     * a dot this means we need to add the default tab
+     * before the dot.
+     *
+     * @param string $section section name
+     *
+     * @return string resolved section name
+     */
+    public function resolveSection($section)
+    {
+        if (substr($section, 0, 1) == '.') {
+            return $this->m_default_tab . $section;
+        }
+        return $section;
     }
 
     /**
@@ -1625,8 +1340,12 @@ class Node
     public function addDefaultExpandedSections()
     {
         $sections = func_get_args();
-        $sections = $this->resolveSections($sections);
-        $this->m_default_expanded_sections = array_unique(array_merge($sections, $this->m_default_expanded_sections));
+        foreach ($sections as $section) {
+            $section = $this->resolveSection($section);
+            if (!in_array($section, $this->m_default_expanded_sections)) {
+                $this->m_default_expanded_sections[] = $section;
+            }
+        }
     }
 
     /**
@@ -1637,6 +1356,18 @@ class Node
         $sections = func_get_args();
 
         $this->m_default_expanded_sections = array_diff($this->m_default_expanded_sections, $sections);
+    }
+
+    /**
+     * Tell if a section is expanded by default or not
+     *
+     * @param $section name
+     *
+     * @return bool
+     */
+    public function isSectionDefaultExpanded($section)
+    {
+        return in_array($section, $this->m_default_expanded_sections);
     }
 
     /**
@@ -1686,86 +1417,6 @@ class Node
         }
 
         return $disable;
-    }
-
-    /**
-     * Remove tabs without attribs from the tablist.
-     *
-     * @param array $list The list of tabnames
-     *
-     * @return array The list of tabnames without the empty tabs.
-     */
-    public function checkEmptyTabs($list)
-    {
-        $tabList = [];
-
-        if (is_array($list)) {
-            foreach ($list as $tabEntry) {
-                if (in_array($tabEntry, $this->m_filledTabs)) {
-                    $tabList[] = $tabEntry;
-                } else {
-                    Tools::atkdebug('Removing TAB '.$tabEntry.' because it had no attributes assigned');
-                }
-            }
-        }
-
-        return $tabList;
-    }
-
-    /**
-     * Returns the currently active tab.
-     *
-     * Note that in themes which use dhtml tabs (tabs without reloads), this
-     * method will always return the name of the first tab.
-     *
-     * @return string The name of the currently visible tab.
-     */
-    public function getActiveTab()
-    {
-        global $ATK_VARS;
-        $tablist = $this->getTabs($ATK_VARS['atkaction']);
-
-        // Note: we may not read atktab from $this->m_postvars, because $this->m_postvars is not filled if this is
-        // a nested node (in a relation for example).
-        if (!empty($ATK_VARS['atktab']) && in_array($ATK_VARS['atktab'], $tablist)) {
-            $tab = $ATK_VARS['atktab'];
-        } elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $tablist)) {
-            $tab = $this->m_default_tab;
-        } else {
-            $tab = $tablist[0];
-        }
-
-        return $tab;
-    }
-
-    /**
-     * Get the active sections.
-     *
-     * @param string $tab The currently active tab
-     * @param string $mode The current mode ("edit", "add", etc.)
-     *
-     * @return array active Sections
-     */
-    public function getActiveSections($tab, $mode)
-    {
-        $activeSections = [];
-        if (is_array($this->m_sectionList[$mode])) {
-            foreach ($this->m_sectionList[$mode] as $section) {
-                if (substr($section, 0, strlen($tab)) == $tab) {
-                    $sectionName = 'section_'.str_replace('.', '_', $section);
-                    $key = array(
-                        'nodetype' => $this->atkNodeUri(),
-                        'section' => $sectionName,
-                    );
-                    $defaultOpen = in_array($section, $this->m_default_expanded_sections);
-                    if (State::get($key, $defaultOpen ? 'opened' : 'closed') != 'closed') {
-                        $activeSections[] = $section;
-                    }
-                }
-            }
-        }
-
-        return $activeSections;
     }
 
     /**
@@ -2025,49 +1676,6 @@ class Node
     }
 
     /**
-     * Place a set of tabs around content.
-     *
-     * @param string $action The action for which the tabs are loaded.
-     * @param string $content The content that is to be displayed within the
-     *                        tabset.
-     *
-     * @return string The complete tabset with content.
-     */
-    public function tabulate($action, $content)
-    {
-        $list = $this->getTabs($action);
-        $sections = $this->getSections($action);
-        $tabs = Tools::count($list);
-
-        if (Tools::count($sections) > 0 || $tabs > 1) {
-            $page = $this->getPage();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js?stateful='.(Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
-
-            // Load default tab show script.
-            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab('.(isset($this->m_postvars['atktab']) ? json_encode($this->m_postvars['atktab']) : '').');}');
-
-            $fulltabs = $this->buildTabs($action);
-            $tabscript = "var tabs = new Array();\n";
-            foreach ($fulltabs as $tab) {
-                $tabscript .= "tabs[tabs.length] = '".$tab['tab']."';\n";
-            }
-            $page->register_scriptcode($tabscript);
-        }
-
-        if ($tabs > 1) {
-            $ui = $this->getUi();
-            if (is_object($ui)) {
-                return $ui->renderTabs(array(
-                    'tabs' => $this->buildTabs($action),
-                    'content' => $content,
-                ));
-            }
-        }
-
-        return $content;
-    }
-
-    /**
      * Determine the default form parameters for an action template.
      *
      * @param bool $locked If the current record is locked, pass true, so
@@ -2158,8 +1766,6 @@ class Node
      * @param string $fieldprefix Of set, each form element is prefixed with
      *                               the specified prefix (used in embedded form
      *                               fields)
-     * @param bool $ignoreTab Ignore the tabs an attribute should be shown on.
-     * @param bool $injectSections Inject sections?
      *
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
@@ -2169,9 +1775,7 @@ class Node
         $record = null,
         $forceList = '',
         $suppressList = '',
-        $fieldprefix = '',
-        $ignoreTab = false,
-        $injectSections = true
+        $fieldprefix = ''
     ) {
         // update visibility of some attributes based on the current record
         $this->checkAttributeSecurity($mode, $record);
@@ -2269,33 +1873,22 @@ class Node
         $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atknodeuri" value="'.$this->atkNodeUri().'">';
         $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.htmlspecialchars(Tools::atkArrayNvl($record, 'atkprimkey', '')).'">';
 
-        foreach (array_keys($this->m_attribIndexList) as $r) {
-            $attribname = $this->m_attribIndexList[$r]['name'];
-            $p_attrib = $this->m_attribList[$attribname];
-
-            if ($p_attrib) {
-                if ($p_attrib->hasDisabledMode($p_attrib::DISABLED_EDIT)) {
-                    continue;
-                }
-
-                /* fields that have not yet been initialised may be overriden in the url */
-                if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->getHtmlName(), $this->m_postvars)) {
-                    $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->getHtmlName()];
-                }
-
-                if (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList)) {
-                    $p_attrib->m_flags |= ($mode == 'add' ? $p_attrib::AF_HIDE_ADD : $p_attrib::AF_HIDE_EDIT);
-                }
-
-                /* we let the attribute add itself to the edit array */
-                $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
-            } else {
-                Tools::atkerror("Attribute $attribname not found!");
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
+            if ($p_attrib->hasDisabledMode($p_attrib::DISABLED_EDIT)) {
+                continue;
             }
-        }
 
-        if ($injectSections) {
-            $this->injectSections($result['fields']);
+            /* fields that have not yet been initialised may be overriden in the url */
+            if (!array_key_exists($attribname, $defaults) && array_key_exists($attribname, $this->m_postvars)) {
+                $defaults[$attribname] = $this->m_postvars[$attribname];
+            }
+
+            if (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList)) {
+                $p_attrib->m_flags |= ($mode == 'add' ? $p_attrib::AF_HIDE_ADD : $p_attrib::AF_HIDE_EDIT);
+            }
+
+            /* we let the attribute add itself to the edit array */
+            $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
 
         /* check for errors */
@@ -2336,106 +1929,18 @@ class Node
 
         $result = [];
 
-        foreach (array_keys($this->m_attribIndexList) as $r) {
-            $attribname = $this->m_attribIndexList[$r]['name'];
-
-            $p_attrib = $this->m_attribList[$attribname];
-            if ($p_attrib != null) {
-                if ($p_attrib->hasDisabledMode(Attribute::DISABLED_VIEW)) {
-                    continue;
-                }
-
-                /* we let the attribute add itself to the view array */
-                $p_attrib->addToViewArray($mode, $result, $record);
-            } else {
-                Tools::atkerror("Attribute $attribname not found!");
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
+            if ($p_attrib->hasDisabledMode(Attribute::DISABLED_VIEW)) {
+                continue;
             }
-        }
 
-        /* inject sections */
-        if ($injectSections) {
-            $this->injectSections($result['fields']);
+            /* we let the attribute add itself to the view array */
+            $p_attrib->addToViewArray($mode, $result, $record);
         }
 
         /* return the result array */
 
         return $result;
-    }
-
-    /**
-     * Add sections to the edit/view fields array.
-     *
-     * @param array $fields fields array (will be modified in-place)
-     */
-    public function injectSections(&$fields)
-    {
-        $this->groupFieldsBySection($fields);
-
-        $addedSections = [];
-        $result = [];
-        foreach ($fields as $field) {
-            /// we add the section link before the first attribute that is in it
-            $fieldSections = $field['sections'];
-            if (!is_array($fieldSections)) {
-                $fieldSections = array($fieldSections);
-            }
-
-            $newSections = array_diff($fieldSections, $addedSections);
-            if (Tools::count($newSections) > 0) {
-                foreach ($newSections as $section) {
-                    if (strpos($section, '.') !== false) {
-                        $result[] = array(
-                            'html' => 'section',
-                            'name' => $section,
-                            'tabs' => $field['tabs'],
-                        );
-                        $addedSections[] = $section;
-                    }
-                }
-            }
-
-            $result[] = $field;
-        }
-
-        $fields = $result;
-    }
-
-    /**
-     * Group fields by section.
-     *
-     * @param array $fields fields array (will be modified in-place)
-     */
-    public function groupFieldsBySection(&$fields)
-    {
-        $result = [];
-        $sections = [];
-
-        // first find sectionless fields and collect all sections
-        foreach ($fields as $field) {
-            if ($field['sections'] == '*' || (Tools::count($field['sections']) == 1 && $field['sections'][0] == $this->m_default_tab)) {
-                $result[] = $field;
-            } else {
-                if (is_array($field['sections'])) {
-                    $sections = array_merge($sections, $field['sections']);
-                }
-            }
-        }
-
-        $sections = array_unique($sections);
-
-        // loop through each section (except the default tab/section) of the mode we are currently in.
-        while (Tools::count($sections) > 0) {
-            $section = array_shift($sections);
-
-            // find fields for this section
-            foreach ($fields as $field) {
-                if (is_array($field['sections']) && in_array($section, $field['sections'])) {
-                    $result[] = $field;
-                }
-            }
-        }
-
-        $fields = $result;
     }
 
     /**
@@ -2453,11 +1958,11 @@ class Node
     {
         $record = [];
 
-        foreach ($this->m_attribList as $attr) {
+        foreach ($this->m_attribList as $attribname => $attr) {
             $value = $attr->fetchValue($this->m_postvars) ?? $attr->initialValue();
 
             if ($value !== null) {
-                $record[$attr->fieldName()] = $value;
+                $record[$attribname] = $value;
             }
         }
 
@@ -2539,10 +2044,7 @@ class Node
     public function hideForm($mode = 'add', $record = null, $forceList = '', $fieldprefix = '')
     {
         /* suppress all */
-        $suppressList = [];
-        foreach (array_keys($this->m_attribIndexList) as $r) {
-            $suppressList[] = $this->m_attribIndexList[$r]['name'];
-        }
+        $suppressList = array_keys($this->m_attribList);
 
         /* get data, transform into "form", return */
         $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
@@ -2552,54 +2054,6 @@ class Node
         }
 
         return $form;
-    }
-
-    /**
-     * Builds a list of tabs.
-     *
-     * This doesn't generate the actual HTML code, but returns the data for
-     * the tabs (title, selected, urls that should be loaded upon click of the
-     * tab etc).
-     *
-     * @param string $action The action for which the tabs should be generated.
-     *
-     * @return array List of tabs
-     *
-     * @todo Make translation of tabs module aware
-     */
-    public function buildTabs($action = '')
-    {
-        if ($action == '') {
-            // assume active action
-            $action = $this->m_action;
-        }
-
-        $result = [];
-
-        // which tab is currently selected
-        $tab = $this->getActiveTab();
-
-        // build navigator
-        $list = $this->getTabs($action);
-
-        if (is_array($list)) {
-            $sm = SessionManager::getInstance();
-            $newtab['total'] = Tools::count($list);
-            foreach ($list as $t) {
-                $newtab['title'] = $this->text(array("tab_$t", $t));
-                $newtab['tab'] = $t;
-                $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&atktab='.$t;
-                if ($this->m_action == 'view') {
-                    $newtab['link'] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
-                } else {
-                    $newtab['link'] = "javascript:ATK.FormSubmit.atkSubmit('".Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT))."')";
-                }
-                $newtab['selected'] = ($t == $tab);
-                $result[] = $newtab;
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -2788,8 +2242,8 @@ class Node
             // descriptor_def method
             if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
                 $content .= '<ul>';
-                for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
-                    $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+                foreach ($recs as $record) {
+                    $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($record)));
                 }
                 $content .= '</ul>';
             }
@@ -2863,21 +2317,7 @@ class Node
             return;
         }
 
-        // We assign the $this reference to the attributes at this stage, since
-        // it fails when we do it in the add() function.
-        // See also the comments in the add() function.
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            $p_attrib->setOwnerInstance($this);
-        }
-
         $this->_addListeners();
-
-        // We set the tabs for the attributes
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            $p_attrib->setTabs($this->m_attributeTabs[$attribname]);
-        }
 
         $this->attribSort();
         $this->setAttribSizes();
@@ -2885,8 +2325,7 @@ class Node
 
         // Call the attributes postInit method to do some last time
         // initialization if necessary.
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
+        foreach ($this->m_attribList as $p_attrib) {
             $p_attrib->postInit();
         }
     }
@@ -2938,11 +2377,8 @@ class Node
         $db = $this->getDb();
         $metainfo = $db->tableMeta($this->m_table);
 
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            if (is_object($p_attrib)) {
-                $p_attrib->fetchMeta($metainfo);
-            }
+        foreach ($this->m_attribList as $p_attrib) {
+            $p_attrib->fetchMeta($metainfo);
         }
         $this->m_attribsizesset = true;
     }
@@ -2993,8 +2429,8 @@ class Node
     public function setFeedback($action, $statusmask)
     {
         if (is_array($action)) {
-            for ($i = 0, $_i = Tools::count($action); $i < $_i; ++$i) {
-                $this->m_feedback[$action[$i]] = $statusmask;
+            foreach ($action as $actionname) {
+                $this->m_feedback[$actionname] = $statusmask;
             }
         } else {
             $this->m_feedback[$action] = $statusmask;
@@ -3097,11 +2533,10 @@ class Node
         }
         $record = [];
 
-        foreach (array_keys($this->m_attribList) as $attribname) {
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
             if ((!is_array($includes) || in_array($attribname, $includes)) && (!is_array($excludes) || !in_array($attribname, $excludes))) {
-                $p_attrib = $this->m_attribList[$attribname];
                 if (!$postedOnly || $p_attrib->isPosted($vars)) {
-                    $record[$p_attrib->fieldName()] = $p_attrib->fetchValue($vars);
+                    $record[$attribname] = $p_attrib->fetchValue($vars);
                 }
             }
         }
@@ -3126,9 +2561,8 @@ class Node
      */
     public function modifyRecord(&$record, $vars)
     {
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            $record[$p_attrib->fieldName()] = $p_attrib->fetchValue($vars);
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
+            $record[$attribname] = $p_attrib->fetchValue($vars);
         }
     }
 
@@ -3359,9 +2793,8 @@ class Node
 
             $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
-            foreach (array_keys($this->m_attribList) as $attribname) {
+            foreach ($this->m_attribList as $attribname => $p_attrib) {
                 if ((!is_array($excludes) || !in_array($attribname, $excludes)) && (!is_array($includes) || in_array($attribname, $includes))) {
-                    $p_attrib = $this->m_attribList[$attribname];
                     if ($p_attrib->needsUpdate($record) || Tools::atk_in_array($attribname, $includes)) {
                         $storemode = $p_attrib->storageType('update');
                         if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
@@ -3381,8 +2814,8 @@ class Node
                 return false;
             }
 
-            for ($i = 0, $_i = Tools::count($storelist['query']); $i < $_i; ++$i) {
-                $p_attrib = $this->m_attribList[$storelist['query'][$i]];
+            foreach ($storelist['query'] as $attribname) {
+                $p_attrib = $this->m_attribList[$attribname];
                 $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'update'); // start at level 1
             }
 
@@ -3416,16 +2849,16 @@ class Node
      * @param array $record The master record being stored.
      * @param string $mode The storage mode ("add", "copy" or "update")
      *
-     * @return bool True if succesful, false if not.
+     * @return bool True if successful, false if not.
      */
     public function _storeAttributes($storelist, &$record, $mode)
     {
         // store special storage attributes.
-        for ($i = 0, $_i = Tools::count($storelist); $i < $_i; ++$i) {
-            $p_attrib = $this->m_attribList[$storelist[$i]];
+        foreach ($storelist as $attribname) {
+            $p_attrib = $this->m_attribList[$attribname];
             if (!$p_attrib->store($this->getDb(), $record, $mode)) {
                 // something went wrong.
-                Tools::atkdebug("Store aborted. Attribute '".$storelist[$i]."' reported an error.");
+                Tools::atkdebug("Store aborted. Attribute '{$attribname}' reported an error.");
 
                 return false;
             }
@@ -3505,7 +2938,6 @@ class Node
 
         $selector->orderBy($this->getOrder());
         $selector->ignoreDefaultFilters($this->hasFlag(self::NF_NO_FILTER));
-        $selector->ignorePostvars($this->atkReadOptimizer());
 
         if (is_string($condition) && !empty($condition)) {
             $selector->where(new QueryPart($condition));
@@ -3570,8 +3002,8 @@ class Node
             $usedFields = array_keys($this->m_attribList);
         } else {
             $usedFields = Tools::atk_array_merge($this->descriptorFields(), $this->m_primaryKey, $includes);
-            foreach (array_keys($this->m_attribList) as $name) {
-                if (is_object($this->m_attribList[$name]) && $this->m_attribList[$name]->hasFlag(Attribute::AF_FORCE_LOAD)) {
+            foreach ($this->m_attribList as $name => $attrib) {
+                if ($attrib->hasFlag(Attribute::AF_FORCE_LOAD)) {
                     $usedFields[] = $name;
                 }
             }
@@ -3722,8 +3154,7 @@ class Node
 
         $storelist = array('pre' => [], 'post' => [], 'query' => array());
 
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
             if (!Tools::atk_in_array($attribname, $excludelist) && ($mode != 'add' || $p_attrib->needsInsert($record))) {
                 $storemode = $p_attrib->storageType($mode);
                 if (Tools::hasFlag($storemode, Attribute::PRESTORE)) {
@@ -3742,8 +3173,8 @@ class Node
             return false;
         }
 
-        for ($i = 0, $_i = Tools::count($storelist['query']); $i < $_i; ++$i) {
-            $p_attrib = $this->m_attribList[$storelist['query'][$i]];
+        foreach ($storelist['query'] as $attribname) {
+            $p_attrib = $this->m_attribList[$attribname];
             $p_attrib->addToQuery($query, $this->m_table, '', $record, 1, 'add'); // start at level 1
         }
 
@@ -3803,8 +3234,7 @@ class Node
                 return false;
             }
 
-            for ($i = 0, $_i = Tools::count($this->m_triggerListeners); $i < $_i; ++$i) {
-                $listener = $this->m_triggerListeners[$i];
+            foreach ($this->m_triggerListeners as $listener) {
                 $return = $listener->notify($trigger, $record, $mode);
 
                 if ($return === null) {
@@ -3856,8 +3286,8 @@ class Node
         }
 
         if ($exectrigger) {
-            for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                $return = $this->executeTrigger('preDelete', $recordset[$i]);
+            foreach ($recordset as $record) {
+                $return = $this->executeTrigger('preDelete', $record);
                 if (!$return) {
                     return false;
                 }
@@ -3865,15 +3295,13 @@ class Node
         }
 
         // delete on "cascading" attributes (like relations, file attribute) BEFORE the query execution
-        if (Tools::count($this->m_cascadingAttribs) > 0) {
-            for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                for ($j = 0, $_j = Tools::count($this->m_cascadingAttribs); $j < $_j; ++$j) {
-                    $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
-                    if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
-                        if (!$p_attrib->delete($recordset[$i])) {
-                            // error
-                            return false;
-                        }
+        foreach ($this->m_cascadingAttribs as $attribname) {
+            $p_attrib = $this->m_attribList[$attribname];
+            foreach ($recordset as $record) {
+                if (isset($record[$attribname]) && !$p_attrib->isEmpty($record)) {
+                    if (!$p_attrib->delete($record)) {
+                        // error
+                        return false;
                     }
                 }
             }
@@ -3881,36 +3309,33 @@ class Node
 
         $query = $this->getDb()->createQuery($this->m_table);
         $query->addCondition($selector);
-        if ($query->executeDelete()) {
+        if (!$query->executeDelete()) {
+            return false;
+        }
 
-            // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
-            if (Tools::count($this->m_cascadingAttribs) > 0) {
-                for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                    for ($j = 0, $_j = Tools::count($this->m_cascadingAttribs); $j < $_j; ++$j) {
-                        $p_attrib = $this->m_attribList[$this->m_cascadingAttribs[$j]];
-                        if (isset($recordset[$i][$this->m_cascadingAttribs[$j]]) && !$p_attrib->isEmpty($recordset[$i])) {
-                            if (!$p_attrib->postDelete($recordset[$i])) {
-                                // error
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($exectrigger) {
-                for ($i = 0, $_i = Tools::count($recordset); $i < $_i; ++$i) {
-                    $return = ($this->executeTrigger('postDel', $recordset[$i]) && $this->executeTrigger('postDelete', $recordset[$i]));
-                    if (!$return) {
+        // postDelete on "cascading" attributes (like relations, file attribute) AFTER the query execution
+        foreach ($this->m_cascadingAttribs as $attribname) {
+            $p_attrib = $this->m_attribList[$attribname];
+            foreach ($recordset as $record) {
+                if (isset($record[$attribname]) && !$p_attrib->isEmpty($record)) {
+                    if (!$p_attrib->postDelete($record)) {
+                        // error
                         return false;
                     }
                 }
             }
-
-            return true;
-        } else {
-            return false;
         }
+
+        if ($exectrigger) {
+            foreach ($recordset as $record) {
+                $return = ($this->executeTrigger('postDel', $record) && $this->executeTrigger('postDelete', $record));
+                if (!$return) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -4429,17 +3854,9 @@ class Node
      */
     public function attribSort()
     {
-        usort($this->m_attribIndexList, array('self', 'attrib_cmp'));
-
-        // after sorting we need to update the attribute indices
-        $attrs = [];
-        foreach ($this->m_attribIndexList as $index => $info) {
-            $attr = $this->getAttribute($info['name']);
-            $attr->m_index = $index;
-            $attrs[$info['name']] = $attr;
-        }
-
-        $this->m_attribList = $attrs;
+        uasort($this->m_attribList, function ($attrib1, $attrib2) {
+                return $attrib1->getOrder() <=> $attrib2->getOrder();
+            });
     }
 
     /**
@@ -4470,8 +3887,7 @@ class Node
         $orgsearch = Tools::atkArrayNvl($this->m_postvars, 'atksearch');
 
         // Built whereclause.
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
+        foreach ($this->m_attribList as $attribname => $p_attrib) {
             // Only search in fields that aren't explicitly hidden from search
             if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && ($p_attrib->dbFieldType() == Db::FT_STRING || $p_attrib->hasFlag(Attribute::AF_SEARCHABLE))
             ) {
@@ -4635,8 +4051,8 @@ class Node
      */
     public function notify($action, $record)
     {
-        for ($i = 0, $_i = Tools::count($this->m_actionListeners); $i < $_i; ++$i) {
-            $this->m_actionListeners[$i]->notify($action, $record);
+        foreach ($this->m_actionListeners as $listener) {
+            $listener->notify($action, $record);
         }
     }
 
@@ -4648,8 +4064,8 @@ class Node
      */
     public function preNotify($action, &$record)
     {
-        for ($i = 0, $_i = Tools::count($this->m_actionListeners); $i < $_i; ++$i) {
-            $this->m_actionListeners[$i]->preNotify($action, $record);
+        foreach ($this->m_actionListeners as $listener) {
+            $listener->preNotify($action, $record);
         }
     }
 
@@ -4815,10 +4231,5 @@ class Node
                 $attr->removeFlag($flag);
             }
         }
-    }
-
-    public function atkReadOptimizer()
-    {
-        return false;
     }
 }

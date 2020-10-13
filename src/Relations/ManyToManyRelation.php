@@ -598,7 +598,7 @@ class ManyToManyRelation extends Relation
                 $record[$localKey[0]][$ownerFields[$j]] = $ownerRecord[$ownerFields[$j]];
             }
         } else {
-            $record[$localKey] = $ownerRecord[$ownerFields[$j]];
+            $record[$localKey] = $ownerRecord[$ownerFields[0]];
         }
 
         return $record;

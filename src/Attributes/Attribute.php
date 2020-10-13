@@ -383,32 +383,29 @@ class Attribute
     public $m_dbfieldtype = null;
 
     /*
-     * The order of the attribute within its node.
+     * The order of the attribute within its section or tab.
      * @access private
      * @var int
      */
     public $m_order = 0;
 
     /*
-     * Index of the attribute within its node.
+     * The tabs on which the attribute lives. If section is set, this
+     * value is ignored.
+     * '' stands for default tab.
+     * '*' stands for 'all tabs'.
      * @access private
-     * @var int
+     * @var array
      */
-    public $m_index = 0;
+    public $m_tabs = [''];
 
     /*
-     * The tab(s) on which the attribute lives.
+     * The section on which the attribute lives, in the form 'tab.section'
+     * or '.section' (default tab).
      * @access private
      * @var mixed
      */
-    public $m_tabs = '*';
-
-    /*
-     * The section(s) on which the attribute lives.
-     * @access private
-     * @var mixed
-     */
-    public $m_sections = '*';
+    public $m_section = null;
 
     /*
      * The id of the attribute in the HTML
@@ -541,13 +538,6 @@ class Attribute
      * @see setInitialValue
      */
     public $m_initialValue = null;
-
-    /**
-     * Column.
-     *
-     * @var string
-     */
-    private $m_column;
 
 
     /**
@@ -1088,6 +1078,42 @@ class Attribute
         return $fieldprefix.$this->m_htmlname;
     }
 
+
+    /**
+     * Resolve tabs, sections and set classes for an array element added
+     * to view or edit array.
+     *
+     * @return array('class' => string, 'section' => string | null, 'tabs' => array)
+     */
+    protected function sectionTabClassArray()
+    {
+        $tabs = [];
+        $section = null;
+
+        // Set atkAttrRowHidden class for rows initially hidden :
+        if ($this->isInitialHidden()) {
+            $this->addRowCSSClass('atkAttrRowHidden');
+        }
+        // Resolve section/tabs and add them to rowCssClasses :
+        if (!is_null($this->m_section)) {
+            $section = $this->m_ownerInstance->resolveSection($this->m_section);
+            $this->addRowCSSClass('section_'.str_replace('.', '_', $section));
+            $tabs = [$this->m_ownerInstance->getTabFromSection($section)];
+        } else {
+            foreach ($this->m_tabs as $tab) {
+                $tab = $this->m_ownerInstance->resolveTab($tab);
+                $this->addRowCSSClass('section_'.$tab);
+                $tabs[] = $tab;
+            }
+        }
+
+        return [
+            'class' => implode(' ', $this->m_rowCssClasses),
+            'section' => $section,
+            'tabs' => $tabs,
+        ];
+    }
+
     /**
      * Adds the attribute's view / hide HTML code to the view array.
      *
@@ -1103,17 +1129,16 @@ class Attribute
     public function addToViewArray($mode, &$arr, &$defaults)
     {
         if (!$this->hasFlag(self::AF_HIDE_VIEW)) {
-            $entry = array('name' => $this->m_name, 'attribute' => $this);
+            $entry = $this->sectionTabClassArray();
 
-            /* label? */
-            $entry['label'] = $this->getLabel($defaults, $mode);
-            // on which tab?
-            $entry['tabs'] = $this->getTabs();
-            //on which sections?
-            $entry['sections'] = $this->getSections();
-            /* the actual edit contents */
-            $entry['html'] = $this->getView($mode, $defaults);
-            $arr['fields'][] = $entry;
+            $arr['fields'][] = [
+                'name' => $this->m_name,
+                'label' => $this->getLabel($defaults, $mode),
+                'class' => $entry['class'],
+                'tabs' => $entry['tabs'],
+                'section' => $entry['section'],
+                'full' => $this->getView($mode, $defaults),
+            ];
         }
     }
 
@@ -1167,120 +1192,151 @@ class Attribute
         } /* edit */ else {
             global $ATK_VARS;
 
+            $entry = $this->sectionTabClassArray();
+            $id = $this->getHtmlId($fieldprefix);
 
-            $entry = array(
+            $arr['fields'][] = [
                 'name' => $this->m_name,
+                'id' => $id,
+                'html' => $this->getEdit($mode, $defaults, $fieldprefix),
+                'label' => $this->getLabel($defaults, $mode),
                 'obligatory' => $this->hasFlag(self::AF_OBLIGATORY),
-                'attribute' => &$this,
-            );
-
-            $entry['class'] = $this->m_rowCssClasses;
-
-            $entry['id'] = $this->getHtmlId($fieldprefix);
-
-            /* label? */
-            $entry['label'] = $this->getLabel($defaults, $mode);
-            /* error? */
-            $entry['error'] = $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
-            // on which tab?
-            $entry['tabs'] = $this->getTabs();
-            //on which sections?
-            $entry['sections'] = $this->getSections();
-            // the actual edit contents
-            $entry['html'] = $this->getEdit($mode, $defaults, $fieldprefix);
-            // initially hidden
-            $entry['initial_hidden'] = $this->isInitialHidden();
-            $arr['fields'][] = $entry;
+                'class' => $entry['class'],
+                'tabs' => $entry['tabs'],
+                'section' => $entry['section'],
+                'error' => $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($id, $ATK_VARS['atkerrorfields'])),
+            ];
         }
+    }
+
+    /**
+     * Put the attribute in parts of the form (a part is a tab or a section)
+     *
+     * Note that the attribute can be in several tabs OR in a section (a section is
+     * inside a tab), but cannot be in several sections or in a tab and a section
+     * in an other tab.
+     *
+     * Example:
+     * <code>$attribute->setParts(['tab1','tab2']);</code>
+     * <code>$attribute->setParts('tab.section');</code>
+     *
+     * @param mixed $parts The section or tabs on which the attribute should be
+     *                     displayed. Can be
+     *                      - a tabname (string)
+     *                      - a list of tabs (array of string)
+     *                      - the string '*' (display on all tabs)
+     *                      - a section of a tab (string in the form 'tab.section')
+     *                      - a section of the default tab (string in the form '.section')
+     *
+     * @return Attribute The instance of this Attribute
+     */
+    public function setParts($parts)
+    {
+        if (is_null($parts)) {
+            // Use default value for $this->m_section and $this->m_tabs
+            return $this;
+        }
+        if (is_array($parts)) {
+            return $this->setTabs($parts);
+        }
+        if (is_string($parts)) {
+            // A string without a dot : it's a tab.
+            if (strpos($parts, '.') === false) {
+                return $this->setTabs([$parts]);
+            }
+            $this->m_section = $parts;
+        }
+
+        return $this;
+    }
+
+    /**
+     * For backwards compatibility
+     *
+     * "sections" was meaning "tabs" or "sections".
+     */
+    public function setSections($sections)
+    {
+        if (is_array($sections) && count($sections) == 1 && strpos($sections[0], '.') !== false) {
+            return $this->setSection($sections[0]);
+        }
+        return $this->setTabs($sections);
+    }
+
+    /**
+     * retrieve section for this attribute.
+     *
+     * @return string
+     */
+    public function getSection()
+    {
+        return $this->m_section;
+    }
+
+    /**
+     * Set the section
+     *
+     * @param string $section
+     *
+     * @return Attribute the instance of this attribute.
+     */
+    public function setSection($section)
+    {
+        $this->m_section = $section;
+    }
+
+    /**
+     * retrieve the tab on which lives this attribute.
+     *
+     * If a section is set, it is the tab of the section.
+     *
+     * @return array of strings (tab names)
+     */
+    public function getTabs()
+    {
+        if ($this->m_section != null) {
+            $dotPos = strpos($this->m_section, '.');
+            return [substr($this->m_section, 0, $dotPos)];
+        }
+        return $this->m_tabs;
     }
 
     /**
      * Put the attribute on one or more tabs.
      *
-     * @param array $tabs An array of tabs on which the attribute should
-     *                    be displayed.
+     * Note that it won't have any effect if $this->m_section is not null.
+     *
+     * @param array $tabs on which to place the attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setTabs($tabs)
+    public function setTabs(array $tabs)
     {
-        if (empty($tabs) && isset($this->m_ownerInstance) && is_object($this->m_ownerInstance)) {
-            $tabs = array($this->m_ownerInstance->m_default_tab);
-        } else {
-            if (empty($tabs)) {
-                $tabs = array('default');
-            }
-        }
-
         $this->m_tabs = $tabs;
-
         return $this;
     }
 
     /**
-     * retrieve the tabs for this attribute.
+     * Set the order of the attribute inside its section or tabs
      *
-     * @return array
-     */
-    public function getTabs()
-    {
-        return $this->m_tabs;
-    }
-
-    /**
-     * Put the attribute on one or more tabs and/or sections.
-     *
-     * Example:
-     * <code>$attribute->setSections(array('tab.section','tab.othersection));</code>
-     *
-     * @param array $sections An array of tabs and/or sections on which the attribute should
-     *                        be displayed.
+     * @param int $order
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setSections($sections)
+    public function setOrder(int $order)
     {
-        if ($sections == null) {
-            $this->m_sections = [];
-        } else {
-            $this->m_sections = $sections;
-        }
-
+        $this->m_order = $order;
         return $this;
     }
 
     /**
-     * retrieve the tabs and/or sections for this attribute.
+     * Get the order of the attribute within its section or tabs
      *
-     * @return array
+     * @return int $order
      */
-    public function getSections()
+    public function getOrder()
     {
-        return $this->m_sections;
-    }
-
-    /**
-     * Get column.
-     *
-     * @return string column name
-     */
-    public function getColumn()
-    {
-        return $this->m_column;
-    }
-
-    /**
-     * Set column.
-     *
-     * @param string $name column name
-     *
-     * @return Attribute The instance of this Attribute
-     */
-    public function setColumn($name)
-    {
-        $this->m_column = $name;
-
-        return $this;
+        return $this->m_order;
     }
 
     /**
@@ -1437,8 +1493,11 @@ class Attribute
      */
     public function getError($errors)
     {
-        for ($i = 0; $i < Tools::count($errors); ++$i) {
-            if ($errors[$i]['attrib_name'] == $this->fieldName() || Tools::atk_in_array($this->fieldName(), $errors[$i]['attrib_name'])) {
+        if (!is_array($errors)) {
+            return false;
+        }
+        foreach ($errors as $error) {
+            if ($error['attrib_name'] == $this->fieldName() || Tools::atk_in_array($this->fieldName(), $error['attrib_name'])) {
                 return true;
             }
         }
@@ -2553,22 +2612,6 @@ class Attribute
     }
 
     /**
-     * Get list of additional tabs.
-     *
-     * Attributes can add new tabs to tabbed screens. This method will be
-     * called to retrieve the tabs. The regular Attribute has no
-     * implementation for this method. Derived attributes may override this.
-     *
-     * @param string $action The action for which additional tabs should be loaded.
-     *
-     * @return array The list of tabs to add to the screen.
-     */
-    public function getAdditionalTabs($action = null)
-    {
-        return [];
-    }
-
-    /**
      * Check if the attribute wants to be shown on a certain tab.
      *
      * @param string $tab The name of the tab to check.
@@ -2577,7 +2620,7 @@ class Attribute
      */
     public function showOnTab($tab)
     {
-        return $this->getTabs() == '*' || Tools::atk_in_array($tab, $this->getTabs());
+        return Tools::atk_in_array('*', $this->getTabs()) || Tools::atk_in_array($tab, $this->getTabs());
     }
 
     /**
