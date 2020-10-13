@@ -15,6 +15,7 @@ We currently have 4 branches:
 * 8.2
 * 9.0
 * 9.1
+* 10.0
 * master
 
 ### 8.2
@@ -47,19 +48,18 @@ This is a deeply refactored version that's not backward compatible. It's been de
 
 ### 9.1
 
-Version like 9.0, but with jQuery only
+Version like 9.0, but with jQuery only. No PRs accepted to avoid breaking legacy projects.
 
-### master
+### 10.0
 
-This is the head of development. Currently it points to 9.1
+Contributions and advancements. PRs welcome!
+
 
 ## Contributions
 
-Since we use both branches in production projects, pull requests for bug fixes are welcome, but we cannot guarantee to accept new features. Please get in touch before submitting such requests.
-
 We kindly ask you to:
 
-- Make pull requests by creating a feature branch from 8.2 or 9.0
+- Make pull requests by creating a feature branch from 10.0
 - Don't branch from master
 - Avoid redundant comments
 - Keep PSR-2 formatting
@@ -73,5 +73,5 @@ Thanks!
 ### 8.2
 The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica and to give us the sources of two historically valuable resources for ATK: the [forum](http://atk-framework.com/forum/) and the [wiki](http://atk-framework.com/wiki/).
 
-### 9.0 and 9.1
-Currently there's no documentation for v. 9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
+### 9.0, 9.1 and 10.0
+Currently there's no documentation for v. 9 and above. If you have some, please contribute directly to Github's wiki.
