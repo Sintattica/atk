@@ -3,6 +3,8 @@
 namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Db\Db;
+use Sintattica\Atk\Db\QueryPart;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Utils\StringParser;
@@ -76,7 +78,7 @@ class TreeNode extends Node
     public function buildTree()
     {
         Tools::atkdebug('treenode::buildtree() '.$this->m_parent);
-        $recordset = $this->select(Tools::atkArrayNvl($this->m_postvars, 'atkfilter', ''))->excludes($this->m_listExcludes)->mode('admin')->fetchAll();
+        $recordset = $this->select()->excludes($this->m_listExcludes)->mode('admin')->fetchAll();
 
         $treeobject = new TreeToolsTree();
         for ($i = 0; $i < Tools::count($recordset); ++$i) {
@@ -124,10 +126,10 @@ class TreeNode extends Node
         $content .= '<table border="0" cellspacing=0 cellpadding=0 cols='.($g_maxlevel + 2).' width='.$width.">\n";
 
         if (!$this->hasFlag(self::NF_NO_ADD) && $this->hasFlag(self::NF_ADD_LINK) && $this->allowed('add')) {
-            $addurl = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=add&atkfilter='.rawurlencode($this->m_parent.'.'.$this->m_primaryKey[0]."='0'");
-            if (Tools::atktext('txt_link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module, '', '', '', true) != '') {
+	    $addurl = Tools::dispatch_url($this->atkNodeUri(), 'add');
+            if (Tools::atktext('link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module, '', '', '', true) != '') {
                 // specific text
-                $label = Tools::atktext('txt_link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module);
+                $label = Tools::atktext('link_'.Tools::getNodeType($this->m_type).'_add', $this->m_module);
             } else {
                 // generic text
                 $label = Tools::atktext('add', 'atk');
@@ -351,9 +353,6 @@ class TreeNode extends Node
                             }
                             ++$i;
                         }
-                        if (isset($this->extraparams)) {
-                            $params = $params.$this->extraparams;
-                        }
                         if ($expand[$cnt] == 0) {
                             $res .= '<td>'.Tools::href(Config::getGlobal('dispatcher').'?'.$params, '<i class="fa fa-'.$img_expand.'"></i>', SessionManager::SESSION_DEFAULT, false, 'class="btn btn-default"')."</td>\n";
                         } else {
@@ -396,21 +395,47 @@ class TreeNode extends Node
 
                     if (!$this->hasFlag(self::NF_NO_ADD) && !($this->hasFlag(self::NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]['level'] == 0)) {
 			$presetForm = '{'.json_encode($this->m_parent).':'.$this->primaryKeyString($this->m_tree[$cnt]).'}';
-                        $actions['add'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=add&atkforce='.urlencode($presetForm);
+			$actions['add'] = Tools::dispatch_url($this->atkNodeUri(), 'add', ['atkforce' => $presetForm]);
                     }
                     if ($cnt > 0) {
                         if (!$this->hasFlag(self::NF_NO_EDIT)) {
-                            $actions['edit'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=edit&atkselector='.urlencode($this->primaryKeyString($this->m_tree[$cnt]));
+			    $actions['edit'] = Tools::dispatch_url($this->atkNodeUri(), 'edit', ['atkselector' => $this->primaryKeyString($this->m_tree[$cnt])]);
                         }
                         if (($this->hasFlag(self::NF_COPY) && $this->allowed('add') && !$this->hasFlag(self::NF_TREE_NO_ROOT_COPY)) || ($this->m_tree[$cnt]['level'] != 1 && $this->hasFlag(self::NF_COPY) && $this->allowed('add'))) {
-                            $actions['copy'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=copy&atkselector='.urlencode($this->primaryKeyString($this->m_tree[$cnt]));
+			    $actions['copy'] = Tools::dispatch_url($this->atkNodeUri(), 'copy', ['atkselector' => $this->primaryKeyString($this->m_tree[$cnt])]);
                         }
                         if ($this->hasFlag(self::NF_NO_DELETE) || ($this->hasFlag(self::NF_TREE_NO_ROOT_DELETE) && $this->m_tree[$cnt]['level'] == 1)) {
                             // Do nothing
                         } else {
-                            $actions['delete'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=delete&atkselector='.urlencode($this->primaryKeyString($this->m_tree[$cnt]));
+			    $actions['delete'] = Tools::dispatch_url($this->atkNodeUri(), 'delete', ['atkselector' => $this->primaryKeyString($this->m_tree[$cnt])]);
                         }
                     }
+                    // Look for custom record actions.
+                    $recordactions = $actions;
+                    $this->collectRecordActions($this->m_tree[$cnt]['label'], $recordactions, $dummy);
+
+                    foreach ($recordactions as $name => $url) {
+                        if (!empty($url)) {
+                            /* dirty hack */
+                            $atkencoded = strpos($url, '_1') > 0;
+
+                            $url = str_replace('%5B', '[', $url);
+                            $url = str_replace('%5D', ']', $url);
+                            $url = str_replace('_1'.'5B', '[', $url);
+                            $url = str_replace('_1'.'5D', ']', $url);
+
+                            if ($atkencoded) {
+                                $url = str_replace('[pk]', Tools::atkurlencode(rawurlencode($this->primaryKeyString($this->m_tree[$cnt])), false), $url);
+                            } else {
+                                $url = str_replace('[pk]', rawurlencode($this->primaryKeyString($this->m_tree[$cnt])), $url);
+                            }
+
+                            $stringparser = new StringParser($url);
+                            $url = $stringparser->parse($this->m_tree[$cnt]['label'], true);
+
+                            $res .= Tools::href($url, Tools::atktext($name), SessionManager::SESSION_NESTED).'&nbsp;';
+			}
+		    }
 
                     $res .= '</td>';
                 }
@@ -500,7 +525,7 @@ class TreeNode extends Node
     public function deleteDb($selector, $exectrigger = true, $failwhenempty = false)
     {
         Tools::atkdebug('Retrieve record');
-        $recordset = $this->select($selector)->mode('delete')->getAllRows();
+        $recordset = $this->select($selector)->mode('delete')->fetchAll();
         // First, recursively deleting children (and stopping if it fails) :
         if ($this->m_parent != '') {
             foreach ($recordset as $record) {

@@ -49,7 +49,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         if (!empty($this->m_destinationFilters)) {
             $this->m_destInstance->addFilter($this->parseFilter($record));
         }
-        $recordset = $this->m_destInstance->select($this->m_destInstance->m_primaryKey[0])->includes($tmp2)->fetchAll();
+        $recordset = $this->m_destInstance->select()->includes($tmp2)->fetchAll();
         $this->m_current = $this->m_ownerInstance->primaryKey($record);
         $result = '<select class="form-control" name="'.$this->getHtmlName($fieldprefix).'">';
 
