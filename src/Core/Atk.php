@@ -3,6 +3,8 @@
 namespace Sintattica\Atk\Core;
 
 use Dotenv\Dotenv;
+use Dotenv\Loader;
+use Dotenv\Environment\DotenvFactory;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
@@ -38,9 +40,21 @@ class Atk
 
         $this->environment = $environment;
 
-        //load .env variables only in development environment
-        if (file_exists($basedir.'.env') && in_array(strtolower($environment), ['dev', 'develop', 'development'])) {
-            $dotEnv = new Dotenv($basedir);
+        $loader = null;
+        $isBaseDirALoader = 'Dotenv\Loader' === (is_object($basedir) and get_class($basedir));
+
+        if (!$isBaseDirALoader) { //If loader is not provided as input
+            if (file_exists($basedir . ".env")) { //If an env file is provided in the basedir
+                $loader = new Loader([$basedir . ".env"], new DotenvFactory(), true);
+            }
+        } else {
+            $loader = $basedir;
+        }
+
+        //If a loader has been provided
+        if ($loader) {
+            //load .env variables
+            $dotEnv = new Dotenv($loader);
             $dotEnv->load();
         }
 
