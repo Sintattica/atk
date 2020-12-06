@@ -20,7 +20,7 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "cp -r vendor/sintattica/atk/app/* ."
+      "mv app/* ../../../"
     ]
   }
 }
