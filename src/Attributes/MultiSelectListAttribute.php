@@ -68,7 +68,7 @@ class MultiSelectListAttribute extends ListAttribute
     }
 
 
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
@@ -131,7 +131,7 @@ class MultiSelectListAttribute extends ListAttribute
             $res[] = $this->_translateValue($values[$i], $record);
         }
 
-        return implode(', ', $res);
+        return $res ? '<span class="badge-sm badge-pill badge-secondary mr-1">' . implode('</span><span class="badge-sm badge-pill badge-secondary mr-1">', $res) . "</span>": "";
     }
 
     /**
@@ -182,7 +182,7 @@ class MultiSelectListAttribute extends ListAttribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$data.$styles.'>';
+        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute().'" '.$onchange.$data.$styles.'>';
 
         $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {
@@ -248,7 +248,7 @@ class MultiSelectListAttribute extends ListAttribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('substring');
+        return ['substring'];
     }
 
     /**

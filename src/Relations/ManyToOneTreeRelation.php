@@ -67,7 +67,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $this->createDestination();
         if ($this->m_destinationFilter != '') {
@@ -77,7 +77,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
                 $this->m_destInstance->m_primaryKey))->getAllRows();
 
-        $result = '<select class="form-control" name="atksearch['.$this->fieldName().']">';
+        $result = '<select class="form-control form-control-sm" name="atksearch['.$this->fieldName().']">';
         $result .= '<option value="">'.Tools::atktext('search_all', 'atk');
         $result .= $this->createdd($recordset);
         $result .= '</select>';

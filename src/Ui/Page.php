@@ -108,7 +108,7 @@ class Page
      *
      * @return Page
      */
-    public static function getInstance()
+    public static function getInstance(): ?Page
     {
         static $s_page = null;
         if ($s_page == null) {
@@ -127,14 +127,94 @@ class Page
         // register default scripts
         $assetsUrl = Config::getGlobal('assets_url');
 
+        //jQuery
+        $this->register_script($assetsUrl.'admin-lte/plugins/jquery/jquery.min.js');
+
+        // Bootstrap 4
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js');
+
+        // Select2
+        $this->register_script($assetsUrl.'admin-lte/plugins/select2/js/select2.full.min.js');
+
+        //Bootstrap DatePicker
+        $this->register_script($assetsUrl.'admin-lte/plugins/moment/moment.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js');
+
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
+
+        /*
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/bs-stepper/js/bs-stepper.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.js');
+        */
+
+
+        //Fixed Scrollbar
+        $this->register_script($assetsUrl.'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
+
+        //AdminLTE App
+        $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
+
+
+
+        //Atk - Custom
         $this->register_scriptcode("var LANGUAGE='".Config::getGlobal('language')."';", true);
-        $this->register_script($assetsUrl.'javascript/libs.min.js');
+        //$this->register_script($assetsUrl.'javascript/libs.min.js'); //disabled old jQuery Bundle
+
         $this->register_script($assetsUrl.'javascript/tools.js');
         $this->register_script($assetsUrl.'javascript/atk.js');
 
+
+        /**
+         * Global Styles
+        */
+
+        //Google Font: Source Sans Pro
+        $this->register_style("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback");
+
+        //Font Awesome
+        $this->register_style($assetsUrl.'admin-lte/plugins/fontawesome-free/css/all.min.css');
+
+        $this->register_style($assetsUrl.'admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css');
+
+        //ICheck
+        $this->register_style($assetsUrl.'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
+
+
+
+
+
+        //Toastr
+        $this->register_style($assetsUrl.'admin-lte/plugins/toastr/toastr.min.css');
+
+        //Select2
+        $this->register_style($assetsUrl.'admin-lte/plugins/select2/css/select2.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css');
+
+        $this->register_style($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css');
+
+
+        // Theme style
+        $this->register_style($assetsUrl.'admin-lte/css/adminlte.min.css');
+
+        //Override default with custom styles
+        $this->register_style($assetsUrl.'admin-lte/css/style.css');
+
+        /*
+        $this->register_style($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/bs-stepper/css/bs-stepper.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.css');
+*/
+
+
         $style_url = Config::getGlobal('style_url');
         if($style_url){
-            $this->register_style(Config::getGlobal('style_url'));
+           // $this->register_style(Config::getGlobal('style_url'));
         }
     }
 
@@ -326,7 +406,7 @@ class Page
      *
      * @return array contain file paths
      */
-    public function getStyles()
+    public function getStyles(): array
     {
         return $this->m_stylesheets;
     }
@@ -350,7 +430,7 @@ class Page
      *
      * @return array
      */
-    public function getStyleCodes()
+    public function getStyleCodes(): array
     {
         return $this->m_stylecode;
     }
@@ -554,7 +634,7 @@ class Page
     /**
      * Add content to the page.
      *
-     * @param string $content The content to add to the page.
+     * @param string|array $content The content to add to the page.
      */
     public function addContent($content)
     {
@@ -564,7 +644,7 @@ class Page
     /**
      * Returns the current page content.
      *
-     * @return string current page content
+     * @return string|array current page content
      */
     public function getContent()
     {
@@ -594,7 +674,7 @@ class Page
     /**
      * Render the complete page, including head and body.
      *
-     * @param string $title Title of the HTML page.
+     * @param null $title Title of the HTML page.
      * @param bool|int $flags (bool) Set to true to generate <body> tags. It is useful
      *                                 to set this to false only when rendering content
      *                                 that either already had its own <body></body>
@@ -603,11 +683,13 @@ class Page
      *                                 (int) Flags for the render function
      * @param string $extrabodyprops Extra attributes to add to the <body> tag.
      * @param string $extra_header HTML code of extra headers to add to the head section
-     *
+     * @param string|null $appendClasses
      * @return string The HTML page, including <html> and </html> tags.
+     * @throws \SmartyException
      */
-    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '')
+    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', string $appendClasses = null): string
     {
+
         if ($title == null) {
             $title = $this->m_title != '' ? $this->m_title : Tools::atktext('app_title');
         }
@@ -631,6 +713,7 @@ class Page
         }
         if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $layout['extrabodyprops'] = $extrabodyprops;
+            $layout['extra_classes'] = $appendClasses ?: '';
             $layout['body'] = $this->m_content."\n";
         }
 
@@ -643,7 +726,7 @@ class Page
     /**
      * Render partial.
      */
-    public function renderPartial()
+    public function renderPartial(): string
     {
         $result = $this->m_content;
         $this->addMeta($result, true);
@@ -659,7 +742,7 @@ class Page
      *
      * @return string a hidden div with the selected ATK variabels
      */
-    public function hiddenVars()
+    public function hiddenVars(): string
     {
         $res = '';
         if ($this->m_hiddenvars) {
@@ -679,7 +762,7 @@ class Page
      * @param array $record The record that holds this attribute's value.
      * @return bool true if there is no content in the page, false if there is
      */
-    public function isEmpty($record)
+    public function isEmpty($record): bool
     {
         return $this->m_content == '';
     }
@@ -689,7 +772,7 @@ class Page
      *
      * @param string $code
      */
-    public function register_metacode($code)
+    public function register_metacode(string $code)
     {
         $this->m_metacode[] = $code;
     }
@@ -700,7 +783,7 @@ class Page
      * @param string $res Reference to the HTML output
      * @param bool $partial Is this a partial request or a complete request
      */
-    public function addMeta(&$res, $partial = false)
+    public function addMeta(string &$res, $partial = false)
     {
         if (!$partial) {
             foreach ($this->m_metacode as $line) {

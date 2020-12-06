@@ -402,13 +402,13 @@ class ManyToManyRelation extends Relation
                 $recordset[] = $descr;
             }
             if (!in_array($mode, array('csv', 'plain'))) {
-                $result = '<ul><li>'.implode('<li>', $recordset).'</ul>';
+                $result = '<div><span class="badge-sm badge-pill badge-secondary mr-1">'.implode('</span><span class="badge-sm badge-pill badge-secondary mr-1">', $recordset).'</span></div>';
             } else {
                 $result = implode(', ', $recordset);
             }
         } else {
             if (!in_array($mode, array('csv', 'plain'))) {
-                $result = $this->text('none');
+                $result = '<span class="badge-sm badge-pill badge-secondary">'.$this->text('none').'</span>';
             }
         }
 
@@ -752,7 +752,7 @@ class ManyToManyRelation extends Relation
      *
      * @return string Piece of html code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $this->createDestination();
 
@@ -780,7 +780,7 @@ class ManyToManyRelation extends Relation
         // now select all records
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey))->getAllRows();
-        $result = '<select class="form-control"'.$data;
+        $result = '<select class="form-control form-control-sm"'.$data;
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, Tools::count($recordset) + 1).'"';
         }

@@ -249,7 +249,7 @@ class ManyToOneRelation extends Relation
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
-        if (Config::getGlobal('manytoone_autocomplete_large', true) && Tools::hasFlag($flags, self::AF_LARGE)) {
+        if (Config::getGlobal('manytoone_autocomplete_large', false) && Tools::hasFlag($flags, self::AF_LARGE)) {
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
@@ -490,12 +490,12 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_pagination_limit = $limit;
     }
 
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if ($this->isEmpty($rec)) {
             Tools::atkdebug($this->fieldName().' IS EMPTY!');
 
-            return;
+            return null;
         } else {
             if ($this->createDestination()) {
                 if (is_array($rec[$this->fieldName()])) {
@@ -816,9 +816,9 @@ class ManyToOneRelation extends Relation
             $recordset = $this->_getSelectableRecords($record, $mode);
         }
 
+
         $isAutocomplete = (is_array($recordset) && Tools::count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1;
         if ($this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && is_object($this->m_ownerInstance) && $isAutocomplete) {
-
 
             $result = $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
             return $result;
@@ -853,7 +853,6 @@ class ManyToOneRelation extends Relation
         if ($this->hasFlag(self::AF_LARGE)) {
             //no select list, but a link for select
             $result = '';
-
             $result .= '<span class="atkmanytoonerelation-large-container">';
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
@@ -1082,7 +1081,7 @@ class ManyToOneRelation extends Relation
             $htmlAttrs .= ' '.$k.'="'.htmlspecialchars($v).'"';
         }
 
-        $result = '<select '.$this->getCSSClassAttribute('form-control').' id="'.$id.'" name="'.$name.'"'.$htmlAttrs.'>';
+        $result = '<select '.$this->getCSSClassAttribute().' id="'.$id.'" name="'.$name.'"'.$htmlAttrs.'>';
         foreach ($options as $value => $option) {
             $result .= '<option ';
             $result .= 'value="'.htmlspecialchars($value).'"';
@@ -1097,7 +1096,7 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
         $id = $this->getHtmlId($fieldprefix);
@@ -1207,7 +1206,7 @@ EOF;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
-                $selectOptions['placeholder'] = $options[''];
+                $selectOptions['placeholder'] = '' ; //$options[''];
 
                 if(!$this->isMultipleSearch($extended)) {
                     $selectOptions['allow-clear'] = true;
@@ -1252,7 +1251,7 @@ EOF;
                 }
 
                 //normal input field
-                $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
+                $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute().' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
             }
 
             return $result;
@@ -1265,7 +1264,7 @@ EOF;
             return array('substring', 'exact', 'wildcard', 'regex');
         }
 
-        return array('exact'); // only support exact search when searching with dropdowns
+        return ['exact']; // only support exact search when searching with dropdowns
     }
 
     public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)
@@ -1348,7 +1347,7 @@ EOF;
                 } else {
                     // ask the destination node for it's search condition
                     $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
-                    $conditions = '';
+                    $conditions = [];
                     foreach($value as $v) {
                         $sc = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode);
 
@@ -2120,7 +2119,7 @@ EOF;
             $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = $noneLabel;
         }
-
+        $selectOptions['placeholder'] = '';
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         if (Tools::count($this->m_onchangecode)) {

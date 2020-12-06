@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\DataGrid;
 
 use Sintattica\Atk\Core\Config;
+use SmartyException;
 
 /**
  * The data grid limit box. Can be used to render a
@@ -17,7 +18,7 @@ class DataGridLimit extends DataGridComponent
      *
      * @return array list of possible limit values
      */
-    protected function getValues()
+    protected function getValues(): array
     {
         $defaultLimit = $this->getGrid()->getDefaultLimit();
         $limit = $this->getGrid()->getLimit();
@@ -37,7 +38,7 @@ class DataGridLimit extends DataGridComponent
      *
      * @return array possible options
      */
-    protected function getOptions($values)
+    protected function getOptions(array $values): array
     {
         $options = [];
 
@@ -64,9 +65,10 @@ class DataGridLimit extends DataGridComponent
     /**
      * Renders the limit box for the given data grid.
      *
-     * @return string rendered HTML
+     * @return null|string rendered HTML
+     * @throws SmartyException
      */
-    public function render()
+    public function render(): ?string
     {
         $values = $this->getValues();
 

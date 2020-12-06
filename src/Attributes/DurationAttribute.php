@@ -35,7 +35,7 @@ class DurationAttribute extends Attribute
     public function __construct($name, $flags = 0, $resolution = '1m', $maxtime = '10h')
     {
         parent::__construct($name, $flags);
-        
+
         $hms = substr($resolution, -1);
         $resolution = substr($resolution, 0, -1);
 
@@ -143,7 +143,7 @@ class DurationAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         return ''; // currently not searchable.
     }
@@ -175,7 +175,7 @@ class DurationAttribute extends Attribute
      */
     public function getSearchModes()
     {
-        return array('exact');
+        return ['exact'];
     }
 
     /**

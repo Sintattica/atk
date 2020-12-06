@@ -35,7 +35,7 @@ class FlagAttribute extends MultiSelectAttribute
      *
      * @return string The database compatible value
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
             $flags = 0;
@@ -181,6 +181,6 @@ class FlagAttribute extends MultiSelectAttribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('exact');
+        return ['exact'];
     }
 }

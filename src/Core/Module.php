@@ -2,6 +2,9 @@
 
 namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Core\Menu\Menu;
+use Sintattica\Atk\Core\Menu\MenuBase;
+
 /**
  * The Module abstract base class.
  *
@@ -9,26 +12,26 @@ namespace Sintattica\Atk\Core;
  */
 abstract class Module
 {
-    public static $module;
+    public static string $module;
 
     /** @var Atk $atk */
-    private $atk;
+    private Atk $atk;
 
-    /** @var Menu $menu */
-    private $menu;
+    /** @var MenuBase $menu */
+    private MenuBase $menu;
 
-    public function __construct(Atk $atk, Menu $menu)
+    public function __construct(Atk $atk, MenuBase $menu)
     {
         $this->atk = $atk;
         $this->menu = $menu;
     }
 
-    protected function getMenu()
+    protected function getMenu(): MenuBase
     {
         return $this->menu;
     }
 
-    protected function getAtk()
+    protected function getAtk(): Atk
     {
         return $this->atk;
     }
@@ -45,12 +48,12 @@ abstract class Module
         $this->atk->registerNode(static::$module.'.'.$nodeName, $nodeClass, $actions);
     }
 
-    public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main', $enable = null, $order = 0, $navbar = 'left')
+    public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main', $enable = null, $order = 0, $position = Menu::MENU_SIDEBAR)
     {
         if ($enable === null) {
             $enable = [static::$module.'.'.$nodeName, $action];
         }
-        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, $enable, $order, static::$module, '', $navbar);
+        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, $enable, $order, static::$module, '', $position);
     }
 
     public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1)

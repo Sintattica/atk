@@ -63,7 +63,7 @@ return [
      */
     'datagrid_class' => '\\Sintattica\\Atk\\DataGrid\\DataGrid',
 
-    'datagrid_display_top_info' => true,
+    'datagrid_display_top_info' => false,
     'datagrid_display_bottom_info' => true,
 
     /*
@@ -71,6 +71,8 @@ return [
      * (like legacy atk)
      */
     'datagrid_total_paginate' => false,
+
+
 
     /*
      * The dispatcher, all request (should) lead to this setting.
@@ -301,7 +303,7 @@ return [
      * Use bugzilla-style crypted password storage
      * @var boolean
      */
-    'auth_usecryptedpassword' => false,
+    'auth_usecryptedpassword' => true,
 
     /*
      * Setting this to true will make ATK use a loginform instead of a browserpopup.
@@ -458,7 +460,7 @@ return [
 
     /************************** MENU *********************************/
 
-    'menu' => Sintattica\Atk\Core\Menu::class,
+    'menu' => Sintattica\Atk\Core\Menu\Menu::class,
 
     /*
      * Show a link in the menu to logout
@@ -495,7 +497,7 @@ return [
      * The number of records per page options to display on drop down list
      * @var array
      */
-    'recordsperpage_options' => [10, 25, 50, 100],
+    'recordsperpage_options' => [2, 10, 25, 50, 100],
 
     /*
      * Add a 'show all' option to the records per page selector.
@@ -503,11 +505,18 @@ return [
      */
     'enable_showall' => true,
 
+
+    /*
+     * Put an icon instead of:
+     * previous, next, first and last
+     */
+    'datagrid_iconize_links' => true,
+
     /*
      * The (max) number of page navigation links to show
      * @var int
      */
-    'pagelinks' => 10,
+    'pagelinks' => 3,
 
     /*
      * Show go to previous page and go to next page links in recordlist
@@ -519,7 +528,7 @@ return [
      * Show go to first page and go to last page links in recordlist
      * @var bool
      */
-    'pagelinks_first_last' => false,
+    'pagelinks_first_last' => true,
 
     /*
      * Display a 'stack' of the user activities in the top right corner.
@@ -651,7 +660,7 @@ return [
      * @var string
      */
     'session_autorefresh_key' => '_sessionautorefresh',
-    
+
     /*
      * The application identifier.
      *
@@ -854,22 +863,23 @@ return [
     'recordlist_icons' => true,
 
     'icon_canceled' => 'fa fa-times',
-    'icon_copy' => 'fa fa-files-o',
-    'icon_default' => 'fa fa-file-o',
-    'icon_delete' => 'fa fa-trash-o text-danger',
-    'icon_document' => 'fa fa-file-o',
+    'icon_copy' => 'fas fa-clone',
+    'icon_default' => 'fa fa-file',
+    'icon_delete' => 'fas fa-trash-alt text-danger',
+    'icon_document' => 'fa fa-file',
     'icon_done' => 'fa fa-check',
-    'icon_edit' => 'fa fa-pencil',
-    'icon_editcopy' => 'fa fa-files-o',
-    'icon_export' => 'fa fa-file-excel-o',
+    'icon_edit' => 'fas fa-pencil-alt',
+    'icon_editcopy' => 'fas fa-clone',
     'icon_preview' => 'fa fa-file-o',
-    'icon_select' => 'fa fa-hand-pointer-o',
+    'icon_select' => 'fas fa-hand-pointer',
     'icon_view' => 'fa fa-search',
-    'icon_email' => 'fa fa-envelope-o',
-    'icon_e_mail' => 'fa fa-envelope-o',
+    'icon_email' => 'fa fa-envelope',
+    'icon_e_mail' => 'fa fa-envelope',
     'icon_print' => 'fa fa-print',
-    'icon_plussquare' => 'fa fa-plus-square-o',
-    'icon_minussquare' => 'fa fa-minus-square-o',
+    'icon_plussquare' => 'fa fa-plus-square',
+    'icon_minussquare' => 'fa fa-minus-square',
+    'icon_add'         => 'fas fa-plus',
+    'icon_export_csv'  => 'fas fa-file-csv',
 
     /****************** CACHING ********************/
 

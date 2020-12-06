@@ -5,10 +5,11 @@ namespace Sintattica\Atk\DataGrid;
 use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
+use SmartyException;
 
 /**
  * The grid renderer is responsible for rendering the grid components and
- * ofcourse the grid itself.
+ * of course the grid itself.
  *
  * @author Peter C. Verhage <peter@achievo.org>
  */
@@ -22,7 +23,7 @@ class DataGridRenderer extends DataGridComponent
      *
      * @return string grid HTML
      */
-    protected function renderContainer($result)
+    protected function renderContainer(string $result): string
     {
         if (!$this->getGrid()->isUpdate()) {
             $result = '<div id="'.$this->getGrid()->getName().'_container" class="atkdatagrid-container">'.$result.'</div>';
@@ -38,7 +39,7 @@ class DataGridRenderer extends DataGridComponent
      *
      * @return string grid HTML
      */
-    protected function renderForm($result)
+    protected function renderForm(string $result): string
     {
         if (!$this->getGrid()->isUpdate() && !$this->getGrid()->isEmbedded()) {
             $sm = SessionManager::getInstance();
@@ -52,8 +53,9 @@ class DataGridRenderer extends DataGridComponent
      * Render the grid components and the grid itself.
      *
      * @return string grid HTML
+     * @throws SmartyException
      */
-    protected function renderGrid()
+    protected function renderGrid(): string
     {
         $vars = [];
 
@@ -76,24 +78,23 @@ class DataGridRenderer extends DataGridComponent
         if ($this->getGrid()->isUpdate()) {
             return;
         }
-        
+
 
         $name = Json::encode($this->getGrid()->getName());
         $baseUrl = Json::encode($this->getGrid()->getBaseUrl());
         $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
 
         $this->getPage()->register_script(Config::getGlobal('assets_url').'javascript/datagrid.js');
-        $this->getPage()->register_loadscript("
-      ATK.DataGrid.register($name, $baseUrl, $embedded);
-    ");
+        $this->getPage()->register_loadscript("ATK.DataGrid.register($name, $baseUrl, $embedded);");
     }
 
     /**
      * Render the grid.
      *
      * @return string grid HTML
+     * @throws SmartyException
      */
-    public function render()
+    public function render(): string
     {
         $this->registerScript();
         $result = $this->renderGrid();

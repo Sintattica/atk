@@ -56,7 +56,7 @@ class UpdatedByAttribute extends ManyToOneRelation
         return $fakeRecord[$this->fieldName()];
     }
 
-    public function value2db($record)
+    public function value2db(array $record)
     {
         $record[$this->fieldName()] = $this->initialValue();
 

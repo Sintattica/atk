@@ -2,10 +2,12 @@
 
 namespace Sintattica\Atk\Ui;
 
+use Exception;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Atk;
+use SmartyException;
 
 /**
  * Utility class for rendering boxes, lists, tabs or other templates.
@@ -19,10 +21,11 @@ class Ui
      * @access private
      * @var SmartyProvider
      */
-    public $m_smarty = null;
+    public ?Smarty $m_smarty = null;
 
     /**
      * Ui constructor, initialises Smarty and Theme instance.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -34,7 +37,7 @@ class Ui
      *
      * @return Ui
      */
-    public static function getInstance()
+    public static function getInstance(): ?Ui
     {
         static $s_instance = null;
 
@@ -56,7 +59,7 @@ class Ui
      *
      * @return string the rendered template
      */
-    public function renderAction($action, $vars, $module = '')
+    public function renderAction($action, $vars, $module = ''): string
     {
         return $this->render("action_$action.tpl", $vars, $module);
     }
@@ -70,7 +73,7 @@ class Ui
      *
      * @return string rendered list
      */
-    public function renderList($action = '', $vars, $module = '')
+    public function renderList($action = '', $vars, $module = ''): string
     {
         return $this->render('list.tpl', $vars, $module);
     }
@@ -89,8 +92,9 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered box
+     * @throws SmartyException
      */
-    public function renderBox($vars, $name = '', $module = '')
+    public function renderBox($vars, $name = '', $module = ''): string
     {
         if ($name) {
             return $this->render($name.'.tpl', $vars);
@@ -107,8 +111,9 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string the rendered template
+     * @throws SmartyException
      */
-    public function renderTabs($vars, $module = '')
+    public function renderTabs(array $vars, $module = ''): string
     {
         return $this->render('tabs.tpl', $vars, $module);
     }
@@ -125,8 +130,9 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered template
+     * @throws SmartyException
      */
-    public function render($name, $vars = [], $module = '')
+    public function render(string $name, $vars = [], $module = ''): string
     {
         $result = $this->renderSmarty($name, $vars);
 
@@ -144,16 +150,15 @@ class Ui
      * @param array $vars template variables
      *
      * @return string rendered template
+     * @throws SmartyException
      */
-    private function renderSmarty($path, $vars)
+    private function renderSmarty(string $path, array $vars): string
     {
         // First clear any existing smarty var.
         $this->m_smarty->clearAllAssign();
 
         $this->m_smarty->assign($vars);
-        $res = $this->m_smarty->fetch($path);
-
-        return $res;
+        return $this->m_smarty->fetch($path);
     }
 
     /**
@@ -167,7 +172,7 @@ class Ui
      *
      * @return string the title for the action
      */
-    public function title($module, $nodetype, $action = null, $actiononly = false)
+    public function title($module, $nodetype, $action = null, $actiononly = false): string
     {
         if ($module == null || $nodetype == null) {
             return '';
@@ -189,7 +194,7 @@ class Ui
      *
      * @return string the title for the action
      */
-    public function nodeTitle($node, $action = null, $actiononly = false)
+    public function nodeTitle($node, $action = null, $actiononly = false): string
     {
         if ($node == null) {
             return '';

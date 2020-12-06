@@ -110,6 +110,7 @@ class RadioAttribute extends ListAttribute
             $total_items = $this->m_amount;
         }
 
+        //Todo: Rivedere Attributo
         $result = '<table class="table">';
         if (!$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $result .= '<tr>';
@@ -142,7 +143,7 @@ class RadioAttribute extends ListAttribute
 
             $commenthtml = '<br/><div class="atkradio_comment">'.$comment.'</div>';
 
-            $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute('atkradio').' value="'.$values[$i].'" '.$onchange.$sel.'>
+            $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute(['atkradio']).' value="'.$values[$i].'" '.$onchange.$sel.'>
         '.$this->renderValue($labelID, $this->_translateValue($values[$i],
                     $record)).($this->hasFlag(self::AF_DISPLAY_VERT) && $comment != '' ? $commenthtml : '').'</td>';
 
@@ -160,7 +161,7 @@ class RadioAttribute extends ListAttribute
                         $sel = '';
                     }
                     if ($values[$j] != '') {
-                        $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute('atkradio').' value="'.$values[$j].'" '.$onchange.$sel.'>
+                        $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute(['atkradio']).' value="'.$values[$j].'" '.$onchange.$sel.'>
               '.$this->renderValue($labelID, $this->_translateValue($values[$j], $record)).($comment != '' ? $commenthtml : '').'</td>';
                     } else {
                         $result .= '<td>&nbsp;</td>';

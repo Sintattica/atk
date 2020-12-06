@@ -17,10 +17,10 @@
     <div class="row form-group">
         <div class="col-sm-2 control-label fieldlabel">{$searchmode_title}</div>
         <div class="col-sm-10">
-            <div class="radio">
+            <div class="radio form-check">
                 <label>{$searchmode_and}</label>
             </div>
-            <div class="radio">
+            <div class="radio form-check">
                 <label>{$searchmode_or}</label>
             </div>
         </div>

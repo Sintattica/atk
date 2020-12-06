@@ -355,7 +355,7 @@ class NumberAttribute extends Attribute
      *
      * @return string The database compatible value
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(self::AF_OBLIGATORY)) {
             return;
@@ -388,7 +388,7 @@ class NumberAttribute extends Attribute
 
     public static function getStaticSearchModes()
     {
-        return array('exact', 'between', 'greaterthan', 'greaterthanequal', 'lessthan', 'lessthanequal');
+        return ['exact', 'between', 'greaterthan', 'greaterthanequal', 'lessthan', 'lessthanequal'];
     }
 
     /**
@@ -513,7 +513,7 @@ class NumberAttribute extends Attribute
         foreach($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
-        
+
         if (Tools::count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
@@ -537,7 +537,7 @@ class NumberAttribute extends Attribute
         $result = '';
         $result .= '<input type="text" id="'.$id.'"';
         $result .= ' name="'.$name.'"';
-        $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
+        $result .= ' '.$this->getCSSClassAttribute();
         $result .= ' value="'.$value.'"';
         if($size > 0){
             $result .= ' size="'.$size.'"';
@@ -571,7 +571,7 @@ class NumberAttribute extends Attribute
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $value = '';
         if (isset($record[$this->fieldName()])) {
@@ -584,7 +584,7 @@ class NumberAttribute extends Attribute
             // TODO we should also consider the sign symbol (for signed type)
         }
 
-        $class = $this->getCSSClassAttribute(['form-control']);
+        $class = $this->getCSSClassAttribute();
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
         $style = '';

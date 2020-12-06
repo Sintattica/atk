@@ -136,7 +136,7 @@ class Output
             self::header('Content-Type: text/html; charset='.($charset == '' ? Tools::atkGetCharset() : $charset));
 
             $res = $this->m_content;
-            
+
             $debugger = Debugger::getInstance();
             $res .= $debugger->renderDebugAndErrorMessages();
         }
@@ -187,7 +187,7 @@ class Output
      *
      * @param string $txt The text to output.
      */
-    public function output($txt)
+    public function output(string $txt)
     {
         $this->m_content .= $txt."\n";
     }
@@ -202,7 +202,7 @@ class Output
      *
      * @return string The gzipped string.
      */
-    public function gzip($contents)
+    public function gzip(string $contents): string
     {
         $gzip_size = strlen($contents);
         $gzip_crc = crc32($contents);

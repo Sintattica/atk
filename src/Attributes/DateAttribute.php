@@ -372,7 +372,7 @@ class DateAttribute extends Attribute
         $emptyfield = null;
         /* date must be within specified (default: 25) years */
         if (!empty($current['y_max']) && !empty($current['y_min']) && $current['y_max'] - $current['y_min'] <= $this->m_maxyears) {
-            $result .= '<select id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
+            $result .= '<select id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control form-control-sm select-standard" onChange="'.$str_script.'">';
             if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
                 $result .= '<option value="0"'.($current === null ? ' selected' : '').'></option>';
             }
@@ -402,7 +402,7 @@ class DateAttribute extends Attribute
 
             $this->m_yeardropdown = true;
         } /* normal input box */ else {
-            $result .= '<input type="text" id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current['year']) ? $current['year'] : '').'">';
+            $result .= '<input type="text" id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control form-control-sm" size="8" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current['year']) ? $current['year'] : '').'">';
         }
 
         return $result;
@@ -422,7 +422,9 @@ class DateAttribute extends Attribute
      */
     protected function renderMonth($fieldid, $fieldname, $str_script, $current, $format, $obligatory)
     {
-        $result = '<select id="'.$fieldid.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
+        $fieldHtmlId = $fieldid.'[month]';
+
+        $result = '<select id="'.$fieldHtmlId.'" name="'.$fieldname.'[month]" data-no-search class="atkdateattribute form-control form-control-sm select-standard" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
@@ -438,6 +440,11 @@ class DateAttribute extends Attribute
             }
         }
         $result .= '</select>';
+
+        //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $escapedFieldHtmlId = $fieldid.'\\\\[month\\\\]';
+
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
         return $result;
     }
@@ -463,7 +470,7 @@ class DateAttribute extends Attribute
         $c_dmax = isset($current['d_max']) ? $current['d_max'] : null;
         $c_mday = isset($current['mday']) ? $current['mday'] : null;
 
-        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
+        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" data-no-search class="atkdateattribute form-control form-control-sm select-standard atk-date-left" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
@@ -484,6 +491,11 @@ class DateAttribute extends Attribute
             }
         }
         $result .= '</select>';
+
+        //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $escapedFieldHtmlId = $fieldid.'\\\\[day\\\\]';
+
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
         return $result;
     }
@@ -545,10 +557,10 @@ class DateAttribute extends Attribute
                 }
                 $result .= ' <input '.$this->getCSSClassAttribute([
                         'btn',
+                        'btn-sm',
                         'btn-default',
                         'button',
                         'atkbutton',
-                        'form-control',
                     ]).' type="button" value="..." onclick="return showCalendar(\''.$id.'\', \''.$id.'\', \''.$format.'\', false, '.$mondayFirst.');">';
             }
 
@@ -625,7 +637,7 @@ class DateAttribute extends Attribute
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
             }
 
-            $result = '<select id="'.$id.'" name="'.$fieldname.'" onChange="'.$str_script.'" class="form-control select-standard">';
+            $result = '<select id="'.$id.'" name="'.$fieldname.'" onChange="'.$str_script.'" class="form-control form-control-sm select-standard">';
             for ($i = $str_min; $i <= $str_max; ++$i) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="'.$i.'"'.($current !== null && $tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date,
@@ -655,12 +667,13 @@ class DateAttribute extends Attribute
         );
 
         if (!$this->m_simplemode) {
-            $result .= '<div class="DateAttribute form-inline"><script>var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
+            $result .= '<div class="DateAttribute align-top d-inline-block"><script>var atkdateattribute_' . $id . ' = ' . Json::encode($info) . ';</script>';
         }
 
         /* other date selections */
         $weekdayFormat = null;
         $str_script = '';
+        $result .= "<div class='atk-date-group'>";
         for ($i = 0; $i < strlen($str_format); ++$i) {
             /* javascript method */
             if (!$this->m_simplemode) {
@@ -684,21 +697,27 @@ class DateAttribute extends Attribute
             } /* other characters */ else {
                 $result .= $str_format[$i];
             }
+
         }
+
+
 
         if (!$this->hasFlag(self::AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
             $mondayFirst = 'false';
             if (is_bool(Tools::atktext('date_monday_first'))) {
                 $mondayFirst = Tools::atktext('date_monday_first') === true ? 'true' : $mondayFirst;
             }
-            $result .= ' <input '.$this->getCSSClassAttribute(array(
-                    'button',
+            $result .= ' <span '.$this->getCSSClassAttribute([
                     'atkbutton',
+                    'fas fa-calendar-alt',
                     'btn',
+                    'btn-sm',
                     'btn-default',
-                    'form-control',
-                )).' type="reset" value="..." onclick="return showCalendar(\''.$id.'\', \''.$id.'[year]\', \'y-mm-dd\', true, '.$mondayFirst.');">';
+                    'atk-date-right',
+                ]).' type="reset" onclick="return showCalendar(\''.$id.'\', \''.$id.'[year]\', \'y-mm-dd\', true, '.$mondayFirst.');"></span>';
         }
+        $result .= "</div>"; //atk-date-group
+
 
         if (!$this->m_simplemode) {
             $result .= '</div>'; // form-inline
@@ -870,7 +889,7 @@ class DateAttribute extends Attribute
      *
      * @return string piece of HTML code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         if (!$extended) {
             // plain text search, check if we didn't come from extended search (then current value is an array)
@@ -898,7 +917,7 @@ class DateAttribute extends Attribute
         $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from']) : $record;
         $res = $this->draw($rec, $id.'_from', $name, 'atksearch_AE_'.$fieldprefix, '_AE_from', 'search');
         $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to']) : $record;
-        $res .= '&nbsp;'.Tools::atktext('until').': '.$this->draw($rec, $id.'_to', $name, 'atksearch_AE_'.$fieldprefix, '_AE_to', 'search');
+        $res .= '<span class="align-middle text-md-center pt-md-2 d-inline-block">&nbsp;' . Tools::atktext('until') . ': </span>' . $this->draw($rec, $id . '_to', $name, 'atksearch_AE_' . $fieldprefix, '_AE_to', 'search');
 
         return $res;
     }
@@ -976,7 +995,7 @@ class DateAttribute extends Attribute
         $fieldname = $db->func_datetochar($fieldname ? $fieldname : ($table.'.'.$this->fieldName()));
 
         if ($fromval == null && $toval == null) {
-            ;
+
         } // do nothing
         else {
             if ($fromval != null && $toval != null) {
@@ -1115,10 +1134,10 @@ class DateAttribute extends Attribute
      *
      * @return string database value for date
      */
-    public function value2db($rec)
+    public function value2db($rec): ?string
     {
         if (!is_array($rec[$this->fieldName()])) {
-            return;
+            return null;
         }
 
         $year = $rec[$this->fieldName()]['year'];
@@ -1126,15 +1145,13 @@ class DateAttribute extends Attribute
         $day = $rec[$this->fieldName()]['day'];
 
         if (empty($year) || empty($month) || empty($day)) {
-            return;
+            return null;
         }
         if ($year == '' || $month == 0 || $day == 0) {
-            return;
+            return null;
         } //one of the fields is left empty
 
-        $result = $year.'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $day);
-
-        return $result;
+        return $year.'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $day);
     }
 
     /**
@@ -1336,7 +1353,7 @@ class DateAttribute extends Attribute
 
     public static function getStaticSearchModes()
     {
-        return array('between');
+        return ['between'];
     }
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')

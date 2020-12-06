@@ -39,7 +39,7 @@ class MultiSelectAttribute extends ListAttribute
     public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
     {
         parent::__construct($name, $flags, $optionArray, $valueArray);
-        
+
         $size = 0;
         $valueArray = $this->getValues();
         for ($i = 0, $_i = Tools::count($valueArray); $i < $_i; ++$i) {
@@ -78,7 +78,7 @@ class MultiSelectAttribute extends ListAttribute
     }
 
 
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
             return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
@@ -163,7 +163,7 @@ class MultiSelectAttribute extends ListAttribute
             $result .= $this->_addLinks($fieldprefix);
         }
 
-        $css = $this->getCSSClassAttribute('');
+        $css = $this->getCSSClassAttribute();
         $result .= '<div '.$css.'>';
 
         $values = $this->getValues();
@@ -234,7 +234,7 @@ class MultiSelectAttribute extends ListAttribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('substring');
+        return ['substring'];
     }
 
     /**

@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
+use SmartyException;
 
 /**
  * Handler class for a readonly view action. Similar to the edit handler,
@@ -148,6 +149,7 @@ class ViewHandler extends ViewEditBase
      * @param string $template The template to use for the view form
      *
      * @return string HTML code of the page
+     * @throws SmartyException
      */
     public function viewForm($record, $mode = 'view', $template = '')
     {

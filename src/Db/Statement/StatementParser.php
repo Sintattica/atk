@@ -63,7 +63,7 @@ class StatementParser
         $quoteChar = null;
 
         for ($i = 0, $length = strlen($query); $i < $length; ++$i) {
-            $char = $query{$i};
+            $char = $query[$i];
 
             if (isset($quoteChars[$char])) {
                 if ($quoteChar == null) {

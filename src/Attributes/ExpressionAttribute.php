@@ -127,7 +127,7 @@ class ExpressionAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         if ($this->getSearchType() == 'number') {
             $attr = new NumberAttribute($this->fieldName());

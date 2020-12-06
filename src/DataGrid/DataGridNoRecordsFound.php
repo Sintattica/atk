@@ -16,9 +16,9 @@ class DataGridNoRecordsFound extends DataGridComponent
     /**
      * Renders the no records found message for the given data grid.
      *
-     * @return string rendered HTML
+     * @return null|string rendered HTML
      */
-    public function render()
+    public function render(): ?string
     {
         $grid = $this->getGrid();
 
@@ -31,7 +31,7 @@ class DataGridNoRecordsFound extends DataGridComponent
             if ($grid->getCount() == 0) {
                 return $grid->text('datagrid_norecordsfound_general');
             } else {
-                return;
+                return null;
             }
         }
     }

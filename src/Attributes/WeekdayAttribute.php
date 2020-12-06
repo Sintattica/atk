@@ -106,7 +106,7 @@ class WeekdayAttribute extends NumberAttribute
 
             $checked = Tools::hasFlag($value, $day) ? ' checked' : '';
 
-            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$id.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute('atkcheckbox').' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max ? $separator : '');
+            $result .= '<span title="'.$fullWeekday.'"><input type="checkbox" id="'.$id.'" name="'.$name.'['.$i.']" '.$this->getCSSClassAttribute(['atkcheckbox']).' value="'.$day.'" '.$checked.'> '.$weekday.'</span>'.($i < $max ? $separator : '');
         }
 
         return $result;

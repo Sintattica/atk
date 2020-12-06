@@ -303,7 +303,7 @@ class ListAttribute extends Attribute
             $styles = 'style="'.$style.'"';
         }
 
-        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.$styles.'>';
+        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute().$onchange.$data.$styles.'>';
 
         if ($hasNullOption) {
             $result .= '<option value="'.$this->getEmptyValue().'">'.$nullLabel.'</option>';
@@ -376,13 +376,13 @@ class ListAttribute extends Attribute
      *
      * @return string A piece of html-code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $values = $this->getValues();
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
         $isMultiple = $this->isMultipleSearch($extended);
-        $class = $this->getCSSClassAttribute(['form-control']);
+        $class = $this->getCSSClassAttribute();
         $style = '';
         $type = $extended ? 'extended_search' : 'search';
 
@@ -409,6 +409,7 @@ class ListAttribute extends Attribute
         foreach ($selectOptions as $k => $v) {
             $result .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
         }
+        $style = 'width:100%; ';
         $result .= $style != '' ? ' style="'.$style.'"': '';
         $result .= ' >';
 
@@ -530,7 +531,7 @@ EOF;
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('exact');
+        return ['exact'];
     }
 
     /**

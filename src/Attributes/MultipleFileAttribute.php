@@ -30,9 +30,9 @@ class MultipleFileAttribute extends FileAttribute
     public function __construct($name, $flags = 0, $dir)
     {
         $flags = $flags | self::AF_CASCADE_DELETE;
-        
+
         parent::__construct($name, $flags, '');
-        
+
         if (is_array($dir)) {
             $this->m_dir = $this->AddSlash($dir[0]);
             $this->m_url = $this->AddSlash($dir[1]);
@@ -105,7 +105,7 @@ class MultipleFileAttribute extends FileAttribute
      *
      * @return mixed Nothing or Fieldname or Original filename
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         $select = $_REQUEST['select_'.$this->fieldName()];
         $r = '';

@@ -253,7 +253,7 @@ class DateTimeAttribute extends Attribute
 
         return $this;
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -271,7 +271,7 @@ class DateTimeAttribute extends Attribute
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;
         $timeEdit = $this->m_time->edit($record, $fieldprefix, $mode);
 
-        return '<div class="DateTimeAttribute">'.$dateEdit.'<span> - </span>'.$timeEdit.'</div>';
+        return '<div class="DateTimeAttribute d-flex flex-nowrap justify-content-between justify-content-sm-start time-attr">'.$dateEdit.'<span class="m-1"></span>'.$timeEdit.'</div>';
     }
 
     /**
@@ -282,7 +282,7 @@ class DateTimeAttribute extends Attribute
      *
      * @return string The database compatible value
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if (is_array($rec[$this->fieldName()])) {
             $value = $rec[$this->fieldName()];
@@ -304,7 +304,7 @@ class DateTimeAttribute extends Attribute
             }
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -393,7 +393,7 @@ class DateTimeAttribute extends Attribute
      * @param DataGrid $grid
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $this->m_date->m_searchsize = 10;
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;

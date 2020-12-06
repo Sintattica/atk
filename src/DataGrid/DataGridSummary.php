@@ -17,7 +17,7 @@ class DataGridSummary extends DataGridComponent
      *
      * @return string rendered HTML
      */
-    public function render()
+    public function render(): ?string
     {
         $grid = $this->getGrid();
 
@@ -25,7 +25,7 @@ class DataGridSummary extends DataGridComponent
         $count = $grid->getCount();
 
         if ($count == 0) {
-            return;
+            return null;
         }
 
         if ($limit == -1) {

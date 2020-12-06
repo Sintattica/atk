@@ -1,0 +1,461 @@
+/**
+ *      General
+ * -------------------
+ */
+.black {
+    color: #212529;
+    transition: color 0.1s linear;
+}
+
+
+/**
+  *     Menu
+  * -----------------
+ */
+/**
+ If one submenu item has a long text it gets hidden after the
+ right border of the sidebar. With this the icon that opens the sidebar
+ will remain in place and the text will go under it.
+ */
+.sidebar li.nav-item {
+    max-width: 100% !important;
+}
+
+
+.nav-icon.small-txt {
+    margin-left: 0.2rem !important;
+    margin-top: 0.2rem !important;
+}
+
+
+.nav-separator > div{
+    border-top:solid 1px #c2c7d0;
+    width:90%;
+    margin: 4px auto;
+}
+
+
+
+/**
+ * SELECT2
+ * -----------------------
+ */
+.select2-container--bootstrap4.select2-container--focus .select2-selection {
+    box-shadow: none !important;
+    border-bottom: solid 1px #80bdff !important;
+}
+
+/** line height */
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+    line-height: normal !important;
+    padding-top: 2px !important;
+}
+
+.select2-selection__rendered {
+    line-height: 27px !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 31px !important;
+}
+
+.d-inline-block .select2-container{
+    display: inline-block;
+}
+
+.select2-selection__rendered > .select2-selection__clear{
+    margin-top: 0.15rem;
+    padding-top: 0.07rem;
+    padding-left: 0.16rem;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice{
+    margin-top:0;
+}
+
+.select2-selection.select2-selection--multiple.MultiSelectListAttribute.form-control.form-control-sm{
+    padding-top:2px;
+    padding-left: 0;
+}
+.select2-search.select2-search--inline{
+    display: none;
+}
+
+
+/**
+  * Tables
+  * ---------------------
+  */
+
+/* Table actions */
+table.recordList tr td .actions .btn {
+    margin: 0 2px;
+}
+
+.recordList{
+    white-space: nowrap;
+}
+
+.recordListTdFirst.row-type-actions,
+.recordListTd.row-type-actions {
+    width: 1%;
+}
+
+table thead th {
+    vertical-align: middle !important;
+    white-space: nowrap;
+}
+
+.recordList-header-row {
+    text-align: center;
+}
+
+.recordList-header-row a {
+    color: #212529;
+}
+
+.list-header{
+    padding-left:0 !important;
+}
+
+
+/*
+ * Calendar.js
+ */
+
+/* The main calendar widget.  DIV containing a table. */
+.calendar {
+    position: relative;
+    display: none;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    background-clip: padding-box;
+    outline: 0;
+}
+
+.calendar table {
+    margin: 5px;
+}
+
+.calendar table td {
+    padding: 2px;
+}
+
+/* Header part -- contains navigation buttons and day names. */
+.calendar .button {
+    /* "<<", "<", ">", ">>" buttons have this class */
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.calendar thead .title {
+    /* This holds the current "month, year" */
+    font-weight: bold;
+    text-align: center;
+}
+
+.calendar .button[colspan="4"] {
+    font-size: 12px;
+}
+
+.calendar thead .headrow {
+    /* Row <TR> containing navigation buttons */
+}
+
+.calendar thead .daynames {
+    /* Row <TR> containing the day names */
+    border-bottom: 1px solid #ccc;
+}
+
+.calendar thead .daynames .wn {
+    visibility: hidden;
+}
+
+.calendar thead .name {
+    /* Cells <TD> containing the day names */
+}
+
+.calendar thead .weekend {
+    /* How a weekend day name shows in header */
+}
+
+.calendar thead .hilite {
+    /* How do the buttons in header appear when hover */
+}
+
+.calendar thead .active {
+    /* Active (pressed) buttons in header */
+}
+
+/* The body part -- contains all the days in month. */
+.calendar tbody .day {
+    /* Cells <TD> containing month days dates */
+    text-align: right;
+    cursor: pointer;
+}
+
+.calendar table .wn {
+    background-color: #ccc;
+    color: #fff;
+}
+
+.calendar tbody td.hilite {
+    /* Hovered cells <TD> */
+}
+
+.calendar tbody td.active {
+    /* Active (pressed) cells <TD> */
+}
+
+.calendar tbody td.selected {
+    /* Cell showing selected date */
+    font-weight: bold;
+}
+
+.calendar tbody td.weekend {
+    /* Cells showing weekend days */
+}
+
+.calendar tbody td.today {
+    /* Cell showing today date */
+}
+
+.calendar tbody .disabled {
+    color: #ccc;
+}
+
+.calendar tbody .emptycell {
+    /* Empty cells (the best is to hide them) */
+    visibility: hidden;
+}
+
+.calendar tbody .emptyrow {
+    /* Empty row (some months need less than 6 rows) */
+    display: none;
+}
+
+/* The footer part -- status bar and "Close" button */
+.calendar tfoot .footrow {
+    /* The <TR> in footer (only one right now) */
+}
+
+.calendar tfoot .ttip {
+    /* Tooltip (status bar) cell <TD> */
+    font-size: 11px;
+    text-align: center;
+}
+
+.calendar tfoot .hilite {
+    /* Hover style for buttons in footer */
+}
+
+.calendar tfoot .active {
+    /* Active (pressed) style for buttons in footer */
+}
+
+
+/**
+ * Checkbox style
+ */
+input[type = checkbox].form-control {
+    max-width: 30px !important;
+}
+
+
+/**
+    Loading overlay
+ */
+.overlay {
+    flex-direction: column;
+    visibility: hidden;
+}
+
+
+.action-buttons-buttons > button {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+
+.shuttle-buttons-container > .btn-group > .btn {
+    width: 30px;
+}
+
+.recordListTd > ul {
+    border: none !important;
+    background-color: transparent !important;
+    height: auto !important;
+}
+
+
+.fieldset-form-group.required > .control-label:after,
+.form-group.required > .control-label:after, span.required:after {
+    font-family: 'Font Awesome 5 Free';
+    display: inline-block;
+    vertical-align: super;
+    font-size: 8px;
+    content: "\f069";
+    color: #c70000;
+    font-weight: bold;
+}
+
+
+/**
+ * Error fields
+ */
+
+.has-error .help-block,
+.has-error .control-label,
+.has-error .radio,
+.has-error .checkbox,
+.has-error .radio-inline,
+.has-error .checkbox-inline,
+.has-error.radio label,
+.has-error.checkbox label,
+.has-error.radio-inline label,
+.has-error.checkbox-inline label {
+    color: #dc3545;
+}
+
+.has-error .form-control {
+    border-color: #dc3545;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.has-error .form-control:focus {
+    border-color: #dc3545;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #E77480;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #E77480;
+}
+
+.has-error .input-group-addon {
+    color: #dc3545;
+    border-color: #dc3545;
+    background-color: #f2dede;
+}
+
+.has-error .form-control-feedback {
+    color: #dc3545;
+}
+
+.has-error .select2-dropdown,
+.has-error .select2-selection {
+    border-color: #dc3545;
+}
+
+.has-error .select2-container--focus .select2-selection,
+.has-error .select2-container--open .select2-selection {
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #E77480;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #E77480;
+    border-color: #dc3545;
+}
+
+.has-error.select2-drop-active {
+    border-color: #dc3545;
+}
+
+.has-error.select2-drop-active.select2-drop.select2-drop-above {
+    border-top-color: #dc3545;
+}
+
+
+/**
+    Border radius for atk date group buttons
+ */
+
+.atk-date-group,
+.atk-time-group{
+    display: flex;
+}
+
+.atk-date-group > .select2-container--bootstrap4 .select2-selection--single,
+.atk-date-group > input,
+.atk-date-group > span {
+    border-radius: 0;
+    border-right: none;
+}
+
+.atk-date-group > .select2-container--bootstrap4 .select2-selection--single.atk-date-left,
+.atk-date-group > input.atk-date-left {
+    border-radius: 0.2rem 0 0 0.2rem;
+}
+
+.atk-date-group > span.atk-date-right {
+    border-radius: 0 0.2rem 0.2rem 0;
+    border-right: solid 1px #dddddd;
+}
+
+
+
+
+/**
+ * Atk Time Group
+ */
+.atk-time-group > .select2-container--bootstrap4 .select2-selection--single,
+.atk-time-group > input,
+.atk-time-group > span {
+    border-radius: 0;
+    border-right: none;
+}
+
+.atk-time-group > .select2-container--bootstrap4 .select2-selection--single.atk-time-left,
+.atk-time-group > input.atk-date-left {
+    border-radius: 0.2rem 0 0 0.2rem;
+}
+
+.atk-time-group > span.atk-time-right {
+    border-radius: 0 0.2rem 0.2rem 0;
+    border-right: solid 1px #dddddd;
+}
+
+.has-error .atk-date-right,
+.has-error .atk-time-right
+{
+    border-right: solid 1px #dc3545 !important;
+}
+
+
+.table td, .table th{
+    padding: .35rem .75rem;
+    vertical-align: middle;
+}
+
+
+.atkdateattribute{
+   /* min-width: 120px;*/
+}
+
+.atk-date-group .select2-container {
+    min-width:120px;
+}
+
+
+/**
+ * iCheck dimensions
+ */
+.icheck-primary[class*="icheck-"] > label {
+    padding-left: 22px !important;
+    line-height: 18px;
+}
+
+.icheck-primary[class*="icheck-"] > input:first-child + input[type="hidden"] + label::before, .icheck-primary[class*="icheck-"] > input:first-child + label::before {
+    width: 18px;
+    height: 18px;
+    border-radius: .2rem;
+    margin-left: -22px;
+}
+
+.icheck-primary[class*="icheck-"] > input:first-child:checked + input[type="hidden"] + label::after,
+.icheck-primary[class*="icheck-"] > input:first-child:checked + label::after {
+    top: -2px;
+    width: 6px;
+    height: 10px;
+    left: -0.1rem;
+}

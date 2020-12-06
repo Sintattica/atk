@@ -233,7 +233,7 @@ class AggregatedColumn extends Attribute
      */
     public function getSearchModes()
     {
-        return array('exact', 'substring', 'wildcard', 'regexp');
+        return ['exact', 'substring', 'wildcard', 'regexp'];
     }
 
     /**

@@ -149,11 +149,11 @@ class ImportHandler extends ActionHandler
             $result[] = Tools::atkButton($this->m_node->text('cancel', 'atk'), '', SessionManager::SESSION_BACK);
         }
         if ($phase == 'init') {
-            $result[] = '<input class="btn btn-primary" type="submit" value="'.$this->m_node->text('import_upload').'">';
+            $result[] = '<input class="btn btn-sm btn-primary" type="submit" value="'.$this->m_node->text('import_upload').'">';
         } else {
             if ($phase == 'analyze') {
-                $result[] = '<input type="submit" class="btn btn-primary" name="analyse" value="'.$this->m_node->text('import_analyse').'">';
-                $result[] = '<input type="submit" class="btn btn-primary" name="import" value="'.$this->m_node->text('import_import').'"> ';
+                $result[] = '<input type="submit" class="btn btn-sm btn-primary" name="analyse" value="'.$this->m_node->text('import_analyse').'">';
+                $result[] = '<input type="submit" class="btn btn-sm btn-primary" name="import" value="'.$this->m_node->text('import_import').'"> ';
             }
         }
 
@@ -488,7 +488,7 @@ class ImportHandler extends ActionHandler
         $content .= '    <td>';
 
         $noallfieldvalue = false;
-        
+
         foreach ($allFields as $allfield) {
             if (!$this->m_postvars[$allfield]) {
                 $noallfieldvalue = true;

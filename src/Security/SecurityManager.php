@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Security;
 
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Core\AdminLTE;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Db;
@@ -443,6 +444,7 @@ class SecurityManager
     {
         $page = Page::getInstance();
         $ui = Ui::getInstance();
+        $adminLte = AdminLTE::getInstance();
 
         $tplvars = [];
         $tplvars['atksessionformvars'] = Tools::makeHiddenPostvars(['atklogout', 'auth_rememberme', 'u2f_response']);
@@ -466,7 +468,8 @@ class SecurityManager
 
         $page->addContent($ui->render('login.tpl', $tplvars));
         $output = Output::getInstance();
-        $output->output($page->render(Tools::atktext('app_title'), Page::HTML_STRICT, '', $ui->render('login_meta.tpl')));
+
+        $output->output($page->render(Tools::atktext('app_title'), Page::HTML_STRICT, '', $ui->render('login_meta.tpl'), $adminLte->getLoginClasses()));
         $output->outputFlush();
         exit;
     }

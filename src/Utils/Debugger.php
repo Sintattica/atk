@@ -564,10 +564,15 @@ class Debugger
 
             $output = '
           <script type="text/javascript" src="'.$script.'"></script>
-          <div id="atk_debugging_div">
+          <div class="content-wrapper" style="padding-left: 10px;">
+          <hr style="margin-top:0">
+         
+          <div id="atk_debugging_div" style="font-size: 10pt;">
             '.$redirect.'
             '.$block.'
-          </div>';
+          </div>
+          </div>
+          ';
         }
 
         return $output;
@@ -592,7 +597,7 @@ class Debugger
      *
      * @return string The elapsed time
      */
-    public static function elapsed()
+    public static function elapsed(): string
     {
         global $g_startTime;
 

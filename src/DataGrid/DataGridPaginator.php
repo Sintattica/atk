@@ -4,6 +4,7 @@ namespace Sintattica\Atk\DataGrid;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
+use SmartyException;
 
 /**
  * The data grid paginator. Can be used to render pagination
@@ -35,6 +36,8 @@ class DataGridPaginator extends DataGridComponent
      */
     protected $m_goToFirstLast = false;
 
+    private bool $iconizeLinks;
+
     /**
      * Constructor.
      *
@@ -47,12 +50,13 @@ class DataGridPaginator extends DataGridComponent
         $this->m_maxLinks = Config::getGlobal('pagelinks', 10);
         $this->m_goToFirstLast = Config::getGlobal('pagelinks_first_last', false);
         $this->m_goToPreviousNext = Config::getGlobal('pagelinks_previous_next', true);
+        $this->iconizeLinks = Config::getGlobal('datagrid_iconize_links', true);
     }
 
     /**
      * Returns an array with pagination links.
      */
-    protected function getLinks()
+    protected function getLinks(): array
     {
         $grid = $this->getGrid();
         $links = [];
@@ -96,7 +100,7 @@ class DataGridPaginator extends DataGridComponent
         // previous link
         if ($this->m_goToPreviousNext) {
             if ($current > 1) {
-                $title = $grid->text('previous');
+                $title = $this->iconizeLinks ? $grid->text('previous') : '';
                 $url = $grid->getUpdateCall(array('atkstartat' => $offset - $limit));
                 $links[] = array('type' => 'previous', 'call' => $url, 'title' => $title);
             }
@@ -137,9 +141,10 @@ class DataGridPaginator extends DataGridComponent
     /**
      * Renders the paginator for the given data grid.
      *
-     * @return string rendered HTML
+     * @return null|string rendered HTML
+     * @throws SmartyException
      */
-    public function render()
+    public function render(): ?string
     {
         if ($this->getGrid()->isEditing()) {
             return '';
@@ -151,8 +156,6 @@ class DataGridPaginator extends DataGridComponent
             return '';
         }
 
-        $result = $this->getUi()->render('dgpaginator.tpl', array('links' => $links));
-
-        return $result;
+        return $this->getUi()->render('dgpaginator.tpl', ['links' => $links, 'iconize_links' => $this->iconizeLinks]);
     }
 }

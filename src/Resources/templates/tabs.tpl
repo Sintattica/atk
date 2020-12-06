@@ -8,12 +8,14 @@
 
 <ul class="nav nav-tabs">
     {section name=i loop=$tabs}
-        <li id="tab_{$tabs[i].tab}"
-            class="{if $tabs[i].selected}active activetab{else}passivetab{/if}">
-            <a href="javascript:void(0)" onclick="ATK.Tabs.showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
+        <li id="tab_{$tabs[i].tab}" class="nav-item mr-2">
+            <a class="nav-link {if $tabs[i].selected}active activetab{else}passivetab{/if}" href="javascript:void(0)" onclick="ATK.Tabs.showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
         </li>
     {/section}
 </ul>
 
-<div class="tabsContent">{$content}</div>
+
+<div class="tab-content mt-4">{$content}</div>
+
+
 

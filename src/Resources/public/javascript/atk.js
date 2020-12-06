@@ -6,7 +6,7 @@ jQuery(function () {
     });
 
     // resize window fix smartmenu rendering
-    setTimeout(function(){
+    setTimeout(function () {
         jQuery(window).trigger('resize');
     }, 10);
 });
@@ -47,7 +47,10 @@ jQuery(document).ajaxError(function (event, jqxhr, settings, thrownError) {
 
 
 // SELECT2
-jQuery.fn.select2.defaults.set('theme', 'bootstrap');
-if (typeof(LANGUAGE) !== 'undefined') {
+jQuery.fn.select2.defaults.set('theme', 'bootstrap4');
+jQuery.fn.select2.defaults.set('containerCssClass', ':all:');
+jQuery.fn.select2.defaults.set('width', null);
+
+if (typeof (LANGUAGE) !== 'undefined') {
     jQuery.fn.select2.defaults.set('language', LANGUAGE);
 }

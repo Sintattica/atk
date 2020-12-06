@@ -26,6 +26,7 @@ class CompatStatement extends Statement
 
     /**
      * Prepares the statement for execution.
+     * @throws StatementException
      */
     protected function _prepare()
     {
@@ -102,7 +103,7 @@ class CompatStatement extends Statement
      */
     protected function _fetch()
     {
-        // store the current query resource    
+        // store the current query resource
         $oldId = $this->getDb()->getQueryId();
 
         // set our own query resource in the database driver so we can use
@@ -133,10 +134,10 @@ class CompatStatement extends Statement
     {
         // There is no proper way to do this which is compatible with all drivers
         // because there is no Db::free() method. We could retrieve all rows,
-        // which automatically closes the current resource, but that's not very 
+        // which automatically closes the current resource, but that's not very
         // efficient. We can also execute a dummy query but the same query should
         // work for all drivers... So instead we simply leak a resource which is
-        // cleaned at the end of the execution of this PHP script. 
+        // cleaned at the end of the execution of this PHP script.
         $this->m_resource = null;
     }
 
@@ -146,7 +147,7 @@ class CompatStatement extends Statement
      */
     protected function _getAffectedRowCount()
     {
-        // store the current query resource    
+        // store the current query resource
         $oldId = $this->getDb()->getQueryId();
 
         // set our own query resource in the database driver so we can use

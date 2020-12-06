@@ -12,23 +12,31 @@ use Sintattica\Atk\Core\Tools;
  */
 class CkAttribute extends HtmlAttribute
 {
+
     /**
      * @var array CKEditor configuration (default)
      */
-    protected $ckOptions = [
+    private array $ckOptions = [
+        'removePlugins' => ['Title', 'MathType', 'ChemType'],
         'toolbar' => [
-            ['name' => 'clipboard', 'items' => ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo', '-', 'Print']],
-            ['name' => 'editing', 'items' => ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']],
-            ['name' => 'links', 'items' => ['Link', 'Unlink']],
-            ['name' => 'insert', 'items' => ['Image', 'Table', 'HorizontalRule', 'SpecialChar']],
-            '/',
-            ['name' => 'basicstyles', 'items' => ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']],
-            ['name' => 'paragraph', 'items' => ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']],
-            ['name' => 'styles', 'items' => ['Format', 'FontSize']],
-            ['name' => 'colors', 'items' => ['TextColor', 'BGColor']],
+            'items' => [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'horizontalLine', 'blockQuote', '|',
+                'highlight', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily', 'removeFormat', '|',
+                'bulletedList', 'numberedList', 'indent', 'outdent', 'alignment', '|',
+                'link', 'insertTable', 'imageInsert', 'mediaEmbed', '|',
+                'undo', 'redo', '|',
+                'htmlEmbed', 'code', 'codeBlock', '|',
+                'specialCharacters',
+            ],
+            'image' => [
+                'toolbar' => ['imageTextAlternative', 'imageStyle:full', 'imageStyle:side']
+            ],
+            'table' => [
+                'contentToolbar' => ['tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties', 'tableProperties']
+            ],
         ],
-        'removePlugins' => 'elementspath',
-        'height' => 300
+        'height' => '200px'
     ];
 
     /**
@@ -40,31 +48,34 @@ class CkAttribute extends HtmlAttribute
      */
     public function __construct($name, $flags = 0, $options = [])
     {
-        $this->ckOptions['language'] = Language::getLanguage();
-        $this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = Tools::atktext('locale');
+        $this->ckOptions['toolbar']['language'] = Language::getLanguage();
+        //$this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = Tools::atktext('locale');
         $this->ckOptions = array_merge($this->ckOptions, Config::getGlobal('ck_options'), $options);
 
         parent::__construct($name, $flags);
     }
 
-    public function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode): string
     {
         $page = $this->getOwnerInstance()->getPage();
         $id = $this->getHtmlId($fieldprefix);
 
         // register CKEditor main script
-        $page->register_script(Config::getGlobal('assets_url').'lib/ckeditor/ckeditor.js');
-        $page->register_script(Config::getGlobal('assets_url').'lib/ckeditor/adapters/jquery.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'lib/ckeditor5/ckeditor.js');
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);
-        $result = parent::edit($record, $fieldprefix, $mode);
 
-        $result .= '<script>';
-        $result .= "jQuery('#$id').ckeditor($options);";
-        $result .= '</script>';
+        $page->register_loadscript("ClassicEditor
+            .create( document.querySelector( '#$id' ), $options)
+            .then( editor => {
+                editor.editing.view.change( writer => writer.setStyle( 'height', '".$this->ckOptions['height']."', editor.editing.view.document.getRoot() ));
+                window.editor = editor
+            })
+			.catch( error => console.error( 'Oops, something went wrong: ', error) );"
+        );
 
-        return $result;
+        return parent::edit($record, $fieldprefix, $mode);
     }
 
     public function display($record, $mode)
@@ -83,10 +94,22 @@ class CkAttribute extends HtmlAttribute
      *
      * @return bool
      */
-    public function isEmpty($record)
+    public function isEmpty($record): bool
     {
         $record[$this->fieldName()] = trim(strip_tags($record[$this->fieldName()], '<div>'));
 
         return parent::isEmpty($record);
     }
+
+
+    /**
+     * Set the ckEditor height
+     * Ex: 200px or 10rem ...
+     * @param string $height
+     */
+    public function setHeight(string $height){
+        $this->ckOptions['height'] = $height;
+    }
+
+
 }

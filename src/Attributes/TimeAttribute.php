@@ -200,9 +200,19 @@ class TimeAttribute extends Attribute
             $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
 
-        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
-        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
-        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
+        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap atk-time-left  form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[hours\\\\]';  //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $m_hourBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
+
+        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[minutes\\\\]';
+        $m_minBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
+
+        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap   form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[seconds\\\\]';
+        $m_secBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
+
+
 
         if (is_array($field)) {
             $m_defHour = $field['hours'];
@@ -278,15 +288,19 @@ class TimeAttribute extends Attribute
         $m_minBox .= '</select>';
         if ($this->hasFlag(self::AF_TIME_SECONDS)) {
             $m_secBox .= '</select>';
-            $m_secBox = ':'.$m_secBox;
+            $m_secBox = '&nbsp;:&nbsp;'.$m_secBox;
         } else {
             $m_secBox = '<input type="hidden" id="'.$fieldprefix.$this->fieldName().'[seconds]" name="'.$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">";
         }
 
-        // assemble display version
-        $timeedit = $m_hourBox.':'.$m_minBox.$m_secBox;
+        $iconBox = '<span class="form-control form-control-sm atk-time-right far fa-clock"></span>';
 
-        return '<div class="TimeAttribute form-inline">'.$timeedit.'</div>';
+        // assemble display version
+        $timeedit = $m_hourBox.$m_minBox.$m_secBox.$iconBox;
+
+
+
+        return '<div class="TimeAttribute form-inline"><div class="atk-time-group">'.$timeedit.'</div></div>';
     }
 
     /**
@@ -297,19 +311,17 @@ class TimeAttribute extends Attribute
      *
      * @return string The database compatible value
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         $hours = $rec[$this->fieldName()]['hours'];
         $minutes = $rec[$this->fieldName()]['minutes'];
         $seconds = $rec[$this->fieldName()]['seconds'];
 
         if ($hours == '' || $minutes == '' || ($this->hasFlag(self::AF_TIME_SECONDS) && $seconds == '')) {
-            return;
+            return null;
         }
 
-        $result = sprintf('%02d', $hours).':'.sprintf('%02d', $minutes).':'.sprintf('%02d', $seconds);
-
-        return $result;
+        return sprintf('%02d', $hours).':'.sprintf('%02d', $minutes).':'.sprintf('%02d', $seconds);
     }
 
     /**
@@ -350,7 +362,7 @@ class TimeAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         return parent::search($record, $extended, $fieldprefix);
     }
@@ -367,7 +379,7 @@ class TimeAttribute extends Attribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('exact');
+        return ['exact'];
     }
 
     /**

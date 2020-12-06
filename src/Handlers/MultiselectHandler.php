@@ -128,7 +128,7 @@ class MultiselectHandler extends AdminHandler
 
         if ($sm->atkLevel() > 0) {
             $backlinkurl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
-            $params['footer'] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\''.$backlinkurl.'\';" value="'.Tools::atktext('cancel').'"></div>';
+            $params['footer'] = '<br><div style="text-align: center"><input type="button" class="btn btn-sm btn-default" onclick="window.location=\''.$backlinkurl.'\';" value="'.Tools::atktext('cancel').'"></div>';
         }
 
         $output = $this->getUi()->renderList('multiselect', $params);

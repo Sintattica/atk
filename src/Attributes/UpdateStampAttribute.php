@@ -29,7 +29,7 @@ class UpdateStampAttribute extends DateTimeAttribute
     {
         $flags = $flags | self::AF_READONLY | self::AF_HIDE_ADD;
         parent::__construct($name, $flags);
-        
+
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
         $this->setInitialValue(self::datetimeArray());
@@ -42,7 +42,7 @@ class UpdateStampAttribute extends DateTimeAttribute
      *
      * @return string The value to store in the database
      */
-    public function value2db($record)
+    public function value2db(array $record)
     {
         // if record not created using a form this situation can occur, so set the value here
         // Every time we must overwrite the value of this attribute, because this is UPDATE stamp

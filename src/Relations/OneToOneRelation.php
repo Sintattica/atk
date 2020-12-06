@@ -1127,7 +1127,7 @@ class OneToOneRelation extends Relation
      *
      * @return mixed The database value
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
             if (is_array($rec[$this->fieldName()])) {
@@ -1137,6 +1137,6 @@ class OneToOneRelation extends Relation
             }
         }
 
-        return;
+        return null;
     }
 }

@@ -204,7 +204,7 @@ class ExportHandler extends ActionHandler
         if ($sm->atkLevel() > 0) {
             $params['buttons'][] = Tools::atkButton(Tools::atktext('cancel', 'atk'), '', SessionManager::SESSION_BACK);
         }
-        $params['buttons'][] = '<input class="btn btn-primary" type="submit" value="'.Tools::atktext('export', 'atk').'"/>';
+        $params['buttons'][] = '<input class="btn btn-sm btn-primary" type="submit" value="'.Tools::atktext('export', 'atk').'"/>';
         $params['buttons'][] = '<input id="export_save_button" style="display:none;" value="'.Tools::atktext('save_export_selection',
                 'atk').'" name="save_export" class="btn" type="submit" /> ';
         $params['content'] = '<b>'.Tools::atktext('export_config_explanation', 'atk', $this->m_node->m_type).'</b><br/><br/>';
@@ -287,13 +287,13 @@ class ExportHandler extends ActionHandler
         $content .= $this->_getOptionsFormRow(
             null,
             Tools::atktext('delimiter', 'atk'),
-            '<input type="text" class="form-control" size="2" name="delimiter" value='.Config::getGlobal('export_delimiter', ';').'>'
+            '<input type="text" class="form-control form-control-sm" size="2" name="delimiter" value='.Config::getGlobal('export_delimiter', ';').'>'
         );
 
         $content .= $this->_getOptionsFormRow(
             null,
             Tools::atktext('enclosure', 'atk'),
-            '<input type="text" size="2" class="form-control" name="enclosure" value='.Config::getGlobal('export_enclosure', '&quot;').'>'
+            '<input type="text" size="2" class="form-control form-control-sm" name="enclosure" value='.Config::getGlobal('export_enclosure', '&quot;').'>'
         );
 
         $content .= $this->_getOptionsFormRow(

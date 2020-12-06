@@ -99,7 +99,7 @@ class BoolAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode): string
     {
         $result = '';
         $id = $this->getHtmlId($fieldprefix);
@@ -116,22 +116,20 @@ class BoolAttribute extends Attribute
             $style .= "$k:$v;";
         }
 
-        $result .= '<div class="checkbox"><span class="checkbox-wrapper">';
+        //Max width 50px because in view mode it occupies all the row
+        $result .= '<div class="checkbox icheck-primary" style="max-width: 50px;">';
         $result .= '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1"';
-        $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute('atkcheckbox');
+        $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute(['atkcheckbox']);
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }
         $result .= ' />';
-        $result .= '</span></div>';
+        $result .= '<label for="'.$id.'"></label></div>';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
-            $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
-                    $this->fieldName().'_label',
-                    parent::label(),
-                )).'</label>';
+            $result .= '&nbsp;<label for="'.$id.'">'.$this->text($this->fieldName().'_label').'</label>';
         }
-        
+
         return $result;
     }
 
@@ -142,7 +140,7 @@ class BoolAttribute extends Attribute
      *
      * @return int
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         return isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()] : 0;
     }
@@ -163,7 +161,7 @@ class BoolAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
@@ -174,7 +172,7 @@ class BoolAttribute extends Attribute
         }
 
         $result = '<select id="'.$id.'" name="'.$name.'"';
-        $result .= ' class="form-control select-standard"';
+        $result .= ' class="form-control form-control-sm select-standard"';
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }
@@ -191,6 +189,8 @@ class BoolAttribute extends Attribute
         }
         $result .= '>'.Tools::atktext('yes', 'atk').'</option>';
         $result .= '</select>';
+
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
@@ -281,7 +281,7 @@ class BoolAttribute extends Attribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('exact');
+        return ['exact'];
     }
 
     /**
@@ -294,7 +294,7 @@ class BoolAttribute extends Attribute
     {
         return 'number';
     }
-    
+
     /**
      * Convert a String representation into an internal value.
      *

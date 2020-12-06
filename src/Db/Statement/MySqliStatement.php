@@ -40,6 +40,7 @@ class MySqliStatement extends Statement
 
     /**
      * Prepares the statement for execution.
+     * @throws StatementException
      */
     protected function _prepare()
     {
@@ -75,6 +76,7 @@ class MySqliStatement extends Statement
      * NOTE:
      * Depending on the database driver, using this method might result in the
      * query to be executed again.
+     * @throws StatementException
      */
     public function rewind()
     {
@@ -110,6 +112,7 @@ class MySqliStatement extends Statement
 
     /**
      * Store the column names from this statement's metadata.
+     * @throws StatementException
      */
     private function _storeColumnNames()
     {
@@ -137,6 +140,7 @@ class MySqliStatement extends Statement
     /**
      * Bind result columns to values array so we can read the result when
      * fetching rows.
+     * @throws StatementException
      */
     private function _bindResult()
     {
