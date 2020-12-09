@@ -45,12 +45,12 @@ abstract class Module
         $this->atk->registerNode(static::$module.'.'.$nodeName, $nodeClass, $actions);
     }
 
-    public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main', $enable = null, $order = 0, $navbar = 'left')
+    public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main', $enable = null, $order = 0, $position = Menu::MENU_SIDEBAR)
     {
         if ($enable === null) {
             $enable = [static::$module.'.'.$nodeName, $action];
         }
-        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, $enable, $order, static::$module, '', $navbar);
+        $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, $enable, $order, static::$module, '', $position);
     }
 
     public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1)

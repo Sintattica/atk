@@ -88,7 +88,7 @@ class IndexPage
             }
 
             if (Config::getGlobal('menu_show_logout_link') && $user) {
-                $menuObj->addMenuItem('<span class="glyphicon glyphicon-log-out"></span>',
+                $menuObj->addMenuItem('<span class="fas fa-sign-out-alt"></span>',
                     Config::getGlobal('dispatcher').'?atklogout=1', 'main', true, 0, '', '', 'right', true
                 );
             }

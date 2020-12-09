@@ -127,14 +127,40 @@ class Page
         // register default scripts
         $assetsUrl = Config::getGlobal('assets_url');
 
+        //jQuery
+        $this->register_script($assetsUrl.'admin-lte/plugins/jquery/jquery.min.js');
+
+        // Bootstrap 4
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js');
+
+        //<!-- AdminLTE App -->
+        $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
+
+        //Atk - Custom
         $this->register_scriptcode("var LANGUAGE='".Config::getGlobal('language')."';", true);
-        $this->register_script($assetsUrl.'javascript/libs.min.js');
+        //$this->register_script($assetsUrl.'javascript/libs.min.js'); //disabled old jQuery Bundle
+
         $this->register_script($assetsUrl.'javascript/tools.js');
         $this->register_script($assetsUrl.'javascript/atk.js');
 
+
+        /**
+         * Global Styles
+        */
+
+        //Google Font: Source Sans Pro
+        $this->register_style("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback");
+
+        //Font Awesome
+        $this->register_style($assetsUrl.'admin-lte/plugins/fontawesome-free/css/all.min.css');
+
+        // Theme style
+        $this->register_style($assetsUrl.'admin-lte/css/adminlte.min.css');
+
+
         $style_url = Config::getGlobal('style_url');
         if($style_url){
-            $this->register_style(Config::getGlobal('style_url'));
+           // $this->register_style(Config::getGlobal('style_url'));
         }
     }
 
@@ -554,7 +580,7 @@ class Page
     /**
      * Add content to the page.
      *
-     * @param string $content The content to add to the page.
+     * @param string|array $content The content to add to the page.
      */
     public function addContent($content)
     {
@@ -564,7 +590,7 @@ class Page
     /**
      * Returns the current page content.
      *
-     * @return string current page content
+     * @return string|array current page content
      */
     public function getContent()
     {
@@ -608,6 +634,8 @@ class Page
      */
     public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '')
     {
+
+
         if ($title == null) {
             $title = $this->m_title != '' ? $this->m_title : Tools::atktext('app_title');
         }

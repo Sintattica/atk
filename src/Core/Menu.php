@@ -7,28 +7,131 @@ use Sintattica\Atk\Ui\Page;
 
 class Menu
 {
+
+    public const MENU_SIDEBAR = 'sidebar';
+    public const MENU_NAV_LEFT = 'left';
+    public const MENU_NAV_RIGHT = 'right';
+
+    //All menu items (sidebar and navbar)
     protected $menuItems = [];
 
-    protected $format_submenuparent = '
-            <li>
-                <a href="#">%s <span class="caret"></span></a>
-                <ul class="dropdown-menu">%s</ul>
-            <li>
-        ';
 
-    protected $format_submenuchild = '
-            <li>
-                <a href="#">%s <span class="caret"></span></a>
-                <ul class="dropdown-menu">%s</ul>
-            <li>
-        ';
 
-    protected $format_menu_left = '<ul class="main-nav nav navbar-nav navbar-left">%s</ul>';
-    protected $format_menu_right = '<ul class="main-nav nav navbar-nav navbar-right">%s</ul>';
+    //-------- Sidebar Menu  ------------
 
-    protected $format_single = '<li><a href="%s" %s>%s</a></li>';
+    //Main Formatting point. Not needed because the sidebar is always present so
+    // it can be found on the template!
+    private $formatMenuSidebar = "%s";
 
-    protected $format_single_text = '<li><p class="navbar-text">%s</p></li>';
+    //The submenu works by exploring all the children and then appending data from bottom up.
+
+    //1) If the item has no children then it will be formatted as a simple item (formatSimpleItemSidebar)
+    //where it can have a link or can be text only.
+    //2) If the item has subitems it will be classified as a complex menu
+    //      -> the two vars $formatSubmenuParentSidebar and $formatSubmenuChildSidebar are needed
+    //   The recursive call sets up a variable called $childs that takes into account if we are on the root father
+    //   that has subitems or a child that has subitems and depending from that decides to format:
+    //      a) If top level father -> $formatSubmenuParentSidebar will be used
+    //      b) If a child of the top level father -> $formatSubmenuChildSidebar will be used.
+    //NB: The recursive call is working on dfs mode:
+    //    1) Get the data from htmlItems
+    //    2) Format in the following mode: Children -> SubmenuChildSidebar -> SubMenuParentSidebar
+    //       Including the html in each step.
+    //    3) Return a string that contains all the formatted sidebar menus.
+
+    //These variables should be itended as formatting templates
+    private $SIDEBAR_PARENT_TEMPLATE = '
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    %s
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">%s</ul>
+               </li>
+            ';
+
+    private $SIDEBAR_COMPLEX_ITEM_TEMPLATE = '
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    %s
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">%s</ul>
+               </li>
+            ';
+
+    private $SIDEBAR_ITEM_TEMPLATE = '
+            <li class="nav-item">
+              <a href="%s" %s class="nav-link">
+               <i class="nav-icon fas fa-th"></i>
+               <p>%s</p>
+              </a>
+            </li>';
+
+    private $SIDEBAR_TEXT_ITEM_TEMPLATE = '
+            <li class="nav-item">
+              <a href="#" %s class="nav-link" style="cursor:default;">
+               <i class="nav-icon fas fa-th"></i>
+               <p>%s</p>
+              </a>
+            </li>';
+
+
+
+    //-------- Navbar Menu  ------------
+    protected $format_menu_left = '%s';
+    protected $format_menu_right = '%s';
+
+
+    private $NAVBAR_PARENT_TEMPLATE = '
+        <li class="nav-item dropdown">
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" 
+                aria-haspopup="true" aria-expanded="false" 
+                class="nav-link dropdown-toggle"
+                >
+                %s
+            </a>
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">%s</ul>
+        </li>';
+
+
+    private $NAVBAR_COMPLEX_ITEM_TEMPLATE = '
+        <li class="dropdown-submenu dropdown-hover">
+            <a id="dropdownSubMenu2" href="#" role="button" 
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                class="dropdown-item dropdown-toggle"
+                >
+                %s
+            </a>
+                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">%s</ul>
+        </li>';
+
+
+    private $NAVBAR_SINGLE_ITEM_NAV_MODE = '<li class="nav-item">
+                                    <a class="nav-link" href="%s" %s>%s</a>
+                                </li>';
+
+
+    private $NAVBAR_SINGLE_ITEM_DROP_MODE = '<li class="nav-item">
+                                    <a class="dropdown-item" href="%s" %s>%s</a>
+                                </li>';
+
+    private $NAVBAR_SINGLE_TEXT_ITEM_DROP_MODE = '<li class="nav-item">
+                                        <span class="dropdown-item" style="cursor:default;">%s</span>
+                                      </li>';
+
+    private $NAVBAR_SINGLE_TEXT_ITEM_NAV_MODE = '<li class="nav-item">
+                                        <span class="nav-link" style="cursor:default;">%s</span>
+                                      </li>';
+
+
+
 
     /**
      * Get new menu object.
@@ -81,9 +184,9 @@ class Menu
     /**
      * Get the menu.
      *
-     * @return string The menu
+     * @return array The menu
      */
-    public function getMenu()
+    public function getMenu(): array
     {
         return $this->load();
     }
@@ -91,60 +194,64 @@ class Menu
     /**
      * Load the menu.
      *
-     * @return string The menu
+     * @return array The menu
      */
-    public function load()
+    public function load(): array
     {
         $html_items = $this->parseItems($this->menuItems['main']);
 
         $html_items_left = array_filter($html_items, function ($el) {
-            return $el['navbar'] == 'left';
+            return $el['position'] == self::MENU_NAV_LEFT;
         });
+
+
         $left = '';
-        $content = $this->processMenu($html_items_left);
+        $content = $this->processMenu($html_items_left, false, false);
         if ($content) {
             $left = sprintf($this->format_menu_left, $content);
         }
 
         $html_items_right = array_filter($html_items, function ($el) {
-            return $el['navbar'] == 'right';
+            return $el['position'] == self::MENU_NAV_RIGHT;
         });
+
         $right = '';
-        $content = $this->processMenu($html_items_right);
+        $content = $this->processMenu($html_items_right, false, false);
+
         if ($content) {
-            $right = sprintf($this->format_menu_right, $this->processMenu($html_items_right));
+            $right = sprintf($this->format_menu_right, $content);
         }
 
-        return $left.$right;
+
+        $html_items_sidebar = array_filter($html_items, function ($el) {
+            return $el['position'] == self::MENU_SIDEBAR;
+        });
+
+        $sidebar = '';
+        $content = $this->processMenu($html_items_sidebar, false, true);
+
+        if ($content) {
+            $sidebar = sprintf($this->formatMenuSidebar, $content);
+        }
+
+        return [
+            'left' => $left,
+            'right' => $right,
+            'sidebar' => $sidebar
+        ];
     }
 
-    protected function processMenu($menu, $child = false)
+
+    private function processMenu($menu, bool $child = false, bool $sidebar = false): string
     {
         $html = '';
         if (is_array($menu)) {
             foreach ($menu as $item) {
                 if ($this->isEnabled($item)) {
-                    if ($this->_hasSubmenu($item)) {
-                        $a_content = $this->_getMenuTitle($item);
-                        $childHtml = $this->processMenu($item['submenu'], true);
-                        if ($child) {
-                            $html .= sprintf($this->format_submenuchild, $a_content, $childHtml);
-                        } else {
-                            $html .= sprintf($this->format_submenuparent, $a_content, $childHtml);
-                        }
+                    if ($sidebar) {
+                        $html .= $this->formatSidebar($item, $child);
                     } else {
-                        $a_content = $this->_getMenuTitle($item);
-
-                        $attrs = '';
-                        if ($item['target']) {
-                            $attrs .= ' target="'.$item['target'].'"';
-                        }
-
-                        if ($item['url']) {
-                            $html .= sprintf($this->format_single, $item['url'], $attrs, $a_content);
-                        } else {
-                            $html .= sprintf($this->format_single_text, $a_content);
-                        }
+                        $html .= $this->formatNavBar($item, $child);
                     }
                 }
             }
@@ -152,6 +259,82 @@ class Menu
 
         return $html;
     }
+
+    private function formatNavBar($item, bool $child): string
+    {
+        $html = '';
+        $menuTitle = $this->_getMenuTitle($item);
+
+        if ($this->_hasSubmenu($item)) {
+            $childHtml = $this->processMenu($item['submenu'], true, false);
+
+            if ($child) {
+                $html .= sprintf($this->NAVBAR_COMPLEX_ITEM_TEMPLATE, $menuTitle, $childHtml);
+            } else {
+                $html .= sprintf($this->NAVBAR_PARENT_TEMPLATE, $menuTitle, $childHtml);
+            }
+
+        } else {
+            $attrs = '';
+            if ($item['target']) {
+                $attrs .= ' target="' . $item['target'] . '"';
+            }
+
+
+            if ($child) {
+                if ($item['url']) {
+                    $html .= sprintf($this->NAVBAR_SINGLE_ITEM_DROP_MODE, $item['url'], $attrs, $menuTitle);
+                } else {
+                    $html .= sprintf($this->NAVBAR_SINGLE_TEXT_ITEM_DROP_MODE, $menuTitle);
+                }
+            } else {
+                if ($item['url']) {
+                    $html .= sprintf($this->NAVBAR_SINGLE_ITEM_NAV_MODE, $item['url'], $attrs, $menuTitle);
+                } else {
+                    $html .= sprintf($this->NAVBAR_SINGLE_TEXT_ITEM_NAV_MODE, $menuTitle);
+                }
+            }
+        }
+
+        return $html;
+
+    }
+
+
+    private function formatSidebar($item, bool $child) : string
+    {
+        $html = '';
+        $menuTitle = $this->_getMenuTitle($item);
+
+        if ($this->_hasSubmenu($item)) {
+
+            //explore the child before formatting the parent (depth-first)
+            $childHtml = $this->processMenu($item['submenu'], true, true);
+
+            if ($child) {
+                $html .= sprintf($this->SIDEBAR_COMPLEX_ITEM_TEMPLATE, $menuTitle, $childHtml);
+            } else {
+                $html .= sprintf($this->SIDEBAR_PARENT_TEMPLATE, $menuTitle, $childHtml);
+            }
+
+            //Caso Simple Item -> No submenu
+        } else {
+            $attrs = '';
+            if ($item['target']) {
+                $attrs .= ' target="' . $item['target'] . '"';
+            }
+
+            if ($item['url']) {
+                $html .= sprintf($this->SIDEBAR_ITEM_TEMPLATE, $item['url'], $attrs, $menuTitle);
+            } else {
+                $html .= sprintf($this->SIDEBAR_TEXT_ITEM_TEMPLATE, $attrs, $menuTitle);
+            }
+
+        }
+
+        return $html;
+    }
+
 
     /**
      * Recursively checks if a menuitem should be enabled or not.
@@ -229,11 +412,11 @@ class Menu
      *                       menuitem at the third position, pass 250 for $order.
      * @param string $module The module name. Used for translations
      * @param string $target The link target (_self, _blank, ...)
-     * @param string $navbar The navbar (left or right) where the menu will be put in
+     * @param string $position The destination (sidebar, navbar left or navbar right) where the menu will be put in
      * @param bool $raw If true, the $name will be rendered as is
      *
      */
-    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $navbar = 'left', $raw = false)
+    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $position = self::MENU_SIDEBAR, $raw = false)
     {
         static $order_value = 100, $s_dupelookup = [];
         if ($order == 0) {
@@ -248,7 +431,7 @@ class Menu
             'order' => $order,
             'module' => $module,
             'target' => $target,
-            'navbar' => $navbar,
+            'position' => $position,
             'raw' => $raw,
         );
 
@@ -291,6 +474,6 @@ class Menu
             return $item['name'];
         }
 
-        return (string)$this->getMenuTranslation($item['name'], $item['module']).$append;
+        return (string)$this->getMenuTranslation($item['name'], $item['module']) . $append;
     }
 }

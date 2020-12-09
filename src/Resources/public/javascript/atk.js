@@ -47,7 +47,8 @@ jQuery(document).ajaxError(function (event, jqxhr, settings, thrownError) {
 
 
 // SELECT2
+/*
 jQuery.fn.select2.defaults.set('theme', 'bootstrap');
 if (typeof(LANGUAGE) !== 'undefined') {
     jQuery.fn.select2.defaults.set('language', LANGUAGE);
-}
+}*/

@@ -564,10 +564,15 @@ class Debugger
 
             $output = '
           <script type="text/javascript" src="'.$script.'"></script>
-          <div id="atk_debugging_div">
+          <div class="container-fluid">
+          <hr style="margin-top:0">
+         
+          <div id="atk_debugging_div" style="font-size: 10pt;">
             '.$redirect.'
             '.$block.'
-          </div>';
+          </div>
+          </div>
+          ';
         }
 
         return $output;
