@@ -597,7 +597,7 @@ class Debugger
      *
      * @return string The elapsed time
      */
-    public static function elapsed()
+    public static function elapsed(): string
     {
         global $g_startTime;
 
