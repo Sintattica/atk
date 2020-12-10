@@ -110,7 +110,8 @@ class IndexPage
         $title = $this->m_title != '' ?: null;
         $bodyprops = $this->m_extrabodyprops != '' ?: null;
         $headers = $this->m_extraheaders != '' ?: null;
-        $content = $this->m_page->render($title, $this->m_flags, $bodyprops, $headers);
+
+        $content = $this->m_page->render($title, $this->m_flags, $bodyprops, $headers, self::EXTRA_BODY_CLASSES);
 
         $this->m_output->output($content);
         $this->m_output->outputFlush();
@@ -213,7 +214,7 @@ class IndexPage
     public function renderContent()
     {
         $content = $this->getContent();
-        $this->m_page->addContent('<div class="container-fluid">'.$content.'</div>');
+        $this->m_page->addContent($content);
     }
 
     public function getContent()

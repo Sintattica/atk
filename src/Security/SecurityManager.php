@@ -36,6 +36,8 @@ class SecurityManager
     public $m_fatalError;
     public $auth_response;
 
+    const ADMIN_LTE_LOGIN_CLASSES = ['login-page'];
+
     /**
      * @var array $system_users are special system users.
      * Can be enabled adding an atk config password value (administratorpassword / guestpassword)
@@ -466,7 +468,8 @@ class SecurityManager
 
         $page->addContent($ui->render('login.tpl', $tplvars));
         $output = Output::getInstance();
-        $output->output($page->render(Tools::atktext('app_title'), Page::HTML_STRICT, '', $ui->render('login_meta.tpl')));
+
+        $output->output($page->render(Tools::atktext('app_title'), Page::HTML_STRICT, '', $ui->render('login_meta.tpl'), self::ADMIN_LTE_LOGIN_CLASSES));
         $output->outputFlush();
         exit;
     }

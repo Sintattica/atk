@@ -12,12 +12,26 @@
 {/if}
 
 {if isset($body)}
-    <body class="hold-transition sidebar-mini text-sm" {if $extrabodyprops} {$extrabodyprops}{/if}>
+    <body class="hold-transition {if $extra_classes} {$extra_classes} {/if} "{if $extrabodyprops} {$extrabodyprops}{/if}>
 
         {$body}
 
         <div id="hiddenvars" style="display: none">{if isset($hiddenvars)}{$hiddenvars}{/if}</div>
 
+    <script>
+        /*
+        $(function() {
+            $(document).Toasts('create', {
+                class: 'bg-danger',
+                title: 'Toast Title',
+                subtitle: 'Subtitle',
+                body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+            })
+
+        });
+
+         */
+    </script>
     </body>
 {/if}
 

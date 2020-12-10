@@ -133,8 +133,9 @@ class Page
         // Bootstrap 4
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js');
 
-        //<!-- AdminLTE App -->
+        //AdminLTE App
         $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
+
 
         //Atk - Custom
         $this->register_scriptcode("var LANGUAGE='".Config::getGlobal('language')."';", true);
@@ -156,6 +157,12 @@ class Page
 
         // Theme style
         $this->register_style($assetsUrl.'admin-lte/css/adminlte.min.css');
+
+        //ICheck
+        $this->register_style($assetsUrl.'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
+
+        //<!-- Toastr -->
+        $this->register_style($assetsUrl.'admin-lte/plugins/toastr/toastr.min.css');
 
 
         $style_url = Config::getGlobal('style_url');
@@ -632,9 +639,8 @@ class Page
      *
      * @return string The HTML page, including <html> and </html> tags.
      */
-    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '')
+    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', array $appendClassess = null)
     {
-
 
         if ($title == null) {
             $title = $this->m_title != '' ? $this->m_title : Tools::atktext('app_title');
@@ -659,6 +665,7 @@ class Page
         }
         if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $layout['extrabodyprops'] = $extrabodyprops;
+            $layout['extra_classes'] = $appendClassess ? implode(' ', $appendClassess) : '';
             $layout['body'] = $this->m_content."\n";
         }
 
