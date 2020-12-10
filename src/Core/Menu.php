@@ -16,13 +16,7 @@ class Menu
     protected $menuItems = [];
 
 
-
     //-------- Sidebar Menu  ------------
-
-    //Main Formatting point. Not needed because the sidebar is always present so
-    // it can be found on the template!
-    private $formatMenuSidebar = "%s";
-
     //The submenu works by exploring all the children and then appending data from bottom up.
 
     //1) If the item has no children then it will be formatted as a simple item (formatSimpleItemSidebar)
@@ -83,11 +77,7 @@ class Menu
             </li>';
 
 
-
     //-------- Navbar Menu  ------------
-    protected $format_menu_left = '%s';
-    protected $format_menu_right = '%s';
-
 
     private $NAVBAR_PARENT_TEMPLATE = '
         <li class="nav-item dropdown">
@@ -131,8 +121,6 @@ class Menu
                                       </li>';
 
 
-
-
     /**
      * Get new menu object.
      *
@@ -167,6 +155,7 @@ class Menu
         return $s;
     }
 
+
     /**
      * Render the menu.
      *
@@ -181,6 +170,7 @@ class Menu
         return $page->render('Menu', true);
     }
 
+
     /**
      * Get the menu.
      *
@@ -191,58 +181,58 @@ class Menu
         return $this->load();
     }
 
+
     /**
-     * Load the menu.
-     *
-     * @return array The menu
+     * Load the complete menu.
+     * The function is used by Atk to load all the formatted menu complete with all parts (sidebar, navbar left and navbar right)
+     * @return array This is a map with three keys:
+     *               sidebar -> containing the html formatted sidebar menu
+     *               left -> containning the html formatted items of the left navbar menu
+     *               right -> same as the left but contains the items of the right part of the nav menu.
      */
     public function load(): array
     {
         $html_items = $this->parseItems($this->menuItems['main']);
 
+        //todo(optimize): when we will support php >=7.4 update the functions following form:
+        // $html_items_left = array_filter($html_items, fn($el): bool => $el['position'] === self::MENU_NAV_LEFT);
+
         $html_items_left = array_filter($html_items, function ($el) {
             return $el['position'] == self::MENU_NAV_LEFT;
         });
+        $left = $this->processMenu($html_items_left) ?: '';
 
-
-        $left = '';
-        $content = $this->processMenu($html_items_left, false, false);
-        if ($content) {
-            $left = sprintf($this->format_menu_left, $content);
-        }
 
         $html_items_right = array_filter($html_items, function ($el) {
             return $el['position'] == self::MENU_NAV_RIGHT;
         });
 
-        $right = '';
-        $content = $this->processMenu($html_items_right, false, false);
-
-        if ($content) {
-            $right = sprintf($this->format_menu_right, $content);
-        }
+        $right = $this->processMenu($html_items_right) ?: '';
 
 
         $html_items_sidebar = array_filter($html_items, function ($el) {
             return $el['position'] == self::MENU_SIDEBAR;
         });
 
-        $sidebar = '';
-        $content = $this->processMenu($html_items_sidebar, false, true);
+        $sidebar = $this->processMenu($html_items_sidebar, false, true) ?: '';
 
-        if ($content) {
-            $sidebar = sprintf($this->formatMenuSidebar, $content);
-        }
 
         return [
-            'left' => $left,
-            'right' => $right,
-            'sidebar' => $sidebar
+            self::MENU_NAV_LEFT => $left,
+            self::MENU_NAV_RIGHT => $right,
+            self::MENU_SIDEBAR => $sidebar
         ];
     }
 
 
-    private function processMenu($menu, bool $child = false, bool $sidebar = false): string
+    /**
+     * @param $menu - An array containing the all the menu (provided by the configuration of all the modules)
+     * @param bool $child - Is this called from the recursive function to explore the child or is this the first call of this method.
+     * @param bool $sidebar - Needed for the recursive function to understand if it was exploring
+     *                        the nav or the sidebar part on the parent
+     * @return string - A complete html formatted menu of the selected type (sidebar, navbar left or navbar right)
+     */
+    private function processMenu(array $menu, bool $child = false, bool $sidebar = false): string
     {
         $html = '';
         if (is_array($menu)) {
@@ -260,6 +250,14 @@ class Menu
         return $html;
     }
 
+
+    /**
+     * The navbar part. This is very similar to the formatSidebarMenu(...)
+     * The main differences are the templates to be used for the the html part.
+     * @param $item - The menu Item containing all the submenus
+     * @param bool $child - Decides it called from the recursive function or is this the main call.
+     * @return string - Containing the generated html for this part of the menu.
+     */
     private function formatNavBar($item, bool $child): string
     {
         $html = '';
@@ -301,7 +299,12 @@ class Menu
     }
 
 
-    private function formatSidebar($item, bool $child) : string
+    /**
+     * @param $item - The menu Item containing all the submenus
+     * @param bool $child - Decides it called from the recursive function or is this the main call.
+     * @return string - Containing the generated html for this part of the menu.
+     */
+    private function formatSidebar($item, bool $child): string
     {
         $html = '';
         $menuTitle = $this->_getMenuTitle($item);
@@ -370,6 +373,7 @@ class Menu
 
         return $enable;
     }
+
 
     /**
      * Create a new menu item.
@@ -443,6 +447,7 @@ class Menu
         }
     }
 
+
     protected function parseItems(&$items)
     {
         if (is_array($items)) {
@@ -454,6 +459,7 @@ class Menu
         return $items;
     }
 
+
     protected function parseItem(&$item)
     {
         if ($item['enable'] && array_key_exists($item['name'], $this->menuItems)) {
@@ -463,10 +469,12 @@ class Menu
         }
     }
 
+
     public function _hasSubmenu($item)
     {
         return isset($item['submenu']) && Tools::count($item['submenu']);
     }
+
 
     public function _getMenuTitle($item, $append = '')
     {
@@ -476,4 +484,5 @@ class Menu
 
         return (string)$this->getMenuTranslation($item['name'], $item['module']) . $append;
     }
+
 }
