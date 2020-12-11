@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Core\Menu;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Ui\Page;
+use Sintattica\Atk\Ui\SmartyProvider;
 
 abstract class MenuBase
 {
@@ -13,10 +14,12 @@ abstract class MenuBase
     public const MENU_NAV_LEFT = 'left';
     public const MENU_NAV_RIGHT = 'right';
 
+    private const TYPE_MENU_SIDEBAR = 'sidebar';
+    private const TYPE_MENU_NAVBAR = 'navbar';
+
     //All menu items (sidebar and navbar)
     private array $items = [];
     private array $menu = [];
-
 
     //-------- Sidebar Menu  ------------
     //The submenu works by exploring all the children and then appending data from bottom up.
@@ -36,91 +39,15 @@ abstract class MenuBase
     //    3) Return a string that contains all the formatted sidebar menus.
 
     //These variables should be itended as formatting templates
-    private $SIDEBAR_PARENT_TEMPLATE = '
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    %s
-                    <i class="fas fa-angle-left right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">%s</ul>
-               </li>
-            ';
 
-    private $SIDEBAR_COMPLEX_ITEM_TEMPLATE = '
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    %s
-                    <i class="fas fa-angle-left right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">%s</ul>
-               </li>
-            ';
-
-    private $SIDEBAR_ITEM_TEMPLATE = '
-            <li class="nav-item">
-              <a href="%s" %s class="nav-link">
-               <i class="nav-icon fas fa-th"></i>
-               <p>%s</p>
-              </a>
-            </li>';
-
-    private $SIDEBAR_TEXT_ITEM_TEMPLATE = '
-            <li class="nav-item">
-              <a href="#" %s class="nav-link" style="cursor:default;">
-               <i class="nav-icon fas fa-th"></i>
-               <p>%s</p>
-              </a>
-            </li>';
-
+    //-------- Sidebar Menu  ------------
+    private const SIDEBAR_PARENT_TPL = "menu/sidebar/parent_item.tpl";
+    private const SIDEBAR_CHILD_TPL = "menu/sidebar/child_item.tpl";
 
     //-------- Navbar Menu  ------------
-
-    private $NAVBAR_PARENT_TEMPLATE = '
-        <li class="nav-item dropdown">
-            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" 
-                aria-haspopup="true" aria-expanded="false" 
-                class="nav-link dropdown-toggle"
-                >
-                %s
-            </a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">%s</ul>
-        </li>';
-
-
-    private $NAVBAR_COMPLEX_ITEM_TEMPLATE = '
-        <li class="dropdown-submenu dropdown-hover">
-            <a id="dropdownSubMenu2" href="#" role="button" 
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
-                class="dropdown-item dropdown-toggle"
-                >
-                %s
-            </a>
-                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">%s</ul>
-        </li>';
-
-
-    private $NAVBAR_SINGLE_ITEM_NAV_MODE = '<li class="nav-item">
-                                    <a class="nav-link" href="%s" %s>%s</a>
-                                </li>';
-
-
-    private $NAVBAR_SINGLE_ITEM_DROP_MODE = '<li class="nav-item">
-                                    <a class="dropdown-item" href="%s" %s>%s</a>
-                                </li>';
-
-    private $NAVBAR_SINGLE_TEXT_ITEM_DROP_MODE = '<li class="nav-item">
-                                        <span class="dropdown-item" style="cursor:default;">%s</span>
-                                      </li>';
-
-    private $NAVBAR_SINGLE_TEXT_ITEM_NAV_MODE = '<li class="nav-item">
-                                        <span class="nav-link" style="cursor:default;">%s</span>
-                                      </li>';
+    private const NAVBAR_PARENT_TPL = 'menu/navbar/parent_item.tpl';
+    private const NAVBAR_SUBPARENT_TPL = 'menu/navbar/subparent_item.tpl';
+    private const NAVBAR_CHILD_TPL = 'menu/navbar/child_item.tpl';
 
 
     public abstract function appendMenuItems();
@@ -131,7 +58,7 @@ abstract class MenuBase
      *
      * @return MenuBase class object
      */
-    public static function getInstance()
+    public static function getInstance(): ?MenuBase
     {
         static $s_instance = null;
         if ($s_instance == null) {
@@ -183,7 +110,7 @@ abstract class MenuBase
      */
     public function getMenu(): array
     {
-        if(!$this->menu) {
+        if (!$this->menu) {
             $this->menu = $this->load();
         }
 
@@ -210,9 +137,9 @@ abstract class MenuBase
         $itemsSidebarHtml = array_filter($html_items, fn($el): bool => $el['position'] === self::MENU_SIDEBAR);
 
         return [
-            self::MENU_NAV_LEFT => $this->processMenu($itemsLeftHtml) ?: '',
-            self::MENU_NAV_RIGHT => $this->processMenu($itemsRightHtml) ?: '',
-            self::MENU_SIDEBAR => $this->processMenu($itemsSidebarHtml, false, true) ?: ''
+            self::MENU_NAV_LEFT => $this->processMenu($itemsLeftHtml, false, self::TYPE_MENU_NAVBAR) ?: '',
+            self::MENU_NAV_RIGHT => $this->processMenu($itemsRightHtml, false, self::TYPE_MENU_NAVBAR) ?: '',
+            self::MENU_SIDEBAR => $this->processMenu($itemsSidebarHtml) ?: ''
         ];
     }
 
@@ -220,20 +147,24 @@ abstract class MenuBase
     /**
      * @param array $menu - An array containing the all the menu (provided by the configuration of all the modules)
      * @param bool $child - Is this called from the recursive function to explore the child or is this the first call of this method.
-     * @param bool $sidebar - Needed for the recursive function to understand if it was exploring
+     * @param string $type - Needed for the recursive function to understand if it was exploring
      *                        the nav or the sidebar part on the parent
      * @return string - A complete html formatted menu of the selected type (sidebar, navbar left or navbar right)
+     * @throws \SmartyException
      */
-    private function processMenu(array $menu, bool $child = false, bool $sidebar = false): string
+    private function processMenu(array $menu, bool $child = false, string $type = self::TYPE_MENU_SIDEBAR): string
     {
         $html = '';
         if (is_array($menu)) {
             foreach ($menu as $item) {
                 if ($this->isEnabled($item)) {
-                    if ($sidebar) {
-                        $html .= $this->formatSidebar($item, $child);
-                    } else {
-                        $html .= $this->formatNavBar($item, $child);
+                    switch ($type) {
+                        case self::TYPE_MENU_SIDEBAR:
+                            $html .= $this->formatSidebar($item);
+                            break;
+                        case self::TYPE_MENU_NAVBAR:
+                            $html .= $this->formatNavBar($item, $child);
+                            break;
                     }
                 }
             }
@@ -249,20 +180,18 @@ abstract class MenuBase
      * @param array $item - The menu Item containing all the submenus
      * @param bool $child - Decides it called from the recursive function or is this the main call.
      * @return string - Containing the generated html for this part of the menu.
+     * @throws \SmartyException
      */
     private function formatNavBar(array $item, bool $child): string
     {
         $html = '';
-        $menuTitle = $this->getMenuTitle($item);
+        $title = $this->getMenuTitle($item);
+        $classes = isset($item['classes']) ? $item['classes'] : '';
 
         if ($this->hasSubmenu($item)) {
-            $childHtml = $this->processMenu($item['submenu'], true, false);
-
-            if ($child) {
-                $html .= sprintf($this->NAVBAR_COMPLEX_ITEM_TEMPLATE, $menuTitle, $childHtml);
-            } else {
-                $html .= sprintf($this->NAVBAR_PARENT_TEMPLATE, $menuTitle, $childHtml);
-            }
+            $submenu = $this->processMenu($item['submenu'], true, self::TYPE_MENU_NAVBAR);
+            $template = $child ? self::NAVBAR_SUBPARENT_TPL : self::NAVBAR_PARENT_TPL;
+            $html .= SmartyProvider::render($template, ['title' => $title, 'submenu' => $submenu, "classes" => $classes]);
 
         } else {
             $attrs = '';
@@ -270,20 +199,9 @@ abstract class MenuBase
                 $attrs .= ' target="' . $item['target'] . '"';
             }
 
-
-            if ($child) {
-                if ($item['url']) {
-                    $html .= sprintf($this->NAVBAR_SINGLE_ITEM_DROP_MODE, $item['url'], $attrs, $menuTitle);
-                } else {
-                    $html .= sprintf($this->NAVBAR_SINGLE_TEXT_ITEM_DROP_MODE, $menuTitle);
-                }
-            } else {
-                if ($item['url']) {
-                    $html .= sprintf($this->NAVBAR_SINGLE_ITEM_NAV_MODE, $item['url'], $attrs, $menuTitle);
-                } else {
-                    $html .= sprintf($this->NAVBAR_SINGLE_TEXT_ITEM_NAV_MODE, $menuTitle);
-                }
-            }
+            $link = isset($item['url']) ? $item['url'] : '';
+            $classes .= $child ? ' dropdown-item' : ' nav-link';
+            $html .= SmartyProvider::render(self::NAVBAR_CHILD_TPL, ['title' => $title, 'link' => $link, "classes" => $classes, "attributes" => $attrs]);
         }
 
         return $html;
@@ -293,37 +211,33 @@ abstract class MenuBase
 
     /**
      * @param array $item - The menu Item containing all the submenus
-     * @param bool $child - Decides it called from the recursive function or is this the main call.
      * @return string - Containing the generated html for this part of the menu.
+     * @throws \SmartyException
      */
-    private function formatSidebar(array $item, bool $child): string
+    private function formatSidebar(array $item): string
     {
         $html = '';
-        $menuTitle = $this->getMenuTitle($item);
+        $title = $this->getMenuTitle($item);
+
+        $classes = isset($item['classes']) ? $item['classes'] : '';
 
         if ($this->hasSubmenu($item)) {
 
             //explore the child before formatting the parent (depth-first)
-            $childHtml = $this->processMenu($item['submenu'], true, true);
+            $subMenu = $this->processMenu($item['submenu'], true);
+            $html .= SmartyProvider::render(self::SIDEBAR_PARENT_TPL, ['title' => $title, 'submenu' => $subMenu, "classes" => $classes]);
 
-            if ($child) {
-                $html .= sprintf($this->SIDEBAR_COMPLEX_ITEM_TEMPLATE, $menuTitle, $childHtml);
-            } else {
-                $html .= sprintf($this->SIDEBAR_PARENT_TEMPLATE, $menuTitle, $childHtml);
-            }
 
-            //Caso Simple Item -> No submenu
         } else {
+            //Caso Simple Item -> No submenu
+
             $attrs = '';
             if ($item['target']) {
                 $attrs .= ' target="' . $item['target'] . '"';
             }
 
-            if ($item['url']) {
-                $html .= sprintf($this->SIDEBAR_ITEM_TEMPLATE, $item['url'], $attrs, $menuTitle);
-            } else {
-                $html .= sprintf($this->SIDEBAR_TEXT_ITEM_TEMPLATE, $attrs, $menuTitle);
-            }
+            $link = isset($item['url']) ? $item['url'] : '';
+            $html .= SmartyProvider::render(self::SIDEBAR_CHILD_TPL, ['title' => $title, 'attributes' => $attrs, 'link' => $link, "classes" => $classes]);
 
         }
 

@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Atk;
+use SmartyException;
 
 /**
  * Utility class for rendering boxes, lists, tabs or other templates.
@@ -144,16 +145,15 @@ class Ui
      * @param array $vars template variables
      *
      * @return string rendered template
+     * @throws SmartyException
      */
-    private function renderSmarty($path, $vars)
+    private function renderSmarty($path, $vars): string
     {
         // First clear any existing smarty var.
         $this->m_smarty->clearAllAssign();
 
         $this->m_smarty->assign($vars);
-        $res = $this->m_smarty->fetch($path);
-
-        return $res;
+        return $this->m_smarty->fetch($path);
     }
 
     /**
