@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Core\Menu\MenuBase;
+
 /**
  * The Module abstract base class.
  *
@@ -14,10 +16,10 @@ abstract class Module
     /** @var Atk $atk */
     private $atk;
 
-    /** @var Menu $menu */
+    /** @var MenuBase $menu */
     private $menu;
 
-    public function __construct(Atk $atk, Menu $menu)
+    public function __construct(Atk $atk, MenuBase $menu)
     {
         $this->atk = $atk;
         $this->menu = $menu;

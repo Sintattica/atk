@@ -4,7 +4,7 @@ namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Menu;
+use Sintattica\Atk\Core\Menu\Menu;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;

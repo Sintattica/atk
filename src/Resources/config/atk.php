@@ -458,7 +458,7 @@ return [
 
     /************************** MENU *********************************/
 
-    'menu' => Sintattica\Atk\Core\Menu::class,
+    'menu' => Sintattica\Atk\Core\Menu\Menu::class,
 
     /*
      * Show a link in the menu to logout
@@ -651,7 +651,7 @@ return [
      * @var string
      */
     'session_autorefresh_key' => '_sessionautorefresh',
-    
+
     /*
      * The application identifier.
      *
