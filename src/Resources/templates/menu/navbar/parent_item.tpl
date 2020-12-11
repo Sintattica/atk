@@ -3,7 +3,7 @@
        aria-haspopup="true" aria-expanded="false"
        class="nav-link dropdown-toggle {$classes}"
     >
-        {$title}}
+        {$title}
     </a>
     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">{$submenu}</ul>
 </li>

@@ -2,10 +2,12 @@
 
 namespace Sintattica\Atk\Core\Menu;
 
+use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\SmartyProvider;
+use SmartyException;
 
 abstract class MenuBase
 {
@@ -41,13 +43,14 @@ abstract class MenuBase
     //These variables should be itended as formatting templates
 
     //-------- Sidebar Menu  ------------
-    private const SIDEBAR_PARENT_TPL = "menu/sidebar/parent_item.tpl";
-    private const SIDEBAR_CHILD_TPL = "menu/sidebar/child_item.tpl";
+    private const SIDEBAR_PARENT_ITEM_TPL = "menu/sidebar/parent_item.tpl";
+    private const SIDEBAR_CHILD_ITEM_TPL = "menu/sidebar/child_item.tpl";
+    private const SIDEBAR_HEADER_ITEM_TPL = "menu/sidebar/header_item.tpl";
 
     //-------- Navbar Menu  ------------
-    private const NAVBAR_PARENT_TPL = 'menu/navbar/parent_item.tpl';
-    private const NAVBAR_SUBPARENT_TPL = 'menu/navbar/subparent_item.tpl';
-    private const NAVBAR_CHILD_TPL = 'menu/navbar/child_item.tpl';
+    private const NAVBAR_PARENT_ITEM_TPL = 'menu/navbar/parent_item.tpl';
+    private const NAVBAR_SUBPARENT_ITEM_TPL = 'menu/navbar/subparent_item.tpl';
+    private const NAVBAR_CHILD_ITEM_TPL = 'menu/navbar/child_item.tpl';
 
 
     public abstract function appendMenuItems();
@@ -93,6 +96,7 @@ abstract class MenuBase
      * Render the menu.
      *
      * @return string HTML fragment containing the menu.
+     * @throws SmartyException
      */
     public function render(): string
     {
@@ -107,6 +111,7 @@ abstract class MenuBase
      * Load a cached version of the menu.
      * The menu gets constructed only if is not present.
      * @return array The menu
+     * @throws SmartyException
      */
     public function getMenu(): array
     {
@@ -124,8 +129,9 @@ abstract class MenuBase
      * The function is used by Atk to load all the formatted menu complete with all parts (sidebar, navbar left and navbar right)
      * @return array This is a map with three keys:
      *               sidebar -> containing the html formatted sidebar menu
-     *               left -> containning the html formatted items of the left navbar menu
+     *               left -> containing the html formatted items of the left navbar menu
      *               right -> same as the left but contains the items of the right part of the nav menu.
+     * @throws SmartyException
      */
     public function load(): array
     {
@@ -150,7 +156,7 @@ abstract class MenuBase
      * @param string $type - Needed for the recursive function to understand if it was exploring
      *                        the nav or the sidebar part on the parent
      * @return string - A complete html formatted menu of the selected type (sidebar, navbar left or navbar right)
-     * @throws \SmartyException
+     * @throws SmartyException
      */
     private function processMenu(array $menu, bool $child = false, string $type = self::TYPE_MENU_SIDEBAR): string
     {
@@ -180,7 +186,7 @@ abstract class MenuBase
      * @param array $item - The menu Item containing all the submenus
      * @param bool $child - Decides it called from the recursive function or is this the main call.
      * @return string - Containing the generated html for this part of the menu.
-     * @throws \SmartyException
+     * @throws SmartyException
      */
     private function formatNavBar(array $item, bool $child): string
     {
@@ -190,7 +196,7 @@ abstract class MenuBase
 
         if ($this->hasSubmenu($item)) {
             $submenu = $this->processMenu($item['submenu'], true, self::TYPE_MENU_NAVBAR);
-            $template = $child ? self::NAVBAR_SUBPARENT_TPL : self::NAVBAR_PARENT_TPL;
+            $template = $child ? self::NAVBAR_SUBPARENT_ITEM_TPL : self::NAVBAR_PARENT_ITEM_TPL;
             $html .= SmartyProvider::render($template, ['title' => $title, 'submenu' => $submenu, "classes" => $classes]);
 
         } else {
@@ -201,7 +207,7 @@ abstract class MenuBase
 
             $link = isset($item['url']) ? $item['url'] : '';
             $classes .= $child ? ' dropdown-item' : ' nav-link';
-            $html .= SmartyProvider::render(self::NAVBAR_CHILD_TPL, ['title' => $title, 'link' => $link, "classes" => $classes, "attributes" => $attrs]);
+            $html .= SmartyProvider::render(self::NAVBAR_CHILD_ITEM_TPL, ['title' => $title, 'link' => $link, "classes" => $classes, "attributes" => $attrs]);
         }
 
         return $html;
@@ -212,7 +218,7 @@ abstract class MenuBase
     /**
      * @param array $item - The menu Item containing all the submenus
      * @return string - Containing the generated html for this part of the menu.
-     * @throws \SmartyException
+     * @throws SmartyException
      */
     private function formatSidebar(array $item): string
     {
@@ -225,11 +231,19 @@ abstract class MenuBase
 
             //explore the child before formatting the parent (depth-first)
             $subMenu = $this->processMenu($item['submenu'], true);
-            $html .= SmartyProvider::render(self::SIDEBAR_PARENT_TPL, ['title' => $title, 'submenu' => $subMenu, "classes" => $classes]);
+            $html .= SmartyProvider::render(self::SIDEBAR_PARENT_ITEM_TPL, ['title' => $title, 'submenu' => $subMenu, "classes" => $classes]);
 
 
         } else {
             //Caso Simple Item -> No submenu
+            switch ($item['type']) {
+                case MenuItem::TYPE_HEADER:
+                    $template = self::SIDEBAR_HEADER_ITEM_TPL;
+                    break;
+                default:
+                    $template = self::SIDEBAR_CHILD_ITEM_TPL;
+                    break;
+            }
 
             $attrs = '';
             if ($item['target']) {
@@ -237,8 +251,7 @@ abstract class MenuBase
             }
 
             $link = isset($item['url']) ? $item['url'] : '';
-            $html .= SmartyProvider::render(self::SIDEBAR_CHILD_TPL, ['title' => $title, 'attributes' => $attrs, 'link' => $link, "classes" => $classes]);
-
+            $html .= SmartyProvider::render($template, ['title' => $title, 'attributes' => $attrs, 'link' => $link, "classes" => $classes]);
         }
 
         return $html;
@@ -322,11 +335,11 @@ abstract class MenuBase
      *                       menuitem at the third position, pass 250 for $order.
      * @param string $module The module name. Used for translations
      * @param string $target The link target (_self, _blank, ...)
-     * @param string $position The destination (sidebar, navbar left or navbar right) where the menu will be put in
      * @param bool $raw If true, the $name will be rendered as is
-     *
+     * @param string $position The destination (sidebar, navbar left or navbar right) where the menu will be put in
+     * @param string $type
      */
-    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $position = self::MENU_SIDEBAR, $raw = false)
+    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $raw = false, $position = self::MENU_SIDEBAR, $type = MenuItem::TYPE_LINK)
     {
         static $order_value = 100, $s_dupelookup = [];
         if ($order == 0) {
@@ -342,6 +355,7 @@ abstract class MenuBase
             'module' => $module,
             'target' => $target,
             'position' => $position,
+            'type' => $type,
             'raw' => $raw,
         );
 
@@ -353,8 +367,39 @@ abstract class MenuBase
         }
     }
 
+    // todo: Check how we can provide those with the last param.
+    public function addMenuItem2(string $parent = '', string $name = '', string $nodeUri = '', string $action = '', string $position = self::MENU_SIDEBAR, array $extraParams = [])
+    {
+        $parent = $parent ?: 'main'; //Default parent is name
 
-    private function parseItems(array &$items): array
+        //Default name is the translation of the node name
+        if (!$name) {
+            list($modulo, $nodo) = explode('.', $nodeUri);
+            $name = Language::text($nodo, $modulo);
+        }
+
+        //todo: Set default filters in urlParams!
+        $urlParams = [];
+        $url = Tools::dispatch_url($nodeUri, $action, $urlParams);
+
+        $enable = isset($extraParams['enable']) ?: 1;
+        $order = isset($extraParams['order']) ?: 0;
+        $module = isset($extraParams['module']) ?: '';
+        $target = isset($extraParams['target']) ?: '';
+        $raw = isset($extraParams['raw']) ?: false;
+        $type = isset($extraParams['type']) ?: MenuItem::TYPE_LINK;
+
+        $this->addMenuItem($name, $url, $parent, $enable, $order, $module, $target, $raw, $position, $type);
+    }
+
+    public function addMenuHeader()
+    {
+
+    }
+
+
+    private
+    function parseItems(array &$items): array
     {
 
         foreach ($items as &$item) {
@@ -376,13 +421,15 @@ abstract class MenuBase
     }
 
 
-    private function hasSubmenu(array $item): bool
+    private
+    function hasSubmenu(array $item): bool
     {
         return isset($item['submenu']) && Tools::count($item['submenu']);
     }
 
 
-    private function getMenuTitle(array $item, string $append = ''): string
+    private
+    function getMenuTitle(array $item, string $append = ''): string
     {
         if ($item['raw'] == true) {
             return $item['name'];
