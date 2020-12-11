@@ -44,6 +44,8 @@ class IndexPage
 
     private $atk;
 
+    private const EXTRA_BODY_CLASSES = ["sidebar-mini", "text-sm"];
+
     /**
      * Constructor
      * @param $atk Atk
