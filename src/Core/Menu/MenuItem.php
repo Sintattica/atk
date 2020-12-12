@@ -306,21 +306,11 @@ class MenuItem
     }
 
     /**
-     * @return bool|string
+     * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
-    }
-
-    /**
-     * @param bool|string $url
-     * @return MenuItem
-     */
-    public function setUrl($url): MenuItem
-    {
-        $this->url = $url;
-        return $this;
     }
 
 
