@@ -368,7 +368,8 @@ abstract class MenuBase
     }
 
     // todo: Check how we can provide those with the last param.
-    public function addMenuItem2(string $parent = '', string $name = '', string $nodeUri = '', string $action = '', string $position = self::MENU_SIDEBAR, array $extraParams = [])
+    //Currently not exposed
+    private function addMenuItem2(string $parent = '', string $name = '', string $nodeUri = '', string $action = '', string $position = self::MENU_SIDEBAR, array $extraParams = [])
     {
         $parent = $parent ?: 'main'; //Default parent is name
 
@@ -392,16 +393,32 @@ abstract class MenuBase
         $this->addMenuItem($name, $url, $parent, $enable, $order, $module, $target, $raw, $position, $type);
     }
 
-    public function addMenuHeader()
+    /**
+     * Add a new MenuItem to the Menu
+     * @param MenuItem $menuItem
+     * @return MenuItem
+     */
+    public function add(MenuItem $menuItem): MenuItem
     {
+        $this->addMenuItem(
+            $menuItem->getName(),
+            $menuItem->getUrl(),
+            $menuItem->getParent(),
+            $menuItem->getEnable(),
+            $menuItem->getOrder(),
+            $menuItem->getModule(),
+            $menuItem->getTarget(),
+            $menuItem->isRaw(),
+            $menuItem->getPosition(),
+            $menuItem->getType(),
+        );
 
+        return $menuItem;
     }
 
 
-    private
-    function parseItems(array &$items): array
+    private function parseItems(array &$items): array
     {
-
         foreach ($items as &$item) {
             $this->parseItem($item);
         }
@@ -421,15 +438,13 @@ abstract class MenuBase
     }
 
 
-    private
-    function hasSubmenu(array $item): bool
+    private function hasSubmenu(array $item): bool
     {
         return isset($item['submenu']) && Tools::count($item['submenu']);
     }
 
 
-    private
-    function getMenuTitle(array $item, string $append = ''): string
+    private function getMenuTitle(array $item, string $append = ''): string
     {
         if ($item['raw'] == true) {
             return $item['name'];
