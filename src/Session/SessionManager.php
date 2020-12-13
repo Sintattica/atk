@@ -677,7 +677,7 @@ class SessionManager
 
                 // Posted vars always overwrite anything in the current session..
                 foreach (array_merge($pageVars, $sessionVars) as $var) {
-                    $recursive = $var{strlen($var) - 1} == '*';
+                    $recursive = $var[strlen($var) - 1] == '*';
                     $var = $recursive ? substr($var, 0, -1) : $var;
 
                     if (isset($postvars[$var]) && $postvars[$var] != '') {
@@ -703,7 +703,7 @@ class SessionManager
                 }
 
                 foreach ($pageVars as $var) {
-                    $recursive = $var{strlen($var) - 1} == '*';
+                    $recursive = $var[strlen($var) - 1] == '*';
                     $var = $recursive ? substr($var, 0, -1) : $var;
 
                     if (isset($postvars[$var]) && Tools::count($postvars[$var]) > 0 && (!$partial || !in_array($var, $lockedVars))) {
