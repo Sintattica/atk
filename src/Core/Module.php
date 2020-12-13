@@ -15,10 +15,10 @@ abstract class Module
     public static $module;
 
     /** @var Atk $atk */
-    private $atk;
+    private Atk $atk;
 
     /** @var MenuBase $menu */
-    private $menu;
+    private MenuBase $menu;
 
     public function __construct(Atk $atk, MenuBase $menu)
     {
@@ -26,12 +26,12 @@ abstract class Module
         $this->menu = $menu;
     }
 
-    protected function getMenu()
+    protected function getMenu(): MenuBase
     {
         return $this->menu;
     }
 
-    protected function getAtk()
+    protected function getAtk(): Atk
     {
         return $this->atk;
     }
