@@ -133,6 +133,9 @@ class Page
         // Bootstrap 4
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js');
 
+        //Fixed Scrollbar
+        $this->register_script($assetsUrl.'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
+
         //AdminLTE App
         $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
 
@@ -154,6 +157,8 @@ class Page
 
         //Font Awesome
         $this->register_style($assetsUrl.'admin-lte/plugins/fontawesome-free/css/all.min.css');
+
+        $this->register_style($assetsUrl.'admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css');
 
         // Theme style
         $this->register_style($assetsUrl.'admin-lte/css/adminlte.min.css');
