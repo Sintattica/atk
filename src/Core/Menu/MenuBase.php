@@ -47,12 +47,21 @@ abstract class MenuBase
     private const SIDEBAR_CHILD_ITEM_TPL = "menu/sidebar/child_item.tpl";
     private const SIDEBAR_HEADER_ITEM_TPL = "menu/sidebar/header_item.tpl";
 
+    //Icons from Font Awesome
+    private const DEFAULT_SIDEBAR_PARENT_ITEM_ICON = 'far fa-circle';
+    private const DEFAULT_SIDEBAR_CHILD_ITEM_ICON = 'fas fa-th';
+
     //-------- Navbar Menu  ------------
     private const NAVBAR_PARENT_ITEM_TPL = 'menu/navbar/parent_item.tpl';
     private const NAVBAR_SUBPARENT_ITEM_TPL = 'menu/navbar/subparent_item.tpl';
     private const NAVBAR_CHILD_ITEM_TPL = 'menu/navbar/child_item.tpl';
 
 
+    //General
+    private const DEFAULT_ACTIVE_CLASS = 'active';
+
+
+    //Exposed to client menus
     public abstract function appendMenuItems();
 
 
@@ -193,11 +202,17 @@ abstract class MenuBase
         $html = '';
         $title = $this->getMenuTitle($item);
         $classes = isset($item['classes']) ? $item['classes'] : '';
+        $active = $item['active'] ? self::DEFAULT_ACTIVE_CLASS : '';
 
         if ($this->hasSubmenu($item)) {
             $submenu = $this->processMenu($item['submenu'], true, self::TYPE_MENU_NAVBAR);
             $template = $child ? self::NAVBAR_SUBPARENT_ITEM_TPL : self::NAVBAR_PARENT_ITEM_TPL;
-            $html .= SmartyProvider::render($template, ['title' => $title, 'submenu' => $submenu, "classes" => $classes]);
+            $html .= SmartyProvider::render($template, [
+                'title' => $title,
+                'submenu' => $submenu,
+                'classes' => $classes,
+                'active' => $active
+            ]);
 
         } else {
             $attrs = '';
@@ -207,7 +222,13 @@ abstract class MenuBase
 
             $link = isset($item['url']) ? $item['url'] : '';
             $classes .= $child ? ' dropdown-item' : ' nav-link';
-            $html .= SmartyProvider::render(self::NAVBAR_CHILD_ITEM_TPL, ['title' => $title, 'link' => $link, "classes" => $classes, "attributes" => $attrs]);
+            $html .= SmartyProvider::render(self::NAVBAR_CHILD_ITEM_TPL, [
+                'title' => $title,
+                'link' => $link,
+                'classes' => $classes,
+                'attributes' => $attrs,
+                'active' => $active
+            ]);
         }
 
         return $html;
@@ -226,21 +247,30 @@ abstract class MenuBase
         $title = $this->getMenuTitle($item);
 
         $classes = isset($item['classes']) ? $item['classes'] : '';
+        $active = $item['active'] ? self::DEFAULT_ACTIVE_CLASS : '';
 
         if ($this->hasSubmenu($item)) {
 
             //explore the child before formatting the parent (depth-first)
             $subMenu = $this->processMenu($item['submenu'], true);
-            $html .= SmartyProvider::render(self::SIDEBAR_PARENT_ITEM_TPL, ['title' => $title, 'submenu' => $subMenu, "classes" => $classes]);
-
+            $icon = isset($item['icon']) ? $item['icon'] : self::DEFAULT_SIDEBAR_PARENT_ITEM_ICON;
+            $html .= SmartyProvider::render(self::SIDEBAR_PARENT_ITEM_TPL, [
+                'title' => $title,
+                'submenu' => $subMenu,
+                'classes' => $classes,
+                'icon' => $icon,
+                'active' => $active
+            ]);
 
         } else {
             //Caso Simple Item -> No submenu
+            $icon = '';
             switch ($item['type']) {
                 case MenuItem::TYPE_HEADER:
                     $template = self::SIDEBAR_HEADER_ITEM_TPL;
                     break;
                 default:
+                    $icon = isset($item['icon']) ? $item['icon'] : self::DEFAULT_SIDEBAR_CHILD_ITEM_ICON;
                     $template = self::SIDEBAR_CHILD_ITEM_TPL;
                     break;
             }
@@ -251,7 +281,14 @@ abstract class MenuBase
             }
 
             $link = isset($item['url']) ? $item['url'] : '';
-            $html .= SmartyProvider::render($template, ['title' => $title, 'attributes' => $attrs, 'link' => $link, "classes" => $classes]);
+            $html .= SmartyProvider::render($template, [
+                'title' => $title,
+                'attributes' => $attrs,
+                'link' => $link,
+                'classes' => $classes,
+                'icon' => $icon,
+                'active' => $active
+            ]);
         }
 
         return $html;
@@ -338,14 +375,32 @@ abstract class MenuBase
      * @param bool $raw If true, the $name will be rendered as is
      * @param string $position The destination (sidebar, navbar left or navbar right) where the menu will be put in
      * @param string $type
+     * @param bool $active
+     * @param string $icon
      */
-    public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1, $order = 0, $module = '', $target = '', $raw = false, $position = self::MENU_SIDEBAR, $type = MenuItem::TYPE_LINK)
+    public function addMenuItem(
+        $name = '',
+        $url = '',
+        $parent = 'main',
+        $enable = 1,
+        $order = 0,
+        $module = '',
+        $target = '',
+        $raw = false,
+        $position = self::MENU_SIDEBAR,
+        $type = MenuItem::TYPE_LINK,
+        $active = false,
+        $icon = null
+    )
     {
         static $order_value = 100, $s_dupelookup = [];
         if ($order == 0) {
             $order = $order_value;
             $order_value += 100;
         }
+
+        $classes = ""; //$active ? ' active' : '';
+        // $classes .= $icon ? ' fas fa-' . $icon : ' fas fa-th';
 
         $item = array(
             'name' => $name,
@@ -357,6 +412,9 @@ abstract class MenuBase
             'position' => $position,
             'type' => $type,
             'raw' => $raw,
+            'classes' => $classes,
+            'active' => $active,
+            'icon' => $icon
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -411,6 +469,8 @@ abstract class MenuBase
             $menuItem->isRaw(),
             $menuItem->getPosition(),
             $menuItem->getType(),
+            $menuItem->isActive(),
+            $menuItem->getIcon(),
         );
 
         return $menuItem;

@@ -33,6 +33,8 @@ class MenuItem
     private string $type;
     private array $urlParams;
     private string $url;
+    private ?string $icon;
+    private bool $active = false;
 
     public function __construct(
         string $name = '',
@@ -46,7 +48,8 @@ class MenuItem
         string $target = '',
         bool $raw = false,
         string $itemType = MenuItem::TYPE_LINK,
-        array $urlParams = []
+        array $urlParams = [],
+        string $icon = null
     )
     {
 
@@ -72,6 +75,7 @@ class MenuItem
         $this->type = $itemType;
         $this->urlParams = $urlParams;
         $this->url = Tools::dispatch_url($nodeUri, $action, $urlParams);
+        $this->icon = $icon;
 
     }
 
@@ -313,5 +317,40 @@ class MenuItem
         return $this->url;
     }
 
+    /**
+     * @return null|string
+     */
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param string|null $icon
+     * @return MenuItem
+     */
+    public function setIcon(?string $icon): MenuItem
+    {
+        $this->icon = $icon;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active
+     * @return MenuItem
+     */
+    public function setActive(bool $active): MenuItem
+    {
+        $this->active = $active;
+        return $this;
+    }
 
 }
