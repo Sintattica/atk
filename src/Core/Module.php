@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\Core\Menu\Menu;
 use Sintattica\Atk\Core\Menu\MenuBase;
 
 /**
