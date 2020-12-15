@@ -2,13 +2,16 @@
 
 namespace Sintattica\Atk\Ui;
 
+use Sintattica\Atk\Core\AdminLTE;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Menu\Menu;
+use Sintattica\Atk\Core\Menu\MenuBase;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
+use SmartyException;
 
 /**
  * Class that generates an index page.
@@ -75,6 +78,7 @@ class IndexPage
 
     /**
      * Generate the page.
+     * @throws SmartyException
      */
     public function generate()
     {
@@ -84,25 +88,35 @@ class IndexPage
             $menuObj = $menuClass::getInstance();
             $user = $this->m_username ?: $this->m_user['name'];
 
-
             if (Config::getGlobal('menu_show_user') && $user) {
-                $menuObj->addMenuItem($user,'', 'main', true, 0, '', '', 'right', true);
+                $menuObj->addMenuItem($user, '', 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT);
             }
 
             if (Config::getGlobal('menu_show_logout_link') && $user) {
                 $menuObj->addMenuItem('<span class="fas fa-sign-out-alt"></span>',
-                    Config::getGlobal('dispatcher').'?atklogout=1', 'main', true, 0, '', '', 'right', true
+                    Config::getGlobal('dispatcher') . '?atklogout=1', 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT
                 );
             }
 
-            $top = $this->m_ui->renderBox(array(
+            $navbar = $this->m_ui->render('menu/navbar.tpl', [
+                'menu' => $menuObj->getMenu(), //formatted smarty menu as ['left', 'right','sidebar']
+                'main_header_classes' => $this->m_adminLte->getMainHeaderClasses(),
+            ]);
+
+            $this->m_page->addContent($navbar);
+
+            $sidebar = $this->m_ui->render("menu/sidebar.tpl", [
                 'title' => ($this->m_title != '' ?: Tools::atktext('app_title')),
                 'app_title' => Tools::atktext('app_title'),
-                'menu' => $menuObj->getMenu(),
-            ), 'top');
-            $this->m_page->addContent($top);
+                'menu' => $menuObj->getMenu(), //formatted smarty menu as ['left', 'right','sidebar']
+                'nav_sidebar_classes' => $this->m_adminLte->getNavSidebarClasses(),
+                'sidebar_classes' => $this->m_adminLte->getSidebarClasses(),
+                'brand_text_style' => $this->m_adminLte->getBrandTextStyle()
+            ]);
 
-            if(Config::getGlobal('session_autorefresh')){
+            $this->m_page->addContent($sidebar);
+
+            if (Config::getGlobal('session_autorefresh')) {
                 $this->m_page->register_scriptcode(SessionManager::getSessionAutoRefreshJs());
             }
         }
@@ -113,7 +127,7 @@ class IndexPage
         $bodyprops = $this->m_extrabodyprops != '' ?: null;
         $headers = $this->m_extraheaders != '' ?: null;
 
-        $content = $this->m_page->render($title, $this->m_flags, $bodyprops, $headers, self::EXTRA_BODY_CLASSES);
+        $content = $this->m_page->render($title, $this->m_flags, $bodyprops, $headers, $this->m_adminLte->getGeneralBodyClassess());
 
         $this->m_output->output($content);
         $this->m_output->outputFlush();
@@ -172,16 +186,16 @@ class IndexPage
 
             $destination = '';
             if (isset($ATK_VARS['atknodeuri']) && isset($ATK_VARS['atkaction'])) {
-                $destination = '&atknodeuri='.$ATK_VARS['atknodeuri'].'&atkaction='.$ATK_VARS['atkaction'];
+                $destination = '&atknodeuri=' . $ATK_VARS['atknodeuri'] . '&atkaction=' . $ATK_VARS['atkaction'];
                 if (isset($ATK_VARS['atkselector'])) {
-                    $destination .= '&atkselector='.$ATK_VARS['atkselector'];
+                    $destination .= '&atkselector=' . $ATK_VARS['atkselector'];
                 }
             }
 
             $box = $this->m_ui->renderBox(array(
                 'title' => Tools::atktext('title_session_expired'),
-                'content' => '<br><br>'.Tools::atktext('explain_session_expired').'<br><br><br><br>
-                                           <a href="'.Config::getGlobal('dispatcher').'?atklogout=true'.$destination.'" target="_top">'.Tools::atktext('relogin').'</a><br><br>',
+                'content' => '<br><br>' . Tools::atktext('explain_session_expired') . '<br><br><br><br>
+                                           <a href="' . Config::getGlobal('dispatcher') . '?atklogout=true' . $destination . '" target="_top">' . Tools::atktext('relogin') . '</a><br><br>',
             ));
 
             $this->m_page->addContent($box);
@@ -204,7 +218,7 @@ class IndexPage
                         $destination = Tools::dispatch_url($this->m_defaultDestination['atknodeuri'], $this->m_defaultDestination['atkaction'],
                             $this->m_defaultDestination[0] ? $this->m_defaultDestination[0] : array());
                     }
-                    header('Location: '.$destination);
+                    header('Location: ' . $destination);
                     exit;
                 } else {
                     $this->renderContent();
@@ -219,15 +233,12 @@ class IndexPage
         $this->m_page->addContent($content);
     }
 
-    public function getContent()
+    public function getContent(): string
     {
-        $box = $this->m_ui->renderBox([
+        return $this->m_ui->renderBox([
             'title' => Tools::atktext('app_shorttitle'),
-            'content' => Tools::atktext('app_description'),
-
-        ]);
-
-        return $box;
+            'content' => Tools::atktext('app_description')
+        ], 'index_page');
     }
 
     /**
@@ -235,7 +246,7 @@ class IndexPage
      *
      * @param array $destination The default destination
      */
-    public function setDefaultDestination($destination)
+    public function setDefaultDestination(array $destination)
     {
         if (is_array($destination)) {
             $this->m_defaultDestination = $destination;
@@ -258,7 +269,7 @@ class IndexPage
         }
 
         $page = $node->getPage();
-        $page->setTitle(Tools::atktext('app_shorttitle').' - '.$node->getUi()->title($node->m_module, $node->m_type, $node->m_action));
+        $page->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $node->getUi()->title($node->m_module, $node->m_type, $node->m_action));
 
         if ($node->allowed($node->m_action)) {
             $secMgr = SecurityManager::getInstance();
@@ -279,7 +290,7 @@ class IndexPage
             }
 
             $page->register_hiddenvars(array(
-                'atknodeuri' => $node->m_module.'.'.$node->m_type,
+                'atknodeuri' => $node->m_module . '.' . $node->m_type,
                 'atkselector' => str_replace("'", '', $id),
             ));
         } else {
@@ -291,12 +302,12 @@ class IndexPage
      * Render a generic access denied page.
      *
      * @param string $nodeType
-     *
      * @return string A complete html page with generic access denied message.
+     * @throws SmartyException
      */
-    private function accessDeniedPage($nodeType)
+    private function accessDeniedPage(string $nodeType): string
     {
-        $content = '<br><br>'.Tools::atktext('error_node_action_access_denied', '', $nodeType).'<br><br><br>';
+        $content = '<br><br>' . Tools::atktext('error_node_action_access_denied', '', $nodeType) . '<br><br><br>';
 
         $blocks = [
             $this->m_ui->renderBox(array(

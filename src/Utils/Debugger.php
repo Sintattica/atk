@@ -564,7 +564,7 @@ class Debugger
 
             $output = '
           <script type="text/javascript" src="'.$script.'"></script>
-          <div class="container-fluid">
+          <div class="content-wrapper" style="padding-left: 10px;">
           <hr style="margin-top:0">
          
           <div id="atk_debugging_div" style="font-size: 10pt;">
