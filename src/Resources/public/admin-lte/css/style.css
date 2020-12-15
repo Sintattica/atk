@@ -1,0 +1,9 @@
+
+/**
+ If one submenu item has a long text it gets hidden after the
+ right border of the sidebar. With this the icon that opens the sidebar
+ will remain in place and the text will go under it.
+ */
+.sidebar li.nav-item{
+    max-width: 100% !important;
+}
