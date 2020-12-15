@@ -108,7 +108,7 @@ class Page
      *
      * @return Page
      */
-    public static function getInstance()
+    public static function getInstance(): ?Page
     {
         static $s_page = null;
         if ($s_page == null) {
@@ -168,6 +168,10 @@ class Page
 
         //<!-- Toastr -->
         $this->register_style($assetsUrl.'admin-lte/plugins/toastr/toastr.min.css');
+
+
+        //Override default with custom styles
+        $this->register_style($assetsUrl.'admin-lte/css/style.css');
 
 
         $style_url = Config::getGlobal('style_url');
@@ -364,7 +368,7 @@ class Page
      *
      * @return array contain file paths
      */
-    public function getStyles()
+    public function getStyles(): array
     {
         return $this->m_stylesheets;
     }
@@ -388,7 +392,7 @@ class Page
      *
      * @return array
      */
-    public function getStyleCodes()
+    public function getStyleCodes(): array
     {
         return $this->m_stylecode;
     }
@@ -632,7 +636,7 @@ class Page
     /**
      * Render the complete page, including head and body.
      *
-     * @param string $title Title of the HTML page.
+     * @param null $title Title of the HTML page.
      * @param bool|int $flags (bool) Set to true to generate <body> tags. It is useful
      *                                 to set this to false only when rendering content
      *                                 that either already had its own <body></body>
@@ -641,10 +645,11 @@ class Page
      *                                 (int) Flags for the render function
      * @param string $extrabodyprops Extra attributes to add to the <body> tag.
      * @param string $extra_header HTML code of extra headers to add to the head section
-     *
+     * @param string|null $appendClasses
      * @return string The HTML page, including <html> and </html> tags.
+     * @throws \SmartyException
      */
-    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', array $appendClassess = null)
+    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', string $appendClasses = null): string
     {
 
         if ($title == null) {
@@ -670,7 +675,7 @@ class Page
         }
         if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $layout['extrabodyprops'] = $extrabodyprops;
-            $layout['extra_classes'] = $appendClassess ? implode(' ', $appendClassess) : '';
+            $layout['extra_classes'] = $appendClasses ?: '';
             $layout['body'] = $this->m_content."\n";
         }
 
@@ -683,7 +688,7 @@ class Page
     /**
      * Render partial.
      */
-    public function renderPartial()
+    public function renderPartial(): string
     {
         $result = $this->m_content;
         $this->addMeta($result, true);
@@ -699,7 +704,7 @@ class Page
      *
      * @return string a hidden div with the selected ATK variabels
      */
-    public function hiddenVars()
+    public function hiddenVars(): string
     {
         $res = '';
         if ($this->m_hiddenvars) {
@@ -719,7 +724,7 @@ class Page
      * @param array $record The record that holds this attribute's value.
      * @return bool true if there is no content in the page, false if there is
      */
-    public function isEmpty($record)
+    public function isEmpty($record): bool
     {
         return $this->m_content == '';
     }
@@ -729,7 +734,7 @@ class Page
      *
      * @param string $code
      */
-    public function register_metacode($code)
+    public function register_metacode(string $code)
     {
         $this->m_metacode[] = $code;
     }
@@ -740,7 +745,7 @@ class Page
      * @param string $res Reference to the HTML output
      * @param bool $partial Is this a partial request or a complete request
      */
-    public function addMeta(&$res, $partial = false)
+    public function addMeta(string &$res, $partial = false)
     {
         if (!$partial) {
             foreach ($this->m_metacode as $line) {

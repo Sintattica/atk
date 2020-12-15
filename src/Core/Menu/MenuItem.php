@@ -19,6 +19,8 @@ class MenuItem
     public const TYPE_LINK = 'link';
     public const TYPE_SEPARATOR = 'separator';
 
+    private const DEFAULT_ORDER = -1;
+
     private string $uuid;
     private string $name;
     private string $parent;
@@ -36,6 +38,9 @@ class MenuItem
     private ?string $icon;
     private bool $active = false;
 
+
+    //Todo: Creare gli ItemType -> HeaderMenuItem, SeparatorMenuItem, LinkMenuItem che estendono MenuItem
+    // Campi base: name, parent, position, enabled, order, module, itemType (autocompilato)
     public function __construct(
         string $name = '',
         string $parent = 'main',
@@ -43,7 +48,7 @@ class MenuItem
         string $action = '',
         string $position = MenuBase::MENU_SIDEBAR,
         int $enable = 1,
-        int $order = 0,
+        int $order = self::DEFAULT_ORDER,
         string $module = '',
         string $target = '',
         bool $raw = false,

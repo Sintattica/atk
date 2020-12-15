@@ -2108,11 +2108,25 @@ class Tools
      *
      * @return int number of items. Zero if $value is not iterable.
      */
-    public static function count($value)
+    public static function count($value): int
     {
         if (is_array($value) || $value instanceof \Countable) {
             return count($value);
         }
         return 0;
+    }
+
+
+    /**
+     * Replaces one or more whitespace (space, tab or newline) with specific replace string.
+     *
+     * @param string $string
+     * @param string $replace
+     * @param bool $multiple If true: don't consider the single spaces but only the multiple ones
+     * @return string
+     */
+    public static function replaceSpaces(string $string, string $replace = ' ', bool $multiple = false): string
+    {
+        return preg_replace($multiple ? '/\s\s+/' : '/\s+/', $replace, $string);
     }
 }

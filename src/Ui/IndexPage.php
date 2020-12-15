@@ -47,7 +47,7 @@ class IndexPage
 
     private $atk;
 
-    private const EXTRA_BODY_CLASSES = ["sidebar-mini", "layout-fixed", "text-sm"];
+    private $m_adminLte;
 
     /**
      * Constructor
@@ -61,6 +61,7 @@ class IndexPage
         $this->m_ui = Ui::getInstance();
         $this->m_output = Output::getInstance();
         $this->m_user = SecurityManager::atkGetUser();
+        $this->m_adminLte = AdminLTE::getInstance();
         $this->m_flags = array_key_exists('atkpartial', $ATK_VARS) ? Page::HTML_PARTIAL : Page::HTML_STRICT;
     }
 
@@ -71,7 +72,7 @@ class IndexPage
      *
      * @return bool
      */
-    public function hasFlag($flag)
+    public function hasFlag($flag): bool
     {
         return Tools::hasFlag($this->m_flags, $flag);
     }
