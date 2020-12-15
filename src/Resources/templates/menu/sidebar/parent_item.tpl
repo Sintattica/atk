@@ -1,6 +1,6 @@
 <li class="nav-item {$active}">
     <a href="#" class="nav-link">
-        <i class="{$icon} nav-icon"></i>
+        <i class="{$icon} nav-icon {$icon_classes}"></i>
         <p>
             {$title}
             <i class="fas fa-angle-left right"></i>

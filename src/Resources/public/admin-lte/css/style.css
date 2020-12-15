@@ -7,3 +7,9 @@
 .sidebar li.nav-item{
     max-width: 100% !important;
 }
+
+
+.nav-icon.small-txt{
+    margin-left: 0.2rem !important;
+    margin-top: 0.2rem !important;
+}

@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core\Menu;
 
+use Sintattica\Atk\Core\AdminLTE;
 use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
@@ -22,6 +23,8 @@ abstract class MenuBase
     //All menu items (sidebar and navbar)
     private array $items = [];
     private array $menu = [];
+
+    private ?AdminLTE $m_adminLte;
 
     //-------- Sidebar Menu  ------------
     //The submenu works by exploring all the children and then appending data from bottom up.
@@ -76,6 +79,7 @@ abstract class MenuBase
         if ($s_instance == null) {
             Tools::atkdebug('Creating a new menu instance');
             $s_instance = new static();
+            $s_instance->m_adminLte = AdminLTE::getInstance();
             $s_instance->appendMenuItems();
         }
 
@@ -259,6 +263,7 @@ abstract class MenuBase
                 'submenu' => $subMenu,
                 'classes' => $classes,
                 'icon' => $icon,
+                'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active
             ]);
 
@@ -287,6 +292,7 @@ abstract class MenuBase
                 'link' => $link,
                 'classes' => $classes,
                 'icon' => $icon,
+                'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active
             ]);
         }
@@ -458,6 +464,7 @@ abstract class MenuBase
      */
     public function add(MenuItem $menuItem): MenuItem
     {
+
         $this->addMenuItem(
             $menuItem->getName(),
             $menuItem->getUrl(),

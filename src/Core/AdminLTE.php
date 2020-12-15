@@ -224,4 +224,14 @@ class AdminLTE
 
     }
 
+    public function getSidebarIconsSize() : string
+    {
+        return $this->areSidebarIconsSmall() ? 'small-txt' : '';
+    }
+
+    private function areSidebarIconsSmall(): bool
+    {
+        return $this->sidebarSmallText || $this->bodySmallText;
+    }
+
 }
