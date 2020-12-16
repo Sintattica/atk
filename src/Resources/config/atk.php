@@ -72,6 +72,8 @@ return [
      */
     'datagrid_total_paginate' => false,
 
+
+
     /*
      * The dispatcher, all request (should) lead to this setting.
      */
@@ -503,11 +505,18 @@ return [
      */
     'enable_showall' => true,
 
+
+    /*
+     * Put an icon instead of:
+     * previous, next, first and last
+     */
+    'datagrid_iconize_links' => true,
+
     /*
      * The (max) number of page navigation links to show
      * @var int
      */
-    'pagelinks' => 10,
+    'pagelinks' => 3,
 
     /*
      * Show go to previous page and go to next page links in recordlist
@@ -519,7 +528,7 @@ return [
      * Show go to first page and go to last page links in recordlist
      * @var bool
      */
-    'pagelinks_first_last' => false,
+    'pagelinks_first_last' => true,
 
     /*
      * Display a 'stack' of the user activities in the top right corner.
