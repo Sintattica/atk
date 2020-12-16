@@ -63,7 +63,7 @@ return [
      */
     'datagrid_class' => '\\Sintattica\\Atk\\DataGrid\\DataGrid',
 
-    'datagrid_display_top_info' => true,
+    'datagrid_display_top_info' => false,
     'datagrid_display_bottom_info' => true,
 
     /*
@@ -497,7 +497,7 @@ return [
      * The number of records per page options to display on drop down list
      * @var array
      */
-    'recordsperpage_options' => [10, 25, 50, 100],
+    'recordsperpage_options' => [2, 10, 25, 50, 100],
 
     /*
      * Add a 'show all' option to the records per page selector.
@@ -865,10 +865,10 @@ return [
     'icon_canceled' => 'fa fa-times',
     'icon_copy' => 'fa fa-files-o',
     'icon_default' => 'fa fa-file-o',
-    'icon_delete' => 'fa fa-trash-o text-danger',
+    'icon_delete' => 'fas fa-trash-alt text-danger',
     'icon_document' => 'fa fa-file-o',
     'icon_done' => 'fa fa-check',
-    'icon_edit' => 'fa fa-pencil',
+    'icon_edit' => 'fas fa-pencil-alt',
     'icon_editcopy' => 'fa fa-files-o',
     'icon_export' => 'fa fa-file-excel-o',
     'icon_preview' => 'fa fa-file-o',

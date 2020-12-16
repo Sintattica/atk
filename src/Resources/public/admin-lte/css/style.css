@@ -19,3 +19,10 @@
     box-shadow: none !important;
     border-bottom: solid 1px #80bdff !important;
 }
+
+
+
+/* Table actions */
+table.recordList tr td .actions .btn {
+    margin: 0 2px;
+}
