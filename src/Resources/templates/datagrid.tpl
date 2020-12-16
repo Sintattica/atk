@@ -24,7 +24,7 @@
 
 {/if}
 {if !empty($list)}
-    <div class="row no-gutters datagrid-list">
+    <div class="row no-gutters datagrid-list overflow-auto">
         {$list}
     </div>
 {/if}
