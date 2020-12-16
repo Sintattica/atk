@@ -48,7 +48,7 @@ class DataGridList extends DataGridComponent
      *
      * @return array The recordlist data
      */
-    private function getRecordlistData($recordset, $actions, $suppressList = array())
+    private function getRecordlistData($recordset, $actions, $suppressList = [])
     {
         $grid = $this->getGrid();
         $page = $this->getPage();
