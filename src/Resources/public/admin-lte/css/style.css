@@ -13,3 +13,9 @@
     margin-left: 0.2rem !important;
     margin-top: 0.2rem !important;
 }
+
+
+.select2-container--bootstrap4.select2-container--focus .select2-selection{
+    box-shadow: none !important;
+    border-bottom: solid 1px #80bdff !important;
+}

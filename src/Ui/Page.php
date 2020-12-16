@@ -133,6 +133,9 @@ class Page
         // Bootstrap 4
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js');
 
+        // Select2
+        $this->register_script($assetsUrl.'admin-lte/plugins/select2/js/select2.full.min.js');
+
         //Fixed Scrollbar
         $this->register_script($assetsUrl.'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
 
@@ -166,8 +169,12 @@ class Page
         //ICheck
         $this->register_style($assetsUrl.'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
 
-        //<!-- Toastr -->
+        //Toastr
         $this->register_style($assetsUrl.'admin-lte/plugins/toastr/toastr.min.css');
+
+        //Select2
+        $this->register_style($assetsUrl.'admin-lte/plugins/select2/css/select2.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css');
 
 
         //Override default with custom styles

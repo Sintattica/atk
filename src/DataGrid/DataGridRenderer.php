@@ -76,7 +76,7 @@ class DataGridRenderer extends DataGridComponent
         if ($this->getGrid()->isUpdate()) {
             return;
         }
-        
+
 
         $name = Json::encode($this->getGrid()->getName());
         $baseUrl = Json::encode($this->getGrid()->getBaseUrl());
@@ -93,7 +93,7 @@ class DataGridRenderer extends DataGridComponent
      *
      * @return string grid HTML
      */
-    public function render()
+    public function render(): string
     {
         $this->registerScript();
         $result = $this->renderGrid();

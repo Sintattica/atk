@@ -644,7 +644,7 @@ class DataGrid
     {
         $this->m_session['system'] = [];
 
-        $vars = array(
+        $vars = [
             'flags',
             'formName',
             'embedded',
@@ -664,7 +664,7 @@ class DataGrid
             'masterRecord',
             'displayTopInfo',
             'displayBottomInfo',
-        );
+        ];
 
         foreach ($vars as $var) {
             $fullVar = "m_{$var}";

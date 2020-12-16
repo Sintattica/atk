@@ -42,11 +42,9 @@ ATK.Tools = {
     get_object: function (name) {
         if (document.getElementById) {
             return document.getElementById(name);
-        }
-        else if (document.all) {
+        } else if (document.all) {
             return document.all[name];
-        }
-        else if (document.layers) {
+        } else if (document.layers) {
             return document.layers[name];
         }
         return false;
@@ -58,8 +56,7 @@ ATK.Tools = {
     toggleDisplay: function (name, obj) {
         if (obj.style.display === "none") {
             obj.style.display = "";
-        }
-        else {
+        } else {
             obj.style.display = "none";
         }
     },
@@ -101,8 +98,7 @@ ATK.Tools = {
         if (selectorobj) {
             if (selectorobj.value) {
                 selector = selectorobj.value;
-            }
-            else if (selectorobj.innerHTML) {
+            } else if (selectorobj.innerHTML) {
                 selector = selectorobj.innerHTML;
             }
         }
@@ -119,8 +115,7 @@ ATK.Tools = {
             // IE works with .value, while the Gecko engine uses .innerHTML
             if (nodetypeobj.value) {
                 nodetype = nodetypeobj.value;
-            }
-            else if (nodetypeobj.innerHTML) {
+            } else if (nodetypeobj.innerHTML) {
                 nodetype = nodetypeobj.innerHTML;
             }
         }
@@ -189,6 +184,10 @@ ATK.Tools = {
                 };
             }
 
+            if (typeof $el.data('no-search') !== 'undefined') {
+                options.minimumResultsForSearch = Infinity;
+            }
+
             if ($el.data('enable-manytoonereleation-autocomplete')) {
                 options = jQuery.extend(options, ATK.ManyToOneRelation.autocomplete);
             }
@@ -201,11 +200,11 @@ ATK.Tools = {
         }
     },
 
-    debounce: function(func, wait, immediate) {
+    debounce: function (func, wait, immediate) {
         // taken fron http://underscorejs.org/
         var timeout, args, context, timestamp, result;
 
-        var later = function() {
+        var later = function () {
             var last = Date.now() - timestamp;
 
             if (last < wait && last >= 0) {
@@ -219,7 +218,7 @@ ATK.Tools = {
             }
         };
 
-        return function() {
+        return function () {
             context = this;
             args = arguments;
             timestamp = Date.now();
