@@ -1,5 +1,5 @@
 <nav aria-label="table navigation">
-    <ul class="pagination">
+    <ul class="pagination mb-0">
         {foreach from=$links item='link' key='i'}
             {if isset($link.current) && $link.current}
                 <li class="page-item active"><a  class="page-link" href="#">{$link.title}</a></li>

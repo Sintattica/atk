@@ -3,7 +3,7 @@
         {if !empty($editcontrol)}{$editcontrol}{/if} {if !empty($index)}{$index}{/if}
     </div>
 {elseif $displayTopInfo && (!empty($paginator) || !empty($limit) || !empty($summary))}
-    <div class="row no-gutters top">
+    <div class="row no-gutters top mb-2">
         <div class="col-12 col-sm-6 text-center text-sm-left">
             {if !empty($editcontrol)}
                 <div>{$editcontrol}</div>{/if}
