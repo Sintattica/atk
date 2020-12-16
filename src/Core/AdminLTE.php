@@ -226,10 +226,10 @@ class AdminLTE
 
     public function getSidebarIconsSize() : string
     {
-        return $this->areSidebarIconsSmall() ? 'small-txt' : '';
+        return $this->shouldFixSmallSidebarIcons() ? 'small-txt' : '';
     }
 
-    private function areSidebarIconsSmall(): bool
+    private function shouldFixSmallSidebarIcons(): bool
     {
         return $this->sidebarSmallText || $this->bodySmallText;
     }
