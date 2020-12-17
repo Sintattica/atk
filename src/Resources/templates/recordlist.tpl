@@ -8,15 +8,19 @@
     </div>
 {/if}
 
-<div class="recordListContainer">
+<div class="w-100 recordListContainer">
     {if $mra!="" && $mraposition == 'top'}
         <!-- multirecord actions -->
         <div class="multirecordactions multirecordactions-top"><i class="fa fa-long-arrow-down fa-2x" aria-hidden="true"></i>
             {$mra}</div>
     {/if}
-    <table id="{$listid}" class="table table-bordered table-condensed recordList">
+
+    <!-- todo: table-striped -->
+    <table id="{$listid}" class="table table-bordered table-hover table-condensed recordList">
+
+        <thead>
         <!-- header -->
-        <tr class="recordList-header-row">
+        <tr class="recordList-header-row" role="row" style="border-top:2px solid #dee2e6;">
             {section name=headerloop loop=$header}
                 <th {if $smarty.section.headerloop.index===0}class="recordListThFirst"{else}class="recordListTh"{/if}>
                     {if $header[headerloop].content != ""}{$header[headerloop].content}{else}&nbsp;{/if}
@@ -26,7 +30,7 @@
 
         {if count($sort)}
             <!-- sort row -->
-            <tr class="recordList-sort-row">
+            <tr class="recordList-sort-row"  role="row">
                 {$sortstart}
                 {foreach from=$sort item=col}
                     <th>{if $col.content != ""}{$col.content}{else}&nbsp;{/if}</th>
@@ -37,14 +41,15 @@
 
         {if count($search)}
             <!-- search row -->
-            <tr class="recordList-search-row">
+            <tr class="recordList-search-row"  role="row">
                 {$searchstart}
                 {foreach from=$search item=col}
-                    <th class="recordListSearch">{if $col.content != ""}{$col.content}{else}&nbsp;{/if}</th>
+                    <th>{if $col.content != ""}{$col.content}{else}&nbsp;{/if}</th>
                 {/foreach}
                 {$searchend}
             </tr>
         {/if}
+        </thead>
 
         <!-- records -->
         {$liststart}

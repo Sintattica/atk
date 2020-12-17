@@ -1,4 +1,4 @@
-<table class="integratededitform" width="100%">
+<table class="integratededitform w-100">
     {if (count($errors)>0)}
         <tr>
             <td colspan="2" class="error">
