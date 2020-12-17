@@ -118,7 +118,7 @@ class BoolAttribute extends Attribute
 
         $result .= '<div class="checkbox"><span class="checkbox-wrapper">';
         $result .= '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1"';
-        $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute('atkcheckbox');
+        $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute(['atkcheckbox']);
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }

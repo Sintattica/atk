@@ -59,7 +59,7 @@ class SwitchAttribute extends BoolAttribute
             $checked = 'checked';
         }
 
-        $result = '<input type="checkbox" id="'.$id.'" name="'.$name.'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute('atkcheckbox').' />';
+        $result = '<input type="checkbox" id="'.$id.'" name="'.$name.'" value="1" '.$onchange.$checked.' '.$this->getCSSClassAttribute(['atkcheckbox']).' />';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
             $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(

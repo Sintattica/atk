@@ -145,7 +145,7 @@ class PasswordAttribute extends Attribute
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
-        $cssClass = $this->getCSSClassAttribute(array('form-control'));
+        $cssClass = $this->getCSSClassAttribute();
 
         if ($mode != 'edit' && $mode != 'update') {
             /* insert */

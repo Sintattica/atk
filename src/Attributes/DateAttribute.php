@@ -545,10 +545,10 @@ class DateAttribute extends Attribute
                 }
                 $result .= ' <input '.$this->getCSSClassAttribute([
                         'btn',
+                        'btn-sm',
                         'btn-default',
                         'button',
                         'atkbutton',
-                        'form-control',
                     ]).' type="button" value="..." onclick="return showCalendar(\''.$id.'\', \''.$id.'\', \''.$format.'\', false, '.$mondayFirst.');">';
             }
 
@@ -691,13 +691,13 @@ class DateAttribute extends Attribute
             if (is_bool(Tools::atktext('date_monday_first'))) {
                 $mondayFirst = Tools::atktext('date_monday_first') === true ? 'true' : $mondayFirst;
             }
-            $result .= ' <input '.$this->getCSSClassAttribute(array(
+            $result .= ' <input '.$this->getCSSClassAttribute([
                     'button',
                     'atkbutton',
                     'btn',
+                    'btn-sm',
                     'btn-default',
-                    'form-control',
-                )).' type="reset" value="..." onclick="return showCalendar(\''.$id.'\', \''.$id.'[year]\', \'y-mm-dd\', true, '.$mondayFirst.');">';
+                ]).' type="reset" value="..." onclick="return showCalendar(\''.$id.'\', \''.$id.'[year]\', \'y-mm-dd\', true, '.$mondayFirst.');">';
         }
 
         if (!$this->m_simplemode) {

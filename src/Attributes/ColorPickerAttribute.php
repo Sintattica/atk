@@ -65,7 +65,7 @@ class ColorPickerAttribute extends Attribute
         $result = '<div class="input-group ColorPickerAttribute_group" id="'.$id.'_group">';
         $result .= '<input type="text" id="'.$id.'"';
         $result .= ' name="'.$this->getHtmlName($fieldprefix).'"';
-        $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
+        $result .= ' '.$this->getCSSClassAttribute();
         $result .= ' value="'.$value.'"';
         if($this->m_size > 0){
             $result .= ' size="'.$this->m_size.'"';

@@ -133,7 +133,7 @@ class TextAttribute extends Attribute
         if ($this->m_maxsize > 0) {
             $result .= 'maxlength="'.$this->m_maxsize.'" '; // now supported in HTML5
         }
-        $result .= $this->getCSSClassAttribute(array('form-control'));
+        $result .= $this->getCSSClassAttribute();
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }

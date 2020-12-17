@@ -952,7 +952,7 @@ class Attribute
         $result = '';
         $result .= '<input type="text" id="' . $id . '"';
         $result .= ' name="' . $this->getHtmlName($fieldprefix) . '"';
-        $result .= ' ' . $this->getCSSClassAttribute(array('form-control'));
+        $result .= ' ' . $this->getCSSClassAttribute();
         $result .= ' value="' . $value . '"';
         if ($this->m_size > 0) {
             $result .= ' size="' . $this->m_size . '"';

@@ -1082,7 +1082,7 @@ class ManyToOneRelation extends Relation
             $htmlAttrs .= ' '.$k.'="'.htmlspecialchars($v).'"';
         }
 
-        $result = '<select '.$this->getCSSClassAttribute('form-control').' id="'.$id.'" name="'.$name.'"'.$htmlAttrs.'>';
+        $result = '<select '.$this->getCSSClassAttribute().' id="'.$id.'" name="'.$name.'"'.$htmlAttrs.'>';
         foreach ($options as $value => $option) {
             $result .= '<option ';
             $result .= 'value="'.htmlspecialchars($value).'"';
@@ -1252,7 +1252,7 @@ EOF;
                 }
 
                 //normal input field
-                $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control form-control-sm').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
+                $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute().' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
             }
 
             return $result;

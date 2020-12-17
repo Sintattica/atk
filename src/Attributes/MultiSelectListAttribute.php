@@ -182,7 +182,7 @@ class MultiSelectListAttribute extends ListAttribute
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute('form-control').'" '.$onchange.$data.$styles.'>';
+        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute().'" '.$onchange.$data.$styles.'>';
 
         $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {

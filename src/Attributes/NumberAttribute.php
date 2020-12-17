@@ -537,7 +537,7 @@ class NumberAttribute extends Attribute
         $result = '';
         $result .= '<input type="text" id="'.$id.'"';
         $result .= ' name="'.$name.'"';
-        $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
+        $result .= ' '.$this->getCSSClassAttribute();
         $result .= ' value="'.$value.'"';
         if($size > 0){
             $result .= ' size="'.$size.'"';
@@ -584,7 +584,7 @@ class NumberAttribute extends Attribute
             // TODO we should also consider the sign symbol (for signed type)
         }
 
-        $class = $this->getCSSClassAttribute(['form-control']);
+        $class = $this->getCSSClassAttribute();
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
         $style = '';

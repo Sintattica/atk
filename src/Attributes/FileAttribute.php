@@ -274,7 +274,7 @@ class FileAttribute extends Attribute
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_CHECKBOX_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
-            $result .= '<br class="atkFileAttributeCheckboxSeparator"><label for="'.$id.'_del"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute('atkcheckbox').'>&nbsp;'.Tools::atktext('remove_current_file',
+            $result .= '<br class="atkFileAttributeCheckboxSeparator"><label for="'.$id.'_del"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute(['atkcheckbox']).'>&nbsp;'.Tools::atktext('remove_current_file',
                     'atk').'</label>';
         }
 

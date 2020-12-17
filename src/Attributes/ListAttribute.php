@@ -303,7 +303,7 @@ class ListAttribute extends Attribute
             $styles = 'style="'.$style.'"';
         }
 
-        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').$onchange.$data.$styles.'>';
+        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute().$onchange.$data.$styles.'>';
 
         if ($hasNullOption) {
             $result .= '<option value="'.$this->getEmptyValue().'">'.$nullLabel.'</option>';
@@ -382,7 +382,7 @@ class ListAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
         $isMultiple = $this->isMultipleSearch($extended);
-        $class = $this->getCSSClassAttribute(['form-control', 'form-control-sm']);
+        $class = $this->getCSSClassAttribute();
         $style = '';
         $type = $extended ? 'extended_search' : 'search';
 

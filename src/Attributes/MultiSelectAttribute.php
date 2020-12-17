@@ -163,7 +163,7 @@ class MultiSelectAttribute extends ListAttribute
             $result .= $this->_addLinks($fieldprefix);
         }
 
-        $css = $this->getCSSClassAttribute('');
+        $css = $this->getCSSClassAttribute();
         $result .= '<div '.$css.'>';
 
         $values = $this->getValues();

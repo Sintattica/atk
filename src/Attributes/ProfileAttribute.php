@@ -567,7 +567,7 @@ class ProfileAttribute extends Attribute
                             }
 
                             $temp_str .= '<label>';
-                            $temp_str .= '<input type="checkbox" name="'.$this->fieldName().'[]" '.$this->getCSSClassAttribute('atkcheckbox').' value="'.$section.'.'.$module.'.'.$node.'.'.$action.'" ';
+                            $temp_str .= '<input type="checkbox" name="'.$this->fieldName().'[]" '.$this->getCSSClassAttribute(['atkcheckbox']).' value="'.$section.'.'.$module.'.'.$node.'.'.$action.'" ';
                             $temp_str .= ($isSelected ? ' checked="checked"' : '').'>';
                             $temp_str .= ' '.$this->permissionName($action, $node, $module);
                             $temp_str .= '</label>';
