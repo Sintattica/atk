@@ -12,7 +12,7 @@ use Sintattica\Atk\Core\Menu\MenuBase;
  */
 abstract class Module
 {
-    public static $module;
+    public static string $module;
 
     /** @var Atk $atk */
     private Atk $atk;

@@ -34,7 +34,8 @@ class MenuItem
     private bool $raw;
     private string $type;
     private array $urlParams;
-    private string $url;
+    //Todo: Pensare come fare per i link esterni!
+    // private string $url;
     private ?string $icon;
     private bool $active = false;
 
@@ -79,10 +80,10 @@ class MenuItem
         $this->raw = $raw;
         $this->type = $itemType;
         $this->urlParams = $urlParams;
-        $this->url = Tools::dispatch_url($nodeUri, $action, $urlParams);
         $this->icon = $icon;
-
     }
+
+
 
     public function getIdentifier(): string
     {
@@ -319,7 +320,7 @@ class MenuItem
      */
     public function getUrl(): string
     {
-        return $this->url;
+        return Tools::dispatch_url($this->nodeUri, $this->action, $this->urlParams);
     }
 
     /**
