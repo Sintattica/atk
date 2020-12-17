@@ -259,7 +259,7 @@ class DataGridList extends DataGridComponent
 
             /* multi-record-priority-actions -> priority selection */
             if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-                $select = '<select name="'.$listName.'_atkselector[]" class="form-control select-standard">'.'<option value="'.htmlentities($list['rows'][$i]['selector']).'"></option>';
+                $select = '<select name="'.$listName.'_atkselector[]" class="form-control form-control-sm select-standard">'.'<option value="'.htmlentities($list['rows'][$i]['selector']).'"></option>';
                 for ($j = $grid->getNode()->m_priority_min; $j <= $grid->getNode()->m_priority_max; ++$j) {
                     $select .= '<option value="'.$j.'">'.$j.'</option>';
                 }
