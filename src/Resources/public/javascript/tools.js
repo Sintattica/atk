@@ -171,8 +171,8 @@ ATK.Tools = {
 
     enableSelect2ForSelect: function (select) {
         // var select2, width;
-        var $el = jQuery(select);
-        var options = {};
+        const $el = jQuery(select);
+        let options = {};
 
         if ($el.is('select')) {
             if (typeof $el.data('with-empty-value') !== 'undefined') {
