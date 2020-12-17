@@ -136,11 +136,25 @@ class Page
         // Select2
         $this->register_script($assetsUrl.'admin-lte/plugins/select2/js/select2.full.min.js');
 
+        /*
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/moment/moment.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/bs-stepper/js/bs-stepper.min.js');
+        $this->register_script($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.js');
+        */
+
+
         //Fixed Scrollbar
         $this->register_script($assetsUrl.'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
 
         //AdminLTE App
         $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
+
 
 
         //Atk - Custom
@@ -179,6 +193,16 @@ class Page
 
         //Override default with custom styles
         $this->register_style($assetsUrl.'admin-lte/css/style.css');
+
+        /*
+        $this->register_style($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/bs-stepper/css/bs-stepper.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.css');
+        $this->register_style($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.css');
+*/
 
 
         $style_url = Config::getGlobal('style_url');

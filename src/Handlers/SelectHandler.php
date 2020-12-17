@@ -70,7 +70,7 @@ class SelectHandler extends ActionHandler
 
         if ($sm->atkLevel() > 0) {
             $backUrl = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$sm->newLevel(SessionManager::SESSION_BACK));
-            $params['footer'] = '<br><div style="text-align: center"><input type="button" class="btn btn-default" onclick="window.location=\''.$backUrl.'\';" value="'.$this->getNode()->text('cancel').'"></div>';
+            $params['footer'] = '<br><div style="text-align: center"><input type="button" class="btn btn-sm btn-default" onclick="window.location=\''.$backUrl.'\';" value="'.$this->getNode()->text('cancel').'"></div>';
         }
 
         $output = $this->getUi()->renderList('select', $params);

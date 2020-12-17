@@ -1788,8 +1788,8 @@ class Node
                 $result[] = $this->getButton('back', false, Tools::atktext('cancel'));
             }
         } elseif ($mode == 'delete') {
-            $result[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok" value="'.$this->text('yes').'">';
-            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="'.$this->text('no').'">';
+            $result[] = '<input name="confirm" type="submit" class="btn btn-sm btn-default btn_ok" value="'.$this->text('yes').'">';
+            $result[] = '<input name="cancel" type="submit" class="btn btn-sm btn-default btn_cancel" value="'.$this->text('no').'">';
         } elseif ($mode == 'search') {
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
@@ -2420,7 +2420,7 @@ class Node
      *
      * @param string $action The action for which you wnat to retrieve the
      *                       template.
-     * @param array $record The record for which you want to return the
+     * @param null $record The record for which you want to return the
      *                       template (or NULL if there is no record).
      * @param string $tab The name of the tab for which you want to
      *                       retrieve the template.
@@ -2710,8 +2710,8 @@ class Node
 
         $buttons = $this->getFormButtons($action, array());
         if (Tools::count($buttons) == 0) {
-            $buttons[] = '<input name="confirm" type="submit" class="btn btn-default btn_ok atkdefaultbutton" value="'.$this->text('yes').'">';
-            $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel" value="'.$this->text('no').'">';
+            $buttons[] = '<input name="confirm" type="submit" class="btn btn-sm btn-default btn_ok atkdefaultbutton" value="'.$this->text('yes').'">';
+            $buttons[] = '<input name="cancel" type="submit" class="btn btn-sm btn-default btn_cancel" value="'.$this->text('no').'">';
         }
 
         $content = '';

@@ -1312,7 +1312,7 @@ class Tools
         static $cnt = 0;
 
         if ($cssclass == '') {
-            $cssclass = 'btn btn-default';
+            $cssclass = 'btn btn-sm btn-default';
         }
 
         $cssclass = ' class="' . $cssclass . '"';

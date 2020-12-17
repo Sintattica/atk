@@ -475,11 +475,11 @@ class OneToManyRelation extends Relation
     public function _getEmbeddedButtons()
     {
         $fname = $this->fieldName();
-        $output = '<input type="submit" class="btn btn-default otm_add" name="'.$fname.'_save" value="'.Tools::atktext('add').'">';
+        $output = '<input type="submit" class="btn btn-sm btn-default otm_add" name="'.$fname.'_save" value="'.Tools::atktext('add').'">';
 
         return $output.'<input type="button"
         onClick="ATK.OneToManyRelation.toggleAddForm(\''.$fname."_integrated','".$fname."_integrated_link');\"
-        class=\"btn btn-default otm_add\"
+        class=\"btn btn-sm btn-default otm_add\"
         name=\"".$fname.'_cancel"
         value="'.Tools::atktext('cancel').'">';
     }
@@ -594,7 +594,7 @@ class OneToManyRelation extends Relation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform, $onchange.' class="atkonetomanyrelation btn btn-default"');
+        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform, $onchange.' class="atkonetomanyrelation btn btn-sm btn-default"');
     }
 
     /**

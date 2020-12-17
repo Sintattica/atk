@@ -153,13 +153,13 @@ class ShuttleRelation extends ManyToManyRelation
         }
 
         $result .= '<div class="shuttle-controls-single">';
-        $result .= '<button class="btn btn-default" onClick="ATK.ShuttleRelation.shuttle_move(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-right"></i></button>';
-        $result .= '<button class="btn btn-default" type="button" value="&lt;" onClick="ATK.ShuttleRelation.shuttle_move(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-left"></i></button>';
+        $result .= '<button class="btn btn-sm btn-default" onClick="ATK.ShuttleRelation.shuttle_move(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-right"></i></button>';
+        $result .= '<button class="btn btn-sm btn-default" type="button" value="&lt;" onClick="ATK.ShuttleRelation.shuttle_move(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-triangle-left"></i></button>';
         $result .= '</div>';
 
         $result .= '<div class="shuttle-controls-multiple">';
-        $result .= '<button class="btn btn-default" type="button" value="&gt;&gt;" onClick="ATK.ShuttleRelation.shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-forward"></i></button>';
-        $result .= '<button class="btn btn-default" type="button" value="&lt;&lt;" onClick="ATK.ShuttleRelation.shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-backward"></i></button>';
+        $result .= '<button class="btn btn-sm btn-default" type="button" value="&gt;&gt;" onClick="ATK.ShuttleRelation.shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-forward"></i></button>';
+        $result .= '<button class="btn btn-sm btn-default" type="button" value="&lt;&lt;" onClick="ATK.ShuttleRelation.shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\', \''.$fieldname.'\');return false;"><i class="glyphicon glyphicon-backward"></i></button>';
         $result .= '</div>';
 
         $result .= '</td><td>'.Tools::atktext('selected', 'atk').':<br/>';
