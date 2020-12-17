@@ -1,28 +1,66 @@
-
+/**
+  *     Menu
+  * -----------------
+ */
 /**
  If one submenu item has a long text it gets hidden after the
  right border of the sidebar. With this the icon that opens the sidebar
  will remain in place and the text will go under it.
  */
-.sidebar li.nav-item{
+.sidebar li.nav-item {
     max-width: 100% !important;
 }
 
 
-.nav-icon.small-txt{
+.nav-icon.small-txt {
     margin-left: 0.2rem !important;
     margin-top: 0.2rem !important;
 }
 
 
-.select2-container--bootstrap4.select2-container--focus .select2-selection{
+/**
+ * SELECT2
+ * -----------------------
+ */
+.select2-container--bootstrap4.select2-container--focus .select2-selection {
     box-shadow: none !important;
     border-bottom: solid 1px #80bdff !important;
 }
 
+/** line height */
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+    line-height: normal !important;
+    padding-top: 2px !important;
+}
 
+
+/**
+  * Tables
+  * ---------------------
+  */
 
 /* Table actions */
 table.recordList tr td .actions .btn {
     margin: 0 2px;
+}
+
+.recordListTdFirst {
+    white-space: nowrap;
+    width: 1%;
+}
+
+table thead th {
+    vertical-align: middle !important;
+}
+
+table thead th .select2-container--bootstrap4 {
+    margin-top: 1px !important;
+}
+
+.recordList-header-row {
+    text-align: center;
+}
+
+.recordList-header-row a {
+    color: #212529;
 }
