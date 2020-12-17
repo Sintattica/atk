@@ -116,7 +116,7 @@ class DataGrid
      *
      * @return bool
      */
-    private $m_embedded = false;
+    private bool $m_embedded = false;
 
     /**
      * Base URL for updating the data grid using an Ajax call.

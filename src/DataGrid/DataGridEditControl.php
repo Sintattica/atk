@@ -18,10 +18,10 @@ class DataGridEditControl extends DataGridComponent
      *
      * @return string rendered HTML
      */
-    public function render()
+    public function render() : ?string
     {
         if (Tools::count($this->getGrid()->getRecords()) == 0 || Tools::count($this->getNode()->m_editableListAttributes) == 0) {
-            return;
+            return null;
         }
 
         if ($this->getGrid()->getPostvar('atkgridedit', false)) {

@@ -141,10 +141,10 @@ class DataGridPaginator extends DataGridComponent
     /**
      * Renders the paginator for the given data grid.
      *
-     * @return string rendered HTML
+     * @return null|string rendered HTML
      * @throws SmartyException
      */
-    public function render(): string
+    public function render(): ?string
     {
         if ($this->getGrid()->isEditing()) {
             return '';

@@ -2427,7 +2427,7 @@ class Node
      *
      * @return string The filename of the template (without path)
      */
-    public function getTemplate($action, $record = null, $tab = '')
+    public function getTemplate(string $action, $record = null, $tab = ''): string
     {
         switch ($action) {
             case 'add': // add and edit both use the same form.

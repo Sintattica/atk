@@ -17,16 +17,16 @@ abstract class DataGridComponent
     /**
      * The DataGrid.
      *
-     * @var DataGrid
+     * @var null|DataGrid
      */
-    private $m_grid;
+    private ?DataGrid $m_grid;
 
     /**
      * The component options.
      *
      * @var array
      */
-    private $m_options;
+    private array $m_options;
 
     /**
      * Constructor.
@@ -34,7 +34,7 @@ abstract class DataGridComponent
      * @param DataGrid $grid grid
      * @param array $options component options
      */
-    public function __construct($grid, $options = array())
+    public function __construct(DataGrid $grid, $options = array())
     {
         $this->m_grid = $grid;
         $this->m_options = $options;
@@ -52,11 +52,11 @@ abstract class DataGridComponent
      * Returns the value for the component option with the given name.
      *
      * @param string $name option name
-     * @param string $fallback
+     * @param null $fallback
      *
      * @return mixed option value
      */
-    protected function getOption($name, $fallback = null)
+    protected function getOption(string $name, $fallback = null): ?string
     {
         return isset($this->m_options[$name]) ? $this->m_options[$name] : $fallback;
     }
@@ -66,7 +66,7 @@ abstract class DataGridComponent
      *
      * @return DataGrid data grid
      */
-    protected function getGrid()
+    protected function getGrid(): ?DataGrid
     {
         return $this->m_grid;
     }
@@ -76,7 +76,7 @@ abstract class DataGridComponent
      *
      * @return Node node
      */
-    protected function getNode()
+    protected function getNode(): Node
     {
         return $this->getGrid()->getNode();
     }
@@ -86,7 +86,7 @@ abstract class DataGridComponent
      *
      * @return Page page
      */
-    protected function getPage()
+    protected function getPage(): Page
     {
         return $this->getNode()->getPage();
     }
@@ -96,7 +96,7 @@ abstract class DataGridComponent
      *
      * @return Ui ui
      */
-    protected function getUi()
+    protected function getUi(): Ui
     {
         return $this->getNode()->getUi();
     }
@@ -114,7 +114,7 @@ abstract class DataGridComponent
      *
      * @return string translation
      */
-    protected function text($string, $fallback = '', $useDefault = true)
+    protected function text($string, $fallback = '', $useDefault = true): string
     {
         return $this->getGrid()->text($string, $fallback, $useDefault);
     }
@@ -124,5 +124,5 @@ abstract class DataGridComponent
      *
      * @return string component HTML
      */
-    abstract public function render();
+    abstract public function render(): ?string;
 }
