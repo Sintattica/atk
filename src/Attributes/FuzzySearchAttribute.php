@@ -79,7 +79,7 @@ class FuzzySearchAttribute extends Attribute
     {
         $flags = $flags | self::AF_HIDE_VIEW | self::AF_HIDE_LIST;
         parent::__construct($name, $flags);
-        
+
         $this->m_searchnode = $searchnode;
         $this->m_callback = $callback;
         $this->m_mode = strtolower($mode);
@@ -362,7 +362,7 @@ class FuzzySearchAttribute extends Attribute
         //noop
     }
 
-    
+
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
     {
         //noop
@@ -373,7 +373,7 @@ class FuzzySearchAttribute extends Attribute
         //noop
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         //noop
     }

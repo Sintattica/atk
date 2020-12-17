@@ -110,7 +110,7 @@ class DummyAttribute extends Attribute
      *
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         return '&nbsp;';
     }
@@ -162,7 +162,7 @@ class DummyAttribute extends Attribute
     {
         return true;
     }
-    
+
     public function db2value($record)
     {
         return;

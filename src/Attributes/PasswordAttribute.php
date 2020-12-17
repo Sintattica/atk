@@ -43,7 +43,7 @@ class PasswordAttribute extends Attribute
      * @var array
      */
     public $m_restrictions;
-    
+
     /**
      * Constructor.
      *
@@ -176,7 +176,7 @@ class PasswordAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         // We don't support searching for passwords!
         return '';

@@ -350,7 +350,7 @@ class TimeAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         return parent::search($record, $extended, $fieldprefix);
     }

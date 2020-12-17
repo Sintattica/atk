@@ -131,7 +131,7 @@ class BoolAttribute extends Attribute
                     parent::label(),
                 )).'</label>';
         }
-        
+
         return $result;
     }
 
@@ -163,7 +163,7 @@ class BoolAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
@@ -174,7 +174,7 @@ class BoolAttribute extends Attribute
         }
 
         $result = '<select id="'.$id.'" name="'.$name.'"';
-        $result .= ' class="form-control select-standard"';
+        $result .= ' class="form-control form-control-sm select-standard"';
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }
@@ -191,6 +191,8 @@ class BoolAttribute extends Attribute
         }
         $result .= '>'.Tools::atktext('yes', 'atk').'</option>';
         $result .= '</select>';
+
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
 
         return $result;
     }
@@ -294,7 +296,7 @@ class BoolAttribute extends Attribute
     {
         return 'number';
     }
-    
+
     /**
      * Convert a String representation into an internal value.
      *

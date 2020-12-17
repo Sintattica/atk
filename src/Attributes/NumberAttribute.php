@@ -513,7 +513,7 @@ class NumberAttribute extends Attribute
         foreach($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
-        
+
         if (Tools::count($this->m_onchangecode)) {
             $onchange = 'onChange="'.$id.'_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
@@ -571,7 +571,7 @@ class NumberAttribute extends Attribute
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $value = '';
         if (isset($record[$this->fieldName()])) {

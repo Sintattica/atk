@@ -936,7 +936,7 @@ class Attribute
         $id = $this->getHtmlId($fieldprefix);
 
         if (Tools::count($this->m_onchangecode)) {
-            $onchange = 'onChange="'.$id.'_onChange(this);"';
+            $onchange = 'onChange="' . $id . '_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {
             $onchange = '';
@@ -945,29 +945,29 @@ class Attribute
         $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()]) ? htmlspecialchars($record[$this->fieldName()]) : '');
 
         $style = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+        foreach ($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
 
         $result = '';
-        $result .= '<input type="text" id="'.$id.'"';
-        $result .= ' name="'.$this->getHtmlName($fieldprefix).'"';
-        $result .= ' '.$this->getCSSClassAttribute(array('form-control'));
-        $result .= ' value="'.$value.'"';
-        if($this->m_size > 0){
-            $result .= ' size="'.$this->m_size.'"';
+        $result .= '<input type="text" id="' . $id . '"';
+        $result .= ' name="' . $this->getHtmlName($fieldprefix) . '"';
+        $result .= ' ' . $this->getCSSClassAttribute(array('form-control'));
+        $result .= ' value="' . $value . '"';
+        if ($this->m_size > 0) {
+            $result .= ' size="' . $this->m_size . '"';
         }
-        if($this->m_maxsize > 0){
-            $result .= ' maxlength="'.$this->m_maxsize.'"';
+        if ($this->m_maxsize > 0) {
+            $result .= ' maxlength="' . $this->m_maxsize . '"';
         }
-        if($onchange){
-            $result .= ' '.$onchange;
+        if ($onchange) {
+            $result .= ' ' . $onchange;
         }
-        if($placeholder = $this->getPlaceholder()){
-            $result .= ' placeholder="'.htmlspecialchars($placeholder).'"';
+        if ($placeholder = $this->getPlaceholder()) {
+            $result .= ' placeholder="' . htmlspecialchars($placeholder) . '"';
         }
-        if($style != ''){
-            $result .= ' style="'.$style.'"';
+        if ($style != '') {
+            $result .= ' style="' . $style . '"';
         }
         $result .= ' />';
 
@@ -1558,7 +1558,7 @@ class Attribute
      *
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
@@ -1569,21 +1569,21 @@ class Attribute
         }
 
         $style = '';
-        $type = $extended ? 'extended_search':'search';
-        foreach($this->getCssStyles($type) as $k => $v) {
+        $type = $extended ? 'extended_search' : 'search';
+        foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
 
-        $class = $this->getCSSClassAttribute(['form-control']);
+        $class = $this->getCSSClassAttribute();
         $result = '';
 
         $result .= '<input type="text"';
-        $result .= ' id="'.$id.'"';
-        $result .= ' '.$class;
-        $result .= ' name="'.$name.'"';
-        $result .= ' value="'.htmlentities($value).'"';
-        $result .= $this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '';
-        $result .= $style != '' ? ' style="'.$style.'"': '';
+        $result .= ' id="' . $id . '"';
+        $result .= ' ' . $class;
+        $result .= ' name="' . $name . '"';
+        $result .= ' value="' . htmlentities($value) . '"';
+        $result .= $this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '';
+        $result .= $style != '' ? ' style="' . $style . '"' : '';
         $result .= ' />';
 
         return $result;

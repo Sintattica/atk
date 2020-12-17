@@ -870,7 +870,7 @@ class DateAttribute extends Attribute
      *
      * @return string piece of HTML code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         if (!$extended) {
             // plain text search, check if we didn't come from extended search (then current value is an array)

@@ -1097,7 +1097,7 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null)
+    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
         $id = $this->getHtmlId($fieldprefix);
@@ -1252,7 +1252,7 @@ EOF;
                 }
 
                 //normal input field
-                $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
+                $result = '<input type="text" id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute('form-control form-control-sm').' value="'.$current.'"'.($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').'>';
             }
 
             return $result;
