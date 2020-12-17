@@ -33,6 +33,14 @@
     padding-top: 2px !important;
 }
 
+.select2-selection__rendered {
+    line-height: 27px !important;
+}
+.select2-container .select2-selection--single {
+    height: 31px !important;
+}
+
+
 
 /**
   * Tables
@@ -53,14 +61,151 @@ table thead th {
     vertical-align: middle !important;
 }
 
-table thead th .select2-container--bootstrap4 {
-    margin-top: 1px !important;
-}
-
 .recordList-header-row {
     text-align: center;
 }
 
 .recordList-header-row a {
     color: #212529;
+}
+
+
+/*
+ * Calendar.js
+ */
+
+/* The main calendar widget.  DIV containing a table. */
+.calendar {
+    position: relative;
+    display: none;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    background-clip: padding-box;
+    outline: 0;
+}
+
+.calendar table {
+    margin: 5px;
+}
+
+.calendar table td {
+    padding: 2px;
+}
+
+/* Header part -- contains navigation buttons and day names. */
+.calendar .button {
+    /* "<<", "<", ">", ">>" buttons have this class */
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.calendar thead .title {
+    /* This holds the current "month, year" */
+    font-weight: bold;
+    text-align: center;
+}
+
+.calendar .button[colspan="4"] {
+    font-size: 12px;
+}
+
+.calendar thead .headrow {
+    /* Row <TR> containing navigation buttons */
+}
+
+.calendar thead .daynames {
+    /* Row <TR> containing the day names */
+    border-bottom: 1px solid #ccc;
+}
+
+.calendar thead .daynames .wn {
+    visibility: hidden;
+}
+
+.calendar thead .name {
+    /* Cells <TD> containing the day names */
+}
+
+.calendar thead .weekend {
+    /* How a weekend day name shows in header */
+}
+
+.calendar thead .hilite {
+    /* How do the buttons in header appear when hover */
+}
+
+.calendar thead .active {
+    /* Active (pressed) buttons in header */
+}
+
+/* The body part -- contains all the days in month. */
+.calendar tbody .day {
+    /* Cells <TD> containing month days dates */
+    text-align: right;
+    cursor: pointer;
+}
+
+.calendar table .wn {
+    background-color: #ccc;
+    color: #fff;
+}
+
+.calendar tbody td.hilite {
+    /* Hovered cells <TD> */
+}
+
+.calendar tbody td.active {
+    /* Active (pressed) cells <TD> */
+}
+
+.calendar tbody td.selected {
+    /* Cell showing selected date */
+    font-weight: bold;
+}
+
+.calendar tbody td.weekend {
+    /* Cells showing weekend days */
+}
+
+.calendar tbody td.today {
+    /* Cell showing today date */
+}
+
+.calendar tbody .disabled {
+    color: #ccc;
+}
+
+.calendar tbody .emptycell {
+    /* Empty cells (the best is to hide them) */
+    visibility: hidden;
+}
+
+.calendar tbody .emptyrow {
+    /* Empty row (some months need less than 6 rows) */
+    display: none;
+}
+
+/* The footer part -- status bar and "Close" button */
+.calendar tfoot .footrow {
+    /* The <TR> in footer (only one right now) */
+}
+
+.calendar tfoot .ttip {
+    /* Tooltip (status bar) cell <TD> */
+    font-size: 11px;
+    text-align: center;
+}
+
+.calendar tfoot .hilite {
+    /* Hover style for buttons in footer */
+}
+
+.calendar tfoot .active {
+    /* Active (pressed) style for buttons in footer */
 }

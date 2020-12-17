@@ -372,7 +372,7 @@ class DateAttribute extends Attribute
         $emptyfield = null;
         /* date must be within specified (default: 25) years */
         if (!empty($current['y_max']) && !empty($current['y_min']) && $current['y_max'] - $current['y_min'] <= $this->m_maxyears) {
-            $result .= '<select id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
+            $result .= '<select id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control form-control-sm select-standard" onChange="'.$str_script.'">';
             if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
                 $result .= '<option value="0"'.($current === null ? ' selected' : '').'></option>';
             }
@@ -402,7 +402,7 @@ class DateAttribute extends Attribute
 
             $this->m_yeardropdown = true;
         } /* normal input box */ else {
-            $result .= '<input type="text" id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current['year']) ? $current['year'] : '').'">';
+            $result .= '<input type="text" id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control form-control-sm" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current['year']) ? $current['year'] : '').'">';
         }
 
         return $result;
@@ -422,7 +422,9 @@ class DateAttribute extends Attribute
      */
     protected function renderMonth($fieldid, $fieldname, $str_script, $current, $format, $obligatory)
     {
-        $result = '<select id="'.$fieldid.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
+        $fieldHtmlId = $fieldid.'[month]';
+
+        $result = '<select id="'.$fieldHtmlId.'" name="'.$fieldname.'[month]" data-no-search class="atkdateattribute form-control form-control-sm select-standard" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
@@ -438,6 +440,11 @@ class DateAttribute extends Attribute
             }
         }
         $result .= '</select>';
+
+        //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $escapedFieldHtmlId = $fieldid.'\\\\[month\\\\]';
+
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
         return $result;
     }
@@ -463,7 +470,7 @@ class DateAttribute extends Attribute
         $c_dmax = isset($current['d_max']) ? $current['d_max'] : null;
         $c_mday = isset($current['mday']) ? $current['mday'] : null;
 
-        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute form-control select-standard" onChange="'.$str_script.'">';
+        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" data-no-search class="atkdateattribute form-control form-control-sm select-standard" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
@@ -484,6 +491,11 @@ class DateAttribute extends Attribute
             }
         }
         $result .= '</select>';
+
+        //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $escapedFieldHtmlId = $fieldid.'\\\\[day\\\\]';
+
+        $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
         return $result;
     }
@@ -625,7 +637,7 @@ class DateAttribute extends Attribute
                 $str_script = $this->getHtmlId($fieldprefix).'_onChange(this);';
             }
 
-            $result = '<select id="'.$id.'" name="'.$fieldname.'" onChange="'.$str_script.'" class="form-control select-standard">';
+            $result = '<select id="'.$id.'" name="'.$fieldname.'" onChange="'.$str_script.'" class="form-control form-control-sm select-standard">';
             for ($i = $str_min; $i <= $str_max; ++$i) {
                 $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
                 $result .= '<option value="'.$i.'"'.($current !== null && $tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date,
@@ -655,7 +667,7 @@ class DateAttribute extends Attribute
         );
 
         if (!$this->m_simplemode) {
-            $result .= '<div class="DateAttribute form-inline"><script>var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
+            $result .= '<div class="DateAttribute d-flex flex-nowrap form-inline"><script>var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
         }
 
         /* other date selections */
@@ -684,20 +696,22 @@ class DateAttribute extends Attribute
             } /* other characters */ else {
                 $result .= $str_format[$i];
             }
+
         }
+
 
         if (!$this->hasFlag(self::AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
             $mondayFirst = 'false';
             if (is_bool(Tools::atktext('date_monday_first'))) {
                 $mondayFirst = Tools::atktext('date_monday_first') === true ? 'true' : $mondayFirst;
             }
-            $result .= ' <input '.$this->getCSSClassAttribute([
-                    'button',
+            $result .= ' <span '.$this->getCSSClassAttribute([
                     'atkbutton',
+                    'fas fa-calendar-alt',
                     'btn',
                     'btn-sm',
                     'btn-default',
-                ]).' type="reset" value="..." onclick="return showCalendar(\''.$id.'\', \''.$id.'[year]\', \'y-mm-dd\', true, '.$mondayFirst.');">';
+                ]).' type="reset" onclick="return showCalendar(\''.$id.'\', \''.$id.'[year]\', \'y-mm-dd\', true, '.$mondayFirst.');"></span>';
         }
 
         if (!$this->m_simplemode) {

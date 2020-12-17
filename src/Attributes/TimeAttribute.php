@@ -200,9 +200,18 @@ class TimeAttribute extends Attribute
             $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
 
-        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
-        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
-        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" class=\"atktimeattribute form-control select-standard\"{$onChangeCode}>";
+        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap  form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[hours\\\\]';  //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $m_hourBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
+
+        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap  form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[minutes\\\\]'; //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $m_minBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
+
+        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap  form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[seconds\\\\]';  //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $m_secBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
+
 
         if (is_array($field)) {
             $m_defHour = $field['hours'];
