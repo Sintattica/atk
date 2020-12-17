@@ -209,3 +209,11 @@ table thead th {
 .calendar tfoot .active {
     /* Active (pressed) style for buttons in footer */
 }
+
+
+/**
+ * Checkbox style
+ */
+input[type = checkbox].form-control{
+    max-width:30px !important;
+}

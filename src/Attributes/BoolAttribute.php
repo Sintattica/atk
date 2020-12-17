@@ -99,7 +99,7 @@ class BoolAttribute extends Attribute
      *
      * @return string piece of html code with a checkbox
      */
-    public function edit($record, $fieldprefix, $mode)
+    public function edit($record, $fieldprefix, $mode): string
     {
         $result = '';
         $id = $this->getHtmlId($fieldprefix);
@@ -116,20 +116,17 @@ class BoolAttribute extends Attribute
             $style .= "$k:$v;";
         }
 
-        $result .= '<div class="checkbox"><span class="checkbox-wrapper">';
+        $result .= '<div class="checkbox icheck-primary" style="max-width: 50px;">';
         $result .= '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1"';
         $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute(['atkcheckbox']);
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }
         $result .= ' />';
-        $result .= '</span></div>';
+        $result .= '<label for="'.$id.'"></label></div>';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
-            $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array(
-                    $this->fieldName().'_label',
-                    parent::label(),
-                )).'</label>';
+            $result .= '&nbsp;<label for="'.$id.'">'.$this->text($this->fieldName().'_label').'</label>';
         }
 
         return $result;
