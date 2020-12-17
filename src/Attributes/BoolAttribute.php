@@ -142,7 +142,7 @@ class BoolAttribute extends Attribute
      *
      * @return int
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         return isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()] : 0;
     }

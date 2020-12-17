@@ -1115,10 +1115,10 @@ class DateAttribute extends Attribute
      *
      * @return string database value for date
      */
-    public function value2db($rec)
+    public function value2db($rec): ?string
     {
         if (!is_array($rec[$this->fieldName()])) {
-            return;
+            return null;
         }
 
         $year = $rec[$this->fieldName()]['year'];
@@ -1126,15 +1126,13 @@ class DateAttribute extends Attribute
         $day = $rec[$this->fieldName()]['day'];
 
         if (empty($year) || empty($month) || empty($day)) {
-            return;
+            return null;
         }
         if ($year == '' || $month == 0 || $day == 0) {
-            return;
+            return null;
         } //one of the fields is left empty
 
-        $result = $year.'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $day);
-
-        return $result;
+        return $year.'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $day);
     }
 
     /**

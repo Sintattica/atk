@@ -827,7 +827,7 @@ class Attribute
      *
      * @return string The database compatible value
      */
-    public function value2db($rec): ?string
+    public function value2db(array $rec)
     {
         if (is_array($rec) && isset($rec[$this->fieldName()])) {
             return $this->escapeSQL($rec[$this->fieldName()]);
@@ -910,7 +910,7 @@ class Attribute
      *
      * @return string|null The internal value
      */
-    public function fetchValue($postvars): ?string
+    public function fetchValue($postvars)
     {
         if ($this->isPosted($postvars)) {
             return $postvars[$this->fieldName()];

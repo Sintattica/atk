@@ -282,7 +282,7 @@ class DateTimeAttribute extends Attribute
      *
      * @return string The database compatible value
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if (is_array($rec[$this->fieldName()])) {
             $value = $rec[$this->fieldName()];
@@ -304,7 +304,7 @@ class DateTimeAttribute extends Attribute
             }
         }
 
-        return;
+        return null;
     }
 
     /**

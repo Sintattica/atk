@@ -297,19 +297,17 @@ class TimeAttribute extends Attribute
      *
      * @return string The database compatible value
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         $hours = $rec[$this->fieldName()]['hours'];
         $minutes = $rec[$this->fieldName()]['minutes'];
         $seconds = $rec[$this->fieldName()]['seconds'];
 
         if ($hours == '' || $minutes == '' || ($this->hasFlag(self::AF_TIME_SECONDS) && $seconds == '')) {
-            return;
+            return null;
         }
 
-        $result = sprintf('%02d', $hours).':'.sprintf('%02d', $minutes).':'.sprintf('%02d', $seconds);
-
-        return $result;
+        return sprintf('%02d', $hours).':'.sprintf('%02d', $minutes).':'.sprintf('%02d', $seconds);
     }
 
     /**

@@ -490,12 +490,12 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_pagination_limit = $limit;
     }
 
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         if ($this->isEmpty($rec)) {
             Tools::atkdebug($this->fieldName().' IS EMPTY!');
 
-            return;
+            return null;
         } else {
             if ($this->createDestination()) {
                 if (is_array($rec[$this->fieldName()])) {

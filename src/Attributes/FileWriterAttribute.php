@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Exception;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
 
@@ -44,12 +45,13 @@ class FileWriterAttribute extends TextAttribute
      * @param array $record The record that holds this attribute's value.
      *
      * @return string The database compatible value
+     * @throws Exception
      */
-    public function value2db($record)
+    public function value2db(array $record): ?string
     {
-        // Note1 : regardless of mode (update or add), we always overwrite the 
+        // Note1 : regardless of mode (update or add), we always overwrite the
         // file with the current contents.
-        // Note 2: even if contents is "", we write the file, since the file 
+        // Note 2: even if contents is "", we write the file, since the file
         // might exist and contain old information.
 
         $contents = $record[$this->fieldName()];
@@ -98,7 +100,7 @@ class FileWriterAttribute extends TextAttribute
             return $record[$this->fieldName()];
         } else {
             if ($record[$this->fieldName()] == '') {
-                // db is empty. if file contains stuff, use that.          
+                // db is empty. if file contains stuff, use that.
                 $contents = implode('', file($filename));
                 Tools::atkdebug('['.$this->fieldName()."] succesfully read $filename");
 

@@ -187,7 +187,7 @@ class PasswordAttribute extends Attribute
      *
      * @return string
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         return $rec[$this->fieldName()]['hash'];
     }

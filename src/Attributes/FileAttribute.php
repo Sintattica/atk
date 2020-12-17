@@ -923,7 +923,7 @@ class FileAttribute extends Attribute
      *
      * @return string Nothing or Fieldname or Original filename
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         $del = isset($rec[$this->fieldName()]['postdel']) ? $rec[$this->fieldName()]['postdel'] : null;
 

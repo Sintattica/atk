@@ -72,7 +72,7 @@ class TextAttribute extends Attribute
         foreach($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
-        
+
         // list mode, show a small textarea, until it get's focus
         // and is inflated to a big textarea
         if ($mode == 'list') {
@@ -158,7 +158,7 @@ class TextAttribute extends Attribute
      *
      * @return string with slashes
      */
-    public function value2db($rec)
+    public function value2db(array $rec)
     {
         $db = $this->getDb();
         if ($db->getType() != 'oci9' || $this->dbFieldType() != 'text') {
@@ -181,7 +181,7 @@ class TextAttribute extends Attribute
             return $rec[$this->fieldName()];
         }
 
-        return;
+        return null;
     }
 
     /**
