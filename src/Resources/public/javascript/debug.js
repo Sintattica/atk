@@ -19,17 +19,17 @@ ATK.Debug = {
      * Add content to the debugging div.
      */
     addContent: function(content) {
-        var el = document.getElementById(ATK.Debug.ELEMENT_ID);
+        const el = document.getElementById(ATK.Debug.ELEMENT_ID);
         if (el !== null) {
             el.innerHTML += content;
         }
     },
     /**
-     * Update cookie which stores whatever the first debug line was last 
+     * Update cookie which stores whatever the first debug line was last
      * expanded or collapsed. This cookie will expire in one year.
      */
     updateCookie: function(state) {
-        var date = new Date();
+        const date = new Date();
         date.setTime(date.getTime() + 1000 * 60 * 60 * 24 * 365);
         document.cookie = 'atkdebugstate=' + state + '; expires=' + date.toUTCString() + '; path=/';
     },
@@ -37,9 +37,9 @@ ATK.Debug = {
      * Is first debug block?
      */
     isFirst: function(block) {
-        var first = true;
+        let first = true;
 
-        var previous = block.previousSibling;
+        let previous = block.previousSibling;
         while (previous !== null) {
             if (previous.className && previous.className.match(ATK.Debug.BLOCK_CLASS)) {
                 first = false;
@@ -54,8 +54,8 @@ ATK.Debug = {
      * Toggle an ATK debug block.
      */
     toggle: function(toggle) {
-        var block = toggle.parentNode;
-        var first = ATK.Debug.isFirst(block);
+        const block = toggle.parentNode;
+        const first = ATK.Debug.isFirst(block);
 
         if (block.className.match(ATK.Debug.COLLAPSED_CLASS)) {
             if (first)
