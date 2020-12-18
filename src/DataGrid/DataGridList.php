@@ -527,7 +527,7 @@ class DataGridList extends DataGridComponent
      */
     protected function _renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext = 'false')
     {
-        return '<a href="'."javascript:ATK.RL.rl_do('$listName',$i,'$name',$confirmtext);".'" class="btn btn-default">'.$link.'</a>';
+        return '<a href="'."javascript:ATK.RL.rl_do('$listName',$i,'$name',$confirmtext);".'" class="btn btn-sm btn-default">'.$link.'</a>';
     }
 
     /**
