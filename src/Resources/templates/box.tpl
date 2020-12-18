@@ -1,5 +1,5 @@
 <!-- Main content -->
-<section class="content">
+<section class="content overflow-hidden">
 
     <!-- Default box -->
     <div class="card">
