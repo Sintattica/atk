@@ -55,10 +55,10 @@ ATK.FormSubmit = {
         }
 
         var form = jQuery(formEl);
-        var spinner = form.find('#action-buttons .spinner');
+        const loadingOverlay = form.find('#action-buttons .overlay');
         var atksubmitaction;
-        bag.spinnerVisibility = spinner.css('visibility');
-        spinner.css('visibility', 'visible');
+        bag.loadingOverlayVisibility = loadingOverlay.css('visibility');
+        loadingOverlay.css('visibility', 'visible');
 
         var actionButton = form.find("#action-buttons button[clicked=true]").get(0);
 
@@ -86,8 +86,8 @@ ATK.FormSubmit = {
         }
 
         if (!retval) {
-            var spinner = jQuery(formEl).find('#action-buttons .spinner');
-            spinner.css('visibility', bag.spinnerVisibility);
+            const loadingOverlay = jQuery(formEl).find('#action-buttons .overlay');
+            loadingOverlay.css('visibility', bag.loadingOverlayVisibility);
 
             if (bag.actionButton) {
                 bag.actionButton.prop('disabled', bag.actionButtonDisabled);

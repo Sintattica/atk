@@ -217,3 +217,12 @@ table thead th {
 input[type = checkbox].form-control{
     max-width:30px !important;
 }
+
+
+/**
+    Loading overlay
+ */
+.overlay{
+    flex-direction: column;
+    visibility: hidden;
+}
