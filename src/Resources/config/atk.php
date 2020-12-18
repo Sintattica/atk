@@ -303,7 +303,7 @@ return [
      * Use bugzilla-style crypted password storage
      * @var boolean
      */
-    'auth_usecryptedpassword' => false,
+    'auth_usecryptedpassword' => true,
 
     /*
      * Setting this to true will make ATK use a loginform instead of a browserpopup.

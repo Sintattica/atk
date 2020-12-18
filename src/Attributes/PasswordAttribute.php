@@ -147,30 +147,41 @@ class PasswordAttribute extends Attribute
         $name = $this->getHtmlName($fieldprefix);
         $cssClass = $this->getCSSClassAttribute();
 
-        if ($mode != 'edit' && $mode != 'update') {
-            /* insert */
-            if (!$this->m_generate) {
-                $result = Tools::atktext('password_new',
-                        'atk').':<br>'.'<input autocomplete="off" '.$cssClass.' type="password" id="'.$id.'[new]" name="'.$name.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext('password_again',
-                        'atk').':<br>'.'<input autocomplete="off" '.$cssClass.' type="password" id="'.$id.'[again]" name="'.$name.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
-            } else {
+        $typeNew = $typeAgain = 'password';
+        $password = '';
+        $result = '<div class="form-row">';
+        $copyPassOnChange = '';
+
+        if($mode != 'edit' && $mode != 'update'){
+
+            if ($this->m_generate) {
                 $password = $this->generatePassword(8, true);
-                $result = '<input type="hidden" id="'.$id.'[again]" name="'.$name.'[again]"'.' value ="'.$password.'" '.$cssClass.'>';
-                $result .= '<input type="text" '.$cssClass.' id="'.$id.'[new]" name="'.$name.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
+                $typeAgain = 'hidden';
+                $typeNew = 'text';
+                $copyPassOnChange = ' onchange="this.form.elements[\'' . $fieldprefix . $this->fieldName() . '[again]\'].value=this.value"';
+
             }
         } else {
-            /* edit */
 
-            $result = '<input type="hidden" name="'.$name.'[hash]"'.' value="'.$record[$this->fieldName()]['hash'].'">';
+            $result .= '<input type="hidden" name="' . $name . '[hash]"' . ' value="' . $record[$this->fieldName()]['hash'] . '">';
 
             if (!$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE)) {
-                $result .= Tools::atktext('password_current',
-                        'atk').':<br>'.'<input autocomplete="off" type="password" '.$cssClass.' id="'.$id.'[current]" name="'.$name.'[current]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
+                $result .= '<div class="col-sm">';
+                $result .= '<input placeholder="'.Tools::atktext('password_current', 'atk').'" autocomplete="off" type="password" ' . $cssClass . ' id="' . $id . '[current]" name="' . $name . '[current]"' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '>';
+                $result .= '</div>';
             }
-            $result .= Tools::atktext('password_new',
-                    'atk').':<br>'.'<input autocomplete="off" type="password" '.$cssClass.' id="'.$id.'[new]" name="'.$name.'[new]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.Tools::atktext('password_again',
-                    'atk').':<br>'.'<input autocomplete="off" type="password" '.$cssClass.' id="'.$id.'[again]" name="'.$name.'[again]"'.($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
         }
+
+        $result .= '<div class="col-sm mt-1 mt-sm-0 mb-1 mb-sm-0">';
+        $result  .= '<input placeholder="'.Tools::atktext('password_new', 'atk').'" type="' . $typeNew . '" ' .   $cssClass . ' id="' . $id . '[new]"   name="' . $name . '[new]"        value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . $copyPassOnChange . '>';
+        $result .= '</div>';
+
+        $result .= '<div class="col-sm">';
+        $result  .= '<input placeholder="'.Tools::atktext('password_again', 'atk').'" type="' . $typeAgain . '" ' . $cssClass . ' id="' . $id . '[again]" name="' . $name . '[again]"' . ' value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ' >';
+        $result .= '</div>';
+
+        $result .='</div>';
+
 
         return $result;
     }
@@ -257,7 +268,7 @@ class PasswordAttribute extends Attribute
                     $actual = $this->_countCharMatches($password, self::NUMBERS);
                     break;
                 case 'minspecialchars':
-                    $actual = strlen($password) - $this->_countCharMatches($password, self::ALPHABETICCHARS.self::NUMBERS);
+                    $actual = strlen($password) - $this->_countCharMatches($password, self::ALPHABETICCHARS . self::NUMBERS);
                     break;
             }
 
@@ -368,7 +379,7 @@ class PasswordAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[hash]"'.' value="'.$record[$this->fieldName()]['hash'].'">';
+        $result = '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '[hash]"' . ' value="' . $record[$this->fieldName()]['hash'] . '">';
 
         return $result;
     }
@@ -443,7 +454,7 @@ class PasswordAttribute extends Attribute
         $tmp = $this->getRandomChars(self::LOWERCHARS, $r['minlowerchars']);
         $tmp .= $this->getRandomChars(self::UPPERCHARS, $r['minupperchars']);
         $alphabeticchars = ($r['minalphabeticchars'] > strlen($tmp)) ? ($r['minalphabeticchars'] - strlen($tmp)) : 0;
-        $tmp .= $this->getRandomChars(self::LOWERCHARS.self::UPPERCHARS, $alphabeticchars);
+        $tmp .= $this->getRandomChars(self::LOWERCHARS . self::UPPERCHARS, $alphabeticchars);
         $tmp .= $this->getRandomChars(self::NUMBERS, $r['minnumbers']);
         $tmp .= $this->getRandomChars(self::SPECIALCHARS, $r['minspecialchars']);
 
@@ -463,7 +474,7 @@ class PasswordAttribute extends Attribute
             $out .= $tmp;
         } else {
             // Add random characters to the string to fill up until the minimum size or passed length
-            $tmp .= $this->getRandomChars(self::LOWERCHARS.self::UPPERCHARS.self::NUMBERS.self::SPECIALCHARS, $remainingchars);
+            $tmp .= $this->getRandomChars(self::LOWERCHARS . self::UPPERCHARS . self::NUMBERS . self::SPECIALCHARS, $remainingchars);
 
             // The output should be a shuffled to make it really random
             $out = str_shuffle($tmp);
