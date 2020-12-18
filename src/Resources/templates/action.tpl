@@ -25,7 +25,7 @@
                 <div class="text-bold pt-2">Loading...</div>
             </div>
 
-            <div class="action-buttons-buttons">
+            <div class="action-buttons-buttons row justify-content-end">
                 {foreach from=$buttons item=button}
                     {$button}
                 {/foreach}

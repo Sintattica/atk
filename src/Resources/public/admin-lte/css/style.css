@@ -226,3 +226,9 @@ input[type = checkbox].form-control{
     flex-direction: column;
     visibility: hidden;
 }
+
+
+.action-buttons-buttons > button{
+    margin-left: 2px;
+    margin-right: 2px;
+}

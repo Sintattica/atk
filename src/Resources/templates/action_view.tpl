@@ -22,7 +22,8 @@
         <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i>
             <div class="text-bold pt-2">Loading...</div>
         </div>
-        <div class="action-buttons-buttons">
+
+        <div class="action-buttons-buttons row justify-content-end">
             {foreach from=$buttons item=button}
                 &nbsp;{$button}&nbsp;
             {/foreach}
