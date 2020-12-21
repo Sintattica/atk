@@ -252,6 +252,7 @@ input[type = checkbox].form-control {
 .recordListTd > ul {
     border: none !important;
     background-color: transparent !important;
+    height:auto !important;
 }
 
 
