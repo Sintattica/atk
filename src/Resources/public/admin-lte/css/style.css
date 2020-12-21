@@ -2,12 +2,10 @@
  *      General
  * -------------------
  */
-.black{
+.black {
     color: #212529;
     transition: color 0.1s linear;
 }
-
-
 
 
 /**
@@ -48,10 +46,10 @@
 .select2-selection__rendered {
     line-height: 27px !important;
 }
+
 .select2-container .select2-selection--single {
     height: 31px !important;
 }
-
 
 
 /**
@@ -227,33 +225,43 @@ table thead th {
 /**
  * Checkbox style
  */
-input[type = checkbox].form-control{
-    max-width:30px !important;
+input[type = checkbox].form-control {
+    max-width: 30px !important;
 }
 
 
 /**
     Loading overlay
  */
-.overlay{
+.overlay {
     flex-direction: column;
     visibility: hidden;
 }
 
 
-.action-buttons-buttons > button{
+.action-buttons-buttons > button {
     margin-left: 2px;
     margin-right: 2px;
 }
 
 
-
-.shuttle-buttons-container > .btn-group > .btn{
+.shuttle-buttons-container > .btn-group > .btn {
     width: 30px;
 }
 
 .recordListTd > ul {
-    border:none !important;
+    border: none !important;
     background-color: transparent !important;
 }
 
+
+.fieldset-form-group.required > .control-label:after,
+.form-group.required > .control-label:after, span.required:after {
+    font-family: 'Font Awesome 5 Free';
+    display: inline-block;
+    vertical-align: super;
+    font-size: 8px;
+    content: "\f069";
+    color: #c70000;
+    font-weight: bold;
+}
