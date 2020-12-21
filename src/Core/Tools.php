@@ -1234,13 +1234,13 @@ class Tools
      *
      *
      * @param string $nodeUri the $nodeUri
-     * @param string $action the atk action the link will perform
+     * @param string|null $action the atk action the link will perform
      * @param array $params A key/value array with extra options for the url
      * @param string $phpfile The php file to use for dispatching
      *
      * @return string url for the node with the action
      */
-    public static function dispatch_url(string $nodeUri, string $action, array $params = [], string $phpfile = ''): string
+    public static function dispatch_url(string $nodeUri, ?string $action, array $params = [], string $phpfile = ''): string
     {
         $phpfile = ($phpfile != '') ?: Config::getGlobal('dispatcher');
         $atkParams = [];
@@ -1791,34 +1791,33 @@ class Tools
      * form variables in the session and restore them whenever you come back.
      *
      * @param string $url the url to make session aware
-     * @param string $name the name to display (will not be escaped!)
-     * @param int $sessionstatus the session flags
+     * @param string $internalElement It can be a html element or a simple text (not escaped)
+     * @param string $sessionStatus the session flags
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param bool $saveform wether or not to save the form
-     * @param string $extraprops extra props you can add in the link such as
+     * @param bool $saveForm whether or not to save the form
+     * @param string $extraProps extra props you can add in the link such as
      *                              'onChange="doSomething()"'
-     * @static
-     *
      * @return string the HTML link for the session aware URI
+     * @static
      */
     public static function href(
-        $url,
-        $name = '',
-        $sessionstatus = SessionManager::SESSION_DEFAULT,
-        $saveform = false,
-        $extraprops = ''
-    )
+        ?string $url,
+        string $internalElement = '',
+        string $sessionStatus = SessionManager::SESSION_DEFAULT,
+        ?bool $saveForm = false,
+        string $extraProps = ''
+    ): string
     {
         $sm = SessionManager::getInstance();
-        if ($saveform) {
-            $str = 'ATK.FormSubmit.atkSubmit("' . self::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '", true);';
+        if ($saveForm) {
+            $str = 'ATK.FormSubmit.atkSubmit("' . self::atkurlencode($sm->sessionUrl($url, $sessionStatus)) . '", true);';
 
-            return '<a href="javascript:void(0)" onclick="' . htmlentities($str) . '" ' . $extraprops . '>' . $name . '</a>';
+            return '<a href="javascript:void(0)" onclick="' . htmlentities($str) . '" ' . $extraProps . '>' . $internalElement . '</a>';
         } else {
-            $str = $sm->sessionUrl($url, $sessionstatus);
+            $str = $sm->sessionUrl($url, $sessionStatus);
 
-            return '<a href="' . htmlentities($str) . '" ' . $extraprops . '>' . $name . '</a>';
+            return '<a href="' . htmlentities($str) . '" ' . $extraProps . '>' . $internalElement . '</a>';
         }
     }
 
