@@ -402,7 +402,7 @@ class ManyToManyRelation extends Relation
                 $recordset[] = $descr;
             }
             if (!in_array($mode, array('csv', 'plain'))) {
-                $result = '<ul><li>'.implode('<li>', $recordset).'</ul>';
+                $result = '<ul class="form-control form-control-sm ml-2"><li>'.implode('<li>', $recordset).'</ul>';
             } else {
                 $result = implode(', ', $recordset);
             }
