@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use SimpleXMLElement;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Page;
@@ -99,7 +100,7 @@ class FileAttribute extends Attribute
      */
     public function __construct($name, $flags = 0, $dir)
     {
-        $flags = $flags | self::AF_CASCADE_DELETE;
+        $flags = $flags | self::AF_CASCADE_DELETE | self::AF_FILE_NO_SELECT;
         parent::__construct($name, $flags);
 
         $this->setDir($dir);
@@ -211,44 +212,59 @@ class FileAttribute extends Attribute
         // When in add mode or we have errors, don't show the filename above the input.
         $hasErrors = isset($record[$this->fieldName()]['error']) && $record[$this->fieldName()]['error'] != 0;
         if ($mode != 'add' && !$hasErrors) {
-            if (method_exists($this->getOwnerInstance(), $this->fieldName().'_display')) {
-                $method = $this->fieldName().'_display';
+            if (method_exists($this->getOwnerInstance(), $this->fieldName() . '_display')) {
+                $method = $this->fieldName() . '_display';
                 $result = $this->m_ownerInstance->$method($record, 'view');
             } else {
                 $result = $this->display($record, $mode);
             }
+
+            if (isset($record[$this->fieldName()]['filename'])) {
+                $fileLink = new SimpleXMLElement($result);
+
+                $result = '<div class="existing-file input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-file"></i></span>
+                    </div>
+                    <input type="text" class="form-control form-control-sm" disabled value="' . $record[$this->fieldName()]['filename'] . '" />
+                    <div class="input-group-append">
+                     <a href="' . $fileLink['href'] . '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-alt-circle-down"></i></a>
+                    </div>
+                  </div>';
+
+            }
+
         }
 
         if (!is_dir($this->m_dir) || !is_writable($this->m_dir)) {
-            Tools::atkwarning('atkFileAttribute: '.$this->m_dir.' does not exist or is not writeable');
+            Tools::atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable');
 
-            return Tools::atktext('no_valid_directory', 'atk').': '.$this->m_dir;
+            return Tools::atktext('no_valid_directory', 'atk') . ': ' . $this->m_dir;
         }
 
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 
         $style = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+        foreach ($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
-        if($style != ''){
-            $style = ' style="'.$style."'";
+        if ($style != '') {
+            $style = ' style="' . $style . "'";
         }
 
         if (isset($record[$this->fieldName()]['orgfilename'])) {
-            $result .= '<br />';
-            $result .= '<input type="hidden" name="'.$name.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
+            $result .= '<input type="hidden" name="' . $name . '_orgfilename" value="' . $record[$this->fieldName()]['orgfilename'] . '">';
         }
 
         $onchange = '';
         if (Tools::count($this->m_onchangecode)) {
-            $onchange = ' onChange="'.$id.'_onChange(this);"';
+            $onchange = ' onChange="' . $id . '_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_UPLOAD)) {
-            $result .= '<input type="file" id="'.$id.'" name="'.$name.'" '.$onchange.$style.'>';
+            $result .= '<input class="mt-2" type="file" id="' . $id . '" name="' . $name . '" ' . $onchange . $style . '>';
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_SELECT)) {
@@ -256,28 +272,27 @@ class FileAttribute extends Attribute
             if (Tools::count($file_arr) > 0) {
                 natcasesort($file_arr);
 
-                $result .= '<select id="'.$id.'_select" name="'.$name.'[select]" '.$onchange.$style.' class="form-control select-standard">';
+                $result .= '<select id="' . $id . '_select" name="' . $name . '[select]" ' . $onchange . $style . ' class="form-control select-standard">';
                 // Add default option with value NULL
-                $result .= '<option value="" selected>'.Tools::atktext('selection', 'atk');
-                foreach($file_arr as $val){
+                $result .= '<option value="" selected>' . Tools::atktext('selection', 'atk');
+                foreach ($file_arr as $val) {
                     (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val) ? $selected = 'selected' : $selected = '';
-                    if (is_file($this->m_dir.$val)) {
-                        $result .= '<option value="'.$val."\" $selected>".$val;
+                    if (is_file($this->m_dir . $val)) {
+                        $result .= '<option value="' . $val . "\" $selected>" . $val;
                     }
                 }
                 $result .= '</select>';
             }
         } else {
             if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename'])) {
-                $result .= '<input type="hidden" name="'.$name.'[select]" value="'.$record[$this->fieldName()]['filename'].'">';
+                $result .= '<input type="hidden" name="' . $name . '[select]" value="' . $record[$this->fieldName()]['filename'] . '">';
             }
         }
 
         if (!$this->hasFlag(self::AF_FILE_NO_CHECKBOX_DELETE) && isset($record[$this->fieldName()]['orgfilename']) && $record[$this->fieldName()]['orgfilename'] != '') {
-            $result .= '<br class="atkFileAttributeCheckboxSeparator"><label for="'.$id.'_del"><input id="'.$id.'_del" type="checkbox" name="'.$name.'[del]" '.$this->getCSSClassAttribute(['atkcheckbox']).'>&nbsp;'.Tools::atktext('remove_current_file',
-                    'atk').'</label>';
+            $result .= '<div class="icheck-primary"><input id="' . $id . '_del" type="checkbox" name="' . $name . '[del]" ' . $this->getCSSClassAttribute() . '>';
+            $result .= '<label for="' . $id . '_del">' . Tools::atktext('remove_current_file', 'atk') . '</label></div>';
         }
-
         return $result;
     }
 
@@ -296,7 +311,7 @@ class FileAttribute extends Attribute
         $randval = mt_rand();
 
         $filename = isset($record[$this->fieldName()]['filename']) ? $record[$this->fieldName()]['filename'] : null;
-        Tools::atkdebug($this->fieldName()." - File: $filename");
+        Tools::atkdebug($this->fieldName() . " - File: $filename");
         $prev_type = array(
             'jpg',
             'jpeg',
@@ -310,22 +325,22 @@ class FileAttribute extends Attribute
         );  // file types for preview
         $imgtype_prev = array('jpg', 'jpeg', 'gif', 'png');  // types which are supported by GetImageSize
         if ($filename != '') {
-            if (is_file($this->m_dir.$filename)) {
+            if (is_file($this->m_dir . $filename)) {
                 $ext = $this->getFileExtension($filename);
                 if ((in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext, $prev_type))) {
-                    return '<a href="'.$this->m_url."$filename\" target=\"_blank\">$filename</a>";
+                    return '<a href="' . $this->m_url . "$filename\" target=\"_blank\">$filename</a>";
                 } elseif (in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_POPUP)) {
                     if (in_array($ext, $imgtype_prev)) {
-                        $imagehw = getimagesize($this->m_dir.$filename);
+                        $imagehw = getimagesize($this->m_dir . $filename);
                     } else {
                         $imagehw = array('0' => '640', '1' => '480');
                     }
-                    return '<a href="'.$this->m_url.$filename.'" alt="'.$filename.'" onclick="ATK.Tools.newWindow(this.href,\'name\',\''.($imagehw[0] + 50).'\',\''.($imagehw[1] + 50).'\',\'yes\');return false;">'.$filename.'</a>';
+                    return '<a href="' . $this->m_url . $filename . '" alt="' . $filename . '" onclick="ATK.Tools.newWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $filename . '</a>';
                 }
 
-                return '<img src="'.$this->m_url.$filename.'?b='.$randval.'" alt="'.$filename.'">';
+                return '<img src="' . $this->m_url . $filename . '?b=' . $randval . '" alt="' . $filename . '">';
             } else {
-                return $filename.' (<font color="#ff0000">'.Tools::atktext('file_not_exist', 'atk').'</font>)';
+                return $filename . ' (<font color="#ff0000">' . Tools::atktext('file_not_exist', 'atk') . '</font>)';
             }
         }
     }
@@ -366,14 +381,14 @@ class FileAttribute extends Attribute
 
         while ($item = $dirHandle->read()) {
             if (Tools::count($this->m_allowedFileTypes) == 0) {
-                if (is_file($this->m_dir.$item)) {
+                if (is_file($this->m_dir . $item)) {
                     $file_arr[] = $item;
                 }
             } else {
                 $extension = $this->getFileExtension($item);
 
                 if (in_array($extension, $this->m_allowedFileTypes)) {
-                    if (is_file($this->m_dir.$item)) {
+                    if (is_file($this->m_dir . $item)) {
                         $file_arr[] = $item;
                     }
                 }
@@ -422,7 +437,7 @@ class FileAttribute extends Attribute
 
         if (isset($rec[$this->fieldName()])) {
             $retData = array(
-                'tmpfile' => $this->m_dir.$rec[$this->fieldName()],
+                'tmpfile' => $this->m_dir . $rec[$this->fieldName()],
                 'orgfilename' => $rec[$this->fieldName()],
                 'filename' => $rec[$this->fieldName()],
                 'filesize' => '?',
@@ -462,14 +477,14 @@ class FileAttribute extends Attribute
      * file formats. If the FileType array is empty this assumes that
      * all formats are allowed!
      *
+     * @param array $rec
+     *
+     * @return bool
      * @todo It turns out that handling mimetypes is not that easy
      * the mime_content_type has been deprecated and there is no
      * Os independend alternative! For now we only support a few
      * image mime types.
      *
-     * @param array $rec
-     *
-     * @return bool
      */
     public function isAllowedFileType(&$rec)
     {
@@ -478,7 +493,7 @@ class FileAttribute extends Attribute
         }
 
         // detect whether the file is uploaded or is an existing file.
-        $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ? $rec[$this->fieldName()]['tmpfile'] : $this->m_dir.$rec[$this->fieldName()]['filename'];
+        $filename = (!empty($rec[$this->fieldName()]['tmpfile'])) ? $rec[$this->fieldName()]['tmpfile'] : $this->m_dir . $rec[$this->fieldName()]['filename'];
 
         if (@empty($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir) {
 
@@ -577,7 +592,7 @@ class FileAttribute extends Attribute
                 elseif (isset($postvars[$this->fieldName()]['filename']) && $postvars[$this->fieldName()]['filename'] != '') {
                     $result = $postvars[$this->fieldName()];
                 } else {
-                    $filename = (isset($postvars[$basename.'_orgfilename'])) ? $postvars[$basename.'_orgfilename'] : '';
+                    $filename = (isset($postvars[$basename . '_orgfilename'])) ? $postvars[$basename . '_orgfilename'] : '';
 
                     if ($del == 'on') {
                         $filename = '';
@@ -585,9 +600,9 @@ class FileAttribute extends Attribute
 
                     // Note: without file_exists() check, calling filesize() generates an error message:
                     $result = array(
-                        'tmpfile' => $filename == '' ? '' : $this->m_dir.$filename,
+                        'tmpfile' => $filename == '' ? '' : $this->m_dir . $filename,
                         'filename' => $filename,
-                        'filesize' => is_file($this->m_dir.$filename) ? filesize($this->m_dir.$filename) : 0,
+                        'filesize' => is_file($this->m_dir . $filename) ? filesize($this->m_dir . $filename) : 0,
                         'orgfilename' => $filename,
                     );
                 }
@@ -625,7 +640,7 @@ class FileAttribute extends Attribute
      */
     public function _filenameMangle($rec, $default)
     {
-        $method = $this->fieldName().'_filename';
+        $method = $this->fieldName() . '_filename';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($rec, $default);
         } else {
@@ -651,7 +666,7 @@ class FileAttribute extends Attribute
             $record = $this->m_ownerInstance->updateRecord($rec, $includes, array($this->fieldName()));
             $record[$this->fieldName()] = substr($default, 0, strrpos($default, '.'));
             $ext = $this->getFileExtension($default);
-            $filename = $parser->parse($record).($ext != '' ? '.'.$ext : '');
+            $filename = $parser->parse($record) . ($ext != '' ? '.' . $ext : '');
         }
 
         return str_replace(' ', '_', $filename);
@@ -688,7 +703,7 @@ class FileAttribute extends Attribute
 
         $sql = "SELECT `$fieldnameSql` AS filename FROM `$tableSql` WHERE `$fieldnameSql` = '$filenameSql' OR `$fieldnameSql` LIKE '$nameSql-%$extSql'";
         if ($rec[$owner->primaryKeyField()] != '') {
-            $sql .= " AND NOT (".$owner->primaryKey($rec).")";
+            $sql .= " AND NOT (" . $owner->primaryKey($rec) . ")";
         }
 
         $records = $db->getRows($sql);
@@ -712,9 +727,9 @@ class FileAttribute extends Attribute
                 }
             }
             // file name exists, so mangle it with a number.
-            $filename = $name.'-'.($max_count + 1).$ext;
+            $filename = $name . '-' . ($max_count + 1) . $ext;
         }
-        Tools::atkdebug('FileAttribute::_filenameUnique() -> New filename = '.$filename);
+        Tools::atkdebug('FileAttribute::_filenameUnique() -> New filename = ' . $filename);
 
         return $filename;
     }
@@ -729,7 +744,7 @@ class FileAttribute extends Attribute
     public function postDelete($record)
     {
         if ($record[$this->fieldName()]['orgfilename'] != '') {
-            $file = $this->m_dir.$record[$this->fieldName()]['orgfilename'];
+            $file = $this->m_dir . $record[$this->fieldName()]['orgfilename'];
 
             return $this->deleteFile($file);
         }
@@ -796,10 +811,10 @@ class FileAttribute extends Attribute
         $result = '';
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$value.'">';
+                $result .= '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '[' . $key . ']" ' . 'value="' . $value . '">';
             }
         } else {
-            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$field.'">';
+            $result = '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '" value="' . $field . '">';
         }
 
         return $result;
@@ -818,23 +833,23 @@ class FileAttribute extends Attribute
     public function store($db, $record, $mode)
     {
         if ($mode == 'update' && !empty($record[$this->fieldName()]['postdel'])) {
-            $file = $this->m_dir.$record[$this->fieldName()]['postdel'];
+            $file = $this->m_dir . $record[$this->fieldName()]['postdel'];
 
             return $this->deleteFile($file);
         }
 
         $filename = $record[$this->fieldName()]['filename'];
 
-        if ($record[$this->fieldName()]['tmpfile'] && $this->m_dir.$filename != $record[$this->fieldName()]['tmpfile']) {
+        if ($record[$this->fieldName()]['tmpfile'] && $this->m_dir . $filename != $record[$this->fieldName()]['tmpfile']) {
             if ($filename != '') {
-                $dirname = dirname($this->m_dir.$filename);
+                $dirname = dirname($this->m_dir . $filename);
                 if (!$this->mkdir($dirname)) {
                     Tools::atkerror("File could not be saved, unable to make directory '{$dirname}'");
 
                     return false;
                 }
 
-                if (@copy($record[$this->fieldName()]['tmpfile'], $this->m_dir.$filename)) {
+                if (@copy($record[$this->fieldName()]['tmpfile'], $this->m_dir . $filename)) {
                     $this->processFile($this->m_dir, $filename);
 
                     return $this->escapeSQL($filename);
@@ -867,7 +882,7 @@ class FileAttribute extends Attribute
 
         $path = '';
         foreach ($dirs as $element) {
-            $path .= $element.'/';
+            $path .= $element . '/';
             if (!is_dir($path) && !mkdir($path)) {
                 return false;
             }
