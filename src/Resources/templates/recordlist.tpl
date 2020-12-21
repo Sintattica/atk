@@ -20,7 +20,7 @@
 
         <thead>
         <!-- header -->
-        <tr class="recordList-header-row" role="row" style="border-top:2px solid #dee2e6;">
+        <tr class="recordList-header-row" role="row">
             {section name=headerloop loop=$header}
                 <th {if $smarty.section.headerloop.index===0}class="recordListThFirst"{else}class="recordListTh"{/if}>
                     {if $header[headerloop].content != ""}{$header[headerloop].content}{else}&nbsp;{/if}
@@ -51,6 +51,7 @@
         {/if}
         </thead>
 
+        <tbody>
         <!-- records -->
         {$liststart}
         {foreach from=$rows item=row}
@@ -82,6 +83,7 @@
                 {/foreach}
             </tr>
         {/if}
+        </tbody>
     </table>
 
     {if $mra!="" && $mraposition == 'bottom'}

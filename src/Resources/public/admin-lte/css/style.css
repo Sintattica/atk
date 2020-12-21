@@ -1,4 +1,16 @@
 /**
+ *      General
+ * -------------------
+ */
+.black{
+    color: #212529;
+    transition: color 0.1s linear;
+}
+
+
+
+
+/**
   *     Menu
   * -----------------
  */
@@ -59,6 +71,7 @@ table.recordList tr td .actions .btn {
 
 table thead th {
     vertical-align: middle !important;
+    white-space: nowrap;
 }
 
 .recordList-header-row {
