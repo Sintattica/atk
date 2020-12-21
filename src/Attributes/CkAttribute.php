@@ -16,7 +16,7 @@ class CkAttribute extends HtmlAttribute
      * @var array CKEditor configuration (default)
      */
     private array $ckOptions = [
-        'removePlugins' => ['Title'],
+        'removePlugins' => ['Title', 'MathType', 'ChemType'],
         'toolbar' => [
             'items' => [
                 'heading', '|',
@@ -26,7 +26,7 @@ class CkAttribute extends HtmlAttribute
                 'link', 'insertTable', 'imageInsert', 'mediaEmbed', '|',
                 'undo', 'redo', '|',
                 'htmlEmbed', 'code', 'codeBlock', '|',
-                'specialCharacters', 'MathType', 'ChemType'
+                'specialCharacters',
             ],
             'image' => [
                 'toolbar' => ['imageTextAlternative', 'imageStyle:full', 'imageStyle:side']
