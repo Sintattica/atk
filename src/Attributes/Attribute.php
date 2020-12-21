@@ -3076,7 +3076,7 @@ class Attribute
      *
      * @return string HTML The attributes classname(s)
      */
-    public function getCSSClassAttribute($additionalClasses = []): string
+    public function getCSSClassAttribute(array $additionalClasses = []): string
     {
         $baseClasses = ['form-control', 'form-control-sm'];
 

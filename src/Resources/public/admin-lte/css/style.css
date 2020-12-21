@@ -245,3 +245,15 @@ input[type = checkbox].form-control{
     margin-left: 2px;
     margin-right: 2px;
 }
+
+
+
+.shuttle-buttons-container > .btn-group > .btn{
+    width: 30px;
+}
+
+.recordListTd > ul {
+    border:none !important;
+    background-color: transparent !important;
+}
+

@@ -110,6 +110,7 @@ class RadioAttribute extends ListAttribute
             $total_items = $this->m_amount;
         }
 
+        //Todo: Rivedere Attributo
         $result = '<table class="table">';
         if (!$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $result .= '<tr>';
