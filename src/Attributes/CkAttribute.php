@@ -12,6 +12,7 @@ use Sintattica\Atk\Core\Tools;
  */
 class CkAttribute extends HtmlAttribute
 {
+
     /**
      * @var array CKEditor configuration (default)
      */
@@ -33,8 +34,9 @@ class CkAttribute extends HtmlAttribute
             ],
             'table' => [
                 'contentToolbar' => ['tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties', 'tableProperties']
-            ]
-        ]
+            ],
+        ],
+        'height' => '200px'
     ];
 
     /**
@@ -66,7 +68,10 @@ class CkAttribute extends HtmlAttribute
 
         $page->register_loadscript("ClassicEditor
             .create( document.querySelector( '#$id' ), $options)
-            .then( editor => window.editor = editor)
+            .then( editor => {
+                editor.editing.view.change( writer => writer.setStyle( 'height', '".$this->ckOptions['height']."', editor.editing.view.document.getRoot() ));
+                window.editor = editor
+            })
 			.catch( error => console.error( 'Oops, something went wrong: ', error) );"
         );
 
@@ -95,4 +100,16 @@ class CkAttribute extends HtmlAttribute
 
         return parent::isEmpty($record);
     }
+
+
+    /**
+     * Set the ckEditor height
+     * Ex: 200px or 10rem ...
+     * @param string $height
+     */
+    public function setHeight(string $height){
+        $this->ckOptions['height'] = $height;
+    }
+
+
 }
