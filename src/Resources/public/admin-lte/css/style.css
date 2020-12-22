@@ -57,6 +57,15 @@
     padding-left: 0.16rem;
 }
 
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice{
+    margin-top:0;
+}
+
+.select2-selection.select2-selection--multiple.MultiSelectListAttribute.form-control.form-control-sm{
+    padding-top:2px;
+    padding-left: 0;
+}
+
 
 /**
   * Tables
