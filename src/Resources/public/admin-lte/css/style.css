@@ -51,6 +51,12 @@
     height: 31px !important;
 }
 
+.select2-selection__rendered > .select2-selection__clear{
+    margin-top: 0.15rem;
+    padding-top: 0.07rem;
+    padding-left: 0.16rem;
+}
+
 
 /**
   * Tables

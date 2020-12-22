@@ -780,7 +780,7 @@ class ManyToManyRelation extends Relation
         // now select all records
         $recordset = $this->m_destInstance->select()->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
             $this->m_destInstance->m_primaryKey))->getAllRows();
-        $result = '<select class="form-control"'.$data;
+        $result = '<select class="form-control form-control-sm"'.$data;
         if ($extended) {
             $result .= 'multiple="multiple" size="'.min(5, Tools::count($recordset) + 1).'"';
         }

@@ -249,7 +249,7 @@ class ManyToOneRelation extends Relation
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
-        if (Config::getGlobal('manytoone_autocomplete_large', true) && Tools::hasFlag($flags, self::AF_LARGE)) {
+        if (Config::getGlobal('manytoone_autocomplete_large', false) && Tools::hasFlag($flags, self::AF_LARGE)) {
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
         }
 
@@ -816,9 +816,9 @@ class ManyToOneRelation extends Relation
             $recordset = $this->_getSelectableRecords($record, $mode);
         }
 
+
         $isAutocomplete = (is_array($recordset) && Tools::count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1;
         if ($this->hasFlag(self::AF_RELATION_AUTOCOMPLETE) && is_object($this->m_ownerInstance) && $isAutocomplete) {
-
 
             $result = $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
             return $result;
@@ -853,7 +853,6 @@ class ManyToOneRelation extends Relation
         if ($this->hasFlag(self::AF_LARGE)) {
             //no select list, but a link for select
             $result = '';
-
             $result .= '<span class="atkmanytoonerelation-large-container">';
             $destrecord = $record[$this->fieldName()];
             if (is_array($destrecord)) {
@@ -1207,7 +1206,7 @@ EOF;
                 $selectOptions['ajax--url'] = Tools::partial_url($this->m_ownerInstance->atkNodeUri(), $this->m_ownerInstance->m_action,
                     'attribute.'.$this->fieldName().'.autocomplete_search');
                 $selectOptions['minimum-input-length'] = $this->m_autocomplete_minchars;
-                $selectOptions['placeholder'] = $options[''];
+                $selectOptions['placeholder'] = '' ; //$options[''];
 
                 if(!$this->isMultipleSearch($extended)) {
                     $selectOptions['allow-clear'] = true;
@@ -1348,7 +1347,7 @@ EOF;
                 } else {
                     // ask the destination node for it's search condition
                     $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
-                    $conditions = '';
+                    $conditions = [];
                     foreach($value as $v) {
                         $sc = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode);
 
@@ -2120,7 +2119,7 @@ EOF;
             $selectOptions['allow-clear'] = true;
             $selectOptions['placeholder'] = $noneLabel;
         }
-
+        $selectOptions['placeholder'] = '';
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['edit']);
 
         if (Tools::count($this->m_onchangecode)) {
