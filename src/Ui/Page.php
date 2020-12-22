@@ -184,6 +184,9 @@ class Page
         $this->register_style($assetsUrl.'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
 
 
+
+
+
         //Toastr
         $this->register_style($assetsUrl.'admin-lte/plugins/toastr/toastr.min.css');
 
@@ -191,14 +194,14 @@ class Page
         $this->register_style($assetsUrl.'admin-lte/plugins/select2/css/select2.min.css');
         $this->register_style($assetsUrl.'admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css');
 
-
-        //Override default with custom styles
-        $this->register_style($assetsUrl.'admin-lte/css/style.css');
         $this->register_style($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css');
 
 
         // Theme style
         $this->register_style($assetsUrl.'admin-lte/css/adminlte.min.css');
+
+        //Override default with custom styles
+        $this->register_style($assetsUrl.'admin-lte/css/style.css');
 
         /*
         $this->register_style($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.css');
