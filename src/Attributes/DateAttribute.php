@@ -470,7 +470,7 @@ class DateAttribute extends Attribute
         $c_dmax = isset($current['d_max']) ? $current['d_max'] : null;
         $c_mday = isset($current['mday']) ? $current['mday'] : null;
 
-        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" data-no-search class="atkdateattribute form-control form-control-sm select-standard" onChange="'.$str_script.'">';
+        $result = '<select id="'.$fieldid.'[day]" name="'.$fieldname.'[day]" data-no-search class="atkdateattribute form-control form-control-sm select-standard atk-date-left" onChange="'.$str_script.'">';
         if (!$obligatory || $this->hasFlag(self::AF_DATE_EMPTYFIELD)) {
             $result .= '<option value=""'.($current === null ? ' selected' : '').'></option>';
         }
@@ -673,6 +673,7 @@ class DateAttribute extends Attribute
         /* other date selections */
         $weekdayFormat = null;
         $str_script = '';
+        $result .= "<div class='atk-date-group'>";
         for ($i = 0; $i < strlen($str_format); ++$i) {
             /* javascript method */
             if (!$this->m_simplemode) {
@@ -700,6 +701,7 @@ class DateAttribute extends Attribute
         }
 
 
+
         if (!$this->hasFlag(self::AF_DATE_NO_CALENDAR) && !$this->m_yeardropdown && !$this->m_simplemode && $mode != 'list') {
             $mondayFirst = 'false';
             if (is_bool(Tools::atktext('date_monday_first'))) {
@@ -711,8 +713,11 @@ class DateAttribute extends Attribute
                     'btn',
                     'btn-sm',
                     'btn-default',
+                    'atk-date-right',
                 ]).' type="reset" onclick="return showCalendar(\''.$id.'\', \''.$id.'[year]\', \'y-mm-dd\', true, '.$mondayFirst.');"></span>';
         }
+        $result .= "</div>"; //atk-date-group
+
 
         if (!$this->m_simplemode) {
             $result .= '</div>'; // form-inline

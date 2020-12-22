@@ -252,7 +252,7 @@ input[type = checkbox].form-control {
 .recordListTd > ul {
     border: none !important;
     background-color: transparent !important;
-    height:auto !important;
+    height: auto !important;
 }
 
 
@@ -266,7 +266,6 @@ input[type = checkbox].form-control {
     color: #c70000;
     font-weight: bold;
 }
-
 
 
 /**
@@ -326,4 +325,60 @@ input[type = checkbox].form-control {
 
 .has-error.select2-drop-active.select2-drop.select2-drop-above {
     border-top-color: #dc3545;
+}
+
+
+/**
+    Border radius for atk date group buttons
+ */
+
+.atk-date-group,
+.atk-time-group{
+    display: flex;
+}
+
+.atk-date-group > .select2-container--bootstrap4 .select2-selection--single,
+.atk-date-group > input,
+.atk-date-group > span {
+    border-radius: 0;
+    border-right: none;
+}
+
+.atk-date-group > .select2-container--bootstrap4 .select2-selection--single.atk-date-left,
+.atk-date-group > input.atk-date-left {
+    border-radius: 0.2rem 0 0 0.2rem;
+}
+
+.atk-date-group > span.atk-date-right {
+    border-radius: 0 0.2rem 0.2rem 0;
+    border-right: solid 1px #dddddd;
+}
+
+
+
+
+/**
+ * Atk Time Group
+ */
+.atk-time-group > .select2-container--bootstrap4 .select2-selection--single,
+.atk-time-group > input,
+.atk-time-group > span {
+    border-radius: 0;
+    border-right: none;
+}
+
+.atk-time-group > .select2-container--bootstrap4 .select2-selection--single.atk-time-left,
+.atk-time-group > input.atk-date-left {
+    border-radius: 0.2rem 0 0 0.2rem;
+}
+
+.atk-time-group > span.atk-time-right {
+    border-radius: 0 0.2rem 0.2rem 0;
+    border-right: solid 1px #dddddd;
+}
+
+.has-error .atk-date-right,
+.has-error .atk-time-right
+{
+    border-right: solid 1px #dc3545 !important;
 }

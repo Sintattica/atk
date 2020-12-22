@@ -200,17 +200,18 @@ class TimeAttribute extends Attribute
             $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
         }
 
-        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap  form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap atk-time-left  form-control form-control-sm select-standard\"{$onChangeCode}>";
         $escapedFieldHtmlId = $id.'\\\\[hours\\\\]';  //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
         $m_hourBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
-        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap  form-control form-control-sm select-standard\"{$onChangeCode}>";
-        $escapedFieldHtmlId = $id.'\\\\[minutes\\\\]'; //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[minutes\\\\]';
         $m_minBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
-        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap  form-control form-control-sm select-standard\"{$onChangeCode}>";
-        $escapedFieldHtmlId = $id.'\\\\[seconds\\\\]';  //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap   form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id.'\\\\[seconds\\\\]';
         $m_secBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
+
 
 
         if (is_array($field)) {
@@ -292,10 +293,14 @@ class TimeAttribute extends Attribute
             $m_secBox = '<input type="hidden" id="'.$fieldprefix.$this->fieldName().'[seconds]" name="'.$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">";
         }
 
-        // assemble display version
-        $timeedit = $m_hourBox.'&nbsp;:&nbsp;'.$m_minBox.$m_secBox;
+        $iconBox = '<span class="form-control form-control-sm atk-time-right far fa-clock"></span>';
 
-        return '<div class="TimeAttribute form-inline">'.$timeedit.'</div>';
+        // assemble display version
+        $timeedit = $m_hourBox.$m_minBox.$m_secBox.$iconBox;
+
+
+
+        return '<div class="TimeAttribute form-inline"><div class="atk-time-group">'.$timeedit.'</div></div>';
     }
 
     /**
