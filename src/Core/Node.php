@@ -1789,7 +1789,7 @@ class Node
             }
         } elseif ($mode == 'delete') {
             $result[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok" value="'.$this->text('yes').'">';
-            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel ml-1" value="'.$this->text('no').'">';
+            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="'.$this->text('no').'">';
         } elseif ($mode == 'search') {
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
@@ -2711,7 +2711,7 @@ class Node
         $buttons = $this->getFormButtons($action, array());
         if (Tools::count($buttons) == 0) {
             $buttons[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok atkdefaultbutton" value="'.$this->text('yes').'">';
-            $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel ml-1" value="'.$this->text('no').'">';
+            $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="'.$this->text('no').'">';
         }
 
         $content = '';

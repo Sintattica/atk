@@ -409,3 +409,12 @@ input[type = checkbox].form-control {
 {
     border-right: solid 1px #dc3545 !important;
 }
+
+
+.table td, .table th{
+    padding-top:.35rem;
+    padding-left: .75rem;
+    padding-right: .75rem;
+    padding-bottom: .35rem;
+    vertical-align: middle;
+}
