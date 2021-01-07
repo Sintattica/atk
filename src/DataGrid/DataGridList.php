@@ -277,15 +277,17 @@ class DataGridList extends DataGridComponent
                 if (Tools::count($list['rows'][$i]['mra']) > 0) {
                     switch ($grid->getMRASelectionMode()) {
                         case Node::MRA_SINGLE_SELECT:
-                            $inputHTML = '<input type="radio" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
+                            $inputHTML = '<input id="chk_'.$listName."_".$i.'"  type="radio" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
                             break;
                         case Node::MRA_NO_SELECT:
-                            $inputHTML = '<input type="checkbox" disabled="disabled" checked="checked">' . '<input type="hidden" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '">';
+                            $inputHTML = '<input id="chk_'.$listName."_".$i.'" type="checkbox" disabled="disabled" checked="checked">' . '<input type="hidden" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '">';
                             break;
                         case Node::MRA_MULTI_SELECT:
                         default:
-                            $inputHTML = '<input type="checkbox" name="' . $listName . '_atkselector[' . $i . ']" value="' . $list['rows'][$i]['selector'] . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
+                            $inputHTML = '<input id="chk_'.$listName."_".$i.'" type="checkbox" name="' . $listName . '_atkselector[' . $i . ']" value="' . $list['rows'][$i]['selector'] . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
                     }
+
+                    $inputHTML = '<div class="icheck-primary" style="margin-top:5px !important;">'.$inputHTML.'<label for="chk_'.$listName.'_'.$i.'"></label></div>';
 
                     $record['cols'][] = array(
                         'content' => $inputHTML . '
@@ -444,7 +446,7 @@ class DataGridList extends DataGridComponent
             /* multiple actions -> dropdown */
             if (Tools::count($list['mra']) > 1) {
                 $default = $this->getGrid()->getMRADefaultAction();
-                $mra .= '<select data-minimum-results-for-search="Infinity" data-width="element" name="' . $listName . '_atkaction" id="' . $listName . '_atkaction" onchange="ATK.FormSelect.updateSelectable(\'' . $listName . '\', this.form);" class="form-control">' . '<option value="">' . Tools::atktext('with_selected') . '</option>';
+                $mra .= '<div class="d-inline-block"><select data-minimum-results-for-search="Infinity" data-width="element" name="' . $listName . '_atkaction" id="' . $listName . '_atkaction" onchange="ATK.FormSelect.updateSelectable(\'' . $listName . '\', this.form);" class="form-control form-control-sm">' . '<option value="">' . Tools::atktext('with_selected') . '</option>';
 
                 foreach ($list['mra'] as $name) {
                     if ($grid->getNode()->allowed($name)) {
@@ -464,7 +466,7 @@ class DataGridList extends DataGridComponent
                 }
 
                 $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
-                $mra .= '</select>&nbsp;' . $this->getCustomMraHtml() . '<input type="button" class="btn btn-sm btn-primary" value="' . Tools::atktext('submit') . '" onclick="ATK.FormSelect.atkSubmitMRA(\'' . $listName . '\', this.form, \'' . $target . '\', ' . $embedded . ', false)">';
+                $mra .= '</select></div>&nbsp;' . $this->getCustomMraHtml() . '<input type="button" class="btn btn-sm btn-primary" value="' . Tools::atktext('submit') . '" onclick="ATK.FormSelect.atkSubmitMRA(\'' . $listName . '\', this.form, \'' . $target . '\', ' . $embedded . ', false)">';
                 $mra .= "<script>ATK.Tools.enableSelect2ForSelect('#" . $listName . "_atkaction');</script>";
             } elseif ($grid->getNode()->allowed($list['mra'][0])) {
                 /* one action -> only the submit button */

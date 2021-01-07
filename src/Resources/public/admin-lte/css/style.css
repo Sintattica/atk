@@ -51,6 +51,10 @@
     height: 31px !important;
 }
 
+.d-inline-block .select2-container{
+    display: inline-block;
+}
+
 .select2-selection__rendered > .select2-selection__clear{
     margin-top: 0.15rem;
     padding-top: 0.07rem;
@@ -80,7 +84,8 @@ table.recordList tr td .actions .btn {
     margin: 0 2px;
 }
 
-.recordListTdFirst {
+.recordListTdFirst.row-type-actions,
+.recordListTd.row-type-actions {
     white-space: nowrap;
     width: 1%;
 }
@@ -96,6 +101,10 @@ table thead th {
 
 .recordList-header-row a {
     color: #212529;
+}
+
+.list-header{
+    padding-left:0 !important;
 }
 
 
