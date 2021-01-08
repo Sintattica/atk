@@ -21,11 +21,11 @@
         <div class="card-body">
             {$content}
         </div>
-        <!-- /.card-body -->
+        <!-- /.card-body
         <div class="card-footer">
             Footer
         </div>
-        <!-- /.card-footer-->
+        -->
     </div>
     <!-- /.card -->
 
