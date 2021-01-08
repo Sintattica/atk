@@ -2,8 +2,9 @@
 
 namespace Sintattica\Atk\Core\Menu;
 
+use Exception;
+use ReflectionException;
 use Sintattica\Atk\Core\AdminLTE;
-use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Ui\Page;
@@ -49,6 +50,7 @@ abstract class MenuBase
     private const SIDEBAR_PARENT_ITEM_TPL = "menu/sidebar/parent_item.tpl";
     private const SIDEBAR_CHILD_ITEM_TPL = "menu/sidebar/child_item.tpl";
     private const SIDEBAR_HEADER_ITEM_TPL = "menu/sidebar/header_item.tpl";
+    private const SIDEBAR_SEPARATOR_ITEM_TPL = "menu/sidebar/separator_item.tpl";
 
     //Icons from Font Awesome
     private const DEFAULT_SIDEBAR_PARENT_ITEM_ICON = 'far fa-circle';
@@ -109,7 +111,7 @@ abstract class MenuBase
      * Render the menu.
      *
      * @return string HTML fragment containing the menu.
-     * @throws SmartyException
+     * @throws SmartyException|ReflectionException
      */
     public function render(): string
     {
@@ -124,7 +126,7 @@ abstract class MenuBase
      * Load a cached version of the menu.
      * The menu gets constructed only if is not present.
      * @return array The menu
-     * @throws SmartyException
+     * @throws SmartyException|ReflectionException
      */
     public function getMenu(): array
     {
@@ -144,7 +146,7 @@ abstract class MenuBase
      *               sidebar -> containing the html formatted sidebar menu
      *               left -> containing the html formatted items of the left navbar menu
      *               right -> same as the left but contains the items of the right part of the nav menu.
-     * @throws SmartyException
+     * @throws SmartyException|ReflectionException
      */
     public function load(): array
     {
@@ -169,7 +171,7 @@ abstract class MenuBase
      * @param string $type - Needed for the recursive function to understand if it was exploring
      *                        the nav or the sidebar part on the parent
      * @return string - A complete html formatted menu of the selected type (sidebar, navbar left or navbar right)
-     * @throws SmartyException
+     * @throws SmartyException|ReflectionException
      */
     private function processMenu(array $menu, bool $child = false, string $type = self::TYPE_MENU_SIDEBAR): string
     {
@@ -243,7 +245,7 @@ abstract class MenuBase
     /**
      * @param array $item - The menu Item containing all the submenus
      * @return string - Containing the generated html for this part of the menu.
-     * @throws SmartyException
+     * @throws SmartyException|ReflectionException
      */
     private function formatSidebar(array $item): string
     {
@@ -269,10 +271,14 @@ abstract class MenuBase
 
         } else {
             //Caso Simple Item -> No submenu
+
             $icon = '';
             switch ($item['type']) {
-                case MenuItem::TYPE_HEADER:
+                case Tools::getClassName(HeaderItem::class):
                     $template = self::SIDEBAR_HEADER_ITEM_TPL;
+                    break;
+                case Tools::getClassName(SeparatorItem::class):
+                    $template = self::SIDEBAR_SEPARATOR_ITEM_TPL;
                     break;
                 default:
                     $icon = isset($item['icon']) ? $item['icon'] : self::DEFAULT_SIDEBAR_CHILD_ITEM_ICON;
@@ -293,7 +299,8 @@ abstract class MenuBase
                 'classes' => $classes,
                 'icon' => $icon,
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
-                'active' => $active
+                'active' => $active,
+                'color' => $item["color"]
             ]);
         }
 
@@ -380,9 +387,11 @@ abstract class MenuBase
      * @param string $target The link target (_self, _blank, ...)
      * @param bool $raw If true, the $name will be rendered as is
      * @param string $position The destination (sidebar, navbar left or navbar right) where the menu will be put in
-     * @param string $type
+     * @param null $type
      * @param bool $active
-     * @param string $icon
+     * @param null $icon
+     * @param null $color
+     * @throws ReflectionException
      */
     public function addMenuItem(
         $name = '',
@@ -394,15 +403,20 @@ abstract class MenuBase
         $target = '',
         $raw = false,
         $position = self::MENU_SIDEBAR,
-        $type = MenuItem::TYPE_LINK,
+        $type = null,
         $active = false,
-        $icon = null
+        $icon = null,
+        $color = ""
     )
     {
         static $order_value = 100, $s_dupelookup = [];
         if ($order == 0) {
             $order = $order_value;
             $order_value += 100;
+        }
+
+        if (!$type) {
+            $type = Tools::getClassName(ActionItem::class);
         }
 
         $classes = ""; //$active ? ' active' : '';
@@ -420,7 +434,8 @@ abstract class MenuBase
             'raw' => $raw,
             'classes' => $classes,
             'active' => $active,
-            'icon' => $icon
+            'icon' => $icon,
+            'color' => $color
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -431,58 +446,105 @@ abstract class MenuBase
         }
     }
 
-    // todo: Check how we can provide those with the last param.
-    //Currently not exposed
-    private function addMenuItem2(string $parent = '', string $name = '', string $nodeUri = '', string $action = '', string $position = self::MENU_SIDEBAR, array $extraParams = [])
+    /**
+     * Add a new Item to the Menu
+     * @param Item $item
+     * @return Item
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function add(Item $item): Item
     {
-        $parent = $parent ?: 'main'; //Default parent is name
+        $className = Tools::getClassName($item);
+        $method = "add$className";
 
-        //Default name is the translation of the node name
-        if (!$name) {
-            list($modulo, $nodo) = explode('.', $nodeUri);
-            $name = Language::text($nodo, $modulo);
+        if (method_exists($this, $method)) {
+            return $this->$method($item);
         }
 
-        //todo: Set default filters in urlParams!
-        $urlParams = [];
-        $url = Tools::dispatch_url($nodeUri, $action, $urlParams);
-
-        $enable = isset($extraParams['enable']) ?: 1;
-        $order = isset($extraParams['order']) ?: 0;
-        $module = isset($extraParams['module']) ?: '';
-        $target = isset($extraParams['target']) ?: '';
-        $raw = isset($extraParams['raw']) ?: false;
-        $type = isset($extraParams['type']) ?: MenuItem::TYPE_LINK;
-
-        $this->addMenuItem($name, $url, $parent, $enable, $order, $module, $target, $raw, $position, $type);
+        throw new Exception("Method " . $method . " does not exist!");
     }
 
-    /**
-     * Add a new MenuItem to the Menu
-     * @param MenuItem $menuItem
-     * @return MenuItem
-     */
-    public function add(MenuItem $menuItem): MenuItem
+    private function addHeaderItem(HeaderItem $item): HeaderItem
     {
-
         $this->addMenuItem(
-            $menuItem->getName(),
-            $menuItem->getUrl(),
-            $menuItem->getParent(),
-            $menuItem->getEnable(),
-            $menuItem->getOrder(),
-            $menuItem->getModule(),
-            $menuItem->getTarget(),
-            $menuItem->isRaw(),
-            $menuItem->getPosition(),
-            $menuItem->getType(),
-            $menuItem->isActive(),
-            $menuItem->getIcon(),
+            $item->getName(),
+            "",
+            $item->getParent(),
+            $item->getEnable(),
+            $item->getOrder(),
+            $item->getModule(),
+            "",
+            $item->isRaw(),
+            $item->getPosition(),
+            $item->getType(),
+            $item->isActive(),
+            $item->getIcon()
         );
 
-        return $menuItem;
+        return $item;
     }
 
+    private function addSeparatorItem(SeparatorItem $item): SeparatorItem
+    {
+        $this->addMenuItem(
+            $item->getName(),
+            "",
+            $item->getParent(),
+            $item->getEnable(),
+            $item->getOrder(),
+            $item->getModule(),
+            "",
+            $item->isRaw(),
+            $item->getPosition(),
+            $item->getType(),
+            $item->isActive(),
+            "",
+            $item->getColor()
+        );
+
+        return $item;
+    }
+
+    private function addActionItem(ActionItem $item): ActionItem
+    {
+        $this->addMenuItem(
+            $item->getName(),
+            $item->getUrl(),
+            $item->getParent(),
+            $item->getEnable(),
+            $item->getOrder(),
+            $item->getModule(),
+            "",
+            $item->isRaw(),
+            $item->getPosition(),
+            $item->getType(),
+            $item->isActive(),
+            $item->getIcon()
+        );
+
+        return $item;
+    }
+
+    private function addUrlItem(UrlItem $item): UrlItem
+    {
+        $this->addMenuItem(
+            $item->getName(),
+            $item->getUrl(),
+            $item->getParent(),
+            $item->getEnable(),
+            $item->getOrder(),
+            $item->getModule(),
+            $item->getTarget(),
+            $item->isRaw(),
+            $item->getPosition(),
+            $item->getType(),
+            $item->isActive(),
+            $item->getIcon(),
+        );
+
+        return $item;
+    }
 
     private function parseItems(array &$items): array
     {

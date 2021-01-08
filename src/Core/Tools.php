@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\Core;
 
+use ReflectionClass;
+use ReflectionException;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Session\SessionManager;
@@ -192,8 +194,9 @@ class Tools
      *                      ("critical"|"warning" (default))
      *
      * @return bool false if something goes horribly wrong
+     * @throws Exception
      */
-    public static function atkhalt($msg, $level = 'warning')
+    public static function atkhalt(string $msg, $level = 'warning'): bool
     {
         if ($level == Config::getGlobal('halt_on_error') || $level == 'critical') {
             if ($level == 'warning') {
@@ -219,6 +222,23 @@ class Tools
         }
 
         return false;
+    }
+
+
+    /**
+     * @param string|object $class Either a string containing the name of
+     * the class to reflect, or an object.
+     * @return string
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public static function getClassName($class): string
+    {
+        if (!(is_object($class) || is_string($class))) {
+            throw new Exception("The class argument must be string or object type!");
+        }
+
+        return (new ReflectionClass($class))->getShortName();
     }
 
     /**
