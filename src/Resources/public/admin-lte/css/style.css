@@ -92,8 +92,11 @@ table.recordList tr td .actions .btn {
     margin: 0 2px;
 }
 
+/*
 .recordListTdFirst.row-type-actions,
-.recordListTd.row-type-actions {
+.recordListTd.row-type-actions,
+*/
+.recordList{
     white-space: nowrap;
     width: 1%;
 }
