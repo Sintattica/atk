@@ -21,7 +21,7 @@
 
 
         <!-- todo: table-striped -->
-        <table id="{$listid}" class="table-sm table-bordered table-hover table-condensed recordList">
+        <table id="{$listid}" class="table table-sm table-bordered table-hover table-condensed recordList">
 
             <thead>
             <!-- header -->
