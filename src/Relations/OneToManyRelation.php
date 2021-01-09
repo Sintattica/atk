@@ -368,13 +368,12 @@ class OneToManyRelation extends Relation
         }
 
         if ($mode == 'list') { // list mode
-            $result = '<ul ' . $this->getCSSClassAttribute(['ml-2']) . '>';
-
+            $result = '<div>'; //.$this->getCSSClassAttribute(['ml-2']) . '>';
             foreach ($records as $current) {
-                $result .= sprintf('<li>%s</li>', $this->m_destInstance->descriptor($current));
+                $result .= sprintf('<span class="badge-sm badge-pill badge-primary mr-1">%s</span>', $this->m_destInstance->descriptor($current));
             }
 
-            $result .= '</ul>';
+            $result .= '</div>';
 
             return $result;
         } else { // cvs / plain mode

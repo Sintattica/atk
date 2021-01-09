@@ -24,17 +24,17 @@
 
 {/if}
 {if !empty($list)}
-    <div class="row no-gutters datagrid-list">
+    <div class="row mt-1 no-gutters datagrid-list">
         {$list}
     </div>
 {/if}
 {if !empty($norecordsfound)}
-    <div class="row no-gutters datagrid-norecordsfound">
+    <div class="row mt-1 no-gutters datagrid-norecordsfound">
         <i>{$norecordsfound}</i>
     </div>
 {/if}
 {if $displayBottomInfo && (!empty($paginator) || !empty($limit) || !empty($summary))}
-    <div class="row no-gutters bottom">
+    <div class="row mt-1 no-gutters bottom">
         <div class="col-12 col-sm-6 text-center text-sm-left">
             {if !empty($summary)}
                 <div class="d-inline-block mr-3">{$summary}</div>

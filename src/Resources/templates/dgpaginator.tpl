@@ -1,4 +1,4 @@
-<nav aria-label="table navigation">
+<nav aria-label="table-sm navigation">
     <ul class="pagination mb-0">
         {foreach from=$links item='link' key='i'}
             {if isset($link.current) && $link.current}
