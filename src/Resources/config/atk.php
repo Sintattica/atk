@@ -870,7 +870,6 @@ return [
     'icon_done' => 'fa fa-check',
     'icon_edit' => 'fas fa-pencil-alt',
     'icon_editcopy' => 'fas fa-clone',
-    'icon_export' => 'fa fa-file-excel-o',
     'icon_preview' => 'fa fa-file-o',
     'icon_select' => 'fas fa-hand-pointer',
     'icon_view' => 'fa fa-search',
@@ -879,6 +878,8 @@ return [
     'icon_print' => 'fa fa-print',
     'icon_plussquare' => 'fa fa-plus-square',
     'icon_minussquare' => 'fa fa-minus-square',
+    'icon_add'         => 'fas fa-plus',
+    'icon_export_csv'  => 'fas fa-file-csv',
 
     /****************** CACHING ********************/
 

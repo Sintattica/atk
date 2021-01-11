@@ -285,8 +285,16 @@ class AdminHandler extends ActionHandler
 
             $cssClass = 'class="btn btn-sm btn-default admin_link admin_link_export"';
 
+            $label = Tools::atktext('export', 'atk', $this->m_node->m_type);
+
+            $icon = Config::getGlobal("icon_export_csv");
+
+            $margin = $label && $icon ? "mr-1"  : "";
+            $label = '<i class="'.$icon. ' ' . $margin. '"></i>'.$label;
+
             $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export', array('atkfilter' => $filter)),
-                Tools::atktext('export', 'atk', $this->m_node->m_type), SessionManager::SESSION_NESTED, false, $cssClass);
+                $label, SessionManager::SESSION_NESTED, false, $cssClass);
+
         }
 
         return $link;
@@ -320,6 +328,9 @@ class AdminHandler extends ActionHandler
                 // generic text
                 $label = Tools::atktext('add', 'atk');
             }
+            $icon = Config::getGlobal("icon_add");
+            $margin = $label && $icon ? "mr-1"  : "";
+            $label = '<i class="'.$icon. ' ' . $margin. '"></i>'.$label;
 
             if ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
