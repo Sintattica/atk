@@ -131,7 +131,7 @@ class MultiSelectListAttribute extends ListAttribute
             $res[] = $this->_translateValue($values[$i], $record);
         }
 
-        return implode(', ', $res);
+        return $res ? '<span class="badge-sm badge-pill badge-secondary mr-1">' . implode('</span><span class="badge-sm badge-pill badge-secondary mr-1">', $res) . "</span>": "";
     }
 
     /**
