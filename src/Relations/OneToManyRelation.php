@@ -370,7 +370,7 @@ class OneToManyRelation extends Relation
         if ($mode == 'list') { // list mode
             $result = '<div>'; //.$this->getCSSClassAttribute(['ml-2']) . '>';
             foreach ($records as $current) {
-                $result .= sprintf('<span class="badge-sm badge-pill badge-primary mr-1">%s</span>', $this->m_destInstance->descriptor($current));
+                $result .= sprintf('<span class="badge-sm badge-pill badge-secondary mr-1">%s</span>', $this->m_destInstance->descriptor($current));
             }
 
             $result .= '</div>';
