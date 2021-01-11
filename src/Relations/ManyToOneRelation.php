@@ -1264,7 +1264,7 @@ EOF;
             return array('substring', 'exact', 'wildcard', 'regex');
         }
 
-        return array('exact'); // only support exact search when searching with dropdowns
+        return ['exact']; // only support exact search when searching with dropdowns
     }
 
     public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)

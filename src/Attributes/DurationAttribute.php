@@ -175,7 +175,7 @@ class DurationAttribute extends Attribute
      */
     public function getSearchModes()
     {
-        return array('exact');
+        return ['exact'];
     }
 
     /**

@@ -782,7 +782,7 @@ class FileAttribute extends Attribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('substring', 'exact', 'wildcard', 'regexp');
+        return ['substring', 'exact', 'wildcard', 'regexp'];
     }
 
     /**

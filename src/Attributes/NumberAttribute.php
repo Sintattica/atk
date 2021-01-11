@@ -388,7 +388,7 @@ class NumberAttribute extends Attribute
 
     public static function getStaticSearchModes()
     {
-        return array('exact', 'between', 'greaterthan', 'greaterthanequal', 'lessthan', 'lessthanequal');
+        return ['exact', 'between', 'greaterthan', 'greaterthanequal', 'lessthan', 'lessthanequal'];
     }
 
     /**

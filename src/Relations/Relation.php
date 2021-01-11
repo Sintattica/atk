@@ -21,7 +21,7 @@ class Relation extends Attribute
      * @var String Destination node.
      */
     public $m_destination;
-    
+
     /** @var Node $m_destInstance Destination instance */
     public $m_destInstance;
 
@@ -298,7 +298,7 @@ class Relation extends Attribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('exact');
+        return ['exact'];
     }
 
     /**

@@ -982,7 +982,7 @@ class OneToManyRelation extends Relation
      */
     public function getSearchModes()
     {
-        return array('substring');
+        return ['substring'];
     }
 
     /**

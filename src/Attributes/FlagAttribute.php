@@ -181,6 +181,6 @@ class FlagAttribute extends MultiSelectAttribute
         // searches can be implemented using LIKE)
         // Possible values
         //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-        return array('exact');
+        return ['exact'];
     }
 }
