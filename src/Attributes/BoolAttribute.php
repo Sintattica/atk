@@ -116,6 +116,7 @@ class BoolAttribute extends Attribute
             $style .= "$k:$v;";
         }
 
+        //Max width 50px because in view mode it occupies all the row
         $result .= '<div class="checkbox icheck-primary" style="max-width: 50px;">';
         $result .= '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1"';
         $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute(['atkcheckbox']);

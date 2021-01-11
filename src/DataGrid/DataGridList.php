@@ -287,7 +287,7 @@ class DataGridList extends DataGridComponent
                             $inputHTML = '<input id="chk_'.$listName."_".$i.'" type="checkbox" name="' . $listName . '_atkselector[' . $i . ']" value="' . $list['rows'][$i]['selector'] . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
                     }
 
-                    $inputHTML = '<div class="icheck-primary" style="margin-top:5px !important;">'.$inputHTML.'<label for="chk_'.$listName.'_'.$i.'"></label></div>';
+                    $inputHTML = '<div class="icheck-primary" style="margin-top:10px !important;">'.$inputHTML.'<label for="chk_'.$listName.'_'.$i.'"></label></div>';
 
                     $record['cols'][] = array(
                         'content' => $inputHTML . '

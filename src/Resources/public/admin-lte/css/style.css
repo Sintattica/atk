@@ -435,3 +435,27 @@ input[type = checkbox].form-control {
 .atk-date-group .select2-container {
     min-width:120px;
 }
+
+
+/**
+ * iCheck dimensions
+ */
+.icheck-primary[class*="icheck-"] > label {
+    padding-left: 22px !important;
+    line-height: 18px;
+}
+
+.icheck-primary[class*="icheck-"] > input:first-child + input[type="hidden"] + label::before, .icheck-primary[class*="icheck-"] > input:first-child + label::before {
+    width: 18px;
+    height: 18px;
+    border-radius: .2rem;
+    margin-left: -22px;
+}
+
+.icheck-primary[class*="icheck-"] > input:first-child:checked + input[type="hidden"] + label::after,
+.icheck-primary[class*="icheck-"] > input:first-child:checked + label::after {
+    top: -2px;
+    width: 6px;
+    height: 10px;
+    left: -0.1rem;
+}
