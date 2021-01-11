@@ -271,7 +271,7 @@ class DateTimeAttribute extends Attribute
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;
         $timeEdit = $this->m_time->edit($record, $fieldprefix, $mode);
 
-        return '<div class="DateTimeAttribute d-flex flex-nowrap justify-content-between justify-content-sm-start">'.$dateEdit.'<span class="m-1"></span>'.$timeEdit.'</div>';
+        return '<div class="DateTimeAttribute d-flex flex-nowrap justify-content-between justify-content-sm-start time-attr">'.$dateEdit.'<span class="m-1"></span>'.$timeEdit.'</div>';
     }
 
     /**

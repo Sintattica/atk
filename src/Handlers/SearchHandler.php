@@ -187,8 +187,8 @@ class SearchHandler extends AbstractSearchHandler
 
             $params = [];
             $params['searchmode_title'] = Tools::atktext('search_mode', 'atk');
-            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>'.Tools::atktext('search_and', 'atk');
-            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">'.Tools::atktext('search_or', 'atk');
+            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio form-check-input" value="AND" checked>'.Tools::atktext('search_and', 'atk');
+            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio form-check-input" value="OR">'.Tools::atktext('search_or', 'atk');
             $params['saved_criteria'] = $this->getSavedCriteria($name);
 
             $params['fields'] = [];

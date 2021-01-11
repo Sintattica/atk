@@ -92,12 +92,12 @@ table.recordList tr td .actions .btn {
     margin: 0 2px;
 }
 
-/*
-.recordListTdFirst.row-type-actions,
-.recordListTd.row-type-actions,
-*/
 .recordList{
     white-space: nowrap;
+}
+
+.recordListTdFirst.row-type-actions,
+.recordListTd.row-type-actions {
     width: 1%;
 }
 
@@ -423,10 +423,15 @@ input[type = checkbox].form-control {
 
 
 .table td, .table th{
-    padding-top:.35rem;
-    padding-left: .75rem;
-    padding-right: .75rem;
-    padding-bottom: .35rem;
+    padding: .35rem .75rem;
     vertical-align: middle;
 }
 
+
+.atkdateattribute{
+   /* min-width: 120px;*/
+}
+
+.atk-date-group .select2-container {
+    min-width:120px;
+}

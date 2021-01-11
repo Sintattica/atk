@@ -402,7 +402,7 @@ class DateAttribute extends Attribute
 
             $this->m_yeardropdown = true;
         } /* normal input box */ else {
-            $result .= '<input type="text" id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control form-control-sm" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current['year']) ? $current['year'] : '').'">';
+            $result .= '<input type="text" id="'.$fieldid.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute form-control form-control-sm" size="8" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current['year']) ? $current['year'] : '').'">';
         }
 
         return $result;
@@ -667,7 +667,7 @@ class DateAttribute extends Attribute
         );
 
         if (!$this->m_simplemode) {
-            $result .= '<div class="DateAttribute d-flex flex-nowrap form-inline"><script>var atkdateattribute_'.$id.' = '.Json::encode($info).';</script>';
+            $result .= '<div class="DateAttribute align-top d-inline-block"><script>var atkdateattribute_' . $id . ' = ' . Json::encode($info) . ';</script>';
         }
 
         /* other date selections */
@@ -917,7 +917,7 @@ class DateAttribute extends Attribute
         $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from']) : $record;
         $res = $this->draw($rec, $id.'_from', $name, 'atksearch_AE_'.$fieldprefix, '_AE_from', 'search');
         $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to']) : $record;
-        $res .= '&nbsp;'.Tools::atktext('until').': '.$this->draw($rec, $id.'_to', $name, 'atksearch_AE_'.$fieldprefix, '_AE_to', 'search');
+        $res .= '<span class="align-middle text-md-center pt-md-2 d-inline-block">&nbsp;' . Tools::atktext('until') . ': </span>' . $this->draw($rec, $id . '_to', $name, 'atksearch_AE_' . $fieldprefix, '_AE_to', 'search');
 
         return $res;
     }
@@ -995,7 +995,7 @@ class DateAttribute extends Attribute
         $fieldname = $db->func_datetochar($fieldname ? $fieldname : ($table.'.'.$this->fieldName()));
 
         if ($fromval == null && $toval == null) {
-            ;
+
         } // do nothing
         else {
             if ($fromval != null && $toval != null) {
@@ -1353,7 +1353,7 @@ class DateAttribute extends Attribute
 
     public static function getStaticSearchModes()
     {
-        return array('between');
+        return ['between'];
     }
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')

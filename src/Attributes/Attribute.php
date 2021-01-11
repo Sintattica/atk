@@ -1599,11 +1599,11 @@ class Attribute
      * searchmodes are supported otherwise the default searchmode is selected.
      *
      * @param bool $extended using extended search?
-     * @param string $fieldprefix optional fieldprefix
+     * @param string $fieldPrefix optional fieldprefix
      *
      * @return string html which is used for selecting searchmode
      */
-    public function searchMode($extended = false, $fieldprefix = '')
+    public function searchMode($extended = false, $fieldPrefix = '')
     {
         $searchModes = $this->getSearchModes();
         $dbSearchModes = $this->getDb()->getSearchModes();
@@ -1616,7 +1616,7 @@ class Attribute
         }
 
         if ($extended && Tools::count($searchModes) > 1) {
-            $field = '<select class="form-control select-standard" name="' . $this->getSearchModeFieldname($fieldprefix) . '">';
+            $field = '<select class="extended-search-generic-attribute-dropdown form-control form-control-sm select-standard" name="' . $this->getSearchModeFieldname($fieldPrefix) . '">';
 
             foreach ($searchModes as $value) {
                 $selected = $searchMode == $value ? ' selected="selected"' : '';
@@ -1624,8 +1624,12 @@ class Attribute
             }
 
             $field .= '</select>';
+
+            //enable select2
+            $field .= "<script>ATK.Tools.enableSelect2ForSelect('.extended-search-generic-attribute-dropdown');</script>";
+
         } else {
-            $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldprefix) . '" value="' . $searchMode . '">' . ($extended ? Tools::atktext('search_' . $searchMode) : '');
+            $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldPrefix) . '" value="' . $searchMode . '">' . ($extended ? Tools::atktext('search_' . $searchMode) : '');
         }
 
         return $field;
@@ -2139,7 +2143,7 @@ class Attribute
         // exact match and substring search should be supported by any database.
         // (the LIKE function is ANSI standard SQL, and both substring and wildcard
         // searches can be implemented using LIKE)
-        return array('substring', 'exact', 'wildcard', 'regexp');
+        return ['substring', 'exact', 'wildcard', 'regexp'];
     }
 
     /**
@@ -2386,7 +2390,7 @@ class Attribute
             return 'AF_NO_LABEL';
         } else {
             if ($this->hasFlag(self::AF_BLANKLABEL)) {
-                return;
+                return null;
             } else {
                 return $this->label();
             }
@@ -2680,9 +2684,7 @@ class Attribute
      */
     public function extendedSort($columnConfig, $fieldprefix = '', $grid = null)
     {
-        $result = $this->sortOptions($columnConfig, $fieldprefix, $grid) . ' ' . $this->sortOrder($columnConfig, $fieldprefix, $grid);
-
-        return $result;
+        return $this->sortOptions($columnConfig, $fieldprefix, $grid) . ' ' . $this->sortOrder($columnConfig, $fieldprefix, $grid);
     }
 
     /**
