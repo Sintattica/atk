@@ -78,10 +78,13 @@ The fine folks at iBuildings were kind enough to transfer the atk-framework.com 
 Currently there's no documentation for v.9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
 
 ### 9.2
-This branch starts from v9.1 and adds support for php>=7.4. Expect some breaking changes and an updated style based on AdminLte framework. 
-We are making other changes that will be rolled out in the future, generally we will be work on fixing existing functionalities on the version 9 line. 
-Our primary objective in the version 9.x is to give a new layout to existing projects and update them to PHP7.4 . 
+This branch starts from v9.1 and it contains an updated style based on AdminLte framework. 
+We are making other changes that will be rolled out in the future, generally we will be work on fixing existing functionalities on the version 9 line.
 
-The second objective is to merge the layout updates of the 9.2.x versions with the changes made in the v10.x and put a base for the upcoming v11 of the ATK framework. 
-This new version will not be backward compatible (even if we're trying to be as much as possible), but we hope it will have a lot of new functionalities, optimisations and a beautiful new design that we starting to roll out with the current release. 
+Our primary objective in the version 9.x is to give a new layout to existing projects and update them at least to PHP7.2. 
 
+The second objective is to merge the layout updates of the 9.2.x versions with the changes made in the v10.x and put a base for the upcoming v11 of the ATK framework.
+
+The third objective is to create a skeleton project and some documentation so everyone can get onboard and develop awesome ATK applications.
+
+Team Sintattica
