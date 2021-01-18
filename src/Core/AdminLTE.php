@@ -163,7 +163,7 @@ class AdminLTE
 
     public function getFixedNavHeaderClass(): string
     {
-        return $this->isFixedNavHeader() ? " fixedNavHeader" : "";
+        return $this->isFixedNavHeader() ? " layout-navbar-fixed" : "";
     }
 
 
