@@ -13,11 +13,11 @@
 
 {if isset($body)}
     <body class="hold-transition {if $extra_classes} {$extra_classes} {/if} "{if $extrabodyprops} {$extrabodyprops}{/if}>
-
+    <div class="wrapper">
         {$body}
 
         <div id="hiddenvars" style="display: none">{if isset($hiddenvars)}{$hiddenvars}{/if}</div>
-
+    </div>
     <script>
         /*
         $(function() {

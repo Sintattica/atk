@@ -121,6 +121,8 @@ class AdminLTE
     private $footerSmallText = false; //Todo: Yet to do this!
     private $brandSmallText = false;
     private $sidebarElevation = 2;
+    private $holdTransition = false; //Transit o min-menu mode with a linear transition
+    private $fixedNavHeader = true;
 
 
     private static $adminLTEInstance = null;
@@ -145,7 +147,23 @@ class AdminLTE
             $bodyClasses .= " text-sm";
         }
 
+        if ($this->holdTransition) {
+            $bodyClasses .= " hold-transition";
+        }
+
+        $bodyClasses .= $this->getFixedNavHeaderClass();
+
         return $bodyClasses;
+    }
+
+    public function isFixedNavHeader(): bool
+    {
+        return $this->fixedNavHeader;
+    }
+
+    public function getFixedNavHeaderClass(): string
+    {
+        return $this->isFixedNavHeader() ? " fixedNavHeader" : "";
     }
 
 
@@ -175,6 +193,13 @@ class AdminLTE
         return $classes;
     }
 
+
+    public function isTransitionHold(): bool
+    {
+        return $this->holdTransition;
+    }
+
+
     public function getNavSidebarClasses(): string
     {
 
@@ -203,7 +228,7 @@ class AdminLTE
     }
 
 
-    public function getFooterClasses()
+    public function getFooterClasses(): string
     {
         $classes = "";
 
@@ -224,7 +249,7 @@ class AdminLTE
 
     }
 
-    public function getSidebarIconsSize() : string
+    public function getSidebarIconsSize(): string
     {
         return $this->shouldFixSmallSidebarIcons() ? 'small-txt' : '';
     }
