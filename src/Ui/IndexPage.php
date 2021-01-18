@@ -234,7 +234,7 @@ class IndexPage
         $this->m_page->addContent($content);
     }
 
-    public function getContent(): string
+    public function getContent()
     {
         return $this->m_ui->renderBox([
             'title' => Tools::atktext('app_shorttitle'),
