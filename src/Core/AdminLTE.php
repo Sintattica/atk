@@ -97,33 +97,33 @@ class AdminLTE
     private const ACCENT_TEAL = 'accent-teal';
     private const ACCENT_OLIVE = 'accent-olive';
 
-    private array $loginBodyClasses = ['login-page'];
-    private array $generalBodyClasses = ["sidebar-mini", "layout-fixed"];
+    private $loginBodyClasses = ['login-page'];
+    private $generalBodyClasses = ["sidebar-mini", "layout-fixed"];
 
     /**
      * Set the default skin combination for navbar and sidebar
      */
-    private array $currentSidebarSkinsBundle = [self::SKINS_SIDEBAR_DARK_PRIMARY];
+    private $currentSidebarSkinsBundle = [self::SKINS_SIDEBAR_DARK_PRIMARY];
 
-    private array $currentNavBarSkinsBundle = [
+    private $currentNavBarSkinsBundle = [
         self::SKINS_NAV_DARK_DARK,
         self::SKINS_NAV_DARK_LIGHTBLUE
     ];
 
-    private bool $expandSidebarOnHover = false;
-    private bool $indentSidebarChildren = true;
-    private bool $flatNavStyle = false;
-    private bool $compactSidebarStyle = false;
-    private bool $legacyNavStyle = false;
-    private bool $bodySmallText = true;
-    private bool $navSmallText = false;
-    private bool $sidebarSmallText = false;
-    private bool $footerSmallText = false; //Todo: Yet to do this!
-    private bool $brandSmallText = false;
-    private int $sidebarElevation = 2;
+    private $expandSidebarOnHover = false;
+    private $indentSidebarChildren = true;
+    private $flatNavStyle = false;
+    private $compactSidebarStyle = false;
+    private $legacyNavStyle = false;
+    private $bodySmallText = true;
+    private $navSmallText = false;
+    private $sidebarSmallText = false;
+    private $footerSmallText = false; //Todo: Yet to do this!
+    private $brandSmallText = false;
+    private $sidebarElevation = 2;
 
 
-    private static ?AdminLTE $adminLTEInstance = null;
+    private static $adminLTEInstance = null;
 
 
     public static function getInstance(): AdminLTE

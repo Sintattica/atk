@@ -13,9 +13,9 @@ class SwitchAttribute extends BoolAttribute
      * eg: array('size' => 'large')
      */
 
-    protected array $switchOptions;
+    protected $switchOptions;
 
-    private ?Page $page;
+    private $page;
 
     public function __construct($name, $flags = 0, $switchOptions = [])
     {

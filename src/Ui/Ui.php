@@ -21,7 +21,7 @@ class Ui
      * @access private
      * @var SmartyProvider
      */
-    public ?Smarty $m_smarty = null;
+    public $m_smarty = null;
 
     /**
      * Ui constructor, initialises Smarty and Theme instance.

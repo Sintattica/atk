@@ -10,8 +10,8 @@ use Sintattica\Atk\Core\Tools;
 class ActionItem extends Item
 {
 
-    private string $nodeUri;
-    private string $action;
+    private $nodeUri;
+    private $action;
 
     /**
      * ActionItem constructor.

@@ -16,7 +16,7 @@ class CkAttribute extends HtmlAttribute
     /**
      * @var array CKEditor configuration (default)
      */
-    private array $ckOptions = [
+    private $ckOptions = [
         'removePlugins' => ['Title', 'MathType', 'ChemType'],
         'toolbar' => [
             'items' => [

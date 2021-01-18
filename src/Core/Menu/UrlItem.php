@@ -11,8 +11,8 @@ class UrlItem extends Item
     public const TARGET_PARENT = "_parent";
     public const TARGET_TOP = "_top";
 
-    private string $url;
-    protected string $target;
+    private $url;
+    protected $target;
 
     /**
      * UrlItem constructor.

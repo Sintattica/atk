@@ -10,7 +10,7 @@ namespace Sintattica\Atk\Core\Menu;
 class SeparatorItem extends Item
 {
 
-    private string $color;
+    private $color;
 
     public function __construct(string $color = "#c2c7d0", string $position = MenuBase::MENU_SIDEBAR)
     {
@@ -36,6 +36,6 @@ class SeparatorItem extends Item
         $this->color = $color;
         return $this;
     }
-    
+
 
 }

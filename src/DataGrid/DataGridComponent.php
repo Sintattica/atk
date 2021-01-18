@@ -19,14 +19,14 @@ abstract class DataGridComponent
      *
      * @var null|DataGrid
      */
-    private ?DataGrid $m_grid;
+    private $m_grid;
 
     /**
      * The component options.
      *
      * @var array
      */
-    private array $m_options;
+    private $m_options;
 
     /**
      * Constructor.

@@ -12,13 +12,13 @@ use Sintattica\Atk\Core\Menu\MenuBase;
  */
 abstract class Module
 {
-    public static string $module;
+    public static $module;
 
     /** @var Atk $atk */
-    private Atk $atk;
+    private $atk;
 
     /** @var MenuBase $menu */
-    private MenuBase $menu;
+    private $menu;
 
     public function __construct(Atk $atk, MenuBase $menu)
     {

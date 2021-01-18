@@ -22,10 +22,10 @@ abstract class MenuBase
     private const TYPE_MENU_NAVBAR = 'navbar';
 
     //All menu items (sidebar and navbar)
-    private array $items = [];
-    private array $menu = [];
+    private $items = [];
+    private $menu = [];
 
-    private ?AdminLTE $m_adminLte;
+    private $m_adminLte;
 
     //-------- Sidebar Menu  ------------
     //The submenu works by exploring all the children and then appending data from bottom up.
@@ -153,9 +153,15 @@ abstract class MenuBase
 
         $html_items = $this->parseItems($this->items['main']);
 
-        $itemsLeftHtml = array_filter($html_items, fn($el): bool => $el['position'] === self::MENU_NAV_LEFT);
-        $itemsRightHtml = array_filter($html_items, fn($el): bool => $el['position'] === self::MENU_NAV_RIGHT);
-        $itemsSidebarHtml = array_filter($html_items, fn($el): bool => $el['position'] === self::MENU_SIDEBAR);
+        $itemsLeftHtml = array_filter($html_items, function ($el): bool {
+            return $el['position'] === self::MENU_NAV_LEFT;
+        });
+        $itemsRightHtml = array_filter($html_items, function ($el): bool {
+            return $el['position'] === self::MENU_NAV_RIGHT;
+        });
+        $itemsSidebarHtml = array_filter($html_items, function ($el): bool {
+            return $el['position'] === self::MENU_SIDEBAR;
+        });
 
         return [
             self::MENU_NAV_LEFT => $this->processMenu($itemsLeftHtml, false, self::TYPE_MENU_NAVBAR) ?: '',
@@ -540,7 +546,7 @@ abstract class MenuBase
             $item->getPosition(),
             $item->getType(),
             $item->isActive(),
-            $item->getIcon(),
+            $item->getIcon()
         );
 
         return $item;

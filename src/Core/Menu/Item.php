@@ -19,21 +19,21 @@ abstract class Item
     protected const DEFAULT_PARENT = "main";
     protected const DEFAULT_ORDER = -1;
 
-    protected string $uuid;
-    protected string $name = "";
+    protected $uuid;
+    protected $name = "";
 
-    protected string $parent = self::DEFAULT_PARENT;
-    protected string $position = MenuBase::MENU_SIDEBAR;
-    protected int $enable = 1;
-    protected int $order = self::DEFAULT_ORDER;
-    protected string $module = '';
-    protected bool $raw = false;
-    protected array $urlParams = [];
+    protected $parent = self::DEFAULT_PARENT;
+    protected $position = MenuBase::MENU_SIDEBAR;
+    protected $enable = 1;
+    protected $order = self::DEFAULT_ORDER;
+    protected $module = '';
+    protected $raw = false;
+    protected $urlParams = [];
 
     //Todo: Pensare come fare per i link esterni!
     // private string $url;
-    protected ?string $icon = null;
-    protected bool $active = false;
+    protected $icon = null;
+    protected $active = false;
 
 
     //Todo: Creare gli ItemType -> HeaderMenuItem, SeparatorMenuItem, LinkMenuItem che estendono Item

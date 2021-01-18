@@ -10,11 +10,12 @@ ATK was originally developed by Ivo Jansch and iBuildings back in 2000. It's bee
 
 This repo is managed by Sintattica. We still have some active projects based on various versions of ATK. Since we didn't find a true alternative to ATK yet, we opted to keep it alive.
 
-We currently have 4 branches:
+We currently have these branches:
 
 * 8.2
 * 9.0
 * 9.1
+* 9.2
 * master
 
 ## 8.2
@@ -74,4 +75,13 @@ Thanks!
 The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica and to give us the sources of two historically valuable resources for ATK: the [forum](http://atk-framework.com/forum/) and the [wiki](http://atk-framework.com/wiki/).
 
 ### 9.0 and 9.1
-Currently there's no documentation for v. 9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
+Currently there's no documentation for v.9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
+
+### 9.2
+This branch starts from v9.1 and adds support for php>=7.4. Expect some breaking changes and an updated style based on AdminLte framework. 
+We are making other changes that will be rolled out in the future, generally we will be work on fixing existing functionalities on the version 9 line. 
+Our primary objective in the version 9.x is to give a new layout to existing projects and update them to PHP7.4 . 
+
+The second objective is to merge the layout updates of the 9.2.x versions with the changes made in the v10.x and put a base for the upcoming v11 of the ATK framework. 
+This new version will not be backward compatible (even if we're trying to be as much as possible), but we hope it will have a lot of new functionalities, optimisations and a beautiful new design that we starting to roll out with the current release. 
+

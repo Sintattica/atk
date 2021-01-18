@@ -36,7 +36,7 @@ class DataGridPaginator extends DataGridComponent
      */
     protected $m_goToFirstLast = false;
 
-    private bool $iconizeLinks;
+    private $iconizeLinks;
 
     /**
      * Constructor.
