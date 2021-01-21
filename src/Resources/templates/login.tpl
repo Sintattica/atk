@@ -10,7 +10,7 @@
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
-            <a href="#" class="h1"><img src="{$login_logo}" class="center-block img-responsive login-logo" alt="logo"></a>
+            <a href="#" class="h1"><img src="{$login_logo}" class="center-block img-responsive login-logo" width="100%" height="auto" alt="logo"></a>
         </div>
         <div class="card-body">
             <p class="login-box-msg">{atktext id="login_form_title"}</p>
