@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Utils;
 
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Ui\SmartyProvider;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Ui\Page;
@@ -562,17 +563,24 @@ class Debugger
 
             $redirect = $this->renderRedirectLink();
 
+            $output = '<script type="text/javascript" src="'.$script.'"></script>';
+
+            //Page::getInstance()->register_loadscript($script);
+
+            $output .= Ui::getInstance()->render('debugger.tpl', ['redirect' => $redirect, 'block' => $block]);
+
+            /*
             $output = '
           <script type="text/javascript" src="'.$script.'"></script>
-          <div class="content-wrapper" style="padding-left: 10px;">
+          <div id="debugger_wrapper" class="content-wrapper" style="padding-left: 10px; height: 100px !important; position: absolute; bottom:0;">
           <hr style="margin-top:0">
-         
+
           <div id="atk_debugging_div" style="font-size: 10pt;">
             '.$redirect.'
             '.$block.'
           </div>
           </div>
-          ';
+          ';*/
         }
 
         return $output;

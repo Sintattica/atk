@@ -459,3 +459,50 @@ input[type = checkbox].form-control {
     height: 10px;
     left: -0.1rem;
 }
+
+
+
+#atk_debugging_div {
+    font-family: monospace;
+    font-size: 11px;
+    white-space: nowrap;
+    text-align: left;
+    padding: 2px 2px 2px 10px;
+    overflow: scroll;
+}
+
+.atkDebugBlock .atkDebugToggle {
+    display: block;
+    margin-top: 0px;
+    text-decoration: none;
+    background-position: 2px 3px;
+    background-repeat: no-repeat;
+    padding: 2px;
+    padding-left: 0px;
+    cursor: pointer;
+}
+
+.atkDebugBlock .atkDebugData {
+    margin-top: 2px;
+    margin-left: 0px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
+.atkDebugExpanded .atkDebugData {
+    display: block;
+}
+
+.atkDebugCollapsed .atkDebugData {
+    display: none;
+}
+
+.atkDebugBlockContainsErrors .atkDebugToggle,
+.atkDebugBlock .atkDebugError,
+.atkDebugBlock .atkDebugError A {
+    color: red;
+}
+
+.atkDebugRedirect {
+    margin-bottom: 10px;
+}

@@ -2,11 +2,12 @@
 {atkconfig var="auth_ignorepasswordmatch" smartyvar="auth_ignorepasswordmatch"}
 
 <style>
-    .container-fluid{
-        margin-top:50px;
+    #debugger_wrapper{
+        display: none;
     }
 </style>
-<div class="login-box text-sm" style="margin-top:400px;">
+
+<div class="login-box text-sm">
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
         <div class="card-header text-center">

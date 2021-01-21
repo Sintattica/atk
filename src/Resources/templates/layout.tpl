@@ -13,25 +13,12 @@
 
 {if isset($body)}
     <body class="hold-transition {if $extra_classes} {$extra_classes} {/if} "{if $extrabodyprops} {$extrabodyprops}{/if}>
-    <div class="wrapper">
-        {$body}
+        {if !login_page }<div class="wrapper">{/if}
 
-        <div id="hiddenvars" style="display: none">{if isset($hiddenvars)}{$hiddenvars}{/if}</div>
-    </div>
-    <script>
-        /*
-        $(function() {
-            $(document).Toasts('create', {
-                class: 'bg-danger',
-                title: 'Toast Title',
-                subtitle: 'Subtitle',
-                body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
-            })
+            {$body}
+            <div id="hiddenvars" style="display: none">{if isset($hiddenvars)}{$hiddenvars}{/if}</div>
 
-        });
-
-         */
-    </script>
+        {if !login_page }</div>{/if}
     </body>
 {/if}
 
