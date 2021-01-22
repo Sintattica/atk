@@ -2148,4 +2148,115 @@ class Tools
     {
         return preg_replace($multiple ? '/\s\s+/' : '/\s+/', $replace, $string);
     }
+
+
+    /**
+     * Convert a hex color code to its RGB equivalent
+     *
+     * @param string $hexStr (hexadecimal color value)
+     * @return array (depending on second parameter. Returns False if invalid hex color value)
+     */
+    public static function hex2RGB(string $hexStr): array
+    {
+
+        $hexStr = preg_replace("/[^0-9A-Fa-f]/", '', $hexStr); // Gets a proper hex string
+        $rgbArray = [];
+
+        if (strlen($hexStr) == 6) { //If a proper hex code, convert using bitwise operation. No overhead... faster
+            $colorVal = hexdec($hexStr);
+            $rgbArray['r'] = 0xFF & ($colorVal >> 0x10);
+            $rgbArray['g'] = 0xFF & ($colorVal >> 0x8);
+            $rgbArray['b'] = 0xFF & $colorVal;
+        } elseif (strlen($hexStr) == 3) { //if shorthand notation, need some string manipulations
+            $rgbArray['r'] = hexdec(str_repeat(substr($hexStr, 0, 1), 2));
+            $rgbArray['g'] = hexdec(str_repeat(substr($hexStr, 1, 1), 2));
+            $rgbArray['b'] = hexdec(str_repeat(substr($hexStr, 2, 1), 2));
+        }
+
+        return $rgbArray; // returns the rgb string or the associative array
+    }
+
+    /**
+     * @param string $hexStr
+     * @param string $seperator
+     * @return string
+     */
+    public static function hex2RGBString(string $hexStr, string $seperator = ','): string
+    {
+        return implode($seperator, self::hex2RGB($hexStr));
+    }
+
+
+    /**
+     * Dim the color light (ex: for borders with the same color as the background)
+     * @param string $hexColor
+     * @param int $deltaSub
+     * @return string
+     */
+    public static function dimColorBy(string $hexColor, int $deltaSub = 30): string
+    {
+        $rgbColor = self::hex2RGB($hexColor);
+
+        $result = "";
+        foreach ($rgbColor as $comp => $val) {
+
+            if ($val - $deltaSub < 1) {
+                $result .= "00";
+                continue;
+            } elseif ($val - $deltaSub > 254) {
+                $result .= "ff";
+                continue;
+            }
+
+            $newValue = strval(dechex($val - $deltaSub));
+
+            if (strlen($newValue) < 2) {
+                $newValue = '0' . $newValue;
+            }
+
+            $result .= $newValue;
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * Decides if the text color should be black of white based on a given background color and a threshold.
+     * Uses a simple formula
+     * Proposed threshold was 186 but in our tests this wasn't good enough.
+     * @param string $bgColor
+     * @param int $threshold
+     * @return bool
+     */
+    public static function isLightTxtUsingBgSimple(string $bgColor, int $threshold = 160): bool
+    {
+        $rgbColor = self::hex2RGB($bgColor);
+        return $rgbColor['r'] * 0.299 + $rgbColor['g'] * 0.587 + $rgbColor['b'] * 0.114 < $threshold;
+    }
+
+
+    /**
+     * Decides if the text color should be black of white based on a given background color and a threshold.
+     * Uses the W3C proposed formula. The proposed threshold is 0.179 but in our tests this wasn't good enough.
+     * @param string $bgColor
+     * @param float $threshold
+     * @return bool
+     */
+    public static function isLightTxtUsingBg(string $bgColor, float $threshold = 0.379): bool
+    {
+        $rgbColor = self::hex2RGB($bgColor);
+
+        $res = [];
+        foreach ($rgbColor as $comp => $val) {
+            $c = $val / 255.0;
+            $res[$comp] = $c <= 0.03928 ? $c / 12.92 : pow((($c + 0.055) / 1.055), 2.4);
+        }
+
+        $luminance = (0.2126 * $res['r'] + 0.7152 * $res['g'] + 0.0722 * $res['b']);
+
+        return $luminance <= $threshold;
+
+    }
+
 }
