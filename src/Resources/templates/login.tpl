@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="login-box text-sm">
+<div class="login-box text-sm" style="margin-top:30%; margin-left: auto; margin-right: auto;">
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
         <div class="card-header text-center">

@@ -447,7 +447,6 @@ class SecurityManager
         $adminLte = AdminLTE::getInstance();
 
         $tplvars = [];
-        $tplvars['login_page'] = true;
         $tplvars['atksessionformvars'] = Tools::makeHiddenPostvars(['atklogout', 'auth_rememberme', 'u2f_response']);
         $tplvars['formurl'] = Config::getGlobal('dispatcher');
         $tplvars['username'] = Tools::atktext('username');
@@ -466,6 +465,7 @@ class SecurityManager
                 $tplvars['auth_rememberme'] = true;
             }
         }
+
 
         $page->addContent($ui->render('login.tpl', $tplvars));
         $output = Output::getInstance();

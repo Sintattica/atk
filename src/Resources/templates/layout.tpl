@@ -13,12 +13,11 @@
 
 {if isset($body)}
     <body class="hold-transition {if $extra_classes} {$extra_classes} {/if} "{if $extrabodyprops} {$extrabodyprops}{/if}>
-        {if !login_page }<div class="wrapper">{/if}
-
+        {if !$login_page }<div class="wrapper">{/if}
             {$body}
             <div id="hiddenvars" style="display: none">{if isset($hiddenvars)}{$hiddenvars}{/if}</div>
 
-        {if !login_page }</div>{/if}
+        {if !$login_page }</div>{/if}
     </body>
 {/if}
 

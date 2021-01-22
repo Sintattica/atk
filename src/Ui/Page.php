@@ -720,6 +720,7 @@ class Page
         $layout['hiddenvars'] = $this->hiddenVars();
         $layout['atkversion'] = Atk::VERSION;
 
+
         return $ui->render('layout.tpl', $layout);
     }
 
