@@ -5,7 +5,7 @@
     {else}
 
         {if $field.label!=="AF_NO_LABEL"}
-            <label for="{$field.htmlid}" class="col-sm-2 col-xl-1 control-label text-nowrap">
+            <label for="{$field.htmlid}" class="col-sm-2 col-xl-1 control-label">
                 {if $field.label!=""}{$field.label}{/if}
             </label>
         {/if}
