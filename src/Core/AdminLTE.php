@@ -110,7 +110,7 @@ class AdminLTE
         self::SKINS_NAV_DARK_LIGHTBLUE
     ];
 
-    private $expandSidebarOnHover = false;
+    private $expandSidebarOnHover = true;
     private $indentSidebarChildren = true;
     private $flatNavStyle = false;
     private $compactSidebarStyle = false;
