@@ -90,7 +90,8 @@ class IndexPage
             $user = $this->m_username ?: $this->m_user['name'];
 
             if (Config::getGlobal('menu_show_user') && $user) {
-                $menuObj->addMenuItem($user, '', 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT);
+                $url = $this->generateUserUrl();
+                $menuObj->addMenuItem($user, $url, 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT);
             }
 
             if (Config::getGlobal('menu_show_logout_link') && $user) {
@@ -132,6 +133,22 @@ class IndexPage
 
         $this->m_output->output($content);
         $this->m_output->outputFlush();
+    }
+
+    private function generateUserUrl(): string
+    {
+        $url = '';
+        if (Config::getGlobal('menu_enable_user_link')) {
+            $userTable = Config::getGlobal('auth_usertable');
+            $userPk = Config::getGlobal('auth_userpk');
+            $userId = $this->m_user[$userPk];
+            $atkSelector = "$userTable.$userPk=$userId";
+            $url = SessionManager::getInstance()->sessionUrl(
+                Tools::dispatch_url(Config::getGlobal('auth_usernode'), 'view', ['atkselector' => $atkSelector]),
+                SessionManager::SESSION_NESTED
+            );
+        }
+        return $url;
     }
 
     /**

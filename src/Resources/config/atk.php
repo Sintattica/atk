@@ -472,6 +472,11 @@ return [
      */
     'menu_show_user' => true,
 
+    /*
+     * Enable user link
+     */
+    'menu_enable_user_link' => true,
+
     /************************************ LAYOUT ****************************** */
 
     /*
