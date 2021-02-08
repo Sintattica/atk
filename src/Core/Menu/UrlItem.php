@@ -55,7 +55,11 @@ class UrlItem extends Item
         return $this->target;
     }
 
-    public function setTarget(string $target): Item
+    /**
+     * @param string $target
+     * @return $this
+     */
+    public function setTarget(string $target): UrlItem
     {
         switch ($target) {
             case $target == self::TARGET_BLANK:

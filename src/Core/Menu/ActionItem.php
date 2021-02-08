@@ -46,9 +46,9 @@ class ActionItem extends Item
 
     /**
      * @param string $nodeUri
-     * @return Item
+     * @return ActionItem
      */
-    public function setNodeUri(string $nodeUri): Item
+    public function setNodeUri(string $nodeUri): ActionItem
     {
         $this->nodeUri = $nodeUri;
         return $this;
@@ -64,9 +64,9 @@ class ActionItem extends Item
 
     /**
      * @param string $action
-     * @return Item
+     * @return ActionItem
      */
-    public function setAction(string $action): Item
+    public function setAction(string $action): ActionItem
     {
         $this->action = $action;
         return $this;
@@ -82,9 +82,9 @@ class ActionItem extends Item
 
     /**
      * @param array $urlParams
-     * @return Item
+     * @return ActionItem
      */
-    public function setActionUrlParams(array $urlParams): Item
+    public function setActionUrlParams(array $urlParams): ActionItem
     {
         $this->urlParams = $urlParams;
         return $this;
