@@ -408,7 +408,8 @@ class ManyToManyRelation extends Relation
             }
         } else {
             if (!in_array($mode, array('csv', 'plain'))) {
-                $result = '<span class="badge-sm badge-pill badge-secondary">'.$this->text('none').'</span>';
+                //Many-to-many was showing tag even if none selected!
+                $result = ''; //'<span class="badge-sm badge-pill badge-secondary">'.$this->text('none').'</span>';
             }
         }
 
