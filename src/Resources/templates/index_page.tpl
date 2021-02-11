@@ -5,5 +5,5 @@
         {include file = "box.tpl"}
     </div>
 
-    {include file = "menu/footer.tpl"}
+    {$footer}
 </div>

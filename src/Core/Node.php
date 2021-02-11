@@ -12,6 +12,7 @@ use Sintattica\Atk\Relations\Relation;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Session\State;
+use Sintattica\Atk\Ui\Footer;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Ui\Ui;
@@ -2899,7 +2900,7 @@ class Node
      *
      * @return string Piece of HTML containing the given blocks and a pagetrail.
      */
-    public function renderActionPage($action, $blocks = array())
+    public function renderActionPage($action, $blocks = [])
     {
         if (!is_array($blocks)) {
             $blocks = ($blocks == '' ? [] : array($blocks));
@@ -2908,10 +2909,11 @@ class Node
         $ui = $this->getUi();
 
         // todo: overridable action templates
-        return $ui->render('actionpage.tpl', array(
+        return $ui->render('actionpage.tpl', [
             'blocks' => $blocks,
             'title' => $ui->title($this->m_module, $this->m_type),
-        ));
+            'footer' => Footer::getInstance()->render()
+        ]);
     }
 
     /**

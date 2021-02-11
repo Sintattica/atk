@@ -7,6 +7,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\RecordList\RecordListCache;
+use Sintattica\Atk\Ui\Footer;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\Ui;
 
@@ -121,7 +122,7 @@ class ActionHandler
         $this->m_action = $action;
         $this->m_partial = $node->m_partial;
 
-        $this->invoke('action_'.$action);
+        $this->invoke('action_' . $action);
 
         // when we're finished, cleanup any atkrejects (that we haven't set ourselves).
         if (!$this->m_rejecting) {
@@ -283,7 +284,7 @@ class ActionHandler
             return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
         } else {
             if (method_exists($this, $methodname)) {
-                Tools::atkdebug("Invoking '$methodname' on ActionHandler for action ".$this->m_action);
+                Tools::atkdebug("Invoking '$methodname' on ActionHandler for action " . $this->m_action);
 
                 return call_user_func_array(array(&$this, $methodname), $arguments);
             }
@@ -308,7 +309,7 @@ class ActionHandler
      */
     public static function getDefaultHandler($action)
     {
-        $class = __NAMESPACE__.'\\'.ucfirst($action).'Handler';
+        $class = __NAMESPACE__ . '\\' . ucfirst($action) . 'Handler';
         if (class_exists($class)) {
             return new $class();
         }
@@ -431,7 +432,7 @@ class ActionHandler
     public function _getAccessDeniedPage()
     {
         $ui = $this->m_node->getUi();
-        $content = '<br><br>'.Tools::atktext('error_node_action_access_denied', '', $this->m_node->getType()).'<br><br><br>';
+        $content = '<br><br>' . Tools::atktext('error_node_action_access_denied', '', $this->m_node->getType()) . '<br><br><br>';
         $blocks = [
             $ui->renderBox([
                 'title' => Tools::atktext('access_denied'),
@@ -439,7 +440,11 @@ class ActionHandler
             ]),
         ];
 
-        return $ui->render('actionpage.tpl', ['blocks' => $blocks, 'title' => Tools::atktext('access_denied')]);
+        return $ui->render('actionpage.tpl', [
+            'blocks' => $blocks,
+            'title' => Tools::atktext('access_denied'),
+            'footer' => Footer::getInstance()->render()
+        ]);
     }
 
     /**
@@ -450,10 +455,10 @@ class ActionHandler
     public function partial($partial)
     {
         $parts = explode('.', $partial);
-        $method = 'partial_'.$parts[0];
+        $method = 'partial_' . $parts[0];
 
         if (!method_exists($this, $method)) {
-            $content = '<span style="color: red; font-weight: bold">Invalid partial \''.$this->m_partial.'\'!</span>';
+            $content = '<span style="color: red; font-weight: bold">Invalid partial \'' . $this->m_partial . '\'!</span>';
         } else {
             $content = $this->$method($partial);
         }

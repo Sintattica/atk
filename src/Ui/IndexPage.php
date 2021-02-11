@@ -255,7 +255,8 @@ class IndexPage
     {
         return $this->m_ui->renderBox([
             'title' => Tools::atktext('app_shorttitle'),
-            'content' => Tools::atktext('app_description')
+            'content' => Tools::atktext('app_description'),
+            'footer' => Footer::getInstance()->render(),
         ], 'index_page');
     }
 
@@ -334,6 +335,10 @@ class IndexPage
             )),
         ];
 
-        return $this->m_ui->render('actionpage.tpl', array('blocks' => $blocks, 'title' => Tools::atktext('access_denied')));
+        return $this->m_ui->render('actionpage.tpl', [
+            'blocks' => $blocks,
+            'title' => Tools::atktext('access_denied'),
+            'footer' => Footer::getInstance()->render()
+        ]);
     }
 }

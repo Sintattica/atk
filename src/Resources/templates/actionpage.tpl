@@ -15,5 +15,5 @@
         {/foreach}
     </div>
 
-    {include file = "menu/footer.tpl"}
+    {$footer}
 </div>
