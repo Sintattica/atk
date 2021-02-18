@@ -16,10 +16,6 @@ namespace Sintattica\Atk\Attributes;
  */
 class HtmlAttribute extends TextAttribute
 {
-    /*
-     * New line to BR boolean
-     */
-    public $nl2br = false;
 
     /**
      * Constructor.
@@ -31,23 +27,6 @@ class HtmlAttribute extends TextAttribute
     public function __construct($name, $flags = 0, $nl2br = false)
     {
         parent::__construct($name, $flags);
-        $this->nl2br = $nl2br;
-    }
-
-    /**
-     * Returns a displayable string for this value.
-     *
-     * @param array $record Array wit fields
-     * @param string $mode
-     *
-     * @return string Formatted string
-     */
-    public function display($record, $mode)
-    {
-        if ($this->nl2br) {
-            return nl2br($record[$this->fieldName()]);
-        } else {
-            return $record[$this->fieldName()];
-        }
+        $this->setNl2br($nl2br);
     }
 }

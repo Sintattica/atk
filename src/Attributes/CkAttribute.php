@@ -52,6 +52,9 @@ class CkAttribute extends HtmlAttribute
         //$this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = Tools::atktext('locale');
         $this->ckOptions = array_merge($this->ckOptions, Config::getGlobal('ck_options'), $options);
 
+        $this->setNl2br(false);
+        $this->setHtmlSpecialChars(false);
+
         parent::__construct($name, $flags);
     }
 
@@ -80,7 +83,13 @@ class CkAttribute extends HtmlAttribute
 
     public function display($record, $mode)
     {
-        return Tools::atkArrayNvl($record, $this->fieldName(), '');
+        $record[$this->fieldName()] = Tools::atkArrayNvl($record, $this->fieldName(), '');
+
+        if($this->getDisplayMode() !== self::MODE_SCROLL){
+            $record[$this->fieldName()] = htmlspecialchars(strip_tags($record[$this->fieldName()]));
+        }
+
+        return parent::display($record, $mode);
     }
 
 

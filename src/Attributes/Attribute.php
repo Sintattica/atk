@@ -572,6 +572,9 @@ class Attribute
      */
     protected $m_placeholder = '';
 
+    private $nl2br = true;
+    private $htmlSpecialChars = true;
+
     /**
      * Constructor.
      *
@@ -1786,7 +1789,10 @@ class Attribute
                 return $value;
             }
 
-            return nl2br(htmlspecialchars($value));
+            $value = $this->htmlSpecialChars ? htmlSpecialChars($value) : $value;
+            $value = $this->nl2br ? nl2br($value) : $value;
+
+            return $value;
         }
 
         return '';
@@ -3183,4 +3189,42 @@ class Attribute
             return $this->cssStyles;
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function isHtmlSpecialChars(): bool
+    {
+        return $this->htmlSpecialChars;
+    }
+
+    /**
+     * @param bool $htmlSpecialChars
+     * @return Attribute
+     */
+    public function setHtmlSpecialChars(bool $htmlSpecialChars): self
+    {
+        $this->htmlSpecialChars = $htmlSpecialChars;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNl2br(): bool
+    {
+        return $this->nl2br;
+    }
+
+    /**
+     * @param bool $nl2br
+     * @return Attribute
+     */
+    public function setNl2br(bool $nl2br): self
+    {
+        $this->nl2br = $nl2br;
+        return $this;
+    }
+
+
 }
