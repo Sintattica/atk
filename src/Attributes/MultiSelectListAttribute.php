@@ -5,6 +5,11 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
+/**
+ * DEPRECATED
+ *
+ * Class MultiSelectListAttribute
+ */
 class MultiSelectListAttribute extends ListAttribute
 {
 

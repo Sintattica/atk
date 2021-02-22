@@ -666,7 +666,7 @@ class Node
     {
         list($part1, $part2) = (strpos($section, '.') !== false) ? explode('.', $section) : array($section, '');
         if ($part2 != null && strlen($part2) > 0 && strlen($part1) == 0) {
-            return $this->m_default_tab.'.'.$part2;
+            return $this->m_default_tab . '.' . $part2;
         } else {
             if (strlen($part2) == 0 && strlen($part1) == 0) {
                 return $this->m_default_tab;
@@ -829,6 +829,7 @@ class Node
                     $this->m_viewExcludes[] = $attribute->fieldName();
                 }
             }
+
         } else {
             // when the read optimizer is enabled there is no active tab
             // we circument this by putting all attributes on all tabs
@@ -1054,9 +1055,7 @@ class Node
      */
     public function getAttribute($name)
     {
-        $ret = isset($this->m_attribList[$name]) ? $this->m_attribList[$name] : null;
-
-        return $ret;
+        return isset($this->m_attribList[$name]) ? $this->m_attribList[$name] : null;
     }
 
     /**
@@ -1256,7 +1255,7 @@ class Node
         $nrOfElements = Tools::count($this->m_primaryKey);
         for ($i = 0; $i < $nrOfElements; ++$i) {
             $p_attrib = $this->m_attribList[$this->m_primaryKey[$i]];
-            $primKey .= $this->m_table.'.'.$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
+            $primKey .= $this->m_table . '.' . $this->m_primaryKey[$i] . "='" . $p_attrib->value2db($rec) . "'";
             if ($i < ($nrOfElements - 1)) {
                 $primKey .= ' AND ';
             }
@@ -1276,8 +1275,7 @@ class Node
     public function primaryKeyField()
     {
         if (Tools::count($this->m_primaryKey) === 0) {
-            Tools::atkwarning($this->atkNodeUri().'::primaryKeyField() called, but there are no primary key fields defined!');
-
+            Tools::atkwarning($this->atkNodeUri() . '::primaryKeyField() called, but there are no primary key fields defined!');
             return;
         }
 
@@ -1299,13 +1297,30 @@ class Node
         $primKey = '';
         $nrOfElements = Tools::count($this->m_primaryKey);
         for ($i = 0; $i < $nrOfElements; ++$i) {
-            $primKey .= $this->m_primaryKey[$i]."='[".$this->m_primaryKey[$i]."]'";
+            $primKey .= $this->m_primaryKey[$i] . "='[" . $this->m_primaryKey[$i] . "]'";
             if ($i < ($nrOfElements - 1)) {
                 $primKey .= ' AND ';
             }
         }
 
         return $primKey;
+    }
+
+    /**
+     * Returns the primary key selector of the record.
+     *
+     * @param array $record
+     * @return string
+     */
+    public function getPrimaryKey(array $record): string
+    {
+        if ($atkPrimKey = $record['atkprimkey']) {
+            return $atkPrimKey;
+        }
+        if ($atkPrimKey = $this->primaryKey($record)) {
+            return $atkPrimKey;
+        }
+        return $this->getTable() . "." . $this->primaryKeyField() . "='" . $record[$this->primaryKeyField()] . "'";
     }
 
     /**
@@ -1572,11 +1587,11 @@ class Node
             }
             $secMgr = SecurityManager::getInstance();
 
-            $priv = 'tab_'.$tablist[$i];
+            $priv = 'tab_' . $tablist[$i];
             if (isset($atk->g_nodes[$this->m_module][$this->m_type]) && Tools::atk_in_array($priv, $atk->g_nodes[$this->m_module][$this->m_type])) {
                 // authorisation is required
-                if (!$secMgr->allowed($this->m_module.'.'.$this->m_type, 'tab_'.$tablist[$i])) {
-                    Tools::atkdebug('Removing TAB '.$tablist[$i].' because access to this tab was denied');
+                if (!$secMgr->allowed($this->m_module . '.' . $this->m_type, 'tab_' . $tablist[$i])) {
+                    Tools::atkdebug('Removing TAB ' . $tablist[$i] . ' because access to this tab was denied');
                     $disable[] = $tablist[$i];
                     unset($tablist[$i]);
                 }
@@ -1614,7 +1629,7 @@ class Node
                 if (in_array($tabEntry, $this->m_filledTabs)) {
                     $tabList[] = $tabEntry;
                 } else {
-                    Tools::atkdebug('Removing TAB '.$tabEntry.' because it had no attributes assigned');
+                    Tools::atkdebug('Removing TAB ' . $tabEntry . ' because it had no attributes assigned');
                 }
             }
         }
@@ -1662,7 +1677,7 @@ class Node
         if (is_array($this->m_sectionList[$mode])) {
             foreach ($this->m_sectionList[$mode] as $section) {
                 if (substr($section, 0, strlen($tab)) == $tab) {
-                    $sectionName = 'section_'.str_replace('.', '_', $section);
+                    $sectionName = 'section_' . str_replace('.', '_', $section);
                     $key = array(
                         'nodetype' => $this->atkNodeUri(),
                         'section' => $sectionName,
@@ -1703,7 +1718,7 @@ class Node
      * @param string $filter The filter to search for
      * @param string $value The value to search for in case it is not a fuzzy filter
      *
-     * @return true if the given filter was found and removed, FALSE otherwise.
+     * @return bool TRUE if the given filter was found and removed, FALSE otherwise.
      */
     public function removeFilter($filter, $value = '')
     {
@@ -1782,15 +1797,15 @@ class Node
         } elseif ($mode == 'view') {
             // if appropriate, display an edit button.
             if (!$this->hasFlag(self::NF_NO_EDIT) && $this->allowed('edit', $record)) {
-                $result[] = '<input type="hidden" name="atkaction" value="edit">'.'<input type="hidden" name="atknodeuri" value="'.$this->atkNodeUri().'">'.$this->getButton('edit');
+                $result[] = '<input type="hidden" name="atkaction" value="edit">' . '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">' . $this->getButton('edit');
             }
 
             if ($sm->atkLevel() > 0) {
                 $result[] = $this->getButton('back', false, Tools::atktext('cancel'));
             }
         } elseif ($mode == 'delete') {
-            $result[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok" value="'.$this->text('yes').'">';
-            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="'.$this->text('no').'">';
+            $result[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok" value="' . $this->text('yes') . '">';
+            $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="' . $this->text('no') . '">';
         } elseif ($mode == 'search') {
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
@@ -1836,7 +1851,7 @@ class Node
             case 'back':
                 $name = 'atkback';
                 $class = 'btn_cancel';
-                $value = '<< '.Tools::atktext($action, 'atk');
+                $value = '<< ' . Tools::atktext($action, 'atk');
                 break;
             case 'edit':
                 $name = 'atkedit';
@@ -1859,12 +1874,12 @@ class Node
         }
         $value = htmlentities($value);
 
-        $class = trim('btn '.$class);
+        $class = trim('btn ' . $class);
 
         if ($default) {
-            $class .= (!empty($class) ? ' ' : '').'atkdefaultbutton btn-primary';
+            $class .= (!empty($class) ? ' ' : '') . 'atkdefaultbutton btn-primary';
         } else {
-            $class .= (!empty($class) ? ' ' : '').'btn-default';
+            $class .= (!empty($class) ? ' ' : '') . 'btn-default';
         }
 
         if ($class != '') {
@@ -1876,10 +1891,10 @@ class Node
         }
 
         if ($name != '') {
-            $name = 'name="'.$this->getEditFieldPrefix()."{$name}\" ";
+            $name = 'name="' . $this->getEditFieldPrefix() . "{$name}\" ";
         }
 
-        return '<button type="submit" '.$class.$name.$valueAttribute.'>'.$value.'</button>';
+        return '<button type="submit" ' . $class . $name . $valueAttribute . '>' . $value . '</button>';
     }
 
     /**
@@ -1931,9 +1946,9 @@ class Node
             }
             for ($i = max(0, $cnt - $maxel), $_i = $cnt; $i < $_i; ++$i) {
                 $desc = $descriptortrace[$i];
-                $descrtrace .= htmlentities($desc, ENT_COMPAT).' - ';
+                $descrtrace .= htmlentities($desc, ENT_COMPAT) . ' - ';
             }
-            $res = $descrtrace.$res;
+            $res = $descrtrace . $res;
         }
 
         if (is_object($ui)) {
@@ -1960,15 +1975,15 @@ class Node
 
         if (Tools::count($sections) > 0 || $tabs > 1) {
             $page = $this->getPage();
-            $page->register_script(Config::getGlobal('assets_url').'javascript/tabs.js?stateful='.(Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
+            $page->register_script(Config::getGlobal('assets_url') . 'javascript/tabs.js?stateful=' . (Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
 
             // Load default tab show script.
-            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab(\''.(isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '').'\');}');
+            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab(\'' . (isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '') . '\');}');
 
             $fulltabs = $this->buildTabs($action);
             $tabscript = "var tabs = new Array();\n";
             foreach ($fulltabs as $tab) {
-                $tabscript .= "tabs[tabs.length] = '".$tab['tab']."';\n";
+                $tabscript .= "tabs[tabs.length] = '" . $tab['tab'] . "';\n";
             }
             $page->register_scriptcode($tabscript);
         }
@@ -2065,9 +2080,6 @@ class Node
      * contains the name, edit HTML code etc. (name, html, obligatory,
      * error, label).
      *
-     * @todo The editArray method should use a set of classes to build the
-     *       form, instead of an array with an overly complex structure.
-     *
      * @param string $mode The edit mode ("add" or "edit")
      * @param array $record The record currently being edited.
      * @param array $forceList A key-value array used to preset certain
@@ -2082,6 +2094,9 @@ class Node
      *
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
+     * @todo The editArray method should use a set of classes to build the
+     *       form, instead of an array with an overly complex structure.
+     *
      */
     public function editArray(
         $mode = 'add',
@@ -2091,7 +2106,8 @@ class Node
         $fieldprefix = '',
         $ignoreTab = false,
         $injectSections = true
-    ) {
+    )
+    {
         // update visibility of some attributes based on the current record
         $this->checkAttributeSecurity($mode, $record);
 
@@ -2184,9 +2200,9 @@ class Node
         }
 
         // extra submission data
-        $result['hide'][] = '<input type="hidden" name="atkfieldprefix" value="'.$this->getEditFieldPrefix(false).'">';
-        $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atknodeuri" value="'.$this->atkNodeUri().'">';
-        $result['hide'][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.Tools::atkArrayNvl($record, 'atkprimkey', '').'">';
+        $result['hide'][] = '<input type="hidden" name="atkfieldprefix" value="' . $this->getEditFieldPrefix(false) . '">';
+        $result['hide'][] = '<input type="hidden" name="' . $fieldprefix . 'atknodeuri" value="' . $this->atkNodeUri() . '">';
+        $result['hide'][] = '<input type="hidden" name="' . $fieldprefix . 'atkprimkey" value="' . Tools::atkArrayNvl($record, 'atkprimkey', '') . '">';
 
         foreach (array_keys($this->m_attribIndexList) as $r) {
             $attribname = $this->m_attribIndexList[$r]['name'];
@@ -2229,15 +2245,15 @@ class Node
      * Function outputs an array with view fields. For each field the array
      * contains the name, view HTML code etc.
      *
-     * @todo The viewArray method should use a set of classes to build the
-     *       form, instead of an array with an overly complex structure.
-     *
      * @param string $mode The edit mode ("view")
      * @param array $record The record currently being viewed.
      * @param bool $injectSections Inject sections?
      *
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
+     * @todo The viewArray method should use a set of classes to build the
+     *       form, instead of an array with an overly complex structure.
+     *
      */
     public function viewArray($mode, $record, $injectSections = true)
     {
@@ -2513,11 +2529,11 @@ class Node
             foreach ($list as $t) {
                 $newtab['title'] = $this->text(array("tab_$t", $t));
                 $newtab['tab'] = $t;
-                $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction='.$this->m_action.'&atktab='.$t;
+                $url = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->atkNodeUri() . '&atkaction=' . $this->m_action . '&atktab=' . $t;
                 if ($this->m_action == 'view') {
                     $newtab['link'] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
                 } else {
-                    $newtab['link'] = "javascript:ATK.FormSubmit.atkSubmit('".Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT))."')";
+                    $newtab['link'] = "javascript:ATK.FormSubmit.atkSubmit('" . Tools::atkurlencode($sm->sessionUrl($url, SessionManager::SESSION_DEFAULT)) . "')";
                 }
                 $newtab['selected'] = ($t == $tab);
                 $result[] = $newtab;
@@ -2560,28 +2576,28 @@ class Node
 
         if (Tools::count($params) > 0) {
             foreach ($params as $key => $value) {
-                $postfix .= "&$key=".rawurlencode($value);
+                $postfix .= "&$key=" . rawurlencode($value);
             }
         }
 
-        $actionbase = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkselector=[pk]'.$postfix;
+        $actionbase = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->atkNodeUri() . '&atkselector=[pk]' . $postfix;
         if (!$this->hasFlag(self::NF_NO_VIEW) && $this->allowed('view')) {
-            $actions['view'] = $actionbase.'&atkaction=view';
+            $actions['view'] = $actionbase . '&atkaction=view';
         }
 
         if ($mode != 'view') {
             if (!$this->hasFlag(self::NF_NO_EDIT) && $this->allowed('edit')) {
-                $actions['edit'] = $actionbase.'&atkaction=edit';
+                $actions['edit'] = $actionbase . '&atkaction=edit';
             }
 
             if (!$this->hasFlag(self::NF_NO_DELETE) && $this->allowed('delete')) {
-                $actions['delete'] = $actionbase.'&atkaction=delete';
+                $actions['delete'] = $actionbase . '&atkaction=delete';
             }
             if ($this->hasFlag(self::NF_COPY) && $this->allowed('copy')) {
-                $actions['copy'] = $actionbase.'&atkaction=copy';
+                $actions['copy'] = $actionbase . '&atkaction=copy';
             }
             if ($this->hasFlag(self::NF_EDITAFTERCOPY) && $this->allowed('editcopy')) {
-                $actions['editcopy'] = $actionbase.'&atkaction=editcopy';
+                $actions['editcopy'] = $actionbase . '&atkaction=editcopy';
             }
         }
 
@@ -2671,8 +2687,9 @@ class Node
         $checkoverride = true,
         $mergeSelectors = true,
         $csrfToken = null
-    ) {
-        $method = 'confirm'.$action;
+    )
+    {
+        $method = 'confirm' . $action;
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector);
         }
@@ -2680,39 +2697,39 @@ class Node
         $ui = $this->getUi();
 
         if (is_array($atkselector)) {
-            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
+            $atkselector_str = '((' . implode($atkselector, ') OR (') . '))';
         } else {
             $atkselector_str = $atkselector;
         }
 
         $sm = SessionManager::getInstance();
 
-        $formstart = '<form action="'.Config::getGlobal('dispatcher').'" method="post">';
+        $formstart = '<form action="' . Config::getGlobal('dispatcher') . '" method="post">';
         $formstart .= $sm->formState();
-        $formstart .= '<input type="hidden" name="atkaction" value="'.$action.'">';
-        $formstart .= '<input type="hidden" name="atknodeuri" value="'.$this->atkNodeUri().'">';
+        $formstart .= '<input type="hidden" name="atkaction" value="' . $action . '">';
+        $formstart .= '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">';
 
         if (isset($csrfToken)) {
             $this->getHandler($action);
-            $formstart .= '<input type="hidden" name="atkcsrftoken" value="'.$csrfToken.'">';
+            $formstart .= '<input type="hidden" name="atkcsrftoken" value="' . $csrfToken . '">';
         }
 
         if ($mergeSelectors) {
-            $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';
+            $formstart .= '<input type="hidden" name="atkselector" value="' . $atkselector_str . '">';
         } else {
             if (!is_array($atkselector)) {
-                $formstart .= '<input type="hidden" name="atkselector" value="'.$atkselector.'">';
+                $formstart .= '<input type="hidden" name="atkselector" value="' . $atkselector . '">';
             } else {
                 foreach ($atkselector as $selector) {
-                    $formstart .= '<input type="hidden" name="atkselector[]" value="'.$selector.'">';
+                    $formstart .= '<input type="hidden" name="atkselector[]" value="' . $selector . '">';
                 }
             }
         }
 
         $buttons = $this->getFormButtons($action, array());
         if (Tools::count($buttons) == 0) {
-            $buttons[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok atkdefaultbutton" value="'.$this->text('yes').'">';
-            $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="'.$this->text('no').'">';
+            $buttons[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok atkdefaultbutton" value="' . $this->text('yes') . '">';
+            $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="' . $this->text('no') . '">';
         }
 
         $content = '';
@@ -2721,7 +2738,7 @@ class Node
         if (Tools::count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
             $record = $recs[0];
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$this->actionTitle($action, $record));
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $this->actionTitle($action, $record));
         } else {
             // we are gonna perform an action on more than one record
             // show a list of affected records, at least if we can find a
@@ -2729,13 +2746,13 @@ class Node
             if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
                 $content .= '<ul>';
                 for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
-                    $content .= '<li>'.str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+                    $content .= '<li>' . str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
                 }
                 $content .= '</ul>';
             }
         }
 
-        $content .= '<br>'.$this->confirmActionText($atkselector, $action, true);
+        $content .= '<br>' . $this->confirmActionText($atkselector, $action, true);
 
         $output = $ui->renderAction($action, array(
             'content' => $content,
@@ -2763,11 +2780,11 @@ class Node
      */
     public function confirmActionText($atkselector = '', $action = 'delete', $checkoverride = true)
     {
-        $method = 'confirm'.$action.'text';
+        $method = 'confirm' . $action . 'text';
         if ($checkoverride && method_exists($this, $method)) {
             return $this->$method($atkselector);
         } else {
-            return $this->text("confirm_$action".(is_array($atkselector) && Tools::count($atkselector) > 1 ? '_multi' : ''));
+            return $this->text("confirm_$action" . (is_array($atkselector) && Tools::count($atkselector) > 1 ? '_multi' : ''));
         }
     }
 
@@ -2796,7 +2813,7 @@ class Node
      */
     public function init()
     {
-        Tools::atkdebug('init for '.$this->m_type);
+        Tools::atkdebug('init for ' . $this->m_type);
 
         // Check if initialisation is not already done.
         if ($this->m_initialised == true) {
@@ -2829,6 +2846,91 @@ class Node
             $p_attrib = $this->m_attribList[$attribname];
             $p_attrib->postInit();
         }
+
+        $this->setFilters();
+    }
+
+    /**
+     * Use it to add filters in child nodes.
+     */
+    protected function setFilters()
+    {
+    }
+
+    /**
+     * Builds th box of the filters in the adminHeader.
+     *
+     * @param array $filters Filters to show ['name', 'values', 'noFilterText']
+     * @param string $sepRows Separator of rows
+     * @param string $sepLinks Separator of links
+     * @param string $class Css class of links
+     * @param string $classActive Css class of active link
+     * @return string
+     */
+    function buildAdminHeaderFilters(array $filters, string $sepRows = '', string $sepLinks = '', string $class = '', string $classActive = ''): string
+    {
+        if (!$sepRows) {
+            $sepRows = '<div class="mb-5"></div>';
+        }
+        $ret = '<div class="mb-5">';
+        foreach ($filters as $filter) {
+            $ret .= $this->addAdminHeaderFilter($filter['name'], $filter['values'], $filter['noFilterText'], $sepLinks, $class, $classActive) . $sepRows;
+        }
+        return $ret . '</div>';
+    }
+
+    /**
+     * Builds a filter to insert into the filter box in the adminHeader.
+     *
+     * @param string $name Name of the filter
+     * @param array $values Values of filter to show as a link
+     * @param string $noFilterText Text to show when null filter (es. 'all' | 'none')
+     * @param string $sepLinks Separator of links
+     * @param string $class Css class of links
+     * @param string $classActive Css class of active link
+     * @return string
+     */
+    private function addAdminHeaderFilter(string $name, array $values, string $noFilterText, string $sepLinks = '', string $class = '', string $classActive = ''): string
+    {
+        $sm = SessionManager::getInstance();
+        if (!$sepLinks) {
+            $sepLinks = ' | ';
+        }
+
+        $links = [];
+        // link to clear filters
+        if ($noFilterText) {
+            if (!$sm or !$sm->pageVar($name) or !in_array($sm->pageVar($name), $values)) {
+                $links[] = '<span class="' . $class . ' ' . $classActive . '">' . $this->formatTitle($noFilterText) . '</span>';
+            } else {
+                $links[] = Tools::actionHref($this->atkNodeUri(), 'admin', [$name => ''], $this->text($noFilterText), 'class="' . $class . '"');
+            }
+        }
+        // filters
+        foreach ($values as $filter) {
+            if ($sm and $sm->pageVar($name) == $filter) {
+                $links[] = '<span class="' . $class . ' ' . $classActive . '">' . $this->formatTitle($filter) . '</span>';
+            } else {
+                $links[] = Tools::actionHref($this->atkNodeUri(), 'admin', [$name => $filter], $this->text($filter), 'class="' . $class . '"');
+            }
+        }
+        return $this->text($name) . ': ' . implode($sepLinks, $links);
+    }
+
+    /**
+     * Formats a string in a title
+     *
+     * @param string $title
+     * @param bool $html True if you want to insert html tags
+     * @return string
+     */
+    protected function formatTitle(string $title, $html = true): string
+    {
+        $ret = $this->text($title);
+        if ($html) {
+            $ret = '<strong>' . $ret . '</strong>';
+        }
+        return $ret;
     }
 
     /**
@@ -2949,9 +3051,7 @@ class Node
      */
     public function getPage()
     {
-        $page = Page::getInstance();
-
-        return $page;
+        return Page::getInstance();
     }
 
     /**
@@ -3009,7 +3109,7 @@ class Node
 
         if (Tools::count($record)) {
             if (isset($this->m_postvars['atkpkret'])) {
-                $location .= '&'.$this->m_postvars['atkpkret'].'='.rawurlencode($this->primaryKey($record));
+                $location .= '&' . $this->m_postvars['atkpkret'] . '=' . rawurlencode($this->primaryKey($record));
             }
         }
 
@@ -3200,7 +3300,7 @@ class Node
                 // default descriptor.. (default is first attribute of a node)
                 $keys = array_keys($this->m_attribList);
                 $ret = $record[$keys[0]];
-                if(is_array($ret)){
+                if (is_array($ret)) {
                     return '';
                 }
 
@@ -3384,7 +3484,7 @@ class Node
             $p_attrib = $this->m_attribList[$storelist[$i]];
             if (!$p_attrib->store($this->getDb(), $record, $mode)) {
                 // something went wrong.
-                Tools::atkdebug("Store aborted. Attribute '".$storelist[$i]."' reported an error.");
+                Tools::atkdebug("Store aborted. Attribute '" . $storelist[$i] . "' reported an error.");
 
                 return false;
             }
@@ -3495,7 +3595,7 @@ class Node
      */
     public function fetchByPk($pk)
     {
-        return $this->select($this->getTable().'.'.$this->primaryKeyField().'= ?', array($pk))->getFirstRow();
+        return $this->select($this->getTable() . '.' . $this->primaryKeyField() . '= ?', array($pk))->getFirstRow();
     }
 
     /**
@@ -3506,8 +3606,6 @@ class Node
      * This method is used when adding the entire node to an existing
      * query, as part of a join.
      *
-     * @todo The allfields parameter is too inflexible.
-     *
      * @param Query $query The query statement
      * @param string $alias The aliasprefix to use for fields from this node
      * @param int $level The recursion level.
@@ -3517,6 +3615,8 @@ class Node
      *                          are added.
      * @param string $mode The mode we're in
      * @param array $includes List of fields that should be included
+     * @todo The allfields parameter is too inflexible.
+     *
      */
     public function addToQuery($query, $alias = '', $level = 0, $allfields = false, $mode = 'select', $includes = array())
     {
@@ -3556,7 +3656,7 @@ class Node
                 if ($loadmode && Tools::hasFlag($loadmode, Attribute::ADDTOQUERY)) {
                     $fieldaliasprefix = '';
                     if ($usefieldalias) {
-                        $fieldaliasprefix = $alias.'_AE_';
+                        $fieldaliasprefix = $alias . '_AE_';
                     }
 
                     $dummy = [];
@@ -3602,11 +3702,11 @@ class Node
             $fieldaliasprefix = '';
 
             if ($usefieldalias) {
-                $fieldaliasprefix = $alias.'_AE_';
+                $fieldaliasprefix = $alias . '_AE_';
             }
 
             // check if the node has a searchcondition method defined for this attr
-            $methodName = $field.'_searchcondition';
+            $methodName = $field . '_searchcondition';
             if (method_exists($this, $methodName)) {
                 $searchCondition = $this->$methodName($query, $table, $value, $searchmode);
                 if ($searchCondition != '') {
@@ -3630,7 +3730,7 @@ class Node
         }
 
         if (Tools::count($searchConditions)) {
-            return '('.implode(' OR ', $searchConditions).')';
+            return '(' . implode(' OR ', $searchConditions) . ')';
         } else {
             return '';
         }
@@ -3734,19 +3834,19 @@ class Node
      */
     public function executeTrigger($trigger, &$record, $mode = null)
     {
-        if (!isset($record['__executed'.$trigger])) {
-            $record['__executed'.$trigger] = true;
+        if (!isset($record['__executed' . $trigger])) {
+            $record['__executed' . $trigger] = true;
 
             $return = $this->$trigger($record, $mode);
 
             if ($return === null) {
-                Tools::atkdebug('Undefined return: '.$this->atkNodeUri().".$trigger doesn't return anything, it should return a boolean!",
+                Tools::atkdebug('Undefined return: ' . $this->atkNodeUri() . ".$trigger doesn't return anything, it should return a boolean!",
                     Tools::DEBUG_WARNING);
                 $return = true;
             }
 
             if (!$return) {
-                Tools::atkdebug($this->atkNodeUri().".$trigger failed!");
+                Tools::atkdebug($this->atkNodeUri() . ".$trigger failed!");
 
                 return false;
             }
@@ -3756,13 +3856,13 @@ class Node
                 $return = $listener->notify($trigger, $record, $mode);
 
                 if ($return === null) {
-                    Tools::atkdebug('Undefined return: '.$this->atkNodeUri().', '.get_class($listener).".notify('$trigger', ...) doesn't return anything, it should return a boolean!",
+                    Tools::atkdebug('Undefined return: ' . $this->atkNodeUri() . ', ' . get_class($listener) . ".notify('$trigger', ...) doesn't return anything, it should return a boolean!",
                         Tools::DEBUG_WARNING);
                     $return = true;
                 }
 
                 if (!$return) {
-                    Tools::atkdebug($this->atkNodeUri().', '.get_class($listener).".notify('$trigger', ...) failed!");
+                    Tools::atkdebug($this->atkNodeUri() . ', ' . get_class($listener) . ".notify('$trigger', ...) failed!");
 
                     return false;
                 }
@@ -3798,7 +3898,7 @@ class Node
 
         // nothing to delete, throw an error (determined by $failwhenempty)!
         if (Tools::count($recordset) == 0) {
-            Tools::atkwarning($this->atkNodeUri()."->deleteDb($selector): 0 records found, not deleting anything.");
+            Tools::atkwarning($this->atkNodeUri() . "->deleteDb($selector): 0 records found, not deleting anything.");
 
             return !$failwhenempty;
         }
@@ -4155,7 +4255,7 @@ class Node
      */
     public function atkNodeUri()
     {
-        return (empty($this->m_module) ? '' : $this->m_module.'.').$this->m_type;
+        return (empty($this->m_module) ? '' : $this->m_module . '.') . $this->m_type;
     }
 
     /**
@@ -4188,7 +4288,7 @@ class Node
         $this->resolveNodeTypeAndAction($alias, $action);
 
         return $this->hasFlag(self::NF_NO_SECURITY) || in_array($action, $this->m_unsecuredActions) || $secMgr->allowed($alias,
-            $action) || (isset($this->m_securityImplied[$action]) && $secMgr->allowed($alias, $this->m_securityImplied[$action]));
+                $action) || (isset($this->m_securityImplied[$action]) && $secMgr->allowed($alias, $this->m_securityImplied[$action]));
     }
 
     /**
@@ -4214,10 +4314,10 @@ class Node
         if (strpos($action, '.') !== false) {
             $complete = explode('.', $action);
             if (Tools::count($complete) == 3) {
-                $alias = $complete[0].'.'.$complete[1];
+                $alias = $complete[0] . '.' . $complete[1];
                 $action = $complete[2];
             } else {
-                $alias = $this->m_module.'.'.$complete[0];
+                $alias = $this->m_module . '.' . $complete[0];
                 $action = $complete[1];
             }
         }
@@ -4281,21 +4381,21 @@ class Node
      */
     public function callHandler($action)
     {
-        Tools::atkdebug('self::callHandler(); action: '.$action);
+        Tools::atkdebug('self::callHandler(); action: ' . $action);
         $atk = Atk::getInstance();
         $handler = $atk->atkGetNodeHandler($this->atkNodeUri(), $action);
 
         // handler function
         if ($handler != null && is_string($handler) && function_exists($handler)) {
-            Tools::atkdebug("self::callHandler: Calling external handler function for '".$action."'");
+            Tools::atkdebug("self::callHandler: Calling external handler function for '" . $action . "'");
             $handler($this, $action);
         } // handler object
         elseif ($handler != null && $handler instanceof ActionHandler) {
-            Tools::atkdebug('self::callHandler:Using override/existing ActionHandler '.get_class($handler)." class for '".$action."'");
+            Tools::atkdebug('self::callHandler:Using override/existing ActionHandler ' . get_class($handler) . " class for '" . $action . "'");
             $handler->handle($this, $action, $this->m_postvars);
         } // no (valid) handler
         else {
-            Tools::atkdebug("Calling default handler function for '".$action."'");
+            Tools::atkdebug("Calling default handler function for '" . $action . "'");
             $this->m_handler = $this->getHandler($action);
             $this->m_handler->handle($this, $action, $this->m_postvars);
         }
@@ -4313,7 +4413,7 @@ class Node
      */
     public function getHandler($action)
     {
-        Tools::atkdebug('self::getHandler(); action: '.$action);
+        Tools::atkdebug('self::getHandler(); action: ' . $action);
 
         //check if a handler exists registered including the module name
         $atk = Atk::getInstance();
@@ -4330,7 +4430,7 @@ class Node
         //       or why support functions at all?!
         // handler object
         if ($handler != null && is_subclass_of($handler, 'ActionHandler')) {
-            Tools::atkdebug('self::getHandler: Using existing ActionHandler '.get_class($handler)." class for '".$action."'");
+            Tools::atkdebug('self::getHandler: Using existing ActionHandler ' . get_class($handler) . " class for '" . $action . "'");
             $handler->setNode($this);
             $handler->setAction($action);
         } else {
@@ -4342,7 +4442,7 @@ class Node
 
             //If we use a default handler we need to register it to this node
             //because we might call it a second time.
-            Tools::atkdebug('self::getHandler: Register default ActionHandler for '.$this->m_type." action: '".$action."'");
+            Tools::atkdebug('self::getHandler: Register default ActionHandler for ' . $this->m_type . " action: '" . $action . "'");
             $atk->atkRegisterNodeHandler($this->m_type, $action, $handler);
         }
 
@@ -4572,7 +4672,7 @@ class Node
             if (is_a($listener, 'TriggerListener')) {
                 $this->m_triggerListeners[] = $listener;
             } else {
-                Tools::atkdebug('self::addListener: Unknown listener base class '.get_class($listener));
+                Tools::atkdebug('self::addListener: Unknown listener base class ' . get_class($listener));
             }
         }
     }
@@ -4674,7 +4774,7 @@ class Node
         if ($this->m_edit_fieldprefix == '') {
             return '';
         } else {
-            return $this->m_edit_fieldprefix.($atk_layout ? '_AE_' : '');
+            return $this->m_edit_fieldprefix . ($atk_layout ? '_AE_' : '');
         }
     }
 

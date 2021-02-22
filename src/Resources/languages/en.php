@@ -120,6 +120,7 @@ return [
     'error_password_invalid' => 'The password you entered is not a valid password!',
     'error_password_nomatch' => 'The supplied passwords do not match.',
     'error_primarykey_exists' => 'A record with this key already exists',
+    'error_record_modified' => 'The record has been changed in the meantime by another user, reopen it and save it again',
     'error_tab' => 'see',
     'error_tag_illegalvalue' => 'A tag may not contain HTML or linefeeds.',
     'error_uniquefield' => 'The value for this field must be unique',

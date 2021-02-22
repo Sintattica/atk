@@ -38,10 +38,12 @@ class CurrencyAttribute extends NumberAttribute
             $currencysymbol = Tools::atktext('currencysymbol', 'atk', '', '', '', true);
         }
         $this->m_currencysymbol = $currencysymbol;
+
         if ($decimalseparator == '') {
             $decimalseparator = Tools::atktext('decimal_separator', 'atk', '', '', '', true);
         }
         $this->m_decimalseparator = $decimalseparator ?: '.';
+
         if ($thousandsseparator == '') {
             $thousandsseparator = Tools::atktext('thousands_separator', 'atk', '', '', '', true);
         }
@@ -115,5 +117,11 @@ class CurrencyAttribute extends NumberAttribute
     public function getCurrencySymbolDisplay()
     {
         return $this->m_currencysymbol;
+    }
+
+    function setCurrencySymbol(string $value): self
+    {
+        $this->m_currencysymbol = $value;
+        return $this;
     }
 }

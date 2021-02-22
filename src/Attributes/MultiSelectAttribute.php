@@ -8,6 +8,8 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
 /**
+ * DEPRECATED
+ *
  * The MultiSelectAttribute class represents an attribute of a node
  * that has a field with checkboxes, and stores the input seperated by a '|'.
  *

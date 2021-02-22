@@ -17,14 +17,6 @@ use Sintattica\Atk\Security\SecurityManager;
  */
 class UpdatedByAttribute extends ManyToOneRelation
 {
-    /**
-     * Constructor.
-     *
-     * @param string $name Name of the field
-     * @param int $flags Flags for this attribute.
-     *
-     * @return UpdatedByAttribute
-     */
     public function __construct($name, $flags = 0)
     {
         $flags = $flags | self::AF_READONLY | self::AF_HIDE_ADD;
@@ -50,7 +42,7 @@ class UpdatedByAttribute extends ManyToOneRelation
      */
     public function initialValue()
     {
-        $fakeRecord = array($this->fieldName() => SecurityManager::atkGetUser());
+        $fakeRecord = [$this->fieldName() => SecurityManager::atkGetUser()];
         $this->populate($fakeRecord);
 
         return $fakeRecord[$this->fieldName()];
@@ -63,3 +55,4 @@ class UpdatedByAttribute extends ManyToOneRelation
         return parent::value2db($record);
     }
 }
+

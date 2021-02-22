@@ -122,6 +122,7 @@ return [
     'error_password_invalid' => 'La password inserita non è in un formato valido!',
     'error_password_nomatch' => 'Le password inserite non corrispondono.',
     'error_primarykey_exists' => 'Esiste già un record con questa chiave',
+    'error_record_modified' => 'Il record è stato modificato nel frattempo da un altro utente, riaprilo e risalvalo',
     'error_tab' => 'scheda',
     'error_tag_illegalvalue' => 'Un tag non dovrebbe contenere HTML o ritorni a capo.',
     'error_uniquefield' => 'Il valore di questo campo deve essere univoco',

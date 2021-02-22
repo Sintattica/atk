@@ -18,7 +18,7 @@ use Sintattica\Atk\Utils\StringParser;
  */
 class FileAttribute extends Attribute
 {
-    /** flag(s) specific for the atkFileAttribute */
+    /** flag(s) specific for the FileAttribute */
     /**
      * Disable uploading of files.
      */
@@ -98,8 +98,12 @@ class FileAttribute extends Attribute
      * @param int $flags Flags for this attribute
      * @param array|string $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      */
-    public function __construct($name, $flags = 0, $dir)
+    public function __construct($name, $flags = 0, $dir = null)
     {
+        if (!$dir) {
+            $dir = ['./' . Config::getGlobal('default_upload_dir'), '/' . Config::getGlobal('default_upload_url')];
+        }
+
         $flags = $flags | self::AF_CASCADE_DELETE | self::AF_FILE_NO_SELECT;
         parent::__construct($name, $flags);
 

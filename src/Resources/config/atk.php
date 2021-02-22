@@ -33,6 +33,12 @@ return [
     'public_dir' => $_public_dir,
 
     /*
+     * Used in FileAttribute
+     */
+    'default_upload_dir' => 'uploads',
+    'default_upload_url' => 'uploads',
+
+    /*
      * The location of a directory that is writable to ATK and that ATK can
      * store it's temporary files in.
      * @var String

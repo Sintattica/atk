@@ -1279,6 +1279,16 @@ class Tools
         return $phpfile;
     }
 
+    static function actionHref($nodeUri, $action, $params = [], $name = "", $extraProps = "", $sessionStatus = SessionManager::SESSION_DEFAULT, $saveForm = false)
+    {
+        if ($action == 'edit') {
+            // check if user has permission, otherwise change in view action
+            $action = Atk::getInstance()->atkGetNode($nodeUri)->allowed('edit') ? 'edit' : 'view';
+        }
+        $url = Tools::dispatch_url($nodeUri, $action, $params);
+        return Tools::href($url, $name, $sessionStatus, $saveForm, $extraProps);
+    }
+
     /**
      * Generate a partial url.
      *

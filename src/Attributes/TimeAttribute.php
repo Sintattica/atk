@@ -7,7 +7,7 @@ use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
 
 /**
- * The atkTimeAttribute class represents an attribute of a node
+ * The TimeAttribute class represents an attribute of a node
  * that has a selectbox to select from predefined time values.
  *
  * @author Wim Kosten <wim@ibuildings.nl>
@@ -22,7 +22,7 @@ class TimeAttribute extends Attribute
 
     public $m_beginTime = 0;
     public $m_endTime = 23;
-    public $m_steps = array('0', '30');
+    public $m_steps = ['0', '30'];
     public $m_default = '';
 
     /**
@@ -78,17 +78,17 @@ class TimeAttribute extends Attribute
     public static function timeArray($time)
     {
         if (strstr($time, ':')) {
-            return array(
+            return [
                 'hours' => substr($time, 0, 2),
                 'minutes' => substr($time, 3, 2),
-                'seconds' => substr($time, 5, 2),
-            );
+                'seconds' => substr($time, 6, 2),
+            ];
         } else {
-            return array(
+            return [
                 'hours' => substr($time, 0, 2),
                 'minutes' => substr($time, 2, 2),
                 'seconds' => substr($time, 4, 2),
-            );
+            ];
         }
     }
 
@@ -137,7 +137,7 @@ class TimeAttribute extends Attribute
             $result = trim($result);
             // $result could contain "date" data (when TimeAttribute is embedded in the DateTimeAttribute)
             // we extract the time information assuming the space is the separator between data and time
-            if(strpos($result, ' ') !== false) {
+            if (strpos($result, ' ') !== false) {
                 $result = trim(substr($result, strpos($result, ' ')));
             }
 
@@ -190,28 +190,27 @@ class TimeAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
         $field = Tools::atkArrayNvl($record, $this->fieldName());
-        if($field && !is_array($field)){
+        if ($field && !is_array($field)) {
             $field = self::parseTime($field);
         }
 
         $onChangeCode = '';
         if (Tools::count($this->m_onchangecode)) {
             $this->_renderChangeHandler($fieldprefix);
-            $onChangeCode = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this);"';
+            $onChangeCode = ' onChange="' . $this->getHtmlId($fieldprefix) . '_onChange(this);"';
         }
 
-        $m_hourBox = '<select id="'.$id.'[hours]" name="'.$name."[hours]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap atk-time-left  form-control form-control-sm select-standard\"{$onChangeCode}>";
-        $escapedFieldHtmlId = $id.'\\\\[hours\\\\]';  //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
+        $m_hourBox = '<select id="' . $id . '[hours]" name="' . $name . "[hours]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap atk-time-left  form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id . '\\\\[hours\\\\]';  //Todo: Fix the fact that html id cannot contain the '[' or ']' chars -> this is horrible!!!
         $m_hourBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
-        $m_minBox = '<select id="'.$id.'[minutes]" name="'.$name."[minutes]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap form-control form-control-sm select-standard\"{$onChangeCode}>";
-        $escapedFieldHtmlId = $id.'\\\\[minutes\\\\]';
+        $m_minBox = '<select id="' . $id . '[minutes]" name="' . $name . "[minutes]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id . '\\\\[minutes\\\\]';
         $m_minBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
-        $m_secBox = '<select id="'.$id.'[seconds]" name="'.$name."[seconds]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap   form-control form-control-sm select-standard\"{$onChangeCode}>";
-        $escapedFieldHtmlId = $id.'\\\\[seconds\\\\]';
+        $m_secBox = '<select id="' . $id . '[seconds]" name="' . $name . "[seconds]\" data-no-search class=\"atktimeattribute d-flex flex-nowrap   form-control form-control-sm select-standard\"{$onChangeCode}>";
+        $escapedFieldHtmlId = $id . '\\\\[seconds\\\\]';
         $m_secBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
-
 
 
         if (is_array($field)) {
@@ -220,14 +219,14 @@ class TimeAttribute extends Attribute
             $m_defSec = $field['seconds'];
         } else {
             $m_defHour = $default[0];
-            $m_defMin = isset($default[1])?$default[1]:null;
-            $m_defSec = isset($default[2])?$default[2]:null;
+            $m_defMin = isset($default[1]) ? $default[1] : null;
+            $m_defSec = isset($default[2]) ? $default[2] : null;
         }
 
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
         // generate hour dropdown
         if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
-            $m_hourBox .= '<option value=""'.($m_defHour === '' ? ' selected' : '').'></option>';
+            $m_hourBox .= '<option value=""' . ($m_defHour === '' ? ' selected' : '') . '></option>';
         }
         for ($i = $this->m_beginTime; $i <= $this->m_endTime; ++$i) {
             if ($m_defHour !== '' && ($i == $m_defHour)) {
@@ -240,7 +239,7 @@ class TimeAttribute extends Attribute
 
         // generate minute dropdown
         if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
-            $m_minBox .= '<option value=""'.($m_defMin === '' ? ' selected' : '').'></option>';
+            $m_minBox .= '<option value=""' . ($m_defMin === '' ? ' selected' : '') . '></option>';
         }
 
         if ($this->hasFlag(self::AF_TIME_SECONDS)) {
@@ -266,7 +265,7 @@ class TimeAttribute extends Attribute
 
         // generate second dropdown
         if (!$this->hasFlag(self::AF_OBLIGATORY) || $this->hasFlag(self::AF_TIME_DEFAULT_EMPTY)) {
-            $m_secBox .= '<option value""'.($m_defSec === '' ? ' selected' : '').'></option>';
+            $m_secBox .= '<option value""' . ($m_defSec === '' ? ' selected' : '') . '></option>';
         }
         for ($i = 0; $i <= Tools::count($this->m_steps) - 1; ++$i) {
             if ($i != 0) {
@@ -288,19 +287,18 @@ class TimeAttribute extends Attribute
         $m_minBox .= '</select>';
         if ($this->hasFlag(self::AF_TIME_SECONDS)) {
             $m_secBox .= '</select>';
-            $m_secBox = '&nbsp;:&nbsp;'.$m_secBox;
+            $m_secBox = '&nbsp;:&nbsp;' . $m_secBox;
         } else {
-            $m_secBox = '<input type="hidden" id="'.$fieldprefix.$this->fieldName().'[seconds]" name="'.$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">";
+            $m_secBox = '<input type="hidden" id="' . $fieldprefix . $this->fieldName() . '[seconds]" name="' . $fieldprefix . $this->fieldName() . "[seconds]\" value=\"00\">";
         }
 
         $iconBox = '<span class="form-control form-control-sm atk-time-right far fa-clock"></span>';
 
         // assemble display version
-        $timeedit = $m_hourBox.$m_minBox.$m_secBox.$iconBox;
+        $timeedit = $m_hourBox . $m_minBox . $m_secBox . $iconBox;
 
 
-
-        return '<div class="TimeAttribute form-inline"><div class="atk-time-group">'.$timeedit.'</div></div>';
+        return '<div class="TimeAttribute form-inline"><div class="atk-time-group">' . $timeedit . '</div></div>';
     }
 
     /**
@@ -321,7 +319,7 @@ class TimeAttribute extends Attribute
             return null;
         }
 
-        return sprintf('%02d', $hours).':'.sprintf('%02d', $minutes).':'.sprintf('%02d', $seconds);
+        return sprintf('%02d', $hours) . ':' . sprintf('%02d', $minutes) . ':' . sprintf('%02d', $seconds);
     }
 
     /**
@@ -440,10 +438,10 @@ class TimeAttribute extends Attribute
         $result = '';
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'['.$key.']" '.'value="'.$value.'">';
+                $result .= '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '[' . $key . ']" ' . 'value="' . $value . '">';
             }
         } else {
-            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.$field.'">';
+            $result = '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '" value="' . $field . '">';
         }
 
         return $result;
@@ -484,13 +482,13 @@ class TimeAttribute extends Attribute
             }
 
             if (strlen($retval['hours']) == 1) {
-                $retval['hours'] = '0'.$retval['hours'];
+                $retval['hours'] = '0' . $retval['hours'];
             }
             if (strlen($retval['minutes']) == 1) {
-                $retval['minutes'] = '0'.$retval['minutes'];
+                $retval['minutes'] = '0' . $retval['minutes'];
             }
             if (strlen($retval['seconds']) == 1) {
-                $retval['seconds'] = '0'.$retval['seconds'];
+                $retval['seconds'] = '0' . $retval['seconds'];
             }
 
             $value = implode(':', $retval);
@@ -524,13 +522,13 @@ class TimeAttribute extends Attribute
         }
 
         if (strlen($retval['hours']) == 1) {
-            $retval['hours'] = '0'.$retval['hours'];
+            $retval['hours'] = '0' . $retval['hours'];
         }
         if (strlen($retval['minutes']) == 1) {
-            $retval['minutes'] = '0'.$retval['minutes'];
+            $retval['minutes'] = '0' . $retval['minutes'];
         }
         if (strlen($retval['seconds']) == 1) {
-            $retval['seconds'] = '0'.$retval['seconds'];
+            $retval['seconds'] = '0' . $retval['seconds'];
         }
 
         return $retval;
