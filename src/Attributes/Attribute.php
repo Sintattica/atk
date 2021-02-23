@@ -1331,7 +1331,7 @@ class Attribute
 
         $helpText = $this->getHelp();
         if ($helpText !== '') {
-            $result .= '<p class="help-block">' . htmlspecialchars($helpText) . '</p>';
+            $result .= '<p class="text-muted text-xs">' . htmlspecialchars($helpText) . '</p>';
         }
 
         return $result;
