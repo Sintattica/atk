@@ -5,11 +5,11 @@
     {else}
 
         {if $field.label!=="AF_NO_LABEL"}
-            <label for="{$field.htmlid}" class="col-sm-2 col-xl-1 control-label">
+            <label for="{$field.htmlid}" class="col-sm-3 col-md-2 control-label">
                 {if $field.label!=""}{$field.label}{/if}
             </label>
         {/if}
-        <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-10 col-xl-11{else}col-sm-12{/if}" id="{$field.id}">
+        <div class="{if $field.label!=="AF_NO_LABEL"}col-sm-9 col-md-10{else}col-sm-12{/if}" id="{$field.id}">
             {$field.full}
         </div>
     {/if}
