@@ -402,7 +402,7 @@ class ManyToManyRelation extends Relation
                 $recordset[] = $descr;
             }
             if (!in_array($mode, array('csv', 'plain'))) {
-                $result = '<div style="max-width: 400px; white-space: normal;"><span class="badge-sm badge-pill badge-secondary mr-1 text-nowrap">'.implode('</span><span class="badge-sm badge-pill badge-secondary mr-1 text-nowrap">', $recordset).'</span></div>';
+                $result = '<div style="max-width: 600px; min-width: 400px; white-space: normal;"><span class="badge-sm d-inline-block badge-pill badge-secondary m-1 text-nowrap">'.implode('</span><span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">', $recordset).'</span></div>';
             } else {
                 $result = implode(', ', $recordset);
             }

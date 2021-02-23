@@ -368,9 +368,9 @@ class OneToManyRelation extends Relation
         }
 
         if ($mode == 'list') { // list mode
-            $result = '<div style="max-width: 400px; white-space: normal;">'; //.$this->getCSSClassAttribute(['ml-2']) . '>';
+            $result = '<div style="max-width: 600px; min-width: 400px; white-space: normal;">'; //.$this->getCSSClassAttribute(['ml-2']) . '>';
             foreach ($records as $current) {
-                $result .= sprintf('<span class="badge-sm badge-pill badge-secondary mr-1 text-nowrap">%s</span>', $this->m_destInstance->descriptor($current));
+                $result .= sprintf('<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">%s</span>', $this->m_destInstance->descriptor($current));
             }
 
             $result .= '</div>';
