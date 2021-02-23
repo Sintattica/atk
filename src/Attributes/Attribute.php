@@ -632,6 +632,24 @@ class Attribute
     }
 
     /**
+     * @return int
+     */
+    public function getOrder(): int
+    {
+        return $this->m_order;
+    }
+
+    /**
+     * @param int $m_order
+     * @return self
+     */
+    public function setOrder(int $m_order): self
+    {
+        $this->m_order = $m_order;
+        return $this;
+    }
+
+    /**
      * Check if the attribute has a certain flag.
      *
      * @param int $flag The flag you want to check
