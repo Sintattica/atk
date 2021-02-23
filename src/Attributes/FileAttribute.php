@@ -5,7 +5,6 @@ namespace Sintattica\Atk\Attributes;
 use SimpleXMLElement;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\StringParser;
 
 /**
@@ -91,6 +90,14 @@ class FileAttribute extends Attribute
      */
     public $m_allowedFileTypes = [];
 
+    private $checkUnique = true;
+    private $fileMaxSize; // eventuale dimensione max per sovrascrivere la config. di php
+    private $fileMaxLength; // eventuale lunghezza massima del nome
+    private $onlyPreview = false; // nel caso di visualizzazione della preview, non mostra il nome file
+    private $noSanitize = false;
+    private $previewHeight = '100px';
+    private $previewWidth = '100px';
+
     /**
      * Constructor.
      *
@@ -104,7 +111,7 @@ class FileAttribute extends Attribute
             $dir = ['./' . Config::getGlobal('default_upload_dir'), '/' . Config::getGlobal('default_upload_url')];
         }
 
-        $flags = $flags | self::AF_CASCADE_DELETE | self::AF_FILE_NO_SELECT;
+        $flags = $flags | self::AF_CASCADE_DELETE | self::AF_FILE_NO_SELECT | self::AF_FILE_PHYSICAL_DELETE;
         parent::__construct($name, $flags);
 
         $this->setDir($dir);
@@ -297,6 +304,13 @@ class FileAttribute extends Attribute
             $result .= '<div class="icheck-primary"><input id="' . $id . '_del" type="checkbox" name="' . $name . '[del]" ' . $this->getCSSClassAttribute() . '>';
             $result .= '<label for="' . $id . '_del">' . Tools::atktext('remove_current_file', 'atk') . '</label></div>';
         }
+
+        if ($this->m_allowedFileTypes) {
+            // TODO abbellire?
+            // mostra le estensioni ammissibili
+            $result .= '<span style="color: #737373">(' . implode(', ', $this->m_allowedFileTypes) . ')</span>';
+        }
+
         return $result;
     }
 
@@ -314,39 +328,39 @@ class FileAttribute extends Attribute
         // while updating images was not allways visible due to caching
         $randval = mt_rand();
 
-        $filename = isset($record[$this->fieldName()]['filename']) ? $record[$this->fieldName()]['filename'] : null;
-        Tools::atkdebug($this->fieldName() . " - File: $filename");
-        $prev_type = array(
-            'jpg',
-            'jpeg',
-            'gif',
-            'tif',
-            'png',
-            'bmp',
-            'htm',
-            'html',
-            'txt',
-        );  // file types for preview
-        $imgtype_prev = array('jpg', 'jpeg', 'gif', 'png');  // types which are supported by GetImageSize
-        if ($filename != '') {
+        $ret = '';
+        $filename = $record[$this->fieldName()]['filename'];
+        if ($filename) {
             if (is_file($this->m_dir . $filename)) {
-                $ext = $this->getFileExtension($filename);
-                if ((in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) || (!in_array($ext, $prev_type))) {
-                    return '<a href="' . $this->m_url . "$filename\" target=\"_blank\">$filename</a>";
-                } elseif (in_array($ext, $prev_type) && $this->hasFlag(self::AF_FILE_POPUP)) {
-                    if (in_array($ext, $imgtype_prev)) {
-                        $imagehw = getimagesize($this->m_dir . $filename);
-                    } else {
-                        $imagehw = array('0' => '640', '1' => '480');
-                    }
-                    return '<a href="' . $this->m_url . $filename . '" alt="' . $filename . '" onclick="ATK.Tools.newWindow(this.href,\'name\',\'' . ($imagehw[0] + 50) . '\',\'' . ($imagehw[1] + 50) . '\',\'yes\');return false;">' . $filename . '</a>';
+                $imgInfo = getimagesize($this->m_dir . $filename);
+                // link per apertura in nuova finestra
+                $url = $this->m_url . $filename; //. '?b=' . mt_rand();
+                $ret = sprintf('<a target="_blank" href="%s">', $url);
+                if (!$imgInfo || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
+                    // nome file (senza cartelle)
+                    $ret .= basename($filename);
                 }
+                if ($imgInfo && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
+                    if (!$this->onlyPreview) {
+                        $ret .= '<br/>';
+                    }
 
-                return '<img src="' . $this->m_url . $filename . '?b=' . $randval . '" alt="' . $filename . '">';
+                    $ret .= "<img src='$url?b=$randval' style=' 
+                                max-height: {$this->getPreviewHeight()};
+                                max-width: {$this->getPreviewWidth()}; 
+                                margin: 5px 0;'
+                                />";
+                }
+                $ret .= '</a>';
             } else {
-                return $filename . ' (<font color="#ff0000">' . Tools::atktext('file_not_exist', 'atk') . '</font>)';
+                // file non trovato
+                $ret = basename($filename);
+                if ($mode != 'add') {
+                    $ret .= ' (<span style="color: #ff0000">' . Tools::atktext("file_not_exist", "atk") . '</span>)';
+                }
             }
         }
+        return $ret;
     }
 
     /**
@@ -358,6 +372,10 @@ class FileAttribute extends Attribute
      */
     public function getFileExtension($filename)
     {
+        if (is_array($filename) && isset($filename['atkfiles']) && isset($filename['atkfiles']['name'])) {
+            $filename = $filename['atkfiles']['name'];
+        }
+
         if ($dotPos = strrpos($filename, '.')) {
             return strtolower(substr($filename, $dotPos + 1, strlen($filename)));
         }
@@ -474,6 +492,86 @@ class FileAttribute extends Attribute
             $error_text = $this->fetchFileErrorType($error);
             Tools::atkTriggerError($record, $this, $error_text, Tools::atktext($error_text, 'atk'));
         }
+
+        if ($record[$this->fieldName()]['error']) {
+            return;
+        }
+
+        if ($mode == 'add' || (!$this->hasFlag(self::AF_READONLY_EDIT) && strpos($record[$this->fieldName()]['tmpfile'], sys_get_temp_dir()) !== false)) { // è stato caricato un nuovo file (in add o edit)
+
+            // valida la dimensione del file
+            if ($this->fileMaxSize && $record[$this->fieldName()]['filesize'] > $this->fileMaxSize) {
+                Tools::atkTriggerError($record, $this, 'error_file_size');
+                return;
+            }
+
+            // valida la lunghezza del nome del file
+            if ($this->fileMaxLength && strlen($record[$this->fieldName()]['filename']) > $this->fileMaxLength) {
+                $realMaxLength = $this->fileMaxLength - strlen(pathinfo($record[$this->fieldName()]['filename'], PATHINFO_DIRNAME)) - 1;
+                Tools::atkTriggerError($record, $this, sprintf(Tools::atktext('error_file_length'), $realMaxLength));
+                return;
+            }
+
+            // sanitize filename
+            $realname = $this->sanitizeFilename($record[$this->fieldName()]['orgfilename']);
+            if (!$realname) {
+                Tools::atkTriggerError($record, $this, 'filename_invalid');
+                return;
+            }
+            $record[$this->fieldName()]['filename'] = $realname;
+            $record[$this->fieldName()]['orgfilename'] = $realname;
+
+            if ($this->checkUnique) {
+                // Controlla che il file caricato sia univoco (nella cartella di destinazione).
+                // Casi possibili di caricamento:
+                // - in add
+                // - in edit, caricando un file mentre prima non c'era
+                // - in edit, caricando un file con un un nome diverso dal precedente
+                // - in edit, caricando un file con lo stesso nome del precedente >> IN QUESTO CASO NON DEVE IMPEDIRLO (va sovrascritto)
+
+                $oldFilename = '';
+                if ($mode != 'add') { // in edit
+                    // recupera l'eventuale file già caricato in precedenza
+                    $node = $this->getOwnerInstance();
+                    $oldRec = $node->select($record['atkprimkey'])->includes($this->fieldName())->getFirstRow();
+                    $oldFile = $oldRec[$this->fieldName()];
+                    if ($oldFile['filename']) {
+                        $oldFilename = $oldFile['filename'];
+                    }
+                }
+
+                if (!$oldFilename || $oldFilename != $realname) {
+                    // controlla che il file sia univoco
+                    if (file_exists($this->m_dir . $realname)) {
+                        if ($oldFilename) {
+                            $record[$this->fieldName()] = $oldFile;
+                        } else {
+                            $record[$this->fieldName()] = null;
+                        }
+                        Tools::atkTriggerError($record, $this, 'error_attachment_unique', sprintf($this->text('error_attachment_unique'), basename($realname)));
+                    }
+                }
+            }
+        }
+    }
+
+    function sanitizeFilename($filename)
+    {
+        // per alcuni file orgfilename non è una stringa ma un array
+        if (is_array($filename) && isset($filename['atkfiles']) && isset($filename['atkfiles']['name'])) {
+            $filename = $filename['atkfiles']['name'];
+        }
+
+        $pathInfo = pathinfo($filename);
+
+        $filename = $this->noSanitize ? $pathInfo['basename'] : Tools::sanitizeFilename($pathInfo['basename']);
+        if (!$filename) {
+            return false;
+        }
+
+        $realname = $pathInfo['dirname'] . '/' . $filename;
+
+        return $realname;
     }
 
     /**
@@ -956,4 +1054,81 @@ class FileAttribute extends Attribute
 
         return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
     }
+
+
+    function setCheckUnique($value)
+    {
+        $this->checkUnique = $value;
+    }
+
+    function showOnlyPreview($value)
+    {
+        $this->onlyPreview = $value;
+    }
+
+    function setNoSanitize($value)
+    {
+        $this->noSanitize = $value;
+    }
+
+    /**
+     * Imposta la dimensione massima del file.
+     *
+     * @param int $bytes Valore massimo di dimensione del file
+     * @param string $um Eventuale unità di misura (B, KB, MB, GB)
+     */
+    function setMaxFileSize($bytes, $um = 'B')
+    {
+        switch ($um) {
+            case 'KB':
+                $bytes *= 1024;
+                break;
+            case 'MB':
+                $bytes *= 1024 * 1024;
+                break;
+            case 'GB':
+                $bytes *= 1024 * 1024 * 1024;
+                break;
+        }
+
+        $this->fileMaxSize = $bytes;
+    }
+
+    function getMaxFileSize()
+    {
+        if ($this->fileMaxSize) {
+            return $this->fileMaxSize;
+        } else {
+            return Tools::getFileUploadMaxSize();
+        }
+    }
+
+    function setMaxFileLength($length)
+    {
+        $this->fileMaxLength = $length;
+    }
+
+    public function getPreviewHeight(): string
+    {
+        return $this->previewHeight;
+    }
+
+    public function setPreviewHeight(string $previewHeight): void
+    {
+        $this->previewHeight = $previewHeight;
+        $this->previewWidth = 'auto';
+    }
+
+    public function getPreviewWidth(): string
+    {
+        return $this->previewWidth;
+    }
+
+    public function setPreviewWidth(string $previewWidth): void
+    {
+        $this->previewWidth = $previewWidth;
+        $this->previewHeight = 'auto';
+    }
+
+
 }

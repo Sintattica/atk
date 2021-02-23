@@ -95,6 +95,7 @@ return [
     'editcopy' => 'Modifica copia',
     'enclosure' => 'Delimitatore',
     'error' => 'Errore',
+    'error_attachment_unique' => 'Questo file esiste già (%s)',
     'error_attributeedit_default' => 'Si è verificato un errore.',
     'error_attributeedit_noselectorset' => 'Seleziona i record da modificare.',
     'error_attributeedit_update' => 'Si è verificato un errore aggiornando i record selezionati.',

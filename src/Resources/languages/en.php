@@ -94,6 +94,7 @@ return [
     'editcopy' => 'Edit copy',
     'enclosure' => 'Delimiter',
     'error' => 'Error',
+    'error_attachment_unique' => 'This file already exists (%s)',
     'error_attributeedit_default' => 'An unknown error has occurred.',
     'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     'error_attributeedit_update' => 'An error occured when updating the selected records.',
