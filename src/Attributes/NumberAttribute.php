@@ -17,15 +17,29 @@ class NumberAttribute extends Attribute
 {
     // N.B. $m_size, $m_maxsize and $m_searchsize are relative to only the integral part of number (before decimal separator)
 
-    public $m_decimals = null; // The number of decimals of the number.
-    public $m_minvalue = false; // The minimum value of the number.
-    public $m_maxvalue = false; // The maximum value of the number.
-    public $m_use_thousands_separator = false; // use the thousands separator when formatting a number
+    /** The number of decimals of the number. */
+    public $m_decimals = null;
+
+    /** The minimum value of the number. */
+    public $m_minvalue = false;
+
+    /** The maximum value of the number. */
+    public $m_maxvalue = false;
+
+    /** The separator of the decimal part of the number */
     public $m_decimalseparator;
+
+    /** The separator of the thousand part of the number */
     public $m_thousandsseparator;
+
+    /** When TRUE, the thousands separator will be shown when formatting a number */
+    public $m_use_thousands_separator = false;
+
+    /** When TRUE, trailing zeros will be shown */
     public $m_trailingzeros = false; // Show trailing zeros
 
-    protected $touchspin;
+    /** see http://www.virtuosoft.eu/code/bootstrap-touchspin/ */
+    protected $touchspin = [];
 
     // ids of separators in atk language file
     const SEPARATOR_DECIMAL = 'decimal_separator';
@@ -45,29 +59,63 @@ class NumberAttribute extends Attribute
         $flags = $flags | self::AF_NO_QUOTES;
         parent::__construct($name, $flags);
 
-        $this->m_decimals = $decimals;
-        $this->m_decimalseparator = Tools::atktext(self::SEPARATOR_DECIMAL, 'atk');
-        $this->m_thousandsseparator = Tools::atktext(self::SEPARATOR_THOUSAND, 'atk');
+        $this->setDecimals($decimals);
+        $this->setDecimalSeparator(Tools::atktext(self::SEPARATOR_DECIMAL, 'atk'));
+        $this->setThousandsSeparator(Tools::atktext(self::SEPARATOR_THOUSAND, 'atk'));
     }
 
-    /**
-     * Returns the number of decimals.
-     *
-     * @return int decimals
-     */
     public function getDecimals()
     {
         return (int)$this->m_decimals;
     }
 
-    /**
-     * Sets the number of decimals.
-     *
-     * @param int $decimals number of decimals
-     */
     public function setDecimals($decimals)
     {
         $this->m_decimals = $decimals;
+    }
+
+    public function getMinValue()
+    {
+        return $this->m_minvalue;
+    }
+
+    public function setMinValue($minvalue): self
+    {
+        $this->m_minvalue = $minvalue;
+        return $this;
+    }
+
+    public function getMaxValue()
+    {
+        return $this->m_maxvalue;
+    }
+
+    public function setMaxValue($maxvalue): self
+    {
+        $this->m_maxvalue = $maxvalue;
+        return $this;
+    }
+
+    public function getDecimalSeparator(): string
+    {
+        return $this->m_decimalseparator;
+    }
+
+    public function setDecimalSeparator(string $decimalseparator): self
+    {
+        $this->m_decimalseparator = $decimalseparator;
+        return $this;
+    }
+
+    public function getThousandsSeparator(): string
+    {
+        return $this->m_thousandsseparator;
+    }
+
+    public function setThousandsSeparator(string $thousandsseparator): self
+    {
+        $this->m_thousandsseparator = $thousandsseparator;
+        return $this;
     }
 
     /**
@@ -78,8 +126,39 @@ class NumberAttribute extends Attribute
      */
     public function setRange($minvalue, $maxvalue)
     {
-        $this->m_minvalue = $minvalue;
-        $this->m_maxvalue = $maxvalue;
+        $this->setMinValue($minvalue);
+        $this->setMaxValue($maxvalue);
+    }
+
+    /**
+     * Use the thousands separator when formatting a number.
+     *
+     * @param bool $use_separator
+     */
+    public function setUseThousandsSeparator($use_separator)
+    {
+        $this->m_use_thousands_separator = (bool)$use_separator;
+    }
+
+    /**
+     * Returns true if we 're using the thousands separator
+     * when formatting the number.
+     *
+     * @return bool
+     */
+    public function getUseThousandsSeparator()
+    {
+        return $this->m_use_thousands_separator;
+    }
+
+    /**
+     * Set showing/hiding of trailing zeros.
+     *
+     * @param bool $value
+     */
+    public function setTrailingZeros($value)
+    {
+        $this->m_trailingzeros = $value;
     }
 
     /**
@@ -126,9 +205,9 @@ class NumberAttribute extends Attribute
         // working hide() functionality but at least it will not give error messages.
         if (!is_array($record[$this->fieldName()])) {
             $value = $this->formatNumber($record[$this->fieldName()]);
-            return '<input type="hidden" id="'.$this->getHtmlId($fieldprefix).'" name="'.$this->getHtmlName($fieldprefix).'" value="'.htmlspecialchars($value).'">';
+            return '<input type="hidden" id="' . $this->getHtmlId($fieldprefix) . '" name="' . $this->getHtmlName($fieldprefix) . '" value="' . htmlspecialchars($value) . '">';
         } else {
-            Tools::atkdebug('Warning attribute '.$this->m_name.' has no proper hide method!');
+            Tools::atkdebug('Warning attribute ' . $this->m_name . ' has no proper hide method!');
         }
     }
 
@@ -167,86 +246,13 @@ class NumberAttribute extends Attribute
             if (substr_count($number, self::DEFAULT_SEPARATOR) > 1) {
                 $parts = explode(self::DEFAULT_SEPARATOR, $number);
                 $decimals = array_pop($parts);
-                $number = implode('', $parts).self::DEFAULT_SEPARATOR.$decimals;
+                $number = implode('', $parts) . self::DEFAULT_SEPARATOR . $decimals;
             }
         } else {
             $number = str_replace($thousands_separator, '', $number);
         }
 
         return $number;
-    }
-
-    /**
-     * Use the thousands separator when formatting a number.
-     *
-     * @param bool $use_separator
-     *
-     * @return bool
-     */
-    public function setUseThousandsSeparator($use_separator)
-    {
-        $this->m_use_thousands_separator = (bool)$use_separator;
-    }
-
-    /**
-     * Returns true if we 're using the thousands separator
-     * when formatting the number.
-     *
-     * @return bool
-     */
-    public function getUseThousandsSeparator()
-    {
-        return $this->m_use_thousands_separator;
-    }
-
-    /**
-     * Get the thousands separator.
-     *
-     * @return string with the thousands separator
-     */
-    public function getThousandsSeparator()
-    {
-        return $this->m_thousandsseparator;
-    }
-
-    /**
-     * Set the thousands separator.
-     *
-     * @param string $separator The thousands separator
-     */
-    public function setThousandsSeparator($separator)
-    {
-        $this->m_thousandsseparator = $separator;
-    }
-
-    /**
-     * Get the decimal separator.
-     *
-     * @return string with the decimal separator
-     */
-    public function getDecimalSeparator()
-    {
-        return $this->m_decimalseparator;
-    }
-
-    /**
-     * Set the decimal separator.
-     *
-     * @param string $separator The decimal separator
-     */
-    public function setDecimalSeparator($separator)
-    {
-        $this->m_decimalseparator = $separator;
-    }
-
-    /**
-     * Set showing/hiding of trailing zeros.
-     *
-     * @param bool $value
-     */
-    public function setTrailingZeros($value)
-    {
-        $this->m_trailingzeros = $value;
     }
 
     /**
@@ -288,7 +294,7 @@ class NumberAttribute extends Attribute
 
         $r = strtr($tmp1, array(' ' => $thousandsSeparator, '.' => $decimalSeparator));
         if ($number < 0) {
-            $r = '-'.$r;
+            $r = '-' . $r;
         }
 
         if (!$this->m_trailingzeros) {
@@ -425,7 +431,7 @@ class NumberAttribute extends Attribute
      */
     public function dbFieldSize()
     {
-        return $this->m_maxsize.($this->getDecimals() > 0 ? ','.$this->getDecimals() : '');
+        return $this->m_maxsize . ($this->getDecimals() > 0 ? ',' . $this->getDecimals() : '');
     }
 
     /**
@@ -476,7 +482,6 @@ class NumberAttribute extends Attribute
     }
 
     /**
-     * See http://www.virtuosoft.eu/code/bootstrap-touchspin/
      * @param array $options
      */
     public function enableTouchspin($options = [])
@@ -498,8 +503,7 @@ class NumberAttribute extends Attribute
      * attribute's value.
      *
      * @param array $record Array with values
-     * @param string $fieldprefix The attribute must use this to prefix its form elements (used for
-     *                            embedded forms)
+     * @param string $fieldprefix The attribute must use this to prefix its form elements (used for embedded forms)
      * @param string $mode The mode we're in ('add' or 'edit')
      *
      * @return string Piece of htmlcode
@@ -510,12 +514,12 @@ class NumberAttribute extends Attribute
         $name = $this->getHtmlName($fieldprefix);
 
         $style = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+        foreach ($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
 
         if (Tools::count($this->m_onchangecode)) {
-            $onchange = 'onChange="'.$id.'_onChange(this);"';
+            $onchange = 'onChange="' . $id . '_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
         } else {
             $onchange = '';
@@ -526,7 +530,7 @@ class NumberAttribute extends Attribute
         if ($this->getDecimals() > 0) {
             $size += ($this->getDecimals() + 1);
             $maxsize += ($this->getDecimals() + 1); // make room for the number of decimals
-            // TODO we should also consider the sign symbol (for signed type)
+            // TODO: we should also consider the sign symbol (for signed type)
         }
 
         $value = '';
@@ -535,28 +539,28 @@ class NumberAttribute extends Attribute
         }
 
         $result = '';
-        $result .= '<input type="text" id="'.$id.'"';
-        $result .= ' name="'.$name.'"';
-        $result .= ' '.$this->getCSSClassAttribute();
-        $result .= ' value="'.$value.'"';
-        if($size > 0){
-            $result .= ' size="'.$size.'"';
+        $result .= '<input type="text" id="' . $id . '"';
+        $result .= ' name="' . $name . '"';
+        $result .= ' ' . $this->getCSSClassAttribute();
+        $result .= ' value="' . $value . '"';
+        if ($size > 0) {
+            $result .= ' size="' . $size . '"';
         }
-        if($maxsize > 0){
-            $result .= ' maxlength="'.$maxsize.'"';
+        if ($maxsize > 0) {
+            $result .= ' maxlength="' . $maxsize . '"';
         }
-        if($onchange){
-            $result .= ' '.$onchange;
+        if ($onchange) {
+            $result .= ' ' . $onchange;
         }
-        if($placeholder = $this->getPlaceholder()){
-            $result .= ' placeholder="'.htmlspecialchars($placeholder).'"';
+        if ($placeholder = $this->getPlaceholder()) {
+            $result .= ' placeholder="' . htmlspecialchars($placeholder) . '"';
         }
-        if($style != ''){
-            $result .= ' style="'.$style.'"';
+        if ($style != '') {
+            $result .= ' style="' . $style . '"';
         }
         $result .= ' />';
 
-        if (is_array($this->touchspin)) {
+        if (is_array($this->touchspin) and $this->touchspin) {
             $page = Page::getInstance();
             $base = Config::getGlobal('assets_url') . 'lib/bootstrap-touchspin/';
             $page->register_script($base . 'jquery.bootstrap-touchspin.min.js');
@@ -588,8 +592,8 @@ class NumberAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
         $style = '';
-        $type = $extended ? 'extended_search':'search';
-        foreach($this->getCssStyles($type) as $k => $v) {
+        $type = $extended ? 'extended_search' : 'search';
+        foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
 
@@ -597,7 +601,7 @@ class NumberAttribute extends Attribute
             if (is_array($value)) { // values entered in the extended search
                 // TODO we would need to know the searchmode for better handling...
                 if ($value['from'] != '' && $value['to'] != '') {
-                    $value = $value['from'].'/'.$value['to'];
+                    $value = $value['from'] . '/' . $value['to'];
                 } elseif ($value['from'] != '') {
                     $value = $value['from'];
                 } elseif ($value['to'] != '') {
@@ -607,12 +611,13 @@ class NumberAttribute extends Attribute
                 }
             }
 
-            $result = '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'"';
-            $result .= ' value="'.htmlentities($value).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '');
-            if($style != ''){
-                $result .= ' style="'.$style.'"';
+            $result = '<input type="text" id="' . $id . '" ' . $class . ' name="' . $name . '"';
+            $result .= ' value="' . htmlentities($value) . '"' . ($searchsize > 0 ? ' size="' . $searchsize . '"' : '');
+            if ($style != '') {
+                $result .= ' style="' . $style . '"';
             }
             $result .= '>';
+
         } else {
 
             if (is_array($value)) {
@@ -623,14 +628,14 @@ class NumberAttribute extends Attribute
             }
 
             $result = '<div class="form-inline"';
-            if($style != ''){
-                $result .= ' style="'.$style.'"';
+            if ($style != '') {
+                $result .= ' style="' . $style . '"';
             }
             $result .= '>';
-            $result .= '<input type="text" id="'.$id.'" '.$class.' name="'.$name.'[from]" value="'.htmlentities($valueFrom).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>';
+            $result .= '<input type="text" id="' . $id . '" ' . $class . ' name="' . $name . '[from]" value="' . htmlentities($valueFrom) . '"' . ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
 
 
-            $result .= ' ('.Tools::atktext('until').' <input type="text" id="'.$id.'" class="form-control '.get_class($this).'" name="'.$name.'[to]" value="'.htmlentities($valueTo).'"'.($searchsize > 0 ? ' size="'.$searchsize.'"' : '').'>)';
+            $result .= ' (' . Tools::atktext('until') . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $name . '[to]" value="' . htmlentities($valueTo) . '"' . ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>)';
             $result .= '</div>';
         }
 
@@ -725,7 +730,7 @@ class NumberAttribute extends Attribute
             return parent::getSearchCondition($query, $table, $value, $searchmode);
         }
 
-        $fieldname = $table.'.'.$this->fieldName();
+        $fieldname = $table . '.' . $this->fieldName();
 
         return $this->getBetweenCondition($query, $fieldname, $value);
     }
