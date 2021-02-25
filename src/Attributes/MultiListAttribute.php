@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
@@ -12,8 +13,11 @@ use Sintattica\Atk\Db\Query;
  */
 class MultiListAttribute extends MultiSelectListAttribute
 {
+    public const TAG_SEPARATOR = 'tag-separator';
+
     private $m_displaySeparator = ', ';
     private $m_exportSeparator = '';
+    private $tagState = UIStateColors::COLOR_SECONDARY;
 
     function __construct($name, $flags, $optionArray, $valueArray = null)
     {
@@ -47,6 +51,11 @@ class MultiListAttribute extends MultiSelectListAttribute
             // export separator
             $sep = $this->m_exportSeparator ?: $this->m_displaySeparator;
         } else {
+
+            if ($this->m_displaySeparator === self::TAG_SEPARATOR) {
+                return Tools::formatTagList($res, $this->tagState);
+            }
+
             $sep = $this->m_displaySeparator;
         }
 
@@ -59,7 +68,7 @@ class MultiListAttribute extends MultiSelectListAttribute
             // store the values like |value1|value2|...
             // (compared to MultiSelectAttribute, it adds the separator also at the begin and at the end of the values
             // in this way, the search is more secure (see getSearchCondition)
-            return Tools::escapeSQL($this->m_fieldSeparator.implode($this->m_fieldSeparator, $rec[$this->fieldName()]).$this->m_fieldSeparator);
+            return Tools::escapeSQL($this->m_fieldSeparator . implode($this->m_fieldSeparator, $rec[$this->fieldName()]) . $this->m_fieldSeparator);
         }
 
         return '';
@@ -85,18 +94,31 @@ class MultiListAttribute extends MultiSelectListAttribute
         if (is_array($value) && $value[0] != "" && count($value) > 0) {
             // includes the separators in the value to search, in this way the search is more secure
             if (in_array('__NONE__', $value)) {
-                return $query->nullCondition($table.'.'.$this->fieldName(), true);
+                return $query->nullCondition($table . '.' . $this->fieldName(), true);
             }
 
             if (count($value) == 1) {
-                $searchconditions[] = $query->substringCondition($table.".".$this->fieldName(), Tools::escapeSQL($this->m_fieldSeparator.$value[0].$this->m_fieldSeparator));
+                $searchconditions[] = $query->substringCondition($table . "." . $this->fieldName(), Tools::escapeSQL($this->m_fieldSeparator . $value[0] . $this->m_fieldSeparator));
             } else {
                 foreach ($value as $str) {
-                    $searchconditions[] = $query->substringCondition($table.".".$this->fieldName(), Tools::escapeSQL($this->m_fieldSeparator.$str.$this->m_fieldSeparator));
+                    $searchconditions[] = $query->substringCondition($table . "." . $this->fieldName(), Tools::escapeSQL($this->m_fieldSeparator . $str . $this->m_fieldSeparator));
                 }
             }
         }
 
-        return count($searchconditions) ? '('.implode(' OR ', $searchconditions).')' : '';
+        return count($searchconditions) ? '(' . implode(' OR ', $searchconditions) . ')' : '';
     }
+
+    public function getTagState(): string
+    {
+        return $this->tagState;
+    }
+
+    public function setTagState(string $tagState): self
+    {
+        $this->tagState = $tagState;
+        return $this;
+    }
+
+
 }

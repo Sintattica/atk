@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Core;
 
 use ReflectionClass;
 use ReflectionException;
+use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Session\SessionManager;
@@ -2337,4 +2338,20 @@ class Tools
 
         return $fileName;
     }
+
+    /**
+     * Format the list elements as nav-pills (tags)
+     * @param array $list
+     * @param string $uiStateColor
+     * @return string
+     */
+    public static function formatTagList(array $list = [], string $uiStateColor = UIStateColors::COLOR_SECONDARY): string
+    {
+        if (!$list) {
+            return "";
+        }
+
+        return '<div style="max-width: 400px; white-space: normal;"><span class="badge-sm badge-pill badge-' . $uiStateColor . ' mr-1 text-nowrap">' . implode('</span><span class="badge-sm badge-pill badge-' . $uiStateColor . ' mr-1 text-nowrap">', $list) . '</span></div>';
+    }
+
 }
