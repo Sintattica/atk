@@ -271,6 +271,7 @@ abstract class MenuBase
                 'submenu' => $subMenu,
                 'classes' => $classes,
                 'icon' => $icon,
+                'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active
             ]);
@@ -304,6 +305,7 @@ abstract class MenuBase
                 'link' => $link,
                 'classes' => $classes,
                 'icon' => $icon,
+                'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active,
                 'color' => $item["color"]
@@ -396,7 +398,8 @@ abstract class MenuBase
      * @param null $type
      * @param bool $active
      * @param null $icon
-     * @param null $color
+     * @param string $color
+     * @param null $iconType
      * @throws ReflectionException
      */
     public function addMenuItem(
@@ -412,7 +415,8 @@ abstract class MenuBase
         $type = null,
         $active = false,
         $icon = null,
-        $color = ""
+        $color = "",
+        $iconType = null
     )
     {
         static $order_value = 100, $s_dupelookup = [];
@@ -441,7 +445,8 @@ abstract class MenuBase
             'classes' => $classes,
             'active' => $active,
             'icon' => $icon,
-            'color' => $color
+            'color' => $color,
+            'icon_type' => $iconType
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -485,7 +490,9 @@ abstract class MenuBase
             $item->getPosition(),
             $item->getType(),
             $item->isActive(),
-            $item->getIcon()
+            $item->getIcon(),
+            "",
+            $item->getIconType()
         );
 
         return $item;
@@ -506,7 +513,8 @@ abstract class MenuBase
             $item->getType(),
             $item->isActive(),
             "",
-            $item->getColor()
+            $item->getColor(),
+            $item->getIconType()
         );
 
         return $item;
@@ -526,7 +534,9 @@ abstract class MenuBase
             $item->getPosition(),
             $item->getType(),
             $item->isActive(),
-            $item->getIcon()
+            $item->getIcon(),
+            "",
+            $item->getIconType()
         );
 
         return $item;
@@ -546,7 +556,9 @@ abstract class MenuBase
             $item->getPosition(),
             $item->getType(),
             $item->isActive(),
-            $item->getIcon()
+            $item->getIcon(),
+            "",
+            $item->getIconType()
         );
 
         return $item;

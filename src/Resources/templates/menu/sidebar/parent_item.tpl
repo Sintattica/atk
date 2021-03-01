@@ -1,6 +1,6 @@
 <li class="nav-item {$active}">
     <a href="#" class="nav-link">
-        <i class="{$icon} nav-icon {$icon_classes}"></i>
+        {include file='menu/sidebar/icon.tpl'}
         <p>
             {$title}
             <i class="fas fa-angle-left right"></i>

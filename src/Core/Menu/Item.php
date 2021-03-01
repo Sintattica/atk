@@ -15,6 +15,9 @@ use Sintattica\Atk\Core\Tools;
 abstract class Item
 {
 
+    public const ICON_FA = 'fa';
+    public const ICON_IMAGE = 'image';
+    public const ICON_CHARS = 'chars';
 
     protected const DEFAULT_PARENT = "main";
     protected const DEFAULT_ORDER = -1;
@@ -29,6 +32,8 @@ abstract class Item
     protected $module = '';
     protected $raw = false;
     protected $urlParams = [];
+
+    private $iconType = self::ICON_FA;
 
     //Todo: Pensare come fare per i link esterni!
     // private string $url;
@@ -51,7 +56,7 @@ abstract class Item
     {
         try {
             return Tools::getClassName($this);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             //NOOP -- this cannot happen!
         }
 
@@ -84,7 +89,7 @@ abstract class Item
      * @param string $parent
      * @return Item
      */
-    public function setParent(string $parent): Item
+    public function setParent(string $parent): self
     {
         $this->parent = $parent;
         return $this;
@@ -102,7 +107,7 @@ abstract class Item
      * @param string $name
      * @return Item
      */
-    public function setName(string $name): Item
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -120,7 +125,7 @@ abstract class Item
      * @param string $position
      * @return Item
      */
-    public function setPosition(string $position): Item
+    public function setPosition(string $position): self
     {
         $this->position = $position;
         return $this;
@@ -138,7 +143,7 @@ abstract class Item
      * @param int $enable
      * @return Item
      */
-    public function setEnable(int $enable): Item
+    public function setEnable(int $enable): self
     {
         $this->enable = $enable;
         return $this;
@@ -156,7 +161,7 @@ abstract class Item
      * @param int $order
      * @return Item
      */
-    public function setOrder(int $order): Item
+    public function setOrder(int $order): self
     {
         $this->order = $order;
         return $this;
@@ -174,7 +179,7 @@ abstract class Item
      * @param string $module
      * @return Item
      */
-    public function setModule(string $module): Item
+    public function setModule(string $module): self
     {
         $this->module = $module;
         return $this;
@@ -192,7 +197,7 @@ abstract class Item
      * @param bool $raw
      * @return Item
      */
-    public function setRaw(bool $raw): Item
+    public function setRaw(bool $raw): self
     {
         $this->raw = $raw;
         return $this;
@@ -208,11 +213,26 @@ abstract class Item
 
     /**
      * @param string|null $icon
+     * @param string|null $iconType
      * @return Item
      */
-    public function setIcon(?string $icon): Item
+    public function setIcon(?string $icon, ?string $iconType = self::ICON_FA): self
     {
-        $this->icon = $icon;
+
+        switch ($iconType) {
+            case self::ICON_IMAGE:
+                $this->iconType = self::ICON_IMAGE;
+                $this->icon = $icon;
+                break;
+            case self::ICON_CHARS:
+                $this->iconType = self::ICON_CHARS;
+                $this->icon = substr($icon, 0, 2);
+                break;
+            default:
+                $this->iconType = self::ICON_FA;
+                $this->icon = $icon;
+        }
+
         return $this;
     }
 
@@ -228,10 +248,18 @@ abstract class Item
      * @param bool $active
      * @return Item
      */
-    public function setActive(bool $active): Item
+    public function setActive(bool $active): self
     {
         $this->active = $active;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIconType(): string
+    {
+        return $this->iconType;
     }
 
 
