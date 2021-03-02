@@ -14,6 +14,9 @@ use SmartyException;
 abstract class MenuBase
 {
 
+    public const ICON_ADMIN = 'fas fa-list';
+    public const ICON_ADD = 'fas fa-plus-circle';
+
     public const MENU_SIDEBAR = 'sidebar';
     public const MENU_NAV_LEFT = 'left';
     public const MENU_NAV_RIGHT = 'right';
@@ -522,6 +525,15 @@ abstract class MenuBase
 
     private function addActionItem(ActionItem $item): ActionItem
     {
+
+        if($item->getAction() === 'admin' && !$item->getIcon()){
+            $item->setIcon(self::ICON_ADMIN);
+        }
+
+        if($item->getAction() === 'add' && !$item->getIcon()){
+            $item->setIcon(self::ICON_ADD);
+        }
+
         $this->addMenuItem(
             $item->getName(),
             $item->getUrl(),
@@ -538,6 +550,7 @@ abstract class MenuBase
             "",
             $item->getIconType()
         );
+
 
         return $item;
     }
