@@ -526,13 +526,20 @@ abstract class MenuBase
     private function addActionItem(ActionItem $item): ActionItem
     {
 
-        if($item->getAction() === 'admin' && !$item->getIcon()){
-            $item->setIcon(self::ICON_ADMIN);
+        if(!$item->getIcon()) {
+            if ($item->getAction() === 'admin') {
+                $item->setIcon(self::ICON_ADMIN);
+            }
+
+            else if ($item->getAction() === 'add') {
+                $item->setIcon(self::ICON_ADD);
+            }
+
+            else {
+                $item->setIcon($item->getName(), Item::ICON_CHARS);
+            }
         }
 
-        if($item->getAction() === 'add' && !$item->getIcon()){
-            $item->setIcon(self::ICON_ADD);
-        }
 
         $this->addMenuItem(
             $item->getName(),
