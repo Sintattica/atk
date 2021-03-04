@@ -3,6 +3,7 @@
 
 namespace Sintattica\Atk\Ui;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 
 final class Footer
@@ -66,7 +67,7 @@ final class Footer
         }
 
         if (!isset($tplVars['footer_right'])) {
-            $tplVars['footer_right'] = Tools::atktext('footer_right', null, null, null, null, true) ?: '';
+            $tplVars['footer_right'] = Tools::atktext('footer_right', null, null, null, null, true) ?: Config::getGlobal('version');
         }
 
         return SmartyProvider::render($this->template, $tplVars);

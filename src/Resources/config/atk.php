@@ -2,16 +2,26 @@
 
 use Sintattica\Atk\Core\Config;
 
-$_configAppRoot = __DIR__.'/../../../../../../';
-$_configTempDir = $_configAppRoot.'var/atktmp/';
+$_configAppRoot = __DIR__ . '/../../../../../../';
+$_configTempDir = $_configAppRoot . 'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
 
-$_public_dir = $_configAppRoot.'web';
-if($_public_dir_real = realpath($_public_dir)){
-    $_public_dir = $_public_dir_real.'/';
-}else{
-    $_public_dir = $_public_dir.'/';
+//Get branch name from git
+$version = null;
+
+if (file_exists($_configAppRoot . '.git/HEAD')) {
+    $stringfromfile = file($_configAppRoot . '.git/HEAD', FILE_USE_INCLUDE_PATH);
+    $firstLine = $stringfromfile[0]; //get the string from the array
+    $explodedstring = explode("/", $firstLine, 3); //seperate out by the "/" in the string
+    $version = $explodedstring[2]; //get the one that is always the branch name
+}
+
+$_public_dir = $_configAppRoot . 'web';
+if ($_public_dir_real = realpath($_public_dir)) {
+    $_public_dir = $_public_dir_real . '/';
+} else {
+    $_public_dir = $_public_dir . '/';
 }
 
 return [
@@ -22,15 +32,17 @@ return [
 
     'application_dir' => $_configAppRoot,
 
-    'application_config_dir' => $_configAppRoot.$_configDirName.'/',
+    'application_config_dir' => $_configAppRoot . $_configDirName . '/',
 
-    'application_config' => $_configAppRoot.$_configDirName.'/atk.php',
+    'application_config' => $_configAppRoot . $_configDirName . '/atk.php',
 
     'assets_url' => $_configAssetsUrl,
 
-    'template_dir' => __DIR__.'/../templates/',
+    'template_dir' => __DIR__ . '/../templates/',
 
     'public_dir' => $_public_dir,
+
+    'version' => $version,
 
     /*
      * Used in FileAttribute
@@ -77,7 +89,6 @@ return [
      * (like legacy atk)
      */
     'datagrid_total_paginate' => false,
-
 
 
     /*
@@ -192,7 +203,7 @@ return [
      *
      * @var String
      */
-    'logfile' => $_configAppRoot.'atk-security.log',
+    'logfile' => $_configAppRoot . 'atk-security.log',
 
     /*
      * Password Restrictions if required
@@ -571,7 +582,7 @@ return [
      */
     'mra_position' => 'bottom',
 
-    'style_url' => $_configAssetsUrl.'styles/style.css',
+    'style_url' => $_configAssetsUrl . 'styles/style.css',
 
     /*********************************** OUTPUT ********************************/
 
@@ -611,7 +622,7 @@ return [
 
     /********************* TEMPLATE ENGINE CONFIGURATION ***********************/
 
-    'tplcompiledir' => $_configTempDir.'tpl/',
+    'tplcompiledir' => $_configTempDir . 'tpl/',
     'tplcompilecheck' => Config::env('TPL_COMPILE_CHECK', 1),
     'tplforcecompile' => Config::env('TPL_FORCE_COMPILE', 0),
 
@@ -865,8 +876,8 @@ return [
     /*
      * logo
      */
-    'login_logo' => $_configAssetsUrl.'images/login_logo.jpg',
-    'brand_logo' =>  '',
+    'login_logo' => $_configAssetsUrl . 'images/login_logo.jpg',
+    'brand_logo' => '',
 
     /*
      * icons
@@ -874,19 +885,19 @@ return [
     'recordlist_icons' => true,
 
 
-    'icon_add'          => 'fas fa-plus',
-    'icon_canceled'     => 'fas fa-times',
-    'icon_copy'         => 'far fa-clone',
-    'icon_default'      => 'fas fa-file',
-    'icon_delete'       => 'fas fa-trash-alt text-danger',
-    'icon_document'     => 'far fa-file',
+    'icon_add' => 'fas fa-plus',
+    'icon_canceled' => 'fas fa-times',
+    'icon_copy' => 'far fa-clone',
+    'icon_default' => 'fas fa-file',
+    'icon_delete' => 'fas fa-trash-alt text-danger',
+    'icon_document' => 'far fa-file',
     'icon_done' => 'fas fa-check',
     'icon_edit' => 'fas fa-pencil-alt',
     'icon_editcopy' => 'far fa-clone',
     'icon_email' => 'far fa-envelope',
     'icon_e_mail' => 'far fa-envelope',
     'icon_export' => 'fas fa-file-export',
-    'icon_export_csv'  => 'fas fa-file-csv',
+    'icon_export_csv' => 'fas fa-file-csv',
     'icon_import' => 'fas fa-file-import',
     'icon_minussquare' => 'far fa-minus-square',
     'icon_plussquare' => 'far fa-plus-square',
