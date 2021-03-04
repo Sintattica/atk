@@ -38,4 +38,8 @@ class SeparatorItem extends Item
     }
 
 
+    protected function createIdentifierComponents(): ?string
+    {
+        return "";
+    }
 }

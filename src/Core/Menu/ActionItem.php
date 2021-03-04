@@ -95,8 +95,18 @@ class ActionItem extends Item
      */
     public function getUrl(): string
     {
+        $this->addUrlParam('atkmenu', $this->getIdentifier());
         return Tools::dispatch_url($this->nodeUri, $this->action, $this->urlParams);
     }
 
+    public function addUrlParam(string $key, string $value)
+    {
+        $this->urlParams[$key] = $value;
+    }
 
+    //Todo Rename Method
+    protected function createIdentifierComponents(): ?string
+    {
+        return $this->nodeUri . $this->action;
+    }
 }

@@ -1260,6 +1260,8 @@ class Tools
      * @param string $phpfile The php file to use for dispatching
      *
      * @return string url for the node with the action
+     *
+     * todo: Nelle azioni interne di un nodo il menu si perde!
      */
     public static function dispatch_url(string $nodeUri, ?string $action, array $params = [], string $phpfile = ''): string
     {
@@ -1271,6 +1273,7 @@ class Tools
         if ($action != '') {
             $atkParams['atkaction'] = $action;
         }
+
         $params = array_merge($atkParams, $params);
 
         if ($params != '' && is_array($params) && Tools::count($params) > 0) {

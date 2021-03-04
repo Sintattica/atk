@@ -526,6 +526,7 @@ abstract class MenuBase
     private function addActionItem(ActionItem $item): ActionItem
     {
 
+
         if(!$item->getIcon()) {
             if ($item->getAction() === 'admin') {
                 $item->setIcon(self::ICON_ADMIN);
@@ -540,6 +541,9 @@ abstract class MenuBase
             }
         }
 
+        if($item->getIdentifier() ===  $_GET['atkmenu']){
+            $item->setActive(true);
+        }
 
         $this->addMenuItem(
             $item->getName(),

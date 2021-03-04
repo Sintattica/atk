@@ -81,5 +81,9 @@ class UrlItem extends Item
         return $this;
     }
 
+    protected function createIdentifierComponents(): ?string
+    {
+        return $this->url;
+    }
 
 }

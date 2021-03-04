@@ -18,5 +18,8 @@ class HeaderItem extends Item
     }
 
 
-
+    protected function createIdentifierComponents(): ?string
+    {
+        return "";
+    }
 }

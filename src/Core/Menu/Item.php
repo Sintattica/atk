@@ -36,16 +36,32 @@ abstract class Item
     private $iconType = self::ICON_FA;
 
     //Todo: Pensare come fare per i link esterni!
-    // private string $url;
     protected $icon = null;
     protected $active = false;
 
-
-    //Todo: Creare gli ItemType -> HeaderMenuItem, SeparatorMenuItem, LinkMenuItem che estendono Item
-    // Campi base: name, parent, position, enabled, order, module, itemType (autocompilato)
-    protected function __construct()
+    /**
+     * Item constructor.
+     */
+    public function __construct()
     {
-        $this->uuid = uniqid("", true);
+    }
+
+    protected abstract function createIdentifierComponents(): ?string;
+
+
+    public function getIdentifier(): ?string
+    {
+        if (!$this->uuid) {
+            $this->uuid = self::generateHash($this->position . $this->parent . $this->createIdentifierComponents());
+        }
+
+        return $this->uuid;
+    }
+
+    protected static function generateHash($string, $hashLength = null)
+    {
+        $fullHash = md5($string);
+        return $hashLength ? substr($fullHash, 0, $hashLength) : $fullHash;
     }
 
     /**
@@ -63,19 +79,6 @@ abstract class Item
         return "";
     }
 
-
-    public function getIdentifier(): string
-    {
-        return $this->uuid;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
 
     /**
      * @return string
@@ -261,7 +264,4 @@ abstract class Item
     {
         return $this->iconType;
     }
-
-
-
 }
