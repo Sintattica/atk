@@ -1250,9 +1250,7 @@ class Tools
     }
 
     /**
-     * Generate a dispatch menu URL for use with nodes and their specific
-     * actions.
-     *
+     * Generate a dispatch menu URL for use with nodes and their specific actions.
      *
      * @param string $nodeUri the $nodeUri
      * @param string|null $action the atk action the link will perform
@@ -1275,6 +1273,12 @@ class Tools
         }
 
         $params = array_merge($atkParams, $params);
+
+        if (!isset($params['atkmenu']) and $_GET['atkmenu']) {
+            // TODO: refactoring $_GET
+            // no atkmenu passed, but one retrieved from query string
+            $params['atkmenu'] = $_GET['atkmenu'];
+        }
 
         if ($params != '' && is_array($params) && Tools::count($params) > 0) {
             $phpfile .= '?' . self::buildQueryString($params);
