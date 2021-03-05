@@ -168,25 +168,28 @@ class SaveHandler extends ActionHandler
     protected function getSuccessReturnURL($record)
     {
         $sm = SessionManager::getInstance();
+        $params = [];
+
         if ($this->m_node->hasFlag(Node::NF_EDITAFTERADD) && $this->m_node->allowed('edit')) {
             // forward atkpkret for newly added records
-            $extra = '';
+
+            $params['atkselector'] = $this->m_node->primaryKey($record);
+
             if (isset($this->m_postvars['atkpkret'])) {
-                $extra = '&atkpkret='.rawurlencode($this->m_postvars['atkpkret']);
+                $params['atkpkret'] = $this->m_postvars['atkpkret'];
             }
 
-            $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri();
-            $url .= '&atkaction=edit';
-            $url .= '&atkselector='.rawurlencode($this->m_node->primaryKey($record));
-            $location = $sm->sessionUrl($url.$extra, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
+            $url = Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit', $params);
+            $location = $sm->sessionUrl($url, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
         } else {
             if ($this->m_node->hasFlag(Node::NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext'])) {
-                $filter = '';
+
                 if (isset($this->m_node->m_postvars['atkfilter'])) {
-                    $filter = '&atkfilter='.rawurlencode($this->m_node->m_postvars['atkfilter']);
+                    $params['atkfilter'] = $this->m_node->m_postvars['atkfilter'];
                 }
-                $url = Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_node->atkNodeUri().'&atkaction='.$this->getAddAction();
-                $location = $sm->sessionUrl($url.$filter, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
+
+                $url = Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getAddAction(), $params);
+                $location = $sm->sessionUrl($url, SessionManager::SESSION_REPLACE, $this->_getSkip() - 1);
             } else {
                 // normal succesful save
                 $location = $this->m_node->feedbackUrl('save', self::ACTION_SUCCESS, $record, '', $this->_getSkip());

@@ -2527,9 +2527,9 @@ class Node
             $sm = SessionManager::getInstance();
             $newtab['total'] = Tools::count($list);
             foreach ($list as $t) {
-                $newtab['title'] = $this->text(array("tab_$t", $t));
+                $newtab['title'] = $this->text(["tab_$t", $t]);
                 $newtab['tab'] = $t;
-                $url = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->atkNodeUri() . '&atkaction=' . $this->m_action . '&atktab=' . $t;
+                $url = Tools::dispatch_url($this->atkNodeUri(), $this->m_action, ['atktab' => $t]);
                 if ($this->m_action == 'view') {
                     $newtab['link'] = $sm->sessionUrl($url, SessionManager::SESSION_DEFAULT);
                 } else {
@@ -2567,37 +2567,31 @@ class Node
      *                       an atkfilter for example. The array should be
      *                       key/value based.
      *
-     * @return array List of actions in the form array($action=>$actionurl)
+     * @return array List of actions in the form array($action=>$actionUrl)
      */
-    public function defaultActions($mode, $params = array())
+    public function defaultActions(string $mode, $params = []): array
     {
         $actions = [];
-        $postfix = '';
 
-        if (Tools::count($params) > 0) {
-            foreach ($params as $key => $value) {
-                $postfix .= "&$key=" . rawurlencode($value);
-            }
-        }
+        $params['atkselector'] = "[pk]";
 
-        $actionbase = Config::getGlobal('dispatcher') . '?atknodeuri=' . $this->atkNodeUri() . '&atkselector=[pk]' . $postfix;
         if (!$this->hasFlag(self::NF_NO_VIEW) && $this->allowed('view')) {
-            $actions['view'] = $actionbase . '&atkaction=view';
+            $actions['view'] = Tools::dispatch_url($this->atkNodeUri(), 'view', array_merge($params, ['atkaction' => 'view']));
         }
 
         if ($mode != 'view') {
             if (!$this->hasFlag(self::NF_NO_EDIT) && $this->allowed('edit')) {
-                $actions['edit'] = $actionbase . '&atkaction=edit';
+                $actions['edit'] = Tools::dispatch_url($this->atkNodeUri(), 'edit', array_merge($params, ['atkaction' => 'edit']));
             }
 
             if (!$this->hasFlag(self::NF_NO_DELETE) && $this->allowed('delete')) {
-                $actions['delete'] = $actionbase . '&atkaction=delete';
+                $actions['delete'] = Tools::dispatch_url($this->atkNodeUri(), 'delete', array_merge($params, ['atkaction' => 'delete']));
             }
             if ($this->hasFlag(self::NF_COPY) && $this->allowed('copy')) {
-                $actions['copy'] = $actionbase . '&atkaction=copy';
+                $actions['copy'] = Tools::dispatch_url($this->atkNodeUri(), 'copy', array_merge($params, ['atkaction' => 'copy']));
             }
             if ($this->hasFlag(self::NF_EDITAFTERCOPY) && $this->allowed('editcopy')) {
-                $actions['editcopy'] = $actionbase . '&atkaction=editcopy';
+                $actions['editcopy'] = Tools::dispatch_url($this->atkNodeUri(), 'editcopy', array_merge($params, ['atkaction' => 'editcopy']));
             }
         }
 

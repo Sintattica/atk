@@ -7,6 +7,7 @@ use ReflectionException;
 use Sintattica\Atk\Core\AdminLTE;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
+use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\SmartyProvider;
 use SmartyException;
@@ -85,7 +86,6 @@ abstract class MenuBase
             Tools::atkdebug('Creating a new menu instance');
             $s_instance = new static();
             $s_instance->m_adminLte = AdminLTE::getInstance();
-            $s_instance->appendMenuItems();
         }
 
         return $s_instance;
@@ -133,6 +133,7 @@ abstract class MenuBase
      */
     public function getMenu(): array
     {
+
         if (!$this->menu) {
             $this->menu = $this->load();
         }
@@ -526,21 +527,23 @@ abstract class MenuBase
     private function addActionItem(ActionItem $item): ActionItem
     {
 
-        if(!$item->getIcon()) {
+        if (!$item->getIcon()) {
             if ($item->getAction() === 'admin') {
                 $item->setIcon(self::ICON_ADMIN);
-            }
-
-            else if ($item->getAction() === 'add') {
+            } else if ($item->getAction() === 'add') {
                 $item->setIcon(self::ICON_ADD);
-            }
-
-            else {
+            } else {
                 $item->setIcon($item->getName(), Item::ICON_CHARS);
             }
         }
 
-        if($item->getIdentifier() === $_GET['atkmenu']){
+        $menuId = $_GET['atkmenu'];
+
+        if (!$menuId) {
+            $menuId = SessionManager::getInstance()->globalStackVar('atkmenu');
+        }
+
+        if ($menuId && $item->getIdentifier() === $menuId) {
             $item->setActive(true);
         }
 

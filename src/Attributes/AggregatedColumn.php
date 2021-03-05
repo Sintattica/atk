@@ -106,12 +106,12 @@ class AggregatedColumn extends Attribute
     public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
-            $arr['heading'][$fieldprefix.$this->fieldName()]['title'] = $this->label();
+            $arr['heading'][$fieldprefix . $this->fieldName()]['title'] = $this->label();
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
                 $rec = [];
                 foreach ($this->m_displayfields as $field) {
-                    $rec[] = $this->m_ownerInstance->m_table.'.'.$field;
+                    $rec[] = $this->m_ownerInstance->m_table . '.' . $field;
                 }
                 $order = implode(', ', $rec);
                 if ($atkorderby == $order) {
@@ -119,12 +119,14 @@ class AggregatedColumn extends Attribute
                     $order .= ' DESC';
                 }
                 $sm = SessionManager::getInstance();
-                $arr['heading'][$fieldprefix.$this->fieldName()]['url'] = $sm->sessionUrl(Config::getGlobal('dispatcher').'?atknodeuri='.$this->m_ownerInstance->atkNodeUri().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
+
+                $url = Tools::dispatch_url($this->m_ownerInstance->atkNodeUri(), $action, ['atkorderby' => $order]);
+                $arr['heading'][$fieldprefix . $this->fieldName()]['url'] = $sm->sessionUrl($url);
             }
 
             if (!Tools::hasFlag($flags, RecordList::RL_NO_SEARCH) && $this->hasFlag(self::AF_SEARCHABLE)) {
-                $arr['search'][$fieldprefix.$this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
-                $arr['search'][$fieldprefix.$this->fieldName()] .= '<input type="hidden" name="atksearchmode['.$this->fieldName().']" value="'.$this->getSearchMode().'">';
+                $arr['search'][$fieldprefix . $this->fieldName()] = $this->search($atksearch, false, $fieldprefix);
+                $arr['search'][$fieldprefix . $this->fieldName()] .= '<input type="hidden" name="atksearchmode[' . $this->fieldName() . ']" value="' . $this->getSearchMode() . '">';
             }
         }
     }
@@ -143,7 +145,7 @@ class AggregatedColumn extends Attribute
     {
         if ($mode !== 'add' && $mode != 'edit') {
             $allfields = Tools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
-            $alias = $fieldaliasprefix.$this->fieldName().'_AE_';
+            $alias = $fieldaliasprefix . $this->fieldName() . '_AE_';
             foreach ($allfields as $field) {
                 /** @var Attribute $p_attrib */
                 $p_attrib = $this->m_ownerInstance->m_attribList[$field];
@@ -195,7 +197,7 @@ class AggregatedColumn extends Attribute
             $data = [];
             foreach ($this->m_searchfields as $field) {
                 if (strpos($field, '.') == false) {
-                    $data[$field] = $table.'.'.$field;
+                    $data[$field] = $table . '.' . $field;
                 } else {
                     $data[$field] = $field;
                 }
@@ -214,13 +216,13 @@ class AggregatedColumn extends Attribute
             }
 
             $db = $this->getDb();
-            $condition = 'UPPER('.$db->func_concat_ws($concatTags, '', true).") LIKE UPPER('%".$value."%')";
+            $condition = 'UPPER(' . $db->func_concat_ws($concatTags, '', true) . ") LIKE UPPER('%" . $value . "%')";
 
             $searchconditions[] = $condition;
         }
 
         if (Tools::count($searchconditions)) {
-            return '('.implode(' OR ', $searchconditions).')';
+            return '(' . implode(' OR ', $searchconditions) . ')';
         }
 
         return '';

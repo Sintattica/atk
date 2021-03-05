@@ -50,7 +50,8 @@ class SelectHandler extends ActionHandler
         $node = $this->getNode();
 
         $grid = DataGrid::create($node, 'select');
-        $actions = array('select' => Tools::atkurldecode($grid->getPostvar('atktarget')));
+
+        $actions = ['select' => Tools::atkurldecode($grid->getPostvar('atktarget'))];
         $grid->removeFlag(DataGrid::MULTI_RECORD_ACTIONS);
         $grid->removeFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
         $grid->setDefaultActions($actions);

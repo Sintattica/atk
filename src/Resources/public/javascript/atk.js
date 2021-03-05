@@ -54,3 +54,21 @@ jQuery.fn.select2.defaults.set('width', null);
 if (typeof (LANGUAGE) !== 'undefined') {
     jQuery.fn.select2.defaults.set('language', LANGUAGE);
 }
+
+
+//Todo: Non funziona ancora correttamente!
+jQuery(() => {
+    const sidebar = document.querySelector('#menu-sidebar');
+    const activeEl = sidebar.querySelector('.nav-link.active');
+
+    // for single sidebar menu
+    jQuery('ul.nav-sidebar a').filter((index, el) => el === activeEl).addClass('active');
+
+    // for sidebar menu and treeview
+    jQuery('ul.nav-treeview a').filter((index, el) => el === activeEl)
+        .parentsUntil(".nav-sidebar > .nav-treeview")
+        .css({'display': 'block'})
+        //.addClass('menu-open')
+        .prev('a')
+        .addClass('active');
+});

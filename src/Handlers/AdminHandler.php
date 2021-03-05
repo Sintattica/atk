@@ -35,7 +35,7 @@ class AdminHandler extends ActionHandler
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/formsubmit.js');
         $res = $this->renderAdminPage();
         $page->addContent($this->m_node->renderActionPage('admin', $res));
     }
@@ -141,7 +141,7 @@ class AdminHandler extends ActionHandler
         }
 
         $params = [];
-        $params['header'] = $this->invoke('adminHeader').$this->getHeaderLinks();
+        $params['header'] = $this->invoke('adminHeader') . $this->getHeaderLinks();
         $params['list'] = $grid->render();
         $params['footer'] = $this->invoke('adminFooter');
         $output = $this->getUi()->renderList('admin', $params);
@@ -212,7 +212,7 @@ class AdminHandler extends ActionHandler
                 SessionManager::SESSION_NESTED);
 
             if ($grid->isUpdate()) {
-                $script = 'document.location.href = '.Json::encode($url).';';
+                $script = 'document.location.href = ' . Json::encode($url) . ';';
                 $node->getPage()->register_loadscript($script);
             } else {
                 $node->redirect($url);
@@ -289,8 +289,8 @@ class AdminHandler extends ActionHandler
 
             $icon = Config::getGlobal("icon_export_csv");
 
-            $margin = $label && $icon ? "mr-1"  : "";
-            $label = '<i class="'.$icon. ' ' . $margin. '"></i>'.$label;
+            $margin = $label && $icon ? "mr-1" : "";
+            $label = '<i class="' . $icon . ' ' . $margin . '"></i>' . $label;
 
             $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export', array('atkfilter' => $filter)),
                 $label, SessionManager::SESSION_NESTED, false, $cssClass);
@@ -323,14 +323,14 @@ class AdminHandler extends ActionHandler
 
         if (!$node->hasFlag(Node::NF_NO_ADD) && $node->allowed('add')) {
 
-            $label = $node->text('link_'.$node->m_type.'_add', null, '', '', true);
+            $label = $node->text('link_' . $node->m_type . '_add', null, '', '', true);
             if (empty($label)) {
                 // generic text
                 $label = Tools::atktext('add', 'atk');
             }
             $icon = Config::getGlobal("icon_add");
-            $margin = $label && $icon ? "mr-1"  : "";
-            $label = '<i class="'.$icon. ' ' . $margin. '"></i>'.$label;
+            $margin = $label && $icon ? "mr-1" : "";
+            $label = '<i class="' . $icon . ' ' . $margin . '"></i>' . $label;
 
             if ($node->hasFlag(Node::NF_ADD_LINK)) {
                 $addurl = $this->invoke('getAddUrl', $node);
@@ -354,7 +354,7 @@ class AdminHandler extends ActionHandler
         $atk = Atk::getInstance();
         $node = $atk->atkGetNode($this->invoke('getAddNodeType'));
 
-        return Config::getGlobal('dispatcher').'?atknodeuri='.$node->atkNodeUri().'&atkaction=add';
+        return Tools::dispatch_url($node->atkNodeUri(), 'add');
     }
 
     /**
@@ -399,7 +399,7 @@ class AdminHandler extends ActionHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeUri()."'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
 
             return '';
         }

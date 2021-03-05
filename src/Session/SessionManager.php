@@ -518,19 +518,20 @@ class SessionManager
 
         // session vars are valid until they are set to something else. if you go a session level higher,
         // the next level will still contain these vars (unless overriden in the url)
-        $sessionVars = array(
+        $sessionVars = [
             'atknodeuri',
             'atkfilter',
             'atkaction',
             'atkpkret',
             'atkstore',
             'atkstore_key',
-        );
+            'atkmenu',
+        ];
 
         // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
         // visible until you return. if the name ends in a * the pagevar is treated as an array that
         // needs to be merged recursive with new postvar values
-        $pageVars = array(
+        $pageVars = [
             'atkdg*',
             'atkdgsession',
             'atksearch',
@@ -546,11 +547,11 @@ class SessionManager
             'atktab',
             'atksmartsearch',
             'atkindex',
-        );
+        ];
 
         // lockedvars are session or page vars that will not be overwritten in partial mode
         // e.g., the values that are already known in the session will be used
-        $lockedVars = array('atknodeuri', 'atkaction', 'atkselector');
+        $lockedVars = ['atknodeuri', 'atkaction', 'atkselector', 'atkmenu'];
 
         // Mental note: We have an $this->atkLevel() function for retrieving the atklevel,
         // but we use the global var itself here, because it gets modified in
@@ -788,6 +789,7 @@ class SessionManager
             $action = $stack[$i]['atkaction'];
             $title = $ui->title($module, $type, $action);
             $descriptor = Tools::atkArrayNvl($stack[$i], 'descriptor', '');
+            $menuId = $stack[$i]['atkmenu'];
 
             $entry = array(
                 'url' => '',
@@ -797,6 +799,7 @@ class SessionManager
                 'nodetitle' => Tools::atktext($type, $module, $type),
                 'action' => $action,
                 'actiontitle' => Tools::atktext($action, $module, $type),
+                'atkmenu' => $menuId
             );
 
             if ($i < Tools::count($stack) - 1) {

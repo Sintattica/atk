@@ -180,8 +180,8 @@ class DataGridList extends DataGridComponent
 
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
                 $filterIcon = '<span class="fas fa-filter"></span>';
-                $button .= ' ' . Tools::href(Config::getGlobal('dispatcher') . '?atknodeuri=' . $grid->getActionNode()->atkNodeUri() . '&atkaction=' . $grid->getActionNode()->getExtendedSearchAction(),
-                        $filterIcon, SessionManager::SESSION_NESTED, false, 'class="btn btn-sm btn-default"');
+                $url = Tools::dispatch_url($grid->getActionNode()->atkNodeUri(), $grid->getActionNode()->getExtendedSearchAction());
+                $button .= ' ' . Tools::href($url, $filterIcon, SessionManager::SESSION_NESTED, false, 'class="btn btn-sm btn-default"');
             }
 
             $button = '<div class="row no-gutters search-buttons justify-content-center"><div class="btn-group" role="group">' . $button . '</div></div>';
@@ -277,17 +277,17 @@ class DataGridList extends DataGridComponent
                 if (Tools::count($list['rows'][$i]['mra']) > 0) {
                     switch ($grid->getMRASelectionMode()) {
                         case Node::MRA_SINGLE_SELECT:
-                            $inputHTML = '<input id="chk_'.$listName."_".$i.'"  type="radio" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
+                            $inputHTML = '<input id="chk_' . $listName . "_" . $i . '"  type="radio" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '" class="atkradiobutton" onclick="if (this.disabled) this.checked = false">';
                             break;
                         case Node::MRA_NO_SELECT:
-                            $inputHTML = '<input id="chk_'.$listName."_".$i.'" type="checkbox" disabled="disabled" checked="checked">' . '<input type="hidden" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '">';
+                            $inputHTML = '<input id="chk_' . $listName . "_" . $i . '" type="checkbox" disabled="disabled" checked="checked">' . '<input type="hidden" name="' . $listName . '_atkselector[]" value="' . $list['rows'][$i]['selector'] . '">';
                             break;
                         case Node::MRA_MULTI_SELECT:
                         default:
-                            $inputHTML = '<input id="chk_'.$listName."_".$i.'" type="checkbox" name="' . $listName . '_atkselector[' . $i . ']" value="' . $list['rows'][$i]['selector'] . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
+                            $inputHTML = '<input id="chk_' . $listName . "_" . $i . '" type="checkbox" name="' . $listName . '_atkselector[' . $i . ']" value="' . $list['rows'][$i]['selector'] . '" class="atkcheckbox" onclick="if (this.disabled) this.checked = false">';
                     }
 
-                    $inputHTML = '<div class="icheck-primary" style="margin-top:10px !important;">'.$inputHTML.'<label for="chk_'.$listName.'_'.$i.'"></label></div>';
+                    $inputHTML = '<div class="icheck-primary" style="margin-top:10px !important;">' . $inputHTML . '<label for="chk_' . $listName . '_' . $i . '"></label></div>';
 
                     $record['cols'][] = array(
                         'content' => $inputHTML . '
@@ -410,7 +410,8 @@ class DataGridList extends DataGridComponent
         /*************************************************/
         $mra = '';
         if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
-            $target = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atknodeuri=' . $grid->getActionNode()->atkNodeUri(), SessionManager::SESSION_NESTED);
+            $url = Tools::dispatch_url($grid->getActionNode()->atkNodeUri(), null);
+            $target = $sm->sessionUrl($url, SessionManager::SESSION_NESTED);
 
             /* multiple actions -> dropdown */
             if (Tools::count($grid->getNode()->m_priority_actions) > 1) {
@@ -428,8 +429,14 @@ class DataGridList extends DataGridComponent
             /* MULTI-RECORD-ACTION FORM (CONTINUED) */
             $postvars = $grid->getNode()->m_postvars;
 
-            $target = $sm->sessionUrl(Config::getGlobal('dispatcher') . '?atknodeuri=' . $grid->getNode()->atkNodeUri() . '&atktarget=' . (!empty($postvars['atktarget']) ? $postvars['atktarget'] : '') . '&atktargetvar=' . (!empty($postvars['atktargetvar']) ? $postvars['atktargetvar'] : '') . '&atktargetvartpl=' . (!empty($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl'] : ''),
-                SessionManager::SESSION_NESTED);
+            $params = [];
+            $params['atktarget'] = (!empty($postvars['atktarget']) ? $postvars['atktarget'] : '');
+            $params['atktargetvar'] = (!empty($postvars['atktargetvar']) ? $postvars['atktargetvar'] : '');
+            $params['atktargetvartpl'] = (!empty($postvars['atktargetvartpl']) ? $postvars['atktargetvartpl'] : '');
+
+            $url = Tools::dispatch_url($grid->getNode()->atkNodeUri(), null, $params);
+
+            $target = $sm->sessionUrl($url, SessionManager::SESSION_NESTED);
 
             $mra_all = '<button type="button" class="btn btn-sm btn-default" onclick="ATK.FormSelect.updateSelection(\'' . $listName . '\', this.form, \'all\');">' . Tools::atktext('select_all') . '</button>';
             $mra_none = '<button type="button" class="btn btn-sm btn-default" onclick="ATK.FormSelect.updateSelection(\'' . $listName . '\', this.form, \'none\');">' . Tools::atktext('deselect_all') . '</button>';

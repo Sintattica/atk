@@ -1263,6 +1263,7 @@ class Tools
      */
     public static function dispatch_url(string $nodeUri, ?string $action, array $params = [], string $phpfile = ''): string
     {
+
         $phpfile = ($phpfile != '') ?: Config::getGlobal('dispatcher');
         $atkParams = [];
         if ($nodeUri != '') {
@@ -1283,6 +1284,7 @@ class Tools
         if ($params != '' && is_array($params) && Tools::count($params) > 0) {
             $phpfile .= '?' . self::buildQueryString($params);
         }
+
 
         return $phpfile;
     }

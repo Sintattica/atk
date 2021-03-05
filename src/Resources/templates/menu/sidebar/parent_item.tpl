@@ -1,4 +1,4 @@
-<li class="nav-item {$active}">
+<li class="nav-item">
     <a href="#" class="nav-link">
         {include file='menu/sidebar/icon.tpl'}
         <p>

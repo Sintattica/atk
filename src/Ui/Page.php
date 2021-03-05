@@ -142,6 +142,9 @@ class Page
 
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
 
+        $this->register_script($assetsUrl.'javascript/tools.js');
+        $this->register_script($assetsUrl.'javascript/atk.js');
+
         /*
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
         $this->register_script($assetsUrl.'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
@@ -155,17 +158,14 @@ class Page
         //Fixed Scrollbar
         $this->register_script($assetsUrl.'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
 
-        //AdminLTE App
-        $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
-
 
 
         //Atk - Custom
         $this->register_scriptcode("var LANGUAGE='".Config::getGlobal('language')."';", true);
         //$this->register_script($assetsUrl.'javascript/libs.min.js'); //disabled old jQuery Bundle
 
-        $this->register_script($assetsUrl.'javascript/tools.js');
-        $this->register_script($assetsUrl.'javascript/atk.js');
+        //AdminLTE App
+        $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
 
 
         /**

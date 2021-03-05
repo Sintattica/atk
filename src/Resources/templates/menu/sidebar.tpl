@@ -9,7 +9,7 @@
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div id="menu-sidebar" class="sidebar">
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column {$nav_sidebar_classes}" data-widget="treeview" role="menu" data-accordion="false">

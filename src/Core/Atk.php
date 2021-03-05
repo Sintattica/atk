@@ -83,6 +83,13 @@ class Atk
             setlocale(LC_TIME, $locale);
         }
 
+        $modules = Config::getGlobal('modules');
+        if (is_array($modules)) {
+            foreach ($modules as $module) {
+                static::$s_instance->registerModule($module);
+            }
+        }
+
         $debug = 'Created a new Atk (' . self::VERSION . ') instance.';
         $debug .= ' Environment: ' . $environment . '.';
         $debug .= ' PHP version: ' . PHP_VERSION . '.';
@@ -90,6 +97,8 @@ class Atk
         if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
             $debug .= ' Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
         }
+
+
 
         Tools::atkdebug($debug);
     }
@@ -116,7 +125,6 @@ class Atk
         if (Config::getGlobal('session_autorefresh') && array_key_exists(Config::getGlobal('session_autorefresh_key'), $_GET)) {
             die(session_id());
         }
-
         $securityManager = SecurityManager::getInstance();
         $securityManager->run();
 
@@ -136,15 +144,19 @@ class Atk
         }
     }
 
+    /**
+     * Load all the menu items
+     */
+    public function initMenu(){
+        /** @var Menu $menuClass */
+        $menuClass = Config::getGlobal('menu');
+        $menuClass::getInstance()->appendMenuItems();
+
+    }
+
     public function bootModules()
     {
-        $modules = Config::getGlobal('modules');
-        if (is_array($modules)) {
-            foreach ($modules as $module) {
-                static::$s_instance->registerModule($module);
-            }
-        }
-
+        $this->initMenu();
         foreach ($this->g_moduleRepository as $module) {
             $module->boot();
         }
@@ -349,13 +361,13 @@ class Atk
 
             /** @var Menu $menuClass */
             $menuClass = Config::getGlobal('menu');
-            $menu = $menuClass::getInstance();
 
             /* @var Module $module */
-            $module = new $modClass(static::$s_instance, $menu);
+            $module = new $modClass(static::$s_instance, $menuClass::getInstance());
             $this->g_moduleRepository[$name] = $module;
             $module->register();
         }
+
     }
 
     public function getEnvironment()
