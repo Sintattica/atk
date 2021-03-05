@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Core;
 use Dotenv\Dotenv;
 use Dotenv\Loader;
 use Dotenv\Environment\DotenvFactory;
+use Sintattica\Atk\Core\Menu\Menu;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
@@ -82,23 +83,15 @@ class Atk
             setlocale(LC_TIME, $locale);
         }
 
-        $debug = 'Created a new Atk ('.self::VERSION.') instance.';
-        $debug .= ' Environment: '.$environment.'.';
-        $debug .= ' PHP version: '.PHP_VERSION.'.';
+        $debug = 'Created a new Atk (' . self::VERSION . ') instance.';
+        $debug .= ' Environment: ' . $environment . '.';
+        $debug .= ' PHP version: ' . PHP_VERSION . '.';
 
         if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
-            $debug .= ' Server info: '.$_SERVER['SERVER_NAME'].' ('.$_SERVER['SERVER_ADDR'].')';
+            $debug .= ' Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
         }
 
         Tools::atkdebug($debug);
-
-        //load modules
-        $modules = Config::getGlobal('modules');
-        if (is_array($modules)) {
-            foreach ($modules as $module) {
-                static::$s_instance->registerModule($module);
-            }
-        }
     }
 
     /**
@@ -115,13 +108,6 @@ class Atk
         return static::$s_instance;
     }
 
-    public function bootModules()
-    {
-        foreach ($this->g_moduleRepository as $module) {
-            $module->boot();
-        }
-    }
-
     public function run()
     {
         $sessionManager = SessionManager::getInstance();
@@ -134,7 +120,7 @@ class Atk
         $securityManager = SecurityManager::getInstance();
         $securityManager->run();
 
-        if($securityManager->isAuthenticated()) {
+        if ($securityManager->isAuthenticated()) {
             $this->bootModules();
             $indexPageClass = Config::getGlobal('indexPage');
 
@@ -142,11 +128,25 @@ class Atk
             $indexPage = new $indexPageClass($this);
 
             $default_destination = Config::getGlobal('default_destination');
-            if(is_array($default_destination)) {
+            if (is_array($default_destination)) {
                 $indexPage->setDefaultDestination($default_destination);
             }
 
             $indexPage->generate();
+        }
+    }
+
+    public function bootModules()
+    {
+        $modules = Config::getGlobal('modules');
+        if (is_array($modules)) {
+            foreach ($modules as $module) {
+                static::$s_instance->registerModule($module);
+            }
+        }
+
+        foreach ($this->g_moduleRepository as $module) {
+            $module->boot();
         }
     }
 
@@ -187,7 +187,7 @@ class Atk
         if ($actions) {
             // prefix tabs with tab_
             for ($i = 0, $_i = Tools::count($tabs); $i < $_i; ++$i) {
-                $tabs[$i] = 'tab_'.$tabs[$i];
+                $tabs[$i] = 'tab_' . $tabs[$i];
             }
 
             if ($module == '') {
@@ -351,7 +351,7 @@ class Atk
             $menuClass = Config::getGlobal('menu');
             $menu = $menuClass::getInstance();
 
-            /* @var \Sintattica\Atk\Core\Module $module */
+            /* @var Module $module */
             $module = new $modClass(static::$s_instance, $menu);
             $this->g_moduleRepository[$name] = $module;
             $module->register();
