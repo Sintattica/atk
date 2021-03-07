@@ -86,7 +86,7 @@ jQuery(window).on("load", () => {
     // i don't know why the TreeView plugin for the adminLTE puts a 'display:block' property
     // on every sibling sub-menu showing these former submenu elements even if their respective
     // menus are closed. This is a hack to fix this wrong behavior.
-    const elements = document.querySelectorAll("ul.nav-treeview.menu-open > .nav-item:not(.menu-open) > ul");
-    elements.forEach(el => el.style.display = 'none');
+    document.querySelectorAll("ul.nav-treeview.menu-open > .nav-item:not(.menu-open) > ul")
+        .forEach(el => el.style.display = 'none');
 
 });
