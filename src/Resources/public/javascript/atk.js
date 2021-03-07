@@ -56,19 +56,37 @@ if (typeof (LANGUAGE) !== 'undefined') {
 }
 
 
-//Todo: Non funziona ancora correttamente!
-jQuery(() => {
+/*
+ * Admin LTE
+ * In our case there can be a submenu that is open when we refresh a page (or
+ * we click on another specified menu it should be displayed as open when the page loads).
+ *
+ * This script detects the menu element that has the active class.
+ * and propagates the 'display block' property and 'menu-open' class
+ * on the father elements so the menu is displayed as open on that specified element.
+ */
+jQuery(window).on("load", () => {
+
     const sidebar = document.querySelector('#menu-sidebar');
     const activeEl = sidebar.querySelector('.nav-link.active');
 
-    // for single sidebar menu
+    // for sidebar menu entirely but not cover treeview
     jQuery('ul.nav-sidebar a').filter((index, el) => el === activeEl).addClass('active');
 
     // for sidebar menu and treeview
     jQuery('ul.nav-treeview a').filter((index, el) => el === activeEl)
         .parentsUntil(".nav-sidebar > .nav-treeview")
         .css({'display': 'block'})
-        //.addClass('menu-open')
-        .prev('a')
-        .addClass('active');
+        .addClass('menu-open')
+        .prev('a').addClass('active');
+
+
+    // ***AdminLTE bug ****:
+    // ----------------------
+    // i don't know why the TreeView plugin for the adminLTE puts a 'display:block' property
+    // on every sibling sub-menu showing these former submenu elements even if their respective
+    // menus are closed. This is a hack to fix this wrong behavior.
+    const elements = document.querySelectorAll("ul.nav-treeview.menu-open > .nav-item:not(.menu-open) > ul");
+    elements.forEach(el => el.style.display = 'none');
+
 });

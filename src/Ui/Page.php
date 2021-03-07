@@ -141,10 +141,6 @@ class Page
         $this->register_script($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js');
 
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
-
-        $this->register_script($assetsUrl.'javascript/tools.js');
-        $this->register_script($assetsUrl.'javascript/atk.js');
-
         /*
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
         $this->register_script($assetsUrl.'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
@@ -154,11 +150,8 @@ class Page
         $this->register_script($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.js');
         */
 
-
         //Fixed Scrollbar
         $this->register_script($assetsUrl.'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
-
-
 
         //Atk - Custom
         $this->register_scriptcode("var LANGUAGE='".Config::getGlobal('language')."';", true);
@@ -166,6 +159,14 @@ class Page
 
         //AdminLTE App
         $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
+
+
+        //Load these scripts as last.
+        //There are parts that overwrite behaviours of the AdminLTE framework.
+        $this->register_script($assetsUrl.'javascript/tools.js');
+        $this->register_script($assetsUrl.'javascript/atk.js');
+
+
 
 
         /**
@@ -182,8 +183,6 @@ class Page
 
         //ICheck
         $this->register_style($assetsUrl.'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
-
-
 
 
 
