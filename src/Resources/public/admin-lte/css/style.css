@@ -89,7 +89,13 @@
 
 /* Table actions */
 table.recordList tr td .actions .btn {
+    width: 30px;
+    height: 30px;
     margin: 0 2px;
+}
+
+.btn-group-sm>.btn, .btn-sm {
+    padding: .25rem 0.25rem;
 }
 
 .recordList{
