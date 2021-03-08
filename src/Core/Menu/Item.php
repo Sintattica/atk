@@ -58,7 +58,7 @@ abstract class Item
         return $this->uuid;
     }
 
-    protected static function generateHash($string, $hashLength = null)
+    protected static function generateHash($string, $hashLength = 6)
     {
         $fullHash = md5($string);
         return $hashLength ? substr($fullHash, 0, $hashLength) : $fullHash;
