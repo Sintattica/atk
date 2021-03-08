@@ -306,6 +306,7 @@ abstract class MenuBase
             $html .= SmartyProvider::render($template, [
                 'title' => $title,
                 'attributes' => $attrs,
+                'nav_classes' => $active ? ' last_active_item' : '',
                 'link' => $link,
                 'classes' => $classes,
                 'icon' => $icon,

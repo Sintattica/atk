@@ -57,6 +57,7 @@ class AdminLTE
     private const SKINS_SIDEBAR_LIGHT_LIME = 'sidebar-light-lime';
     private const SKINS_SIDEBAR_LIGHT_TEAL = 'sidebar-light-teal';
     private const SKINS_SIDEBAR_LIGHT_OLIVE = 'sidebar-light-olive';
+    private const SKINS_SIDEBAR_DARK_ATK = 'sidebar-dark-atk';
 
     private const SKINS_NAV_LIGHT_LIGHT = 'navbar-light';
     private const SKINS_NAV_LIGHT_WARNING = 'navbar-warning';
@@ -103,7 +104,7 @@ class AdminLTE
     /**
      * Set the default skin combination for navbar and sidebar
      */
-    private $currentSidebarSkinsBundle = [self::SKINS_SIDEBAR_DARK_PRIMARY];
+    private $currentSidebarSkinsBundle = [self::SKINS_SIDEBAR_DARK_ATK];
 
     private $currentNavBarSkinsBundle = [
         self::SKINS_NAV_DARK_DARK,
