@@ -28,28 +28,30 @@
 }
 
 
-.nav-separator > div{
-    border-top:solid 1px #c2c7d0;
-    width:90%;
+.nav-separator > div {
+    border-top: solid 1px #c2c7d0;
+    width: 90%;
     margin: 4px auto;
 }
 
-
-.sidebar-dark-atk .nav-sidebar>.nav-item>.nav-link.active {
-    background-color: rgba(255,255,255,.2);
+/**
+  ATK DARK SIDEBAR SKIN
+ */
+.sidebar-dark-atk .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: rgba(255, 255, 255, .2);
     color: #fff;
 }
 
-.sidebar-dark-atk .nav-treeview>.nav-item>.nav-link.active,
-.sidebar-dark-atk .nav-treeview>.nav-item>.nav-link.active:focus,
-.sidebar-dark-atk .nav-treeview>.nav-item>.nav-link.active:hover{
-    background-color: rgba(255,255,255,.2);
+.sidebar-dark-atk .nav-treeview > .nav-item > .nav-link.active,
+.sidebar-dark-atk .nav-treeview > .nav-item > .nav-link.active:focus,
+.sidebar-dark-atk .nav-treeview > .nav-item > .nav-link.active:hover {
+    background-color: rgba(255, 255, 255, .2);
     color: #fff;
 }
 
-.sidebar-dark-atk .nav-treeview>.nav-item.last_active_item>.nav-link.active,
-.sidebar-dark-atk .nav-treeview>.nav-item.last_active_item>.nav-link.active:focus,
-.sidebar-dark-atk .nav-treeview>.nav-item.last_active_item>.nav-link.active:hover{
+.sidebar-dark-atk .nav-item.last_active_item > .nav-link.active,
+.sidebar-dark-atk .nav-item.last_active_item > .nav-link.active:focus,
+.sidebar-dark-atk .nav-item.last_active_item > .nav-link.active:hover {
     background-color: #3c8dbc;
     color: white;
 }
@@ -78,25 +80,26 @@
     height: 31px !important;
 }
 
-.d-inline-block .select2-container{
+.d-inline-block .select2-container {
     display: inline-block;
 }
 
-.select2-selection__rendered > .select2-selection__clear{
+.select2-selection__rendered > .select2-selection__clear {
     margin-top: 0.15rem;
     padding-top: 0.07rem;
     padding-left: 0.16rem;
 }
 
-.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice{
-    margin-top:0;
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+    margin-top: 0;
 }
 
-.select2-selection.select2-selection--multiple.MultiSelectListAttribute.form-control.form-control-sm{
-    padding-top:2px;
+.select2-selection.select2-selection--multiple.MultiSelectListAttribute.form-control.form-control-sm {
+    padding-top: 2px;
     padding-left: 0;
 }
-.select2-search.select2-search--inline{
+
+.select2-search.select2-search--inline {
     display: none;
 }
 
@@ -113,11 +116,11 @@ table.recordList tr td .actions .btn {
     margin: 0 2px;
 }
 
-.btn-group-sm>.btn, .btn-sm {
+.btn-group-sm > .btn, .btn-sm {
     padding: .25rem 0.25rem;
 }
 
-.recordList{
+.recordList {
     white-space: nowrap;
 }
 
@@ -139,8 +142,8 @@ table thead th {
     color: #212529;
 }
 
-.list-header{
-    padding-left:0 !important;
+.list-header {
+    padding-left: 0 !important;
 }
 
 
@@ -396,7 +399,7 @@ input[type = checkbox].form-control {
  */
 
 .atk-date-group,
-.atk-time-group{
+.atk-time-group {
     display: flex;
 }
 
@@ -416,8 +419,6 @@ input[type = checkbox].form-control {
     border-radius: 0 0.2rem 0.2rem 0;
     border-right: solid 1px #dddddd;
 }
-
-
 
 
 /**
@@ -441,24 +442,23 @@ input[type = checkbox].form-control {
 }
 
 .has-error .atk-date-right,
-.has-error .atk-time-right
-{
+.has-error .atk-time-right {
     border-right: solid 1px #dc3545 !important;
 }
 
 
-.table td, .table th{
+.table td, .table th {
     padding: .35rem .75rem;
     vertical-align: middle;
 }
 
 
-.atkdateattribute{
-   /* min-width: 120px;*/
+.atkdateattribute {
+    /* min-width: 120px;*/
 }
 
 .atk-date-group .select2-container {
-    min-width:120px;
+    min-width: 120px;
 }
 
 
@@ -484,7 +484,6 @@ input[type = checkbox].form-control {
     height: 10px;
     left: -0.1rem;
 }
-
 
 
 #atk_debugging_div {
@@ -532,7 +531,7 @@ input[type = checkbox].form-control {
     margin-bottom: 10px;
 }
 
-div.rounded-circle{
+div.rounded-circle {
     display: inline-block;
     width: 1.6rem;
     height: 1.6rem;
@@ -545,7 +544,7 @@ div.rounded-circle{
     text-transform: uppercase;
 }
 
-img.rounded-circle{
+img.rounded-circle {
     width: 1.6rem;
     height: 1.6rem;
 }
