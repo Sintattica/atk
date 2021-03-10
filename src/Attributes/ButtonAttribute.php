@@ -13,6 +13,7 @@ class ButtonAttribute extends DummyAttribute
     private $params;
     private $name;
     private $class;
+    private $target;
     private $sessionStatus;
     private $saveForm;
 
@@ -24,6 +25,7 @@ class ButtonAttribute extends DummyAttribute
         // TODO: remove?
         $this->params = isset($options['params']) ? $options['params'] : [];
         $this->class = 'btn btn-default' . (isset($options['class']) ? ' ' . $options['class'] : '');
+        $this->target = isset($options['target']) ? $options['target'] : null;
         $this->sessionStatus = isset($options['sessionStatus']) ? $options['sessionStatus'] : SessionManager::SESSION_NESTED;
         $this->saveForm = isset($options['saveForm']) ? $options['saveForm'] : false;
 
@@ -41,7 +43,9 @@ class ButtonAttribute extends DummyAttribute
         $this->params['atkselector'] = $ownerInstance->getPrimaryKey($record);
         $url = Tools::dispatch_url($this->nodeUri, $action, $this->params);
         $extraProps = 'class="' . $this->class . '"';
-
+        if ($this->target) {
+            $extraProps .= ' target="' . $this->target . '"';
+        }
         return Tools::href($url, Tools::atktext($this->name, $ownerInstance->getModule()), $this->sessionStatus, $this->saveForm, $extraProps);
     }
 
@@ -66,6 +70,12 @@ class ButtonAttribute extends DummyAttribute
     public function setClass(string $class): self
     {
         $this->class = $class;
+        return $this;
+    }
+
+    public function setTarget(string $target): self
+    {
+        $this->target = $target;
         return $this;
     }
 
