@@ -454,7 +454,7 @@ input[type = checkbox].form-control {
 
 
 .atkdateattribute {
-    /* min-width: 120px;*/
+    min-width: 130px;
 }
 
 .atk-date-group .select2-container {
