@@ -107,7 +107,7 @@
     display: none;
 }
 
-.MultiSelectListAttribute.select2-selection--multiple{
+.MultiSelectListAttribute.select2-selection--multiple {
     overflow: hidden !important;
     height: auto !important;
 }
@@ -159,6 +159,9 @@ table thead th {
     padding-left: 0 !important;
 }
 
+.row-type-actions, .row-type-mra {
+    background-color: white;
+}
 
 /*
  * Calendar.js
