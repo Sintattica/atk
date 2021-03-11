@@ -103,6 +103,19 @@
     display: none;
 }
 
+.ListAttribute .select2-selection__clear {
+    display: none;
+}
+
+.MultiSelectListAttribute.select2-selection--multiple{
+    overflow: hidden !important;
+    height: auto !important;
+}
+
+.MultiSelectListAttribute > .select2-selection__rendered > .select2-selection__choice {
+    margin-top: 5px;
+}
+
 
 /**
   * Tables
