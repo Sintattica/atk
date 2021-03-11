@@ -124,7 +124,7 @@ class AdminLTE
     private $sidebarElevation = 2;
     private $holdTransition = false; //Transit o min-menu mode with a linear transition
     private $fixedNavHeader = true;
-
+    private $menuAccordion = true;
 
     private static $adminLTEInstance = null;
 
@@ -258,6 +258,17 @@ class AdminLTE
     private function shouldFixSmallSidebarIcons(): bool
     {
         return $this->sidebarSmallText || $this->bodySmallText;
+    }
+
+    public function isMenuAccordion(): bool
+    {
+        return $this->menuAccordion;
+    }
+
+    public function setMenuAccordion(bool $menuAccordion): self
+    {
+        $this->menuAccordion = $menuAccordion;
+        return $this;
     }
 
 }

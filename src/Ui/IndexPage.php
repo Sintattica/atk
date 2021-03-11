@@ -113,7 +113,8 @@ class IndexPage
                 'menu' => $menuObj->getMenu(), //formatted smarty menu as ['left', 'right','sidebar']
                 'nav_sidebar_classes' => $this->m_adminLte->getNavSidebarClasses(),
                 'sidebar_classes' => $this->m_adminLte->getSidebarClasses(),
-                'brand_text_style' => $this->m_adminLte->getBrandTextStyle()
+                'brand_text_style' => $this->m_adminLte->getBrandTextStyle(),
+                'menu_accordion' => $this->m_adminLte->isMenuAccordion()
             ]);
 
             $this->m_page->addContent($sidebar);
