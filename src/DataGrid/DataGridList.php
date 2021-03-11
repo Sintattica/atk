@@ -60,8 +60,6 @@ class DataGridList extends DataGridComponent
 
         $listName = $grid->getName();
 
-        $defaulthighlight = Config::getGlobal('highlight');
-
         /* retrieve list array */
         $list = $this->listArray($recordset, '', $actions, $suppressList);
 
@@ -236,19 +234,12 @@ class DataGridList extends DataGridComponent
         for ($i = 0, $_i = Tools::count($list['rows']); $i < $_i; ++$i) {
             $record = [];
 
-            /* Special rowColor method makes it possible to change the row color based on the record data.
-             * the method can return a simple value (which will be used for the normal row color), or can be
-             * an array, in which case the first element will be the normal row color, and the second the mouseover
-             * row color, example: function rowColor(&$record, $num) { return array('red', 'blue'); }
-             */
-            $method = 'rowColor';
-            $bgn = '';
-            $bgh = $defaulthighlight;
-            if (method_exists($grid->getNode(), $method)) {
-                $bgn = $grid->getNode()->$method($recordset[$i], $i);
-                if (is_array($bgn)) {
-                    list($bgn, $bgh) = $bgn;
-                }
+            // row Color
+            $bgn = $bgh = $grid->getNode()->rowColorByState($recordset[$i], $i);
+            if (is_array($bgn)) {
+                list($bgn, $bgh) = $bgn;
+            } elseif (strpos($bgn, '#') === 0 && $grid->getNode()->isRecordListHover()) {
+                $bgh = '#' . Tools::dimColorBy($bgn, 15);
             }
 
             $record['class'] = $grid->getNode()->rowClass($recordset[$i], $i);

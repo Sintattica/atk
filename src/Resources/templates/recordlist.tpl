@@ -21,7 +21,7 @@
 
 
         <!-- todo: table-striped -->
-        <table id="{$listid}" class="table table-sm table-bordered table-hover table-condensed recordList">
+        <table id="{$listid}" class="table table-sm table-bordered table-condensed recordList">
 
             <thead>
             <!-- header -->
@@ -63,11 +63,9 @@
             {foreach from=$rows item=row}
                 <tr id="{$row.id}" class="{$row.class}"
                     {if $row.background!=""}style="background-color:{$row.background}" {/if}
-                        {if $recordlist_onclick}
-                            onmouseover="ATK.RL.highlightRow(this, '{$row.highlight}')"
-                            onmouseout="ATK.RL.resetRow(this)"
-                            onclick="ATK.RL.selectRow(this, '{$listid}', {$row.rownum})"
-                        {/if}
+                    onmouseover="ATK.RL.highlightRow(this, '{$row.highlight}')"
+                    onmouseout="ATK.RL.resetRow(this)"
+                    onclick="ATK.RL.selectRow(this, '{$listid}', {$row.rownum})"
                 >
                     {section name=colloop loop=$row.cols}
                         <{if $row.type == "subtotal"}th{else}td{/if}

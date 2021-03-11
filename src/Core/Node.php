@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core;
 
+use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\FieldSet;
 use Sintattica\Atk\Db\Db;
@@ -206,6 +207,8 @@ class Node
      * No selection possible (e.g. action is always for all (visible) records!).
      */
     const MRA_NO_SELECT = 3;
+
+    const DEFAULT_RECORDLIST_BG_COLOR = '#fff';
 
     /*
      * reference to the class which is used to validate atknodes
@@ -640,6 +643,8 @@ class Node
 
 
     public $m_cacheidentifiers;
+
+    private $recordListHover = true;
 
     /**
      * @param string $nodeUri The nodeuri
@@ -4785,6 +4790,35 @@ class Node
     }
 
     /**
+     * The method can return a simple value (which will be used for the normal row color), or can be
+     * an array, in which case the first element will be the normal row color, and the second the mouseover
+     * row color, example: function rowColor(&$record, $num) { return ['#f00', '#00f'] };
+     *
+     * @param $record
+     * @param $index
+     * @return string
+     */
+    public function rowColor($record)
+    {
+        return self::DEFAULT_RECORDLIST_BG_COLOR;
+    }
+
+    public function rowColorByState($record, $index = 0, $statesMap = [])
+    {
+        if ($statesMap) {
+            if ($record['disabilitato'] or $record['disabled']) {
+                return UIStateColors::getHex(UIStateColors::COLOR_LIGHT);
+            }
+            foreach ($statesMap as $color => $condition) {
+                if ($condition) {
+                    return UIStateColors::getHex($color);
+                }
+            }
+        }
+        return $this->rowColor($record);
+    }
+
+    /**
      * Row CSS class.
      *
      * Used to determine the CSS class(s) for rows in the datagrid list.
@@ -4871,6 +4905,24 @@ class Node
                 $attr->removeFlag($flag);
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecordListHover(): bool
+    {
+        return $this->recordListHover;
+    }
+
+    /**
+     * @param bool $recordListHover
+     * @return Node
+     */
+    public function setRecordListHover(bool $recordListHover): self
+    {
+        $this->recordListHover = $recordListHover;
+        return $this;
     }
 
     public function atkReadOptimizer()
