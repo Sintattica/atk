@@ -645,6 +645,7 @@ class Node
     public $m_cacheidentifiers;
 
     private $recordListHover = true;
+    private $rowColorConditions = [];
 
     /**
      * @param string $nodeUri The nodeuri
@@ -1096,11 +1097,9 @@ class Node
      */
     public function &getAttributes()
     {
-        if (isset($this->m_attribList)) {
-            return $this->m_attribList;
-        } else {
-            return null;
-        }
+        $result = isset($this->m_attribList) ? $this->m_attribList : null;
+
+        return $result;
     }
 
     /**
@@ -2847,12 +2846,20 @@ class Node
         }
 
         $this->setFilters();
+        $this->setRowColors();
     }
 
     /**
      * Use it to add filters in child nodes.
      */
     protected function setFilters()
+    {
+    }
+
+    /**
+     * Use this to add color conditions for rows.
+     */
+    protected function setRowColors()
     {
     }
 
@@ -4804,15 +4811,15 @@ class Node
         return self::DEFAULT_RECORDLIST_BG_COLOR;
     }
 
-    public function rowColorByState($record, $index = 0, $statesMap = [])
+    public function rowColorByState($record, $index = 0)
     {
 
-        if ($statesMap) {
+        if ($this->rowColorConditions) {
             if ($record['disabilitato'] or $record['disabled']) {
                 return UIStateColors::getBgClassFromState(UIStateColors::STATE_LIGHT);
             }
-            foreach ($statesMap as $uiState => $condition) {
-                if ($condition) {
+            foreach ($this->rowColorConditions as $uiState => $callback) {
+                if (call_user_func($callback, $record)) {
                     return UIStateColors::getBgClassFromState($uiState);
                 }
             }
@@ -4931,5 +4938,20 @@ class Node
     public function atkReadOptimizer()
     {
         return false;
+    }
+
+    /**
+     * Adds color for all rows that satisfy the specified condition.
+     * Used as a callback function.
+     * Example on a node: $this->addColorCondition(UIStateColors::STATE_SUCCESS, function($record){
+     *                      return $record['id'] === 1;
+     *                      });
+     * In PHP >= 7.4 you can use this with an arrow function if you want.
+     * @param string $uiState
+     * @param $callback
+     */
+    public function addColorCondition(string $uiState, $callback)
+    {
+        $this->rowColorConditions[$uiState] = $callback;
     }
 }

@@ -7,6 +7,10 @@ namespace Sintattica\Atk\AdminLte;
 abstract class UIStateColors
 {
 
+    /**
+     * Todo: Add more colors.
+     */
+
     public const STATE_DEFAULT = 'default';
     public const COLOR_DEFAULT = '#6c757d';
 
