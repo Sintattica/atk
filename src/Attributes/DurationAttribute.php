@@ -205,6 +205,7 @@ class DurationAttribute extends Attribute
                 $tmp[1] = $tmp[1] * 10;
             }
 
+            // TODO: check "[Warning] A non-numeric value encountered" for php >= 7.2
             return $tmp[0] * 60 + $tmp[1] * (60 / 100);
         } else {
             // hh:mm format
