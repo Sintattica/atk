@@ -17,7 +17,7 @@ class MultiListAttribute extends MultiSelectListAttribute
 
     private $m_displaySeparator = ', ';
     private $m_exportSeparator = '';
-    private $tagState = UIStateColors::COLOR_SECONDARY;
+    private $tagState = UIStateColors::STATE_SECONDARY;
 
     function __construct($name, $flags, $optionArray, $valueArray = null)
     {

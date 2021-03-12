@@ -2354,7 +2354,7 @@ class Tools
      * @param string $uiStateColor
      * @return string
      */
-    public static function formatTagList(array $list = [], string $uiStateColor = UIStateColors::COLOR_SECONDARY): string
+    public static function formatTagList(array $list = [], string $uiStateColor = UIStateColors::STATE_SECONDARY): string
     {
         if (!$list) {
             return "";

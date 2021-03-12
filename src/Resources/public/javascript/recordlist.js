@@ -85,14 +85,14 @@ ATK.RL = {
     highlightRow: function (row, color) {
         if (typeof (row.style) !== 'undefined') {
             row.oldcolor = row.style.backgroundColor;
-            row.style.backgroundColor = color;
+            row.style.setProperty('background-color', color, 'important');
         }
     },
     resetRow: function (row) {
-        row.style.backgroundColor = row.oldcolor;
+        row.style.setProperty("background-color", row.oldcolor, "important");
     },
     selectRow: function (row, rlId, rownum) {
-        var table = document.getElementById(rlId);
+        const table = document.getElementById(rlId);
         if (table.listener && table.listener.setRow(rownum, row.oldcolor)) {
             row.oldcolor = row.style.backgroundColor;
         }

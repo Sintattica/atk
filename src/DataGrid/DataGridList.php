@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\DataGrid;
 
+use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
@@ -234,8 +235,10 @@ class DataGridList extends DataGridComponent
         for ($i = 0, $_i = Tools::count($list['rows']); $i < $_i; ++$i) {
             $record = [];
 
+
             // row Color
             $bgn = $bgh = $grid->getNode()->rowColorByState($recordset[$i], $i);
+
             if (is_array($bgn)) {
                 list($bgn, $bgh) = $bgn;
             } elseif (strpos($bgn, '#') === 0 && $grid->getNode()->isRecordListHover()) {
@@ -249,11 +252,19 @@ class DataGridList extends DataGridComponent
             }
 
             /* alternate colors of rows */
-            $record['background'] = $bgn;
-            $record['highlight'] = $bgh;
+            if (strpos($bgn, '#') === 0) {
+                $record['background'] = $bgn;
+                $record['highlight'] = $bgh;
+            } else if($bgn) {
+                $record['bg_class'] = $bgn;
+                $uiState = UIStateColors::getBgStateFromClass($bgn);
+                $record['highlight'] = '#' . Tools::dimColorBy(UIStateColors::getHex($uiState), 15);
+            }
+
             $record['rownum'] = $i;
             $record['id'] = $listName . '_' . $i;
             $record['type'] = $list['rows'][$i]['type'];
+
 
             /* multi-record-priority-actions -> priority selection */
             if (!$edit && $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS)) {
