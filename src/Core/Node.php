@@ -4816,11 +4816,11 @@ class Node
 
         if ($this->rowColorConditions) {
             if ($record['disabilitato'] or $record['disabled']) {
-                return UIStateColors::getBgClassFromState(UIStateColors::STATE_LIGHT);
+                return UIStateColors::getHexRList(UIStateColors::STATE_LIGHT);
             }
             foreach ($this->rowColorConditions as $uiState => $callback) {
                 if (call_user_func($callback, $record)) {
-                    return UIStateColors::getBgClassFromState($uiState);
+                    return UIStateColors::getHexRList($uiState);
                 }
             }
         }

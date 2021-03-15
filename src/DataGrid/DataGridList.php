@@ -242,7 +242,7 @@ class DataGridList extends DataGridComponent
             if (is_array($bgn)) {
                 list($bgn, $bgh) = $bgn;
             } elseif (strpos($bgn, '#') === 0 && $grid->getNode()->isRecordListHover()) {
-                $bgh = '#' . Tools::dimColorBy($bgn, 15);
+                $bgh = Tools::dimColorBy($bgn, UIStateColors::HOVER_RLIST_INTENSITY);
             }
 
             $record['class'] = $grid->getNode()->rowClass($recordset[$i], $i);
@@ -251,16 +251,12 @@ class DataGridList extends DataGridComponent
                 $record['class'] .= ' ' . call_user_func_array($callback, array($recordset[$i], $i));
             }
 
-            /* alternate colors of rows */
             if (strpos($bgn, '#') === 0) {
                 $record['background'] = $bgn;
                 $record['highlight'] = $bgh;
-            } else if($bgn) {
-                $record['bg_class'] = $bgn;
-                $uiState = UIStateColors::getBgStateFromClass($bgn);
-                $record['highlight'] = '#' . Tools::dimColorBy(UIStateColors::getHex($uiState), 15);
             }
 
+            $record['color'] = Tools::isLightTxtUsingBg($record['background']) ? "#fff" : '#212529';
             $record['rownum'] = $i;
             $record['id'] = $listName . '_' . $i;
             $record['type'] = $list['rows'][$i]['type'];

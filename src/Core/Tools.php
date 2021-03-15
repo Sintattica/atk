@@ -2238,7 +2238,7 @@ class Tools
 
         }
 
-        return $result;
+        return "#" . $result;
     }
 
     /**

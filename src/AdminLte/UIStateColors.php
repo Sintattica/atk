@@ -3,8 +3,9 @@
 
 namespace Sintattica\Atk\AdminLte;
 
+use Sintattica\Atk\Core\Tools;
 
-abstract class UIStateColors
+class UIStateColors
 {
 
     /**
@@ -56,46 +57,166 @@ abstract class UIStateColors
     public const STATE_TEAL = 'teal';
     public const COLOR_TEAL = '#20c997';
 
+    public const STATE_DISABLED = 'atk-disabled';
+    public const COLOR_DISABLED = '#CED4DA';
+
+    public const STATE_LIGHT_GREEN = 'light-green';
+    public const COLOR_LIGHT_GREEN = '#94F0A9';
+
+    public const STATE_RED = 'red';
+    public const COLOR_RED = '#F13030';
+
+
+    public const HEX_COLOR = 'hex_color';
+    public const BG_CLASS = 'bg_class';
+    public const HEX_COLOR_RLIST = 'hex_color_rl';
+
+    //Used to calculate the intensity of the hover effect on the record.
+    public const HOVER_RLIST_INTENSITY = 15;
+
+    private $colorPalette = [];
+
+    /**
+     * Get new menu object.
+     *
+     * @return UIStateColors|null class object
+     */
+    public static function getInstance(): ?self
+    {
+        static $instance = null;
+        if ($instance == null) {
+            Tools::atkdebug('Creating UI color states');
+            $instance = new static();
+            $instance->initColorPalette();
+        }
+
+        return $instance;
+    }
+
+
+    private function initColorPalette()
+    {
+        $this->colorPalette = [
+            self::STATE_DEFAULT => [
+                self::HEX_COLOR => self::COLOR_DEFAULT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_DEFAULT),
+                self::HEX_COLOR_RLIST => self::COLOR_WHITE,
+            ],
+
+            self::STATE_PRIMARY => [
+                self::HEX_COLOR => self::COLOR_PRIMARY,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_PRIMARY),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_PRIMARY, -30),
+            ],
+            self::STATE_SECONDARY => [
+                self::HEX_COLOR => self::COLOR_SECONDARY,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_SECONDARY),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_SECONDARY, -20),
+            ],
+            self::STATE_SUCCESS => [
+                self::HEX_COLOR => self::COLOR_SUCCESS,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_SUCCESS),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_SUCCESS, -15),
+            ],
+            self::STATE_INFO => [
+                self::HEX_COLOR => self::COLOR_INFO,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_INFO),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_INFO, -40),
+            ],
+            self::STATE_WARNING => [
+                self::HEX_COLOR => self::COLOR_WARNING,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_WARNING),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_WARNING, -30),
+            ],
+            self::STATE_DANGER => [
+                self::HEX_COLOR => self::COLOR_DANGER,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_DANGER),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_DANGER, -30),
+            ],
+            self::STATE_DARK => [
+                self::HEX_COLOR => self::COLOR_DARK,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_DARK),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_DARK, -10),
+            ],
+            self::STATE_LIGHT => [
+                self::HEX_COLOR => self::COLOR_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_LIGHT, 5),
+            ],
+            self::STATE_WHITE => [
+                self::HEX_COLOR => self::COLOR_WHITE,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_WHITE),
+                self::HEX_COLOR_RLIST => self::COLOR_WHITE,
+            ],
+            self::STATE_PURPLE => [
+                self::HEX_COLOR => self::COLOR_PURPLE,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_PURPLE),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_PURPLE, 0),
+            ],
+            self::STATE_INDIGO => [
+                self::HEX_COLOR => self::COLOR_INDIGO,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_INDIGO),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_INDIGO, 0),
+            ],
+            self::STATE_PINK => [
+                self::HEX_COLOR => self::COLOR_PINK,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_PINK),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_PINK, 0),
+            ],
+            self::STATE_ORANGE => [
+                self::HEX_COLOR => self::COLOR_ORANGE,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_ORANGE),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_ORANGE, 0),
+            ],
+            self::STATE_TEAL => [
+                self::HEX_COLOR => self::COLOR_TEAL,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_TEAL),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_TEAL, -20),
+            ],
+            self::STATE_DISABLED => [
+                self::HEX_COLOR => self::COLOR_DISABLED,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_DISABLED),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_DISABLED, -10),
+            ],
+
+            self::STATE_LIGHT_GREEN => [
+                self::HEX_COLOR => self::COLOR_LIGHT_GREEN,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_LIGHT_GREEN),
+                self::HEX_COLOR_RLIST => self::COLOR_LIGHT_GREEN,
+            ],
+
+            self::STATE_RED => [
+                self::HEX_COLOR => self::STATE_RED,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_RED),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_RED, -20),
+            ],
+        ];
+    }
+
+
     /**
      * Returns the hex color for the provided state
      * @param string|null $state
      * @return string
      */
-    static function getHex(?string $state): string
+    static function getHex(?string $state): ?string
     {
-        switch ($state) {
-            case self::STATE_SECONDARY:
-                return self::COLOR_SECONDARY;
-            case self::STATE_SUCCESS:
-                return self::COLOR_SUCCESS;
-            case self::STATE_INFO:
-                return self::COLOR_INFO;
-            case self::STATE_WARNING:
-                return self::COLOR_WARNING;
-            case self::STATE_DANGER:
-                return self::COLOR_DANGER;
-            case self::STATE_DARK:
-                return self::COLOR_DARK;
-            case self::STATE_LIGHT:
-                return self::COLOR_LIGHT;
-            case self::STATE_WHITE:
-                return self::COLOR_WHITE;
-            case self::STATE_INDIGO:
-                return self::COLOR_INDIGO;
-            case self::STATE_PURPLE:
-                return self::COLOR_PURPLE;
-            case self::STATE_PINK:
-                return self::COLOR_PINK;
-            case self::STATE_ORANGE:
-                return self::COLOR_ORANGE;
-            case self::STATE_TEAL:
-                return self::COLOR_TEAL;
-            case self::STATE_PRIMARY:
-                return self::COLOR_PRIMARY;
-            case self::STATE_DEFAULT:
-            default:
-                return self::COLOR_DEFAULT;
+
+        if (!self::getInstance()->colorPalette[$state]) {
+            $state = self::STATE_WHITE;
         }
+
+        return self::getInstance()->colorPalette[$state][self::HEX_COLOR];
+    }
+
+    static function getHexRList(?string $state): ?string
+    {
+
+        if (!isset(self::getInstance()->colorPalette[$state])) {
+            $state = self::STATE_WHITE;
+        }
+
+        return self::getInstance()->colorPalette[$state][self::HEX_COLOR_RLIST];
     }
 
     /**
@@ -103,18 +224,9 @@ abstract class UIStateColors
      * @param string $state
      * @return string
      */
-    static function getBgClassFromState(string $state): string
+    public static function getBgClassFromState(string $state): string
     {
         return "bg-" . $state;
-    }
-
-    static function getBgStateFromClass($class): ?string
-    {
-        if (strpos($class, 'bg-') !== 0) {
-            return null;
-        }
-
-        return str_replace('bg-', '', $class);
     }
 
     /**
@@ -125,6 +237,42 @@ abstract class UIStateColors
     static function getTextClass(string $state): string
     {
         return "text-" . $state;
+    }
+
+    /**
+     * @param $class
+     * @return string|null
+     */
+    static function getBgStateFromClass(string $class): ?string
+    {
+
+        foreach (self::getInstance()->colorPalette as $state => $values) {
+            if ($values[self::BG_CLASS] === $class) {
+                return $state;
+            }
+        }
+
+        return null;
+    }
+
+    public function getAllUIStates(): array
+    {
+        return array_keys($this->colorPalette);
+    }
+
+    /**
+     * Add color on the palette, if existing it gets overwritten.
+     * @param string $uiState
+     * @param string $hexColor
+     * @param string|null $hexColorRList
+     */
+    public function addColor(string $uiState, string $hexColor, ?string $hexColorRList = null): void
+    {
+        $this->colorPalette[$uiState] = [
+            self::HEX_COLOR => $hexColor,
+            self::BG_CLASS => self::getBgClassFromState($uiState),
+            self::HEX_COLOR_RLIST => $hexColorRList ?: $hexColor
+        ];
     }
 
 }

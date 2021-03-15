@@ -61,8 +61,8 @@
             <!-- records -->
             {$liststart}
             {foreach from=$rows item=row}
-                <tr id="{$row.id}" class="{$row.class} {if $row.bg_class!=""}{$row.bg_class}" {/if}"
-                    {if $row.background!=""} style="background-color:{$row.background}" {/if}
+                <tr id="{$row.id}" class="{$row.class}"
+                    style="{if $row.background!=""} background-color:{$row.background};{/if} {if $row.color!=""}color:{$row.color};{/if}"
                     onmouseover="ATK.RL.highlightRow(this, '{$row.highlight}')"
                     onmouseout="ATK.RL.resetRow(this)"
                     onclick="ATK.RL.selectRow(this, '{$listid}', {$row.rownum})"
