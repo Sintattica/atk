@@ -208,7 +208,7 @@ class Node
      */
     const MRA_NO_SELECT = 3;
 
-    const DEFAULT_RECORDLIST_BG_COLOR = '#fff';
+    const DEFAULT_RECORDLIST_BG_COLOR = UIStateColors::COLOR_WHITE;
 
     /*
      * reference to the class which is used to validate atknodes

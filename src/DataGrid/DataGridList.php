@@ -237,7 +237,7 @@ class DataGridList extends DataGridComponent
 
 
             // row Color
-            $bgn = $bgh = $grid->getNode()->rowColorByState($recordset[$i], $i);
+            $bgn = $bgh = $grid->getNode()->rowColorByState($recordset[$i], $i) ?: Node::DEFAULT_RECORDLIST_BG_COLOR;
 
             if (is_array($bgn)) {
                 list($bgn, $bgh) = $bgn;
