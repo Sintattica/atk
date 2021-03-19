@@ -2,62 +2,81 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\AdminLte\UIStateColors;
+use Sintattica\Atk\Core\Tools;
+
 /**
  * Class StateColorAttribute
  * @package Sintattica\Atk\Attributes
  *
- * Classe utile per mostrare lo stato in maniera grafica (cerchio colorato + testo).
- * È possibile specificare una funzione di callback per determinare il colore in base al record.
- *
- * TODO: integrare con UIStateColors + bootstrap + admin lte
+ * Shows an attribute that creates a colored dot and eventually a text on its right.
+ * It's possible to set the colors using a callback function.
  */
 class StateColorAttribute extends DummyAttribute
 {
-    /**
-     * Colori disponibili: red, orange, yellow, blue, green, grey, black.
-     *
-     * @var string $color
-     */
-    protected $color;
+    public const SHAPE_ROUND = 'round';
+    public const SHAPE_SQUARE = 'square';
+    public const SIZE_MD = 'md';
+    public const SIZE_SM = 'sm';
+    public const SIZE_LG = 'lg';
 
     /**
-     * @var callable Funzione di callback per determinare il colore in base al record.
+     * Colors from UIStateColors
+     *
+     * @var UIStateColors $color
+     */
+    protected $color = UIStateColors::COLOR_WHITE;
+
+    /**
+     * @var callable Base function to conditionally retrieve the color
      */
     protected $colorCondition;
 
     /**
-     * Contenuto testuale mostrato a destra del cerchio colorato.
+     * Text content (shown in the right side of the color)
      *
      * @var string $content
      */
-    protected $content;
+    protected $textContent;
 
-    /**
-     * Modalità di display del contenuto.
-     *
-     * @var string $displayStyle
-     */
-    protected $displayStyle;
+    private $shape = self::SHAPE_ROUND;
+    private $bordered = false;
+    private $coloredText = false;
+    private $size = self::SIZE_MD;
 
-    public function __construct($name, $flags = 0, $color = '', $content = '')
+    public function __construct($name, $flags = 0)
     {
         parent::__construct($name, $flags | self::AF_READONLY | self::AF_DUMMY_SHOW_LABEL);
-
-        $this->color = $color;
-        $this->content = $content;
-        $this->displayStyle = 'inline-block';
     }
 
     public function display($record, $mode)
     {
+
+        $shapeClasses = [];
+
         if ($this->colorCondition) {
             $this->color = call_user_func($this->colorCondition, $record);
         }
 
-        $display = '<div class="colore-stato ' . ($this->color ?: 'empty') . '"></div>';
+        $shapeClasses[] = $this->shape;
+        $shapeClasses[] = UIStateColors::getBgClassFromState($this->color);
+        $shapeClasses[] = $this->size;
 
-        if ($this->content) {
-            $display .= '<div style="display: ' . $this->displayStyle . '; margin-left: 4px;">' . $this->content . '</div>';
+        $borderStyle = '';
+        if ($this->bordered) {
+            $shapeClasses[] = 'bordered';
+            $borderStyle = 'style="border-color:' . Tools::dimColorBy(UIStateColors::getHex($this->color), 15) . ';"';
+        }
+
+        $display = '<span class="' . implode(' ', $shapeClasses) . ' d-inline-block state-color-attribute"' . $borderStyle . '></span>';
+
+        if ($this->textContent) {
+            $textClasses = [];
+            if ($this->coloredText) {
+                $textClasses[] = UIStateColors::getTextClassFromState($this->color);
+            }
+
+            $display .= '<span class="ml-2 ' . implode(' ', $textClasses) . '">' . $this->textContent . '</span>';
         }
 
         return $display;
@@ -73,42 +92,30 @@ class StateColorAttribute extends DummyAttribute
 
     /**
      * @param string $color
+     * @return StateColorAttribute
      */
-    public function setColor(string $color)
+    public function setColor(string $color): self
     {
         $this->color = $color;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getContent(): string
+    public function getTextContent(): string
     {
-        return $this->content;
+        return $this->textContent;
     }
 
     /**
      * @param string $content
+     * @return StateColorAttribute
      */
-    public function setContent(string $content)
+    public function setTextContent(string $content): self
     {
-        $this->content = $content;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDisplayStyle(): string
-    {
-        return $this->displayStyle;
-    }
-
-    /**
-     * @param string $displayStyle
-     */
-    public function setDisplayStyle(string $displayStyle)
-    {
-        $this->displayStyle = $displayStyle;
+        $this->textContent = $content;
+        return $this;
     }
 
     /**
@@ -121,9 +128,87 @@ class StateColorAttribute extends DummyAttribute
 
     /**
      * @param callable $colorCondition
+     * @return StateColorAttribute
      */
-    public function setColorCondition(callable $colorCondition)
+    public function setColorCondition(callable $colorCondition): self
     {
         $this->colorCondition = $colorCondition;
+        return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getShape(): string
+    {
+        return $this->shape;
+    }
+
+    /**
+     * @param string $shape
+     * @return StateColorAttribute
+     */
+    public function setShape(string $shape): self
+    {
+        $this->shape = $shape;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getBordered(): bool
+    {
+        return $this->bordered;
+    }
+
+    /**
+     * @param bool $bordered
+     * @return StateColorAttribute
+     */
+    public function setBordered(bool $bordered): self
+    {
+        $this->bordered = $bordered;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getColoredText(): bool
+    {
+        return $this->coloredText;
+    }
+
+    /**
+     * @param null $coloredText
+     * @return StateColorAttribute
+     */
+    public function setColoredText($coloredText): self
+    {
+        $this->coloredText = $coloredText;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize(): string
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param string $size
+     * @return StateColorAttribute
+     */
+    public function setSize(string $size): self
+    {
+        $this->size = $size;
+        return $this;
+    }
+
+
+
+
 }

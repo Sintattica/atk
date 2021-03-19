@@ -564,3 +564,29 @@ img.rounded-circle {
     width: 1.6rem;
     height: 1.6rem;
 }
+
+/** State Color Attribute **/
+.state-color-attribute{
+    width: 20px;
+    height: 20px;
+    vertical-align:middle;
+    margin-bottom:1px;
+}
+
+.state-color-attribute.round{
+    border-radius: 50%;
+}
+
+.state-color-attribute.bordered{
+    border: solid 1px;
+}
+
+.state-color-attribute.sm{
+    width: 15px;
+    height: 15px;
+}
+
+.state-color-attribute.lg{
+    width: 25px;
+    height: 25px;
+}

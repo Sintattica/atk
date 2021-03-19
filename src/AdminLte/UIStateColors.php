@@ -234,7 +234,7 @@ class UIStateColors
      * @param string $state
      * @return string
      */
-    static function getTextClass(string $state): string
+    static function getTextClassFromState(string $state): string
     {
         return "text-" . $state;
     }
