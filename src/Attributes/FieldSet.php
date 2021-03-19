@@ -15,6 +15,8 @@ class FieldSet extends Attribute
     private $m_template;
     private $m_parser;
 
+    private $growLastElement = true;
+
     /**
      * Constructor.
      *
@@ -26,12 +28,12 @@ class FieldSet extends Attribute
     {
         $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH;
         parent::__construct($name, $flags);
-        
+
         $this->setTemplate($template);
         $this->setLoadType(self::NOLOAD);
         $this->setStorageType(self::NOSTORE);
     }
-    
+
     public function isEmpty($record)
     {
         // always return false, this way you can mark a field-set as obligatory
@@ -131,6 +133,7 @@ class FieldSet extends Attribute
 
         $fields = array_unique($this->getParser()->getFields());
 
+        $lastElName = end($fields);
         foreach ($fields as $attrName) {
             $attr = $this->getOwnerInstance()->getAttribute($attrName);
             $field = '';
@@ -157,22 +160,26 @@ class FieldSet extends Attribute
 
                 // render the label
                 if (!$attr->hasFlag(self::AF_NO_LABEL)) {
-                    $label = '<label for="'.$fieldId.'" class="control-label"> '.$attr->getLabel($record, $mode).'</label>: ';
+                    $label = '<label for="' . $fieldId . '" class="control-label m-0"> ' . $attr->getLabel($record, $mode) . '</label>:&nbsp;';
                 } else {
                     $label = '';
                 }
 
                 // wrap in a div with appropriate id in order to properly handle a refreshAttribute (v. EditFormModifier)
                 // for reference, see Edithandler::createTplField
-                $containerId = str_replace('.', '_', $attr->getOwnerInstance()->atkNodeUri().'_'.$fieldId);
+                $containerId = str_replace('.', '_', $attr->getOwnerInstance()->atkNodeUri() . '_' . $fieldId);
 
                 $requiredClass = '';
-                if($attr->hasFlag(Attribute::AF_OBLIGATORY)){
+                if ($attr->hasFlag(Attribute::AF_OBLIGATORY) && !in_array($mode, ['list', 'view'])) {
                     $requiredClass = ' required';
                 }
+                $style = [];
+                if ($this->growLastElement && $lastElName && ($attrName === $lastElName)) {
+                    $style[] = 'flex-grow:1;';
+                }
 
-                $html = '<div class="fieldset-form-group'.$requiredClass.'">';
-                $html .= $label.'<div id="'.$containerId.'" class="fieldset-form-group-field">'.$field.'</div>';
+                $html = '<div class="fieldset-form-group d-flex align-items-center' . $requiredClass . '" style="' . implode(' ', $style) . '">';
+                $html .= $label . '<div id="' . $containerId . '" class="fieldset-form-group-field">' . $field . '</div>';
                 $html .= '</div>';
 
                 $replacements[$attrName] = $html;
@@ -182,13 +189,13 @@ class FieldSet extends Attribute
         }
 
         $style = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+        foreach ($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
 
-        $result = '<div class="atkfieldset"';
-        if($style != ''){
-            $result .= ' style="'.$style.'"';
+        $result = '<div class="atkfieldset d-flex align-items-center"';
+        if ($style != '') {
+            $result .= ' style="' . $style . '"';
         }
         $result .= '>';
         $result .= $this->getParser()->parse($replacements);
@@ -234,4 +241,24 @@ class FieldSet extends Attribute
         }
         return $result;
     }
+
+    /**
+     * @return bool
+     */
+    public function isGrowLastElement(): bool
+    {
+        return $this->growLastElement;
+    }
+
+    /**
+     * @param bool $growLastElement
+     * @return FieldSet
+     */
+    public function setGrowLastElement(bool $growLastElement): self
+    {
+        $this->growLastElement = $growLastElement;
+        return $this;
+    }
+
+
 }
