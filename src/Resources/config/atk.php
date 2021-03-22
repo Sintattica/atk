@@ -905,6 +905,9 @@ return [
     'icon_print' => 'fas fa-print',
     'icon_select' => 'far fa-hand-pointer',
     'icon_view' => 'fas fa-search',
+    'icon_undo' => 'fas fa-undo-alt',
+    'icon_redo' => 'fas fa-redo-alt',
+    'icon_reply' => 'fas fa-reply',
 
     /****************** CACHING ********************/
 
