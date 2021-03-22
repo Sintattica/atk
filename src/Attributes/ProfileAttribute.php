@@ -566,11 +566,12 @@ class ProfileAttribute extends Attribute
                                 $display_tabs_str = true;
                             }
 
-                            $temp_str .= '<label>';
-                            $temp_str .= '<input type="checkbox" name="'.$this->fieldName().'[]" '.$this->getCSSClassAttribute(['atkcheckbox']).' value="'.$section.'.'.$module.'.'.$node.'.'.$action.'" ';
+                            //Todo: Update with iCheckBox
+                            $temp_str .= '<div class="form-check form-check-inline">';
+                            $temp_str .= '<input type="checkbox" name="'.$this->fieldName().'[]" class="form-check-input" value="'.$section.'.'.$module.'.'.$node.'.'.$action.'" ';
                             $temp_str .= ($isSelected ? ' checked="checked"' : '').'>';
-                            $temp_str .= ' '.$this->permissionName($action, $node, $module);
-                            $temp_str .= '</label>';
+                            $temp_str .= '<label class="form-check-label" for="'.$this->fieldName().'[]">'.$this->permissionName($action, $node, $module). "</label>";
+                            $temp_str .= '</div>';
                         }
 
                         if (substr($action, 0, 4) == 'tab_') {
