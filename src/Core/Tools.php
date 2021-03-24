@@ -1352,12 +1352,12 @@ class Tools
         static $cnt = 0;
 
         if ($cssclass == '') {
-            $cssclass = 'btn btn-sm btn-default';
+            $cssclass = 'btn btn-default';
         }
 
         $cssclass = ' class="' . $cssclass . '"';
         $script = 'ATK.FormSubmit.atkSubmit("' . self::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '")';
-        $button = '<input type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>';
+        $button = '<button type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>'.$text.'</button>';
 
         return $button;
     }

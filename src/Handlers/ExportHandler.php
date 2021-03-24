@@ -82,14 +82,14 @@ class ExportHandler extends ActionHandler
           {
             fieldval = $( 'export_selection_options' ).value;
           }
-          new Ajax.Updater('export_attributes', '".Tools::partial_url($this->m_postvars['atknodeuri'], 'export', 'export')."exportvalue='+fieldval+'&' );
+          new Ajax.Updater('export_attributes', '" . Tools::partial_url($this->m_postvars['atknodeuri'], 'export', 'export') . "exportvalue='+fieldval+'&' );
 
           if( fieldval != 'none' )
           {
             if( fieldval != 'new' )
             {
-              new Ajax.Updater('selection_interact', '".Tools::partial_url($this->m_postvars['atknodeuri'], 'export', 'selection_interact')."exportvalue='+fieldval+'&' );
-              new Ajax.Updater('export_name', '".Tools::partial_url($this->m_postvars['atknodeuri'], 'export', 'selection_name')."exportvalue='+fieldval+'&' );
+              new Ajax.Updater('selection_interact', '" . Tools::partial_url($this->m_postvars['atknodeuri'], 'export', 'selection_interact') . "exportvalue='+fieldval+'&' );
+              new Ajax.Updater('export_name', '" . Tools::partial_url($this->m_postvars['atknodeuri'], 'export', 'selection_name') . "exportvalue='+fieldval+'&' );
               $( 'selection_interact' ).style.display='';
               $( 'export_name' ).style.display='';
               $( 'export_save_button' ).style.display='';
@@ -115,12 +115,12 @@ class ExportHandler extends ActionHandler
         $page->register_scriptcode("
         function confirm_delete()
         {
-         var where_to = confirm('".Tools::atktext('confirm_delete')."');
+         var where_to = confirm('" . Tools::atktext('confirm_delete') . "');
          var dodelete = $( 'export_selection_options' ).value;
 
          if (where_to == true)
          {
-           window.location= \"".Tools::dispatch_url($this->m_postvars['atknodeuri'], 'export', array('confirmed' => 'true')).'&dodelete="+dodelete;
+           window.location= \"" . Tools::dispatch_url($this->m_postvars['atknodeuri'], 'export', array('confirmed' => 'true')) . '&dodelete="+dodelete;
          }
         }');
 
@@ -158,15 +158,15 @@ class ExportHandler extends ActionHandler
 
         if ($selected) {
             $db = Db::getInstance();
-            $rows = $db->getRows('SELECT name FROM atk_exportcriteria WHERE id = '.(int)$selected);
+            $rows = $db->getRows('SELECT name FROM atk_exportcriteria WHERE id = ' . (int)$selected);
             if (Tools::count($rows) == 1) {
                 $value = htmlentities($rows[0]['name']);
             }
         }
 
-        return '<td>'.Tools::atktext('export_selections_name',
-            'atk').': </td><td align="left"><input type="text" size="40" name="export_selection_name" id="export_selection_name" value="'.$value.'"></td>
-              <input type="hidden" name="exportvalue" value="'.$this->m_postvars['exportvalue'].'" />';
+        return '<td>' . Tools::atktext('export_selections_name',
+                'atk') . ': </td><td align="left"><input type="text" size="40" name="export_selection_name" id="export_selection_name" value="' . $value . '"></td>
+              <input type="hidden" name="exportvalue" value="' . $this->m_postvars['exportvalue'] . '" />';
     }
 
     /**
@@ -178,10 +178,10 @@ class ExportHandler extends ActionHandler
     {
         $selected = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue'] : null;
 
-        $url_delete = Tools::dispatch_url($this->m_node->m_module.'.'.$this->m_node->m_type, 'export', array('dodelete' => $selected));
+        $url_delete = Tools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export', array('dodelete' => $selected));
 
         if ($selected) {
-            $result = '<a href="'.$url_delete.'" title="'.Tools::atktext('delete_selection').'" onclick="confirm_delete();">'.Tools::atktext('delete_selection').'</a>';
+            $result = '<a href="' . $url_delete . '" title="' . Tools::atktext('delete_selection') . '" onclick="confirm_delete();">' . Tools::atktext('delete_selection') . '</a>';
 
             return $result;
         }
@@ -194,20 +194,24 @@ class ExportHandler extends ActionHandler
      */
     public function _getInitHtml()
     {
-        $action = Tools::dispatch_url($this->m_node->m_module.'.'.$this->m_node->m_type, 'export');
+        $action = Tools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export');
         $sm = SessionManager::getInstance();
 
         $params = [];
-        $params['formstart'] = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post" class="form-horizontal">';
+        $params['formstart'] = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="' . $action . '" method="post" class="form-horizontal">';
         $params['formstart'] .= $sm->formState();
         $params['formstart'] .= '<input type="hidden" name="phase" value="process"/>';
         if ($sm->atkLevel() > 0) {
             $params['buttons'][] = Tools::atkButton(Tools::atktext('cancel', 'atk'), '', SessionManager::SESSION_BACK);
         }
-        $params['buttons'][] = '<input class="btn btn-sm btn-primary" type="submit" value="'.Tools::atktext('export', 'atk').'"/>';
-        $params['buttons'][] = '<input id="export_save_button" style="display:none;" value="'.Tools::atktext('save_export_selection',
-                'atk').'" name="save_export" class="btn" type="submit" /> ';
-        $params['content'] = '<b>'.Tools::atktext('export_config_explanation', 'atk', $this->m_node->m_type).'</b><br/><br/>';
+
+        $exportText = Tools::atktext('export', 'atk');
+        $params['buttons'][] = '<button class="btn btn-primary" type="submit" value="' . $exportText . '">' . $exportText . '</button>';
+
+        $saveExportText = Tools::atktext('save_export_selection', 'atk');
+        $params['buttons'][] = '<button id="export_save_button" style="display:none;" value="' . $saveExportText . '" name="save_export" class="btn" type="submit" >' . $saveExportText . '</button>';
+
+        $params['content'] = '<b>' . Tools::atktext('export_config_explanation', 'atk', $this->m_node->m_type) . '</b><br/><br/>';
         $params['content'] .= $this->_getOptions();
         $params['formend'] = '</form>';
 
@@ -241,19 +245,20 @@ class ExportHandler extends ActionHandler
         }
     }
 
-    private function _getOptionsFormRow($rowAttributes, $label, $field) {
+    private function _getOptionsFormRow($rowAttributes, $label, $field)
+    {
         $content = '';
 
         $content .= '<div class="row form-group"';
-        if($rowAttributes) {
-            foreach($rowAttributes as $k => $v) {
-                $content .= ' '.$k.'="'.$v.'"';
+        if ($rowAttributes) {
+            foreach ($rowAttributes as $k => $v) {
+                $content .= ' ' . $k . '="' . $v . '"';
             }
         }
         $content .= '>';
 
-        $content .= '  <label class="col-sm-2 control-label">'.$label.'</label>';
-        $content .= '  <div class="col-sm-10">'.$field.'</div>';
+        $content .= '  <label class="col-sm-2 control-label">' . $label . '</label>';
+        $content .= '  <div class="col-sm-10">' . $field . '</div>';
         $content .= '</div>';
         return $content;
     }
@@ -273,39 +278,39 @@ class ExportHandler extends ActionHandler
             $content .= $this->_getOptionsFormRow(
                 null,
                 Tools::atktext('export_selections', 'atk'),
-                $this->getExportSelectionDropdown().'&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">'.Tools::atktext('new', 'atk'));
+                $this->getExportSelectionDropdown() . '&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="toggleSelectionName(\'new\');return false;">' . Tools::atktext('new', 'atk'));
 
             $content .= $this->_getOptionsFormRow(null, '', '<div id="selection_interact"></div>');
 
             $content .= $this->_getOptionsFormRow(
-                ['id' => 'export_name', 'style'=>"display:none;"],
+                ['id' => 'export_name', 'style' => "display:none;"],
                 Tools::atktext('export_selections_name', 'atk'),
-                '<input type="text" size="40" id="export_selection_name" name="export_selection_name" value="" class="form-control">'
+                '<input type="text" size="40" id="export_selection_name" name="export_selection_name" value="" class="form-control form-control-sm">'
             );
         }
 
         $content .= $this->_getOptionsFormRow(
             null,
             Tools::atktext('delimiter', 'atk'),
-            '<input type="text" class="form-control form-control-sm" size="2" name="delimiter" value='.Config::getGlobal('export_delimiter', ';').'>'
+            '<input type="text" class="form-control form-control-sm" size="2" name="delimiter" value=' . Config::getGlobal('export_delimiter', ';') . '>'
         );
 
         $content .= $this->_getOptionsFormRow(
             null,
             Tools::atktext('enclosure', 'atk'),
-            '<input type="text" size="2" class="form-control form-control-sm" name="enclosure" value='.Config::getGlobal('export_enclosure', '&quot;').'>'
+            '<input type="text" size="2" class="form-control form-control-sm" name="enclosure" value=' . Config::getGlobal('export_enclosure', '&quot;') . '>'
         );
 
         $content .= $this->_getOptionsFormRow(
             null,
             Tools::atktext('export_selectcolumns', 'atk'),
-            '<div id="export_attributes">'.$this->getAttributeSelect().'</div>'
+            '<div id="export_attributes">' . $this->getAttributeSelect() . '</div>'
         );
 
         $content .= $this->_getOptionsFormRow(
             null,
             Tools::atktext('export_generatetitlerow'),
-            '<input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 '.(Config::getGlobal('export_titlerow_checked', true) ? 'checked' : '').'>'
+            '<input type="checkbox" name="generatetitlerow" class="atkcheckbox" value=1 ' . (Config::getGlobal('export_titlerow_checked', true) ? 'checked' : '') . '>'
         );
 
         return $content;
@@ -320,13 +325,13 @@ class ExportHandler extends ActionHandler
     {
         $html = '
         <select name="export_selection_options" id="export_selection_options" onchange="toggleSelectionName();return false;" class="form-control select-standard">
-          <option value="none">'.Tools::atktext('none', 'atk');
+          <option value="none">' . Tools::atktext('none', 'atk');
 
         $options = $this->getExportSelections();
         if (Tools::count($options)) {
             foreach ($options as $option) {
                 $html .= '
-           <option value="'.$option['id'].'">'.htmlentities($option['name']).'</option>';
+           <option value="' . $option['id'] . '">' . htmlentities($option['name']) . '</option>';
             }
         }
 
@@ -351,16 +356,16 @@ class ExportHandler extends ActionHandler
 
         // first check if the combination of node, name and user_id doesn't already exist
         $rows = $db->getRows("SELECT id FROM atk_exportcriteria
-                            WHERE nodetype = '".$this->m_postvars['atknodeuri']."'
-                            AND name = '".$this->m_postvars['export_selection_name']."'
-                            AND user_id = ".$user_id);
+                            WHERE nodetype = '" . $this->m_postvars['atknodeuri'] . "'
+                            AND name = '" . $this->m_postvars['export_selection_name'] . "'
+                            AND user_id = " . $user_id);
         if (Tools::count($rows)) {
             return;
         }
 
         $query = 'INSERT INTO atk_exportcriteria ( id, nodetype, name, criteria, user_id )
-                VALUES ( '.$id.', "'.$this->m_postvars['atknodeuri'].'", "'.$db->escapeSQL($this->m_postvars['export_selection_name']).'",
-                         "'.addslashes(serialize($this->m_postvars)).'", '.$user_id.' )';
+                VALUES ( ' . $id . ', "' . $this->m_postvars['atknodeuri'] . '", "' . $db->escapeSQL($this->m_postvars['export_selection_name']) . '",
+                         "' . addslashes(serialize($this->m_postvars)) . '", ' . $user_id . ' )';
 
         $db->query($query);
     }
@@ -380,10 +385,10 @@ class ExportHandler extends ActionHandler
 
         // first check if the combination of node, name and user_id doesn't already exist
         $rows = $db->getRows("SELECT id FROM atk_exportcriteria
-                            WHERE nodetype = '".$this->m_postvars['atknodeuri']."'
-                            AND name = '".$this->m_postvars['export_selection_name']."'
-                            AND user_id = ".$user_id.'
-                            AND id <> '.(int)$this->m_postvars['exportvalue']);
+                            WHERE nodetype = '" . $this->m_postvars['atknodeuri'] . "'
+                            AND name = '" . $this->m_postvars['export_selection_name'] . "'
+                            AND user_id = " . $user_id . '
+                            AND id <> ' . (int)$this->m_postvars['exportvalue']);
         if (Tools::count($rows)) {
             return;
         }
@@ -391,10 +396,10 @@ class ExportHandler extends ActionHandler
         $query = 'UPDATE
                   atk_exportcriteria
                 SET
-                  name = "'.$db->escapeSQL($this->m_postvars['export_selection_name']).'",
-                  criteria = "'.addslashes(serialize($this->m_postvars)).'"
+                  name = "' . $db->escapeSQL($this->m_postvars['export_selection_name']) . '",
+                  criteria = "' . addslashes(serialize($this->m_postvars)) . '"
                 WHERE
-                  id = '.(int)$this->m_postvars['exportvalue'];
+                  id = ' . (int)$this->m_postvars['exportvalue'];
 
         $db->query($query);
     }
@@ -407,7 +412,7 @@ class ExportHandler extends ActionHandler
     private function deleteSelection($id)
     {
         $db = Db::getInstance();
-        $db->query('DELETE FROM atk_exportcriteria WHERE id = '.(int)$id);
+        $db->query('DELETE FROM atk_exportcriteria WHERE id = ' . (int)$id);
     }
 
     /**
@@ -417,17 +422,17 @@ class ExportHandler extends ActionHandler
      */
     protected function getExportSelections()
     {
-        $where = ' nodetype = "'.$this->m_postvars['atknodeuri'].'"';
+        $where = ' nodetype = "' . $this->m_postvars['atknodeuri'] . '"';
         if ('none' !== strtolower(Config::getGlobal('authentication'))) {
             $user = SecurityManager::atkGetUser();
             if (!SecurityManager::isUserAdmin($user)) {
-                $where .= ' AND user_id IN( 0, '.(int)$user[Config::getGlobal('auth_userpk')].' )';
+                $where .= ' AND user_id IN( 0, ' . (int)$user[Config::getGlobal('auth_userpk')] . ' )';
             }
         }
 
         $db = Db::getInstance();
 
-        return $db->getRows($query = 'SELECT id, name FROM atk_exportcriteria WHERE '.$where.' ORDER BY name');
+        return $db->getRows($query = 'SELECT id, name FROM atk_exportcriteria WHERE ' . $where . ' ORDER BY name');
     }
 
     /**
@@ -450,9 +455,9 @@ class ExportHandler extends ActionHandler
             }
 
             foreach ($group as $item) {
-                $checked = $item['checked']?'CHECKED':'';
+                $checked = $item['checked'] ? 'CHECKED' : '';
                 $content .= '<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2 attributes-checkbox-container">';
-                $content .= '<label><input type="checkbox" name="export_'.$item['name'].'" class="atkcheckbox" value="export_'.$item['name'].'" '.$checked.'> '.$item['text'].'</label>';
+                $content .= '<label><input type="checkbox" name="export_' . $item['name'] . '" class="atkcheckbox" value="export_' . $item['name'] . '" ' . $checked . '> ' . $item['text'] . '</label>';
                 $content .= '</div>';
             }
 
@@ -476,7 +481,7 @@ class ExportHandler extends ActionHandler
         $criteria = [];
         if (!in_array($value, array('new', 'none', ''))) {
             $db = Db::getInstance();
-            $rows = $db->getRows('SELECT * FROM atk_exportcriteria WHERE id = '.(int)$value);
+            $rows = $db->getRows('SELECT * FROM atk_exportcriteria WHERE id = ' . (int)$value);
             $criteria = unserialize($rows[0]['criteria']);
         }
 
@@ -510,7 +515,7 @@ class ExportHandler extends ActionHandler
                 $atts[$group][] = array(
                     'name' => $key,
                     'text' => $attr->label(),
-                    'checked' => in_array('export_'.$key, $criteria) ? true : false,
+                    'checked' => in_array('export_' . $key, $criteria) ? true : false,
                 );
             }
         }
@@ -552,7 +557,7 @@ class ExportHandler extends ActionHandler
         $sm = SessionManager::getInstance();
         $sessionData = &SessionManager::getSession();
         $session_back = $sessionData['default']['stack'][$sm->atkStackID()][$sm->atkLevel() - 1];
-        $atkorderby = isset($session_back['atkorderby'])?$session_back['atkorderby']:null;
+        $atkorderby = isset($session_back['atkorderby']) ? $session_back['atkorderby'] : null;
 
         $node = $this->m_node;
         $node_bk = $node;
@@ -579,8 +584,8 @@ class ExportHandler extends ActionHandler
 
         $atkfilter = Tools::atkArrayNvl($source, 'atkfilter', '');
 
-        $atkselector = isset($session_back['atkselector'])?$session_back['atkselector']:'';
-        $condition = $atkselector.($atkselector != '' && $atkfilter != '' ? ' AND ' : '').$atkfilter;
+        $atkselector = isset($session_back['atkselector']) ? $session_back['atkselector'] : '';
+        $condition = $atkselector . ($atkselector != '' && $atkfilter != '' ? ' AND ' : '') . $atkfilter;
         $recordset = $node_bk->select($condition)->orderBy($atkorderby)->includes($list_includes)->mode('export')->getAllRows();
         if (method_exists($this->m_node, 'assignExportData')) {
             $this->m_node->assignExportData($list_includes, $recordset);
@@ -599,7 +604,7 @@ class ExportHandler extends ActionHandler
             $recordset_new[] = $row;
         }
 
-        $filename = 'export_'.strtolower(str_replace(' ', '_', $this->getUi()->nodeTitle($node)));
+        $filename = 'export_' . strtolower(str_replace(' ', '_', $this->getUi()->nodeTitle($node)));
         $rl->render($node_bk, $recordset_new, '', $enclosure, $enclosure, "\r\n", 1, '', '', array('filename' => $filename), 'csv', $source['generatetitlerow'],
             true, $delimiter);
 
