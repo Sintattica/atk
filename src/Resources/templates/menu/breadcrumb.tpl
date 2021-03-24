@@ -3,13 +3,13 @@
 
     <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-sm-6">
+            <div class="col-12 col-xl-4">
                 <h1>{$title}</h1>
             </div>
-            <div class="col-sm-6">
+            <div class="col-12 col-xl-8 mt-3 mt-xl-0">
                 {stacktrace}
                 {if count($stacktrace) > 0}
-                    <ol class="breadcrumb float-sm-right">
+                    <ol class="breadcrumb justify-content-end">
                         <li class="breadcrumb-item"><a href="{$dispatcher}"><span class="fas fa-home"></a></li>
                         {foreach $stacktrace as $item}
                             {if !$item@last}
