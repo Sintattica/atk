@@ -9,7 +9,7 @@
             <div class="col-12 col-xl-8 mt-3 mt-xl-0">
                 {stacktrace}
                 {if count($stacktrace) > 0}
-                    <ol class="breadcrumb justify-content-end">
+                    <ol class="breadcrumb justify-content-xl-end">
                         <li class="breadcrumb-item"><a href="{$dispatcher}"><span class="fas fa-home"></a></li>
                         {foreach $stacktrace as $item}
                             {if !$item@last}
