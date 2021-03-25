@@ -587,7 +587,7 @@ img.rounded-circle {
     height: 25px;
 }
 
-.btn-group-sm > .btn, .btn-sm {
+.btn-group > .btn .btn-sm {
     padding: .25rem 0.5rem;
 }
 
