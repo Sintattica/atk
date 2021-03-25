@@ -107,6 +107,9 @@ class ActionItem extends Item
     //Todo Rename Method
     protected function createIdentifierComponents(): ?string
     {
-        return $this->nodeUri . $this->action;
+        //In case there are urls that differ only from params
+        $urlParams = $this->urlParams ? implode('-', $this->urlParams) : '';
+
+        return $this->nodeUri . $this->action . $urlParams;
     }
 }
