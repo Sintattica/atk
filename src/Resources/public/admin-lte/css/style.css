@@ -587,12 +587,13 @@ img.rounded-circle {
     height: 25px;
 }
 
-.btn.btn-sm,
+.btn-group-sm > .btn, .btn-sm {
+    padding: .25rem 0.25rem;
+}
+
 .DateAttribute.atkbutton {
     min-width: 30px;
 }
-
-
 
 
 /* The main calendar widget.  DIV containing a table. */
@@ -636,7 +637,7 @@ img.rounded-circle {
     font-size: 12px;
 }
 
-.calendar thead tr:first-child{
+.calendar thead tr:first-child {
 }
 
 .calendar thead .headrow {
