@@ -587,9 +587,11 @@ img.rounded-circle {
     height: 25px;
 }
 
+.btn.btn-sm,
 .DateAttribute.atkbutton {
     min-width: 30px;
 }
+
 
 
 
