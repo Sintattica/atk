@@ -1,5 +1,4 @@
 <section class="content overflow-hidden">
-
     <div class="card">
         <div class="card-header">
             <h3 class="card-title pt-1">{$title}</h3>
