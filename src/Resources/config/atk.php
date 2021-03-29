@@ -915,4 +915,8 @@ return [
     'cache_method' => 'var',
     // Cache namespace, change this when you are hosting your application on a shared hosting.
     'cache_namespace' => 'default',
+
+
+    /******* Admin LTE 3 *********/
+    'enableDevModeNavbar' => true
 ];

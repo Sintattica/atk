@@ -106,10 +106,17 @@ class AdminLTE
      */
     private $currentSidebarSkinsBundle = [self::SKINS_SIDEBAR_DARK_ATK];
 
-    private $currentNavBarSkinsBundle = [
+    private $defaultNavBarSkinsBundle = [
         self::SKINS_NAV_DARK_DARK,
         self::SKINS_NAV_DARK_LIGHTBLUE
     ];
+
+    private $devEnvSkinsBundle = [
+            self::SKINS_NAV_DARK_DARK,
+            self::SKINS_NAV_DARK_SUCCESS
+    ];
+
+    private $currentNavBarSkinsBundle = [];
 
     private $expandSidebarOnHover = true;
     private $indentSidebarChildren = true;
@@ -133,6 +140,9 @@ class AdminLTE
     {
         if (self::$adminLTEInstance == null) {
             self::$adminLTEInstance = new self();
+
+            //Assign current skin bundle on creation
+            self::$adminLTEInstance->currentNavBarSkinsBundle = self::$adminLTEInstance->defaultNavBarSkinsBundle;
             Tools::atkdebug('Created a new AdminLte instance');
         }
 
@@ -226,6 +236,19 @@ class AdminLTE
         }
 
         return $classes;
+    }
+
+    public function setNavBarSkinBundle(array $skinBundle)
+    {
+        $this->currentNavBarSkinsBundle = $skinBundle;
+    }
+
+    public function setNavBarDevMode($enable)
+    {
+        $this->currentNavBarSkinsBundle = $enable && Config::getGlobal('enableDevModeNavbar', true)
+            ? $this->devEnvSkinsBundle
+            : $this->defaultNavBarSkinsBundle;
+
     }
 
 

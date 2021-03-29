@@ -100,6 +100,8 @@ class IndexPage
                 );
             }
 
+            $this->m_adminLte->setNavBarDevMode($_SERVER['APP_ENV'] !== 'prod');
+
             $navbar = $this->m_ui->render('menu/navbar.tpl', [
                 'menu' => $menuObj->getMenu(), //formatted smarty menu as ['left', 'right','sidebar']
                 'main_header_classes' => $this->m_adminLte->getMainHeaderClasses(),
