@@ -112,7 +112,7 @@ class AdminLTE
     ];
 
     private $devEnvSkinsBundle = [
-            self::SKINS_NAV_DARK_DARK,
+            self::SKINS_NAV_LIGHT_LIGHT,
             self::SKINS_NAV_LIGHT_WARNING
     ];
 
