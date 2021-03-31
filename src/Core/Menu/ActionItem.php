@@ -91,6 +91,19 @@ class ActionItem extends Item
     }
 
     /**
+     * @return int|array|string
+     */
+    public function getEnable()
+    {
+
+        if($this->nodeUri && $this->action){
+            return [$this->nodeUri, $this->action];
+        }
+
+        return $this->enable;
+    }
+
+    /**
      * @return string
      */
     public function getUrl(): string

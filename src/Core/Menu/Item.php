@@ -135,9 +135,9 @@ abstract class Item
     }
 
     /**
-     * @return int
+     * @return int|array|string
      */
-    public function getEnable(): int
+    public function getEnable()
     {
         return $this->enable;
     }
