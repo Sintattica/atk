@@ -169,13 +169,12 @@ class DataGridList extends DataGridComponent
         $searchend = '';
         if ($hasSearch) {
             $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides'));
-            $buttonType = $grid->isEmbedded() ? 'button' : 'submit';
 
             $extendedSearchable = $grid->hasFlag(DataGrid::EXTENDED_SEARCH);
 
             $fullWidth = $extendedSearchable ? '' : 'w-100';
 
-            $button = '<input type="' . $buttonType . '" class="btn btn-sm btn-default btn_search ' . $fullWidth . '" value="' . Tools::atktext('search') . '" onclick="' . $call . ' return false;">';
+            $button = '<input type="submit" class="btn btn-sm btn-default btn_search ' . $fullWidth . '" value="' . Tools::atktext('search') . '" onclick="' . $call . ' return false;">';
 
             if ($grid->hasFlag(DataGrid::EXTENDED_SEARCH)) {
                 $filterIcon = '<span class="fas fa-filter"></span>';
