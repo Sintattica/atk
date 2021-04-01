@@ -155,15 +155,24 @@ abstract class MenuBase
     public function load(): array
     {
 
-        $html_items = $this->parseItems($this->items['main']);
+        $itemsHtml = $this->parseItems($this->items['main']);
+        $this->setItemVisibility($itemsHtml);
 
-        $itemsLeftHtml = array_filter($html_items, function ($el): bool {
+        //reindex the array in case unsets have been made!
+        //we have to put this here because setItemVisibility() is recursive!
+        $itemsHtml = array_values($itemsHtml);
+
+        $this->setSeparatorItemVisibility($itemsHtml);
+
+        $itemsLeftHtml = array_filter($itemsHtml, function ($el): bool {
             return $el['position'] === self::MENU_NAV_LEFT;
         });
-        $itemsRightHtml = array_filter($html_items, function ($el): bool {
+
+        $itemsRightHtml = array_filter($itemsHtml, function ($el): bool {
             return $el['position'] === self::MENU_NAV_RIGHT;
         });
-        $itemsSidebarHtml = array_filter($html_items, function ($el): bool {
+
+        $itemsSidebarHtml = array_filter($itemsHtml, function ($el): bool {
             return $el['position'] === self::MENU_SIDEBAR;
         });
 
@@ -185,23 +194,55 @@ abstract class MenuBase
      */
     private function processMenu(array $menu, bool $child = false, string $type = self::TYPE_MENU_SIDEBAR): string
     {
+
         $html = '';
         if (is_array($menu)) {
             foreach ($menu as $item) {
-                if ($this->isEnabled($item)) {
-                    switch ($type) {
-                        case self::TYPE_MENU_SIDEBAR:
-                            $html .= $this->formatSidebar($item);
-                            break;
-                        case self::TYPE_MENU_NAVBAR:
-                            $html .= $this->formatNavBar($item, $child);
-                            break;
-                    }
+                switch ($type) {
+                    case self::TYPE_MENU_SIDEBAR:
+                        $html .= $this->formatSidebar($item);
+                        break;
+                    case self::TYPE_MENU_NAVBAR:
+                        $html .= $this->formatNavBar($item, $child);
+                        break;
                 }
             }
         }
 
         return $html;
+    }
+
+
+    private function setItemVisibility(array &$menu): void
+    {
+        foreach ($menu as $index => $menuItem) {
+            //todo: transform item in menuItem
+            if (!$this->isEnabled($menuItem) || !$menuItem['enable']) {
+                unset($menu[$index]);
+            } else if ($menuItem['submenu']) {
+                $this->setItemVisibility($menuItem['submenu']);
+            }
+        }
+    }
+
+    /**
+     * @param $menu
+     * @throws ReflectionException
+     */
+    private function setSeparatorItemVisibility(&$menu)
+    {
+        for ($i = 0; $i < count($menu); $i++) {
+            if (in_array($menu[$i]['type'], [Tools::getClassName(SeparatorItem::class), Tools::getClassName(HeaderItem::class)])) {
+                if (!isset($menu[$i + 1]) || $menu[$i]['type'] === $menu[$i + 1]['type']) {
+                    //The next element doesn't exist or is of the same type as the current one.
+                    unset($menu[$i]);
+                    break;
+                }
+            }
+        }
+
+        //re-index array
+        $menu = array_values($menu);
     }
 
 

@@ -3,6 +3,7 @@
 
 namespace Sintattica\Atk\Core\Menu;
 
+
 /**
  * Class SeparatorItem
  * @package Sintattica\Atk\Core\Menu
@@ -17,6 +18,7 @@ class SeparatorItem extends Item
         parent::__construct();
         $this->position = $position;
         $this->color = $color;
+        $this->name = uniqid();
     }
 
     /**
@@ -42,4 +44,6 @@ class SeparatorItem extends Item
     {
         return "";
     }
+
+
 }
