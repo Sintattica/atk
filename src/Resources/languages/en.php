@@ -1,5 +1,7 @@
 <?php
 
+use Sintattica\Atk\Core\Node;
+
 return [
     'locale' => 'en_EN',
     'above_maximum_value' => 'Above the maximum allowed value',
@@ -385,4 +387,5 @@ return [
     'yes' => 'Yes',
     'btkdate_format_edit' => 'MM/DD/YYYY', // momentJS format style
     'btkdate_format_view' => 'MM/DD/YYYY', // momentJS format style
+    Node::ROW_COLOR_ATTRIBUTE => 'State Color'
 ];

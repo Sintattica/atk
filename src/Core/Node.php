@@ -647,6 +647,8 @@ class Node
     private $recordListHover = true;
     private $rowColorConditions = [];
 
+    private $rowColorMode = self::ROW_COLOR_MODE_DEFAULT;
+
     /**
      * @param string $nodeUri The nodeuri
      * @param int $flags Bitmask of node flags (self::NF_*).
@@ -657,7 +659,21 @@ class Node
         $this->m_flags = $flags;
 
         $this->setEditFieldPrefix(Config::getGlobal('edit_fieldprefix', ''));
+
+
+        $rowColorModeAttribute = new StateColorAttribute(self::ROW_COLOR_ATTRIBUTE);
+        $rowColorModeAttribute->setShape(StateColorAttribute::SHAPE_ROUND);
+        $rowColorModeAttribute->setSize(StateColorAttribute::SIZE_LG);
+
+        $rowColorModeAttribute->setViewCallback(function ($record, $mode, $attribute) {
+            $attribute->setColor($this->recordStateColor($record) ?: self::DEFAULT_RECORDLIST_BG_COLOR);
+            return "<div class='text-center w-100'>" . $attribute->display($record, $mode) . "</div>";
+        });
+
+        $this->add($rowColorModeAttribute);
+
     }
+
 
     /**
      * Resolve section. If a section is only prefixed by

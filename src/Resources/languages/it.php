@@ -1,5 +1,7 @@
 <?php
 
+use Sintattica\Atk\Core\Node;
+
 return [
     'locale' => 'it_IT',
     'above_maximum_value' => 'Superiore al massimo valore consentito',
@@ -400,7 +402,6 @@ return [
     'unselect' => 'Deseleziona',
     'until' => 'fino a',
     'update' => 'Aggiornare',
-    // TODO corretto?
     'upperchars' => 'caratteri maiuscoli',
     'username' => 'Nome utente',
     'view' => 'Vedi',
@@ -434,4 +435,5 @@ return [
     // momentJS format style
     'btkdatetime_format_view' => 'DD/MM/YYYY HH:mm',
     // momentJS format style
+    Node::ROW_COLOR_ATTRIBUTE => 'Colore Stato'
 ];
