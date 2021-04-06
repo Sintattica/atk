@@ -506,27 +506,12 @@ class ProfileAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-        $page = Page::getInstance();
+        Page::getInstance()->register_script(Config::getGlobal('assets_url') . 'javascript/profileattribute.js');
 
-        $icons = "var ATK_PROFILE_ICON_OPEN = '" . Config::getGlobal('icon_plussquare') . "';";
-        $icons .= "var ATK_PROFILE_ICON_CLOSE = '" . Config::getGlobal('icon_minussquare') . "';";
-        $page->register_scriptcode($icons);
-        $page->register_script(Config::getGlobal('assets_url') . 'javascript/profileattribute.js');
-
-        $this->_restoreDivStates($page);
-
-        $result = '<div class="mt-3 mb-2 btn-group d-none">';
-        $result .= '<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\'' . $this->fieldName() . '\'); return false;">' . Tools::atktext('check_all') . '</a>';
-        $result .= '<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\'' . $this->fieldName() . '\'); return false;">' . Tools::atktext('check_none') . '</a>';
-        $result .= '<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\'' . $this->fieldName() . '\'); return false;">' . Tools::atktext('invert_selection') . '</a>';
-        $result .= '</div>';
-
-        $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
-        $editableActions = $this->getEditableActions($record);
         $selectedActions = $this->getSelectedActions($record);
 
-        $result .= '<div class="row">';
+        $result = '<div class="row">';
         foreach ($allActions as $section => $modules) {
             $result .= '<div class="col-12 col-md-4 profileSection">';
 
@@ -559,10 +544,8 @@ class ProfileAttribute extends Attribute
                     $result .= '<div class="col-12 mt-1 mb-1"><strong>' . Tools::atktext($node, $module) . '</strong></div>';
 
                     foreach ($actions as $action) {
-
                         $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
-                        //Todo: Update with iCheckBox
                         $result .= '<div class="col-6 col-xl-4">';
                         $result .= '<div class="form-check form-check-inline">';
                         $result .= '<input type="checkbox" name="' . $this->fieldName() . '[]" class="form-check-input" value="' . $section . '.' . $module . '.' . $node . '.' . $action . '" ';
@@ -570,18 +553,14 @@ class ProfileAttribute extends Attribute
                         $result .= '<label class="form-check-label text-nowrap" for="' . $this->fieldName() . '[]">' . $this->permissionName($action, $node, $module) . "</label>";
                         $result .= '</div>';
                         $result .= '</div>';
-
                     }
 
                     $result .= '</div>';
                     if($i < count($nodes)-1) {
                         $result .= '<hr>';
                     }
-
                     $i++;
                 }
-
-
             }
 
             $result .= '</div>'; // end card-body
@@ -591,6 +570,7 @@ class ProfileAttribute extends Attribute
         }
 
         $result .= "</div>"; //end row
+
         return $result;
     }
 

@@ -65,27 +65,5 @@ ATK.ProfileAttribute = {
                 $el.prop('checked', !$el.prop('checked'));
             }
         });
-    },
-    profile_fixExpandImage: function (divName) {
-        var icon = ATK.Tools.get_object("img_" + divName);
-        if (ATK.Tools.get_object(divName).style.display === 'none')
-            icon.className = ATK_PROFILE_ICON_OPEN;
-        else
-            icon.className = ATK_PROFILE_ICON_CLOSE;
-    },
-    profile_fixDivState: function (divName) {
-        var divElement = ATK.Tools.get_object(divName);
-        var inputElement = ATK.Tools.get_object("divstate['" + divName + "']");
-
-        if (divElement.style.display === 'none') {
-            inputElement.value = 'closed';
-        } else {
-            inputElement.value = 'opened';
-        }
-    },
-    profile_swapProfileDiv: function (divName) {
-        ATK.Tools.toggleDisplay(divName, ATK.Tools.get_object(divName));
-        ATK.ProfileAttribute.profile_fixExpandImage(divName);
-        ATK.ProfileAttribute.profile_fixDivState(divName);
     }
 };
