@@ -667,7 +667,14 @@ class Node
 
         $rowColorModeAttribute->setViewCallback(function ($record, $mode, $attribute) {
             $attribute->setColor($this->recordStateColor($record) ?: self::DEFAULT_RECORDLIST_BG_COLOR);
-            return "<div class='text-center w-100'>" . $attribute->display($record, $mode) . "</div>";
+
+            $display = $attribute->display($record, $mode);
+            if ($mode === 'list') {
+                $display = "<div class='text-center w-100'>" . $display . "</div>";
+            }
+
+            return $display;
+
         });
 
         $this->add($rowColorModeAttribute);
