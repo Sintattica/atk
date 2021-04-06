@@ -53,8 +53,8 @@ class ProfileAttribute extends Attribute
     public function load($db, $record, $mode)
     {
         $query = 'SELECT *
-                FROM '.Config::getGlobal('auth_accesstable').'
-                WHERE '.$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+                FROM ' . Config::getGlobal('auth_accesstable') . '
+                WHERE ' . $this->m_accessField . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'";
 
         $result = [];
         $rows = $db->getRows($query);
@@ -82,8 +82,8 @@ class ProfileAttribute extends Attribute
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
 
-        $delquery = 'DELETE FROM '.Config::getGlobal('auth_accesstable').'
-                   WHERE '.$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+        $delquery = 'DELETE FROM ' . Config::getGlobal('auth_accesstable') . '
+                   WHERE ' . $this->m_accessField . "='" . $record[$this->m_ownerInstance->primaryKeyField()] . "'";
 
         if ($db->query($delquery)) {
             $checked = $record[$this->fieldName()];
@@ -112,8 +112,8 @@ class ProfileAttribute extends Attribute
                 }
 
                 foreach ($validActions as $action) {
-                    $query = 'INSERT INTO '.Config::getGlobal('auth_accesstable').' (node, action, '.$this->m_accessField.') ';
-                    $query .= "VALUES ('".$db->escapeSQL($node)."','".$db->escapeSQL($action)."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
+                    $query = 'INSERT INTO ' . Config::getGlobal('auth_accesstable') . ' (node, action, ' . $this->m_accessField . ') ';
+                    $query .= "VALUES ('" . $db->escapeSQL($node) . "','" . $db->escapeSQL($action) . "','" . $record[$this->m_ownerInstance->primaryKeyField()] . "')";
 
                     if (!$db->query($query)) {
                         // error.
@@ -122,8 +122,8 @@ class ProfileAttribute extends Attribute
                 }
 
                 if (Tools::count($children) > 0 && Tools::count($validActions) > 0) {
-                    $query = 'DELETE FROM '.Config::getGlobal('auth_accesstable').' '.'WHERE '.$this->m_accessField.' IN ('.implode(',',
-                            $children).') '."AND node = '".$db->escapeSQL($node)."' "."AND action NOT IN ('".implode("','", $validActions)."')";
+                    $query = 'DELETE FROM ' . Config::getGlobal('auth_accesstable') . ' ' . 'WHERE ' . $this->m_accessField . ' IN (' . implode(',',
+                            $children) . ') ' . "AND node = '" . $db->escapeSQL($node) . "' " . "AND action NOT IN ('" . implode("','", $validActions) . "')";
 
                     if (!$db->query($query)) {
                         // error.
@@ -152,7 +152,7 @@ class ProfileAttribute extends Attribute
 
             list($mod, $node, $priv) = explode('.', $privilege_setting);
 
-            return $securityManager->allowed($mod.'.'.$node, $priv);
+            return $securityManager->allowed($mod . '.' . $node, $priv);
         }
 
         return false;
@@ -176,7 +176,7 @@ class ProfileAttribute extends Attribute
         $parentAttr = $this->m_parentAttrName;
         if (!empty($parentAttr) && is_numeric($record[$parentAttr])) {
             $db = $this->getDb();
-            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' '.'WHERE '.$this->m_accessField.' = '.$record[$parentAttr];
+            $query = 'SELECT DISTINCT node, action FROM ' . Config::getGlobal('auth_accesstable') . ' ' . 'WHERE ' . $this->m_accessField . ' = ' . $record[$parentAttr];
             $rows = $db->getRows($query);
 
             foreach ($rows as $row) {
@@ -236,7 +236,7 @@ class ProfileAttribute extends Attribute
 
         $escapedLevels = [];
         foreach ($levels as $currLevel) {
-            $escapedLevels[] = "'".$db->escapeSQL($currLevel)."'";
+            $escapedLevels[] = "'" . $db->escapeSQL($currLevel) . "'";
         }
         $levels = implode(',', $escapedLevels);
 
@@ -244,7 +244,7 @@ class ProfileAttribute extends Attribute
         $rows = [];
         if ($levels) {
             $db = $this->getDb();
-            $query = 'SELECT DISTINCT node, action FROM '.Config::getGlobal('auth_accesstable').' WHERE '.$this->m_accessField.' IN ('.$levels.')';
+            $query = 'SELECT DISTINCT node, action FROM ' . Config::getGlobal('auth_accesstable') . ' WHERE ' . $this->m_accessField . ' IN (' . $levels . ')';
             $rows = $db->getRows($query);
         }
 
@@ -273,7 +273,7 @@ class ProfileAttribute extends Attribute
             return $result;
         }
 
-        $query = 'SELECT '.$this->m_ownerInstance->primaryKeyField().' '.'FROM '.$this->m_ownerInstance->m_table.' '.'WHERE '.$this->m_parentAttrName." = $id";
+        $query = 'SELECT ' . $this->m_ownerInstance->primaryKeyField() . ' ' . 'FROM ' . $this->m_ownerInstance->m_table . ' ' . 'WHERE ' . $this->m_parentAttrName . " = $id";
 
         $rows = $db->getRows($query);
         foreach ($rows as $row) {
@@ -304,8 +304,8 @@ class ProfileAttribute extends Attribute
 
         foreach ($checked as $key => $val) {
             for ($i = 0; $i <= Tools::count($val) - 1; ++$i) {
-                $value = $key.'.'.$val[$i];
-                $rights .= '<input type="hidden" name="rights[]" value="'.$value.'">';
+                $value = $key . '.' . $val[$i];
+                $rights .= '<input type="hidden" name="rights[]" value="' . $value . '">';
             }
         }
 
@@ -334,11 +334,11 @@ class ProfileAttribute extends Attribute
     public function display($record, $mode)
     {
         $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/profileattribute.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/profileattribute.js');
         $this->_restoreDivStates($page);
 
-        $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal('icon_plussquare')."';";
-        $icons .= "var ATK_PROFILE_ICON_CLOSE = '".Config::getGlobal('icon_minussquare')."';";
+        $icons = "const ATK_PROFILE_ICON_OPEN = '" . Config::getGlobal('icon_plussquare') . "';";
+        $icons .= "const ATK_PROFILE_ICON_CLOSE = '" . Config::getGlobal('icon_minussquare') . "';";
         $page->register_scriptcode($icons);
 
         $result = '';
@@ -373,24 +373,24 @@ class ProfileAttribute extends Attribute
                         $display_node_str = true;
                         if (substr($action, 0, 4) == 'tab_') {
                             $display_tabs_str = true;
-                            $tab_permissions_string .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
+                            $tab_permissions_string .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
                         } else {
-                            $permissions_string .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
+                            $permissions_string .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
                         }
                     }
                 }
 
                 if ($showBox) {
-                    $node_result .= '<b>'.Tools::atktext($node, $module).'</b><br>';
+                    $node_result .= '<b>' . Tools::atktext($node, $module) . '</b><br>';
                     $node_result .= $permissions_string;
                     if ($display_tabs_str) {
-                        $node_result .= '<br>Tabs:&nbsp;'.$tab_permissions_string;
+                        $node_result .= '<br>Tabs:&nbsp;' . $tab_permissions_string;
                     }
                     $node_result .= "<br /><br />\n";
                 } else {
                     $node_result .= $permissions_string;
                     if ($display_tabs_str) {
-                        $node_result .= '<br>Tabs:&nbsp;'.$tab_permissions_string;
+                        $node_result .= '<br>Tabs:&nbsp;' . $tab_permissions_string;
                     }
                 }
 
@@ -478,12 +478,12 @@ class ProfileAttribute extends Attribute
     public function permissionName($action, $nodename = '', $modulename = '')
     {
         $keys = array(
-            'permission_'.$modulename.'_'.$nodename.'_'.$action,
-            'action_'.$modulename.'_'.$nodename.'_'.$action,
-            'permission_'.$nodename.'_'.$action,
-            'action_'.$nodename.'_'.$action,
-            'permission_'.$action,
-            'action_'.$action,
+            'permission_' . $modulename . '_' . $nodename . '_' . $action,
+            'action_' . $modulename . '_' . $nodename . '_' . $action,
+            'permission_' . $nodename . '_' . $action,
+            'action_' . $nodename . '_' . $action,
+            'permission_' . $action,
+            'action_' . $action,
             $action,
         );
 
@@ -508,94 +508,89 @@ class ProfileAttribute extends Attribute
     {
         $page = Page::getInstance();
 
-        $icons = "var ATK_PROFILE_ICON_OPEN = '".Config::getGlobal('icon_plussquare')."';";
-        $icons .= "var ATK_PROFILE_ICON_CLOSE = '".Config::getGlobal('icon_minussquare')."';";
+        $icons = "var ATK_PROFILE_ICON_OPEN = '" . Config::getGlobal('icon_plussquare') . "';";
+        $icons .= "var ATK_PROFILE_ICON_CLOSE = '" . Config::getGlobal('icon_minussquare') . "';";
         $page->register_scriptcode($icons);
-        $page->register_script(Config::getGlobal('assets_url').'javascript/profileattribute.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/profileattribute.js');
 
         $this->_restoreDivStates($page);
 
-        $result = '<div align="right">[<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> | <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
+        $result = '<div class="mt-3 mb-2 btn-group d-none">';
+        $result .= '<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\'' . $this->fieldName() . '\'); return false;">' . Tools::atktext('check_all') . '</a>';
+        $result .= '<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\'' . $this->fieldName() . '\'); return false;">' . Tools::atktext('check_none') . '</a>';
+        $result .= '<a class="btn btn-sm btn-default" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\'' . $this->fieldName() . '\'); return false;">' . Tools::atktext('invert_selection') . '</a>';
+        $result .= '</div>';
 
         $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
         $allActions = $this->getAllActions($record, true);
         $editableActions = $this->getEditableActions($record);
         $selectedActions = $this->getSelectedActions($record);
 
+        $result .= '<div class="row">';
         foreach ($allActions as $section => $modules) {
-            $result .= '<div class="profileSection">';
+            $result .= '<div class="col-12 col-md-4 profileSection">';
 
-            $result .= "<span onclick=\"ATK.ProfileAttribute.profile_swapProfileDiv('div_$section');\" style=\"cursor: pointer; font-size: 110%; font-weight: bold\">";
-            $result .= '  <i class="'.Config::getGlobal('icon_plussquare')."\" id=\"img_div_$section\"></i> ".Tools::atktext(array("title_$section", $section),
-                    $section);
-            $result .= '</span><br/>';
+            $result .= '<div class="card card-default collapsed-card">';
 
-            $result .= "<div id='div_$section' name='div_$section' style='display: none; padding-left: 15px' class='checkbox'>";
+            $result .= '<div class="card-header">
+                <h3 class="card-title">' . Tools::atktext(["title_$section", $section], $section) . '</h3>
 
-            $result .= "  <input type='hidden' name=\"divstate['div_$section']\" id=\"divstate['div_$section']\" value='closed' />";
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+                </div>
+                <!-- /.card-tools -->
+              </div>';
 
-            $result .= '  <div style="font-size: 80%; margin-top: 4px; margin-bottom: 4px" >
-                  [<a  style="font-size: 100%" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAllByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_all',
-                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('check_none',
-                    'atk').'</a> | <a  style="font-size: 100%" href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$section.'.\'); return false;">'.Tools::atktext('invert_selection',
-                    'atk').'</a>]';
-            $result .= '  </div>';
-            $result .= '  <br>';
+
+            $result .= '<div class="card-body">';
+
+            $result .= '<div class="row mt-1 mb-3 btn-group w-100 justify-content-center no-gutters">';
+            $result .= '<button class="btn btn-xs btn-default" onclick="ATK.ProfileAttribute.profile_checkAllByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' . Tools::atktext('pf_check_all', 'atk') . '</button>';
+            $result .= '<button class="btn btn-xs btn-default" onclick="ATK.ProfileAttribute.profile_checkNoneByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' . Tools::atktext('pf_check_none', 'atk') . '</button>';
+            $result .= '<button class="btn btn-xs btn-default" onclick="ATK.ProfileAttribute.profile_checkInvertByValue(\'' . $this->fieldName() . '\',\'' . $section . '.\'); return false;">' . Tools::atktext('pf_invert_selection', 'atk') . '</button>';
+            $result .= '</div>';
 
             foreach ($modules as $module => $nodes) {
+
+                $i = 0;
                 foreach ($nodes as $node => $actions) {
-                    $showBox = $isAdmin || Tools::count(array_intersect($actions,
-                            (is_array($editableActions[$module][$node]) ? $editableActions[$module][$node] : array()))) > 0;
-
-                    if ($showBox) {
-                        $result .= '<b>'.Tools::atktext($node, $module).'</b><br>';
-                    }
-
-                    $tabs_str = '';
-                    $display_tabs_str = false;
-
                     // Draw action checkboxes
-                    foreach ($actions as $action) {
-                        $temp_str = '';
+                    $result .= "<div class='row no-gutters'>";
+                    $result .= '<div class="col-12 mt-1 mb-1"><strong>' . Tools::atktext($node, $module) . '</strong></div>';
 
-                        $isEditable = $isAdmin || Tools::atk_in_array($action, $editableActions[$module][$node]);
+                    foreach ($actions as $action) {
+
                         $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
-                        if ($isEditable) {
-                            if (substr($action, 0, 4) == 'tab_') {
-                                $display_tabs_str = true;
-                            }
+                        //Todo: Update with iCheckBox
+                        $result .= '<div class="col-6 col-xl-4">';
+                        $result .= '<div class="form-check form-check-inline">';
+                        $result .= '<input type="checkbox" name="' . $this->fieldName() . '[]" class="form-check-input" value="' . $section . '.' . $module . '.' . $node . '.' . $action . '" ';
+                        $result .= ($isSelected ? ' checked="checked"' : '') . '>';
+                        $result .= '<label class="form-check-label text-nowrap" for="' . $this->fieldName() . '[]">' . $this->permissionName($action, $node, $module) . "</label>";
+                        $result .= '</div>';
+                        $result .= '</div>';
 
-                            //Todo: Update with iCheckBox
-                            $temp_str .= '<div class="form-check form-check-inline">';
-                            $temp_str .= '<input type="checkbox" name="'.$this->fieldName().'[]" class="form-check-input" value="'.$section.'.'.$module.'.'.$node.'.'.$action.'" ';
-                            $temp_str .= ($isSelected ? ' checked="checked"' : '').'>';
-                            $temp_str .= '<label class="form-check-label" for="'.$this->fieldName().'[]">'.$this->permissionName($action, $node, $module). "</label>";
-                            $temp_str .= '</div>';
-                        }
-
-                        if (substr($action, 0, 4) == 'tab_') {
-                            $tabs_str .= $temp_str;
-                        } else {
-                            $result .= $temp_str;
-                        }
                     }
 
-                    if ($display_tabs_str) {
-                        $result .= '<br>Tabs:&nbsp;';
+                    $result .= '</div>';
+                    if($i < count($nodes)-1) {
+                        $result .= '<hr>';
                     }
 
-                    $result .= $tabs_str;
-
-                    if ($showBox) {
-                        $result .= "<br /><br />\n";
-                    }
+                    $i++;
                 }
+
+
             }
-            $result .= '  </div>'; // end div_$section
+
+            $result .= '</div>'; // end card-body
+            $result .= '</div>'; // end card
             $result .= '</div>'; // end profileSection
+
         }
 
+        $result .= "</div>"; //end row
         return $result;
     }
 
@@ -623,7 +618,7 @@ class ProfileAttribute extends Attribute
             $node = $action = null;
             $elems = explode('.', $checkboxes[$i]);
             if (Tools::count($elems) == 4) {
-                $node = $elems[1].'.'.$elems[2];
+                $node = $elems[1] . '.' . $elems[2];
                 $action = $elems[3];
             } else {
                 if (Tools::count($elems) == 3) {
