@@ -1333,7 +1333,7 @@ class Attribute
         if ($this->getViewCallback() != null) {
             $ret = call_user_func($this->getViewCallback(), $defaults, $mode, $this);
         } elseif (method_exists($this->m_ownerInstance, $method)) {
-            $ret = $this->m_ownerInstance->$method($defaults, $mode);
+            $ret = $this->m_ownerInstance->$method($defaults, $mode, $this);
         } else {
             $ret = $this->display($defaults, $mode);
             if ($ret != '' && strlen($this->m_postfixlabel) > 0) {
@@ -1412,7 +1412,7 @@ class Attribute
             if ($this->m_name != 'action' && method_exists($this->m_ownerInstance, $method)) {
                 // we can't support the override for attributes named action, because of a conflict with
                 // a possible edit action override (in both cases the method is called action_edit)
-                $result = $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode);
+                $result = $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode, $this);
             } else {
                 $result = $this->edit($defaults, $fieldprefix, $mode) . (strlen($this->m_postfixlabel) > 0 ? '&nbsp;' . $this->m_postfixlabel : '');
             }
