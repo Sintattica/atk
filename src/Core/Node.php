@@ -4,7 +4,9 @@ namespace Sintattica\Atk\Core;
 
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Attributes\Attribute;
+use Sintattica\Atk\Attributes\ButtonAttribute;
 use Sintattica\Atk\Attributes\FieldSet;
+use Sintattica\Atk\Attributes\StateColorAttribute;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Handlers\ActionHandler;
@@ -210,6 +212,10 @@ class Node
 
     const DEFAULT_RECORDLIST_BG_COLOR = UIStateColors::COLOR_WHITE;
 
+    const ROW_COLOR_MODE_CELL = 'cell';
+    const ROW_COLOR_MODE_DEFAULT = 'row';
+    const ROW_COLOR_ATTRIBUTE = 'row_color_mode_attribute';
+
     /*
      * reference to the class which is used to validate atknodes
      * the validator is overridable by changing this variable
@@ -254,6 +260,13 @@ class Node
      * @var Attribute[] $m_attribList
      */
     public $m_attribList = [];
+
+    /**
+     * Name of the custom submit attributes that are different
+     * from the ATK built in ones (ex: ButtonAttribute)
+     * @var array
+     */
+    private $submitBtnAttribList = [];
 
     /*
      * Index list containing the attributes in the order in which they will
@@ -660,6 +673,16 @@ class Node
 
         $this->setEditFieldPrefix(Config::getGlobal('edit_fieldprefix', ''));
 
+        $this->addStateColorAttribute();
+    }
+
+    /**
+     * Create a state color attribute so the client can create set the row colors as
+     * a 'row type', where all the row gets colored or show them as a column type, where
+     * the row color will be shown automatically in a new column with a specified shape;
+     */
+    private function addStateColorAttribute()
+    {
 
         $rowColorModeAttribute = new StateColorAttribute(self::ROW_COLOR_ATTRIBUTE);
         $rowColorModeAttribute->setShape(StateColorAttribute::SHAPE_ROUND);
@@ -678,7 +701,6 @@ class Node
         });
 
         $this->add($rowColorModeAttribute);
-
     }
 
 
@@ -877,6 +899,10 @@ class Node
         // To work around this, we reassign the this pointer to the attributes as
         // soon as possible AFTER the constructor. (the dispatcher function)
         $attribute->setOwnerInstance($this);
+
+        if(method_exists($attribute, 'getType') && $attribute->getType() == ButtonAttribute::TYPE_SUBMIT){
+            $this->addSubmitBtnAttrib($attribute->m_name);
+        }
 
         if ($attribute->hasFlag(Attribute::AF_PRIMARY)) {
             if (!in_array($attribute->fieldName(), $this->m_primaryKey)) {
@@ -1182,7 +1208,7 @@ class Node
     /**
      * Removes a flag from the node.
      *
-     * @param int $flag The flag to remove from the attribute
+     * @param int $flag The flag to remove
      */
     public function removeFlag($flag)
     {
@@ -1725,7 +1751,7 @@ class Node
      *
      * @param string $filter The fieldname you want to filter OR a SQL where
      *                       clause expression.
-     * @param string $value Required value. (Ommit this parameter if you pass
+     * @param string $value Required value. (Omit this parameter if you pass
      *                       an SQL expression for $filter.)
      */
     public function addFilter($filter, $value = '')
@@ -4834,21 +4860,37 @@ class Node
         return self::DEFAULT_RECORDLIST_BG_COLOR;
     }
 
-    public function rowColorByState($record, $index = 0)
-    {
 
+    /**
+     * On child nodes should be called before calling the parent constructor
+     * @param array $record
+     * @param int $index
+     * @return string|null
+     */
+    public function recordStateColor(array $record, int $index = 0): ?string
+    {
         if ($this->rowColorConditions) {
             if ($record['disabilitato'] or $record['disabled']) {
-                return UIStateColors::getHexRList(UIStateColors::STATE_LIGHT);
+                return UIStateColors::STATE_LIGHT;
             }
             foreach ($this->rowColorConditions as $uiState => $callback) {
                 if (call_user_func($callback, $record)) {
-                    return UIStateColors::getHexRList($uiState);
+                    return $uiState;
                 }
             }
         }
 
-        return $this->rowColor($record);
+        return null;
+    }
+
+
+    public function recordHexColor(array $record, int $index = 0): ?string
+    {
+        if ($state = $this->recordStateColor($record, $index)) {
+            return UIStateColors::getHexRList($state);
+        }
+
+        return $this->rowColor($record) ?: self::DEFAULT_RECORDLIST_BG_COLOR;
     }
 
     /**
@@ -4977,4 +5019,48 @@ class Node
     {
         $this->rowColorConditions[$uiState] = $callback;
     }
+
+    /**
+     * @return string
+     */
+    public function getRowColorMode(): string
+    {
+        return $this->rowColorMode;
+    }
+
+    /**
+     * @param string $rowColorMode
+     * @return Node
+     */
+    public function setRowColorMode(string $rowColorMode): self
+    {
+
+        if ($rowColorMode !== self::ROW_COLOR_MODE_CELL) {
+            $this->getAttribute(self::ROW_COLOR_ATTRIBUTE)->addFlag(Attribute::AF_HIDE);
+        }
+
+        $this->rowColorMode = $rowColorMode;
+        return $this;
+    }
+
+
+    public function getSubmitBtnAttribList(): array
+    {
+        return $this->submitBtnAttribList;
+    }
+
+
+    public function addSubmitBtnAttrib(string $buttonName): self
+    {
+        $this->submitBtnAttribList[] = $buttonName;
+        return $this;
+    }
+
+
+    public function isSubmitBtnClicked(string $buttonName): bool
+    {
+        return in_array($buttonName, $this->submitBtnAttribList) and isset($this->m_postvars[$buttonName]) and $this->m_postvars[$buttonName];
+    }
+
+
 }

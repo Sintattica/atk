@@ -38,9 +38,40 @@ class UpdateHandler extends ActionHandler
 
         if (isset($this->m_partial) && $this->m_partial != '') {
             $this->partial($this->m_partial);
-
             return;
         } else {
+
+            $record = $this->m_postvars;
+            foreach ($this->m_node->getSubmitBtnAttribList() as $attributeName) {
+                if ($this->m_node->isSubmitBtnClicked($attributeName)) {
+                    /** @var ButtonAttribute $btn */
+                    $btn = $this->m_node->getAttribute($attributeName);
+
+                    if($btn->getOnClickCallback()) {
+                        $result = call_user_func($btn->getOnClickCallback(), $record);
+
+                        if (isset($result)) {
+                            if ($result) {
+                                $this->m_node->getDb()->commit();
+                            } else {
+                                $this->m_node->getDb()->rollback();
+                            }
+                        }
+
+                        $sm = SessionManager::getInstance();
+                        $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), [
+                            'atkselector' => $this->m_node->primaryKey($record),
+                            'atktab' => $this->m_node->getActiveTab(),
+                        ]), SessionManager::SESSION_BACK);
+
+                        $this->m_node->redirect($location);
+                        return;
+                    }
+                }
+            }
+
+
+
             $this->doUpdate();
         }
     }
@@ -88,7 +119,7 @@ class UpdateHandler extends ActionHandler
             $prefix = $this->m_postvars['atkfieldprefix'];
         }
 
-        $csrfToken = isset($this->m_postvars[$prefix.'atkcsrftoken']) ? $this->m_postvars[$prefix.'atkcsrftoken'] : null;
+        $csrfToken = isset($this->m_postvars[$prefix . 'atkcsrftoken']) ? $this->m_postvars[$prefix . 'atkcsrftoken'] : null;
 
         // check for CSRF token
         if (!$this->isValidCSRFToken($csrfToken)) {
@@ -159,7 +190,7 @@ class UpdateHandler extends ActionHandler
         $errorHandler = 'handleUpdateError',
         $successHandler = 'handleUpdateSuccess',
         $extraParams = []
-    ) {
+    ){
         // empty the postvars because we don't want to use these
         $postvars = $this->getNode()->m_postvars;
         $this->getNode()->m_postvars = [];

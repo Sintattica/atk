@@ -10,110 +10,38 @@ use Sintattica\Atk\Session\SessionManager;
 class ButtonAttribute extends DummyAttribute
 {
     const TYPE_SUBMIT = 'submit'; // default
-    const TYPE_ACTION = 'action';
 
-    private $name;
-    private $classes = ['btn', 'btn-default'];
-    private $node = '';
-    private $action = '';
-    private $params = [];
-    private $target = null;
-    private $sessionStatus = SessionManager::SESSION_NESTED;
-    private $saveForm = false;
-    private $type = self::TYPE_SUBMIT;
-    private $callback = null;
+    protected $classes = ['btn', 'btn-default'];
+    protected $node = '';
+    protected $text = '';
+    protected $sessionStatus = SessionManager::SESSION_NESTED;
+    protected $saveForm = false;
+    protected $onClickCallback = null;
+
 
     public function __construct($name, $flags = 0)
     {
-        $this->name = $name;
-
+        $this->text = $name;
         parent::__construct($name, $flags | self::AF_HIDE_LIST | self::AF_READONLY);
     }
 
     public function display($record, $mode)
     {
         $classes = implode(' ', $this->classes);
+        $tranlatedText = $this->text($this->text);
 
-        switch ($this->type) {
-            case self::TYPE_ACTION:
-                /** @var Node $ownerInstance */
-                $ownerInstance = Atk::getInstance()->atkGetNode($this->node);
-                $action = $this->action;
-                if ($action === 'edit' and !$ownerInstance->allowed('edit')) {
-                    // action edit ma l'utente non ha i permessi: mando in view
-                    $action = 'view';
-                }
-                $this->params['atkselector'] = $ownerInstance->getPrimaryKey($record);
-                $url = Tools::dispatch_url($this->node, $action, $this->params);
-                $extraProps = [];
-                if ($classes) {
-                    $extraProps[] = 'class="' . $classes . '"';
-                }
-                if ($this->target) {
-                    $extraProps[] = 'target="' . $this->target . '"';
-                }
-                return Tools::href($url, Tools::atktext($this->name, $ownerInstance->getModule()), $this->sessionStatus, $this->saveForm, implode(' ', $extraProps));
+        return '<button type="submit" class="' . $classes . '" name="' . $this->m_name . '" value="' . $tranlatedText . '">' . $tranlatedText . '</button>';
 
-            case self::TYPE_SUBMIT:
-            default:
-                $txt = $this->text($this->name);
-                return '<button type="submit" class="' . $classes . '" name="' . $this->name . '" value="' . $txt . '">' . $txt . '</button>';
-        }
     }
 
-    public function addParam($key, $value): self
+    public function getText(): string
     {
-        $this->params[$key] = $value;
-        return $this;
+        return $this->text;
     }
 
-    public function addParams($params = []): self
+    public function setText($name): self
     {
-        $this->params = array_merge($this->params, $params);
-        return $this;
-    }
-
-    public function setParams($params = []): self
-    {
-        $this->params = $params;
-        return $this;
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name): self
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function getNode(): string
-    {
-        return $this->node;
-    }
-
-    public function setNode(string $node): self
-    {
-        $this->node = $node;
-        return $this;
-    }
-
-    public function getAction(): string
-    {
-        return $this->action;
-    }
-
-    public function setAction($action): self
-    {
-        $this->action = $action;
+        $this->text = $name;
         return $this;
     }
 
@@ -131,17 +59,6 @@ class ButtonAttribute extends DummyAttribute
     public function addClass(string $class): self
     {
         $this->classes[] = $class;
-        return $this;
-    }
-
-    public function getTarget(): string
-    {
-        return $this->target;
-    }
-
-    public function setTarget($target): self
-    {
-        $this->target = $target;
         return $this;
     }
 
@@ -169,23 +86,17 @@ class ButtonAttribute extends DummyAttribute
 
     public function getType(): string
     {
-        return $this->type;
+        return self::TYPE_SUBMIT;
     }
 
-    public function setType(string $type): self
+    public function getOnClickCallback(): callable
     {
-        $this->type = $type;
-        return $this;
+        return $this->onClickCallback;
     }
 
-    public function getCallback(): callable
+    public function onClick(callable $clickCallback): self
     {
-        return $this->callback;
-    }
-
-    public function setCallback(callable $callback): self
-    {
-        $this->callback = $callback;
+        $this->onClickCallback = $clickCallback;
         return $this;
     }
 }
