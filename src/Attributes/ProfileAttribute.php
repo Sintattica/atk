@@ -27,7 +27,6 @@ class ProfileAttribute extends Attribute
      * @param string $name The name of the attribute
      * @param int $flags The flags of this attribute
      * @param string $parentAttrName
-     * @return ProfileAttribute
      */
     public function __construct($name, $flags = 0, $parentAttrName = '')
     {
@@ -333,90 +332,82 @@ class ProfileAttribute extends Attribute
      */
     public function display($record, $mode)
     {
-        $page = Page::getInstance();
-        $page->register_script(Config::getGlobal('assets_url') . 'javascript/profileattribute.js');
-        $this->_restoreDivStates($page);
+        Page::getInstance()->register_script(Config::getGlobal('assets_url') . 'javascript/profileattribute.js');
 
-        $icons = "const ATK_PROFILE_ICON_OPEN = '" . Config::getGlobal('icon_plussquare') . "';";
-        $icons .= "const ATK_PROFILE_ICON_CLOSE = '" . Config::getGlobal('icon_minussquare') . "';";
-        $page->register_scriptcode($icons);
 
-        $result = '';
         $isAdmin = (SecurityManager::isUserAdmin() || $this->canGrantAll());
 
         $allActions = $this->getAllActions($record, false);
         $editableActions = $this->getEditableActions($record);
         $selectedActions = $this->getSelectedActions($record);
-
         $showModule = Tools::count($allActions) > 1 && ($isAdmin || Tools::count($editableActions) > 1);
 
-        $firstModule = true;
+        $result = '<div class="row">';
 
         foreach ($allActions as $module => $nodes) {
             $module_result = '';
+            $hasAnyPermissions = false;
 
-            foreach ($nodes as $node => $actions) {
-                $showBox = $isAdmin || Tools::count(array_intersect($actions,
-                        (is_array($editableActions[$module][$node]) ? $editableActions[$module][$node] : array()))) > 0;
-                $display_node_str = false;
-                $display_tabs_str = false;
-                $node_result = '';
-                $permissions_string = '';
-                $tab_permissions_string = '';
-
-                foreach ($actions as $action) {
-                    $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
-
-                    // If the action of a node is selected for this user we will show the node,
-                    // otherwise we won't
-                    if ($isSelected) {
-                        $display_node_str = true;
-                        if (substr($action, 0, 4) == 'tab_') {
-                            $display_tabs_str = true;
-                            $tab_permissions_string .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
-                        } else {
-                            $permissions_string .= $this->permissionName($action, $node, $module) . '&nbsp;&nbsp;&nbsp;';
-                        }
-                    }
-                }
-
-                if ($showBox) {
-                    $node_result .= '<b>' . Tools::atktext($node, $module) . '</b><br>';
-                    $node_result .= $permissions_string;
-                    if ($display_tabs_str) {
-                        $node_result .= '<br>Tabs:&nbsp;' . $tab_permissions_string;
-                    }
-                    $node_result .= "<br /><br />\n";
-                } else {
-                    $node_result .= $permissions_string;
-                    if ($display_tabs_str) {
-                        $node_result .= '<br>Tabs:&nbsp;' . $tab_permissions_string;
-                    }
-                }
-
-                if ($display_node_str) {
-                    $module_result .= $node_result;
-                }
-            }
-
-            // If we have more then one module, split up the module results by collapsable div's
             if ($showModule) {
-                if ($module_result) {
-                    if ($firstModule) {
-                        $firstModule = false;
-                    } else {
-                        $result .= '</div>';
+                $module_result .= '<div class="col-12 col-md-4" id="div_' . $module . '">';
+
+                $module_result .= '<div class="card card-default">';
+
+                $module_result .= '<div class="card-header">
+                                <h3 class="card-title">' . Tools::atktext(["title_$module", $module], $module) . '</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>';
+
+                $module_result .= '<div class="card-body">';
+
+                $isFirstModule = true;
+                foreach ($nodes as $node => $actions) {
+
+                    $hasAnyEnabledPermission = false;
+                    $permissionsResult = '';
+
+
+                    $permissionsPills = '<div class="row justify-content-start">';
+                    foreach ($actions as $action) {
+
+                        // If the action of a node is selected for this user we will show the node otherwise we won't
+                        if (isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node])) {
+                            $hasAnyEnabledPermission = true;
+                            $hasAnyPermissions = true;
+                             $permissionsPills .= "<span class='mt-1 mr-1 badge-sm badge-pill badge-secondary text-nowrap'>" . $this->permissionName($action, $node, $module) . "</span>";
+                        }
+
+                    }
+                    $permissionsPills .= '</div>'; //end-row
+
+                    $permissionsResult .= '<div class="container-fluid">';
+                    $permissionsResult .= '<div class="row"><strong>' . Tools::atktext($node, $module) . '</strong></div>';
+                    $permissionsResult .= $permissionsPills;
+                    $permissionsResult .= '</div>';
+
+                    if($isFirstModule){
+                        $permissionsResult .='<hr>';
+                        $isFirstModule = false;
                     }
 
-                    $result .= sprintf("<span onclick=\"%s\" style=\"cursor: pointer; font-size: 110%%; font-weight: bold;display:block;\"><i class=\"%s\" id=\"img_div_$module\"></i> %s</span>",
-                        "ATK.ProfileAttribute.profile_swapProfileDiv('div_$module'); return false;", Config::getGlobal('icon_plussquare'),
-                        Tools::atktext(array("title_$module", $module), $module));
-                    $result .= "<div id=\"div_$module\" name=\"div_$module\" style=\"display: none;padding-left: 15px;\">";
-                    $result .= "<input type=\"hidden\" name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value=\"closed\" />";
-                    $result .= $module_result;
+                    if ($hasAnyEnabledPermission) {
+                        $module_result .= $permissionsResult;
+                    }
                 }
+
+                $result .= $hasAnyPermissions ? $module_result : '';
+
+                $result .= '</div>'; //end card-body
+                $result .= '</div>'; //end card
+                $result .= '</div>'; //end-col
+
             }
+
         }
+
+        $result .= "</div>"; //end-row
 
         return $result;
     }
@@ -556,7 +547,7 @@ class ProfileAttribute extends Attribute
                     }
 
                     $result .= '</div>';
-                    if($i < count($nodes)-1) {
+                    if ($i < count($nodes) - 1) {
                         $result .= '<hr>';
                     }
                     $i++;
