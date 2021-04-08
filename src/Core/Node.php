@@ -674,6 +674,7 @@ class Node
         $this->setEditFieldPrefix(Config::getGlobal('edit_fieldprefix', ''));
 
         $this->addStateColorAttribute();
+        $this->setRowColorMode(self::ROW_COLOR_MODE_DEFAULT);
     }
 
     /**
@@ -900,7 +901,7 @@ class Node
         // soon as possible AFTER the constructor. (the dispatcher function)
         $attribute->setOwnerInstance($this);
 
-        if(method_exists($attribute, 'getType') && $attribute->getType() == ButtonAttribute::TYPE_SUBMIT){
+        if (method_exists($attribute, 'getType') && $attribute->getType() == ButtonAttribute::TYPE_SUBMIT) {
             $this->addSubmitBtnAttrib($attribute->m_name);
         }
 
@@ -5035,7 +5036,9 @@ class Node
     public function setRowColorMode(string $rowColorMode): self
     {
 
-        if ($rowColorMode !== self::ROW_COLOR_MODE_CELL) {
+        if ($rowColorMode === self::ROW_COLOR_MODE_CELL) {
+            $this->getAttribute(self::ROW_COLOR_ATTRIBUTE)->removeFlag(Attribute::AF_HIDE);
+        } else {
             $this->getAttribute(self::ROW_COLOR_ATTRIBUTE)->addFlag(Attribute::AF_HIDE);
         }
 
