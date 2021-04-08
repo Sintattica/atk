@@ -356,7 +356,7 @@ class ProfileAttribute extends Attribute
                 $module_result .= '<div class="card-header">
                                 <h3 class="card-title">' . Tools::atktext(["title_$module", $module], $module) . '</h3>
                                 <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                 </div>
                             </div>';
 
