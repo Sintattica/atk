@@ -569,8 +569,15 @@ img.rounded-circle {
     margin-bottom: 1px;
 }
 
-.state-color-attribute.round {
+.state-color-attribute.shape-round {
     border-radius: 50%;
+}
+
+
+.state-color-attribute.shape-fluid {
+    width:100% !important;
+    border-radius: 5px;
+    display: block;
 }
 
 .state-color-attribute.bordered {

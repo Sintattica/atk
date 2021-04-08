@@ -14,8 +14,9 @@ use Sintattica\Atk\Core\Tools;
  */
 class StateColorAttribute extends DummyAttribute
 {
-    public const SHAPE_ROUND = 'round';
-    public const SHAPE_SQUARE = 'square';
+    public const SHAPE_ROUND = 'shape-round';
+    public const SHAPE_SQUARE = 'shape-square';
+    public const SHAPE_FLUID = 'shape-fluid';
     public const SIZE_MD = 'md';
     public const SIZE_SM = 'sm';
     public const SIZE_LG = 'lg';

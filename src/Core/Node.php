@@ -214,7 +214,7 @@ class Node
 
     const ROW_COLOR_MODE_CELL = 'cell';
     const ROW_COLOR_MODE_DEFAULT = 'row';
-    const ROW_COLOR_ATTRIBUTE = 'row_color_mode_attribute';
+    const ROW_COLOR_ATTRIBUTE = '_row_color_attribute';
 
     /*
      * reference to the class which is used to validate atknodes
@@ -4884,7 +4884,6 @@ class Node
         return null;
     }
 
-
     public function recordHexColor(array $record, int $index = 0): ?string
     {
         if ($state = $this->recordStateColor($record, $index)) {
@@ -4893,7 +4892,6 @@ class Node
 
         return $this->rowColor($record) ?: self::DEFAULT_RECORDLIST_BG_COLOR;
     }
-
     /**
      * Row CSS class.
      *
@@ -5021,6 +5019,7 @@ class Node
         $this->rowColorConditions[$uiState] = $callback;
     }
 
+
     /**
      * @return string
      */
@@ -5064,6 +5063,4 @@ class Node
     {
         return in_array($buttonName, $this->submitBtnAttribList) and isset($this->m_postvars[$buttonName]) and $this->m_postvars[$buttonName];
     }
-
-
 }

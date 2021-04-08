@@ -234,9 +234,11 @@ class DataGridList extends DataGridComponent
         for ($i = 0, $_i = Tools::count($list['rows']); $i < $_i; ++$i) {
             $record = [];
 
+            $bgn = $bgh = Node::DEFAULT_RECORDLIST_BG_COLOR;
 
-            // row Color
-            $bgn = $bgh = $grid->getNode()->rowColorByState($recordset[$i], $i) ?: Node::DEFAULT_RECORDLIST_BG_COLOR;
+            if($this->getNode()->getRowColorMode() === Node::ROW_COLOR_MODE_DEFAULT){
+                $bgn = $bgh = $grid->getNode()->recordHexColor($recordset[$i], $i);
+            }
 
             if (is_array($bgn)) {
                 list($bgn, $bgh) = $bgn;
@@ -254,6 +256,7 @@ class DataGridList extends DataGridComponent
                 $record['background'] = $bgn;
                 $record['highlight'] = $bgh;
             }
+
 
             $record['color'] = Tools::isLightTxtUsingBg($record['background']) ? "#fff" : '#212529';
             $record['rownum'] = $i;
