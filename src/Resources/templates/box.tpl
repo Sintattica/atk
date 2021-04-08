@@ -2,7 +2,7 @@
 <section class="content overflow-hidden">
 
     <!-- Default box -->
-    <div class="card">
+    <div class="card card-outline card-secondary">
         <div class="card-header">
             <h3 class="card-title">{$title}</h3>
 
