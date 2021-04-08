@@ -3,16 +3,17 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Atk;
-use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 
-class ActionAttribute extends ButtonAttribute
+class ActionButtonAttribute extends ButtonAttribute
 {
-
+    private $node = '';
     private $action = '';
     private $params = [];
     private $target = null;
+    private $sessionStatus = SessionManager::SESSION_NESTED;
+    private $saveForm = false;
 
     public function __construct($name, $flags = 0)
     {
@@ -21,8 +22,8 @@ class ActionAttribute extends ButtonAttribute
 
     public function display($record, $mode)
     {
-        $classes = implode(' ', $this->classes);
-        $tranlatedText = $this->text($this->text);
+        $classes = implode(' ', $this->m_cssclasses);
+        $tranlatedText = $this->text($this->m_text);
 
         $targetNode = Atk::getInstance()->atkGetNode($this->node);
         $action = $this->action;
@@ -95,6 +96,33 @@ class ActionAttribute extends ButtonAttribute
     public function setTarget($target): self
     {
         $this->target = $target;
+        return $this;
+    }
+
+    public function getType(): string
+    {
+        return self::TYPE_ACTION;
+    }
+
+    public function getSessionStatus(): int
+    {
+        return $this->sessionStatus;
+    }
+
+    public function setSessionStatus(int $sessionStatus): self
+    {
+        $this->sessionStatus = $sessionStatus;
+        return $this;
+    }
+
+    public function getSaveForm(): bool
+    {
+        return $this->saveForm;
+    }
+
+    public function setSaveForm(bool $saveForm): self
+    {
+        $this->saveForm = $saveForm;
         return $this;
     }
 }

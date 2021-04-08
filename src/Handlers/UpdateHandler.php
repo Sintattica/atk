@@ -2,9 +2,9 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Attributes\SubmitButtonAttribute;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionStore;
 
 /**
@@ -44,10 +44,11 @@ class UpdateHandler extends ActionHandler
             $record = $this->m_postvars;
             foreach ($this->m_node->getSubmitBtnAttribList() as $attributeName) {
                 if ($this->m_node->isSubmitBtnClicked($attributeName)) {
-                    /** @var ButtonAttribute $btn */
+
+                    /** @var SubmitButtonAttribute $btn */
                     $btn = $this->m_node->getAttribute($attributeName);
 
-                    if($btn->getOnClickCallback()) {
+                    if ($btn->getOnClickCallback()) {
                         $result = call_user_func($btn->getOnClickCallback(), $record);
 
                         if (isset($result)) {
@@ -57,20 +58,18 @@ class UpdateHandler extends ActionHandler
                                 $this->m_node->getDb()->rollback();
                             }
                         }
-
-                        $sm = SessionManager::getInstance();
-                        $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), [
-                            'atkselector' => $this->m_node->primaryKey($record),
-                            'atktab' => $this->m_node->getActiveTab(),
-                        ]), SessionManager::SESSION_BACK);
-
-                        $this->m_node->redirect($location);
-                        return;
                     }
+
+                    $sm = SessionManager::getInstance();
+                    $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), [
+                        'atkselector' => $this->m_node->primaryKey($record),
+                        'atktab' => $this->m_node->getActiveTab(),
+                    ]), SessionManager::SESSION_BACK);
+
+                    $this->m_node->redirect($location);
+                    return;
                 }
             }
-
-
 
             $this->doUpdate();
         }
@@ -190,7 +189,8 @@ class UpdateHandler extends ActionHandler
         $errorHandler = 'handleUpdateError',
         $successHandler = 'handleUpdateSuccess',
         $extraParams = []
-    ){
+    )
+    {
         // empty the postvars because we don't want to use these
         $postvars = $this->getNode()->m_postvars;
         $this->getNode()->m_postvars = [];

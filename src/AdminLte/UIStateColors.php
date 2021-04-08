@@ -255,9 +255,9 @@ class UIStateColors
         return null;
     }
 
-    public function getAllUIStates(): array
+    public static function getAllUIStates(): array
     {
-        return array_keys($this->colorPalette);
+        return array_keys(self::getInstance()->colorPalette);
     }
 
     /**

@@ -3056,10 +3056,19 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function addCSSClass(string $classname): Attribute
+    public function addCSSClass(string $classname): self
     {
         if (!in_array($classname, $this->m_cssclasses)) {
             $this->m_cssclasses[] = $classname;
+        }
+
+        return $this;
+    }
+
+    public function addCSSClasses(array $classes): self
+    {
+        foreach ($classes as $class) {
+            $this->addCSSClass($class);
         }
 
         return $this;
