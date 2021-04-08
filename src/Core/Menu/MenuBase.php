@@ -156,31 +156,41 @@ abstract class MenuBase
     {
 
         $itemsHtml = $this->parseItems($this->items['main']);
-        $this->setItemVisibility($itemsHtml);
-
-        //reindex the array in case unsets have been made!
-        //we have to put this here because setItemVisibility() is recursive!
-        $itemsHtml = array_values($itemsHtml);
-
-        $this->setSeparatorItemVisibility($itemsHtml);
 
         $itemsLeftHtml = array_filter($itemsHtml, function ($el): bool {
             return $el['position'] === self::MENU_NAV_LEFT;
         });
+        $this->setItemsVisibility($itemsLeftHtml);
+
 
         $itemsRightHtml = array_filter($itemsHtml, function ($el): bool {
             return $el['position'] === self::MENU_NAV_RIGHT;
         });
+        $this->setItemsVisibility($itemsRightHtml);
 
         $itemsSidebarHtml = array_filter($itemsHtml, function ($el): bool {
             return $el['position'] === self::MENU_SIDEBAR;
         });
+        $this->setItemsVisibility($itemsSidebarHtml);
 
         return [
             self::MENU_NAV_LEFT => $this->processMenu($itemsLeftHtml, false, self::TYPE_MENU_NAVBAR) ?: '',
             self::MENU_NAV_RIGHT => $this->processMenu($itemsRightHtml, false, self::TYPE_MENU_NAVBAR) ?: '',
             self::MENU_SIDEBAR => $this->processMenu($itemsSidebarHtml) ?: ''
         ];
+    }
+
+
+    private function setItemsVisibility(&$htmlMenuitems)
+    {
+        $this->unsetDisabledItem($htmlMenuitems);
+
+        //re-index the array in case unsets have been made!
+        //we have to put this here because unsetDisabledItem() is recursive!
+        $htmlMenuitems = array_values($htmlMenuitems);
+
+        $this->unsetUselessSeparatorItems($htmlMenuitems);
+
     }
 
 
@@ -194,7 +204,6 @@ abstract class MenuBase
      */
     private function processMenu(array $menu, bool $child = false, string $type = self::TYPE_MENU_SIDEBAR): string
     {
-
         $html = '';
         if (is_array($menu)) {
             foreach ($menu as $item) {
@@ -213,14 +222,14 @@ abstract class MenuBase
     }
 
 
-    private function setItemVisibility(array &$menu): void
+    private function unsetDisabledItem(array &$menu): void
     {
         foreach ($menu as $index => $menuItem) {
             //todo: transform item in menuItem
             if (!$this->isEnabled($menuItem) || !$menuItem['enable']) {
                 unset($menu[$index]);
             } else if ($menuItem['submenu']) {
-                $this->setItemVisibility($menuItem['submenu']);
+                $this->unsetDisabledItem($menuItem['submenu']);
             }
         }
     }
@@ -229,7 +238,7 @@ abstract class MenuBase
      * @param $menu
      * @throws ReflectionException
      */
-    private function setSeparatorItemVisibility(&$menu)
+    private function unsetUselessSeparatorItems(&$menu)
     {
         for ($i = 0; $i < count($menu); $i++) {
             if (in_array($menu[$i]['type'], [Tools::getClassName(SeparatorItem::class), Tools::getClassName(HeaderItem::class)])) {
