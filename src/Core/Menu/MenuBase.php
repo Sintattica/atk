@@ -224,12 +224,16 @@ abstract class MenuBase
 
     private function unsetDisabledItem(array &$menu): void
     {
-        foreach ($menu as $index => $menuItem) {
+        //Keep outside otherwise the variable references get lost due to unset call.
+        $firstKey = array_keys($menu)[0];
+        $menuLength = count($menu);
+
+        for ($i=$firstKey; $i<$menuLength; $i++) {
             //todo: transform item in menuItem
-            if (!$this->isEnabled($menuItem) || !$menuItem['enable']) {
-                unset($menu[$index]);
-            } else if ($menuItem['submenu']) {
-                $this->unsetDisabledItem($menuItem['submenu']);
+            if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
+                unset($menu[$i]);
+            } else if ($menu[$i]['submenu']) {
+                $this->unsetDisabledItem($menu[$i]['submenu']);
             }
         }
     }
