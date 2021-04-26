@@ -58,10 +58,17 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string the rendered template
+     * @throws SmartyException
      */
     public function renderAction($action, $vars, $module = ''): string
     {
-        return $this->render("action_$action.tpl", $vars, $module);
+        $tpl = "action_$action.tpl";
+        if (!$this->m_smarty->templateExists($tpl)) // no specific theme for this action
+        {
+            $tpl = "action.tpl";
+        }
+
+        return $this->render($tpl, $vars, $module);
     }
 
     /**
