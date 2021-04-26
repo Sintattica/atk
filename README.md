@@ -53,7 +53,7 @@ Version like 9.0, but with jQuery only. No PRs accepted to avoid breaking legacy
 
 ### 9.2
 We are actively working on this version as we use it on production. The latest release is fixed on v9.2.1. Feel free to test it and report any bugs. 
-For the latest developments (we do the best but there's no absolute guarantee of bug free code) you can use v9.2-dev where you can find our latest pushes. 
+For the latest developments (we'll do our best but there's no absolute guarantee of bug free code) you can use v9.2-dev where you can find our latest pushes. 
 
 
 ### 10.0
