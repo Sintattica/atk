@@ -52,6 +52,9 @@ This is a deeply refactored version that's not backward compatible. It's been de
 Version like 9.0, but with jQuery only. No PRs accepted to avoid breaking legacy projects.
 
 ### 9.2
+In this version we have integrated the AdminLte layout (https://adminlte.io). It starts from v9.1 and adds some features to it. The goal is to make a v.11.0 that will be a merge between v9.2 and v.10.0 (hopefully 🙏🏻).
+
+
 We are actively working on this version as we use it on production. The latest release is fixed on v9.2.1. Feel free to test it and report any bugs. 
 For the latest developments (we'll do our best but there's no absolute guarantee of bug free code) you can use v9.2-dev where you can find our latest pushes. 
 
