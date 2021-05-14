@@ -2242,12 +2242,12 @@ class Tools
     }
 
     /**
-     * Decides if the text color should be black of white based on a given background color and a threshold.
+     * Decides if the text color should be black or white based on a given background color and a threshold.
      * Uses a simple formula
      * Proposed threshold was 186 but in our tests this wasn't good enough.
      * @param string $bgColor
      * @param int $threshold
-     * @return bool
+     * @return bool - True if white text required otherwise false
      */
     public static function isLightTxtUsingBgSimple(string $bgColor, int $threshold = 160): bool
     {
@@ -2257,11 +2257,11 @@ class Tools
 
 
     /**
-     * Decides if the text color should be black of white based on a given background color and a threshold.
+     * Decides if the text color should be black or white based on a given background color and a threshold.
      * Uses the W3C proposed formula. The proposed threshold is 0.179 but in our tests this wasn't good enough.
      * @param string $bgColor
      * @param float $threshold
-     * @return bool
+     * @return bool - True if white text required otherwise false
      */
     public static function isLightTxtUsingBg(string $bgColor, float $threshold = 0.379): bool
     {
