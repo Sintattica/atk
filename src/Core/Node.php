@@ -2926,9 +2926,9 @@ class Node
     function buildAdminHeaderFilters(array $filters, string $sepRows = '', string $sepLinks = '', string $class = '', string $classActive = ''): string
     {
         if (!$sepRows) {
-            $sepRows = '<div class="mb-5"></div>';
+            $sepRows = '<div class="mb-1"></div>';
         }
-        $ret = '<div class="mb-5">';
+        $ret = '<div class="mb-3">';
         foreach ($filters as $filter) {
             $ret .= $this->addAdminHeaderFilter($filter['name'], $filter['values'], $filter['noFilterText'], $sepLinks, $class, $classActive) . $sepRows;
         }
