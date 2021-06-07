@@ -4,6 +4,7 @@
 namespace Sintattica\Atk\Core\Menu;
 
 
+use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 
 /**
@@ -229,7 +230,7 @@ abstract class Item
                 break;
             case self::ICON_CHARS:
                 $this->iconType = self::ICON_CHARS;
-                $this->icon = substr($icon, 0, 2);
+                $this->icon = substr(Tools::atktext($icon, '', '', Language::getLanguage()), 0, 2);
                 break;
             default:
                 $this->iconType = self::ICON_FA;
