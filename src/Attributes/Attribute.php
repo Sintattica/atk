@@ -1345,14 +1345,24 @@ class Attribute
             return $ret;
         }
 
-        $result = '<span class="form-control-static">' . $ret . '</span>';
+        return '<span class="form-control-static">' . $ret . '</span>' . $this->formatHelper($this->getHelp());
 
-        $helpText = $this->getHelp();
-        if ($helpText !== '') {
-            $result .= '<p class="text-muted text-xs">' . htmlspecialchars($helpText) . '</p>';
+    }
+
+    /**
+     * @param $text
+     * @param bool $filterHtmlTags
+     * @return string
+     */
+    private function formatHelper($text, $filterHtmlTags = true)
+    {
+
+        if ($text) {
+            return '<p class="text-muted text-xs">' . ($filterHtmlTags ? htmlspecialchars($text) : $text) . '</p>';
         }
 
-        return $result;
+        return "";
+
     }
 
     /**
@@ -1418,10 +1428,7 @@ class Attribute
             }
         }
 
-        $helpText = $this->getHelp();
-        if ($helpText !== '') {
-            $result .= '<p class="help-block">' . htmlspecialchars($helpText) . '</p>';
-        }
+        $result .= $this->formatHelper($this->getHelp());
 
         return $result;
     }
