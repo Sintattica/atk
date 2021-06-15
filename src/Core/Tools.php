@@ -1295,8 +1295,14 @@ class Tools
             // check if user has permission, otherwise change in view action
             $action = Atk::getInstance()->atkGetNode($nodeUri)->allowed('edit') ? 'edit' : 'view';
         }
+
         $url = Tools::dispatch_url($nodeUri, $action, $params);
-        return Tools::href($url, $name, $sessionStatus, $saveForm, $extraProps);
+
+        if (!$name) {
+            $name = Atk::getInstance()->atkGetNode($nodeUri)->text($action);
+        }
+
+        return self::href($url, $name, $sessionStatus, $saveForm, $extraProps);
     }
 
     /**
@@ -1357,7 +1363,7 @@ class Tools
 
         $cssclass = ' class="' . $cssclass . '"';
         $script = 'ATK.FormSubmit.atkSubmit("' . self::atkurlencode($sm->sessionUrl($url, $sessionstatus)) . '")';
-        $button = '<button type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>'.$text.'</button>';
+        $button = '<button type="button" name="atkbtn' . (++$cnt) . '" value="' . $text . '" onClick=\'' . $script . '\'' . $cssclass . '>' . $text . '</button>';
 
         return $button;
     }
