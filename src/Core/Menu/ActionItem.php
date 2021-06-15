@@ -4,6 +4,7 @@
 namespace Sintattica\Atk\Core\Menu;
 
 
+use Exception;
 use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 
@@ -96,7 +97,7 @@ class ActionItem extends Item
     public function getEnable()
     {
 
-        if($this->nodeUri && $this->action){
+        if ($this->nodeUri && $this->action) {
             return [$this->nodeUri, $this->action];
         }
 
@@ -117,12 +118,34 @@ class ActionItem extends Item
         $this->urlParams[$key] = $value;
     }
 
-    //Todo Rename Method
+    /**
+     * The method encodes the url params as a string with separators.
+     * This is used to generate unique links for the menu items so the active menu can be displayed.
+     * If no associative arrays have been provided the index of the array gets concatenated.
+     * @return string|null
+     * @throws Exception - If UrlParams contain arrays with more than 2 nested levels.
+     *
+     */
     protected function createIdentifierComponents(): ?string
     {
-        //In case there are urls that differ only from params
-        $urlParams = $this->urlParams ? implode('-', $this->urlParams) : '';
 
-        return $this->nodeUri . $this->action . $urlParams;
+        $encodedUrlParams = "";
+        $separator = "-";
+
+        foreach ($this->urlParams as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $subKey => $val) {
+                    if (is_array($val)) {
+                        throw new Exception("UrlParams on menu items must have less then 2 levels. More levels have been provided, ...");
+                    } else {
+                        $encodedUrlParams .= $separator . $subKey . $separator . $val;
+                    }
+                }
+            } else {
+                $encodedUrlParams .= $separator . $key . $separator . $value;
+            }
+        }
+
+        return $this->nodeUri . $this->action . $encodedUrlParams;
     }
 }
