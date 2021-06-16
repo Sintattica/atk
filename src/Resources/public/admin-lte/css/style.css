@@ -116,13 +116,19 @@
     margin-top: 5px;
 }
 
-.select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm{
+.select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm,
+.select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm {
     height: auto;
     padding-bottom: 0;
 }
 
-.select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm .select2-selection__choice{
-    margin-top:2px;
+.recordList-search-row .select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm {
+    min-width: 150px;
+}
+
+.recordList-search-row .select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm .select2-selection__choice,
+.recordList-search-row .select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm .select2-selection__choice {
+    margin-top: 2px;
 }
 
 
@@ -584,7 +590,7 @@ img.rounded-circle {
 
 
 .state-color-attribute.shape-fluid {
-    width:100% !important;
+    width: 100% !important;
     border-radius: 5px;
     display: block;
 }
