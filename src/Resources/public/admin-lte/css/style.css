@@ -116,6 +116,15 @@
     margin-top: 5px;
 }
 
+.select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm{
+    height: auto;
+    padding-bottom: 0;
+}
+
+.select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm .select2-selection__choice{
+    margin-top:2px;
+}
+
 
 /**
   * Tables
