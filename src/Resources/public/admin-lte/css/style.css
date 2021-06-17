@@ -120,10 +120,6 @@
 .select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm {
     height: auto;
     padding-bottom: 0;
-}
-
-.recordList-search-row .ManyToOneRelation .select2.select2-container.select2-container--bootstrap4.select2-container--below.select2-container--focus,
-.recordList-search-row .ListAttribute .select2.select2-container.select2-container--bootstrap4.select2-container--below.select2-container--focus {
     min-width: 250px;
 }
 
