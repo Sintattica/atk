@@ -120,10 +120,7 @@
 .select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm {
     height: auto;
     padding-bottom: 0;
-}
-
-.recordList-search-row .select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm {
-    min-width: 150px;
+    min-width: 250px;
 }
 
 .recordList-search-row .select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm .select2-selection__choice,
