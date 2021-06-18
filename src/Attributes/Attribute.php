@@ -1424,13 +1424,23 @@ class Attribute
                 // a possible edit action override (in both cases the method is called action_edit)
                 $result = $this->m_ownerInstance->$method($defaults, $fieldprefix, $mode, $this);
             } else {
-                $result = $this->edit($defaults, $fieldprefix, $mode) . (strlen($this->m_postfixlabel) > 0 ? '&nbsp;' . $this->m_postfixlabel : '');
+                $result = $this->edit($defaults, $fieldprefix, $mode);
+
+                if ($this->formatPostfixLabel()) {
+                    $result = "<div class='input-attr d-flex'>" . $result . $this->formatPostfixLabel() . "</div>";
+                }
+
             }
         }
 
         $result .= $this->formatHelper($this->getHelp());
 
         return $result;
+    }
+
+    protected function formatPostfixLabel(): string
+    {
+        return strlen($this->m_postfixlabel) > 0 ? '<span class="pl-1 my-auto">' . $this->m_postfixlabel . '</span>' : '';
     }
 
     public function isReadonlyEdit($mode)

@@ -186,7 +186,7 @@ class Relation extends Attribute
      */
     public function descriptor($record, $node)
     {
-        $method = $this->m_name.'_descriptor';
+        $method = $this->m_name . '_descriptor';
         if (method_exists($this->m_descHandler, $method)) {
             return $this->m_descHandler->$method($record, $node);
         } else {
@@ -205,12 +205,12 @@ class Relation extends Attribute
     {
         if (!is_object($this->m_destInstance)) {
             $atk = Atk::getInstance();
-            $cache_id = $this->m_owner.'.'.$this->m_name;
+            $cache_id = $this->m_owner . '.' . $this->m_name;
             $this->m_destInstance = $atk->atkGetNode($this->m_destination, true, $cache_id);
 
             // Validate if destination was created succesfully
             if (!is_object($this->m_destInstance)) {
-                Tools::atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
+                Tools::atkerror("Relation with unknown nodetype '" . $this->m_destination . "' (in node '" . $this->m_owner . "')");
                 $this->m_destInstance = null;
 
                 return false;
@@ -369,12 +369,12 @@ class Relation extends Attribute
      */
     public function getAddLabel()
     {
-        $key = 'link_'.$this->fieldName().'_add';
+        $key = 'link_' . $this->fieldName() . '_add';
         $label = Tools::atktext($key, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, '', '', true);
         if ($label == '') {
             $label = Tools::atktext($key, $this->m_destInstance->m_module, '', '', '', true);
             if ($label == '') {
-                $key = 'link_'.Tools::getNodeType($this->m_destination).'_add';
+                $key = 'link_' . Tools::getNodeType($this->m_destination) . '_add';
                 $label = Tools::atktext($key, $this->m_destInstance->m_module, '', '', '', true);
                 if ($label == '') {
                     $label = Tools::atktext('link_add', 'atk');
@@ -403,4 +403,10 @@ class Relation extends Attribute
 
         return '';
     }
+
+    protected function formatPostfixLabel(): string
+    {
+        return "";
+    }
+
 }

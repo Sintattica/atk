@@ -1131,4 +1131,10 @@ class FileAttribute extends Attribute
     }
 
 
+    protected function formatPostfixLabel(): string
+    {
+        return "";
+    }
+
+
 }

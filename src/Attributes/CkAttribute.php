@@ -120,5 +120,10 @@ class CkAttribute extends HtmlAttribute
         $this->ckOptions['height'] = $height;
     }
 
+    protected function formatPostfixLabel(): string
+    {
+        return "";
+    }
+
 
 }
