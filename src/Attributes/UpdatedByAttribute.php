@@ -19,10 +19,12 @@ class UpdatedByAttribute extends ManyToOneRelation
 {
     public function __construct($name, $flags = 0)
     {
-        $flags = $flags | self::AF_READONLY | self::AF_HIDE_ADD;
+        $flags = $flags | self::AF_READONLY | self::AF_HIDE_ADD | self::AF_LARGE; // self::AF_LARGE per migliorare performance
         parent::__construct($name, $flags, Config::getGlobal('auth_usernode'));
         $this->setForceInsert(true);
         $this->setForceUpdate(true);
+
+        $this->setNoneLabel($this->text('system'));
     }
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
@@ -50,7 +52,9 @@ class UpdatedByAttribute extends ManyToOneRelation
 
     public function value2db(array $record)
     {
-        $record[$this->fieldName()] = $this->initialValue();
+        if (!$record[$this->fieldName()]) { // only if it has no value
+            $record[$this->fieldName()] = $this->initialValue();
+        }
 
         return parent::value2db($record);
     }
