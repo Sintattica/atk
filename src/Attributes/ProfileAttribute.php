@@ -504,7 +504,7 @@ class ProfileAttribute extends Attribute
 
         $result = '<div class="row">';
         foreach ($allActions as $section => $modules) {
-            $result .= '<div class="col-12 col-md-4 profileSection">';
+            $result .= '<div class="col-12 col-lg-6 col-xl-4 profileSection">';
 
             $result .= '<div class="card card-default collapsed-card">';
 
@@ -533,11 +533,10 @@ class ProfileAttribute extends Attribute
                     // Draw action checkboxes
                     $result .= "<div class='row no-gutters'>";
                     $result .= '<div class="col-12 mt-1 mb-1"><strong>' . Tools::atktext($node, $module) . '</strong></div>';
-
                     foreach ($actions as $action) {
                         $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
-                        $result .= '<div class="col-6 col-xl-4">';
+                        $result .= '<div class="d-flex">';
                         $result .= '<div class="form-check form-check-inline">';
                         $result .= '<input type="checkbox" name="' . $this->fieldName() . '[]" class="form-check-input" value="' . $section . '.' . $module . '.' . $node . '.' . $action . '" ';
                         $result .= ($isSelected ? ' checked="checked"' : '') . '>';
