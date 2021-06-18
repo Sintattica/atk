@@ -126,21 +126,26 @@ class Page
     {
         // register default scripts
         $assetsUrl = Config::getGlobal('assets_url');
+        $lang = Config::getGlobal('language');
 
         //jQuery
-        $this->register_script($assetsUrl.'admin-lte/plugins/jquery/jquery.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/plugins/jquery/jquery.min.js');
 
         // Bootstrap 4
-        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js');
 
         // Select2
-        $this->register_script($assetsUrl.'admin-lte/plugins/select2/js/select2.full.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/plugins/select2/js/select2.full.min.js');
+
+        if ($lang) {
+            $this->register_script($assetsUrl . 'admin-lte/plugins/select2/js/i18n/' . $lang . '.js');
+        }
 
         //Bootstrap DatePicker
-        $this->register_script($assetsUrl.'admin-lte/plugins/moment/moment.min.js');
-        $this->register_script($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/plugins/moment/moment.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js');
 
-        $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
         /*
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
         $this->register_script($assetsUrl.'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
@@ -151,56 +156,53 @@ class Page
         */
 
         //Fixed Scrollbar
-        $this->register_script($assetsUrl.'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
 
         //Atk - Custom
-        $this->register_scriptcode("var LANGUAGE='".Config::getGlobal('language')."';", true);
+        $this->register_scriptcode("var LANGUAGE='" . $lang . "';", true);
         //$this->register_script($assetsUrl.'javascript/libs.min.js'); //disabled old jQuery Bundle
 
         //AdminLTE App
-        $this->register_script($assetsUrl.'admin-lte/js/adminlte.min.js');
+        $this->register_script($assetsUrl . 'admin-lte/js/adminlte.min.js');
 
 
         //Load these scripts as last.
         //There are parts that overwrite behaviours of the AdminLTE framework.
-        $this->register_script($assetsUrl.'javascript/tools.js');
-        $this->register_script($assetsUrl.'javascript/atk.js');
-
-
+        $this->register_script($assetsUrl . 'javascript/tools.js');
+        $this->register_script($assetsUrl . 'javascript/atk.js');
 
 
         /**
          * Global Styles
-        */
+         */
 
         //Google Font: Source Sans Pro
         $this->register_style("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback");
 
         //Font Awesome
-        $this->register_style($assetsUrl.'admin-lte/plugins/fontawesome-free/css/all.min.css');
+        $this->register_style($assetsUrl . 'admin-lte/plugins/fontawesome-free/css/all.min.css');
 
-        $this->register_style($assetsUrl.'admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css');
+        $this->register_style($assetsUrl . 'admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css');
 
         //ICheck
-        $this->register_style($assetsUrl.'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
-
+        $this->register_style($assetsUrl . 'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
 
 
         //Toastr
-        $this->register_style($assetsUrl.'admin-lte/plugins/toastr/toastr.min.css');
+        $this->register_style($assetsUrl . 'admin-lte/plugins/toastr/toastr.min.css');
 
         //Select2
-        $this->register_style($assetsUrl.'admin-lte/plugins/select2/css/select2.min.css');
-        $this->register_style($assetsUrl.'admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css');
+        $this->register_style($assetsUrl . 'admin-lte/plugins/select2/css/select2.min.css');
+        $this->register_style($assetsUrl . 'admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css');
 
-        $this->register_style($assetsUrl.'admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css');
+        $this->register_style($assetsUrl . 'admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css');
 
 
         // Theme style
-        $this->register_style($assetsUrl.'admin-lte/css/adminlte.min.css');
+        $this->register_style($assetsUrl . 'admin-lte/css/adminlte.min.css');
 
         //Override default with custom styles
-        $this->register_style($assetsUrl.'admin-lte/css/style.css');
+        $this->register_style($assetsUrl . 'admin-lte/css/style.css');
 
         /*
         $this->register_style($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.css');
@@ -212,8 +214,8 @@ class Page
 
 
         $style_url = Config::getGlobal('style_url');
-        if($style_url){
-           // $this->register_style(Config::getGlobal('style_url'));
+        if ($style_url) {
+            // $this->register_style(Config::getGlobal('style_url'));
         }
     }
 
@@ -316,10 +318,10 @@ class Page
      * Register a javascript code statement that is executed when a form on
      * the page is submitted.
      *
+     * @param string $code The javascript code fragment to execute on submit.
      * @todo This is inconsequent, if multiple forms are present, each should
      *       have its own submitscripts. Should be moved to an atkForm class.
      *
-     * @param string $code The javascript code fragment to execute on submit.
      */
     public function register_submitscript($code)
     {
@@ -463,8 +465,8 @@ class Page
 
         $favico = Config::getGlobal('defaultfavico');
         if ($favico != '') {
-            $res .= '  <link rel="icon" href="'.$favico.'" type="image/x-icon" />'."\n";
-            $res .= '  <link rel="shortcut icon" href="'.$favico.'" type="image/x-icon" />'."\n";
+            $res .= '  <link rel="icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
+            $res .= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
         }
 
         return $res;
@@ -480,7 +482,7 @@ class Page
     {
         $count_scriptcode = Tools::count($this->m_scriptcode['before']);
         if ($count_scriptcode > 0) {
-            $res .= '  <script type="text/javascript">'."\n";
+            $res .= '  <script type="text/javascript">' . "\n";
         }
         $res .= $this->renderScriptCode('before');
 
@@ -490,17 +492,17 @@ class Page
 
         if (!$partial) {
             for ($i = 0; $i < Tools::count($this->m_scriptfiles); ++$i) {
-                $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
+                $res .= '  <script type="text/javascript" src="' . $this->m_scriptfiles[$i] . '"></script>' . "\n";
             }
         } else {
             $files = '';
             for ($i = 0; $i < Tools::count($this->m_scriptfiles); ++$i) {
-                $files .= "ATK.Tools.loadScript('".$this->m_scriptfiles[$i]."');\n";
+                $files .= "ATK.Tools.loadScript('" . $this->m_scriptfiles[$i] . "');\n";
             }
 
             if (!empty($files)) {
                 // prepend script files
-                $res = '<script type="text/javascript">'.$files.'</script>'.$res;
+                $res = '<script type="text/javascript">' . $files . '</script>' . $res;
             }
         }
 
@@ -528,7 +530,7 @@ class Page
     {
         $res = '';
         for ($i = 0, $_i = Tools::count($this->m_scriptcode[$position]); $i < $_i; ++$i) {
-            $res .= $this->m_scriptcode[$position][$i]."\n";
+            $res .= $this->m_scriptcode[$position][$i] . "\n";
         }
 
         return $res;
@@ -548,14 +550,14 @@ class Page
             return '';
         }
 
-        $res  = "if (!window.ATK) {var ATK = {};}\n";
+        $res = "if (!window.ATK) {var ATK = {};}\n";
         $res .= "ATK.globalSubmit = function(form, standardSubmit)\n";
         $res .= "    {\n";
         $res .= "      var retval = true; var bag = {};\n";
         $res .= "      if (typeof(ATK.FormSubmit.preGlobalSubmit) == 'function') { ATK.FormSubmit.preGlobalSubmit(form, bag, standardSubmit);}\n";
 
         for ($i = 0, $_i = Tools::count($this->m_submitscripts); $i < $_i; ++$i) {
-            $res .= '      retval = '.$this->m_submitscripts[$i]."\n";
+            $res .= '      retval = ' . $this->m_submitscripts[$i] . "\n";
             $res .= "      if (retval != true) {\n";
             $res .= "        if (typeof(ATK.FormSubmit.postGlobalSubmit) == 'function') {\n";
             $res .= "           return ATK.FormSubmit.postGlobalSubmit(form, bag, retval, standardSubmit);\n";
@@ -611,11 +613,11 @@ class Page
     {
         if (!$partial) {
             foreach ($this->m_stylesheets as $file => $media) {
-                $res .= '  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
+                $res .= '  <link href="' . $file . '" rel="stylesheet" type="text/css" media="' . $media . '" />' . "\n";
             }
 
             for ($i = 0; $i < Tools::count($this->m_stylecode); ++$i) {
-                $res .= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
+                $res .= '<style type="text/css"> ' . $this->m_stylecode[$i] . ' </style>' . "\n";
             }
         } else {
             $files = '';
@@ -625,7 +627,7 @@ class Page
 
             if (!empty($files)) {
                 // prepend stylesheets
-                $res = '<script type="text/javascript">'.$files.'</script>'.$res;
+                $res = '<script type="text/javascript">' . $files . '</script>' . $res;
             }
         }
     }
@@ -708,12 +710,12 @@ class Page
         $layout = [];
         $layout['title'] = $title;
         if (Tools::hasFlag($flags, self::HTML_HEADER)) {
-            $layout['head'] = $this->head().$extra_header;
+            $layout['head'] = $this->head() . $extra_header;
         }
         if (Tools::hasFlag($flags, self::HTML_BODY)) {
             $layout['extrabodyprops'] = $extrabodyprops;
             $layout['extra_classes'] = $appendClasses ?: '';
-            $layout['body'] = $this->m_content."\n";
+            $layout['body'] = $this->m_content . "\n";
         }
 
         $layout['hiddenvars'] = $this->hiddenVars();
@@ -787,7 +789,7 @@ class Page
     {
         if (!$partial) {
             foreach ($this->m_metacode as $line) {
-                $res .= '  '.$line."\n";
+                $res .= '  ' . $line . "\n";
             }
         }
     }
