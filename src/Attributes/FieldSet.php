@@ -160,7 +160,7 @@ class FieldSet extends Attribute
 
                 // render the label
                 if (!$attr->hasFlag(self::AF_NO_LABEL)) {
-                    $label = '<label for="' . $fieldId . '" class="control-label m-0"> ' . $attr->getLabel($record, $mode) . '</label>:&nbsp;';
+                    $label = '<label for="' . $fieldId . '" class="control-label m-0 mr-1 text-nowrap">' . $attr->getLabel($record, $mode) . '&nbsp;</label>';
                 } else {
                     $label = '';
                 }
