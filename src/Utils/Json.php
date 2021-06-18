@@ -33,7 +33,9 @@ class Json
     /**
      * Maximum recursion depth for conversion of data for encoding to UTF-8.
      */
-    const UTF8_CONVERSION_RECURSION_LIMIT = 30;
+    public const UTF8_CONVERSION_RECURSION_LIMIT = 30;
+    public const JSON_FILTER_CHARS = ["\t", "\n", "\r"];
+    public const EMPTY_STRING = "{}";
 
     /**
      * Encode to JSON.
@@ -106,5 +108,93 @@ class Json
     public static function decode($string, $assoc = false)
     {
         return json_decode($string, $assoc);
+    }
+
+
+    /**
+     * Check if the passed string is a JSON.
+     *
+     * @param string $string
+     * @return bool
+     */
+    public static function isValid(string $string): bool
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /**
+     * JSON beautifier
+     *
+     * @param string    The original JSON string
+     * @param string  Return string
+     * @param string    Tab string
+     * @return string
+     */
+    public static function prettify($json, $ret = "\n", $ind = "\t"): ?string
+    {
+
+        $beauty_json = '';
+        $quote_state = FALSE;
+        $level = 0;
+
+        $json_length = strlen($json);
+
+        for ($i = 0; $i < $json_length; $i++) {
+            $pre = '';
+            $suf = '';
+
+            switch ($json[$i]) {
+                case '"':
+                    $quote_state = !$quote_state;
+                    break;
+                case '[':
+                    $level++;
+                    break;
+                case ']':
+                    $level--;
+                    $pre = $ret;
+                    $pre .= str_repeat($ind, $level);
+                    break;
+                case '{':
+
+                    if ($i - 1 >= 0 && $json[$i - 1] != ',') {
+                        $pre = $ret;
+                        $pre .= str_repeat($ind, $level);
+                    }
+                    $level++;
+                    $suf = $ret;
+                    $suf .= str_repeat($ind, $level);
+                    break;
+                case ':':
+                    $suf = ' ';
+                    break;
+                case ',':
+                    if (!$quote_state) {
+                        $suf = $ret;
+                        $suf .= str_repeat($ind, $level);
+                    }
+                    break;
+                case '}':
+                    $level--;
+                case ']':
+                    $pre = $ret;
+                    $pre .= str_repeat($ind, $level);
+                    break;
+            }
+            $beauty_json .= $pre . $json[$i] . $suf;
+        }
+
+        return $beauty_json;
+
+    }
+
+    public static function compact(string $json, array $removeChars = []): ?string
+    {
+        foreach (self::JSON_FILTER_CHARS as $flag) {
+            $json = str_replace($flag, "", $json);
+        }
+
+        return $json;
     }
 }

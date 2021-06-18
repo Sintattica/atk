@@ -3,58 +3,33 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Utils\Json;
 
-class JsonAttribute extends Attribute
+class JsonAttribute extends TextAttribute
 {
-    /** @var bool If true, in display shows only list of values without label. */
-    protected $displayOnlyValues = false;
 
-    function setDisplayOnlyValues(bool $value): self
-    {
-        $this->displayOnlyValues = $value;
-        return $this;
-    }
+    private $jsonIndentChar = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    private $jsonNewlineChar = "<br />";
 
     public function display($record, $mode)
     {
-        $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+        $value = $record[$this->fieldName()] ?? null;
         if (!$value) {
             return parent::display($record, $mode);
         }
 
-        // TODO: check jsontable css
-        $html = '<table class="jsontable">';
-
-        foreach ($value as $a => $v) {
-            $html .= "<tr>"; // start row
-
-            if (!$this->displayOnlyValues) {
-                // add label
-                // TODO: translate label?
-                $html .= "<td>" . $a . "</td>";
-            }
-
-            if (!is_array($v) or array_key_exists('value', $v)) {
-                // it is an array with the field "value", otherwise it is not an array
-                $html .= "<td>" . (array_key_exists('value', is_array($v) ? $v : []) ? $v['value'] : $v) . "</td>";
-            } else {
-                // it is an array without the field "value"
-                $html .= (implode("<br>", $v)) . "</td>";
-            }
-
-            $html .= "</tr>"; // end row
-        }
-
-        $html .= '</table>';
-
-        return $html;
+        return Json::prettify(json_encode($value, JSON_PRETTY_PRINT), $this->jsonNewlineChar, $this->jsonIndentChar);
     }
+
 
     public function edit($record, $fieldprefix, $mode)
     {
         if (is_array($record[$this->fieldName()])) {
             $record[$this->fieldName()] = json_encode($record[$this->fieldName()] ?: []);
         }
+
+        $record[$this->fieldName()] = Json::prettify($record[$this->fieldName()]);
+
         return parent::edit($record, $fieldprefix, $mode);
     }
 
@@ -70,7 +45,7 @@ class JsonAttribute extends Attribute
             }
         }
 
-        if (!self::isJson($record[$this->fieldName()])) {
+        if ($record[$this->fieldName()] && !Json::isValid($record[$this->fieldName()])) {
             Tools::atkTriggerError($record, $this, 'error_invalid_json');
         }
     }
@@ -78,25 +53,56 @@ class JsonAttribute extends Attribute
     public function db2value($record)
     {
         $val = parent::db2value($record);
-        if ($val and self::isJson($val)) {
-            return json_decode($val, true);
+        if ($val and Json::isValid($val)) {
+            return $val !== Json::EMPTY_STRING ? json_decode($val, true) : '';
         }
         return $val;
     }
 
-    /**
-     * Check if the passed string is a JSON.
-     *
-     * @param string $string
-     * @return bool
-     */
-    public static function isJson($string)
+    public function value2db(array $record)
     {
-        if (!is_string($string)) {
-            return false;
-        }
-
-        json_decode($string);
-        return (json_last_error() == JSON_ERROR_NONE);
+        return $record[$this->fieldName()] ? Json::compact($record[$this->fieldName()]) : JSON::EMPTY_STRING;
     }
+
+    /**
+     * The character to use for the indentation of the Json string.
+     * @return string
+     */
+    public function getJsonIndentChar(): string
+    {
+        return $this->jsonIndentChar;
+    }
+
+    /**
+     *  The character to use for the indentation of the Json string.
+     *  You can use a string that has repeated chars if you want. Like: nbsp;nbsp;nbsp;
+     *  The method supports html elements too, but be aware that you will have to do the cleaning yourself
+     *  if you want to save a minimizzed version on the database (without saving the separators and indentators).
+     * @param string $jsonIndentChar
+     * @return JsonAttribute
+     */
+    public function setJsonIndentChar(string $jsonIndentChar): self
+    {
+        $this->jsonIndentChar = $jsonIndentChar;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJsonNewlineChar(): string
+    {
+        return $this->jsonNewlineChar;
+    }
+
+    /**
+     * @param string $jsonNewlineChar
+     * @return JsonAttribute
+     */
+    public function setJsonNewlineChar(string $jsonNewlineChar): self
+    {
+        $this->jsonNewlineChar = $jsonNewlineChar;
+        return $this;
+    }
+
 }

@@ -91,6 +91,7 @@ class TimeAttribute extends Attribute
             ];
         }
     }
+    
 
     /**
      * Display's text version of Record.
