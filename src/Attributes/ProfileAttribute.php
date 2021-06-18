@@ -349,7 +349,7 @@ class ProfileAttribute extends Attribute
             $hasAnyPermissions = false;
 
             if ($showModule) {
-                $module_result .= '<div class="col-12 col-md-4" id="div_' . $module . '">';
+                $module_result .= '<div class="col-12 col-lg-6 col-xl-3" id="div_' . $module . '">';
 
                 $module_result .= '<div class="card card-default">';
 
@@ -380,6 +380,7 @@ class ProfileAttribute extends Attribute
                         }
 
                     }
+
                     $permissionsPills .= '</div>'; //end-row
 
                     $permissionsResult .= '<div class="container-fluid">';
@@ -397,11 +398,11 @@ class ProfileAttribute extends Attribute
                     }
                 }
 
-                $result .= $hasAnyPermissions ? $module_result : '';
+                $module_result .= '</div>'; //end card-body
+                $module_result .= '</div>'; //end card
+                $module_result .= '</div>'; //end-col
 
-                $result .= '</div>'; //end card-body
-                $result .= '</div>'; //end card
-                $result .= '</div>'; //end-col
+                $result .= $hasAnyPermissions ? $module_result : '';
 
             }
 
