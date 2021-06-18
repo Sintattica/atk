@@ -116,15 +116,13 @@
     margin-top: 5px;
 }
 
-.select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm,
-.select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm {
+.select2-selection.select2-selection--multiple.form-control.form-control-sm{
     height: auto;
     padding-bottom: 0;
     min-width: 250px;
 }
 
-.recordList-search-row .select2-selection.select2-selection--multiple.ManyToOneRelation.form-control.form-control-sm .select2-selection__choice,
-.recordList-search-row .select2-selection.select2-selection--multiple.ListAttribute.form-control.form-control-sm .select2-selection__choice {
+.select2-selection.select2-selection--multiple.form-control.form-control-sm .select2-selection__choice {
     margin-top: 2px;
 }
 
