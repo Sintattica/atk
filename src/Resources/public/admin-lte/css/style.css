@@ -751,3 +751,7 @@ img.rounded-circle {
 .calendar tfoot .active {
     /* Active (pressed) style for buttons in footer */
 }
+
+.atkAttrRowHidden {
+    display: none !important;
+}
