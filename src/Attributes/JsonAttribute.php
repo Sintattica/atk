@@ -61,6 +61,10 @@ class JsonAttribute extends TextAttribute
 
     public function value2db(array $record)
     {
+        if ($record[$this->fieldName()] and is_array($record[$this->fieldName()])) {
+            $record[$this->fieldName()] = json_encode($record[$this->fieldName()]);
+        }
+
         return $record[$this->fieldName()] ? Json::compact($record[$this->fieldName()]) : JSON::EMPTY_STRING;
     }
 
