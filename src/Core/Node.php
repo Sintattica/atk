@@ -5034,11 +5034,12 @@ class Node
      */
     public function setRowColorMode(string $rowColorMode): self
     {
-
         if ($rowColorMode === self::ROW_COLOR_MODE_CELL) {
             $this->getAttribute(self::ROW_COLOR_ATTRIBUTE)->removeFlag(Attribute::AF_HIDE);
+            $this->getAttribute(self::ROW_COLOR_ATTRIBUTE)->setInitialHidden(false);
         } else {
             $this->getAttribute(self::ROW_COLOR_ATTRIBUTE)->addFlag(Attribute::AF_HIDE);
+            $this->getAttribute(self::ROW_COLOR_ATTRIBUTE)->setInitialHidden(true);
         }
 
         $this->rowColorMode = $rowColorMode;
