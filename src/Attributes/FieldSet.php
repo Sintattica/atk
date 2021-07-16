@@ -179,7 +179,7 @@ class FieldSet extends Attribute
                 }
 
                 $html = '<div class="fieldset-form-group d-flex align-items-center' . $requiredClass . '" style="' . implode(' ', $style) . '">';
-                $html .= $label . '<div id="' . $containerId . '" class="fieldset-form-group-field w-100">' . $field . '</div>';
+                $html .= $label . '<div id="' . $containerId . '" class="fieldset-form-group-field w-100 pr-3">' . $field . '</div>';
                 $html .= '</div>';
 
                 $replacements[$attrName] = $html;
