@@ -755,3 +755,18 @@ img.rounded-circle {
 .atkAttrRowHidden {
     display: none !important;
 }
+
+
+.fieldset-form-group .fieldset-form-group-field > span {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    padding-left:.5rem;
+    padding-right:.5rem;
+}
+
+.fieldset-form-group .fieldset-form-group-field .select2.select2-container {
+    min-width: 12rem;
+}
