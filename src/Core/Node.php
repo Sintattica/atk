@@ -20,6 +20,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\PageBuilder;
 use Sintattica\Atk\Ui\Ui;
 use Sintattica\Atk\Utils\ActionListener;
+use Sintattica\Atk\Utils\EditFormModifier;
 use Sintattica\Atk\Utils\Selector;
 use Sintattica\Atk\Utils\StringParser;
 
@@ -215,6 +216,13 @@ class Node
     const ROW_COLOR_MODE_CELL = 'cell';
     const ROW_COLOR_MODE_DEFAULT = 'row';
     const ROW_COLOR_ATTRIBUTE = '_row_color_attribute';
+
+    /**
+     * Attribute prefix, useful to show|hide default or special attributes.
+     */
+    const PREFIX_FIELDSET = 'fieldset';
+    const PREFIX_DEFAULT = 'fieldset';
+    const PREFIX_TABBED_PANE = 'tabbedPaneAttr';
 
     /*
      * reference to the class which is used to validate atknodes
@@ -5046,12 +5054,10 @@ class Node
         return $this;
     }
 
-
     public function getSubmitBtnAttribList(): array
     {
         return $this->submitBtnAttribList;
     }
-
 
     public function addSubmitBtnAttrib(string $buttonName): self
     {
@@ -5059,9 +5065,116 @@ class Node
         return $this;
     }
 
-
     public function isSubmitBtnClicked(string $buttonName): bool
     {
         return in_array($buttonName, $this->submitBtnAttribList) and isset($this->m_postvars[$buttonName]) and $this->m_postvars[$buttonName];
+    }
+
+    public function showAttribute(EditFormModifier $modifier, string $attrName, string $prefix = '')
+    {
+        $this->setAttributeVisibility($modifier, $attrName, $prefix, 'show');
+    }
+
+    public function showAttributes(EditFormModifier $modifier, array $attrNames, $prefix = '')
+    {
+        foreach ($attrNames as $attrName) {
+            $this->showAttribute($modifier, $attrName, $prefix);
+        }
+    }
+
+    public function showAttributeTabbed(EditFormModifier $modifier, string $attrName)
+    {
+        $this->showAttribute($modifier, $attrName, self::PREFIX_TABBED_PANE);
+    }
+
+    public function showAttributesTabbed(EditFormModifier $modifier, array $attrNames)
+    {
+        $this->showAttributes($modifier, $attrNames, self::PREFIX_TABBED_PANE);
+    }
+
+    public function showAttributeFieldSet(EditFormModifier $modifier, string $attrName)
+    {
+        $this->showAttribute($modifier, $attrName, self::PREFIX_FIELDSET);
+    }
+
+    public function showAttributesFieldSet(EditFormModifier $modifier, array $attrNames)
+    {
+        $this->showAttributes($modifier, $attrNames, self::PREFIX_FIELDSET);
+    }
+
+    public function hideAttribute(EditFormModifier $modifier, string $attrName, $prefix = '')
+    {
+        $this->setAttributeVisibility($modifier, $attrName, $prefix, 'hide');
+    }
+
+    public function hideAttributes(EditFormModifier $modifier, array $attrNames, $prefix = '')
+    {
+        foreach ($attrNames as $attrName) {
+            $this->hideAttribute($modifier, $attrName, $prefix);
+        }
+    }
+
+    public function hideAttributeTabbed(EditFormModifier $modifier, string $attrName)
+    {
+        $this->hideAttribute($modifier, $attrName, self::PREFIX_TABBED_PANE);
+    }
+
+    public function hideAttributesTabbed(EditFormModifier $modifier, array $attrNames)
+    {
+        $this->hideAttributes($modifier, $attrNames, self::PREFIX_TABBED_PANE);
+    }
+
+    public function hideAttributeFieldSet(EditFormModifier $modifier, string $attrName)
+    {
+        $this->hideAttribute($modifier, $attrName, self::PREFIX_FIELDSET);
+    }
+
+    public function hideAttributesFieldSet(EditFormModifier $modifier, array $attrNames)
+    {
+        $this->hideAttributes($modifier, $attrNames, self::PREFIX_FIELDSET);
+    }
+
+    /**
+     * Mostra o nasconde un attributo del form.
+     *
+     * @param EditFormModifier $modifier
+     * @param string $attrName Nome dell'attributo
+     * @param string $prefix Valori possibili: ar|tabbedPaneAttr|fieldset
+     * @param string $visibility Valori possibili: show|hide
+     */
+    private function setAttributeVisibility(EditFormModifier $modifier, string $attrName, string $prefix = '', string $visibility = 'show')
+    {
+        if (!$attr = $this->getAttribute($attrName)) {
+            return;
+        }
+
+        if ($prefix === self::PREFIX_FIELDSET) {
+            $prefix = str_replace('.', '_', $modifier->getNode()->atkNodeUri());
+        }
+
+        $defaultPrefixes = [self::PREFIX_DEFAULT, self::PREFIX_TABBED_PANE];
+        $prefixes = $prefix ? [$prefix] : $defaultPrefixes;
+
+        foreach ($prefixes as $prefix) {
+            $rowId = $prefix . '_' . $attr->getHtmlId($modifier->getFieldPrefix());
+
+            if (!in_array($prefix, $defaultPrefixes)) {
+                // prefisso non di default
+                if ($visibility === 'hide') {
+                    $code = "jQuery('#$rowId').parent().addClass('atkAttrRowHidden');"; // devo nascondere il padre
+                } else {
+                    $code = "jQuery('#$rowId').parent().removeClass('atkAttrRowHidden');"; // devo mostrare il padre
+                }
+
+            } else {
+                if ($visibility === 'hide') {
+                    $code = "try {ATK.Tools.hideAttribute('$rowId');} catch (exception) {/*noop*/}";
+                } else {
+                    $code = "try {ATK.Tools.showAttribute('$rowId');} catch (exception) {/*noop*/}";
+                }
+            }
+
+            $modifier->scriptCode($code);
+        }
     }
 }
