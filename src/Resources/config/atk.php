@@ -11,10 +11,9 @@ $_configDirName = 'config';
 $version = null;
 
 if (file_exists($_configAppRoot . '.git/HEAD')) {
-    $stringfromfile = file($_configAppRoot . '.git/HEAD', FILE_USE_INCLUDE_PATH);
-    $firstLine = $stringfromfile[0]; //get the string from the array
-    $explodedstring = explode("/", $firstLine, 3); //seperate out by the "/" in the string
-    $version = $explodedstring[2]; //get the one that is always the branch name
+    $version = shell_exec('git describe --abbrev=0 --tags'); //extract last tag.
+    $gitInfo = shell_exec("git log -1 --pretty=format:'%h|%s|%ci|%cn'");  //extract other git info.
+    list($commitHash, $commitMessage, $commitDate, $commitAuthor) = explode('|', $gitInfo);
 }
 
 $_public_dir = $_configAppRoot . 'web';
@@ -43,6 +42,14 @@ return [
     'public_dir' => $_public_dir,
 
     'version' => $version,
+
+    'commit_info' => [
+        'hash' => $commitHash ?? "",
+        'message' => $commitMessage ?? "",
+        'date' => $commitDate ?? "",
+        'author' => $commitAuthor ?? "",
+        'version' => $version
+    ],
 
     /*
      * Used in FileAttribute
