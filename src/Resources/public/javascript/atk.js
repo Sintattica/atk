@@ -89,10 +89,9 @@ jQuery(window).on("load", () => {
     document.querySelectorAll("ul.nav-treeview.menu-open > .nav-item:not(.menu-open) > ul")
         .forEach(el => el.style.display = 'none');
 
-
     const activeItem = document.querySelector(".last_active_item > .nav-link.active");
     if (activeItem != null) {
-        activeItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        activeItem.scrollIntoView({block: 'start'});
     }
 
 });
