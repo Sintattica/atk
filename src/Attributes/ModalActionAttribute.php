@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Atk\Modules\App\Attributes;
+namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Attributes\DummyAttribute;
