@@ -74,8 +74,9 @@ class DummyAttribute extends Attribute
             $style .= "$k:$v;";
         }
 
-        $result = '';
-        $result .=  '<div id="'.$this->getHtmlId($fieldprefix).'"';
+        $classes = implode(" ", $this->getCSSClasses());
+
+        $result =  '<div class=' . $classes .' id="'.$this->getHtmlId($fieldprefix).'"';
         if($style != ''){
             $result .= ' style="'.$style.'"';
         }
