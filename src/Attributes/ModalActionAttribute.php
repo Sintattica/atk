@@ -3,11 +3,7 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\AdminLte\UIStateColors;
-use Sintattica\Atk\Attributes\DummyAttribute;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\DataGrid\DataGrid;
-use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Session\SessionManager;
 
 class ModalActionAttribute extends DummyAttribute
