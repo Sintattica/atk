@@ -235,16 +235,16 @@ class ModalActionAttribute extends DummyAttribute
         $result = '<div class="modal fade" id="' . $htmlFieldPrefix . '-modal' . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                    <div class="modal-dialog modal-dialog-centered" role="document">
                      <div class="modal-content">
+                     <form method="post" action="' . Config::getGlobal('dispatcher') . '">
                        <div class="modal-header">
                          <h5 class="modal-title">' . $this->modalTitle . '</h5>
                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                        </div> 
-                       <div class="modal-body">
-                        <form method="post" action="' . Config::getGlobal('dispatcher') . '">';
+                       <div class="modal-body">';
 
 
         $sm = SessionManager::getInstance();
-
+        $result .= $sm->formState(SessionManager::SESSION_REPLACE);
         $result .= '<input type="hidden" name="atkaction" value="' . $this->atkActionName . '">';
         $result .= '<input type="hidden" name="atkmenu" value="' . $sm->globalStackVar('atkmenu') . '">';
         $result .= '<input type="hidden" name="atknodeuri" value="' . $nodeInstance->atkNodeUri() . '">';
@@ -266,12 +266,12 @@ class ModalActionAttribute extends DummyAttribute
         }
 
 
-        $result .= '    </form>
-                        </div>
+        $result .= '    </div>
                           <div class="modal-footer">
                             <a class="btn btn-secondary" data-dismiss="modal">' . $this->cancelLabel . '</a>
                             <button type="submit" class="btn bg-' . $this->uiState . '"> ' . $this->okLabel . '</button>
                           </div>
+                          </form>
                         </div>
                       </div>
                     </div>';
