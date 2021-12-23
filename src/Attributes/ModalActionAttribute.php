@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
+use Sintattica\Atk\Utils\StringParser;
 
 class ModalActionAttribute extends DummyAttribute
 {
@@ -178,7 +179,6 @@ class ModalActionAttribute extends DummyAttribute
     }
 
 
-
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -215,7 +215,11 @@ class ModalActionAttribute extends DummyAttribute
 
         $result .= '</a>';
 
-        $result .= $this->createModalWindow($record, $fieldprefix);
+
+        $modalContent = $this->createModalWindow($record, $fieldprefix);
+        $this->getOwnerInstance()
+            ->getPage()
+            ->register_loadscript("$('#entryform').after(`" . StringParser::stripSpaces(str_replace("\n", "", $modalContent)) . "`)");
 
         return $result;
     }
