@@ -72,7 +72,7 @@ class StringParser
                 $value = rawurlencode($value);
             }
 
-            $string = str_replace('['.$field.']', $value, $string);
+            $string = str_replace('[' . $field . ']', $value, $string);
         }
 
         return $string;
@@ -164,7 +164,7 @@ class StringParser
     public function getAllParsedFieldsAsArray($data, $split_tags_and_fields = false)
     {
         $matches = $this->getAllFieldsAsArray();
-        Tools::atk_var_dump($matches, 'MATCHES'.($split_tags_and_fields ? ' (split tags and separators)' : ''));
+        Tools::atk_var_dump($matches, 'MATCHES' . ($split_tags_and_fields ? ' (split tags and separators)' : ''));
 
         $fields = [];
         if (is_array($matches)) {
@@ -182,7 +182,7 @@ class StringParser
                     if ($split_tags_and_fields) {
                         $fields['separators'][] = $match;
                     } else {
-                        $fields[] = "'".$match."'";
+                        $fields[] = "'" . $match . "'";
                     }
                 }
             }
@@ -208,5 +208,17 @@ class StringParser
         }
 
         return $attrs;
+    }
+
+
+    /**
+     * Strip spaces, tabs or line breaks (one or more) replacing them with a single space char.
+     *
+     * @param string $string - the input string
+     * @return string
+     */
+    static function stripSpaces(string $string): string
+    {
+        return preg_replace('/\s+/', ' ', $string);
     }
 }
