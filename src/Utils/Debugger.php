@@ -79,11 +79,11 @@ class Debugger
      * Add a query string to the debugger.
      *
      * @param string $query
-     * @param bool $system is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
+     * @param bool $isSystemQuery is system query? (e.g. for retrieving metadata, warnings, setting locks etc.)
      *
      * @return bool Indication if query is added
      */
-    public static function addQuery($query, $isSystemQuery = false)
+    public static function addQuery(string $query, bool $isSystemQuery = false): ?bool
     {
         self::$s_queryCount += !$isSystemQuery ? 1 : 0;
         self::$s_systemQueryCount += $isSystemQuery ? 1 : 0;
