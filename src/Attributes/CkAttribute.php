@@ -72,24 +72,13 @@ class CkAttribute extends HtmlAttribute
         $page->register_loadscript("ClassicEditor
             .create( document.querySelector( '#$id' ), $options)
             .then( editor => {
-                editor.editing.view.change( writer => writer.setStyle( 'height', '".$this->ckOptions['height']."', editor.editing.view.document.getRoot() ));
+                editor.editing.view.change( writer => writer.setStyle( 'height', '" . $this->ckOptions['height'] . "', editor.editing.view.document.getRoot() ));
                 window.editor = editor
             })
 			.catch( error => console.error( 'Oops, something went wrong: ', error) );"
         );
 
         return parent::edit($record, $fieldprefix, $mode);
-    }
-
-    public function display($record, $mode)
-    {
-        $record[$this->fieldName()] = Tools::atkArrayNvl($record, $this->fieldName(), '');
-
-        if($this->getDisplayMode() !== self::MODE_SCROLL){
-            $record[$this->fieldName()] = htmlspecialchars(strip_tags($record[$this->fieldName()]));
-        }
-
-        return parent::display($record, $mode);
     }
 
 
@@ -116,7 +105,8 @@ class CkAttribute extends HtmlAttribute
      * Ex: 200px or 10rem ...
      * @param string $height
      */
-    public function setHeight(string $height){
+    public function setHeight(string $height)
+    {
         $this->ckOptions['height'] = $height;
     }
 

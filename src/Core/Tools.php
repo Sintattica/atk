@@ -1637,7 +1637,7 @@ class Tools
      */
     public static function atkArrayNvl($array, $key, $defaultvalue = null)
     {
-        return isset($array[$key]) ? $array[$key] : $defaultvalue;
+        return $array[$key] ?? $defaultvalue;
     }
 
     /**
@@ -1849,10 +1849,10 @@ class Tools
      */
     public static function href(
         ?string $url,
-        string $internalElement = '',
-        string $sessionStatus = SessionManager::SESSION_DEFAULT,
-        ?bool $saveForm = false,
-        string $extraProps = ''
+        string  $internalElement = '',
+        string  $sessionStatus = SessionManager::SESSION_DEFAULT,
+        ?bool   $saveForm = false,
+        string  $extraProps = ''
     ): string
     {
         $sm = SessionManager::getInstance();
@@ -2128,20 +2128,93 @@ class Tools
      * ATK version of the Smarty truncate function, multibyte safe.
      *
      * @param string $string text to truncate
-     * @param int $max Maximum length of the total result string
-     * @param string $replace text to append to the end of the truncated string
+     * @param int $maxLength Maximum length of the total result string
+     * @param string $endingChars text to append to the end of the truncated string
      *
      * @return string truncated sting
      */
-    public static function truncate($string, $max, $replace)
+    public static function truncate($string, int $maxLength, string $endingChars = '...'): string
     {
-        if (self::strlen($string) <= $max) {
+        if (self::strlen($string) <= $maxLength) {
             return $string;
         } else {
-            $length = $max - self::strlen($replace);
+            $length = $maxLength - self::strlen($endingChars);
 
-            return self::substr($string, 0, $length) . $replace;
+            return self::substr($string, 0, $length) . $endingChars;
         }
+    }
+
+
+    static function truncateHTML(string $html, int $maxLength, string $endingChars = '...', bool $isUtf8 = true): string
+    {
+        $printedLength = 0;
+        $position = 0;
+        $tags = [];
+
+        $result = "";
+
+        // For UTF-8, we need to count multibyte sequences as one character.
+        $re = $isUtf8
+            ? '{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;|[\x80-\xFF][\x80-\xBF]*}'
+            : '{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}';
+
+        while ($printedLength < $maxLength && preg_match($re, $html, $match, PREG_OFFSET_CAPTURE, $position)) {
+            list($tag, $tagPosition) = $match[0];
+
+            // Print text leading up to the tag.
+            $str = substr($html, $position, $tagPosition - $position);
+            if ($printedLength + strlen($str) > $maxLength) {
+                $result .= (substr($str, 0, $maxLength - $printedLength));
+                $printedLength = $maxLength;
+                break;
+            }
+
+            $result .= $str;
+            $printedLength += strlen($str);
+            if ($printedLength >= $maxLength) break;
+
+            if ($tag[0] == '&' || ord($tag) >= 0x80) {
+                // Pass the entity or UTF-8 multibyte sequence through unchanged.
+                $result .= $tag;
+                $printedLength++;
+            } else {
+                // Handle the tag.
+                $tagName = $match[1][0];
+                if ($tag[1] == '/') {
+                    // This is a closing tag.
+
+                    $openingTag = array_pop($tags);
+                    assert($openingTag == $tagName); // check that tags are properly nested.
+
+                    $result .= $tag;
+                } else if ($tag[strlen($tag) - 2] == '/') {
+                    // Self-closing tag.
+                    $result .= $tag;
+                } else {
+                    // Opening tag.
+                    $result .= $tag;
+                    $tags[] = $tagName;
+                }
+            }
+
+            // Continue after the tag.
+            $position = $tagPosition + strlen($tag);
+        }
+
+        // Print any remaining text.
+        if ($printedLength < $maxLength && $position < strlen($html))
+            $result .= substr($html, $position, $maxLength - $printedLength);
+
+        // Close any open tags.
+        while (!empty($tags)) {
+            $result .= sprintf('</%s>', array_pop($tags));
+        }
+
+        if(strlen($result) < strlen($html)){
+            $result .= $endingChars;
+        }
+
+        return $result;
     }
 
     /**

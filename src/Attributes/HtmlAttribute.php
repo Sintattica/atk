@@ -2,6 +2,8 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Tools;
+
 /**
  * The HtmlAttribute class is the same as a normal Attribute. It only
  * (has a different display function. For this attribute, the value is
@@ -17,6 +19,9 @@ namespace Sintattica\Atk\Attributes;
 class HtmlAttribute extends TextAttribute
 {
 
+    private $previewSkipFilteringHTMLTags = "<a><p><br>";
+
+
     /**
      * Constructor.
      *
@@ -28,5 +33,38 @@ class HtmlAttribute extends TextAttribute
     {
         parent::__construct($name, $flags);
         $this->setNl2br($nl2br);
+    }
+
+    public function display($record, $mode)
+    {
+        $record[$this->fieldName()] = Tools::atkArrayNvl($record, $this->fieldName(), '');
+
+        if ($this->getDisplayMode() !== self::MODE_SCROLL && $mode === 'list') {
+            $record[$this->fieldName()] = strip_tags($record[$this->fieldName()], '<a><p><br>');
+        }
+
+        return parent::display($record, $mode);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getPreviewSkipFilteringHTMLTags(): string
+    {
+        return $this->previewSkipFilteringHTMLTags;
+    }
+
+    /**
+     * @param array $skipTags
+     * @return CkAttribute
+     */
+    public function setPreviewSkipFilteringHTMLTags(array $skipTags): CkAttribute
+    {
+        foreach ($skipTags as $tag) {
+            $this->previewSkipFilteringHTMLTags .= $tag;
+        }
+
+        return $this;
     }
 }
