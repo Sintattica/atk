@@ -100,7 +100,7 @@ class TextAttribute extends Attribute
             switch ($this->displayMode) {
                 case self::MODE_INLINE:
                     if ($this->maxChars) {
-                        $record[$this->fieldName()] = Tools::truncateHTML($record[$this->fieldName()], $this->maxChars, '...');
+                        $record[$this->fieldName()] = $record[$this->fieldName()] != null ? Tools::truncateHTML($record[$this->fieldName()], $this->maxChars, '...') : null;
                         $display = parent::display($record, $mode);
                     }
                     break;
@@ -111,7 +111,7 @@ class TextAttribute extends Attribute
                 default:
                     $classes = 'text-wrap';
                     $maxChars = $this->maxChars ?: '200';
-                    $record[$this->fieldName()] = Tools::truncateHTML($record[$this->fieldName()], $maxChars, '...');
+                    $record[$this->fieldName()] = $record[$this->fieldName()] != null ? Tools::truncateHTML($record[$this->fieldName()], $maxChars, '...') : null;
                     $display = parent::display($record, $mode);
 
             }
