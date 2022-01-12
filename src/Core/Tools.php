@@ -86,22 +86,24 @@ class Tools
      * This function catches PHP parse errors etc, and passes
      * them to self::atkerror(), so errors can be mailed and output
      * can be regulated.
-     * This funtion must be registered with set_error_handler("self::atkErrorHandler");.
+     * This function must be registered with set_error_handler("self::atkErrorHandler");.
      *
      * @param $errtype : One of the PHP errortypes (E_PARSE, E_USER_ERROR, etc)
      * (See http://www.php.net/manual/en/function.error-reporting.php)
      * @param $errstr : Error self::text
      * @param $errfile : The php file in which the error occured.
      * @param $errline : The line in the file on which the error occured.
+     * @throws Exception
      */
     public static function atkErrorHandler($errtype, $errstr, $errfile, $errline)
     {
         // probably suppressed error using the @ operator, simply ignore
+        // Todo: Disable this check in dev; We need to fix all the errors!
         if (error_reporting() == 0) {
             return;
         }
 
-        $errortype = array(
+        $errorType = [
             E_ERROR => "Error",
             E_WARNING => "Warning",
             E_PARSE => "Parsing Error",
@@ -115,21 +117,21 @@ class Tools
             E_USER_NOTICE => "User Notice",
             E_STRICT => "Strict Notice",
             'EXCEPTION' => 'Uncaught exception',
-        );
+        ];
 
         // E_RECOVERABLE_ERROR is available since 5.2.0
         if (defined('E_RECOVERABLE_ERROR')) {
-            $errortype[E_RECOVERABLE_ERROR] = "Recoverable Error";
+            $errorType[E_RECOVERABLE_ERROR] = "Recoverable Error";
         }
 
         // E_DEPRECATED / E_USER_DEPRECATED are available since 5.3.0
         if (defined('E_DEPRECATED')) {
-            $errortype[E_DEPRECATED] = "Deprecated";
-            $errortype[E_USER_DEPRECATED] = "User Deprecated";
+            $errorType[E_DEPRECATED] = "Deprecated";
+            $errorType[E_USER_DEPRECATED] = "User Deprecated";
         }
 
         // Translate the given errortype into a string
-        $errortypestring = $errortype[$errtype];
+        $errortypestring = $errorType[$errtype];
 
         if ($errtype == E_STRICT) {
             // ignore strict notices for now, there is too much stuff that needs to be fixed
@@ -153,7 +155,7 @@ class Tools
 
                         return;
                     } else {
-
+                        header("HTTP/1.0 500 Internal Server Error");
                         self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)", ($errtype == 'EXCEPTION'));
                         // we must die. we can't even output anything anymore..
                         // we can do something with the info though.
@@ -168,6 +170,7 @@ class Tools
      * Default ATK exception handler, handles uncaught exceptions and calls atkHalt.
      *
      * @param Exception $exception uncaught exception
+     * @throws Exception
      */
     public static function atkExceptionHandler($exception)
     {
@@ -254,6 +257,7 @@ class Tools
     {
         global $g_debug_msg;
         $level = Config::getGlobal('debug');
+
         if ($level >= 0) {
             if (self::hasFlag($flags, self::DEBUG_HTML)) {
                 $txt = htmlentities($txt);
@@ -279,8 +283,7 @@ class Tools
                 }
             }
         } else {
-            if ($level > -1) { // at 0 we still collect the info so we
-                // have it in error reports. At -1, we don't collect
+            if ($level > -1) { // at 0 we still collect the info, so we have it in error reports. At -1, we don't collect
                 $g_debug_msg[] = $txt;
             }
         }
