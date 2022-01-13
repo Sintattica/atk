@@ -183,6 +183,7 @@ abstract class MenuBase
 
     private function setItemsVisibility(&$htmlMenuitems)
     {
+
         $this->unsetDisabledItem($htmlMenuitems);
 
         //re-index the array in case unsets have been made!
@@ -205,16 +206,15 @@ abstract class MenuBase
     private function processMenu(array $menu, bool $child = false, string $type = self::TYPE_MENU_SIDEBAR): string
     {
         $html = '';
-        if (is_array($menu)) {
-            foreach ($menu as $item) {
-                switch ($type) {
-                    case self::TYPE_MENU_SIDEBAR:
-                        $html .= $this->formatSidebar($item);
-                        break;
-                    case self::TYPE_MENU_NAVBAR:
-                        $html .= $this->formatNavBar($item, $child);
-                        break;
-                }
+
+        foreach ($menu as $item) {
+            switch ($type) {
+                case self::TYPE_MENU_SIDEBAR:
+                    $html .= $this->formatSidebar($item);
+                    break;
+                case self::TYPE_MENU_NAVBAR:
+                    $html .= $this->formatNavBar($item, $child);
+                    break;
             }
         }
 
@@ -224,16 +224,21 @@ abstract class MenuBase
 
     private function unsetDisabledItem(array &$menu): void
     {
+        if (!$menu) {
+            return;
+        }
         //Keep outside otherwise the variable references get lost due to unset call.
         $firstKey = array_keys($menu)[0];
         $menuLength = count($menu);
 
-        for ($i=$firstKey; $i<$menuLength; $i++) {
-            //todo: transform item in menuItem
-            if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
-                unset($menu[$i]);
-            } else if ($menu[$i]['submenu']) {
-                $this->unsetDisabledItem($menu[$i]['submenu']);
+        if ($firstKey != null && $menuLength > 0) {
+            for ($i = $firstKey; $i < $menuLength; $i++) {
+                //todo: transform item in menuItem
+                if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
+                    unset($menu[$i]);
+                } else if ($menu[$i]['submenu']) {
+                    $this->unsetDisabledItem($menu[$i]['submenu']);
+                }
             }
         }
     }
