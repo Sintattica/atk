@@ -619,7 +619,7 @@ class Debugger
         $new = self::getMicroTime();
 
         $execDuration = $new - $offset; //Duration of the executed instruction in absolute terms (instant time difference when each instruction starts)
-        $relativeDuration =  /*$offset === $previous ? '0' : */ $new - $previous; //Relative time difference (how much time has passed since the last instruction was executed)
+        $relativeDuration =  $offset === $previous ? '0' : $new - $previous; //Relative time difference (how much time has passed since the last instruction was executed)
 
         $res =  '+' . sprintf('%02.05f', $execDuration).'s / '. sprintf('%02.05f', $relativeDuration) .'s';
         $previous = $new;
