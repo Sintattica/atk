@@ -174,6 +174,10 @@ class EditHandler extends ViewEditBase
     {
         $this->registerExternalFiles();
 
+        if($this->m_node->hasNestedAttributes()) {
+            $this->m_node->loadNestedAttributesValue($record);
+        }
+
         $params = $this->getEditParams($record);
 
         if ($params === false) {

@@ -111,6 +111,10 @@ class AddHandler extends ActionHandler
 
         $this->registerExternalFiles();
 
+        if($this->m_node->hasNestedAttributes()) {
+            $this->m_node->loadNestedAttributesValue($record);
+        }
+
         $params = $this->getAddParams($record);
 
         if ($params === false) {

@@ -575,6 +575,9 @@ class Attribute
     private $nl2br = true;
     private $htmlSpecialChars = true;
 
+
+    private $isNestedAttribute = false;
+
     /**
      * Constructor.
      *
@@ -3269,6 +3272,26 @@ class Attribute
         $this->nl2br = $nl2br;
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isNestedAttribute(): bool
+    {
+        return $this->isNestedAttribute;
+    }
+
+    /**
+     * @param bool $isNestedAttribute
+     * @return self
+     */
+    public function setIsNestedAttribute(bool $isNestedAttribute): self
+    {
+        $this->isNestedAttribute = $isNestedAttribute;
+        return $this;
+    }
+
+
 
 
 }

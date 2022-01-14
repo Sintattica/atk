@@ -6,6 +6,7 @@ use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\ButtonAttribute;
 use Sintattica\Atk\Attributes\FieldSet;
+use Sintattica\Atk\Attributes\JsonAttribute;
 use Sintattica\Atk\Attributes\StateColorAttribute;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
@@ -671,6 +672,16 @@ class Node
     private $rowColorMode = self::ROW_COLOR_MODE_DEFAULT;
 
     /**
+     * @var string - Name of the nested attributes' field on the db.
+     */
+    private $nestedAttributeField = 'nested_fields_value';
+
+    /**
+     * @var array - List of nested attributes stored in the $nestedAttributeField
+     */
+    private $nestedAttributesList = [];
+
+    /**
      * @param string $nodeUri The nodeuri
      * @param int $flags Bitmask of node flags (self::NF_*).
      */
@@ -860,6 +871,19 @@ class Node
      */
     public function add($attribute, $sections = null, $order = 0)
     {
+
+        //If $attribute is a nested attribute create a fake one and handle the loading/storage through the JsonAttribute
+        if ($attribute->isNestedAttribute()) {
+            if (!$this->getAttribute($this->nestedAttributeField)) {
+                $this->add(new JSONAttribute($this->nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD))->setForceUpdate(true);
+            }
+
+            //Set the attribute as not stored/loaded on/from the database (the JsonAttribute will handle the storage)
+            $attribute->setStorageType(Attribute::NOSTORE)->setLoadType(Attribute::NOLOAD);
+            $this->addNestedAttribute($attribute->fieldName());
+        }
+
+
         $tabs = null;
         $column = null;
 
@@ -4062,7 +4086,7 @@ class Node
      */
     public function preAdd(&$record, $mode = 'add')
     {
-        // Do nothing
+        $this->storeNestedAttributesValue($record);
         return true;
     }
 
@@ -4103,7 +4127,7 @@ class Node
      */
     public function preUpdate(&$record)
     {
-        // Do nothing
+        $this->storeNestedAttributesValue($record);
         return true;
     }
 
@@ -5177,4 +5201,108 @@ class Node
             $modifier->scriptCode($code);
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getNestedAttributeField(): string
+    {
+        return $this->nestedAttributeField;
+    }
+
+    /**
+     * @param string $nestedAttributeField
+     * @return self
+     */
+    public function setNestedAttributeField(string $nestedAttributeField): self
+    {
+        $this->nestedAttributeField = $nestedAttributeField;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNestedAttributesList(): array
+    {
+        return $this->nestedAttributesList;
+    }
+
+    /**
+     * @param string $nestedAttribute
+     * @return self
+     */
+    public function addNestedAttribute(string $nestedAttribute): self
+    {
+        $this->nestedAttributesList[] = $nestedAttribute;
+        return $this;
+    }
+
+
+    public function hasNestedAttributes(): bool {
+        return count($this->nestedAttributesList) > 0;
+    }
+
+    public function isNestedAttribute(string $attributeName): bool {
+        return in_array($attributeName, $this->nestedAttributesList);
+    }
+
+    /**
+     * Load the
+     * Funzione per impostare sulla ui il valore dei vari attributi generici in base al contenuto del JSON
+     * Es: editPage, viewPage ecc...
+     *
+     * @param array $record
+     */
+    public function loadNestedAttributesValue(array &$record)
+    {
+        if (!$this->hasNestedAttributes()) {
+            return;
+        }
+
+        if (!is_array($record[$this->nestedAttributeField])) {
+            // decodifico il contenuto del JSON
+            $record[$this->nestedAttributeField] = json_decode($record[$this->nestedAttributeField], true);
+        }
+
+        foreach ($this->nestedAttributesList as $field) {
+
+            // per ogni attributo generico, setto il valore
+            //Todo: Sistemare questa parte
+            $default = null;
+            $list = ['ManyToOneAttribute', 'OneToManyAttribute'];
+
+            if (in_array($this->getAttribute($field)->get_class_name(), $list)) {
+                $default = []; // necessario per il default di quelle classi che si aspettano un array (Relations, etc)
+            }
+
+            $values = [];
+            $values[$field] = $record[$this->nestedAttributeField][$field] ?? $default;
+            $record[$field] = $this->getAttribute($field)->db2value($values);
+        }
+
+    }
+
+    /**
+     * Funzione per salvare il valore degli attributi generici nel JSON.
+     *
+     * @param array $record
+     */
+    protected function storeNestedAttributesValue(array &$record)
+    {
+        if (!$this->hasNestedAttributes()) {
+            return;
+        }
+
+        if (!is_array($record[$this->nestedAttributeField])) {
+            $record[$this->nestedAttributeField] = json_decode($record[$this->nestedAttributeField], true);
+        }
+
+        foreach ($this->nestedAttributesList as $field) {
+            $record[$this->nestedAttributeField][$field] = $this->getAttribute($field)->value2db([$field => $record[$field]]);
+        }
+
+    }
+
+
 }

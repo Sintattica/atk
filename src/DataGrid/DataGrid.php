@@ -1437,6 +1437,13 @@ class DataGrid
      */
     public function setRecords($records)
     {
+        if ($this->m_node->hasNestedAttributes()) {
+            foreach ($records as &$record) {
+                // imposta il valore degli eventuali campi generici
+                $this->m_node->loadNestedAttributesValue($record);
+            }
+        }
+
         $this->m_records = $records;
     }
 

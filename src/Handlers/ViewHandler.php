@@ -84,6 +84,11 @@ class ViewHandler extends ViewEditBase
         $ui = $this->getUi();
 
         if (is_object($ui)) {
+            
+            if($this->m_node->hasNestedAttributes()) {
+                $this->m_node->loadNestedAttributesValue($record);
+            }
+
             $params = $node->getDefaultActionParams();
             $tab = $node->getActiveTab();
             $innerform = $this->viewForm($record, 'view');
