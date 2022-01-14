@@ -57,9 +57,9 @@ class HtmlAttribute extends TextAttribute
 
     /**
      * @param array $skipTags
-     * @return CkAttribute
+     * @return HtmlAttribute
      */
-    public function setPreviewSkipFilteringHTMLTags(array $skipTags): CkAttribute
+    public function setPreviewSkipFilteringHTMLTags(array $skipTags): self
     {
         foreach ($skipTags as $tag) {
             $this->previewSkipFilteringHTMLTags .= $tag;
