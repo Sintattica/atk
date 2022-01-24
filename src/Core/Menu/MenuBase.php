@@ -221,27 +221,27 @@ abstract class MenuBase
         return $html;
     }
 
-
     private function unsetDisabledItem(array &$menu): void
     {
         if (!$menu) {
             return;
         }
         //Keep outside otherwise the variable references get lost due to unset call.
-        $firstKey = array_keys($menu)[0];
         $menuLength = count($menu);
 
-        if ($firstKey != null && $menuLength > 0) {
-            for ($i = $firstKey; $i < $menuLength; $i++) {
-                //todo: transform item in menuItem
-                if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
-                    unset($menu[$i]);
-                } else if ($menu[$i]['submenu']) {
-                    $this->unsetDisabledItem($menu[$i]['submenu']);
-                }
+        $firstKey = array_keys($menu)[0];
+
+        for ($i = $firstKey; $i < $menuLength; $i++) {
+            //todo: transform item in menuItem
+            if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
+                unset($menu[$i]);
+            } else if (isset($menu[$i]['submenu'])) {
+                $this->unsetDisabledItem($menu[$i]['submenu']);
             }
         }
+
     }
+
 
     /**
      * @param $menu
