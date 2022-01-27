@@ -270,14 +270,17 @@ abstract class MenuBase
      * @param array $item - The menu Item containing all the submenus
      * @param bool $child - Decides it called from the recursive function or is this the main call.
      * @return string - Containing the generated html for this part of the menu.
-     * @throws SmartyException
+     * @throws SmartyException|ReflectionException
      */
     private function formatNavBar(array $item, bool $child): string
     {
         $html = '';
         $title = $this->getMenuTitle($item);
-        $classes = isset($item['classes']) ? $item['classes'] : '';
+        $classes = $item['classes'] ?? '';
         $active = $item['active'] ? self::DEFAULT_ACTIVE_CLASS : '';
+
+
+        $icon = $item['icon'] ?? null;
 
         if ($this->hasSubmenu($item)) {
             $submenu = $this->processMenu($item['submenu'], true, self::TYPE_MENU_NAVBAR);
@@ -286,7 +289,11 @@ abstract class MenuBase
                 'title' => $title,
                 'submenu' => $submenu,
                 'classes' => $classes,
-                'active' => $active
+                'icon' => $icon,
+                'icon_type' => $item['icon_type'],
+                'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
+                'active' => $active,
+                'hide_name' => !$child ? $item['hide_name'] : false
             ]);
 
         } else {
@@ -295,14 +302,18 @@ abstract class MenuBase
                 $attrs .= ' target="' . $item['target'] . '"';
             }
 
-            $link = isset($item['url']) ? $item['url'] : '';
+            $link = $item['url'] ?? '';
             $classes .= $child ? ' dropdown-item' : ' nav-link';
             $html .= SmartyProvider::render(self::NAVBAR_CHILD_ITEM_TPL, [
                 'title' => $title,
                 'link' => $link,
+                'icon' => $icon,
+                'icon_type' => $item['icon_type'],
+                'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'classes' => $classes,
                 'attributes' => $attrs,
-                'active' => $active
+                'active' => $active,
+                'hide_name' => !$child ? $item['hide_name'] : false,
             ]);
         }
 
@@ -321,14 +332,14 @@ abstract class MenuBase
         $html = '';
         $title = $this->getMenuTitle($item);
 
-        $classes = isset($item['classes']) ? $item['classes'] : '';
+        $classes = $item['classes'] ?? '';
         $active = $item['active'] ? self::DEFAULT_ACTIVE_CLASS : '';
 
         if ($this->hasSubmenu($item)) {
 
             //explore the child before formatting the parent (depth-first)
             $subMenu = $this->processMenu($item['submenu'], true);
-            $icon = isset($item['icon']) ? $item['icon'] : self::DEFAULT_SIDEBAR_PARENT_ITEM_ICON;
+            $icon = $item['icon'] ?? self::DEFAULT_SIDEBAR_PARENT_ITEM_ICON;
             $html .= SmartyProvider::render(self::SIDEBAR_PARENT_ITEM_TPL, [
                 'title' => $title,
                 'submenu' => $subMenu,
@@ -351,7 +362,7 @@ abstract class MenuBase
                     $template = self::SIDEBAR_SEPARATOR_ITEM_TPL;
                     break;
                 default:
-                    $icon = isset($item['icon']) ? $item['icon'] : self::DEFAULT_SIDEBAR_CHILD_ITEM_ICON;
+                    $icon = $item['icon'] ?? self::DEFAULT_SIDEBAR_CHILD_ITEM_ICON;
                     $template = self::SIDEBAR_CHILD_ITEM_TPL;
                     break;
             }
@@ -361,7 +372,7 @@ abstract class MenuBase
                 $attrs .= ' target="' . $item['target'] . '"';
             }
 
-            $link = isset($item['url']) ? $item['url'] : '';
+            $link = $item['url'] ?? '';
             $html .= SmartyProvider::render($template, [
                 'title' => $title,
                 'attributes' => $attrs,
@@ -480,7 +491,8 @@ abstract class MenuBase
         $active = false,
         $icon = null,
         $color = "",
-        $iconType = null
+        $iconType = null,
+        $hideName = false
     )
     {
         static $order_value = 100, $s_dupelookup = [];
@@ -510,7 +522,8 @@ abstract class MenuBase
             'active' => $active,
             'icon' => $icon,
             'color' => $color,
-            'icon_type' => $iconType
+            'icon_type' => $iconType,
+            'hide_name' => $hideName
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -578,22 +591,28 @@ abstract class MenuBase
             $item->isActive(),
             "",
             $item->getColor(),
-            $item->getIconType()
+            $item->getIconType(),
+            $item->isNameHidden()
         );
 
         return $item;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function addActionItem(ActionItem $item): ActionItem
     {
 
-        if (!$item->getIcon()) {
-            if ($item->getAction() === 'admin') {
-                $item->setIcon(self::ICON_ADMIN);
-            } else if ($item->getAction() === 'add') {
-                $item->setIcon(self::ICON_ADD);
-            } else {
-                $item->setIcon($item->getName(), Item::ICON_CHARS);
+        if ($item->getPosition() === self::MENU_SIDEBAR) {
+            if (!$item->getIcon()) {
+                if ($item->getAction() === 'admin') {
+                    $item->setIcon(self::ICON_ADMIN);
+                } else if ($item->getAction() === 'add') {
+                    $item->setIcon(self::ICON_ADD);
+                } else {
+                    $item->setIcon($item->getName(), Item::ICON_CHARS);
+                }
             }
         }
 
@@ -621,13 +640,17 @@ abstract class MenuBase
             $item->isActive(),
             $item->getIcon(),
             "",
-            $item->getIconType()
+            $item->getIconType(),
+            $item->isNameHidden()
         );
 
 
         return $item;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function addUrlItem(UrlItem $item): UrlItem
     {
         $this->addMenuItem(
@@ -644,7 +667,8 @@ abstract class MenuBase
             $item->isActive(),
             $item->getIcon(),
             "",
-            $item->getIconType()
+            $item->getIconType(),
+            $item->isNameHidden()
         );
 
         return $item;

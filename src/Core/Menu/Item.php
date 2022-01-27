@@ -35,6 +35,7 @@ abstract class Item
     protected $urlParams = [];
 
     private $iconType = self::ICON_FA;
+    private $hideName = false;
 
     //Todo: Pensare come fare per i link esterni!
     protected $icon = null;
@@ -265,4 +266,24 @@ abstract class Item
     {
         return $this->iconType;
     }
+
+    /**
+     * @return bool
+     */
+    public function isNameHidden(): bool
+    {
+        return $this->hideName;
+    }
+
+    /**
+     * @param bool $showItemName
+     * @return Item
+     */
+    public function hideName(bool $showItemName = true): Item
+    {
+        $this->hideName = $showItemName;
+        return $this;
+    }
+
+
 }
