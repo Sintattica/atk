@@ -4924,6 +4924,7 @@ class Node
 
         return $this->rowColor($record) ?: self::DEFAULT_RECORDLIST_BG_COLOR;
     }
+
     /**
      * Row CSS class.
      *
@@ -5239,11 +5240,13 @@ class Node
     }
 
 
-    public function hasNestedAttributes(): bool {
+    public function hasNestedAttributes(): bool
+    {
         return count($this->nestedAttributesList) > 0;
     }
 
-    public function isNestedAttribute(string $attributeName): bool {
+    public function isNestedAttribute(string $attributeName): bool
+    {
         return in_array($attributeName, $this->nestedAttributesList);
     }
 
@@ -5316,7 +5319,7 @@ class Node
         if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
             $this->getPage()->addContent($this->renderActionPage(
                 $handler->m_action, [$this->confirmAction($this->m_postvars['atkselector'], $handler->m_action) //show confirm buttons
-                ])
+            ])
             );
 
             return false;
@@ -5328,6 +5331,169 @@ class Node
         }
 
         return true;
+    }
+
+    /**
+     * Check if at least one of the attribute has been modified before saving.
+     *
+     * @param array $record
+     * @param string[] $attributes
+     * @return bool
+     */
+    protected function areAttributesModified($record, $attributes)
+    {
+        if (!is_array($attributes)) {
+            $attributes = [$attributes];
+        }
+
+        foreach ($attributes as $attribute) {
+            if ($this->isAttributeModified($record, $attribute)) {
+                // almeno un attributo è stato modificato
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Check if the attribute is present on the current node and if its TRACK_CHANGES flag has been set.
+     * @param string $attribute
+     * @return bool
+     */
+    protected function isAttributeTrackChangesAvailable($attribute)
+    {
+        return $this->getAttribute($attribute) and $this->hasFlag(self::NF_TRACK_CHANGES);
+    }
+
+
+    /**
+     * Check if the attribute has been modified before saving it.
+     *
+     * @param array $record
+     * @param string $attributeName
+     * @param string[] $checkMtoPrimaryKeys More $keys that can be specified in case of ManyToManyRelations
+     * @return bool
+     */
+    protected function isAttributeModified(array $record, string $attributeName, array $checkMtoPrimaryKeys = ['id']): ?bool
+    {
+        if (!$this->isAttributeTrackChangesAvailable($attributeName)) {
+            //Cannot check for modifications on this attribute/node.
+            return null;
+        }
+
+        $oldValue = $record['atkorgrec'][$attributeName];
+        $newValue = $record[$attributeName];
+
+        // 'special' attributes.
+        $attr = $this->getAttribute($attributeName);
+        if ($attr->get_class_name() == 'FileAttribute') {
+            //True if the file has been added or modified.
+            return strpos($newValue['tmpfile'], sys_get_temp_dir()) !== false;
+
+        } elseif ($attr->get_class_name() == 'MultiListAttribute') {
+            // check foreach id (unordered)
+
+            // convert the null values to empty arrays so the array_diff doesn't complain.
+            if ($oldValue === null) {
+                $oldValue = [];
+            }
+
+            if ($newValue === null) {
+                $newValue = [];
+            }
+
+            return array_diff($oldValue, $newValue) or array_diff($newValue, $oldValue);
+
+        } elseif (is_array($newValue) or $attr->get_class_name() == 'ManyToOneRelation') {  // relation attributes
+
+            if (!is_array($newValue)) {
+                foreach ($checkMtoPrimaryKeys as $key) {
+
+                    // if newValue is not an array => the attribute must be a ManyToOneRelation
+                    // transform the record in an array with 'id' or 'codice' depending on the oldValue structure.
+                    if (isset($oldValue[$key])) {
+                        $newValue = [$key => $newValue]; // in oldValue we have found a $key field
+                    }
+                }
+            }
+
+            foreach ($checkMtoPrimaryKeys as $key) {
+                if ($oldValue[$key] != $newValue[$key]) {
+                    return true; // the field value has changed
+                }
+            }
+
+            return false;
+        }
+
+        //default check.
+        return $newValue != $oldValue;
+    }
+
+    /**
+     * Verify if the value of the attribute has changed from null or empty to a non-null value.
+     *
+     * @param array $record
+     * @param string $attributeName
+     * @return bool
+     */
+    protected function attributeGainedValue(array $record, string $attributeName): ?bool
+    {
+        if (!$this->isAttributeTrackChangesAvailable($attributeName)) {
+            // cannot check the changes for the given attribute on this node.
+            return null;
+        }
+
+        $oldValue = $record['atkorgrec'][$attributeName];
+        $newValue = $record[$attributeName];
+
+        $attr = $this->getAttribute($attributeName);
+        if ($attr->get_class_name() == 'FileAttribute') {
+            // True se il file è stato aggiunto o modificato
+            // True
+            return strpos($newValue['tmpfile'], sys_get_temp_dir()) !== false;
+
+        }
+
+        return !$oldValue and $newValue;
+    }
+
+
+    /**
+     * Get the list of the attribute names for a given tab.
+     *
+     * @param string $tabName Tab Name
+     * @return array Attribute names
+     */
+    function getTabAttributeNames(string $tabName): array
+    {
+        $attrNames = [];
+        foreach ($this->m_attributeTabs as $attrName => $tabs) {
+            if (in_array($tabName, $tabs)) {
+                $attrNames[] = $attrName;
+            }
+        }
+        return $attrNames;
+    }
+
+
+    /**
+     * Get the list of the attributes for a given tab.
+     *
+     * @param string $tabName Tab Name
+     * @return Attribute[]
+     */
+    function getTabAttributes(string $tabName): array
+    {
+        $attrs = [];
+        foreach ($this->m_attributeTabs as $attrName => $tabs) {
+            if (in_array($tabName, $tabs)) {
+                $attrs[] = $this->getAttribute($attrName);
+            }
+        }
+        return $attrs;
     }
 
 
