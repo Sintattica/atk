@@ -5305,4 +5305,30 @@ class Node
     }
 
 
+    /**
+     * Ask the user a confirmation before proceeding with the action.
+     *
+     * @param ActionHandler $handler
+     * @return bool True if the user has confirmed the action.
+     */
+    protected function checkConfirmAction(ActionHandler $handler): bool
+    {
+        if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
+            $this->getPage()->addContent($this->renderActionPage(
+                $handler->m_action, [$this->confirmAction($this->m_postvars['atkselector'], $handler->m_action) //show confirm buttons
+                ])
+            );
+
+            return false;
+
+        } elseif ($this->m_postvars['cancel']) {
+            //The user has cancelled the action.
+            $this->redirect();
+            return false;
+        }
+
+        return true;
+    }
+
+
 }
