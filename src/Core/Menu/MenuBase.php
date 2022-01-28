@@ -231,7 +231,7 @@ abstract class MenuBase
 
         $firstKey = array_keys($menu)[0];
 
-        for ($i = $firstKey; $i < $menuLength; $i++) {
+        for ($i = $firstKey; $i < $firstKey + $menuLength; $i++) {
             //todo: transform item in menuItem
             if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
                 unset($menu[$i]);
