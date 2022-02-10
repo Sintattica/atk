@@ -13,7 +13,14 @@ $version = null;
 if (file_exists($_configAppRoot . '.git/HEAD')) {
     $version = shell_exec('git describe --abbrev=0 --tags'); //extract last tag.
     $gitInfo = shell_exec("git log -1 --pretty=format:'%h|%s|%ci|%cn'");  //extract other git info.
-    list($commitHash, $commitMessage, $commitDate, $commitAuthor) = explode('|', $gitInfo);
+
+    //Todo: Is it still needed? No one is currently using this.
+    $gitInfoParams = explode('|', $gitInfo);
+    if (isset($gitInfo) && count($gitInfoParams) === 4) {
+        list($commitHash, $commitMessage, $commitDate, $commitAuthor) = explode('|', $gitInfo);
+    } else {
+        $commitHash = $commitMessage = $commitDate = $commitAuthor = "";
+    }
 }
 
 $_public_dir = $_configAppRoot . 'web';
