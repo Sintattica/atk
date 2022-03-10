@@ -16,6 +16,11 @@ use Sintattica\Atk\Core\Tools;
 abstract class Item
 {
 
+    public const TOOLTIP_PLACEMENT_TOP = "top";
+    public const TOOLTIP_PLACEMENT_BOTTOM = "bottom";
+    public const TOOLTIP_PLACEMENT_LEFT = "left";
+    public const TOOLTIP_PLACEMENT_RIGHT = "right";
+
     public const ICON_FA = 'fa';
     public const ICON_IMAGE = 'image';
     public const ICON_CHARS = 'chars';
@@ -33,6 +38,8 @@ abstract class Item
     protected $module = '';
     protected $raw = false;
     protected $urlParams = [];
+    protected $tooltip = null;
+    protected $tooltipPlacement = self::TOOLTIP_PLACEMENT_BOTTOM;
 
     private $iconType = self::ICON_FA;
     private $hideName = false;
@@ -284,6 +291,44 @@ abstract class Item
         $this->hideName = $showItemName;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getTooltip(): ?string
+    {
+        return $this->tooltip;
+    }
+
+    /**
+     * @param string $tooltip
+     * @return Item
+     */
+    public function setTooltip(string $tooltip): Item
+    {
+        $this->tooltip = $tooltip;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTooltipPlacement(): string
+    {
+        return $this->tooltipPlacement;
+    }
+
+    /**
+     * @param string $tooltipPlacement
+     * @return Item
+     */
+    public function setTooltipPlacement(string $tooltipPlacement): Item
+    {
+        $this->tooltipPlacement = $tooltipPlacement;
+        return $this;
+    }
+
+
 
 
 }

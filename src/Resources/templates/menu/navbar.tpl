@@ -23,4 +23,12 @@
 
     </ul>
 
+    <script type="text/javascript">
+        {literal}
+        jQuery(function () {
+            jQuery('.nav-item .nav-link[data-toggle="tooltip"]').tooltip()
+        });
+        {/literal}
+    </script>
+
 </div>

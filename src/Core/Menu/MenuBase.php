@@ -293,7 +293,9 @@ abstract class MenuBase
                 'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active,
-                'hide_name' => !$child ? $item['hide_name'] : false
+                'hide_name' => !$child ? $item['hide_name'] : false,
+                'tooltip' => $item['tooltip'],
+                'tooltip_placement' => $item['tooltip_placement']
             ]);
 
         } else {
@@ -314,6 +316,8 @@ abstract class MenuBase
                 'attributes' => $attrs,
                 'active' => $active,
                 'hide_name' => !$child ? $item['hide_name'] : false,
+                'tooltip' => $item['tooltip'],
+                'tooltip_placement' => $item['tooltip_placement']
             ]);
         }
 
@@ -383,7 +387,9 @@ abstract class MenuBase
                 'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active,
-                'color' => $item["color"]
+                'color' => $item["color"],
+                'tooltip' => $item['tooltip'],
+                'tooltip_placement' => $item['tooltip_placement']
             ]);
         }
 
@@ -492,7 +498,9 @@ abstract class MenuBase
         $icon = null,
         $color = "",
         $iconType = null,
-        $hideName = false
+        $hideName = false,
+        $tooltip = null,
+        $tooltipPlacement = Item::TOOLTIP_PLACEMENT_BOTTOM
     )
     {
         static $order_value = 100, $s_dupelookup = [];
@@ -523,7 +531,9 @@ abstract class MenuBase
             'icon' => $icon,
             'color' => $color,
             'icon_type' => $iconType,
-            'hide_name' => $hideName
+            'hide_name' => $hideName,
+            'tooltip' => $tooltip,
+            'tooltip_placement' => $tooltipPlacement,
         );
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -569,7 +579,10 @@ abstract class MenuBase
             $item->isActive(),
             $item->getIcon(),
             "",
-            $item->getIconType()
+            $item->getIconType(),
+            null,
+            $item->getTooltipPlacement(),
+            $item->getTooltipPlacement()
         );
 
         return $item;
@@ -592,7 +605,9 @@ abstract class MenuBase
             "",
             $item->getColor(),
             $item->getIconType(),
-            $item->isNameHidden()
+            $item->isNameHidden(),
+            $item->getTooltip(),
+            $item->getTooltipPlacement()
         );
 
         return $item;
@@ -641,7 +656,9 @@ abstract class MenuBase
             $item->getIcon(),
             "",
             $item->getIconType(),
-            $item->isNameHidden()
+            $item->isNameHidden(),
+            $item->getTooltip(),
+            $item->getTooltipPlacement()
         );
 
 
@@ -668,7 +685,9 @@ abstract class MenuBase
             $item->getIcon(),
             "",
             $item->getIconType(),
-            $item->isNameHidden()
+            $item->isNameHidden(),
+            $item->getTooltip(),
+            $item->getTooltipPlacement()
         );
 
         return $item;
