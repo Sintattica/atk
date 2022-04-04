@@ -103,6 +103,13 @@ class Page
      */
     protected $m_title = '';
 
+
+    /**
+     * Set the displayed view in fullscreen mode (the card will be rendered in fullscreen)
+     * @var $m_fullscreen
+     */
+    private $m_fullscreen;
+
     /**
      * Retrieve the one-and-only Page instance.
      *
@@ -127,6 +134,8 @@ class Page
         // register default scripts
         $assetsUrl = Config::getGlobal('assets_url');
         $lang = Config::getGlobal('language');
+
+        $this->m_fullscreen = isset($_GET['atkfullscreen']) && $_GET['atkfullscreen'] === 'true';
 
         //jQuery
         $this->register_script($assetsUrl . 'admin-lte/plugins/jquery/jquery.min.js');
@@ -203,6 +212,10 @@ class Page
 
         //Override default with custom styles
         $this->register_style($assetsUrl . 'admin-lte/css/style.css');
+
+        if($this->m_fullscreen){
+            $this->register_style($assetsUrl . 'admin-lte/css/fullscreen.css');
+        }
 
         /*
         $this->register_style($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.css');

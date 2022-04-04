@@ -116,7 +116,8 @@ class IndexPage
                 'nav_sidebar_classes' => $this->m_adminLte->getNavSidebarClasses(),
                 'sidebar_classes' => $this->m_adminLte->getSidebarClasses(),
                 'brand_text_style' => $this->m_adminLte->getBrandTextStyle(),
-                'menu_accordion' => $this->m_adminLte->isMenuAccordion()
+                'menu_accordion' => $this->m_adminLte->isMenuAccordion(),
+                'collapse_sidebar' => $this->m_adminLte->isCollapsedSidebar()
             ]);
 
             $this->m_page->addContent($sidebar);

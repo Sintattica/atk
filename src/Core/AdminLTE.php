@@ -126,6 +126,7 @@ class AdminLTE
     private $bodySmallText = true;
     private $navSmallText = false;
     private $sidebarSmallText = false;
+    private $collapsedSidebar = false;
     private $footerSmallText = false; //Todo: Yet to do this!
     private $brandSmallText = false;
     private $sidebarElevation = 2;
@@ -293,5 +294,25 @@ class AdminLTE
         $this->menuAccordion = $menuAccordion;
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isCollapsedSidebar(): bool
+    {
+        return $this->collapsedSidebar;
+    }
+
+    /**
+     * @param bool $collapsedSidebar
+     * @return AdminLTE
+     */
+    public function setCollapsedSidebar(bool $collapsedSidebar): self
+    {
+        $this->collapsedSidebar = $collapsedSidebar;
+        return $this;
+    }
+
+
 
 }

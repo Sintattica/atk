@@ -1,0 +1,30 @@
+
+.navbar, .main-sidebar, .content-header {
+    display: none !important;
+}
+
+.content-wrapper {
+    margin: 0 !important;
+    height: 100vh;
+    background: #ffffff;
+}
+
+
+.content-wrapper > .content {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.content-wrapper > .content > .card {
+    border: none;
+    margin: 0;
+}
+
+.content-wrapper > .content > .card > .card-header{
+    display: none;
+}
+
+.main-footer {
+    display: none;
+}
