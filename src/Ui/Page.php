@@ -213,7 +213,7 @@ class Page
         //Override default with custom styles
         $this->register_style($assetsUrl . 'admin-lte/css/style.css');
 
-        if($this->m_fullscreen){
+        if ($this->m_fullscreen) {
             $this->register_style($assetsUrl . 'admin-lte/css/fullscreen.css');
         }
 
@@ -806,4 +806,24 @@ class Page
             }
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFullscreenMode(): bool
+    {
+        return $this->m_fullscreen;
+    }
+
+    /**
+     * @param bool $fullscreenMode
+     * @return Page
+     */
+    public function setFullscreenMode(bool $fullscreenMode = false): self
+    {
+        $this->m_fullscreen = $fullscreenMode;
+        return $this;
+    }
+
+
 }
