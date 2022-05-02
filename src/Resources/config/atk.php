@@ -7,8 +7,7 @@ $_configTempDir = $_configAppRoot . 'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
 
-//Get branch name from git
-$version = null;
+$version = null; //Git Tag
 
 if (file_exists($_configAppRoot . '.git/HEAD')) {
     $version = shell_exec('git describe --abbrev=0 --tags'); //extract last tag.
