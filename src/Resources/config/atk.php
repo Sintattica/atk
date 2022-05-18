@@ -7,20 +7,6 @@ $_configTempDir = $_configAppRoot . 'var/atktmp/';
 $_configAssetsUrl = '/bundles/atk/';
 $_configDirName = 'config';
 
-$version = null; //Git Tag
-
-if (file_exists($_configAppRoot . '.git/HEAD')) {
-    $version = shell_exec('git describe --abbrev=0 --tags'); //extract last tag.
-    $gitInfo = shell_exec("git log -1 --pretty=format:'%h|%s|%ci|%cn'");  //extract other git info.
-
-    //Todo: Is it still needed? No one is currently using this.
-    $gitInfoParams = explode('|', $gitInfo);
-    if (isset($gitInfo) && count($gitInfoParams) === 4) {
-        list($commitHash, $commitMessage, $commitDate, $commitAuthor) = explode('|', $gitInfo);
-    } else {
-        $commitHash = $commitMessage = $commitDate = $commitAuthor = "";
-    }
-}
 
 $_public_dir = $_configAppRoot . 'web';
 if ($_public_dir_real = realpath($_public_dir)) {
@@ -47,15 +33,7 @@ return [
 
     'public_dir' => $_public_dir,
 
-    'version' => $version,
-
-    'commit_info' => [
-        'hash' => $commitHash ?? "",
-        'message' => $commitMessage ?? "",
-        'date' => $commitDate ?? "",
-        'author' => $commitAuthor ?? "",
-        'version' => $version
-    ],
+    'version' => '',
 
     /*
      * Used in FileAttribute
