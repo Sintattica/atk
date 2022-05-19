@@ -8,6 +8,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <meta name="atkversion" content="{$atkversion}"/>
         {$head}
+
+        <script type="text/javascript">
+            {literal}
+            jQuery(function () {
+                jQuery('*[data-toggle="tooltip"]').tooltip()
+            });
+            {/literal}
+        </script>
     </head>
 {/if}
 
