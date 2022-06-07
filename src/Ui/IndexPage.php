@@ -91,7 +91,7 @@ class IndexPage
 
             if (Config::getGlobal('menu_show_user') && $user) {
                 $url = $this->generateUserUrl();
-                $menuObj->addMenuItem($user, $url, 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT);
+                $menuObj->addMenuItem(MenuBase::ATK_MENU_USERNAME_PREFIX . $user, $url, 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT);
             }
 
             if (Config::getGlobal('menu_show_logout_link') && $user) {

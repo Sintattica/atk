@@ -25,6 +25,8 @@ abstract class MenuBase
     private const TYPE_MENU_SIDEBAR = 'sidebar';
     private const TYPE_MENU_NAVBAR = 'navbar';
 
+    public const ATK_MENU_USERNAME_PREFIX = 'atk_menu_username_prefix';
+
     //All menu items (sidebar and navbar)
     private $items = [];
     private $menu = [];
@@ -274,6 +276,11 @@ abstract class MenuBase
      */
     private function formatNavBar(array $item, bool $child): string
     {
+        // remove prefix of username menu added to make it unique
+        if (substr($item['name'], 0, strlen(self::ATK_MENU_USERNAME_PREFIX))) {
+            $item['name'] = str_replace(self::ATK_MENU_USERNAME_PREFIX, '', $item['name']);
+        }
+
         $html = '';
         $title = $this->getMenuTitle($item);
         $classes = $item['classes'] ?? '';
