@@ -25,15 +25,21 @@ class TextAttribute extends Attribute
     /**
      * Display the text stretched in height.
      * You must specify a min-width.
+     * You can specify a max-height in this display mode
      */
     public const MODE_SCROLL = 'scroll';
 
     /**
-     * Display the text as wrapped. As default it truncates the text at
-     * specified length, it can be set with setMaxChars()
+     * Display the text as wrapped. As default, it truncates the text at
+     * 200 chars in length, it can be set with setMaxChars()
      */
     public const MODE_DEFAULT = 'default';
 
+    /**
+     * If display mode is Scroll than we can specify a max height to start scrolling
+     * If the display mode is INLINE then we can specify a max number of characters to show.
+     * If the display mode is DEFAULT then the inline mode with max 200 chars is set.
+     */
     private const MODES_ALLOWED = [self::MODE_DEFAULT, self::MODE_SCROLL, self::MODE_INLINE];
 
     private $displayMode = self::MODE_DEFAULT;

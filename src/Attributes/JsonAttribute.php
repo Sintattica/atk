@@ -13,12 +13,41 @@ class JsonAttribute extends TextAttribute
 
     public function display($record, $mode)
     {
-        $value = $record[$this->fieldName()] ?? null;
-        if (!$value) {
-            return parent::display($record, $mode);
+        $displayContent = "";
+        $fieldContent = $record[$this->fieldName()];
+
+        if ($fieldContent != null && $fieldContent != "") {
+
+            $encodedJson = Json::prettify(json_encode($fieldContent, JSON_PRETTY_PRINT), $this->jsonNewlineChar, $this->jsonIndentChar);
+
+            if ($mode == 'list') {
+                $style = "min-width: {$this->getMinWidth()};";
+                $classes = '';
+
+                switch ($this->getDisplayMode()) {
+                    case self::MODE_INLINE:
+                        if ($this->getMaxChars()) {
+                            $displayContent = Tools::truncateHTML($encodedJson, $this->getMaxChars(), '...');
+                        }
+                        break;
+                    case self::MODE_SCROLL:
+                        $classes = 'text-wrap';
+                        $style .= " max-height: {$this->getMaxHeight()}; overflow-y: auto; ";
+                        $displayContent = $encodedJson;
+                        break;
+                    default:
+                        $classes = 'text-wrap';
+                        $maxChars = $this->getMaxChars() ?: '200';
+                        $displayContent = Tools::truncateHTML($encodedJson, $maxChars, '...');
+                }
+
+                $displayContent = "<div class='$classes' style='$style'>$displayContent</div>";
+            } else {
+                $displayContent = $encodedJson;
+            }
         }
 
-        return Json::prettify(json_encode($value, JSON_PRETTY_PRINT), $this->jsonNewlineChar, $this->jsonIndentChar);
+        return $displayContent;
     }
 
 
