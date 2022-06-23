@@ -573,7 +573,7 @@ return [
      */
     'mra_position' => 'bottom',
 
-    'style_url' => $_configAssetsUrl . 'styles/style.css',
+    'style_url' => $_configAssetsUrl . 'admin-lte/css/style.css',
 
     /*********************************** OUTPUT ********************************/
 
