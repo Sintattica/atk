@@ -155,6 +155,10 @@ class Page
         $this->register_script($assetsUrl . 'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js');
 
         $this->register_script($assetsUrl . 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
+
+        //Custom file input lib
+        $this->register_script($assetsUrl . 'admin-lte/plugins/bs-custom-file-input/bs-custom-file-input.min.js');
+
         /*
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
         $this->register_script($assetsUrl.'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
