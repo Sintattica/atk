@@ -440,7 +440,7 @@ class TextAttribute extends Attribute
     /**
      * @return int|mixed
      */
-    public function getMaxChars(): int
+    public function getMaxChars(): ?int
     {
         return $this->maxChars;
     }
