@@ -4882,10 +4882,9 @@ class Node
      * Should always be called from in child methods!
      * The method can return a simple value (which will be used for the normal row color), or can be
      * an array, in which case the first element will be the normal row color, and the second the mouseover
-     * row color, example: function rowColor(&$record, $num) { return ['#f00', '#00f'] };
+     * row color, example: function rowColor($record) { return ['#f00', '#00f'] };
      *
      * @param $record
-     * @param $index
      * @return string
      */
     public function rowColor($record)
