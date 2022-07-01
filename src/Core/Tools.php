@@ -624,7 +624,7 @@ class Tools
      *
      * @return bool wether or not the value is in the array
      */
-    public static function atk_in_array($needle, $haystack, $strict = false)
+    public static function atk_in_array($needle, $haystack, bool $strict = false): bool
     {
         return is_array($haystack) && in_array($needle, $haystack, $strict);
     }

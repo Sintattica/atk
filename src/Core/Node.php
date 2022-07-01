@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core;
 
+use Exception;
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\ButtonAttribute;
@@ -869,10 +870,9 @@ class Node
      *
      * @return Attribute the attribute just added
      */
-    public function add($attribute, $sections = null, $order = 0)
+    public function add(Attribute $attribute, $sections = null, int $order = 0): Attribute
     {
-
-        //If $attribute is a nested attribute create a fake one and handle the loading/storage through the JsonAttribute
+        // if $attribute is a nested attribute create a fake one and handle the loading/storage through the JsonAttribute
         if ($attribute->isNestedAttribute()) {
             if (!$this->getAttribute($this->nestedAttributeField)) {
                 $this->add(new JSONAttribute($this->nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD))->setForceUpdate(true);
@@ -1392,6 +1392,20 @@ class Node
         return $primKey;
     }
 
+    public function getAtkError(array $record): string
+    {
+        $errors = [];
+        if (isset($record['atkerror']) && count($record['atkerror']) > 0) {
+            foreach ($record['atkerror'] as $error) {
+                if (is_array($error["attrib_name"])) {
+                    $error["attrib_name"] = implode(', ', $error["attrib_name"]);
+                }
+                $errors[] = $error["attrib_name"] . ": " . $error['msg'];
+            }
+        }
+        return implode("\n", $errors);
+    }
+
     /**
      * Returns the primary key selector of the record.
      *
@@ -1843,7 +1857,7 @@ class Node
      *
      * @return array
      */
-    public function getFormButtons($mode, $record = array())
+    public function getFormButtons(string $mode, array $record = []): array
     {
         $result = [];
         $sm = SessionManager::getInstance();
@@ -1899,6 +1913,61 @@ class Node
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the form button with passed html name.
+     *
+     * @param string $name
+     * @param string $mode
+     * @param array $record
+     * @return string|null
+     */
+    function getFormButton(string $name, string $mode, array $record = []): ?string
+    {
+        $buttons = self::getFormButtons($mode, $record);
+
+        foreach ($buttons as $i => $button) {
+            if (strpos($button, "name=\"$name\"") !== false) {
+                return $button;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Remove the form button with passed html name.
+     *
+     * @param array $buttons
+     * @param string $name
+     */
+    function removeFormButton(array &$buttons, string $name): void
+    {
+        foreach ($buttons as $i => $button) {
+            if (strpos($button, "name=\"$name\"") !== false) {
+                unset($buttons[$i]);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Find the form button in the passed array of buttons.
+     *
+     * @param array $buttons
+     * @param string $name
+     * @return bool
+     */
+    function findFormButton(array $buttons, string $name): bool
+    {
+        foreach ($buttons as $i => $button) {
+            if (strpos($button, "name=\"$name\"") !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -2523,14 +2592,14 @@ class Node
      *
      * @param string $action The action for which you wnat to retrieve the
      *                       template.
-     * @param null $record The record for which you want to return the
+     * @param array|null $record The record for which you want to return the
      *                       template (or NULL if there is no record).
      * @param string $tab The name of the tab for which you want to
      *                       retrieve the template.
      *
-     * @return string The filename of the template (without path)
+     * @return string|null The filename of the template (without path)
      */
-    public function getTemplate(string $action, $record = null, $tab = ''): string
+    public function getTemplate(string $action, ?array $record = null, string $tab = ''): ?string
     {
         switch ($action) {
             case 'add': // add and edit both use the same form.
@@ -2545,6 +2614,8 @@ class Node
             case 'admin':
                 return 'recordlist.tpl';
         }
+
+        return null;
     }
 
     /**
@@ -3553,6 +3624,53 @@ class Node
         Tools::atkdebug('NOT UPDATING! NO SELECTOR SET!');
 
         return false;
+    }
+
+    /**
+     * updateDb() v2
+     *
+     * @param array $record
+     * @param array $includes Associative array ['attribute_name' => 'attribute_value']
+     * @param bool $exectrigger
+     * @param array $excludes
+     * @return bool
+     * @throws Exception
+     */
+    function updateDbIncludes(array $record, array $includes = [], bool $exectrigger = true, array $excludes = []): bool
+    {
+        // inject value of includes attributes into the record
+        foreach ($includes as $k => $v) {
+            $record[$k] = $v;
+        }
+
+        unset($record['__executedpreUpdate']);
+        unset($record['__executedpostUpdate']);
+        unset($record['atkorgrec']);
+
+        $this->trackChangesIfNeeded($record);
+
+        try {
+            if ($exectrigger) {
+                if (!$this->executeTrigger('preUpdate', $record)) {
+                    throw new Exception('preUpdate error');
+                }
+            }
+
+            $this->validate($record, 'update', ['__version']);
+            if ($errors = $this->getAtkError($record)) {
+                throw new Exception("validate error ($errors)'");
+            }
+
+            if (!$this->updateDb($record, $exectrigger, $excludes, array_keys($includes))) {
+                throw new Exception('updateDb error');
+            }
+
+        } catch (Exception $e) {
+            Tools::atkerror($this->atkNodeUri() . ' updateDbIncludes ' . $e->getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -4946,8 +5064,9 @@ class Node
      *                        and the name of a method or closure
      *
      * @return bool
+     * @throws Exception
      */
-    public function setRowClassCallback($callback)
+    public function setRowClassCallback($callback): bool
     {
         $res = false;
         if (is_callable($callback, false, $callableName)) {
@@ -4982,11 +5101,11 @@ class Node
     /**
      * Adds a flag to a list of attributes.
      *
-     * @param array $attrsNames The names of attributes
+     * @param string[] $attrsNames The names of attributes
      * @param int $flag The flag to add to the attributes
      * @param bool $check Check the presence of the attributes
      */
-    public function addAttributesFlag($attrsNames, $flag, $check = false)
+    public function addAttributesFlag(array $attrsNames, int $flag, bool $check = false)
     {
         foreach ($attrsNames as $name) {
             $attr = $this->getAttribute($name);
@@ -4997,19 +5116,47 @@ class Node
     }
 
     /**
+     * Adds all passed flags to a list of attributes.
+     *
+     * @param string[] $attrsNames
+     * @param int[] $flags
+     * @param bool $check
+     */
+    protected function addAttributesFlags(array $attrsNames, array $flags, bool $check = false)
+    {
+        foreach ($flags as $flag) {
+            $this->addAttributesFlag($attrsNames, $flag, $check);
+        }
+    }
+
+    /**
      * Removes a flag from a list of attributes.
      *
-     * @param array $attrsNames The names of attributes
+     * @param string[] $attrsNames The names of attributes
      * @param int $flag The flag to remove from the attributes
      * @param bool $check Check the presence of the attributes
      */
-    public function removeAttributesFlag($attrsNames, $flag, $check = false)
+    public function removeAttributesFlag(array $attrsNames, int $flag, bool $check = false)
     {
         foreach ($attrsNames as $name) {
             $attr = $this->getAttribute($name);
             if (!$check || $attr) {
                 $attr->removeFlag($flag);
             }
+        }
+    }
+
+    /**
+     * Removes all passed flags from a list of attributes.
+     *
+     * @param string[] $attrsNames
+     * @param int[] $flags
+     * @param bool $check
+     */
+    protected function removeAttributesFlags(array $attrsNames, array $flags, bool $check = false)
+    {
+        foreach ($flags as $flag) {
+            $this->removeAttributesFlag($attrsNames, $flag, $check);
         }
     }
 
@@ -5317,14 +5464,13 @@ class Node
     {
         if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
             $this->getPage()->addContent($this->renderActionPage(
-                $handler->m_action, [$this->confirmAction($this->m_postvars['atkselector'], $handler->m_action) //show confirm buttons
-            ])
+                $handler->m_action, [$this->confirmAction($this->m_postvars['atkselector'], $handler->m_action)]) // show confirm buttons
             );
 
             return false;
 
         } elseif ($this->m_postvars['cancel']) {
-            //The user has cancelled the action.
+            // the user has cancelled the action.
             $this->redirect();
             return false;
         }
@@ -5339,15 +5485,11 @@ class Node
      * @param string[] $attributes
      * @return bool
      */
-    protected function areAttributesModified($record, $attributes)
+    protected function areAttributesModified(array $record, array $attributes): bool
     {
-        if (!is_array($attributes)) {
-            $attributes = [$attributes];
-        }
-
         foreach ($attributes as $attribute) {
             if ($this->isAttributeModified($record, $attribute)) {
-                // almeno un attributo è stato modificato
+                // at least one of the attribute has been modified
                 return true;
             }
         }
@@ -5358,12 +5500,13 @@ class Node
 
     /**
      * Check if the attribute is present on the current node and if its TRACK_CHANGES flag has been set.
-     * @param string $attribute
+     *
+     * @param string $attributeName
      * @return bool
      */
-    protected function isAttributeTrackChangesAvailable($attribute)
+    protected function isAttributeTrackChangesAvailable(string $attributeName): bool
     {
-        return $this->getAttribute($attribute) and $this->hasFlag(self::NF_TRACK_CHANGES);
+        return $this->getAttribute($attributeName) and $this->hasFlag(self::NF_TRACK_CHANGES);
     }
 
 
@@ -5378,7 +5521,7 @@ class Node
     protected function isAttributeModified(array $record, string $attributeName, array $checkMtoPrimaryKeys = ['id']): ?bool
     {
         if (!$this->isAttributeTrackChangesAvailable($attributeName)) {
-            //Cannot check for modifications on this attribute/node.
+            // cannot check for modifications on this attribute/node.
             return null;
         }
 
@@ -5409,7 +5552,6 @@ class Node
 
             if (!is_array($newValue)) {
                 foreach ($checkMtoPrimaryKeys as $key) {
-
                     // if newValue is not an array => the attribute must be a ManyToOneRelation
                     // transform the record in an array with 'id' or 'codice' depending on the oldValue structure.
                     if (isset($oldValue[$key])) {
@@ -5427,7 +5569,7 @@ class Node
             return false;
         }
 
-        //default check.
+        // default check.
         return $newValue != $oldValue;
     }
 
@@ -5468,11 +5610,10 @@ class Node
      */
     function getTabAttributeNames(string $tabName): array
     {
+        $tabAttributes = $this->getTabAttributes($tabName);
         $attrNames = [];
-        foreach ($this->m_attributeTabs as $attrName => $tabs) {
-            if (in_array($tabName, $tabs)) {
-                $attrNames[] = $attrName;
-            }
+        foreach ($tabAttributes as $attribute) {
+            $attrNames[] = $attribute->fieldName();
         }
         return $attrNames;
     }
@@ -5495,5 +5636,15 @@ class Node
         return $attrs;
     }
 
-
+    /**
+     * True if the node has the passed action
+     * @param string $action
+     * @return bool
+     */
+    function hasAction(string $action): bool
+    {
+        $g_nodes = Atk::getInstance()->g_nodes;
+        $nodeActions = $g_nodes[$this->getModule()][$this->getModule()][$this->getType()];
+        return Tools::atk_in_array($action, $nodeActions);
+    }
 }
