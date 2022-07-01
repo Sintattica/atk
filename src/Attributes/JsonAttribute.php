@@ -138,4 +138,37 @@ class JsonAttribute extends TextAttribute
         return $this;
     }
 
+    /**
+     * @param array|string $array
+     * @param int $level
+     * @param string $itemSep
+     * @return string
+     */
+    public static function arrayToString($array, int $level = 0, string $itemSep = "<br>"): string
+    {
+        if (!is_array($array)) {
+            if ($array === null) {
+                $array = "null";
+            } elseif ($array === false) {
+                $array = "false";
+            }
+            return $array . $itemSep;
+        }
+
+        $result = '';
+        $oldLevel = $level;
+        foreach ($array as $key => $value) {
+            if ($oldLevel == $level) {
+                $level++;
+            }
+            $result = str_repeat("&nbsp", $level * 3);
+            $result .= "<b>" . $key . "</b>: ";
+            if (is_array($value)) {
+                $result .= "<br>";
+            }
+            $result .= self::arrayToString($value, $level, $itemSep);
+        }
+
+        return $result;
+    }
 }

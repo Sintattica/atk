@@ -204,7 +204,7 @@ class DateTimeAttribute extends Attribute
         $date = $this->m_date->display($record, $mode);
         $time = $this->m_time->display($record, $mode);
         if ($date != '' && $time != '') {
-            return $date.(($mode == 'csv' || $mode == 'plain') ? ' ' : '&nbsp;').$time;
+            return $date . (($mode == 'csv' || $mode == 'plain') ? ' ' : '&nbsp;') . $time;
         } else {
             return '';
         }
@@ -271,34 +271,35 @@ class DateTimeAttribute extends Attribute
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;
         $timeEdit = $this->m_time->edit($record, $fieldprefix, $mode);
 
-        return '<div class="DateTimeAttribute d-flex flex-nowrap justify-content-between justify-content-sm-start time-attr">'.$dateEdit.'<span class="m-1"></span>'.$timeEdit.'</div>';
+        return '<div class="DateTimeAttribute d-flex flex-nowrap justify-content-between justify-content-sm-start time-attr">' . $dateEdit . '<span class="m-1"></span>' . $timeEdit . '</div>';
     }
 
     /**
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      *
-     * @return string The database compatible value
+     * @return string|null The database compatible value
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        if (is_array($rec[$this->fieldName()])) {
-            $value = $rec[$this->fieldName()];
-            $value = $this->toUTC($value, $rec);
-            $rec[$this->fieldName()] = $value;
+        if (is_array($record[$this->fieldName()])) {
+            $value = $record[$this->fieldName()];
+            $value = $this->toUTC($value, $record);
+            $record[$this->fieldName()] = $value;
 
-            $date = $this->m_date->value2db($rec);
-            $time = $this->m_time->value2db($rec);
+            $date = $this->m_date->value2db($record);
+            $time = $this->m_time->value2db($record);
 
             if ($date != null && $time != null) {
-                return $date.' '.$time;
+                return $date . ' ' . $time;
             }
+
         } else {
-            if (!empty($rec[$this->fieldName()])) {
-                $stamp = strtotime($rec[$this->fieldName()]);
-                $stamp = $this->toUTC($stamp, $rec);
+            if (!empty($record[$this->fieldName()])) {
+                $stamp = strtotime($record[$this->fieldName()]);
+                $stamp = $this->toUTC($stamp, $record);
 
                 return date('Y-m-d H:i:s', $stamp);
             }
@@ -310,48 +311,46 @@ class DateTimeAttribute extends Attribute
     /**
      * Convert database value to datetime array.
      *
-     * @param array $rec database record with date field
+     * @param array $record database record with date field
      *
-     * @return mixed array with 3 fields (hours:minutes:seconds)
+     * @return array|int|string|null array with 3 fields (hours:minutes:seconds)
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] != null) {
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != null) {
             /*
-             * @todo Fix handling of 0 and NULL db values in the date, time and datetime attributes
-             * Currently the date attribute gives an empty string when parsing 0000-00-00,
-             * the time attribute gives an array with all three values set to 00,
-             * and the datetimeattribute gives an empty string now (previously it gave a php warning
-             * because it was trying to array_merge the empty string from the date attribute with the
-             * array of the time attribute).
+             * TODO: Fix handling of 0 and NULL db values in the date, time and datetime attributes
+             *  Currently the date attribute gives an empty string when parsing 0000-00-00,
+             *  the time attribute gives an array with all three values set to 00,
+             *  and the datetimeattribute gives an empty string now (previously it gave a php warning
+             *  because it was trying to array_merge the empty string from the date attribute with the
+             *  array of the time attribute).
              */
-            if ($rec[$this->fieldName()] == '0000-00-00 00:00:00') {
+            if ($record[$this->fieldName()] == '0000-00-00 00:00:00') {
                 return '';
             }
 
-            $datetime = explode(' ', $rec[$this->fieldName()]);
+            $datetime = explode(' ', $record[$this->fieldName()]);
 
-            $tmp_rec = $rec;
+            $tmp_rec = $record;
             $tmp_rec[$this->fieldName()] = $datetime[0];
             $result_date = $this->m_date->db2value($tmp_rec);
             if ($result_date == null) {
                 return null;
             }
 
-            $tmp_rec = $rec;
-            $tmp_rec[$this->fieldName()] = isset($datetime[1]) ? $datetime[1] : null;
+            $tmp_rec = $record;
+            $tmp_rec[$this->fieldName()] = $datetime[1] ?? null;
             $result_time = $this->m_time->db2value($tmp_rec);
             if ($result_time == null) {
-                $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
+                $result_time = ['hours' => '00', 'minutes' => '00', 'seconds' => '00'];
             }
 
-            $value = array_merge((array)$result_date, (array)$result_time);
-            $value = $this->fromUTC($value, $tmp_rec);
-
-            return $value;
-        } else {
-            return null;
+            $value = array_merge($result_date, (array)$result_time);
+            return $this->fromUTC($value, $tmp_rec);
         }
+
+        return null;
     }
 
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
@@ -581,7 +580,7 @@ class DateTimeAttribute extends Attribute
                     }
                 }
 
-                Tools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "'.$this->fieldName().'"!');
+                Tools::atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "' . $this->fieldName() . '"!');
 
                 return 0;
             } else {

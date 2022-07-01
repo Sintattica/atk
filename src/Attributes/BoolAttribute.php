@@ -136,13 +136,13 @@ class BoolAttribute extends Attribute
     /**
      * Get the value if it exits, otherwise return 0.
      *
-     * @param array $rec Array with values
+     * @param array $record Array with values
      *
      * @return int
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        return isset($rec[$this->fieldName()]) ? (int)$rec[$this->fieldName()] : 0;
+        return isset($record[$this->fieldName()]) ? (int)$record[$this->fieldName()] : 0;
     }
 
     /**

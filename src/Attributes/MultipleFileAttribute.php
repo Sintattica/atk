@@ -101,11 +101,11 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * Convert value to record for database.
      *
-     * @param array $rec Array with Fields
+     * @param array $record Array with Fields
      *
      * @return mixed Nothing or Fieldname or Original filename
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
         $select = $_REQUEST['select_'.$this->fieldName()];
         $r = '';
@@ -127,17 +127,17 @@ class MultipleFileAttribute extends FileAttribute
     /**
      * Convert value to string.
      *
-     * @param array $rec Array with fields
+     * @param array $record Array with fields
      *
      * @return array with tmpfile, orgfilename,filesize
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        return array(
-            'tmpfile' => $this->m_dir.$rec[$this->fieldName()],
-            'orgfilename' => $rec[$this->fieldName()],
+        return [
+            'tmpfile' => $this->m_dir.$record[$this->fieldName()],
+            'orgfilename' => $record[$this->fieldName()],
             'filesize' => '?',
-        );
+        ];
     }
 
     /**

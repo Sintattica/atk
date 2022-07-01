@@ -357,19 +357,19 @@ class NumberAttribute extends Attribute
      * own conversion.
      * This is the exact opposite of the db2value method.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      *
      * @return string The database compatible value
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(self::AF_OBLIGATORY)) {
+        if ((!isset($record[$this->fieldName()]) || strlen($record[$this->fieldName()]) == 0) && !$this->hasFlag(self::AF_OBLIGATORY)) {
             return;
         }
         if ($this->getDecimals() > 0) {
-            return round((float)$rec[$this->fieldName()], $this->getDecimals());
+            return round((float)$record[$this->fieldName()], $this->getDecimals());
         } else {
-            return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
+            return isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         }
     }
 

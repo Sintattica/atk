@@ -306,15 +306,15 @@ class TimeAttribute extends Attribute
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      *
      * @return string The database compatible value
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        $hours = $rec[$this->fieldName()]['hours'];
-        $minutes = $rec[$this->fieldName()]['minutes'];
-        $seconds = $rec[$this->fieldName()]['seconds'];
+        $hours = $record[$this->fieldName()]['hours'];
+        $minutes = $record[$this->fieldName()]['minutes'];
+        $seconds = $record[$this->fieldName()]['seconds'];
 
         if ($hours == '' || $minutes == '' || ($this->hasFlag(self::AF_TIME_SECONDS) && $seconds == '')) {
             return null;
@@ -326,20 +326,20 @@ class TimeAttribute extends Attribute
     /**
      * Convert database value to time array.
      *
-     * @param array $rec database record with date field
+     * @param array $record database record with date field
      *
      * @return array with 3 fields (hours:minutes:seconds)
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) {
+        if (!isset($record[$this->fieldName()]) || strlen($record[$this->fieldName()]) == 0) {
             $retval = null;
         } else {
-            $retval = array(
-                'hours' => substr($rec[$this->fieldName()], 0, 2),
-                'minutes' => substr($rec[$this->fieldName()], 3, 2),
-                'seconds' => substr($rec[$this->fieldName()], 6, 2),
-            );
+            $retval = [
+                'hours' => substr($record[$this->fieldName()], 0, 2),
+                'minutes' => substr($record[$this->fieldName()], 3, 2),
+                'seconds' => substr($record[$this->fieldName()], 6, 2),
+            ];
         }
 
         return $retval;

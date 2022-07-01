@@ -1129,20 +1129,20 @@ class DateAttribute extends Attribute
     /**
      * Convert date array to database value.
      *
-     * @param array $rec database record with a date attribute
+     * @param array $record database record with a date attribute
      *                   field $rec[{name of the date attribute}]
      *
      * @return string database value for date
      */
-    public function value2db($rec): ?string
+    public function value2db($record): ?string
     {
-        if (!is_array($rec[$this->fieldName()])) {
+        if (!is_array($record[$this->fieldName()])) {
             return null;
         }
 
-        $year = $rec[$this->fieldName()]['year'];
-        $month = $rec[$this->fieldName()]['month'];
-        $day = $rec[$this->fieldName()]['day'];
+        $year = $record[$this->fieldName()]['year'];
+        $month = $record[$this->fieldName()]['month'];
+        $day = $record[$this->fieldName()]['day'];
 
         if (empty($year) || empty($month) || empty($day)) {
             return null;
@@ -1157,21 +1157,21 @@ class DateAttribute extends Attribute
     /**
      * Convert database value to date array.
      *
-     * @param array $rec database record with date field
+     * @param array $record database record with date field
      *
      * @return array|null array with 3 fields (year, month, day) or null
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) {
+        if (!isset($record[$this->fieldName()]) || strlen($record[$this->fieldName()]) == 0 || (int)substr($record[$this->fieldName()], 0, 4) == 0) {
             return null;
         }
 
-        return array(
-            'year' => substr($rec[$this->fieldName()], 0, 4),
-            'month' => substr($rec[$this->fieldName()], 5, 2),
-            'day' => substr($rec[$this->fieldName()], 8, 2),
-        );
+        return [
+            'year' => substr($record[$this->fieldName()], 0, 4),
+            'month' => substr($record[$this->fieldName()], 5, 2),
+            'day' => substr($record[$this->fieldName()], 8, 2),
+        ];
     }
 
     /**

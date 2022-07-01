@@ -221,31 +221,31 @@ class TextAttribute extends Attribute
     /**
      * Add's slashes to the string for the database.
      *
-     * @param array $rec Array with values
+     * @param array $record Array with values
      *
      * @return string with slashes
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
         $db = $this->getDb();
         if ($db->getType() != 'oci9' || $this->dbFieldType() != 'text') {
-            return $db->escapeSQL($rec[$this->fieldName()]);
+            return $db->escapeSQL($record[$this->fieldName()]);
         } else {
-            return $rec[$this->fieldName()];
+            return $record[$this->fieldName()];
         } //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
     }
 
     /**
      * Removes slashes from the string.
      *
-     * @param array $rec Array with values
+     * @param array $record Array with values
      *
      * @return string without slashes
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        if (isset($rec[$this->fieldName()])) {
-            return $rec[$this->fieldName()];
+        if (isset($record[$this->fieldName()])) {
+            return $record[$this->fieldName()];
         }
 
         return null;

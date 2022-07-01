@@ -31,42 +31,43 @@ class FlagAttribute extends MultiSelectAttribute
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      *
      * @return string The database compatible value
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
+        if (is_array($record[$this->fieldName()]) && Tools::count($record[$this->fieldName()]) >= 1) {
             $flags = 0;
-            foreach ($rec[$this->fieldName()] as $flag) {
+            foreach ($record[$this->fieldName()] as $flag) {
                 $flags |= $flag;
             }
 
             return $flags;
-        } else {
-            return 0;
+
         }
+
+        return 0;
     }
 
     /**
      * Converts a database value to an internal value.
      *
-     * @param array $rec The database record that holds this attribute's value
+     * @param array $record The database record that holds this attribute's value
      *
      * @return mixed The internal value
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        if ($rec[$this->fieldName()] > 0) {
-            $newrec = [];
+        if ($record[$this->fieldName()] > 0) {
+            $newRecord = [];
             foreach ($this->m_values as $value) {
-                if (Tools::hasFlag($rec[$this->fieldName()], $value)) {
-                    $newrec[] = $value;
+                if (Tools::hasFlag($record[$this->fieldName()], $value)) {
+                    $newRecord[] = $value;
                 }
             }
 
-            return $newrec;
+            return $newRecord;
         }
 
         return [];

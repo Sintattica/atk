@@ -235,13 +235,13 @@ class ManyToOneRelation extends Relation
     /**
      * Constructor.
      *
-     * @param string $name The name of the attribute. This is the name of the field that is the referential key to the destination.
-     *                     For relations with more than one field in the foreign key, you should pass an array of referential key fields.
-     *                     The order of the fields must match the order of the primary key attributes in the destination node.
+     * @param string|string[] $name The name of the attribute. This is the name of the field that is the referential key to the destination.
+     *                              For relations with more than one field in the foreign key, you should pass an array of referential key fields.
+     *                              The order of the fields must match the order of the primary key attributes in the destination node.
      * @param int $flags Flags for the relation
-     *
      * @param string $destination The node we have a relationship with.
      *
+     * @throws Exception
      */
     public function __construct($name, $flags = 0, $destination)
     {
@@ -490,21 +490,21 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_pagination_limit = $limit;
     }
 
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        if ($this->isEmpty($rec)) {
+        if ($this->isEmpty($record)) {
             Tools::atkdebug($this->fieldName().' IS EMPTY!');
 
             return null;
         } else {
             if ($this->createDestination()) {
-                if (is_array($rec[$this->fieldName()])) {
+                if (is_array($record[$this->fieldName()])) {
                     $pkfield = $this->m_destInstance->m_primaryKey[0];
                     $pkattr = $this->m_destInstance->getAttribute($pkfield);
+                    return $pkattr->value2db($record[$this->fieldName()]);
 
-                    return $pkattr->value2db($rec[$this->fieldName()]);
                 } else {
-                    return $rec[$this->fieldName()];
+                    return $record[$this->fieldName()];
                 }
             }
         }
@@ -538,31 +538,30 @@ class ManyToOneRelation extends Relation
             }
 
             if (Tools::count($result) == 0) {
-                return;
+                return null;
             }
 
             // add descriptor fields, this means they can be shown in the title
             // bar etc. when updating failed for example
             $record = array($this->fieldName() => $result);
             $this->populate($record);
-            $result = $record[$this->fieldName()];
-
-            return $result;
+            return $record[$this->fieldName()];
         }
 
-        return;
+        return null;
     }
 
-    public function db2value($rec)
+    public function db2value($record)
     {
         $this->createDestination();
 
-        if (isset($rec[$this->fieldName()]) && is_array($rec[$this->fieldName()]) && (!isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) || empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))) {
-            return;
+        if (isset($record[$this->fieldName()]) && is_array($record[$this->fieldName()]) && (!isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) || empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))) {
+            return null;
         }
 
-        if (isset($rec[$this->fieldName()])) {
-            $myrec = $rec[$this->fieldName()];
+        if (isset($record[$this->fieldName()])) {
+            $myrec = $record[$this->fieldName()];
+
             if (is_array($myrec)) {
                 $result = [];
                 if ($this->createDestination()) {
@@ -576,16 +575,18 @@ class ManyToOneRelation extends Relation
                         }
                     }
                 }
-
                 return $result;
+
             } else {
                 // if the record is not an array, probably only the value of the primary key was loaded.
                 // This workaround only works for single-field primary keys.
                 if ($this->createDestination()) {
-                    return array($this->m_destInstance->primaryKeyField() => $myrec);
+                    return [$this->m_destInstance->primaryKeyField() => $myrec];
                 }
             }
         }
+
+        return null;
     }
 
     /**

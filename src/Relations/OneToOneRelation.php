@@ -281,34 +281,34 @@ class OneToOneRelation extends Relation
      * own conversion.
      * This is the exact opposite of the db2value method.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      *
      * @return string The database compatible value
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
         // we need to pass all values to the destination node, so it can
         // run it's db2value stuff over it..
         if ($this->hasFlag(self::AF_ONETOONE_LAZY) && $this->m_refKey == '') {
-            return parent::db2value($rec);
+            return parent::db2value($record);
         }
 
         if ($this->createDestination()) {
-            (isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()])) ? $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()] : $pkval = null;
+            (isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()])) ? $pkval = $record[$this->fieldName()][$this->m_destInstance->primaryKeyField()] : $pkval = null;
             if ($pkval != null && $pkval != '') { // If primary key is not filled, there was no record, so we
                 // should return NULL.
                 foreach (array_keys($this->m_destInstance->m_attribList) as $attribname) {
                     $p_attrib = $this->m_destInstance->m_attribList[$attribname];
-                    $rec[$this->fieldName()][$attribname] = $p_attrib->db2value($rec[$this->fieldName()]);
+                    $record[$this->fieldName()][$attribname] = $p_attrib->db2value($record[$this->fieldName()]);
                 }
                 // also set the primkey..
-                $rec[$this->fieldName()]['atkprimkey'] = $this->m_destInstance->primaryKey($rec[$this->fieldName()]);
+                $record[$this->fieldName()]['atkprimkey'] = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
 
-                return $rec[$this->fieldName()];
+                return $record[$this->fieldName()];
             }
         }
 
-        return;
+        return null;
     }
 
     public function fetchMeta($metadata)
@@ -1123,17 +1123,17 @@ class OneToOneRelation extends Relation
     /**
      * Convert the internal value to the database value.
      *
-     * @param array $rec The record that holds the value for this attribute
+     * @param array $record The record that holds the value for this attribute
      *
      * @return mixed The database value
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        if (is_array($rec) && isset($rec[$this->fieldName()])) {
-            if (is_array($rec[$this->fieldName()])) {
-                return $this->escapeSQL($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+        if (isset($record[$this->fieldName()])) {
+            if (is_array($record[$this->fieldName()])) {
+                return $this->escapeSQL($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
             } else {
-                return $rec[$this->fieldName()];
+                return $record[$this->fieldName()];
             }
         }
 

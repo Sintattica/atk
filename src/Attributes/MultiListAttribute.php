@@ -62,23 +62,23 @@ class MultiListAttribute extends MultiSelectListAttribute
         return implode($sep, $res);
     }
 
-    function value2db($rec)
+    function value2db($record)
     {
-        if (is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]) >= 1) {
+        if (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) >= 1) {
             // store the values like |value1|value2|...
             // (compared to MultiSelectAttribute, it adds the separator also at the begin and at the end of the values
             // in this way, the search is more secure (see getSearchCondition)
-            return Tools::escapeSQL($this->m_fieldSeparator . implode($this->m_fieldSeparator, $rec[$this->fieldName()]) . $this->m_fieldSeparator);
+            return Tools::escapeSQL($this->m_fieldSeparator . implode($this->m_fieldSeparator, $record[$this->fieldName()]) . $this->m_fieldSeparator);
         }
 
         return '';
     }
 
-    function db2value($rec)
+    function db2value($record)
     {
-        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] !== '') {
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== '') {
             // remove initial and final separators
-            $value = substr($rec[$this->fieldName()], 1, strlen($rec[$this->fieldName()]) - 2);
+            $value = substr($record[$this->fieldName()], 1, strlen($record[$this->fieldName()]) - 2);
             // transform in array
             return explode($this->m_fieldSeparator, $value);
         }

@@ -194,23 +194,23 @@ class PasswordAttribute extends Attribute
     }
 
     /**
-     * @param array $rec Array with values
+     * @param array $record Array with values
      *
      * @return string
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        return $rec[$this->fieldName()]['hash'];
+        return $record[$this->fieldName()]['hash'];
     }
 
     /**
-     * @param array $rec array with values
+     * @param array $record array with values
      *
      * @return array with hash field
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        $value = isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
+        $value = $record[$this->fieldName()] ?? null;
 
         return ['hash' => $value];
     }

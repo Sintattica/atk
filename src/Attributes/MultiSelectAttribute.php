@@ -80,29 +80,29 @@ class MultiSelectAttribute extends ListAttribute
     }
 
 
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        if (is_array($rec[$this->fieldName()]) && Tools::count($rec[$this->fieldName()]) >= 1) {
-            return $this->escapeSQL(implode($this->m_fieldSeparator, $rec[$this->fieldName()]));
-        } else {
-            return '';
+        if (is_array($record[$this->fieldName()]) && Tools::count($record[$this->fieldName()]) >= 1) {
+            return $this->escapeSQL(implode($this->m_fieldSeparator, $record[$this->fieldName()]));
         }
+
+        return '';
     }
 
     /**
      * Converts a database value to an internal value.
      *
-     * @param array $rec The database record that holds this attribute's value
+     * @param array $record The database record that holds this attribute's value
      *
      * @return mixed The internal value
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] !== '') {
-            return explode($this->m_fieldSeparator, $rec[$this->fieldName()]);
-        } else {
-            return [];
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== '') {
+            return explode($this->m_fieldSeparator, $record[$this->fieldName()]);
         }
+
+        return [];
     }
 
     /**

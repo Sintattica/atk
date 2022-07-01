@@ -104,37 +104,37 @@ class IpAttribute extends Attribute
      * Converts the internal attribute value to one that is understood by the
      * database.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      *
      * @return string The database compatible value
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
-            return Tools::atkArrayNvl($rec, $this->fieldName());
+            return Tools::atkArrayNvl($record, $this->fieldName());
         }
 
         // But if the self::AF_IP_STORENUMERIC flag is set, we store it as long integer
-        return IpUtils::ipLongFormat(Tools::atkArrayNvl($rec, $this->fieldName()));
+        return IpUtils::ipLongFormat(Tools::atkArrayNvl($record, $this->fieldName()));
     }
 
     /**
      * Converts a database value to an internal value.
      *
-     * @param array $rec The database record that holds this attribute's value
+     * @param array $record The database record that holds this attribute's value
      *
      * @return mixed The internal value
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
         // By default, return the plain ip number
         if (!$this->hasFlag(self::AF_IP_STORENUMERIC)) {
-            return Tools::atkArrayNvl($rec, $this->fieldName());
+            return Tools::atkArrayNvl($record, $this->fieldName());
         }
 
         // But if the self::AF_IP_STORENUMERIC flag is set, we load it as long integer
-        return IpUtils::ipStringFormat(Tools::atkArrayNvl($rec, $this->fieldName()));
+        return IpUtils::ipStringFormat(Tools::atkArrayNvl($record, $this->fieldName()));
     }
 
     /**

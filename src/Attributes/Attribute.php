@@ -847,14 +847,14 @@ class Attribute
      * own conversion.
      * This is the exact opposite of the db2value method.
      *
-     * @param array $rec The record that holds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      *
      * @return string The database compatible value
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        if (is_array($rec) && isset($rec[$this->fieldName()])) {
-            return $this->escapeSQL($rec[$this->fieldName()]);
+        if (is_array($record) && isset($record[$this->fieldName()])) {
+            return $this->escapeSQL($record[$this->fieldName()]);
         }
 
         return null;
@@ -869,14 +869,14 @@ class Attribute
      *
      * This is the exact opposite of the value2db method.
      *
-     * @param array $rec The database record that holds this attribute's value
+     * @param array $record The database record that holds this attribute's value
      *
      * @return mixed The internal value
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
-        if (isset($rec[$this->fieldName()])) {
-            return $rec[$this->fieldName()] === null ? null : $rec[$this->fieldName()];
+        if (isset($record[$this->fieldName()])) {
+            return $record[$this->fieldName()] === null ? null : $record[$this->fieldName()];
         }
 
         return null;

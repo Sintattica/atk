@@ -444,11 +444,11 @@ class FileAttribute extends Attribute
     /**
      * Convert value to string.
      *
-     * @param array $rec Array with fields
+     * @param array $record Array with fields
      *
      * @return array Array with tmpfile, orgfilename,filesize
      */
-    public function db2value($rec)
+    public function db2value($record)
     {
         $retData = array(
             'tmpfile' => null,
@@ -457,13 +457,13 @@ class FileAttribute extends Attribute
             'filesize' => null,
         );
 
-        if (isset($rec[$this->fieldName()])) {
-            $retData = array(
-                'tmpfile' => $this->m_dir . $rec[$this->fieldName()],
-                'orgfilename' => $rec[$this->fieldName()],
-                'filename' => $rec[$this->fieldName()],
+        if (isset($record[$this->fieldName()])) {
+            $retData = [
+                'tmpfile' => $this->m_dir . $record[$this->fieldName()],
+                'orgfilename' => $record[$this->fieldName()],
+                'filename' => $record[$this->fieldName()],
                 'filesize' => '?',
-            );
+            ];
         }
 
         return $retData;
@@ -1036,23 +1036,23 @@ class FileAttribute extends Attribute
     /**
      * Convert value to record for database.
      *
-     * @param array $rec Array with Fields
+     * @param array $record Array with Fields
      *
      * @return string Nothing or Fieldname or Original filename
      */
-    public function value2db(array $rec)
+    public function value2db(array $record)
     {
-        $del = isset($rec[$this->fieldName()]['postdel']) ? $rec[$this->fieldName()]['postdel'] : null;
+        $del = isset($record[$this->fieldName()]['postdel']) ? $record[$this->fieldName()]['postdel'] : null;
 
-        if ($rec[$this->fieldName()]['tmpfile'] == '' && $rec[$this->fieldName()]['filename'] != '' && ($del != null || $del != $rec[$this->fieldName()]['filename'])) {
-            return $this->escapeSQL($rec[$this->fieldName()]['filename']);
+        if ($record[$this->fieldName()]['tmpfile'] == '' && $record[$this->fieldName()]['filename'] != '' && ($del != null || $del != $record[$this->fieldName()]['filename'])) {
+            return $this->escapeSQL($record[$this->fieldName()]['filename']);
         }
 
         if ($del != null) {
             return '';
         }
 
-        return $this->escapeSQL($rec[$this->fieldName()]['orgfilename']);
+        return $this->escapeSQL($record[$this->fieldName()]['orgfilename']);
     }
 
 
