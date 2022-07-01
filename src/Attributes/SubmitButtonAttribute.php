@@ -7,7 +7,6 @@ class SubmitButtonAttribute extends ButtonAttribute
 {
     private $onClickCallback = null;
 
-
     public function display($record, $mode)
     {
         $classes = implode(' ', $this->m_cssclasses);

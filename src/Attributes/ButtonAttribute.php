@@ -20,24 +20,30 @@ class ButtonAttribute extends DummyAttribute
 
     /**
      * @param string $uiState
+     * @return ButtonAttribute
      */
-    public function setUIState(string $uiState)
+    public function setUIState(string $uiState): self
     {
         if (in_array($uiState, UIStateColors::getAllUIStates())) {
             $this->removeUIState($this->currentState);
             $this->currentState = $uiState;
             $this->addCSSClass("btn-$uiState");
         }
+
+        return $this;
     }
 
     /**
      * @param string $uiState
+     * @return ButtonAttribute
      */
-    public function removeUIState(string $uiState)
+    public function removeUIState(string $uiState): self
     {
         if (in_array($uiState, UIStateColors::getAllUIStates())) {
             $this->currentState = UIStateColors::STATE_DEFAULT;
             $this->removeCSSClass("btn-$uiState");
         }
+
+        return $this;
     }
 }

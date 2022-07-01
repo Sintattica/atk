@@ -107,7 +107,7 @@ class DummyAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @param DataGrid $grid
+     * @param DataGrid|null $grid
      *
      * @return string A piece of html-code
      */
@@ -134,10 +134,12 @@ class DummyAttribute extends Attribute
      * Set the text of this attribute.
      *
      * @param string $text
+     * @return DummyAttribute
      */
-    public function setText($text)
+    public function setText(string $text): self
     {
         $this->m_text = $text;
+        return $this;
     }
 
     /**
@@ -145,7 +147,7 @@ class DummyAttribute extends Attribute
      *
      * @return string The text of the attribute
      */
-    public function getText()
+    public function getText(): string
     {
         return $this->m_text;
     }
