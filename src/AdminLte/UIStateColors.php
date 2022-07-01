@@ -201,7 +201,6 @@ class UIStateColors
      */
     static function getHex(?string $state): ?string
     {
-
         if (!self::getInstance()->colorPalette[$state]) {
             $state = self::STATE_WHITE;
         }
@@ -240,12 +239,11 @@ class UIStateColors
     }
 
     /**
-     * @param $class
+     * @param string $class
      * @return string|null
      */
     static function getBgStateFromClass(string $class): ?string
     {
-
         foreach (self::getInstance()->colorPalette as $state => $values) {
             if ($values[self::BG_CLASS] === $class) {
                 return $state;

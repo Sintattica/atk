@@ -15,7 +15,9 @@ use Sintattica\Atk\Db\Query;
  */
 class ExpressionListAttribute extends ExpressionAttribute
 {
-    /** @var ListAttribute useful for search and display */
+    /** @var ListAttribute $m_listAttribute
+     * Useful for search and display
+     */
     protected $m_listAttribute;
 
     function __construct($name, $flags, $expression, $listAttribute, $searchType = '')
@@ -46,7 +48,7 @@ class ExpressionListAttribute extends ExpressionAttribute
 
     function getSearchModes()
     {
-        // all'utente è sensato visualizzare solo exact (in ricerca avanzata)
+        // it makes sense to the user to view only 'exact' (in the advanced search)
         return ['exact'];
     }
 

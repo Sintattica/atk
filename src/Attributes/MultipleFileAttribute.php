@@ -34,29 +34,29 @@ class MultipleFileAttribute extends FileAttribute
         parent::__construct($name, $flags, '');
 
         if (is_array($dir)) {
-            $this->m_dir = $this->AddSlash($dir[0]);
-            $this->m_url = $this->AddSlash($dir[1]);
+            $this->m_dir = $this->addSlash($dir[0]);
+            $this->m_url = $this->addSlash($dir[1]);
         } else {
-            $this->m_dir = $this->AddSlash($dir);
-            $this->m_url = $this->AddSlash($dir);
+            $this->m_dir = $this->addSlash($dir);
+            $this->m_url = $this->addSlash($dir);
         }
     }
 
     /**
      * Returns an array with files extracted from the content of a databasefield.
      *
-     * @param string $str content of dbfield
-     * @param string $del delimiter
+     * @param string $dir content of dbfield
+     * @param string $del
      *
      * @return array of files
      */
-    public function getFiles($str, $del = '')
+    public function getFiles(string $dir, string $del = ''): array
     {
         if ($del == '') {
             $del = $this->m_delimiter;
         }
 
-        return explode($del, $str);
+        return explode($del, $dir);
     }
 
     public function edit($record, $fieldprefix, $mode)

@@ -6,12 +6,12 @@ use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Core\Tools;
 
 /**
- * The atkTextAttribute class represents an attribute of a node
+ * The TextAttribute class represents an attribute of a node
  * that is a big text field.
  *
  * @author Ivo Jansch <ivo@achievo.org>
  *
- * @todo autadjust needs to be modified as not every character == 1 column,
+ * TODO: autoadjust needs to be modified as not every character == 1 column,
  *       perhaps forcing every textattribute to use a non-proportional font?
  */
 class TextAttribute extends Attribute
@@ -58,7 +58,7 @@ class TextAttribute extends Attribute
      * @param int $flags Flags for this attribute
      * @param array $options : rows, cols, autoadjust
      */
-    public function __construct($name, $flags = 0, $options = [])
+    public function __construct($name, $flags = 0, array $options = [])
     {
         parent::__construct($name, $flags);
 
@@ -79,7 +79,7 @@ class TextAttribute extends Attribute
      *
      * @return string wrap mode
      */
-    public function getWrapMode()
+    public function getWrapMode(): string
     {
         return $this->wrapMode;
     }
@@ -89,9 +89,10 @@ class TextAttribute extends Attribute
      *
      * @param string $mode wrap mode ('soft', 'hard' or 'off')
      */
-    public function setWrapMode($mode)
+    public function setWrapMode(string $mode): self
     {
         $this->wrapMode = $mode;
+        return $this;
     }
 
 
@@ -110,16 +111,17 @@ class TextAttribute extends Attribute
                         $display = parent::display($record, $mode);
                     }
                     break;
+
                 case self::MODE_SCROLL:
                     $classes = 'text-wrap';
                     $style .= " max-height: {$this->maxHeight}; overflow-y: auto; ";
                     break;
+
                 default:
                     $classes = 'text-wrap';
                     $maxChars = $this->maxChars ?: '200';
                     $record[$this->fieldName()] = $record[$this->fieldName()] != null ? Tools::truncateHTML($record[$this->fieldName()], $maxChars, '...') : null;
                     $display = parent::display($record, $mode);
-
             }
 
             $display = "<div class='$classes' style='$style'>$display</div>";
@@ -131,7 +133,6 @@ class TextAttribute extends Attribute
 
     public function edit($record, $fieldprefix, $mode)
     {
-
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 
@@ -174,7 +175,7 @@ class TextAttribute extends Attribute
             return $result;
         }
 
-        $text = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : '';
+        $text = $record[$this->fieldName()] ?? '';
 
         if ($this->m_cols != 0) {
             $cols = $this->m_cols;
@@ -275,12 +276,11 @@ class TextAttribute extends Attribute
      * Fetch the metadata about this attrib from the table metadata, and
      * process it.
      *
-     * @param array $metadata The table metadata from the table for this
-     *                        attribute.
+     * @param array $metadata The table metadata from the table for this attribute.
      */
     public function fetchMeta($metadata)
     {
-        $this->m_dbfieldtype = isset($metadata[$this->fieldName()]['gentype']) ? $metadata[$this->fieldName()]['gentype'] : null;
+        $this->m_dbfieldtype = $metadata[$this->fieldName()]['gentype'] ?? null;
         if ($this->m_dbfieldtype == 'string') {
             parent::fetchMeta($metadata);
         }
@@ -326,7 +326,7 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * @return int|mixed
+     * @return int
      */
     public function getMRows(): int
     {
@@ -334,28 +334,28 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * @param int|mixed $m_rows
+     * @param int $m_rows
      * @return TextAttribute
      */
-    public function setMRows(int $m_rows): TextAttribute
+    public function setMRows(int $m_rows): self
     {
         $this->m_rows = $m_rows;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getMCols()
+    public function getMCols(): ?int
     {
         return $this->m_cols;
     }
 
     /**
-     * @param mixed $m_cols
+     * @param int $m_cols
      * @return TextAttribute
      */
-    public function setMCols($m_cols)
+    public function setMCols(int $m_cols): self
     {
         $this->m_cols = $m_cols;
         return $this;
@@ -373,27 +373,26 @@ class TextAttribute extends Attribute
      * @param mixed $m_autoadjust
      * @return TextAttribute
      */
-    public function setMAutoadjust($m_autoadjust)
+    public function setMAutoadjust($m_autoadjust): self
     {
         $this->m_autoadjust = $m_autoadjust;
         return $this;
     }
 
     /**
-     * @return mixed|string
+     * @return string|null
      */
-    public function getDisplayMode(): string
+    public function getDisplayMode(): ?string
     {
         return $this->displayMode;
     }
 
     /**
-     * @param mixed|string $displayMode
+     * @param string $displayMode
      * @return TextAttribute
      */
     public function setDisplayMode(string $displayMode): self
     {
-
         if (in_array($displayMode, self::MODES_ALLOWED)) {
             $this->displayMode = $displayMode;
         }
@@ -402,15 +401,15 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * @return mixed|string
+     * @return string|null
      */
-    public function getMinWidth(): string
+    public function getMinWidth(): ?string
     {
         return $this->minWidth;
     }
 
     /**
-     * @param mixed|string $minWidth
+     * @param string $minWidth
      * @return TextAttribute
      */
     public function setMinWidth(string $minWidth): self
@@ -420,15 +419,15 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * @return mixed|string
+     * @return string|null
      */
-    public function getMaxHeight(): string
+    public function getMaxHeight(): ?string
     {
         return $this->maxHeight;
     }
 
     /**
-     * @param mixed|string $maxHeight
+     * @param string $maxHeight
      * @return TextAttribute
      */
     public function setMaxHeight(string $maxHeight): self
@@ -438,7 +437,7 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * @return int|mixed
+     * @return int|null
      */
     public function getMaxChars(): ?int
     {
@@ -446,7 +445,7 @@ class TextAttribute extends Attribute
     }
 
     /**
-     * @param int|mixed $maxChars
+     * @param int $maxChars
      * @return TextAttribute
      */
     public function setMaxChars(int $maxChars): self
@@ -454,6 +453,4 @@ class TextAttribute extends Attribute
         $this->maxChars = $maxChars;
         return $this;
     }
-
-
 }
