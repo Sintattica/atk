@@ -322,7 +322,7 @@ class DataNode extends Node
      *
      * @return array data list
      */
-    protected function sortData($data, $order)
+    protected function sortData($data, $order): array
     {
         list($column, $asc) = $this->translateOrder($order);
 
@@ -353,7 +353,7 @@ class DataNode extends Node
      *
      * @return array limited data
      */
-    protected function limitData($data, $limit = -1, $offset = 0)
+    protected function limitData($data, $limit = -1, $offset = 0): array
     {
         if ($limit >= 0) {
             $data = array_slice($data, $offset, $limit);
@@ -369,7 +369,7 @@ class DataNode extends Node
      *
      * @return bool false
      */
-    public function addDb()
+    public function addDb(array &$record, bool $exectrigger = true, string $mode = 'add', $excludelist = []): bool
     {
         return false;
     }
@@ -379,7 +379,7 @@ class DataNode extends Node
      *
      * @return bool false
      */
-    public function updateDb()
+    public function updateDb(array &$record, bool $exectrigger = true, $excludes = '', $includes = ''): bool
     {
         return false;
     }
@@ -389,7 +389,7 @@ class DataNode extends Node
      *
      * @return bool false
      */
-    public function deleteDb()
+    public function deleteDb(string $selector, bool $exectrigger = true, bool $failwhenempty = false): bool
     {
         return false;
     }
@@ -397,7 +397,8 @@ class DataNode extends Node
     /**
      * Don't fetch meta data.
      */
-    public function setAttribSizes()
+    public function setAttribSizes(): bool
     {
+        return false;
     }
 }

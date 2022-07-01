@@ -1044,7 +1044,7 @@ class Node
      *
      * @return array
      */
-    public function getTabsFromSections($sections)
+    public function getTabsFromSections($sections): ?array
     {
         if ($sections == '*' || $sections === null) {
             return $sections;
@@ -1052,17 +1052,15 @@ class Node
 
         $tabs = [];
 
-        if (!isset($sections)) {
-        } elseif (!is_array($sections)) {
-            $sections = array($sections);
+        if (!is_array($sections)) {
+            $sections = [$sections];
         }
 
         foreach ($sections as $section) {
             $tabs[] = $this->getTabFromSection($section);
         }
 
-        //when using the tab.sections notation, we can have duplicate tabs
-        //strip them out.
+        // when using the tab.sections notation, we can have duplicate tabs strip them out.
         return array_unique($tabs);
     }
 
@@ -1356,13 +1354,13 @@ class Node
      * Note: If a node has a primary key that consists of multiple attributes,
      * this method will retrieve only the first attribute!
      *
-     * @return string First primary key attribute
+     * @return string|null First primary key attribute
      */
-    public function primaryKeyField()
+    public function primaryKeyField(): ?string
     {
         if (Tools::count($this->m_primaryKey) === 0) {
             Tools::atkwarning($this->atkNodeUri() . '::primaryKeyField() called, but there are no primary key fields defined!');
-            return;
+            return null;
         }
 
         return $this->m_primaryKey[0];
@@ -3130,7 +3128,7 @@ class Node
      * This method should be called before rendering a form, if you want the
      * sizes of all the inputs to match the fieldlengths from the database.
      */
-    public function setAttribSizes()
+    public function setAttribSizes(): bool
     {
         if ($this->m_attribsizesset) {
             return true;
@@ -3146,6 +3144,7 @@ class Node
             }
         }
         $this->m_attribsizesset = true;
+        return true;
     }
 
     /**
@@ -3554,7 +3553,7 @@ class Node
      *
      * @return bool True if succesful, false if not.
      */
-    public function updateDb(&$record, $exectrigger = true, $excludes = '', $includes = '')
+    public function updateDb(array &$record, bool $exectrigger = true, $excludes = '', $includes = ''): bool
     {
         $db = $this->getDb();
         $query = $db->createQuery();
@@ -3885,7 +3884,7 @@ class Node
      *
      * @return string The search condition
      */
-    public function getSearchCondition($query, $table, $alias, $value, $searchmode)
+    public function getSearchCondition($query, string $table, string $alias, $value, string $searchmode): string
     {
         $usefieldalias = false;
 
@@ -3898,7 +3897,7 @@ class Node
         $searchConditions = [];
 
         $attribs = $this->descriptorFields();
-        array_unique($attribs);
+        $attribs = array_unique($attribs);
 
         foreach ($attribs as $field) {
             $p_attrib = $this->getAttribute($field);
@@ -3960,19 +3959,21 @@ class Node
      *                            and not stored in the database.
      *
      * @return bool True if succesful, false if not.
+     * @throws Exception
      */
-    public function addDb(&$record, $exectrigger = true, $mode = 'add', $excludelist = array())
+    public function addDb(array &$record, bool $exectrigger = true, string $mode = 'add', $excludelist = []): bool
     {
         if ($exectrigger) {
             if (!$this->executeTrigger('preAdd', $record, $mode)) {
-                return Tools::atkerror('preAdd() failed!');
+                Tools::atkerror('preAdd() failed!');
+                return false;
             }
         }
 
         $db = $this->getDb();
         $query = $db->createQuery();
 
-        $storelist = array('pre' => [], 'post' => [], 'query' => array());
+        $storelist = ['pre' => [], 'post' => [], 'query' => []];
 
         $query->addTable($this->m_table);
 
@@ -4003,7 +4004,6 @@ class Node
 
         if (!$query->executeInsert()) {
             Tools::atkdebug('executeInsert failed..');
-
             return false;
         }
 
@@ -4012,7 +4012,6 @@ class Node
 
         if (!$this->_storeAttributes($storelist['post'], $record, $mode)) {
             Tools::atkdebug('_storeAttributes failed..');
-
             return false;
         }
 
@@ -4034,11 +4033,11 @@ class Node
      *
      * @param string $trigger function, such as 'postUpdate'
      * @param array $record record on which action is performed
-     * @param string $mode mode like add or update
+     * @param string|null $mode mode like add or update
      *
      * @return bool true on case of success or when the trigger isn't returning anything (assumes success)
      */
-    public function executeTrigger($trigger, &$record, $mode = null)
+    public function executeTrigger(string $trigger, array &$record, ?string $mode = null): bool
     {
         if (!isset($record['__executed' . $trigger])) {
             $record['__executed' . $trigger] = true;
@@ -4053,7 +4052,6 @@ class Node
 
             if (!$return) {
                 Tools::atkdebug($this->atkNodeUri() . ".$trigger failed!");
-
                 return false;
             }
 
@@ -4069,7 +4067,6 @@ class Node
 
                 if (!$return) {
                     Tools::atkdebug($this->atkNodeUri() . ', ' . get_class($listener) . ".notify('$trigger', ...) failed!");
-
                     return false;
                 }
             }
@@ -4098,7 +4095,7 @@ class Node
      * @param bool $failwhenempty determine whether to throw an error if there is nothing to delete
      * @returns boolean True if successful, false if not.
      */
-    public function deleteDb($selector, $exectrigger = true, $failwhenempty = false)
+    public function deleteDb(string $selector, bool $exectrigger = true, bool $failwhenempty = false): bool
     {
         $recordset = $this->select($selector)->mode('delete')->getAllRows();
 
