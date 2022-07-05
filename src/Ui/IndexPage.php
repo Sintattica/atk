@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Ui;
 
+use ReflectionException;
 use Sintattica\Atk\Core\AdminLTE;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Config;
@@ -79,7 +80,9 @@ class IndexPage
 
     /**
      * Generate the page.
+     *
      * @throws SmartyException
+     * @throws ReflectionException
      */
     public function generate()
     {
@@ -271,9 +274,7 @@ class IndexPage
      */
     public function setDefaultDestination(array $destination)
     {
-        if (is_array($destination)) {
-            $this->m_defaultDestination = $destination;
-        }
+        $this->m_defaultDestination = $destination;
     }
 
     /**
@@ -333,10 +334,10 @@ class IndexPage
         $content = '<br><br>' . Tools::atktext('error_node_action_access_denied', '', $nodeType) . '<br><br><br>';
 
         $blocks = [
-            $this->m_ui->renderBox(array(
+            $this->m_ui->renderBox([
                 'title' => Tools::atktext('access_denied'),
                 'content' => $content,
-            )),
+            ]),
         ];
 
         return $this->m_ui->render('actionpage.tpl', [
@@ -344,5 +345,21 @@ class IndexPage
             'title' => Tools::atktext('access_denied'),
             'footer' => Footer::getInstance()->render()
         ]);
+    }
+
+    /**
+     * @return Page|null
+     */
+    public function getPage(): ?Page
+    {
+        return $this->m_page;
+    }
+
+    /**
+     * @return Ui|null
+     */
+    public function getUi(): ?Ui
+    {
+        return $this->m_ui;
     }
 }
