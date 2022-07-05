@@ -1,5 +1,5 @@
 <section class="content overflow-hidden">
-    <div class="card">
+    <div class="card card-outline card-secondary">
         <div class="card-header">
             <h3 class="card-title pt-1">{$title}</h3>
             {if $link_edit}
