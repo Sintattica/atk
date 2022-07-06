@@ -330,13 +330,13 @@ class Tools
      * @param string|Exception $error the error self::text or exception to display
      * @param bool $skipThrow
      *
-     * @throws \Exception if throw_exception_on_error
+     * @throws Exception if throw_exception_on_error
      */
-    public static function atkerror($error, $skipThrow = false)
+    public static function atkerror($error, bool $skipThrow = false)
     {
         global $g_error_msg, $g_debug_msg;
 
-        if ($error instanceof \Exception) {
+        if ($error instanceof Exception) {
             $g_error_msg[] = '[' . Debugger::elapsed() . '] ' . $error->getMessage();
             self::atkdebug(nl2br($error->getMessage() . "\n" . $error->getTraceAsString()), self::DEBUG_ERROR);
         } else {

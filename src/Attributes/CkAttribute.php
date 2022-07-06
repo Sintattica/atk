@@ -11,6 +11,10 @@ use Sintattica\Atk\Core\Language;
  */
 class CkAttribute extends HtmlAttribute
 {
+    const ENTER_MODE_P = 1;     // new <p> paragraphs are created
+    const ENTER_MODE_BR = 2;    // lines are broken with <br> elements
+    const ENTER_MODE_DIV = 3;   // new <div> blocks are created.
+
     /**
      * @var array CKEditor configuration (default)
      */
@@ -52,6 +56,9 @@ class CkAttribute extends HtmlAttribute
 
         $this->setNl2br(false);
         $this->setHtmlSpecialChars(false);
+
+        // scroll mode by default
+        $this->setDisplayMode(self::MODE_SCROLL);
 
         parent::__construct($name, $flags);
     }

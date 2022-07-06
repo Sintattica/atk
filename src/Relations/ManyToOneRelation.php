@@ -240,8 +240,6 @@ class ManyToOneRelation extends Relation
      *                              The order of the fields must match the order of the primary key attributes in the destination node.
      * @param int $flags Flags for the relation
      * @param string $destination The node we have a relationship with.
-     *
-     * @throws Exception
      */
     public function __construct($name, $flags = 0, $destination)
     {
@@ -269,13 +267,14 @@ class ManyToOneRelation extends Relation
             // Languagefiles, overrides, etc should use this first name to
             // override the relation.
             parent::__construct($name[0], $flags, $destination);
+
         } else {
             $this->m_refKey[] = $name;
             parent::__construct($name, $flags, $destination);
         }
 
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY) && (Tools::count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName())) {
-            Tools::atkerror('self::AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.');
+            Tools::atkwarning('self::AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.');
         }
     }
 
@@ -2411,7 +2410,7 @@ EOF;
      * @param bool $extended
      * @return array $m_multipleSearch
      */
-    public function setMultipleSearch($normal = true, $extended = true)
+    public function setMultipleSearch(bool $normal = true, bool $extended = true): array
     {
         $this->m_multipleSearch = [
             'normal' => $normal,
@@ -2430,7 +2429,7 @@ EOF;
      * @param bool $extended
      * @return bool
      */
-    public function isMultipleSearch($extended)
+    public function isMultipleSearch(bool $extended = false): bool
     {
         $ms = $this->getMultipleSearch();
 

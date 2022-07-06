@@ -101,7 +101,7 @@ class TextAttribute extends Attribute
         $display = parent::display($record, $mode);
 
         if ($mode == 'list') {
-            $style = "min-width: {$this->minWidth};";
+            $style = "min-width: $this->minWidth;";
             $classes = '';
 
             switch ($this->displayMode) {
@@ -114,7 +114,7 @@ class TextAttribute extends Attribute
 
                 case self::MODE_SCROLL:
                     $classes = 'text-wrap';
-                    $style .= " max-height: {$this->maxHeight}; overflow-y: auto; ";
+                    $style .= " max-height: $this->maxHeight; overflow-y: auto; ";
                     break;
 
                 default:
