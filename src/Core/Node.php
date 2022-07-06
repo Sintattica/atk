@@ -1849,13 +1849,13 @@ class Node
      * Can be overridden by derived classes to define custom buttons.
      *
      * @param string $mode The action for which the buttons are retrieved.
-     * @param array $record The record currently displayed/edited in the form.
+     * @param array|null $record The record currently displayed/edited in the form.
      *                       This param can be used to define record specific
      *                       buttons.
      *
      * @return array
      */
-    public function getFormButtons(string $mode, array $record = []): array
+    public function getFormButtons(string $mode, ?array $record = []): array
     {
         $result = [];
         $sm = SessionManager::getInstance();
