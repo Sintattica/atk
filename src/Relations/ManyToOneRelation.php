@@ -2427,9 +2427,9 @@ EOF;
 
     /**
      * @param bool $extended
-     * @return bool
+     * @return bool|null
      */
-    public function isMultipleSearch(bool $extended = false): bool
+    public function isMultipleSearch(bool $extended = false): ?bool
     {
         $ms = $this->getMultipleSearch();
 
