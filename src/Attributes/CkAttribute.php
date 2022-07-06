@@ -4,7 +4,6 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Language;
-use Sintattica\Atk\Core\Tools;
 
 /**
  * Attribute wrapper for CKEditor (the successor of FCK Editor)
@@ -12,7 +11,6 @@ use Sintattica\Atk\Core\Tools;
  */
 class CkAttribute extends HtmlAttribute
 {
-
     /**
      * @var array CKEditor configuration (default)
      */
@@ -99,21 +97,21 @@ class CkAttribute extends HtmlAttribute
         return parent::isEmpty($record);
     }
 
-
     /**
      * Set the ckEditor height
      * Ex: 200px or 10rem ...
+     *
      * @param string $height
+     * @return CkAttribute
      */
-    public function setHeight(string $height)
+    public function setHeight(string $height): self
     {
         $this->ckOptions['height'] = $height;
+        return $this;
     }
 
     protected function formatPostfixLabel(): string
     {
         return "";
     }
-
-
 }
