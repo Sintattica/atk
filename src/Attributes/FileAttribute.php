@@ -105,7 +105,7 @@ class FileAttribute extends Attribute
      *
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param array|string $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
+     * @param string[]|string $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      */
     public function __construct($name, $flags = 0, $dir = null)
     {
@@ -293,6 +293,10 @@ class FileAttribute extends Attribute
         // while updating images was not allways visible due to caching
         $randval = mt_rand();
 
+        if (!isset($record[$this->fieldName()]['filename'])) {
+            return '';
+        }
+
         $ret = '';
         $filename = $record[$this->fieldName()]['filename'];
         if ($filename) {
@@ -427,6 +431,7 @@ class FileAttribute extends Attribute
                 // - in edit, uploading a file with same name -> N THIS CASE, IT SHOULD NOT PREVENT IT (must be overwritten)
 
                 $oldFilename = '';
+                $oldFile = [];
                 if ($mode != 'add') { // in edit
                     // retrieves the file already uploaded previously
                     $node = $this->getOwnerInstance();
@@ -861,7 +866,7 @@ class FileAttribute extends Attribute
      * Sets the directory into which uploaded files are saved.  (See setAutonumbering() and setFilenameTemplate()
      * for some other ways of manipulating the names of uploaded files.).
      *
-     * @param array|string $dir string with directory path or array with directory path and display url (see constructor)
+     * @param string[]|string $dir string with directory path or array with directory path and display url (see constructor)
      * @return FileAttribute
      */
     public function setDir($dir): self
@@ -984,6 +989,54 @@ class FileAttribute extends Attribute
     {
         $this->checkUnique = $value;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCheckUnique(): bool
+    {
+        return $this->checkUnique;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFileMaxSize(): ?int
+    {
+        return $this->fileMaxSize;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFileMaxLength(): ?int
+    {
+        return $this->fileMaxLength;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnlyPreview(): bool
+    {
+        return $this->onlyPreview;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoSanitize(): bool
+    {
+        return $this->noSanitize;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isThumbnail(): bool
+    {
+        return $this->thumbnail;
     }
 
     function showOnlyPreview(bool $value): self
