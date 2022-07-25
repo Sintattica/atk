@@ -2445,4 +2445,45 @@ class Tools
         return '<div style="max-width: 400px; white-space: normal;"><span class="badge-sm badge-pill badge-' . $uiStateColor . ' mr-1 text-nowrap">' . implode('</span><span class="badge-sm badge-pill badge-' . $uiStateColor . ' mr-1 text-nowrap">', $list) . '</span></div>';
     }
 
+    /**
+     * Check if the string begins with one or more substrings.
+     *
+     * @param string $haystack
+     * @param string[]|string $needle
+     * @return bool
+     */
+    static function strStartsWith(string $haystack, $needle): bool
+    {
+        if (!is_array($needle)) {
+            $needle = [$needle];
+        }
+        foreach ($needle as $s) {
+            if (substr($haystack, 0, strlen($s)) === $s) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the string ends with one or more substrings.
+     *
+     * @param string $haystack
+     * @param string[]|string $needle
+     * @param bool $caseInsensitive
+     * @return bool
+     */
+    static function strEndsWith(string $haystack, $needle, bool $caseInsensitive = false): bool
+    {
+        if (!is_array($needle)) {
+            $needle = array($needle);
+        }
+        foreach ($needle as $s) {
+            if (substr_compare($haystack, $s, -strlen($s), strlen($s), $caseInsensitive) === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
