@@ -8,35 +8,31 @@ use Sintattica\Atk\Core\Tools;
 class UIStateColors
 {
 
-    /**
-     * Todo: Add more colors.
-     */
-
     public const STATE_DEFAULT = 'default';
     public const COLOR_DEFAULT = '#6c757d';
 
-    public const STATE_PRIMARY = 'primary'; //blue
+    public const STATE_PRIMARY = 'primary'; // blue
     public const COLOR_PRIMARY = '#007bff';
 
-    public const STATE_SECONDARY = 'secondary'; //gray
+    public const STATE_SECONDARY = 'secondary'; // gray
     public const COLOR_SECONDARY = '#6c757d';
 
-    public const STATE_SUCCESS = 'success'; //green
+    public const STATE_SUCCESS = 'success'; // green
     public const COLOR_SUCCESS = '#28a745';
 
-    public const STATE_INFO = 'info'; //cyan
+    public const STATE_INFO = 'info'; // cyan
     public const COLOR_INFO = '#17a2b8';
 
-    public const STATE_WARNING = 'warning'; //yellow
+    public const STATE_WARNING = 'warning'; // yellow
     public const COLOR_WARNING = '#ffde25';
 
-    public const STATE_DANGER = 'danger'; //red
+    public const STATE_DANGER = 'danger'; // red
     public const COLOR_DANGER = '#dc3545';
 
-    public const STATE_DARK = 'dark'; //dark-gray
+    public const STATE_DARK = 'dark'; // dark-gray
     public const COLOR_DARK = '#343a40';
 
-    public const STATE_LIGHT = 'light'; //light-gray
+    public const STATE_LIGHT = 'light'; // light-gray
     public const COLOR_LIGHT = '#f8f9fa';
 
     public const STATE_WHITE = 'white';
@@ -51,20 +47,47 @@ class UIStateColors
     public const STATE_PINK = 'pink';
     public const COLOR_PINK = '#e83e8c';
 
-    public const STATE_ORANGE = 'orange';
-    public const COLOR_ORANGE = '#fd7e14';
-
     public const STATE_TEAL = 'teal';
     public const COLOR_TEAL = '#20c997';
 
     public const STATE_DISABLED = 'atk-disabled';
-    public const COLOR_DISABLED = '#CED4DA';
+    public const COLOR_DISABLED = '#ced4da';
 
-    public const STATE_LIGHT_GREEN = 'light-green';
-    public const COLOR_LIGHT_GREEN = '#94F0A9';
+    public const STATE_GREEN_LIGHT = 'green-light';
+    public const COLOR_GREEN_LIGHT = '#cef3da';
 
-    public const STATE_RED = 'red';
-    public const COLOR_RED = '#F13030';
+    public const STATE_GREEN_STRONG = 'green-strong';
+    public const COLOR_GREEN_STRONG = '#58da78';
+
+//    public const STATE_BLUE_LIGHT = 'blue-light';
+//    public const COLOR_BLUE_LIGHT = '#0b99fe';
+//
+//    public const STATE_BLUE_STRONG = 'blue-strong';
+//    public const COLOR_BLUE_STRONG = '#01538e';
+
+    public const STATE_CYAN_LIGHT = 'cyan-light';
+    public const COLOR_CYAN_LIGHT = '#caf0f8';
+
+    public const STATE_CYAN_STRONG = 'cyan-strong';
+    public const COLOR_CYAN_STRONG = '#5dd2ea';
+
+    public const STATE_RED_LIGHT = 'red-light';
+    public const COLOR_RED_LIGHT = '#f0a8ab'; //'#f6cacc';
+
+    public const STATE_RED_STRONG = 'red-strong';
+    public const COLOR_RED_STRONG = '#dc2e36';
+
+    public const STATE_YELLOW_LIGHT = 'yellow-light';
+    public const COLOR_YELLOW_LIGHT = '#fff5c2';
+
+    public const STATE_YELLOW_STRONG = 'yellow-strong';
+    public const COLOR_YELLOW_STRONG = '#ffdd47';
+
+    public const STATE_ORANGE_LIGHT = 'orange-light';
+    public const COLOR_ORANGE_LIGHT = '#ffd085';
+
+    public const STATE_ORANGE_STRONG = 'orange-strong';
+    public const COLOR_ORANGE_STRONG = '#ff7900';
 
 
     public const HEX_COLOR = 'hex_color';
@@ -163,11 +186,6 @@ class UIStateColors
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_PINK),
                 self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_PINK, 0),
             ],
-            self::STATE_ORANGE => [
-                self::HEX_COLOR => self::COLOR_ORANGE,
-                self::BG_CLASS => self::getBgClassFromState(self::STATE_ORANGE),
-                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_ORANGE, 0),
-            ],
             self::STATE_TEAL => [
                 self::HEX_COLOR => self::COLOR_TEAL,
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_TEAL),
@@ -178,17 +196,65 @@ class UIStateColors
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_DISABLED),
                 self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_DISABLED, -10),
             ],
-
-            self::STATE_LIGHT_GREEN => [
-                self::HEX_COLOR => self::COLOR_LIGHT_GREEN,
-                self::BG_CLASS => self::getBgClassFromState(self::STATE_LIGHT_GREEN),
-                self::HEX_COLOR_RLIST => self::COLOR_LIGHT_GREEN,
+            self::STATE_GREEN_LIGHT => [
+                self::HEX_COLOR => self::COLOR_GREEN_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_GREEN_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_GREEN_LIGHT, -20),
             ],
-
-            self::STATE_RED => [
-                self::HEX_COLOR => self::STATE_RED,
-                self::BG_CLASS => self::getBgClassFromState(self::STATE_RED),
-                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_RED, -20),
+            self::STATE_GREEN_STRONG => [
+                self::HEX_COLOR => self::COLOR_GREEN_STRONG,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_GREEN_STRONG),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_GREEN_STRONG, -20),
+            ],
+//            self::STATE_BLUE_LIGHT => [
+//                self::HEX_COLOR => self::COLOR_BLUE_LIGHT,
+//                self::BG_CLASS => self::getBgClassFromState(self::STATE_BLUE_LIGHT),
+//                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_BLUE_LIGHT, -20),
+//            ],
+//            self::STATE_BLUE_STRONG => [
+//                self::HEX_COLOR => self::COLOR_BLUE_STRONG,
+//                self::BG_CLASS => self::getBgClassFromState(self::STATE_BLUE_STRONG),
+//                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_BLUE_STRONG, -20),
+//            ],
+            self::STATE_CYAN_LIGHT => [
+                self::HEX_COLOR => self::COLOR_CYAN_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_CYAN_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_CYAN_LIGHT, -20),
+            ],
+            self::STATE_CYAN_STRONG => [
+                self::HEX_COLOR => self::COLOR_CYAN_STRONG,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_CYAN_STRONG),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_CYAN_STRONG, -20),
+            ],
+            self::STATE_RED_LIGHT => [
+                self::HEX_COLOR => self::COLOR_RED_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_RED_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_RED_LIGHT, -20),
+            ],
+            self::STATE_RED_STRONG => [
+                self::HEX_COLOR => self::COLOR_RED_STRONG,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_RED_STRONG),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_RED_STRONG, -20),
+            ],
+            self::STATE_YELLOW_LIGHT => [
+                self::HEX_COLOR => self::COLOR_YELLOW_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_YELLOW_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_YELLOW_LIGHT, -20),
+            ],
+            self::STATE_YELLOW_STRONG => [
+                self::HEX_COLOR => self::COLOR_YELLOW_STRONG,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_YELLOW_STRONG),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_YELLOW_STRONG, -20),
+            ],
+            self::STATE_ORANGE_LIGHT => [
+                self::HEX_COLOR => self::COLOR_ORANGE_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_ORANGE_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_ORANGE_LIGHT, -20),
+            ],
+            self::STATE_ORANGE_STRONG => [
+                self::HEX_COLOR => self::COLOR_ORANGE_STRONG,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_ORANGE_STRONG),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_ORANGE_STRONG, -20),
             ],
         ];
     }
