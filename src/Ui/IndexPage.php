@@ -90,14 +90,14 @@ class IndexPage
             /** @var Menu $menuClass */
             $menuClass = Config::getGlobal('menu');
             $menuObj = $menuClass::getInstance();
-            $user = $this->m_username ?: $this->m_user['name'];
+            $username = $this->m_username ?: $this->m_user['name'];
 
-            if (Config::getGlobal('menu_show_user') && $user) {
+            if (Config::getGlobal('menu_show_user') && $username) {
                 $url = $this->generateUserUrl();
-                $menuObj->addMenuItem(MenuBase::ATK_MENU_USERNAME_PREFIX . $user, $url, 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT);
+                $menuObj->addMenuItem(MenuBase::ATK_MENU_USERNAME_PREFIX . $username, $url, 'main', true, 0, '', '', true, MenuBase::MENU_NAV_RIGHT);
             }
 
-            if (Config::getGlobal('menu_show_logout_link') && $user) {
+            if (Config::getGlobal('menu_show_logout_link') && $username) {
                 $menuObj->addMenuItem('<span class="fas fa-sign-out-alt"></span>',
                     Config::getGlobal('dispatcher') . '?atklogout=1', 'main', true, 0, '', '', false, MenuBase::MENU_NAV_RIGHT
                 );
@@ -148,6 +148,10 @@ class IndexPage
         if (Config::getGlobal('menu_enable_user_link')) {
             $userTable = Config::getGlobal('auth_usertable');
             $userPk = Config::getGlobal('auth_userpk');
+            if (!isset($this->m_user[$userPk])) {
+                // logged user is atk administrator
+                return '';
+            }
             $userId = $this->m_user[$userPk];
             $atkSelector = "$userTable.$userPk=$userId";
             $url = SessionManager::getInstance()->sessionUrl(
@@ -163,7 +167,7 @@ class IndexPage
      *
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         $this->m_title = $title;
     }
@@ -173,7 +177,7 @@ class IndexPage
      *
      * @param string $extrabodyprops
      */
-    public function setBodyprops($extrabodyprops)
+    public function setBodyprops(string $extrabodyprops)
     {
         $this->m_extrabodyprops = $extrabodyprops;
     }
@@ -183,7 +187,7 @@ class IndexPage
      *
      * @param string $extraheaders
      */
-    public function setExtraheaders($extraheaders)
+    public function setExtraheaders(string $extraheaders)
     {
         $this->m_extraheaders = $extraheaders;
     }
@@ -193,7 +197,7 @@ class IndexPage
      *
      * @param string $username
      */
-    public function setUsername($username)
+    public function setUsername(string $username)
     {
         $this->m_username = $username;
     }
@@ -226,6 +230,7 @@ class IndexPage
             $this->m_page->addContent($box);
 
             $this->m_output->output($this->m_page->render(Tools::atktext('title_session_expired'), true));
+
         } else {
 
             // Create node
