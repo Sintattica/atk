@@ -683,6 +683,11 @@ class Node
     private $nestedAttributesList = [];
 
     /**
+     * @var array[] - List of legend item ['text', 'color']
+     */
+    private $legendItems = [];
+
+    /**
      * @param string $nodeUri The nodeuri
      * @param int $flags Bitmask of node flags (self::NF_*).
      */
@@ -2998,6 +3003,7 @@ class Node
 
         $this->setFilters();
         $this->setRowColors();
+        $this->setLegendItems();
     }
 
     /**
@@ -3008,9 +3014,16 @@ class Node
     }
 
     /**
-     * Use this to add color conditions for rows.
+     * Use this to add color conditions for rows in child nodes.
      */
     protected function setRowColors()
+    {
+    }
+
+    /**
+     * Use this to add legend items in child nodes.
+     */
+    public function setLegendItems()
     {
     }
 
@@ -5643,5 +5656,62 @@ class Node
         $g_nodes = Atk::getInstance()->g_nodes;
         $nodeActions = $g_nodes[$this->getModule()][$this->getModule()][$this->getType()];
         return Tools::atk_in_array($action, $nodeActions);
+    }
+
+    /**
+     * @return array
+     */
+    public function getLegendItems(): array
+    {
+        return $this->legendItems;
+    }
+
+    public function addLegendItem(string $text, string $color = UIStateColors::COLOR_WHITE)
+    {
+        // TODO: trasform in object?
+        $this->legendItems[] = ['text' => $text, 'color' => $color];
+    }
+
+    /**
+     * Build the box of the legend in the adminHeader.
+     *
+     * @param string $sep Separator between one item and another
+     * @param string $title Title of the legend (default: "Legend")
+     * @return string String with html to render the legend box
+     */
+    function buildAdminHeaderLegend(string $sep = ' ', string $title = 'legend'): string
+    {
+        if (!$this->legendItems) {
+            return '';
+        }
+
+        $ret = '<div class="row no-gutters legenda-box"><div class="legenda-titolo my-auto">' . $this->text($title) . ': </div>';
+        for ($i = 0; $i < count($this->legendItems); $i++) {
+            $item = $this->legendItems[$i];
+
+            if (isset($item['text'])) {
+                $text = $item['text'];
+                if (is_array($text)) {
+                    $text = implode(' | ', $text);
+                }
+            } else {
+                $text = $this->text('n.d.');
+            }
+
+            $bgColor = $item['color'] ?? UIStateColors::COLOR_WHITE;
+            if (!Tools::strStartsWith($bgColor, '#')) {
+                $bgColor = '#' . $bgColor;
+            }
+            $borderColor = Tools::dimColorBy($bgColor);
+            $txtColor = Tools::isLightTxtUsingBg($bgColor) ? '#F8F9FA' : '#212529';
+
+            $ret .= '<div class="legenda-item-box ml-1 p-1 pl-2 pr-2 border rounded" style="background-color: ' . $bgColor . '; border-color: ' . $borderColor . ' !important;">
+                        <span class="legenda-item-text" style="color: ' . $txtColor . ' ">' . $text . '</span>
+                     </div>';
+            if ($i != count($this->legendItems) - 1) {
+                $ret .= $sep;
+            }
+        }
+        return $ret . '</div>';
     }
 }
