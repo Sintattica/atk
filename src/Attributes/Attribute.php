@@ -1036,6 +1036,8 @@ class Attribute
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">).
+     * In cases when the attribute is read-only or hidden (atk inserts a hidden html attribute so it can retain
+     * the value when submitting the form)
      *
      * @param array $record
      * @param string $fieldprefix
@@ -1050,18 +1052,18 @@ class Attribute
             return $this->m_ownerInstance->$method($record, $fieldprefix, $mode);
         }
 
-        // the next if-statement is a workaround for derived attributes which do
-        // not override the hide() method properly. This will not give them a
-        // working hide() functionality but at least it will not give error messages.
-        $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
-        if (!is_array($value)) {
-            return '<input type="hidden" id="' . $this->getHtmlId($fieldprefix) . '" name="' . $this->getHtmlName($fieldprefix) . '" value="' . htmlspecialchars($value) . '">';
+        $value = $record[$this->fieldName()] ?? null;
 
-        } else {
-            Tools::atkdebug('Warning attribute ' . $this->m_name . ' has no proper hide method!');
+        if (!$value){
+            return "";
         }
 
-        return '';
+        if (is_array($value)) {
+            $value = json_encode($value, JSON_PRETTY_PRINT);
+        }
+
+        return '<input type="hidden" id="' . $this->getHtmlId($fieldprefix) . '" name="' . $this->getHtmlName($fieldprefix) . '" value="' . htmlspecialchars($value) . '">';
+
     }
 
     /**
@@ -3290,8 +3292,6 @@ class Attribute
         $this->isNestedAttribute = $isNestedAttribute;
         return $this;
     }
-
-
 
 
 }

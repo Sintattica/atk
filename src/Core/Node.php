@@ -2409,6 +2409,7 @@ class Node
      *
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
+     * @throws Exception
      * @todo The viewArray method should use a set of classes to build the
      *       form, instead of an array with an overly complex structure.
      *
