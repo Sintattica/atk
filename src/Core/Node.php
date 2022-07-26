@@ -3058,13 +3058,13 @@ class Node
      *
      * @param string $name Name of the filter
      * @param array $values Values of filter to show as a link
-     * @param string $noFilterText Text to show when null filter (es. 'all' | 'none')
+     * @param string|null $noFilterText Text to show when null filter (es. 'all' | 'none')
      * @param string $sepLinks Separator of links
      * @param string $class Css class of links
      * @param string $classActive Css class of active link
      * @return string
      */
-    private function addAdminHeaderFilter(string $name, array $values, string $noFilterText, string $sepLinks = '', string $class = '', string $classActive = ''): string
+    private function addAdminHeaderFilter(string $name, array $values, ?string $noFilterText, string $sepLinks = '', string $class = '', string $classActive = ''): string
     {
         $sm = SessionManager::getInstance();
         if (!$sepLinks) {
