@@ -5670,10 +5670,10 @@ class Node
         return $this->legendItems;
     }
 
-    public function addLegendItem(string $text, string $color = UIStateColors::COLOR_WHITE)
+    public function addLegendItem(string $text, string $uiStateColor = UIStateColors::COLOR_WHITE)
     {
         // TODO: trasform in object?
-        $this->legendItems[] = ['text' => $text, 'color' => $color];
+        $this->legendItems[] = ['text' => $text, 'color' => $uiStateColor];
     }
 
     /**
@@ -5702,7 +5702,7 @@ class Node
                 $text = $this->text('n.d.');
             }
 
-            $bgColor = $item['color'] ?? UIStateColors::COLOR_WHITE;
+            $bgColor = UIStateColors::getHex($item['color'] ?? UIStateColors::STATE_WHITE);
             if (!Tools::strStartsWith($bgColor, '#')) {
                 $bgColor = '#' . $bgColor;
             }
