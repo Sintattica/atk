@@ -853,11 +853,7 @@ class Attribute
      */
     public function value2db(array $record)
     {
-        if (is_array($record) && isset($record[$this->fieldName()])) {
-            return $this->escapeSQL($record[$this->fieldName()]);
-        }
-
-        return null;
+        return isset($record[$this->fieldName()]) ? $this->escapeSQL($record[$this->fieldName()]) : null;
     }
 
     /**

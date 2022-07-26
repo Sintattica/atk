@@ -1334,19 +1334,22 @@ class Node
     /**
      * Returns the primary key sql expression of a record.
      *
-     * @param array $rec The record for which the primary key is calculated.
+     * @param array $record The record for which the primary key is calculated.
      *
      * @return string the primary key of the record.
      */
-    public function primaryKey($rec)
+    public function primaryKey($record)
     {
         $primKey = '';
-        $nrOfElements = Tools::count($this->m_primaryKey);
-        for ($i = 0; $i < $nrOfElements; ++$i) {
-            $p_attrib = $this->m_attribList[$this->m_primaryKey[$i]];
-            $primKey .= $this->m_table . '.' . $this->m_primaryKey[$i] . "='" . $p_attrib->value2db($rec) . "'";
-            if ($i < ($nrOfElements - 1)) {
-                $primKey .= ' AND ';
+
+        if ($record) {
+            $nrOfElements = Tools::count($this->m_primaryKey);
+            for ($i = 0; $i < $nrOfElements; ++$i) {
+                $p_attrib = $this->m_attribList[$this->m_primaryKey[$i]];
+                $primKey .= $this->m_table . '.' . $this->m_primaryKey[$i] . "='" . $p_attrib->value2db($record) . "'";
+                if ($i < ($nrOfElements - 1)) {
+                    $primKey .= ' AND ';
+                }
             }
         }
 
