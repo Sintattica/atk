@@ -24,7 +24,7 @@ class UIStateColors
     public const COLOR_INFO = '#17a2b8';
 
     public const STATE_WARNING = 'warning'; // yellow
-    public const COLOR_WARNING = '#ffde25';
+    public const COLOR_WARNING = '#ffc107';
 
     public const STATE_DANGER = 'danger'; // red
     public const COLOR_DANGER = '#dc3545';

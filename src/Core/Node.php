@@ -688,6 +688,11 @@ class Node
     private $legendItems = [];
 
     /**
+     * @var array[] - List of filter buttons of admin header ['label', 'values', 'noFilterLabel']
+     */
+    private $adminHeaderFilterButtons = [];
+
+    /**
      * @param string $nodeUri The nodeuri
      * @param int $flags Bitmask of node flags (self::NF_*).
      */
@@ -1837,6 +1842,7 @@ class Node
 
                 return true;
             }
+
         } else {
             // not fuzzy
             foreach (array_keys($this->m_filters) as $key) {
@@ -1868,7 +1874,6 @@ class Node
         $result = [];
         $sm = SessionManager::getInstance();
 
-        // edit mode
         if ($mode == 'edit') {
             if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($this->m_feedback, 'update', 0), ActionHandler::ACTION_SUCCESS)) {
                 $result[] = $this->getButton('saveandclose', true);
@@ -1882,6 +1887,7 @@ class Node
             if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($this->m_feedback, 'update', 0), ActionHandler::ACTION_CANCELLED)) {
                 $result[] = $this->getButton('cancel');
             }
+
         } elseif ($mode == 'add') {
             if ($this->hasFlag(self::NF_EDITAFTERADD) === true) {
                 if ($this->allowed('edit')) {
@@ -1900,6 +1906,7 @@ class Node
             if ($sm->atkLevel() > 0 || Tools::hasFlag(Tools::atkArrayNvl($this->m_feedback, 'save', 0), ActionHandler::ACTION_CANCELLED)) {
                 $result[] = $this->getButton('cancel');
             }
+
         } elseif ($mode == 'view') {
             // if appropriate, display an edit button.
             if (!$this->hasFlag(self::NF_NO_EDIT) && $this->allowed('edit', $record)) {
@@ -1909,9 +1916,11 @@ class Node
             if ($sm->atkLevel() > 0) {
                 $result[] = $this->getButton('back', false, Tools::atktext('cancel'));
             }
+
         } elseif ($mode == 'delete') {
             $result[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok" value="' . $this->text('yes') . '">';
             $result[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="' . $this->text('no') . '">';
+
         } elseif ($mode == 'search') {
             // (don't change the order of button)
             $result[] = $this->getButton('search', true);
@@ -3008,6 +3017,7 @@ class Node
         $this->setFilters();
         $this->setRowColors();
         $this->setLegendItems();
+        $this->setAdminHeaderFilterButtons();
     }
 
     /**
@@ -3032,6 +3042,29 @@ class Node
     }
 
     /**
+     * Use this to add legend items in child nodes.
+     */
+    public function setAdminHeaderFilterButtons()
+    {
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdminHeaderFilterButtons(): array
+    {
+        return $this->adminHeaderFilterButtons;
+    }
+
+    public function addAdminHeaderFilterButton(string $label, array $values, ?string $noFilterLabel)
+    {
+        // TODO: trasform in object?
+        $this->adminHeaderFilterButtons[] = ['label' => $label, 'values' => $values, 'noFilterLabel' => $noFilterLabel];
+    }
+
+    /**
+     * @deprecated Use buildAdminHeaderFilterButtons() instead
+     *
      * Builds th box of the filters in the adminHeader.
      *
      * @param array $filters Filters to show ['name', 'values', 'noFilterText']
@@ -3054,41 +3087,118 @@ class Node
     }
 
     /**
-     * Builds a filter to insert into the filter box in the adminHeader.
+     * Builds th box of the filters in the adminHeader.
      *
-     * @param string $name Name of the filter
-     * @param array $values Values of filter to show as a link
-     * @param string|null $noFilterText Text to show when null filter (es. 'all' | 'none')
-     * @param string $sepLinks Separator of links
-     * @param string $class Css class of links
-     * @param string $classActive Css class of active link
+     * @param string $cssClass Css class of the buttons
+     * @param string $uiStateColorActive UIStateColor of the active button
      * @return string
      */
-    private function addAdminHeaderFilter(string $name, array $values, ?string $noFilterText, string $sepLinks = '', string $class = '', string $classActive = ''): string
+    function buildAdminHeaderFilterButtons(string $cssClass = '', string $uiStateColorActive = ''): string
     {
-        $sm = SessionManager::getInstance();
-        if (!$sepLinks) {
-            $sepLinks = ' | ';
+        if (!$this->adminHeaderFilterButtons) {
+            return '';
         }
 
-        $links = [];
-        // link to clear filters
-        if ($noFilterText) {
-            if (!$sm or !$sm->pageVar($name) or !in_array($sm->pageVar($name), $values)) {
-                $links[] = '<span class="' . $class . ' ' . $classActive . '">' . $this->formatTitle($noFilterText) . '</span>';
+        $ret = '<div class="mb-3">';
+        foreach ($this->adminHeaderFilterButtons as $filter) {
+            $ret .= $this->addAdminHeaderFilter($filter['label'], $filter['values'], $filter['noFilterLabel'], '', $cssClass, $uiStateColorActive) . '<div class="mb-1"></div>';
+        }
+        return $ret . '</div>';
+    }
+
+    /**
+     * Builds a filter to insert into the filter box in the adminHeader.
+     *
+     * @param string $label Name of the filter
+     * @param array $values Values of filter to show as a link
+     * @param string|null $noFilterLabel Text to show when null filter (es. 'all' | 'none')
+     * @param string $sepLinks Separator of links TODO: remove
+     * @param string $cssClass Css class of the buttons
+     * @param string $uiStateColorActive UIStateColor of the active button
+     * @return string
+     */
+    private function addAdminHeaderFilter(string $label, array $values, ?string $noFilterLabel, string $sepLinks = '', string $cssClass = '', string $uiStateColorActive = ''): string
+    {
+        $sm = SessionManager::getInstance();
+        $cssClass .= ' btn btn-sm btn-default mr-1 mb-1';
+
+        if (!$uiStateColorActive) {
+            // default active state
+            $uiStateColorActive = UIStateColors::STATE_CYAN_LIGHT;
+        }
+        $cssBgClassActive = UIStateColors::getBgClassFromState($uiStateColorActive);
+
+        $buttons = [];
+
+        // button to clear filters
+        if ($noFilterLabel) {
+            if (!$sm or !$sm->pageVar($label) or !in_array($sm->pageVar($label), $values)) {
+                $buttons[] = '<button class="' . $cssClass . ' ' . $cssBgClassActive . '" disabled>' . $this->formatTitle($noFilterLabel) . '</button>';
             } else {
-                $links[] = Tools::actionHref($this->atkNodeUri(), 'admin', [$name => ''], $this->text($noFilterText), 'class="' . $class . '"');
+                $buttons[] = Tools::actionHref($this->atkNodeUri(), 'admin', [$label => ''], $this->text($noFilterLabel), 'class="' . $cssClass . '"');
             }
         }
+
         // filters
         foreach ($values as $filter) {
-            if ($sm and $sm->pageVar($name) == $filter) {
-                $links[] = '<span class="' . $class . ' ' . $classActive . '">' . $this->formatTitle($filter) . '</span>';
+            if ($sm and $sm->pageVar($label) == $filter) {
+                $buttons[] = '<button class="' . $cssClass . ' ' . $cssBgClassActive . '" disabled>' . $this->formatTitle($filter) . '</button>';
             } else {
-                $links[] = Tools::actionHref($this->atkNodeUri(), 'admin', [$name => $filter], $this->text($filter), 'class="' . $class . '"');
+                $buttons[] = Tools::actionHref($this->atkNodeUri(), 'admin', [$label => $filter], $this->text($filter), 'class="' . $cssClass . '"');
             }
         }
-        return $this->text($name) . ': ' . implode($sepLinks, $links);
+
+        return $this->text($label) . ': ' . implode($sepLinks, $buttons);
+    }
+
+    /**
+     * @return array
+     */
+    public function getLegendItems(): array
+    {
+        return $this->legendItems;
+    }
+
+    public function addLegendItem(string $text, string $uiStateColor = UIStateColors::COLOR_WHITE)
+    {
+        // TODO: trasform in object?
+        $this->legendItems[] = ['text' => $text, 'color' => $uiStateColor];
+    }
+
+    /**
+     * Build the box of the legend in the adminHeader.
+     *
+     * @param string $sep Separator between one item and another
+     * @param string $title Title of the legend (default: "Legend")
+     * @return string String with html to render the legend box
+     */
+    function buildAdminHeaderLegend(string $sep = ' ', string $title = 'legend'): string
+    {
+        if (!$this->legendItems) {
+            return '';
+        }
+
+        $ret = '<div class="row no-gutters legenda-box"><div class="legenda-titolo my-auto">' . $this->text($title) . ': </div>';
+
+        for ($i = 0; $i < count($this->legendItems); $i++) {
+            $item = $this->legendItems[$i];
+
+            $text = $item['text'] ?? $this->text('n.d.');
+
+            $bgColor = UIStateColors::getHex($item['color'] ?? UIStateColors::STATE_WHITE);
+            $borderColor = Tools::dimColorBy($bgColor);
+            $txtColor = Tools::isLightTxtUsingBg($bgColor) ? '#F8F9FA' : '#212529';
+
+            $ret .= '<div class="legenda-item-box ml-1 mb-1 p-1 pl-2 pr-2 border rounded" style="background-color: ' . $bgColor . '; border-color: ' . $borderColor . ' !important;">
+                        <span class="legenda-item-text" style="color: ' . $txtColor . ' ">' . $text . '</span>
+                     </div>';
+
+            if ($i != count($this->legendItems) - 1) {
+                $ret .= $sep;
+            }
+        }
+
+        return $ret . '</div>';
     }
 
     /**
@@ -5660,62 +5770,5 @@ class Node
         $g_nodes = Atk::getInstance()->g_nodes;
         $nodeActions = $g_nodes[$this->getModule()][$this->getModule()][$this->getType()];
         return Tools::atk_in_array($action, $nodeActions);
-    }
-
-    /**
-     * @return array
-     */
-    public function getLegendItems(): array
-    {
-        return $this->legendItems;
-    }
-
-    public function addLegendItem(string $text, string $uiStateColor = UIStateColors::COLOR_WHITE)
-    {
-        // TODO: trasform in object?
-        $this->legendItems[] = ['text' => $text, 'color' => $uiStateColor];
-    }
-
-    /**
-     * Build the box of the legend in the adminHeader.
-     *
-     * @param string $sep Separator between one item and another
-     * @param string $title Title of the legend (default: "Legend")
-     * @return string String with html to render the legend box
-     */
-    function buildAdminHeaderLegend(string $sep = ' ', string $title = 'legend'): string
-    {
-        if (!$this->legendItems) {
-            return '';
-        }
-
-        $ret = '<div class="row no-gutters legenda-box"><div class="legenda-titolo my-auto">' . $this->text($title) . ': </div>';
-        for ($i = 0; $i < count($this->legendItems); $i++) {
-            $item = $this->legendItems[$i];
-
-            if (isset($item['text'])) {
-                $text = $item['text'];
-                if (is_array($text)) {
-                    $text = implode(' | ', $text);
-                }
-            } else {
-                $text = $this->text('n.d.');
-            }
-
-            $bgColor = UIStateColors::getHex($item['color'] ?? UIStateColors::STATE_WHITE);
-            if (!Tools::strStartsWith($bgColor, '#')) {
-                $bgColor = '#' . $bgColor;
-            }
-            $borderColor = Tools::dimColorBy($bgColor);
-            $txtColor = Tools::isLightTxtUsingBg($bgColor) ? '#F8F9FA' : '#212529';
-
-            $ret .= '<div class="legenda-item-box ml-1 p-1 pl-2 pr-2 border rounded" style="background-color: ' . $bgColor . '; border-color: ' . $borderColor . ' !important;">
-                        <span class="legenda-item-text" style="color: ' . $txtColor . ' ">' . $text . '</span>
-                     </div>';
-            if ($i != count($this->legendItems) - 1) {
-                $ret .= $sep;
-            }
-        }
-        return $ret . '</div>';
     }
 }

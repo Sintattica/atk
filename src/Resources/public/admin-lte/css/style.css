@@ -759,3 +759,43 @@ img.rounded-circle {
 .fieldset-form-group .fieldset-form-group-field .select2.select2-container {
   min-width: 12rem;
 }
+
+.bg-green-light {
+    background-color: #cef3da !important;
+}
+
+.bg-green-strong {
+    background-color: #58da78 !important;
+}
+
+.bg-cyan-light {
+    background-color: #caf0f8 !important;
+}
+
+.bg-cyan-strong {
+    background-color: #5dd2ea !important;
+}
+
+.bg-red-light {
+    background-color: #f0a8ab !important;
+}
+
+.bg-red-strong {
+    background-color: #dc2e36 !important;
+}
+
+.bg-yellow-light {
+    background-color: #fff5c2 !important;
+}
+
+.bg-yellow-strong {
+    background-color: #ffdd47 !important;
+}
+
+.bg-orange-light {
+    background-color: #ffd085 !important;
+}
+
+.bg-orange-strong {
+    background-color: #ff7900 !important;
+}
