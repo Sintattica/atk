@@ -15,6 +15,13 @@ class NestedAttribute extends Attribute
         parent::__construct($name, $flags);
     }
 
+    public function setForceUpdate($value)
+    {
+        parent::setForceUpdate($value);
+
+        $this->m_ownerInstance->getAttribute($this->m_ownerInstance->getNestedAttributeField())->setForceUpdate($value);
+    }
+
     public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
     {
         $json_query = self::getOrderByStatementStatic($this, $extra, $table, $direction);

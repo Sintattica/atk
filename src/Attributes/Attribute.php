@@ -2101,13 +2101,13 @@ class Attribute
     /**
      * Used to force an attribute to update with every updateDb() call.
      *
-     * @param bool $force Wether or not to force the attribute to update
+     * @param bool $value Wether or not to force the attribute to update
      *
      * @return Attribute Returns the instance of this attribute
      */
-    public function setForceUpdate($force)
+    public function setForceUpdate($value)
     {
-        $this->m_forceupdate = $force;
+        $this->m_forceupdate = $value;
 
         return $this;
     }
