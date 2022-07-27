@@ -3183,7 +3183,7 @@ class Node
         for ($i = 0; $i < count($this->legendItems); $i++) {
             $item = $this->legendItems[$i];
 
-            $text = $item['text'] ?? $this->text('n.d.');
+            $text = $this->text($item['text'] ?? 'n.d.');
 
             $bgColor = UIStateColors::getHex($item['color'] ?? UIStateColors::STATE_WHITE);
             $borderColor = Tools::dimColorBy($bgColor);
