@@ -807,3 +807,13 @@ img.rounded-circle {
 .bg-orange-strong {
     background-color: #ff7900 !important;
 }
+
+.legenda-box {
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.admin-header {
+    color: #6c757d;
+    padding: 10px 4px 10px 0;
+}

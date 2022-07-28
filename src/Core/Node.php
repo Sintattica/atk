@@ -3178,7 +3178,7 @@ class Node
             return '';
         }
 
-        $ret = '<div class="row no-gutters legenda-box"><div class="legenda-titolo my-auto">' . $this->text($title) . ': </div>';
+        $ret = '<div class="row no-gutters legenda-box"><div class="legenda-titolo my-auto pb-1">' . $this->text($title) . ': </div>';
 
         for ($i = 0; $i < count($this->legendItems); $i++) {
             $item = $this->legendItems[$i];

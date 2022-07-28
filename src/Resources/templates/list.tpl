@@ -13,7 +13,7 @@
         </div>
     {/if}
     {if (isset($header) && !empty($header))}
-        <div class="row list-header">
+        <div class="row admin-header">
             <div class="col-md-12">{$header}</div>
         </div>
     {/if}
