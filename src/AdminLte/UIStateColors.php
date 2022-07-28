@@ -59,11 +59,11 @@ class UIStateColors
     public const STATE_GREEN_STRONG = 'green-strong';
     public const COLOR_GREEN_STRONG = '#58da78';
 
-//    public const STATE_BLUE_LIGHT = 'blue-light';
-//    public const COLOR_BLUE_LIGHT = '#0b99fe';
-//
-//    public const STATE_BLUE_STRONG = 'blue-strong';
-//    public const COLOR_BLUE_STRONG = '#01538e';
+    public const STATE_BLUE_LIGHT = 'blue-light';
+    public const COLOR_BLUE_LIGHT = '#5dbbfe'; // TODO: check
+
+    public const STATE_BLUE_STRONG = 'blue-strong';
+    public const COLOR_BLUE_STRONG = '#0177cb'; // TODO: check
 
     public const STATE_CYAN_LIGHT = 'cyan-light';
     public const COLOR_CYAN_LIGHT = '#caf0f8';
@@ -206,16 +206,16 @@ class UIStateColors
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_GREEN_STRONG),
                 self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_GREEN_STRONG, -20),
             ],
-//            self::STATE_BLUE_LIGHT => [
-//                self::HEX_COLOR => self::COLOR_BLUE_LIGHT,
-//                self::BG_CLASS => self::getBgClassFromState(self::STATE_BLUE_LIGHT),
-//                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_BLUE_LIGHT, -20),
-//            ],
-//            self::STATE_BLUE_STRONG => [
-//                self::HEX_COLOR => self::COLOR_BLUE_STRONG,
-//                self::BG_CLASS => self::getBgClassFromState(self::STATE_BLUE_STRONG),
-//                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_BLUE_STRONG, -20),
-//            ],
+            self::STATE_BLUE_LIGHT => [
+                self::HEX_COLOR => self::COLOR_BLUE_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_BLUE_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_BLUE_LIGHT, -20),
+            ],
+            self::STATE_BLUE_STRONG => [
+                self::HEX_COLOR => self::COLOR_BLUE_STRONG,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_BLUE_STRONG),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_BLUE_STRONG, -20),
+            ],
             self::STATE_CYAN_LIGHT => [
                 self::HEX_COLOR => self::COLOR_CYAN_LIGHT,
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_CYAN_LIGHT),

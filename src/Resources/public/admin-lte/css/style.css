@@ -768,6 +768,14 @@ img.rounded-circle {
     background-color: #58da78 !important;
 }
 
+.bg-blue-light {
+    background-color: #5dbbfe !important; /* TODO: check */
+}
+
+.bg-blue-strong {
+    background-color: #0177cb !important; /* TODO: check */
+}
+
 .bg-cyan-light {
     background-color: #caf0f8 !important;
 }
