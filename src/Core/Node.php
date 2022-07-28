@@ -2893,14 +2893,15 @@ class Node
             }
         }
 
-        $buttons = $this->getFormButtons($action, array());
+        $buttons = $this->getFormButtons($action);
         if (Tools::count($buttons) == 0) {
             $buttons[] = '<input name="confirm" type="submit" class="btn btn-primary btn_ok atkdefaultbutton" value="' . $this->text('yes') . '">';
             $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="' . $this->text('no') . '">';
         }
 
-        $content = '';
         $record = null;
+        $content = $this->confirmActionText($atkselector, $action);
+
         $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
         if (Tools::count($recs) == 1) {
             // 1 record, put it in the page title (with the actionTitle call, a few lines below)
@@ -2911,41 +2912,39 @@ class Node
             // show a list of affected records, at least if we can find a
             // descriptor_def method
             if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
-                $content .= '<ul>';
+                $content .= '<div class="mt-2">';
+                $content .= '<div>' . $this->text('confirm_action_title_multi') . '</div>';
+                $content .= '<ul class="mt-1">';
                 for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
                     $content .= '<li>' . str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
                 }
-                $content .= '</ul>';
+                $content .= '</ul></div>';
             }
         }
 
-        $content .= '<br>' . $this->confirmActionText($atkselector, $action, true);
-
-        $output = $ui->renderAction($action, array(
+        $output = $ui->renderAction($action, [
             'content' => $content,
             'formstart' => $formstart,
             'formend' => '</form>',
             'buttons' => $buttons,
-        ));
+        ]);
 
-        return $ui->renderBox(array(
+        return $ui->renderBox([
             'title' => $this->actionTitle($action, $record),
             'content' => $output,
-        ));
+        ]);
     }
 
     /**
      * Determine the confirmation message.
      *
-     * @param string $atkselector The record(s) on which the action is
-     *                              performed.
+     * @param string[]|string $atkselector The record(s) on which the action is performed.
      * @param string $action The action being performed.
-     * @param bool $checkoverride If true, returns the output of a custom
-     *                              method named "confirm".$action."text()"
+     * @param bool $checkoverride If true, returns the output of a custom method named "confirm".$action."text()"
      *
      * @return string The confirmation text.
      */
-    public function confirmActionText($atkselector = '', $action = 'delete', $checkoverride = true)
+    public function confirmActionText($atkselector = '', string $action = 'delete', bool $checkoverride = true): string
     {
         $method = 'confirm' . $action . 'text';
         if ($checkoverride && method_exists($this, $method)) {

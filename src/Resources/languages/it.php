@@ -66,6 +66,7 @@ return [
     'column_desc' => 'Giù',
     'column_subtotal' => 'Subtotale',
     'column_unsubtotal' => 'Nessun Subtotale',
+    'confirm_action_title_multi' => 'L\'azione verrà eseguita sui seguenti record:',
     'confirm_delete' => 'Sicuro di voler eliminare questo record?',
     'confirm_delete_multi' => 'Sicuro di voler eliminare questi record?',
     'content_wizard_finished' => 'Wizard completato con successo!',

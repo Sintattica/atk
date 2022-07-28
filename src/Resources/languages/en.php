@@ -66,6 +66,7 @@ return [
     'column_desc' => 'Down',
     'column_subtotal' => 'Subtotal',
     'column_unsubtotal' => 'No Subt.',
+    'confirm_action_title_multi' => 'The action will be applied to the following records:',
     'confirm_delete' => 'Are you sure you want to delete this item?',
     'confirm_delete_multi' => 'Are you sure you want to delete these items?',
     'content_wizard_finished' => 'Wizard was finished successfully!',
