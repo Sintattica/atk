@@ -57,7 +57,7 @@ class UIStateColors
     public const COLOR_GREEN_LIGHT = '#cef3da';
 
     public const STATE_GREEN_STRONG = 'green-strong';
-    public const COLOR_GREEN_STRONG = '#58da78';
+    public const COLOR_GREEN_STRONG = '#98ddb8';
 
     public const STATE_BLUE_LIGHT = 'blue-light';
     public const COLOR_BLUE_LIGHT = '#5dbbfe'; // TODO: check
