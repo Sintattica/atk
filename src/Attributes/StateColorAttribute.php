@@ -67,7 +67,7 @@ class StateColorAttribute extends DummyAttribute
         $borderStyle = '';
         if ($this->bordered) {
             $shapeClasses[] = 'bordered';
-            $borderStyle = 'style="border-color:' . Tools::dimColorBy(UIStateColors::getHex($this->color), 15) . ';"';
+            $borderStyle = 'style="border-color:' . UIStateColors::getBorderColor($this->color) . ';"';
         }
 
         $display = '<span class="' . implode(' ', $shapeClasses) . ' d-inline-block state-color-attribute"' . $borderStyle . '></span>';

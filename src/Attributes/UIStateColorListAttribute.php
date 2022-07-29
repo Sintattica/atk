@@ -33,6 +33,28 @@ class UIStateColorListAttribute extends ListAttribute
 
     public function edit($record, $fieldprefix, $mode)
     {
+        $uiStateColors = json_encode(UIStateColors::getColorPalette());
+        $this->getOwnerInstance()->getPage()->register_scriptcode("const uiStateColors = $uiStateColors;");
+
+        $this->addOnChangeHandler("
+            const selectorEl = document.getElementById('{$this->getHtmlId($fieldprefix)}');
+            const uiStateColorCurr = selectorEl.value;
+            const uiStateColorSpotEl = selectorEl.parentNode.parentNode.querySelector('.state-color-attribute');
+            
+            for (let i = 0; i < uiStateColorSpotEl.classList.length; i++) {
+                if (uiStateColorSpotEl.classList[i].startsWith('bg-')) {
+                    // toglie l'unica classe bg-
+                    uiStateColorSpotEl.classList.remove(uiStateColorSpotEl.classList[i]);
+                    break;
+                }
+            }
+            
+            const bgClass = uiStateColors[uiStateColorCurr]['bg_class'];
+            const borderColor = uiStateColors[uiStateColorCurr]['hex_border_color'];
+            uiStateColorSpotEl.classList.add(bgClass);
+            uiStateColorSpotEl.style.borderColor = borderColor;
+        ");
+
         $edit = parent::edit($record, $fieldprefix, $mode);
 
         if ($edit) {

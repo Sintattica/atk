@@ -91,6 +91,7 @@ class UIStateColors
 
 
     public const HEX_COLOR = 'hex_color';
+    public const HEX_BORDER_COLOR = 'hex_border_color';
     public const BG_CLASS = 'bg_class';
     public const HEX_COLOR_RLIST = 'hex_color_rl';
 
@@ -125,7 +126,6 @@ class UIStateColors
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_DEFAULT),
                 self::HEX_COLOR_RLIST => self::COLOR_WHITE,
             ],
-
             self::STATE_PRIMARY => [
                 self::HEX_COLOR => self::COLOR_PRIMARY,
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_PRIMARY),
@@ -257,6 +257,10 @@ class UIStateColors
                 self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_ORANGE_STRONG, -20),
             ],
         ];
+
+        foreach ($this->colorPalette as $uiStateColor => &$values) {
+            $values[self::HEX_BORDER_COLOR] = self::getBorderColor($uiStateColor);
+        }
     }
 
 
@@ -324,6 +328,14 @@ class UIStateColors
         return array_keys(self::getInstance()->colorPalette);
     }
 
+    public static function getBorderColor(?string $uiStateColor): string
+    {
+        if (!$uiStateColor) {
+            $uiStateColor = self::STATE_WHITE;
+        }
+        return Tools::dimColorBy(UIStateColors::getHex($uiStateColor), 15);
+    }
+
     /**
      * Add color on the palette, if existing it gets overwritten.
      * @param string $uiState
@@ -337,6 +349,11 @@ class UIStateColors
             self::BG_CLASS => self::getBgClassFromState($uiState),
             self::HEX_COLOR_RLIST => $hexColorRList ?: $hexColor
         ];
+    }
+
+    public static function getColorPalette(): array
+    {
+        return self::getInstance()->colorPalette;
     }
 
 }
