@@ -6,6 +6,8 @@ use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\Tools;
 
 /**
+ * TODO: rename in UIStateColor?
+ *
  * Class StateColorAttribute
  * @package Sintattica\Atk\Attributes
  *
@@ -22,11 +24,11 @@ class StateColorAttribute extends DummyAttribute
     public const SIZE_LG = 'lg';
 
     /**
-     * Colors from UIStateColors
+     * State from UIStateColors
      *
      * @var UIStateColors $color
      */
-    protected $color = UIStateColors::COLOR_WHITE;
+    protected $color = UIStateColors::STATE_WHITE;
 
     /**
      * @var callable Base function to conditionally retrieve the color
@@ -52,7 +54,6 @@ class StateColorAttribute extends DummyAttribute
 
     public function display($record, $mode)
     {
-
         $shapeClasses = [];
 
         if ($this->colorCondition) {
@@ -208,8 +209,4 @@ class StateColorAttribute extends DummyAttribute
         $this->size = $size;
         return $this;
     }
-
-
-
-
 }

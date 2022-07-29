@@ -94,6 +94,10 @@
     margin-top: 0;
 }
 
+.prepend-ui-item .select2-container--bootstrap4 {
+    width: 100%;
+}
+
 .select2-selection.select2-selection--multiple.MultiSelectListAttribute.form-control.form-control-sm {
     padding-top: 2px;
     padding-left: 0;

@@ -1023,7 +1023,7 @@ class Attribute
             $page->register_scriptcode('
     function ' . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
     {
-      {$this->m_onchangehandler_init}
+      $this->m_onchangehandler_init
       " . implode("\n      ", $this->m_onchangecode) . "
     }\n");
         }
