@@ -5050,7 +5050,7 @@ class Node
     /**
      * Translate using this node's module and type.
      *
-     * @param string|array $string string or array of strings containing the name(s) of the string to return
+     * @param string|string[] $string string or array of strings containing the name(s) of the string to return
      *                              when an array of strings is passed, the second will be the fallback if
      *                              the first one isn't found, and so forth
      * @param string $module module in which the language file should be looked for,

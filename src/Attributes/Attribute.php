@@ -2868,7 +2868,7 @@ class Attribute
     /**
      * Translate using the owner instance's module and type.
      *
-     * @param string $string The string to be translated
+     * @param string|string[] $string The string or array of strings to be translated
      * @param bool $fallback
      *
      * @return string The translated string.
