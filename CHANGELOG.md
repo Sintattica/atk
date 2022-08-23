@@ -1,5 +1,13 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.0] - 2022-08-23
+### Added
+- Attribute: added UIStateColorListAttribute
+
+### Changed
+- Node: refactor template in confirmAction with multiple records
+
+
 ## [9.5.2] - 2022-07-28
 ### Changed
 - Node: added argument $atkSelectors of checkConfirmAction to manage multiple atkselector
