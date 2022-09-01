@@ -692,6 +692,8 @@ class Node
      */
     private $adminHeaderFilterButtons = [];
 
+    private $hidePageTitle = false;
+
     /**
      * @param string $nodeUri The nodeuri
      * @param int $flags Bitmask of node flags (self::NF_*).
@@ -3297,7 +3299,7 @@ class Node
         // todo: overridable action templates
         return $ui->render('actionpage.tpl', [
             'blocks' => $blocks,
-            'title' => $ui->title($this->m_module, $this->m_type),
+            'title' => !$this->hidePageTitle ? $ui->title($this->m_module, $this->m_type) : '',
             'footer' => Footer::getInstance()->render()
         ]);
     }
@@ -5773,5 +5775,16 @@ class Node
         $g_nodes = Atk::getInstance()->g_nodes;
         $nodeActions = $g_nodes[$this->getModule()][$this->getModule()][$this->getType()];
         return Tools::atk_in_array($action, $nodeActions);
+    }
+
+    public function isHidePageTitle(): bool
+    {
+        return $this->hidePageTitle;
+    }
+
+    public function setHidePageTitle(bool $hidePageTitle): self
+    {
+        $this->hidePageTitle = $hidePageTitle;
+        return $this;
     }
 }
