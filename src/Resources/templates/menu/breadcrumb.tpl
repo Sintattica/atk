@@ -10,7 +10,7 @@
                 {stacktrace}
                 {if count($stacktrace) > 0}
                     <ol class="breadcrumb justify-content-xl-end">
-                        <li class="breadcrumb-item"><a href="{$dispatcher}"><span class="fas fa-home"></a></li>
+                        <li class="breadcrumb-item"><a href="{$dispatcher}"><span class="fa-solid fa-house"></a></li>
                         {foreach $stacktrace as $item}
                             {if !$item@last}
                                 <li class="active breadcrumb-item">
