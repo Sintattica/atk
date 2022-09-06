@@ -631,6 +631,7 @@ class Attribute
         $this->m_name = $name;
         $this->setFlags((int)$flags);
         $this->setMaxChars('200');
+        $this->setMinWidth('50px');
 
         // default class
         $this->addCSSClass($this->get_class_name());
