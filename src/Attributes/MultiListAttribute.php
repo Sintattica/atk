@@ -26,14 +26,16 @@ class MultiListAttribute extends MultiSelectListAttribute
         $this->setSelect2Options(['close-on-select' => false], 'edit');
     }
 
-    public function setDisplaySeparator($separator)
+    public function setDisplaySeparator($separator): self
     {
         $this->m_displaySeparator = $separator;
+        return $this;
     }
 
-    public function setExportSeparator($separator)
+    public function setExportSeparator($separator): self
     {
         $this->m_exportSeparator = $separator;
+        return $this;
     }
 
     function display($record, $mode)
@@ -41,17 +43,23 @@ class MultiListAttribute extends MultiSelectListAttribute
         $values = $record[$this->fieldName()];
         $res = [];
 
-        for ($i = 0; $i < count($values); $i++) {
-            if ($r = $this->_translateValue($values[$i], $record)) {
-                $res[] = $r;
+        if ($values) {
+            if (is_string($values)) {
+                // se arriva una stringa |xxx|xxx| al posto dell'array
+                $values = $this->db2value($record);
+            }
+            for ($i = 0; $i < count($values); $i++) {
+                if ($r = $this->_translateValue($values[$i], $record)) {
+                    $res[] = $r;
+                }
             }
         }
 
         if ($mode == 'csv') {
             // export separator
             $sep = $this->m_exportSeparator ?: $this->m_displaySeparator;
-        } else {
 
+        } else {
             if ($this->m_displaySeparator === self::TAG_SEPARATOR) {
                 return Tools::formatTagList($res, $this->tagState);
             }
