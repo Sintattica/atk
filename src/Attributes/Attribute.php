@@ -575,8 +575,39 @@ class Attribute
     private $nl2br = true;
     private $htmlSpecialChars = true;
 
-
     private $isNestedAttribute = false;
+
+    private $minWidth = null;
+    private $maxHeight = null;
+    private $maxChars = null;
+
+    /**
+     * Display long text in row.
+     * You can specify $maxChars for the length of the text to show.
+     */
+    public const MODE_INLINE = 'inline';
+
+    /**
+     * Display the text stretched in height.
+     * You must specify a $minWidth.
+     * You can specify a $maxHeight in this display mode
+     */
+    public const MODE_SCROLL = 'scroll';
+
+    /**
+     * Display the text as wrapped. As default, it truncates the text at
+     * $maxChars in length, it can be set with setMaxChars()
+     */
+    public const MODE_DEFAULT = 'default';
+
+    /**
+     * If display mode is Scroll than we can specify a max height to start scrolling
+     * If the display mode is INLINE then we can specify a max number of characters to show.
+     * If the display mode is DEFAULT then the inline mode with max 200 chars is set.
+     */
+    private const MODES_ALLOWED = [self::MODE_DEFAULT, self::MODE_SCROLL, self::MODE_INLINE];
+
+    private $displayMode = self::MODE_DEFAULT;
 
     /**
      * Constructor.
@@ -599,6 +630,7 @@ class Attribute
     {
         $this->m_name = $name;
         $this->setFlags((int)$flags);
+        $this->setMaxChars('200');
 
         // default class
         $this->addCSSClass($this->get_class_name());
@@ -672,6 +704,81 @@ class Attribute
     public function getFlags()
     {
         return $this->m_flags;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMinWidth(): ?string
+    {
+        return $this->minWidth;
+    }
+
+    /**
+     * @param string $minWidth
+     * @return TextAttribute
+     */
+    public function setMinWidth(string $minWidth): self
+    {
+        $this->minWidth = $minWidth;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMaxHeight(): ?string
+    {
+        return $this->maxHeight;
+    }
+
+    /**
+     * @param string $maxHeight
+     * @return TextAttribute
+     */
+    public function setMaxHeight(string $maxHeight): self
+    {
+        $this->maxHeight = $maxHeight;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMaxChars(): ?int
+    {
+        return $this->maxChars;
+    }
+
+    /**
+     * @param int $maxChars
+     * @return TextAttribute
+     */
+    public function setMaxChars(int $maxChars): self
+    {
+        $this->maxChars = $maxChars;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDisplayMode(): ?string
+    {
+        return $this->displayMode;
+    }
+
+    /**
+     * @param string $displayMode
+     * @return TextAttribute
+     */
+    public function setDisplayMode(string $displayMode): self
+    {
+        if (in_array($displayMode, self::MODES_ALLOWED)) {
+            $this->displayMode = $displayMode;
+        }
+
+        return $this;
     }
 
     /**
@@ -1050,7 +1157,7 @@ class Attribute
 
         $value = $record[$this->fieldName()] ?? null;
 
-        if (!$value){
+        if (!$value) {
             return "";
         }
 
@@ -1333,8 +1440,10 @@ class Attribute
 
         if ($this->getViewCallback() != null) {
             $ret = call_user_func($this->getViewCallback(), $defaults, $mode, $this);
+
         } elseif (method_exists($this->m_ownerInstance, $method)) {
             $ret = $this->m_ownerInstance->$method($defaults, $mode, $this);
+
         } else {
             $ret = $this->display($defaults, $mode);
             if ($ret != '' && strlen($this->m_postfixlabel) > 0) {
@@ -1342,7 +1451,15 @@ class Attribute
             }
         }
 
-        if (in_array($mode, ['csv', 'plain', 'list'])) {
+        if (in_array($mode, ['csv', 'plain'])) {
+            return $ret;
+        }
+
+        if ($ret != '') {
+            $ret = $this->formatDisplay($ret, $mode);
+        }
+
+        if ($mode == 'list') {
             return $ret;
         }
 
@@ -1817,21 +1934,48 @@ class Attribute
         // the next if-statement is a workaround for derived attributes which do
         // not override the display() method properly. This will not give them a
         // working display() functionality but at least it will not give error messages.
-        $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+        $value = $record[$this->fieldName()] ?? '';
 
         if (!is_array($value)) {
             // default behaviour is that we display a value 'as is'.
-            if (($mode == 'csv') || ($mode == 'plain')) {
+            if (in_array($mode, ['csv', 'plain'])) {
                 return $value;
             }
 
             $value = $this->htmlSpecialChars ? htmlSpecialChars($value) : $value;
             $value = $this->nl2br ? nl2br($value) : $value;
-
-            return $value;
         }
 
-        return '';
+        return $value;
+    }
+
+    public function formatDisplay($value, $mode)
+    {
+        if ($mode == 'list') {
+            $style = "min-width: {$this->getMinWidth()};";
+            $classes = '';
+
+            switch ($this->getDisplayMode()) {
+                case self::MODE_INLINE:
+                    if ($this->getMaxChars()) {
+                        $value = $value != null ? Tools::truncateHTML($value, $this->getMaxChars(), '...') : null;
+                    }
+                    break;
+
+                case self::MODE_SCROLL:
+                    $classes = 'text-wrap';
+                    $style .= " max-height: {$this->getMaxHeight()}; overflow-y: auto;";
+                    break;
+
+                default:
+                    $classes = 'text-wrap';
+                    $value = $value != null ? Tools::truncateHTML($value, $this->getMaxChars(), '...') : null;
+            }
+
+            $value = "<div class='$classes' style='$style'>$value</div>";
+        }
+
+        return $value;
     }
 
     /**
@@ -3288,6 +3432,4 @@ class Attribute
         $this->isNestedAttribute = $isNestedAttribute;
         return $this;
     }
-
-
 }

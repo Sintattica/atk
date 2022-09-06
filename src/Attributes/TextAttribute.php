@@ -16,37 +16,7 @@ use Sintattica\Atk\Core\Tools;
  */
 class TextAttribute extends Attribute
 {
-    /**
-     * Display long text in row.
-     * You can specify maxChars for the length of the text to show.
-     */
-    public const MODE_INLINE = 'inline';
-
-    /**
-     * Display the text stretched in height.
-     * You must specify a min-width.
-     * You can specify a max-height in this display mode
-     */
-    public const MODE_SCROLL = 'scroll';
-
-    /**
-     * Display the text as wrapped. As default, it truncates the text at
-     * 200 chars in length, it can be set with setMaxChars()
-     */
-    public const MODE_DEFAULT = 'default';
-
-    /**
-     * If display mode is Scroll than we can specify a max height to start scrolling
-     * If the display mode is INLINE then we can specify a max number of characters to show.
-     * If the display mode is DEFAULT then the inline mode with max 200 chars is set.
-     */
-    private const MODES_ALLOWED = [self::MODE_DEFAULT, self::MODE_SCROLL, self::MODE_INLINE];
-
-    private $displayMode = self::MODE_DEFAULT;
     private $wrapMode = 'soft';
-    private $minWidth = "200px";
-    private $maxHeight = "200px";
-    private $maxChars = null;
 
     // number of rows of the edit box
     public $m_rows = 10;
@@ -56,11 +26,14 @@ class TextAttribute extends Attribute
     /**
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
-     * @param array $options : rows, cols, autoadjust
+     * @param array $options : rows, cols, autoadjust (deprecated, use functions instead)
      */
     public function __construct($name, $flags = 0, array $options = [])
     {
         parent::__construct($name, $flags);
+
+        $this->setMinWidth('200px');
+        $this->setMaxHeight('200px');
 
         if (isset($options['rows'])) {
             $this->m_rows = $options['rows'];
@@ -94,42 +67,6 @@ class TextAttribute extends Attribute
         $this->wrapMode = $mode;
         return $this;
     }
-
-
-    public function display($record, $mode)
-    {
-        $display = parent::display($record, $mode);
-
-        if ($mode == 'list') {
-            $style = "min-width: $this->minWidth;";
-            $classes = '';
-
-            switch ($this->displayMode) {
-                case self::MODE_INLINE:
-                    if ($this->maxChars) {
-                        $record[$this->fieldName()] = $record[$this->fieldName()] != null ? Tools::truncateHTML($record[$this->fieldName()], $this->maxChars, '...') : null;
-                        $display = parent::display($record, $mode);
-                    }
-                    break;
-
-                case self::MODE_SCROLL:
-                    $classes = 'text-wrap';
-                    $style .= " max-height: $this->maxHeight; overflow-y: auto; ";
-                    break;
-
-                default:
-                    $classes = 'text-wrap';
-                    $maxChars = $this->maxChars ?: '200';
-                    $record[$this->fieldName()] = $record[$this->fieldName()] != null ? Tools::truncateHTML($record[$this->fieldName()], $maxChars, '...') : null;
-                    $display = parent::display($record, $mode);
-            }
-
-            $display = "<div class='$classes' style='$style'>$display</div>";
-        }
-
-        return $display;
-    }
-
 
     public function edit($record, $fieldprefix, $mode)
     {
@@ -376,81 +313,6 @@ class TextAttribute extends Attribute
     public function setMAutoadjust($m_autoadjust): self
     {
         $this->m_autoadjust = $m_autoadjust;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDisplayMode(): ?string
-    {
-        return $this->displayMode;
-    }
-
-    /**
-     * @param string $displayMode
-     * @return TextAttribute
-     */
-    public function setDisplayMode(string $displayMode): self
-    {
-        if (in_array($displayMode, self::MODES_ALLOWED)) {
-            $this->displayMode = $displayMode;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMinWidth(): ?string
-    {
-        return $this->minWidth;
-    }
-
-    /**
-     * @param string $minWidth
-     * @return TextAttribute
-     */
-    public function setMinWidth(string $minWidth): self
-    {
-        $this->minWidth = $minWidth;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMaxHeight(): ?string
-    {
-        return $this->maxHeight;
-    }
-
-    /**
-     * @param string $maxHeight
-     * @return TextAttribute
-     */
-    public function setMaxHeight(string $maxHeight): self
-    {
-        $this->maxHeight = $maxHeight;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getMaxChars(): ?int
-    {
-        return $this->maxChars;
-    }
-
-    /**
-     * @param int $maxChars
-     * @return TextAttribute
-     */
-    public function setMaxChars(int $maxChars): self
-    {
-        $this->maxChars = $maxChars;
         return $this;
     }
 }
