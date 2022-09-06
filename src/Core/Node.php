@@ -1243,9 +1243,10 @@ class Node
      *
      * @param int $flag The flag to add.
      */
-    public function addFlag($flag)
+    public function addFlag(int $flag): self
     {
         $this->m_flags |= $flag;
+        return $this;
     }
 
     /**
@@ -1253,11 +1254,12 @@ class Node
      *
      * @param int $flag The flag to remove
      */
-    public function removeFlag($flag)
+    public function removeFlag(int $flag): self
     {
         if ($this->hasFlag($flag)) {
             $this->m_flags ^= $flag;
         }
+        return $this;
     }
 
     /**
@@ -1265,7 +1267,7 @@ class Node
      *
      * @return int node flags
      */
-    public function getFlags()
+    public function getFlags(): int
     {
         return $this->m_flags;
     }
@@ -1275,9 +1277,10 @@ class Node
      *
      * @param int $flags node flags
      */
-    public function setFlags($flags)
+    public function setFlags(int $flags): self
     {
         $this->m_flags = $flags;
+        return $this;
     }
 
     /**
@@ -1323,9 +1326,10 @@ class Node
      *
      * @param string $mode selection mode
      */
-    public function setMRASelectionMode($mode)
+    public function setMRASelectionMode(string $mode): self
     {
         $this->m_mraSelectionMode = $mode;
+        return $this;
     }
 
     /**
@@ -1345,7 +1349,7 @@ class Node
      *
      * @return string the primary key of the record.
      */
-    public function primaryKey($record)
+    public function primaryKey(array $record): string
     {
         $primKey = '';
 
@@ -1391,7 +1395,7 @@ class Node
      *
      * @return string Primary key template
      */
-    public function primaryKeyTpl()
+    public function primaryKeyTpl(): string
     {
         $primKey = '';
         $nrOfElements = Tools::count($this->m_primaryKey);
@@ -1442,7 +1446,7 @@ class Node
      * @param string $orderby Default order by. Can be an attribute name or a
      *                        SQL expression.
      */
-    public function setOrder($orderby)
+    public function setOrder(string $orderby)
     {
         $this->m_default_order = $orderby;
     }
@@ -1453,7 +1457,7 @@ class Node
      * @return string $orderby Default order by. Can be an attribute name or a
      *                SQL expression.
      */
-    public function getOrder()
+    public function getOrder(): string
     {
         return str_replace('[table]', $this->getTable(), $this->m_default_order);
     }
@@ -5229,8 +5233,9 @@ class Node
      * @param string[] $attrsNames The names of attributes
      * @param int $flag The flag to add to the attributes
      * @param bool $check Check the presence of the attributes
+     * @return Node
      */
-    public function addAttributesFlag(array $attrsNames, int $flag, bool $check = false)
+    public function addAttributesFlag(array $attrsNames, int $flag, bool $check = false): self
     {
         foreach ($attrsNames as $name) {
             $attr = $this->getAttribute($name);
@@ -5238,6 +5243,7 @@ class Node
                 $attr->addFlag($flag);
             }
         }
+        return $this;
     }
 
     /**
@@ -5246,12 +5252,14 @@ class Node
      * @param string[] $attrsNames
      * @param int[] $flags
      * @param bool $check
+     * @return Node
      */
-    protected function addAttributesFlags(array $attrsNames, array $flags, bool $check = false)
+    protected function addAttributesFlags(array $attrsNames, array $flags, bool $check = false): self
     {
         foreach ($flags as $flag) {
             $this->addAttributesFlag($attrsNames, $flag, $check);
         }
+        return $this;
     }
 
     /**
@@ -5260,8 +5268,9 @@ class Node
      * @param string[] $attrsNames The names of attributes
      * @param int $flag The flag to remove from the attributes
      * @param bool $check Check the presence of the attributes
+     * @return Node
      */
-    public function removeAttributesFlag(array $attrsNames, int $flag, bool $check = false)
+    public function removeAttributesFlag(array $attrsNames, int $flag, bool $check = false): self
     {
         foreach ($attrsNames as $name) {
             $attr = $this->getAttribute($name);
@@ -5269,6 +5278,7 @@ class Node
                 $attr->removeFlag($flag);
             }
         }
+        return $this;
     }
 
     /**
@@ -5277,12 +5287,14 @@ class Node
      * @param string[] $attrsNames
      * @param int[] $flags
      * @param bool $check
+     * @return Node
      */
-    protected function removeAttributesFlags(array $attrsNames, array $flags, bool $check = false)
+    protected function removeAttributesFlags(array $attrsNames, array $flags, bool $check = false): self
     {
         foreach ($flags as $flag) {
             $this->removeAttributesFlag($attrsNames, $flag, $check);
         }
+        return $this;
     }
 
     /**
