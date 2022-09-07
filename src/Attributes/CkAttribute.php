@@ -12,8 +12,10 @@ use Sintattica\Atk\Core\Language;
 class CkAttribute extends HtmlAttribute
 {
     const ENTER_MODE_P = 1;     // new <p> paragraphs are created
-    const ENTER_MODE_BR = 2;    // lines are broken with <br> elements
-    const ENTER_MODE_DIV = 3;   // new <div> blocks are created.
+    const ENTER_MODE_BR = 2;    // replaces all <p> tags with <br><br>
+    const ENTER_MODE_DIV = 3;   // replaces all <p> tags with <div>
+
+    private $enterMode = self::ENTER_MODE_P;
 
     /**
      * @var array CKEditor configuration (default)
@@ -86,7 +88,6 @@ class CkAttribute extends HtmlAttribute
         return parent::edit($record, $fieldprefix, $mode);
     }
 
-
     /**
      * Check if a record has an empty value for this attribute.
      *
@@ -120,5 +121,33 @@ class CkAttribute extends HtmlAttribute
     protected function formatPostfixLabel(): string
     {
         return "";
+    }
+
+    public function getEnterMode(): int
+    {
+        return $this->enterMode;
+    }
+
+    public function setEnterMode(int $enterMode): self
+    {
+        $this->enterMode = $enterMode;
+        return $this;
+    }
+
+    public function value2db(array $record)
+    {
+        switch ($this->enterMode) {
+            case self::ENTER_MODE_BR:
+                $record[$this->fieldName()] = str_replace('<p>', '', $record[$this->fieldName()]);
+                $record[$this->fieldName()] = str_replace('</p>', '</br></br>', $record[$this->fieldName()]);
+                break;
+
+            case self:: ENTER_MODE_DIV:
+                $record[$this->fieldName()] = str_replace('<p>', '<div>', $record[$this->fieldName()]);
+                $record[$this->fieldName()] = str_replace('</p>', '</div>', $record[$this->fieldName()]);
+                break;
+        }
+
+        return parent::value2db($record);
     }
 }
