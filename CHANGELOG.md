@@ -1,5 +1,16 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.2] - 2022-09-08
+### Added
+- CkAttribute: added support to enterMode
+
+### Changed
+- Attribute: moved minWidth, maxHeight and maxChars from TextAttribute to Attribute
+
+### Fixed
+- MultiListAttribute: fixed fluent setters
+
+
 ## [9.6.1] - 2022-09-01
 ### Added
 - Node: added hidePageTitle flag to hide title of the page
