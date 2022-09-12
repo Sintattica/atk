@@ -16,16 +16,27 @@ class NestedBoolAttribute extends BoolAttribute
         parent::__construct($name, $flags);
     }
 
-    // TODO implementare
-    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC')
+    public function getOrderByStatement($extra = [], $table = '', $direction = 'ASC'): string
     {
-        return '';
+        $json_query = NestedAttribute::getOrderByStatementStatic($this, $extra, $table, $direction);
+        if ($json_query) {
+            return $json_query;
+        }
+
+        return parent::getOrderByStatement($extra, $table, $direction);
     }
 
-    // TODO implementare
-    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = ''): string
     {
-        return '';
+        if (!$this->getOwnerInstance()->isNestedAttribute($this->fieldName())) {
+            return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
+        }
+        return parent::getSearchCondition($query, $table, $value, $searchmode, $this->buildSQLSearchValue($table));
+    }
+
+    protected function buildSQLSearchValue($table): string
+    {
+        return "JSON_UNQUOTE(" . NestedAttribute::buildJSONExtractValue($this, $table) . ")";
     }
 
 }
