@@ -1,5 +1,17 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.5] - 2022-09-13
+### Changed
+- NestedBoolAttribute: support for search field
+
+## [9.6.4] - 2022-09-12
+### Added
+- NestedBoolAttribute: support for search field (WIP)
+
+## [9.6.3] - 2022-09-09
+### Added
+- Attribute: added NestedDateTimeAttribute
+
 ## [9.6.3] - 2022-09-09
 ### Added
 - Attribute: added NestedDateTimeAttribute
