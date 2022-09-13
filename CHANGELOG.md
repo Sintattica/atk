@@ -7,13 +7,11 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 ### Changed
 - NestedBoolAttribute: support for search field
 
+
 ## [9.6.4] - 2022-09-12
 ### Added
 - NestedBoolAttribute: support for search field (WIP)
 
-## [9.6.3] - 2022-09-09
-### Added
-- Attribute: added NestedDateTimeAttribute
 
 ## [9.6.3] - 2022-09-09
 ### Added
