@@ -898,6 +898,8 @@ return [
     'icon_undo' => 'fa-solid fa-rotate-left',
     'icon_redo' => 'fa-solid fa-rotate-right',
     'icon_reply' => 'fa-solid fa-reply',
+    'icon_add_bookmark' => 'fa-regular fa-star',
+    'icon_delete_bookmark' => 'fa-solid fa-star',
 
     /****************** CACHING ********************/
 

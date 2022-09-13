@@ -105,18 +105,20 @@ class AdminHandler extends ActionHandler
      * @return string A box containing the admin page (without the add form,
      *                which is added later.
      */
-    public function adminPage($actions = array())
+    public function adminPage($actions = [])
     {
         $ui = $this->getUi();
 
-        $vars = array(
-            'title' => $this->m_node->actionTitle($this->getNode()->m_action),
+        $vars = [
+            'title' => $this->getNode()->actionTitle($this->getNode()->getAction()),
             'content' => $this->renderAdminList(),
-        );
+            'bookmarkLink' => $this->getNode()->getAdminPageBookmarkLink(),
+            'legend' => $this->getNode()->buildAdminHeaderLegend(),
+            'filterButtons' => $this->getNode()->buildAdminHeaderFilterButtons(),
+//            'boxActions' => $this->getNode()->buildAdminHeaderBoxActions(), TODO
+        ];
 
-        $output = $ui->renderBox($vars);
-
-        return $output;
+        return $ui->renderBox($vars);
     }
 
     /**

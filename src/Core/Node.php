@@ -482,7 +482,7 @@ class Node
      * @access protected
      * @var array
      */
-    public $m_securityMap = array(
+    public $m_securityMap = [
         'save' => 'add',
         'update' => 'edit',
         'multiupdate' => 'edit',
@@ -491,7 +491,7 @@ class Node
         'editcopy' => 'add',
         'search' => 'admin',
         'smartsearch' => 'admin',
-    );
+    ];
 
     /*
      * The right to execute certain actions can be implied by the fact that you
@@ -693,6 +693,8 @@ class Node
     private $adminHeaderFilterButtons = [];
 
     private $hidePageTitle = false;
+
+    private $adminPageBookmarkLink = null;
 
     /**
      * @param string $nodeUri The nodeuri
@@ -3047,15 +3049,70 @@ class Node
     }
 
     /**
-     * Use this to add legend items in child nodes.
+     * Use this to add filter buttons in child nodes.
      */
     public function setAdminHeaderFilterButtons()
     {
     }
 
+    public function getAdminPageBookmarkLink(): ?string
+    {
+        return $this->adminPageBookmarkLink;
+    }
+
+    public function setAdminPageBookmarkLink(string $adminPageBookmarkLink): self
+    {
+        $this->adminPageBookmarkLink = $adminPageBookmarkLink;
+        return $this;
+    }
+
+    public function getLegendItems(): array
+    {
+        return $this->legendItems;
+    }
+
+    public function addLegendItem(string $text, string $uiStateColor = UIStateColors::COLOR_WHITE)
+    {
+        // TODO: trasform in object?
+        $this->legendItems[] = ['text' => $text, 'color' => $uiStateColor];
+    }
+
     /**
-     * @return array
+     * Build the box of the legend in the adminHeader.
+     *
+     * @param string $sep Separator between one item and another
+     * @param string $title Title of the legend (default: "Legend")
+     * @return string String with html to render the legend box
      */
+    function buildAdminHeaderLegend(string $sep = ' ', string $title = 'legend'): string
+    {
+        if (!$this->legendItems) {
+            return '';
+        }
+
+        $ret = '<div class="row no-gutters legenda-box"><div class="legenda-titolo my-auto pb-1">' . $this->text($title) . ': </div>';
+
+        for ($i = 0; $i < count($this->legendItems); $i++) {
+            $item = $this->legendItems[$i];
+
+            $text = $this->text($item['text'] ?? 'n.d.');
+
+            $bgColor = UIStateColors::getHex($item['color'] ?? UIStateColors::STATE_WHITE);
+            $borderColor = Tools::dimColorBy($bgColor);
+            $txtColor = Tools::isLightTxtUsingBg($bgColor) ? '#F8F9FA' : '#212529';
+
+            $ret .= '<div class="legenda-item-box ml-1 mb-1 p-1 pl-2 pr-2 border rounded" style="background-color: ' . $bgColor . '; border-color: ' . $borderColor . ' !important;">
+                        <span class="legenda-item-text" style="color: ' . $txtColor . ' ">' . $text . '</span>
+                     </div>';
+
+            if ($i != count($this->legendItems) - 1) {
+                $ret .= $sep;
+            }
+        }
+
+        return $ret . '</div>';
+    }
+
     public function getAdminHeaderFilterButtons(): array
     {
         return $this->adminHeaderFilterButtons;
@@ -3154,56 +3211,6 @@ class Node
         }
 
         return $this->text($label) . ': ' . implode($sepLinks, $buttons);
-    }
-
-    /**
-     * @return array
-     */
-    public function getLegendItems(): array
-    {
-        return $this->legendItems;
-    }
-
-    public function addLegendItem(string $text, string $uiStateColor = UIStateColors::COLOR_WHITE)
-    {
-        // TODO: trasform in object?
-        $this->legendItems[] = ['text' => $text, 'color' => $uiStateColor];
-    }
-
-    /**
-     * Build the box of the legend in the adminHeader.
-     *
-     * @param string $sep Separator between one item and another
-     * @param string $title Title of the legend (default: "Legend")
-     * @return string String with html to render the legend box
-     */
-    function buildAdminHeaderLegend(string $sep = ' ', string $title = 'legend'): string
-    {
-        if (!$this->legendItems) {
-            return '';
-        }
-
-        $ret = '<div class="row no-gutters legenda-box"><div class="legenda-titolo my-auto pb-1">' . $this->text($title) . ': </div>';
-
-        for ($i = 0; $i < count($this->legendItems); $i++) {
-            $item = $this->legendItems[$i];
-
-            $text = $this->text($item['text'] ?? 'n.d.');
-
-            $bgColor = UIStateColors::getHex($item['color'] ?? UIStateColors::STATE_WHITE);
-            $borderColor = Tools::dimColorBy($bgColor);
-            $txtColor = Tools::isLightTxtUsingBg($bgColor) ? '#F8F9FA' : '#212529';
-
-            $ret .= '<div class="legenda-item-box ml-1 mb-1 p-1 pl-2 pr-2 border rounded" style="background-color: ' . $bgColor . '; border-color: ' . $borderColor . ' !important;">
-                        <span class="legenda-item-text" style="color: ' . $txtColor . ' ">' . $text . '</span>
-                     </div>';
-
-            if ($i != count($this->legendItems) - 1) {
-                $ret .= $sep;
-            }
-        }
-
-        return $ret . '</div>';
     }
 
     /**
@@ -5521,7 +5528,6 @@ class Node
         $this->nestedAttributesList[] = $nestedAttribute;
         return $this;
     }
-
 
     public function hasNestedAttributes(): bool
     {
