@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.6] - 2022-09-14
+### Added
+- Node: added adminPage node help in the top right corner of the adminPage box 
+
+
 ## [9.6.5] - 2022-09-13
 ### Added
 - Node: added bookmarkLink, legend and filter buttons in the box.tpl
