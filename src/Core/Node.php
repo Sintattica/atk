@@ -696,6 +696,8 @@ class Node
 
     private $adminPageBookmarkLink = null;
 
+    private $adminPageNodeHelp = null;
+
     /**
      * @param string $nodeUri The nodeuri
      * @param int $flags Bitmask of node flags (self::NF_*).
@@ -2990,7 +2992,7 @@ class Node
         Tools::atkdebug('init for ' . $this->m_type);
 
         // Check if initialisation is not already done.
-        if ($this->m_initialised == true) {
+        if ($this->m_initialised) {
             return;
         }
 
@@ -3025,6 +3027,8 @@ class Node
         $this->setRowColors();
         $this->setLegendItems();
         $this->setAdminHeaderFilterButtons();
+        $this->adminPageNodeHelp = $this->buildAdminPageNodeHelp();
+
     }
 
     /**
@@ -3053,6 +3057,25 @@ class Node
      */
     public function setAdminHeaderFilterButtons()
     {
+    }
+
+    /**
+     * Use this to add node help in the right corner of the header of the adminPage
+     */
+    public function buildAdminPageNodeHelp(): string
+    {
+        return '';
+    }
+
+    public function getAdminPageNodeHelp(): ?string
+    {
+        return $this->adminPageNodeHelp;
+    }
+
+    public function setAdminPageNodeHelp(string $nodeHelper): self
+    {
+        $this->adminPageNodeHelp = $nodeHelper;
+        return $this;
     }
 
     public function getAdminPageBookmarkLink(): ?string
