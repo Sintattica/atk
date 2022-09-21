@@ -83,6 +83,9 @@ class UIStateColors
     public const STATE_YELLOW_STRONG = 'yellow-strong';
     public const COLOR_YELLOW_STRONG = '#ffdd47';
 
+    public const STATE_ORANGE_ULTRA_LIGHT = 'orange-ultra-light';
+    public const COLOR_ORANGE_ULTRA_LIGHT = '#ffdc85';
+
     public const STATE_ORANGE_LIGHT = 'orange-light';
     public const COLOR_ORANGE_LIGHT = '#ffd085';
 
@@ -240,6 +243,11 @@ class UIStateColors
                 self::HEX_COLOR => self::COLOR_YELLOW_LIGHT,
                 self::BG_CLASS => self::getBgClassFromState(self::STATE_YELLOW_LIGHT),
                 self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_YELLOW_LIGHT, -20),
+            ],
+            self::STATE_ORANGE_ULTRA_LIGHT => [
+                self::HEX_COLOR => self::COLOR_ORANGE_ULTRA_LIGHT,
+                self::BG_CLASS => self::getBgClassFromState(self::STATE_ORANGE_ULTRA_LIGHT),
+                self::HEX_COLOR_RLIST => Tools::dimColorBy(self::COLOR_ORANGE_ULTRA_LIGHT, -20),
             ],
             self::STATE_YELLOW_STRONG => [
                 self::HEX_COLOR => self::COLOR_YELLOW_STRONG,

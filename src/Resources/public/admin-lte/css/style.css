@@ -814,6 +814,11 @@ img.rounded-circle {
     border-color: #e1bf29 !important;
 }
 
+.bg-orange-ultra-light {
+    background-color: #ffdc85 !important;
+    border-color: #e1be67 !important;
+}
+
 .bg-orange-light {
     background-color: #ffd085 !important;
     border-color: #e1b267 !important;
