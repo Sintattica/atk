@@ -332,10 +332,11 @@ class FileAttribute extends Attribute
 
             } else {
                 // file not found
-                $ret = basename($filename);
+                $ret = '<div>' . basename($filename);
                 if ($mode != 'add') {
                     $ret .= ' (<span style="color: #ff0000">' . Tools::atktext("file_not_exist", "atk") . '</span>)';
                 }
+                $ret .= '</div>';
             }
         }
 
