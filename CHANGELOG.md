@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.8] - 2022-09-30
+### Fixed
+- Attribute: fix FileAttribute edit when file not found
+
+
 ## [9.6.7] - 2022-09-21
 ### Added
 - UIStateColors: added color "orange ultra light"
