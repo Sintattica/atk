@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.9] - 2022-10-07
+### Fixed
+- Attribute: added setMultipleSearch on ExpressionListAttribute
+- Attribute: fix search in NestedDateTimeAttribute
+
+
 ## [9.6.8] - 2022-09-30
 ### Fixed
 - Attribute: fix FileAttribute edit when file not found
