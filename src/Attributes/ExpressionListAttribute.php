@@ -124,4 +124,15 @@ class ExpressionListAttribute extends ExpressionAttribute
 
         return '';
     }
+
+    /**
+     * @param bool $normal
+     * @param bool $extended
+     * @return array
+     */
+    public function setMultipleSearch(bool $normal = true, bool $extended = true): array
+    {
+        $this->getListAttribute()->setMultipleSearch($normal, $extended);
+        return $this->getListAttribute()->getMultipleSearch();
+    }
 }

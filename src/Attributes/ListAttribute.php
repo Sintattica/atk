@@ -727,7 +727,7 @@ EOF;
      * @param bool $extended
      * @return array $m_multipleSearch
      */
-    public function setMultipleSearch($normal = true, $extended = true)
+    public function setMultipleSearch(bool $normal = true, bool $extended = true): array
     {
         $this->m_multipleSearch = [
             'normal' => $normal,
@@ -737,7 +737,10 @@ EOF;
         return $this->m_multipleSearch;
     }
 
-    public function getMultipleSearch()
+    /**
+     * @return array
+     */
+    public function getMultipleSearch(): array
     {
         return $this->m_multipleSearch;
     }
