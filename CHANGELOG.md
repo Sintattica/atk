@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.10] - 2022-10-10
+### Fixed
+- Handler: fix nested attribute loading in EditcopyHandler
+
+
 ## [9.6.9] - 2022-10-07
 ### Fixed
 - Attribute: added setMultipleSearch on ExpressionListAttribute
