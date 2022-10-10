@@ -24,7 +24,6 @@ class EditcopyHandler extends ActionHandler
         // allowed to editcopy record?
         if (!$this->allowed($record)) {
             $this->renderAccessDeniedPage();
-
             return;
         }
 
@@ -52,13 +51,16 @@ class EditcopyHandler extends ActionHandler
     {
         $selector = $this->m_postvars['atkselector'];
         $recordset = $this->m_node->select($selector)->mode('copy')->getAllRows();
+
         if (Tools::count($recordset) > 0) {
+            if ($this->m_node->hasNestedAttributes()) {
+                $this->m_node->loadNestedAttributesValue($recordset[0]);
+            }
             return $recordset[0];
         } else {
             Tools::atkdebug("Geen records gevonden met selector: $selector");
             $this->m_node->redirect();
         }
-
         return;
     }
 }
