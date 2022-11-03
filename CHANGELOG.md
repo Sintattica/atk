@@ -1,5 +1,13 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.11] - 2022-11-03
+### Changed
+- Attribute: removed default param 'atkselector' in ActionButtonAttribute when other params are specified
+
+### Fixed
+- Attribute: fix default text of ButtonAttribute
+
+
 ## [9.6.10] - 2022-10-10
 ### Fixed
 - Handler: fix nested attribute loading in EditcopyHandler
