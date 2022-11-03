@@ -13,9 +13,8 @@ class ButtonAttribute extends DummyAttribute
 
     public function __construct($name, $flags = 0)
     {
-        $this->m_text = $name;
         $this->addCSSClasses(['btn', 'btn-sm', 'btn-default']);
-        parent::__construct($name, $flags | self::AF_HIDE_LIST | self::AF_HIDE_VIEW | self::AF_HIDE_ADD | self::AF_READONLY);
+        parent::__construct($name, $flags | self::AF_HIDE_LIST | self::AF_HIDE_VIEW | self::AF_HIDE_ADD | self::AF_READONLY, $name);
     }
 
     /**
