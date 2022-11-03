@@ -28,10 +28,13 @@ class ActionButtonAttribute extends ButtonAttribute
         $targetNode = Atk::getInstance()->atkGetNode($this->node);
         $action = $this->action;
         if ($action === 'edit' and !$targetNode->allowed('edit')) {
-            // action edit ma l'utente non ha i permessi: mando in view
+            // action edit but user has not access rights: goes to view page
             $action = 'view';
         }
-        $this->params['atkselector'] = $targetNode->getPrimaryKey($record);
+        if (empty($this->params)) {
+            // default params
+            $this->params['atkselector'] = $targetNode->getPrimaryKey($record);
+        }
         $url = Tools::dispatch_url($this->node, $action, $this->params);
         $extraProps = [];
         if ($classes) {
