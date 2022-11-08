@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.12] - 2022-11-08
+### Fixed
+- Style: fix max-width of helpModal in box.tpl
+
+
 ## [9.6.11] - 2022-11-03
 ### Changed
 - Attribute: removed default param 'atkselector' in ActionButtonAttribute when other params are specified
