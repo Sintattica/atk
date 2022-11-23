@@ -195,7 +195,7 @@ class FileAttribute extends Attribute
                 $result = $this->display($record, $mode);
             }
 
-            if (isset($record[$this->fieldName()]['filename'])) {
+            if (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] != '') {
                 $fileLink = new SimpleXMLElement($result);
 
                 $result = '<div class="existing-file input-group">
@@ -207,14 +207,11 @@ class FileAttribute extends Attribute
                      <a href="' . $fileLink['href'] . '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-alt-circle-down"></i></a>
                     </div>
                   </div>';
-
             }
-
         }
 
         if (!is_dir($this->m_dir) || !is_writable($this->m_dir)) {
             Tools::atkwarning('atkFileAttribute: ' . $this->m_dir . ' does not exist or is not writeable');
-
             return Tools::atktext('no_valid_directory', 'atk') . ': ' . $this->m_dir;
         }
 
@@ -271,8 +268,7 @@ class FileAttribute extends Attribute
         }
 
         if ($this->m_allowedFileTypes) {
-            // TODO abbellire?
-            // mostra le estensioni ammissibili
+            // show allowed extensions
             $result .= '<span style="color: #737373">(' . implode(', ', $this->m_allowedFileTypes) . ')</span>';
         }
 
