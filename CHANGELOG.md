@@ -2,7 +2,9 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 
 ## [9.6.13] - 2022-11-25
 ### Added
-- Node: added function getDefaultNestedAttribute 
+- Node: added function getDefaultNestedAttribute
+
+### Fixed
 - Attribute: fix filename check in edit in FileAttribute
 
 
