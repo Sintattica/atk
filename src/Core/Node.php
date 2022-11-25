@@ -5828,4 +5828,11 @@ class Node
         $this->hidePageTitle = $hidePageTitle;
         return $this;
     }
+
+    public function getDefaultNestedAttribute(string $nestedAttributeField = null): JsonAttribute
+    {
+        $attr = new JsonAttribute($nestedAttributeField ?? $this->nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD);
+        $attr->setForceUpdate(true);
+        return $attr;
+    }
 }
