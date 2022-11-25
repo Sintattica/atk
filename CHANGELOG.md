@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.6.13] - 2022-11-25
+### Added
+- Node: added function getDefaultNestedAttribute 
+- Attribute: fix filename check in edit in FileAttribute
+
+
 ## [9.6.12] - 2022-11-08
 ### Fixed
 - Style: fix max-width of helpModal in box.tpl
