@@ -356,7 +356,9 @@ class OneToManyRelation extends Relation
 
             $grid->setDefaultActions($actions);
 
-            return $grid->render();
+            $exportBtn = $this->getDestination()->hasFlag(Node::NF_EXPORT) ? $this->getExportButton($record) : '';
+
+            return $exportBtn . ' ' . $grid->render();
         }
 
         // records should be loaded inside the load method
@@ -368,14 +370,20 @@ class OneToManyRelation extends Relation
         }
 
         if ($mode == 'list') { // list mode
-            $result = '<div style="max-width: 600px; min-width: 400px; white-space: normal;">'; //.$this->getCSSClassAttribute(['ml-2']) . '>';
-            foreach ($records as $current) {
-                $result .= sprintf('<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">%s</span>', $this->m_destInstance->descriptor($current));
+            $result = '<div style="max-width: 600px; min-width: 400px; white-space: normal;">';
+
+            foreach ($records as $currentRecord) {
+                $descriptor = $this->m_destInstance->descriptor($currentRecord);
+                if ($this->hasFlag(ManyToOneRelation::AF_RELATION_AUTOLINK)) {
+                    $descriptor = Tools::actionHref($this->m_destInstance->atkNodeUri(), 'view', ['atkselector' => $currentRecord['atkprimkey']], $descriptor, '', SessionManager::SESSION_NESTED);
+                }
+                $result .= sprintf('<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">%s</span>', $descriptor);
             }
 
             $result .= '</div>';
 
             return $result;
+
         } else { // cvs / plain mode
             $result = '';
 
@@ -433,6 +441,10 @@ class OneToManyRelation extends Relation
 
         if ($this->m_destInstance->allowed('add')) {
             $this->_addAddToEditOutput($output, $grid->getRecords(), $record, $mode, $fieldprefix);
+        }
+
+        if ($mode == 'edit' && $this->getDestination()->hasFlag(Node::NF_EXPORT)) {
+            $output = $this->getExportButton($record) . ' ' . $output;
         }
 
         return $output;
@@ -504,6 +516,11 @@ class OneToManyRelation extends Relation
             }
             $params['atkstore'] = 'session';
             $params['atkstore_key'] = $this->getSessionStoreKey();
+        }
+
+        $method = $this->fieldName() . '_getNestedAddLink';
+        if (method_exists($this->getOwnerInstance(), $method)) {
+            return $this->getOwnerInstance()->$method($myrecords, $record, $saveform, $fieldprefix);
         }
 
         return $this->_getNestedAddLink($myrecords, $record, $saveform, $fieldprefix, $params);
@@ -1285,7 +1302,7 @@ class OneToManyRelation extends Relation
     }
 
     /**
-     * Set the exclude fields for the grid.
+     * Set the excluded fields for the grid.
      *
      * @param array $excludes
      */
@@ -1295,12 +1312,24 @@ class OneToManyRelation extends Relation
     }
 
     /**
-     * Get the exclude fields for the grid.
+     * Get the excluded fields for the grid.
      *
      * @return array with exclude fields
      */
     public function getGridExcludes()
     {
         return $this->m_excludes;
+    }
+
+    function getExportButton(array $record): string
+    {
+        $params = [];
+        $filter = $this->getAddFilterString($record);
+        if (isset($filter)) {
+            $params['atkfilter'] = $filter;
+        }
+        // open export action in target _blank because in SESSION_NESTED export failed...
+        $url = Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'export', $params);
+        return sprintf('<a href="%s" target="_blank" class="btn btn-sm btn-default mb-1">%s</a>', $url, $this->text('export'));
     }
 }
