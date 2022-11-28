@@ -760,10 +760,6 @@ img.rounded-circle {
     display: none !important;
 }
 
-.fieldset-form-group .fieldset-form-group-field .select2.select2-container {
-    min-width: 12rem;
-}
-
 .bg-green-light {
     background-color: #cef3da !important;
     border-color: #b0d5bc !important;

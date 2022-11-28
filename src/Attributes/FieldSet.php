@@ -128,15 +128,17 @@ class FieldSet extends Attribute
      */
     protected function renderFieldSet($type, $record, $mode, $fieldprefix = '')
     {
-
         $replacements = [];
 
         $fields = array_unique($this->getParser()->getFields());
-
         $lastElName = end($fields);
+        $counterFields = 0;
+        $numFields = count($fields);
+
         foreach ($fields as $attrName) {
             $attr = $this->getOwnerInstance()->getAttribute($attrName);
             $field = '';
+            $counterFields++;
 
             // render the field
             if ($type == 'edit') {
@@ -179,10 +181,15 @@ class FieldSet extends Attribute
                 }
 
                 $html = '<div class="fieldset-form-group d-flex align-items-center' . $requiredClass . '" style="' . implode(' ', $style) . '">';
-                $html .= $label . '<div id="' . $containerId . '" class="fieldset-form-group-field w-100 pr-3">' . $field . '</div>';
+                $classes = 'fieldset-form-group-field w-100';
+                if ($counterFields < $numFields) {
+                    $classes .= ' pr-3';
+                }
+                $html .= $label . '<div id="' . $containerId . '" class="' . $classes . '">' . $field . '</div>';
                 $html .= '</div>';
 
                 $replacements[$attrName] = $html;
+
             } else {
                 $replacements[$attrName] = '';
             }
@@ -193,7 +200,7 @@ class FieldSet extends Attribute
             $style .= "$k:$v;";
         }
 
-        $result = '<div class="atkfieldset d-flex align-items-center"';
+        $result = '<div class="atkfieldset d-flex flex-wrap align-items-center"';
         if ($style != '') {
             $result .= ' style="' . $style . '"';
         }
@@ -259,6 +266,4 @@ class FieldSet extends Attribute
         $this->growLastElement = $growLastElement;
         return $this;
     }
-
-
 }
