@@ -232,6 +232,7 @@ return [
     'mon' => 'Mon',
     'monday' => 'Monday',
     'multiselect' => 'Multiselect',
+    'na' => 'n.a.',
     'new' => 'New',
     'next' => 'Next',
     'no' => 'No',

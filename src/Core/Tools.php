@@ -1839,12 +1839,12 @@ class Tools
      * When using hrefs in the editform, you can set saveform to true. This will save your
      * form variables in the session and restore them whenever you come back.
      *
-     * @param string $url the url to make session aware
+     * @param string|null $url the url to make session aware
      * @param string $internalElement It can be a html element or a simple text (not escaped)
      * @param string $sessionStatus the session flags
      *                              (SessionManager::SESSION_DEFAULT (default)|SessionManager::SESSION_NEW|SessionManager::SESSION_REPLACE|
      *                              SessionManager::SESSION_NESTED|SessionManager::SESSION_BACK)
-     * @param bool $saveForm whether or not to save the form
+     * @param bool $saveForm whether to save the form
      * @param string $extraProps extra props you can add in the link such as
      *                              'onChange="doSomething()"'
      * @return string the HTML link for the session aware URI
@@ -1917,7 +1917,7 @@ class Tools
     }
 
     /**
-     * Gets the node type of a node string.
+     * Gets the node type of node string.
      *
      * @param string $nodeUri the node uri
      *
@@ -2213,7 +2213,7 @@ class Tools
             $result .= sprintf('</%s>', array_pop($tags));
         }
 
-        if(strlen($result) < strlen($html)){
+        if (strlen($result) < strlen($html)) {
             $result .= $endingChars;
         }
 

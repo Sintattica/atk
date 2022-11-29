@@ -242,6 +242,7 @@ return [
     'mon' => 'Lun',
     'monday' => 'Lunedì',
     'multiselect' => 'Selezione multipla',
+    'na' => 'n.d.',
     'new' => 'Nuovo',
     'next' => 'Successivo',
     'no' => 'No',
