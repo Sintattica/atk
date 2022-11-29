@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Exception;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Config;
@@ -155,6 +156,7 @@ class ViewHandler extends ViewEditBase
      *
      * @return string HTML code of the page
      * @throws SmartyException
+     * @throws Exception
      */
     public function viewForm($record, $mode = 'view', $template = '')
     {
@@ -208,7 +210,7 @@ class ViewHandler extends ViewEditBase
                         $field['tabs'])) && (!is_array($field['sections']) || Tools::count(array_intersect($field['sections'], $visibleSections)) > 0);
 
             // Give the row an id if it doesn't have one yet
-            if (!isset($field['id']) || empty($field['id'])) {
+            if (!isset($field['id'])) {
                 $field['id'] = Tools::getUniqueId('anonymousattribrows');
             }
 
@@ -218,12 +220,16 @@ class ViewHandler extends ViewEditBase
             /* check for separator */
             if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
                 $tplfield['line'] = '<hr>';
-            } /* double separator, ignore */ elseif ($field['html'] == '-') {
-            } /* sections */ elseif ($field['html'] == 'section') {
+            } elseif ($field['html'] == '-') {
+                /* double separator, ignore */
+            } elseif ($field['html'] == 'section') {
+                /* sections */
                 $tplfield['line'] = $this->getSectionControl($field, $mode);
-            } /* only full HTML */ elseif (isset($field['line'])) {
+            } elseif (isset($field['line'])) {
+                /* only full HTML */
                 $tplfield['line'] = $field['line'];
-            } /* edit field */ else {
+            } else {
+                /* edit field */
                 if ($field['attribute']->m_ownerInstance->getNumbering()) {
                     $this->_addNumbering($field, $tplfield, $i);
                 }
@@ -254,22 +260,23 @@ class ViewHandler extends ViewEditBase
                 $column = $field['attribute']->getColumn();
                 $tplfield['column'] = $column;
             }
+
             $fields[] = $tplfield; // make field available in numeric array
             $params[$field['name']] = $tplfield; // make field available in associative array
             $attributes[$field['name']] = $tplfield; // make field available in associative array
         }
-        $ui = $this->getUi();
 
+        $ui = $this->getUi();
         $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
 
         if ($template) {
-            $innerform = $ui->render($template, array('fields' => $fields, 'attributes' => $attributes));
+            $innerform = $ui->render($template, ['fields' => $fields, 'attributes' => $attributes]);
         } else {
             if (Tools::count(array_unique($tabTpl)) > 1) {
                 $tabForm = $this->_renderTabs($fields, $tabTpl);
                 $innerform = implode(null, $tabForm);
             } else {
-                $innerform = $ui->render($node->getTemplate('view', $record, $tab), array('fields' => $fields, 'attributes' => $attributes));
+                $innerform = $ui->render($node->getTemplate('view', $record, $tab), ['fields' => $fields, 'attributes' => $attributes]);
             }
         }
 

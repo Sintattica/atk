@@ -510,13 +510,13 @@ class EditHandler extends ViewEditBase
                     }
 
                     /* Error messages should be rendered in templates using message, label and the link to the tab. */
-                    $err = array('message' => $error['msg'], 'tablink' => $tabLink, 'label' => $label);
+                    $err = ['message' => $error['msg'], 'tablink' => $tabLink, 'label' => $label];
 
                     /*
                      * @deprecated: For backwards compatibility, we still support the msg variable as well.
                      * Although the message, tablink variables should be used instead of msg and tab.
                      */
-                    $err = array_merge($err, array('msg' => $error['msg'].$error_tab));
+                    $err = array_merge($err, ['msg' => $error['msg'].$error_tab]);
 
                     $errors[] = $err;
                 }
@@ -530,7 +530,10 @@ class EditHandler extends ViewEditBase
                         $pk_err_msg .= ', ';
                     }
                 }
-                $errors[] = array('label' => Tools::atktext('error_primarykey_exists'), 'message' => $pk_err_msg);
+                $errors[] = [
+                    'label' => Tools::atktext('error_primarykey_exists'),
+                    'message' => $pk_err_msg
+                ];
             }
         }
 
@@ -543,10 +546,13 @@ class EditHandler extends ViewEditBase
             $field = &$data['fields'][$i];
             $tplfield = $this->createTplField($data['fields'], $i, $mode, $tab);
             $fields[] = $tplfield; // make field available in numeric array
-            $params[isset($field['name'])?$field['name']:null] = $tplfield; // make field available in associative array
-            $attributes[isset($field['name'])?$field['name']:null] = $tplfield; // make field available in associative array
+            if (isset($field['name'])) {
+                // make field available in associative array
+                $params[$field['name']] = $tplfield;
+                $attributes[$field['name']] = $tplfield;
+            }
 
-            if (!empty($field['error'])) {
+            if (isset($field['error'])) {
                 $errorFields[] = $field['id'];
             }
         }
@@ -555,14 +561,10 @@ class EditHandler extends ViewEditBase
         $page = $this->getPage();
         $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
 
-        // register fields that contain errornous values
+        // register fields that contain errors values
         $page->register_scriptcode('var atkErrorFields = '.Json::encode($errorFields).';');
 
-        $result = '';
-
-        foreach ($data['hide'] as $hidden) {
-            $result .= $hidden;
-        }
+        $result = implode('', $data['hide']);
 
         $params['activeTab'] = $tab;
         $params['fields'] = $fields; // add all fields as a numeric array.
