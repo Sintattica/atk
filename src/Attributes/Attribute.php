@@ -1158,7 +1158,7 @@ class Attribute
 
         $value = $record[$this->fieldName()] ?? null;
 
-        if (!$value) {
+        if (!isset($value)) {
             return "";
         }
 
@@ -1167,7 +1167,6 @@ class Attribute
         }
 
         return '<input type="hidden" id="' . $this->getHtmlId($fieldprefix) . '" name="' . $this->getHtmlName($fieldprefix) . '" value="' . htmlspecialchars($value) . '">';
-
     }
 
     /**
