@@ -95,16 +95,26 @@
 }
 
 .select2-selection.select2-selection--multiple.MultiSelectListAttribute.form-control.form-control-sm {
-    padding-top: 2px;
+    padding-top: 1px;
+    margin: 0;
     padding-left: 0;
+}
+
+.select2-selection__rendered{
+
+}
+
+
+.select2-container .select2-search--inline .select2-search__field {
+    margin-top: 3px;
 }
 
 .select2-search.select2-search--inline {
     height: 100%;
-    margin-top: 3px;
 }
 
 .select2-search.select2-search--inline input{
+    margin: 0;
     padding: 2px 0 0;
 }
 
