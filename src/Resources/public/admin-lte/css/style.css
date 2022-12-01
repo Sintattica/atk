@@ -72,10 +72,6 @@
     padding-top: 2px !important;
 }
 
-.select2-selection__rendered {
-    line-height: 27px !important;
-}
-
 .select2-container .select2-selection--single {
     height: 31px !important;
 }
@@ -104,8 +100,14 @@
 }
 
 .select2-search.select2-search--inline {
-    display: none;
+    height: 100%;
+    margin-top: 3px;
 }
+
+.select2-search.select2-search--inline input{
+    padding: 2px 0 0;
+}
+
 
 .ListAttribute .select2-selection__clear {
     display: none;
