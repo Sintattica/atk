@@ -42,7 +42,7 @@ class ViewHandler extends ViewEditBase
         }
 
         $page = $this->getPage();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/formsubmit.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/formsubmit.js');
         $this->notify('view', $record);
         $page->addContent($this->m_node->renderActionPage('admin', $this->invoke('viewPage', $record, $this->m_node, $renderbox)));
     }
@@ -63,16 +63,16 @@ class ViewHandler extends ViewEditBase
     public function getFormStart($record = null)
     {
         $sm = SessionManager::getInstance();
-        $formstart = '<form id="entryform" name="entryform" action="'.Config::getGlobal('dispatcher').'" method="get" onsubmit="return ATK.globalSubmit(this,false)">';
+        $formstart = '<form id="entryform" name="entryform" action="' . Config::getGlobal('dispatcher') . '" method="get" onsubmit="return ATK.globalSubmit(this,false)">';
         $formstart .= $sm->formState(SessionManager::SESSION_NESTED);
-        $formstart .= '<input type="hidden" name="atkselector" value="'.$this->getNode()->primaryKey($record).'">';
+        $formstart .= '<input type="hidden" name="atkselector" value="' . $this->getNode()->primaryKey($record) . '">';
         $formstart .= '<input type="hidden" class="atksubmitaction" />';
 
         return $formstart;
     }
 
     /**
-     * Returns an htmlpage displaying all displayable attributes.
+     * Returns a htmlpage displaying all displayable attributes.
      *
      * @param array $record The record to display.
      * @param Node $node The node for which a viewPage is displayed.
@@ -85,8 +85,8 @@ class ViewHandler extends ViewEditBase
         $ui = $this->getUi();
 
         if (is_object($ui)) {
-            
-            if($this->m_node->hasNestedAttributes()) {
+
+            if ($this->m_node->hasNestedAttributes()) {
                 $this->m_node->loadNestedAttributesValue($record);
             }
 
@@ -109,16 +109,17 @@ class ViewHandler extends ViewEditBase
                 return $output;
             }
 
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle($this->m_action, $record));
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $node->actionTitle($this->m_action, $record));
 
             $vars = array('title' => $node->actionTitle($this->m_action, $record), 'content' => $output);
 
-            $total = $ui->renderBox($vars, $this->m_boxTemplate);
+            return $ui->renderBox($vars, $this->m_boxTemplate);
 
-            return $total;
         } else {
             Tools::atkerror('ui object error');
         }
+
+        return '';
     }
 
     /**
@@ -187,12 +188,12 @@ class ViewHandler extends ViewEditBase
                 if ($field['html'] == 'section') {
                     // section should only have the tab section classes
                     foreach ($field['tabs'] as $section) {
-                        $classes[] = 'section_'.str_replace('.', '_', $section);
+                        $classes[] = 'section_' . str_replace('.', '_', $section);
                     }
                 } else {
                     if (is_array($field['sections'])) {
                         foreach ($field['sections'] as $section) {
-                            $classes[] = 'section_'.str_replace('.', '_', $section);
+                            $classes[] = 'section_' . str_replace('.', '_', $section);
                         }
                     }
                 }
@@ -215,7 +216,7 @@ class ViewHandler extends ViewEditBase
             }
 
             // ar_ stands voor 'attribrow'.
-            $tplfield['rowid'] = 'ar_'.$field['id']; // The id of the containing row
+            $tplfield['rowid'] = 'ar_' . $field['id']; // The id of the containing row
 
             /* check for separator */
             if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
@@ -253,7 +254,7 @@ class ViewHandler extends ViewEditBase
                 $tplfield['widget'] = $field['html'];
                 $editsrc = $field['html'];
 
-                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri().'_'.$field['id']);
+                $tplfield['id'] = str_replace('.', '_', $node->atkNodeUri() . '_' . $field['id']);
 
                 $tplfield['full'] = $editsrc;
 

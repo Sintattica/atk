@@ -12,6 +12,10 @@ use Sintattica\Atk\Attributes\StateColorAttribute;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Handlers\ActionHandler;
+use Sintattica\Atk\Handlers\AddHandler;
+use Sintattica\Atk\Handlers\AdminHandler;
+use Sintattica\Atk\Handlers\EditHandler;
+use Sintattica\Atk\Handlers\ViewHandler;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\Relation;
 use Sintattica\Atk\Security\SecurityManager;
@@ -2670,12 +2674,7 @@ class Node
 
         /* get data, transform into "form", return */
         $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
-        $form = '';
-        foreach ($data['hide'] as $hide) {
-            $form .= $hide;
-        }
-
-        return $form;
+        return implode('', $data['hide']);
     }
 
     /**
@@ -2683,7 +2682,7 @@ class Node
      *
      * This doesn't generate the actual HTML code, but returns the data for
      * the tabs (title, selected, urls that should be loaded upon click of the
-     * tab etc).
+     * tab etc.).
      *
      * @param string $action The action for which the tabs should be generated.
      *
@@ -3336,6 +3335,43 @@ class Node
             'title' => !$this->hidePageTitle ? $ui->title($this->m_module, $this->m_type) : '',
             'footer' => Footer::getInstance()->render()
         ]);
+    }
+
+    function adminPage(AdminHandler $handler, array $actions = []): string
+    {
+        $this->setAttributesFlags(null, 'admin');
+        return $handler->adminPage($actions);
+    }
+
+    function addPage(AddHandler $handler, array $record = null): string
+    {
+        $this->setAttributesFlags($record, 'add');
+        return $handler->addPage($record);
+    }
+
+    function viewPage(ViewHandler $handler, array $record, Node $node, bool $renderbox = true): string
+    {
+        $this->setAttributesFlags($record, 'view');
+        return $handler->viewPage($record, $node, $renderbox);
+    }
+
+    function editPage(EditHandler $handler, array $record): string
+    {
+        $this->setAttributesFlags($record, 'edit');
+        return $handler->editPage($record);
+    }
+
+    /**
+     * use this function to set flags on the attributes of the node.
+     * It is called automatically by adminPage, addPage, viewPage and editPage functions.
+     *
+     * @param array|null $record
+     * @param string $mode 'admin', 'add', 'view' and 'edit'
+     * @return void
+     */
+    function setAttributesFlags(array $record = null, string $mode = ''): void
+    {
+
     }
 
     /**

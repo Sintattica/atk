@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Exception;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
@@ -265,33 +266,32 @@ class ActionHandler
      * if present, or editPage($record, $mode) in the handler if the node has
      * no override.
      *
-     * @param string $methodname The name of the method to call.
+     * @param string $methodName The name of the method to call.
      *
      * @return mixed The method returns the return value of the invoked
      *               method.
+     * @throws Exception
      */
-    public function invoke($methodname)
+    public function invoke(string $methodName)
     {
-        $arguments = func_get_args(); // Put arguments in a variable (php won't let us pass func_get_args() to other functions directly.
+        $arguments = func_get_args(); // Put arguments in a variable (php won't let us pass func_get_args() to other functions directly).
         // the first argument is $methodname, which we already defined by name.
         array_shift($arguments);
 
-        if ($this->m_node !== null && method_exists($this->m_node, $methodname)) {
-            Tools::atkdebug("Invoking '$methodname' override on node");
+        if ($this->m_node !== null && method_exists($this->m_node, $methodName)) {
+            Tools::atkdebug("Invoking '$methodName' override on node");
             // We pass the original object as first parameter to the override.
             array_unshift($arguments, $this);
             $arguments[0] = &$this; // reference copy workaround;
-            return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
-        } else {
-            if (method_exists($this, $methodname)) {
-                Tools::atkdebug("Invoking '$methodname' on ActionHandler for action " . $this->m_action);
+            return call_user_func_array([&$this->m_node, $methodName], $arguments);
 
-                return call_user_func_array(array(&$this, $methodname), $arguments);
-            }
+        } else if (method_exists($this, $methodName)) {
+            Tools::atkdebug("Invoking '$methodName' on ActionHandler for action " . $this->m_action);
+            return call_user_func_array([&$this, $methodName], $arguments);
         }
-        Tools::atkerror("Undefined method '$methodname' in ActionHandler");
 
-        return;
+        Tools::atkerror("Undefined method '$methodName' in ActionHandler");
+        return null;
     }
 
     /**

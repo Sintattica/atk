@@ -90,7 +90,7 @@ class AddHandler extends ActionHandler
             return $result;
         }
 
-        return;
+        return '';
     }
 
     /**
