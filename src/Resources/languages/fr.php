@@ -102,7 +102,7 @@ return [
     'db_unknown_database' => "Connexion impossible a la base de donne�es '%s'",
     'db_unknown_host' => "Serveur introuvable '%s'",
     'dec' => 'Dec',
-    'december' => 'D�cembre',
+    'december' => 'Décembre',
     'decimal_separator' => ',',
     'delete' => 'Effacer',
     'delimiter' => 'D�limiter',
