@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.7.0] - 2022-12-13
+### Added
+- Node: added new function setAttributesFlags() called automatically by adminPage, addPage, viewPage and editPage
+
+
 ## [9.6.14] - 2022-12-01
 ### Fixed
 - Select2: Updated layout margins for multiselect
