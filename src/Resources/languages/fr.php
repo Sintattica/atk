@@ -16,7 +16,7 @@
 // Translation Tool.
 //
 return [
-    'above_maximum_value' => 'Au-dessus de la valeur maximale autoris�e',
+    'above_maximum_value' => 'Au-dessus de la valeur maximale autorisée',
     'access_denied' => 'Acc�s refuse',
     'add' => 'Ajouter',
     'addorcopy' => 'Ajouter ou copier',
@@ -24,7 +24,7 @@ return [
     'admin' => 'Administration',
     'administration_application' => "Administration de l'application",
     'all' => 'Tous',
-    'alphabeticchars' => 'Caract�res alphab�tique',
+    'alphabeticchars' => 'Caractères alphabétiques',
     'apply' => 'Appliquer',
     'app_close' => 'Fermer',
     'app_description' => "Bienvenu(e) a l'application ATK.",
@@ -34,7 +34,7 @@ return [
     'app_title' => 'Application ATK ',
     'apr' => 'Apr',
     'april' => 'Avril',
-    'attributeedit' => 'Mise � jour de la valeur',
+    'attributeedit' => 'Mise à jour de la valeur',
     'attrib_delete_not_allowed' => "Le champ '%s' n'autorise pas la suppression de cet enregistrement. (%s)'",
     'aug' => 'Aug',
     'august' => 'Aout',
@@ -56,7 +56,7 @@ return [
     // Missing string!!!
     'back' => 'Retour',
     'back_to' => 'Retour �',
-    'below_minimum_value' => 'Au-dessous de la valeur minimale autoris�e',
+    'below_minimum_value' => 'Au-dessous de la valeur minimale autorisée',
     'cancel' => 'Annuler',
     'cancel_edit' => 'Cancel edit',
     // Missing string!!!
@@ -102,10 +102,10 @@ return [
     'db_unknown_database' => "Connexion impossible a la base de donne�es '%s'",
     'db_unknown_host' => "Serveur introuvable '%s'",
     'dec' => 'Dec',
-    'december' => 'D�cembre',
+    'december' => 'Décembre',
     'decimal_separator' => ',',
     'delete' => 'Effacer',
-    'delimiter' => 'D�limiter',
+    'delimiter' => 'Délimiteur',
     'deselect_all' => 'D�selectionner tous',
     'document' => 'Ouvrir document',
     'edit' => 'Editer',

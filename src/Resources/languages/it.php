@@ -12,7 +12,7 @@ return [
     'admin' => 'Elenco',
     'administration_application' => "Amministrazione dell'applicazione",
     'all' => 'Tutti',
-    'alphabeticchars' => 'caratteri alfabetici',
+    'alphabeticchars' => 'Caratteri alfabetici',
     'apply' => 'Applica',
     'app_close' => 'Chiudi',
     'app_description' => 'Benvenuto in questa applicazione ATK.',
