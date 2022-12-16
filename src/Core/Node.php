@@ -3646,16 +3646,28 @@ class Node
             $parser = new StringParser($this->m_descTemplate);
 
             return $parser->parse($record);
-        } // See if node has a custom descriptor definition.
-        else {
+
+        } else {
+            // See if node has a custom descriptor definition.
             if (method_exists($this, 'descriptor_def')) {
                 $parser = new StringParser($this->descriptor_def());
-
                 return $parser->parse($record);
+
             } else {
-                // default descriptor.. (default is first attribute of a node)
-                $keys = array_keys($this->m_attribList);
-                $ret = $record[$keys[0]];
+
+                if ($primaryKeyField = $this->primaryKeyField()) {
+                    // default descriptor is primary key field
+                    $descriptorAttribute = $primaryKeyField;
+                } else {
+                    // or first attribute
+                    $attributesNames = array_keys($this->m_attribList);
+                    $descriptorAttribute = $attributesNames[0];
+                    if ($descriptorAttribute === self::ROW_COLOR_ATTRIBUTE) {
+                        $descriptorAttribute = $attributesNames[1];
+                    }
+                }
+
+                $ret = $record[$descriptorAttribute];
                 if (is_array($ret)) {
                     return '';
                 }
