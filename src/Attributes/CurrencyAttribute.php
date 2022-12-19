@@ -67,18 +67,15 @@ class CurrencyAttribute extends NumberAttribute
     {
         $input = parent::edit($record, $fieldprefix, $mode);
         $currency = trim($this->getCurrencySymbolDisplay());
-        $result = $input;
 
-        $size = $this->m_size;
-        if ($this->getDecimals() > 0) {
-            $size += ($this->getDecimals() + 1);
-        }
-
-        if (strlen($currency)) {
-            $result = '<div class="input-group" style="width:'.$size.'em;">';
+        if (strlen($currency) > 0) {
+            $result = '<div class="input-group">';
             $result .= $input;
-            $result .= '<div class="input-group-addon">'.$currency.'</div>';
+            $result .= "<span style='max-width: 30px;'{$this->getCSSClassAttribute(['btn', 'btn-sm', 'btn-default'])}>$currency</span>";
             $result .= '</div>';
+
+        } else {
+            $result = $input;
         }
 
         return $result;
