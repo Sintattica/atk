@@ -7,49 +7,21 @@ use Sintattica\Atk\Utils\Json;
 
 class JsonAttribute extends TextAttribute
 {
-
     private $jsonIndentChar = "&nbsp;&nbsp;&nbsp;&nbsp;";
     private $jsonNewlineChar = "<br />";
 
     public function display($record, $mode)
     {
-        $displayContent = "";
+        $displayContent = '';
         $fieldContent = $record[$this->fieldName()];
 
-        if ($fieldContent != null && $fieldContent != "") {
-
+        if ($fieldContent !== null && $fieldContent !== '') {
             $encodedJson = Json::prettify(json_encode($fieldContent, JSON_PRETTY_PRINT), $this->jsonNewlineChar, $this->jsonIndentChar);
-
-            if ($mode == 'list') {
-                $style = "min-width: {$this->getMinWidth()};";
-                $classes = '';
-
-                switch ($this->getDisplayMode()) {
-                    case self::MODE_INLINE:
-                        if ($this->getMaxChars()) {
-                            $displayContent = Tools::truncateHTML($encodedJson, $this->getMaxChars(), '...');
-                        }
-                        break;
-                    case self::MODE_SCROLL:
-                        $classes = 'text-wrap';
-                        $style .= " max-height: {$this->getMaxHeight()}; overflow-y: auto; ";
-                        $displayContent = $encodedJson;
-                        break;
-                    default:
-                        $classes = 'text-wrap';
-                        $maxChars = $this->getMaxChars() ?: '200';
-                        $displayContent = Tools::truncateHTML($encodedJson, $maxChars, '...');
-                }
-
-                $displayContent = "<div class='$classes' style='$style'>$displayContent</div>";
-            } else {
-                $displayContent = $encodedJson;
-            }
+            $displayContent = $this->formatDisplay($encodedJson, $mode);
         }
 
         return $displayContent;
     }
-
 
     public function edit($record, $fieldprefix, $mode)
     {

@@ -630,7 +630,7 @@ class Attribute
     {
         $this->m_name = $name;
         $this->setFlags((int)$flags);
-        $this->setMaxChars('200');
+        $this->setMaxChars(200);
         $this->setMinWidth('50px');
 
         // default class
@@ -716,10 +716,10 @@ class Attribute
     }
 
     /**
-     * @param string $minWidth
+     * @param string|null $minWidth
      * @return TextAttribute
      */
-    public function setMinWidth(string $minWidth): self
+    public function setMinWidth(?string $minWidth): self
     {
         $this->minWidth = $minWidth;
         return $this;
@@ -734,10 +734,10 @@ class Attribute
     }
 
     /**
-     * @param string $maxHeight
+     * @param string|null $maxHeight
      * @return TextAttribute
      */
-    public function setMaxHeight(string $maxHeight): self
+    public function setMaxHeight(?string $maxHeight): self
     {
         $this->maxHeight = $maxHeight;
         return $this;
@@ -752,10 +752,10 @@ class Attribute
     }
 
     /**
-     * @param int $maxChars
+     * @param int|null $maxChars
      * @return TextAttribute
      */
-    public function setMaxChars(int $maxChars): self
+    public function setMaxChars(?int $maxChars): self
     {
         $this->maxChars = $maxChars;
         return $this;
@@ -1949,33 +1949,44 @@ class Attribute
         return $value;
     }
 
-    public function formatDisplay($value, $mode)
+    public function formatDisplay($value, string $mode)
     {
+        $displayContent = $value;
+
         if ($mode == 'list') {
-            $style = "min-width: {$this->getMinWidth()};";
+            $style = '';
             $classes = '';
+            $maxChars = $this->getMaxChars();
+
+            if ($this->getMinWidth() !== null) {
+                $style .= "min-width: {$this->getMinWidth()};";
+            }
 
             switch ($this->getDisplayMode()) {
                 case self::MODE_INLINE:
-                    if ($this->getMaxChars()) {
-                        $value = $value != null ? Tools::truncateHTML($value, $this->getMaxChars(), '...') : null;
+                    if ($maxChars !== null) {
+                        $displayContent = $value != null ? Tools::truncateHTML($value, $maxChars) : null;
                     }
                     break;
 
                 case self::MODE_SCROLL:
                     $classes = 'text-wrap';
-                    $style .= " max-height: {$this->getMaxHeight()}; overflow-y: auto;";
+                    if ($this->getMaxHeight() !== null) {
+                        $style .= " max-height: {$this->getMaxHeight()}; overflow-y: auto;";
+                    }
                     break;
 
                 default:
                     $classes = 'text-wrap';
-                    $value = $value != null ? Tools::truncateHTML($value, $this->getMaxChars(), '...') : null;
+                    if ($maxChars !== null) {
+                        $displayContent = $value != null ? Tools::truncateHTML($value, $maxChars) : null;
+                    }
             }
 
-            $value = "<div class='$classes' style='$style'>$value</div>";
+            $displayContent = "<div class='$classes' style='$style'>$displayContent</div>";
         }
 
-        return $value;
+        return $displayContent;
     }
 
     /**
@@ -2458,7 +2469,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setLabel($label)
+    public function setLabel(string $label): self
     {
         $this->m_label = $label;
 
@@ -2472,7 +2483,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setPostFixLabel($label)
+    public function setPostFixLabel(string $label): self
     {
         $this->m_postfixlabel = $label;
 
@@ -2485,13 +2496,9 @@ class Attribute
      *
      * @return string HTML compatible help text for this attribute
      */
-    public function getHelp()
+    public function getHelp(): string
     {
-        if ($this->m_help != '') {
-            return $this->text($this->m_help);
-        }
-
-        return '';
+        return $this->m_help !== '' ? $this->text($this->m_help) : '';
     }
 
     /**
@@ -2501,7 +2508,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setHelp($help)
+    public function setHelp(string $help): self
     {
         $this->m_help = $help;
 
@@ -2529,7 +2536,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setPlaceholder($placeholder)
+    public function setPlaceholder($placeholder): self
     {
         $this->m_placeholder = $placeholder;
 
@@ -2593,7 +2600,7 @@ class Attribute
      * @see storageType
      *
      */
-    public function setStorageType($type, $mode = null)
+    public function setStorageType($type, $mode = null): self
     {
         $this->m_storageType[$mode] = $type;
 
@@ -2657,7 +2664,7 @@ class Attribute
      * @see loadType
      *
      */
-    public function setLoadType($type, $mode = null)
+    public function setLoadType($type, $mode = null): self
     {
         $this->m_loadType[$mode] = $type;
 
