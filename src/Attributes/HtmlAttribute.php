@@ -20,6 +20,8 @@ class HtmlAttribute extends TextAttribute
 {
     private $previewSkipFilteringHTMLTags = "<a><p><br>";
 
+    private $stripTagsEnabled = true;
+
     public function __construct($name, $flags = 0, $nl2br = false)
     {
         parent::__construct($name, $flags);
@@ -30,7 +32,7 @@ class HtmlAttribute extends TextAttribute
     {
         $record[$this->fieldName()] = Tools::atkArrayNvl($record, $this->fieldName(), '');
 
-        if ($this->previewSkipFilteringHTMLTags !== '' && $this->getDisplayMode() !== self::MODE_SCROLL && $mode === 'list') {
+        if ($this->stripTagsEnabled && $this->getDisplayMode() !== self::MODE_SCROLL && $mode === 'list') {
             $record[$this->fieldName()] = strip_tags($record[$this->fieldName()], $this->previewSkipFilteringHTMLTags);
         }
 
@@ -46,6 +48,17 @@ class HtmlAttribute extends TextAttribute
     {
         $this->previewSkipFilteringHTMLTags = $skipTags ? implode('', $skipTags) : '';
 
+        return $this;
+    }
+
+    public function isStripTagsEnabled(): bool
+    {
+        return $this->stripTagsEnabled;
+    }
+
+    public function setStripTagsEnabled(bool $stripTagsEnabled): self
+    {
+        $this->stripTagsEnabled = $stripTagsEnabled;
         return $this;
     }
 }
