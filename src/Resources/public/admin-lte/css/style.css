@@ -74,6 +74,7 @@
 
 .select2-container .select2-selection--single {
     height: 31px !important;
+    width: 100%;
 }
 
 .d-inline-block .select2-container {
@@ -453,11 +454,10 @@ input[type = checkbox].form-control {
     border-radius: 0.2rem 0 0 0.2rem;
 }
 
-.atk-date-group > span.atk-date-right {
+.atk-date-group > .atk-date-right {
     border-radius: 0 0.2rem 0.2rem 0;
     border-right: solid 1px #dddddd;
 }
-
 
 /**
  * Atk Time Group
