@@ -17,7 +17,7 @@ use Exception;
 /**
  * Implementation of one-to-many relationships.
  *
- * Can be used to create one to many relations ('1 library has N books').
+ * Can be used to create oneToMany relations ('1 library has N books').
  * A common term for this type of relation is a master-detail relationship.
  * The detailrecords can be edited inline.
  *
@@ -138,7 +138,7 @@ class OneToManyRelation extends Relation
      * @param string $name The unique name of this relation within a node.
      *                            In contrast with most other attributes, the name
      *                            does not correspond to a database field. (Because
-     *                            in one2many relations, the databasefield that
+     *                            in oneToMany relations, the databasefield that
      *                            stores the link, is in the destination node and not
      *                            in the owner node).
      * @param int $flags Attribute flags that influence this attributes' behavior.
@@ -151,18 +151,16 @@ class OneToManyRelation extends Relation
      */
     public function __construct($name, $flags = 0, $destination, $refKey = '')
     {
-        $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_ADD;
-        parent::__construct($name, $flags, $destination);
+        parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_ADD, $destination);
 
         if (is_array($refKey)) {
             $this->m_refKey = $refKey;
+        } elseif ($refKey) {
+            $this->m_refKey[] = $refKey;
         } else {
-            if (empty($refKey)) {
-                $this->m_refKey = [];
-            } else {
-                $this->m_refKey[] = $refKey;
-            }
+            $this->m_refKey = [];
         }
+
         $this->setGridExcludes($this->m_refKey);
     }
 
@@ -236,7 +234,7 @@ class OneToManyRelation extends Relation
      * configured with the correct node filter, excludes etc.
      *
      * The datagrid uses for both the edit and display actions the partial_grid
-     * method to update it's view.
+     * method to update its view.
      *
      * @param array $record the record
      * @param string $mode the mode
@@ -319,34 +317,29 @@ class OneToManyRelation extends Relation
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * The atkOneToManyRelation displays a list of detail records in "view"
+     * The OneToManyRelation displays a list of detail records in "view"
      * mode, in the form of a read-only data grid. In "list" mode, a plain
      * list of detail record descriptors is displayed.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param string $mode The display mode ("view" for viewpages, or "list"
-     *                       for displaying in recordlists)
+     * @param string $mode The display mode ("view" for viewpages, or "list" for displaying in record lists)
      *
      * @return string HTML String
      */
     public function display($record, $mode)
     {
         // for the view mode we use the datagrid and load the records ourselves
-        if ($mode == 'view' || ($mode == 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {
+        if ($mode === 'view' || ($mode === 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {
             $grid = $this->createGrid($record, 'admin', 'view');
             $grid->loadRecords(); // load records early
 
-            if ($mode == 'view') {
+            if ($mode === 'view') {
                 $grid->setEmbedded(false);
             }
 
             // no records
             if ($grid->getCount() == 0) {
-                if (!in_array($mode, array('csv', 'plain'))) {
-                    return $this->text('none');
-                } else {
-                    return '';
-                }
+                return $this->text('none');
             }
 
             $actions = [];
@@ -369,30 +362,41 @@ class OneToManyRelation extends Relation
             return !in_array($mode, ['csv', 'plain', 'list']) ? $this->text('none') : '';
         }
 
-        if ($mode == 'list') { // list mode
-            $result = '<div style="max-width: 600px; min-width: 400px; white-space: normal;">';
+        $result = '';
+
+        if ($mode === 'list') {
+            if ($this->getDisplayListMode() === parent::MODE_LIST_UL) {
+                $result .= '<ul>';
+            } else {
+                $result .= '<div style="max-width: 600px; min-width: 400px; white-space: normal;">';
+            }
 
             foreach ($records as $currentRecord) {
                 $descriptor = $this->m_destInstance->descriptor($currentRecord);
                 if ($this->hasFlag(ManyToOneRelation::AF_RELATION_AUTOLINK)) {
                     $descriptor = Tools::actionHref($this->m_destInstance->atkNodeUri(), 'view', ['atkselector' => $currentRecord['atkprimkey']], $descriptor, '', SessionManager::SESSION_NESTED);
                 }
-                $result .= sprintf('<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">%s</span>', $descriptor);
+                if ($this->getDisplayListMode() === parent::MODE_LIST_UL) {
+                    $format = '<li>%s</li>';
+                } else {
+                    $format = '<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">%s</span>';
+                }
+                $result .= sprintf($format, $descriptor);
             }
 
-            $result .= '</div>';
+            if ($this->getDisplayListMode() === parent::MODE_LIST_UL) {
+                $result .= '</ul>';
+            } else {
+                $result .= '</div>';
+            }
 
-            return $result;
-
-        } else { // cvs / plain mode
-            $result = '';
-
+        } else { // csv / plain mode
             foreach ($records as $i => $current) {
                 $result .= ($i > 0 ? ', ' : '') . $this->m_destInstance->descriptor($current);
             }
-
-            return $result;
         }
+
+        return $result;
     }
 
     public function edit($record, $fieldprefix, $mode)
@@ -930,6 +934,7 @@ class OneToManyRelation extends Relation
      * @param string $mode Mode ('copy')
      *
      * @return bool
+     * @throws Exception
      */
     private function storeCopy($db, $record, $mode)
     {
@@ -1228,11 +1233,12 @@ class OneToManyRelation extends Relation
     /**
      * Here we check if the selector is on the owner or on the destination
      * if it's on the destination, we leave it alone.
-     * Otherwise we translate it back to the destination.
+     * Otherwise, we translate it back to the destination.
      *
      * @param string $selector the selector we have to translate
      *
      * @return string the new selector
+     * @throws Exception
      * @todo when we translate the selector, we get the last used refKey
      *       but how do we know what is the right one?
      *
@@ -1240,7 +1246,7 @@ class OneToManyRelation extends Relation
     public function translateSelector($selector)
     {
         // All standard SQL operators
-        $sqloperators = array(
+        $sqloperators = [
             '=',
             '<>',
             '>',
@@ -1250,7 +1256,7 @@ class OneToManyRelation extends Relation
             'BETWEEN',
             'LIKE',
             'IN',
-        );
+        ];
         $this->createDestination();
 
         // Check the filter for every SQL operators

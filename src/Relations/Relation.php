@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Relations;
 
+use Exception;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
@@ -41,6 +42,20 @@ class Relation extends Attribute
      * @var Object
      */
     public $m_descHandler = null;
+
+    /**
+     * Display <ul> and <li> tag
+     */
+    public const MODE_LIST_UL = 'ul';
+
+    /**
+     * Display <div> with "badge-pill" class
+     */
+    public const MODE_LIST_BADGE_PILL = 'badge_pill';
+
+    private const MODES_LIST_ALLOWED = [self::MODE_LIST_UL, self::MODE_LIST_BADGE_PILL];
+
+    private $displayListMode = self::MODE_LIST_BADGE_PILL;
 
     /**
      * Constructor.
@@ -89,7 +104,7 @@ class Relation extends Attribute
     {
         $result = '';
         $filter_length = strlen($filter);
-        $quotes = array("'", '"', '`');
+        $quotes = ["'", '"', '`'];
         $quoteStack = [];
         $lastChar = '';
 
@@ -100,7 +115,7 @@ class Relation extends Attribute
                 if (sizeof($quoteStack) > 0 && $currentChar == $quoteStack[sizeof($quoteStack) - 1]) {
                     array_pop($quoteStack);
                 } else {
-                    array_push($quoteStack, $currentChar);
+                    $quoteStack[] = $currentChar;
                 }
             }
 
@@ -200,6 +215,7 @@ class Relation extends Attribute
      * If succesful, the instance is stored in the m_destInstance member variable.
      *
      * @return bool true if succesful, false if something went wrong.
+     * @throws Exception
      */
     public function createDestination()
     {
@@ -248,6 +264,25 @@ class Relation extends Attribute
     public function display($record, $mode)
     {
         return $record[$this->fieldName()];
+    }
+
+    public function getDisplayListMode(): string
+    {
+        return $this->displayListMode;
+    }
+
+    public function setDisplayListMode(string $displayListMode): self
+    {
+        if (in_array($displayListMode, $this->getAllowedDisplayListModes())) {
+            $this->displayListMode = $displayListMode;
+        }
+
+        return $this;
+    }
+
+    public function getAllowedDisplayListModes(): array
+    {
+        return self::MODES_LIST_ALLOWED;
     }
 
     /**

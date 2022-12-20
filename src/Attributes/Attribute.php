@@ -601,7 +601,7 @@ class Attribute
     public const MODE_DEFAULT = 'default';
 
     /**
-     * If display mode is Scroll than we can specify a max height to start scrolling
+     * If display mode is Scroll then we can specify a max height to start scrolling.
      * If the display mode is INLINE then we can specify a max number of characters to show.
      * If the display mode is DEFAULT then the inline mode with max 200 chars is set.
      */
@@ -761,25 +761,23 @@ class Attribute
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDisplayMode(): ?string
     {
         return $this->displayMode;
     }
 
-    /**
-     * @param string $displayMode
-     * @return TextAttribute
-     */
     public function setDisplayMode(string $displayMode): self
     {
-        if (in_array($displayMode, self::MODES_ALLOWED)) {
+        if (in_array($displayMode, $this->getAllowedDisplayModes())) {
             $this->displayMode = $displayMode;
         }
 
         return $this;
+    }
+
+    public function getAllowedDisplayModes(): array
+    {
+        return self::MODES_ALLOWED;
     }
 
     /**
