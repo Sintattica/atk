@@ -1963,7 +1963,7 @@ class Attribute
             switch ($this->getDisplayMode()) {
                 case self::MODE_INLINE:
                     if ($maxChars !== null) {
-                        $displayContent = $value != null ? Tools::truncateHTML($value, $maxChars) : null;
+                        $displayContent = $value != null ? Tools::truncateHTML($value, $maxChars, true) : null;
                     }
                     break;
 
@@ -1977,7 +1977,7 @@ class Attribute
                 default:
                     $classes = 'text-wrap';
                     if ($maxChars !== null) {
-                        $displayContent = $value != null ? Tools::truncateHTML($value, $maxChars) : null;
+                        $displayContent = $value != null ? Tools::truncateHTML($value, $maxChars, true) : null;
                     }
             }
 

@@ -2147,8 +2147,15 @@ class Tools
         }
     }
 
-
-    static function truncateHTML(string $html, int $maxLength, string $endingChars = '...', bool $isUtf8 = true): string
+    /**
+     * @param string $html
+     * @param int $maxLength
+     * @param bool $forceWholeWords Use true to make sure the last word doesn't get trimmed
+     * @param string $endingChars
+     * @param bool $isUtf8
+     * @return string
+     */
+    static function truncateHTML(string $html, int $maxLength, bool $forceWholeWords = false, string $endingChars = '...', bool $isUtf8 = true): string
     {
         $printedLength = 0;
         $position = 0;
@@ -2166,7 +2173,7 @@ class Tools
 
             // Print text leading up to the tag.
             $str = substr($html, $position, $tagPosition - $position);
-            if ($printedLength + strlen($str) > $maxLength) {
+            if (!$forceWholeWords && $printedLength + strlen($str) > $maxLength) {
                 $result .= (substr($str, 0, $maxLength - $printedLength));
                 $printedLength = $maxLength;
                 break;
@@ -2174,25 +2181,28 @@ class Tools
 
             $result .= $str;
             $printedLength += strlen($str);
-            if ($printedLength >= $maxLength) break;
+            if ($printedLength >= $maxLength) {
+                break;
+            }
 
             if ($tag[0] == '&' || ord($tag) >= 0x80) {
                 // Pass the entity or UTF-8 multibyte sequence through unchanged.
                 $result .= $tag;
                 $printedLength++;
+
             } else {
                 // Handle the tag.
                 $tagName = $match[1][0];
                 if ($tag[1] == '/') {
                     // This is a closing tag.
-
                     $openingTag = array_pop($tags);
                     assert($openingTag == $tagName); // check that tags are properly nested.
-
                     $result .= $tag;
-                } else if ($tag[strlen($tag) - 2] == '/') {
+
+                } elseif ($tag[strlen($tag) - 2] == '/') {
                     // Self-closing tag.
                     $result .= $tag;
+
                 } else {
                     // Opening tag.
                     $result .= $tag;
@@ -2201,7 +2211,7 @@ class Tools
             }
 
             // Continue after the tag.
-            $position = $tagPosition + strlen($tag);
+            $position = (int)$tagPosition + strlen($tag);
         }
 
         // Print any remaining text.
