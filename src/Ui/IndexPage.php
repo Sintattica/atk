@@ -153,10 +153,13 @@ class IndexPage
                 return '';
             }
             $userId = $this->m_user[$userPk];
-            $atkSelector = "$userTable.$userPk=$userId";
+            $userAtkSelector = "$userTable.$userPk=$userId";
+            $userNode = Atk::getInstance()->atkGetNode(Config::getGlobal('auth_usernode'));
+            $userRecord = $userNode->select($userAtkSelector)->getFirstRow();
+            $action = $userNode->allowed('edit', $userRecord) ? 'edit' : 'view';
             $url = SessionManager::getInstance()->sessionUrl(
-                Tools::dispatch_url(Config::getGlobal('auth_usernode'), 'view', ['atkselector' => $atkSelector]),
-                SessionManager::SESSION_NESTED
+                Tools::dispatch_url($userNode->atkNodeUri(), $action, ['atkselector' => $userAtkSelector]),
+                SessionManager::SESSION_NEW
             );
         }
         return $url;
