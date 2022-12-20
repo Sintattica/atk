@@ -1,5 +1,22 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.8.0] - 2022-12-20
+### Added
+- Attribute: added CkAttribute stripTagsEnabled property
+- Relation: added display list mode (ul and badge pill)
+- IndexPage: username link goes in edit when user has permissions
+- Tools: added param to force whole words in truncateHTML function
+
+### Changed
+- Attribute: refactor edit render in DateAttribute
+
+### Fixed
+- Atk: fix FR and IT translations
+- Node: fix default descriptor
+- Attribute: fix CurrencyAttribute edit()
+- Relation: fix width of select2 in ManyToOne
+
+
 ## [9.7.0] - 2022-12-13
 ### Added
 - Node: added new function setAttributesFlags() called automatically by adminPage, addPage, viewPage and editPage
