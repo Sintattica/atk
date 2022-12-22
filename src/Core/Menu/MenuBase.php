@@ -222,22 +222,20 @@ abstract class MenuBase
         if (!$menu) {
             return;
         }
-        //Keep outside otherwise the variable references get lost due to unset call.
-        $menuLength = count($menu);
 
+        // Keep outside otherwise the variable references get lost due to unset call.
+        $menuLength = count($menu);
         $firstKey = array_keys($menu)[0];
 
         for ($i = $firstKey; $i < $firstKey + $menuLength; $i++) {
             // TODO: transform item in menuItem
-            if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
+            if (isset($menu[$i]) && (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable'])) {
                 unset($menu[$i]);
-            } else if (isset($menu[$i]['submenu'])) {
+            } elseif (isset($menu[$i]['submenu'])) {
                 $this->unsetDisabledItem($menu[$i]['submenu']);
             }
         }
-
     }
-
 
     /**
      * @param $menu
