@@ -5,6 +5,8 @@ namespace Sintattica\Atk\Core;
 use Dotenv\Dotenv;
 use Dotenv\Loader;
 use Dotenv\Environment\DotenvFactory;
+use ReflectionException;
+use RuntimeException;
 use Sintattica\Atk\Core\Menu\Menu;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Security\SecurityManager;
@@ -14,12 +16,13 @@ use Sintattica\Atk\Ui\IndexPage;
 
 class Atk
 {
-    const VERSION = 'v9.2-dev';
+    const VERSION = 'v9';
 
     public $g_nodes = [];
     public $g_nodesClasses = [];
     public $g_nodeRepository = [];
     public $g_modules = [];
+    /** @var Module[] */
     public $g_moduleRepository = [];
     public $g_nodeHandlers = [];
     public $g_nodeListeners = [];
@@ -34,7 +37,7 @@ class Atk
         $g_startTime = microtime(true);
 
         if (static::$s_instance) {
-            throw new \RuntimeException('Only one Atk app can be created');
+            throw new RuntimeException('Only one Atk app can be created');
         }
 
         static::$s_instance = $this;
@@ -98,8 +101,6 @@ class Atk
             $debug .= ' Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
         }
 
-
-
         Tools::atkdebug($debug);
     }
 
@@ -111,12 +112,15 @@ class Atk
     public static function getInstance()
     {
         if (!is_object(static::$s_instance)) {
-            throw new \RuntimeException('Atk instance not available');
+            throw new RuntimeException('Atk instance not available');
         }
 
         return static::$s_instance;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function run()
     {
         $sessionManager = SessionManager::getInstance();
@@ -125,6 +129,7 @@ class Atk
         if (Config::getGlobal('session_autorefresh') && array_key_exists(Config::getGlobal('session_autorefresh_key'), $_GET)) {
             die(session_id());
         }
+
         $securityManager = SecurityManager::getInstance();
         $securityManager->run();
 
@@ -144,14 +149,13 @@ class Atk
         }
     }
 
-    /**
-     * Load all the menu items
-     */
-    public function initMenu(){
-        /** @var Menu $menuClass */
-        $menuClass = Config::getGlobal('menu');
-        $menuClass::getInstance()->appendMenuItems();
-
+    public function runCli()
+    {
+        Config::setGlobal('authentication', 'none');
+        Config::setGlobal('authorization', 'none');
+        $securityManager = SecurityManager::getInstance();
+        $securityManager->run();
+        $this->bootModules();
     }
 
     public function bootModules()
@@ -162,13 +166,13 @@ class Atk
         }
     }
 
-    public function runCli()
-    {
-        Config::setGlobal('authentication', 'none');
-        Config::setGlobal('authorization', 'none');
-        $securityManager = SecurityManager::getInstance();
-        $securityManager->run();
-        $this->bootModules();
+    /**
+     * Load all the menu items
+     */
+    public function initMenu(){
+        /** @var Menu $menuClass */
+        $menuClass = Config::getGlobal('menu');
+        $menuClass::getInstance()->appendMenuItems();
     }
 
     /**

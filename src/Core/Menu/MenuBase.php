@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Core\Menu;
 
 use Exception;
 use ReflectionException;
+use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\AdminLTE;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
@@ -14,7 +15,6 @@ use SmartyException;
 
 abstract class MenuBase
 {
-
     public const ICON_ADMIN = 'fas fa-list';
     public const ICON_ADD = 'fas fa-plus-circle';
 
@@ -27,54 +27,51 @@ abstract class MenuBase
 
     public const ATK_MENU_USERNAME_PREFIX = 'atk_menu_username_prefix';
 
-    //All menu items (sidebar and navbar)
+    // All menu items (sidebar and navbar)
     private $items = [];
     private $menu = [];
 
     private $m_adminLte;
 
-    //-------- Sidebar Menu  ------------
-    //The submenu works by exploring all the children and then appending data from bottom up.
+    // -------- Sidebar Menu  ------------
+    // The submenu works by exploring all the children and then appending data from bottom up.
 
-    //1) If the item has no children then it will be formatted as a simple item (formatSimpleItemSidebar)
-    //where it can have a link or can be text only.
-    //2) If the item has subitems it will be classified as a complex menu
+    // 1) If the item has no children then it will be formatted as a simple item (formatSimpleItemSidebar)
+    // where it can have a link or can be text only.
+    // 2) If the item has subitems it will be classified as a complex menu
     //      -> the two vars $formatSubmenuParentSidebar and $formatSubmenuChildSidebar are needed
-    //   The recursive call sets up a variable called $childs that takes into account if we are on the root father
-    //   that has subitems or a child that has subitems and depending from that decides to format:
+    //    The recursive call sets up a variable called $childs that takes into account if we are on the root father
+    //    that has subitems or a child that has subitems and depending from that decides to format:
     //      a) If top level father -> $formatSubmenuParentSidebar will be used
     //      b) If a child of the top level father -> $formatSubmenuChildSidebar will be used.
-    //NB: The recursive call is working on dfs mode:
+    // NB: The recursive call is working on dfs mode:
     //    1) Get the data from htmlItems
     //    2) Format in the following mode: Children -> SubmenuChildSidebar -> SubMenuParentSidebar
     //       Including the html in each step.
     //    3) Return a string that contains all the formatted sidebar menus.
 
-    //These variables should be itended as formatting templates
+    // These variables should be itended as formatting templates
 
-    //-------- Sidebar Menu  ------------
+    // -------- Sidebar Menu  ------------
     private const SIDEBAR_PARENT_ITEM_TPL = "menu/sidebar/parent_item.tpl";
     private const SIDEBAR_CHILD_ITEM_TPL = "menu/sidebar/child_item.tpl";
     private const SIDEBAR_HEADER_ITEM_TPL = "menu/sidebar/header_item.tpl";
     private const SIDEBAR_SEPARATOR_ITEM_TPL = "menu/sidebar/separator_item.tpl";
 
-    //Icons from Font Awesome
+    // Icons from Font Awesome
     private const DEFAULT_SIDEBAR_PARENT_ITEM_ICON = 'far fa-circle';
     private const DEFAULT_SIDEBAR_CHILD_ITEM_ICON = 'fas fa-th';
 
-    //-------- Navbar Menu  ------------
+    // -------- Navbar Menu  ------------
     private const NAVBAR_PARENT_ITEM_TPL = 'menu/navbar/parent_item.tpl';
     private const NAVBAR_SUBPARENT_ITEM_TPL = 'menu/navbar/subparent_item.tpl';
     private const NAVBAR_CHILD_ITEM_TPL = 'menu/navbar/child_item.tpl';
 
-
-    //General
+    // General
     private const DEFAULT_ACTIVE_CLASS = 'active';
 
-
-    //Exposed to client menus
+    // Exposed to client menus
     public abstract function appendMenuItems();
-
 
     /**
      * Get new menu object.
@@ -135,7 +132,6 @@ abstract class MenuBase
      */
     public function getMenu(): array
     {
-
         if (!$this->menu) {
             $this->menu = $this->load();
         }
@@ -156,7 +152,6 @@ abstract class MenuBase
      */
     public function load(): array
     {
-
         $itemsHtml = $this->parseItems($this->items['main']);
 
         $itemsLeftHtml = array_filter($itemsHtml, function ($el): bool {
@@ -182,10 +177,11 @@ abstract class MenuBase
         ];
     }
 
-
+    /**
+     * @throws ReflectionException
+     */
     private function setItemsVisibility(&$htmlMenuitems)
     {
-
         $this->unsetDisabledItem($htmlMenuitems);
 
         //re-index the array in case unsets have been made!
@@ -193,9 +189,7 @@ abstract class MenuBase
         $htmlMenuitems = array_values($htmlMenuitems);
 
         $this->unsetUselessSeparatorItems($htmlMenuitems);
-
     }
-
 
     /**
      * @param array $menu - An array containing the all the menu (provided by the configuration of all the modules)
@@ -234,7 +228,7 @@ abstract class MenuBase
         $firstKey = array_keys($menu)[0];
 
         for ($i = $firstKey; $i < $firstKey + $menuLength; $i++) {
-            //todo: transform item in menuItem
+            // TODO: transform item in menuItem
             if (!$this->isEnabled($menu[$i]) || !$menu[$i]['enable']) {
                 unset($menu[$i]);
             } else if (isset($menu[$i]['submenu'])) {
@@ -273,6 +267,7 @@ abstract class MenuBase
      * @param bool $child - Decides it called from the recursive function or is this the main call.
      * @return string - Containing the generated html for this part of the menu.
      * @throws SmartyException|ReflectionException
+     * @throws Exception
      */
     private function formatNavBar(array $item, bool $child): string
     {
@@ -302,7 +297,9 @@ abstract class MenuBase
                 'active' => $active,
                 'hide_name' => !$child ? $item['hide_name'] : false,
                 'tooltip' => $item['tooltip'],
-                'tooltip_placement' => $item['tooltip_placement']
+                'tooltip_placement' => $item['tooltip_placement'],
+                'badge_text' => $item['badge_text'],
+                'badge_status' => $item['badge_status']
             ]);
 
         } else {
@@ -324,19 +321,20 @@ abstract class MenuBase
                 'active' => $active,
                 'hide_name' => !$child ? $item['hide_name'] : false,
                 'tooltip' => $item['tooltip'],
-                'tooltip_placement' => $item['tooltip_placement']
+                'tooltip_placement' => $item['tooltip_placement'],
+                'badge_text' => $item['badge_text'],
+                'badge_status' => $item['badge_status']
             ]);
         }
 
         return $html;
-
     }
-
 
     /**
      * @param array $item - The menu Item containing all the submenus
      * @return string - Containing the generated html for this part of the menu.
      * @throws SmartyException|ReflectionException
+     * @throws Exception
      */
     private function formatSidebar(array $item): string
     {
@@ -347,8 +345,7 @@ abstract class MenuBase
         $active = $item['active'] ? self::DEFAULT_ACTIVE_CLASS : '';
 
         if ($this->hasSubmenu($item)) {
-
-            //explore the child before formatting the parent (depth-first)
+            // explore the child before formatting the parent (depth-first)
             $subMenu = $this->processMenu($item['submenu'], true);
             $icon = $item['icon'] ?? self::DEFAULT_SIDEBAR_PARENT_ITEM_ICON;
             $html .= SmartyProvider::render(self::SIDEBAR_PARENT_ITEM_TPL, [
@@ -358,11 +355,13 @@ abstract class MenuBase
                 'icon' => $icon,
                 'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
-                'active' => $active
+                'active' => $active,
+                'badge_text' => $item['badge_text'],
+                'badge_status' => $item['badge_status']
             ]);
 
         } else {
-            //Caso Simple Item -> No submenu
+            // no submenu
 
             $icon = '';
             switch ($item['type']) {
@@ -396,7 +395,9 @@ abstract class MenuBase
                 'active' => $active,
                 'color' => $item["color"],
                 'tooltip' => $item['tooltip'],
-                'tooltip_placement' => $item['tooltip_placement']
+                'tooltip_placement' => $item['tooltip_placement'],
+                'badge_text' => $item['badge_text'],
+                'badge_status' => $item['badge_status']
             ]);
         }
 
@@ -507,7 +508,9 @@ abstract class MenuBase
         $iconType = null,
         $hideName = false,
         $tooltip = null,
-        $tooltipPlacement = Item::TOOLTIP_PLACEMENT_BOTTOM
+        $tooltipPlacement = Item::TOOLTIP_PLACEMENT_BOTTOM,
+        $badgeText = null,
+        string $badgeStatus = UIStateColors::STATE_INFO
     )
     {
         static $order_value = 100, $s_dupelookup = [];
@@ -523,7 +526,7 @@ abstract class MenuBase
         $classes = ""; //$active ? ' active' : '';
         // $classes .= $icon ? ' fas fa-' . $icon : ' fas fa-th';
 
-        $item = array(
+        $item = [
             'name' => $name,
             'url' => $url,
             'enable' => $enable,
@@ -541,7 +544,9 @@ abstract class MenuBase
             'hide_name' => $hideName,
             'tooltip' => $tooltip,
             'tooltip_placement' => $tooltipPlacement,
-        );
+            'badge_text' => $badgeText,
+            'badge_status' => $badgeStatus,
+        ];
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
             $this->items[$parent][$s_dupelookup[$parent][$name]] = $item;
@@ -570,6 +575,9 @@ abstract class MenuBase
         throw new Exception("Method " . $method . " does not exist!");
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function addHeaderItem(HeaderItem $item): HeaderItem
     {
         $this->addMenuItem(
@@ -595,6 +603,9 @@ abstract class MenuBase
         return $item;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function addSeparatorItem(SeparatorItem $item): SeparatorItem
     {
         $this->addMenuItem(
@@ -625,7 +636,6 @@ abstract class MenuBase
      */
     private function addActionItem(ActionItem $item): ActionItem
     {
-
         if ($item->getPosition() === self::MENU_SIDEBAR) {
             if (!$item->getIcon()) {
                 if ($item->getAction() === 'admin') {
@@ -665,9 +675,10 @@ abstract class MenuBase
             $item->getIconType(),
             $item->isNameHidden(),
             $item->getTooltip(),
-            $item->getTooltipPlacement()
+            $item->getTooltipPlacement(),
+            $item->getBadgeText(),
+            $item->getBadgeStatus()
         );
-
 
         return $item;
     }
@@ -709,7 +720,6 @@ abstract class MenuBase
         return $items;
     }
 
-
     private function parseItem(array &$item): ?array
     {
         if ($item['enable'] && array_key_exists($item['name'], $this->items)) {
@@ -720,20 +730,17 @@ abstract class MenuBase
         return null;
     }
 
-
     private function hasSubmenu(array $item): bool
     {
         return isset($item['submenu']) && Tools::count($item['submenu']);
     }
 
-
     private function getMenuTitle(array $item, string $append = ''): string
     {
-        if ($item['raw'] == true) {
+        if ($item['raw'] === true) {
             return $item['name'];
         }
 
-        return (string)$this->getMenuTranslation($item['name'], $item['module']) . $append;
+        return $this->getMenuTranslation($item['name'], $item['module']) . $append;
     }
-
 }

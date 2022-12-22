@@ -5,27 +5,22 @@ namespace Sintattica\Atk\Core\Menu;
 
 
 use Exception;
+use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 
 class ActionItem extends Item
 {
-
     private $nodeUri;
     private $action;
+    protected $badgeText = null;
+    protected $badgeStatus = UIStateColors::STATE_INFO;
 
-    /**
-     * ActionItem constructor.
-     * @param string $name
-     * @param string $nodeUri
-     * @param string $action
-     */
     public function __construct(string $name, string $nodeUri = "", string $action = "")
     {
-
         parent::__construct();
 
-        //Default name is the translation of the node name
+        // Default name is the translation of the node name
         if (!$name) {
             list($modulo, $nodo) = explode('.', $nodeUri);
             $name = Language::text($nodo, $modulo);
@@ -34,7 +29,6 @@ class ActionItem extends Item
         $this->name = $name;
         $this->nodeUri = $nodeUri;
         $this->action = $action;
-
     }
 
     /**
@@ -116,6 +110,28 @@ class ActionItem extends Item
     public function addUrlParam(string $key, string $value)
     {
         $this->urlParams[$key] = $value;
+    }
+
+    public function getBadgeText()
+    {
+        return $this->badgeText;
+    }
+
+    public function setBadgeText($badge): self
+    {
+        $this->badgeText = $badge;
+        return $this;
+    }
+
+    public function getBadgeStatus(): string
+    {
+        return $this->badgeStatus;
+    }
+
+    public function setBadgeStatus(string $badgeStatus): self
+    {
+        $this->badgeStatus = $badgeStatus;
+        return $this;
     }
 
     /**

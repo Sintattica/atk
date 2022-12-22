@@ -44,19 +44,15 @@ abstract class Item
     private $iconType = self::ICON_FA;
     private $hideName = false;
 
-    //Todo: Pensare come fare per i link esterni!
+    // TODO: how to handle external links?
     protected $icon = null;
     protected $active = false;
 
-    /**
-     * Item constructor.
-     */
     public function __construct()
     {
     }
 
     protected abstract function createIdentifierComponents(): ?string;
-
 
     public function getIdentifier(): ?string
     {
@@ -88,55 +84,33 @@ abstract class Item
         return "";
     }
 
-
-    /**
-     * @return string
-     */
     public function getParent(): string
     {
         return $this->parent;
     }
 
-    /**
-     * @param string $parent
-     * @return Item
-     */
     public function setParent(string $parent): self
     {
         $this->parent = $parent;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Item
-     */
     public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPosition(): string
     {
         return $this->position;
     }
 
-    /**
-     * @param string $position
-     * @return Item
-     */
     public function setPosition(string $position): self
     {
         $this->position = $position;
@@ -151,73 +125,45 @@ abstract class Item
         return $this->enable;
     }
 
-    /**
-     * @param int $enable
-     * @return Item
-     */
     public function setEnable(int $enable): self
     {
         $this->enable = $enable;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getOrder(): int
     {
         return $this->order;
     }
 
-    /**
-     * @param int $order
-     * @return Item
-     */
     public function setOrder(int $order): self
     {
         $this->order = $order;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getModule(): string
     {
         return $this->module;
     }
 
-    /**
-     * @param string $module
-     * @return Item
-     */
     public function setModule(string $module): self
     {
         $this->module = $module;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isRaw(): bool
     {
         return $this->raw;
     }
 
-    /**
-     * @param bool $raw
-     * @return Item
-     */
     public function setRaw(bool $raw): self
     {
         $this->raw = $raw;
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     public function getIcon(): ?string
     {
         return $this->icon;
@@ -230,7 +176,6 @@ abstract class Item
      */
     public function setIcon(?string $icon, ?string $iconType = self::ICON_FA): self
     {
-
         switch ($iconType) {
             case self::ICON_IMAGE:
                 $this->iconType = self::ICON_IMAGE;
@@ -248,87 +193,52 @@ abstract class Item
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return $this->active;
     }
 
-    /**
-     * @param bool $active
-     * @return Item
-     */
     public function setActive(bool $active): self
     {
         $this->active = $active;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getIconType(): string
     {
         return $this->iconType;
     }
 
-    /**
-     * @return bool
-     */
     public function isNameHidden(): bool
     {
         return $this->hideName;
     }
 
-    /**
-     * @param bool $showItemName
-     * @return Item
-     */
-    public function hideName(bool $showItemName = true): Item
+    public function hideName(bool $showItemName = true): self
     {
         $this->hideName = $showItemName;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTooltip(): ?string
     {
         return $this->tooltip;
     }
 
-    /**
-     * @param string $tooltip
-     * @return Item
-     */
-    public function setTooltip(string $tooltip): Item
+    public function setTooltip(string $tooltip): self
     {
         $this->tooltip = $tooltip;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTooltipPlacement(): string
     {
         return $this->tooltipPlacement;
     }
 
-    /**
-     * @param string $tooltipPlacement
-     * @return Item
-     */
-    public function setTooltipPlacement(string $tooltipPlacement): Item
+    public function setTooltipPlacement(string $tooltipPlacement): self
     {
         $this->tooltipPlacement = $tooltipPlacement;
         return $this;
     }
-
-
-
-
 }
