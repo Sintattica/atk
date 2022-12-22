@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.0] - 2022-12-22
+### Added
+- Menu: added badge on menu ActionItem
+
+
 ## [9.8.0] - 2022-12-20
 ### Added
 - Attribute: added CkAttribute stripTagsEnabled property
