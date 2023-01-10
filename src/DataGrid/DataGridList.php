@@ -304,7 +304,7 @@ class DataGridList extends DataGridComponent
                 $liststart .= '<input type="hidden" name="atkdatagriddata_AE_' . $i . '_AE_atkprimkey" value="' . htmlentities($list['rows'][$i]['selector']) . '">';
             }
 
-            $str_actions = '<span class="actions">';
+            $str_actions = '<div class="actions d-flex flex-wrap justify-content-center">';
             $actionloader .= "\nATK.RL.a['" . $listName . "'][" . $i . '] = {};';
             $icons = Config::getGlobal('recordlist_icons');
 
