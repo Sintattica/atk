@@ -236,7 +236,7 @@ class DataGridList extends DataGridComponent
 
             $bgn = $bgh = Node::DEFAULT_RECORDLIST_BG_COLOR;
 
-            if($this->getNode()->getRowColorMode() === Node::ROW_COLOR_MODE_DEFAULT){
+            if ($this->getNode()->getRowColorMode() === Node::ROW_COLOR_MODE_DEFAULT) {
                 $bgn = $bgh = $grid->getNode()->recordHexColor($recordset[$i], $i);
             }
 
@@ -291,7 +291,7 @@ class DataGridList extends DataGridComponent
 
                     $record['cols'][] = array(
                         'content' => $inputHTML . '
-              <script language="javascript"  type="text/javascript">' . $listName . '["' . htmlentities($list['rows'][$i]['selector']) . '"] =
+              <script type="text/javascript">' . $listName . '["' . htmlentities($list['rows'][$i]['selector']) . '"] =
                   new Array("' . implode($list['rows'][$i]['mra'], '","') . '");
               </script>',
                         'type' => 'mra',
@@ -304,10 +304,12 @@ class DataGridList extends DataGridComponent
                 $liststart .= '<input type="hidden" name="atkdatagriddata_AE_' . $i . '_AE_atkprimkey" value="' . htmlentities($list['rows'][$i]['selector']) . '">';
             }
 
-            $str_actions = '<div class="actions d-flex flex-wrap justify-content-center">';
+            $str_actions = '<div class="actions dt-buttons btn-group">';
             $actionloader .= "\nATK.RL.a['" . $listName . "'][" . $i . '] = {};';
             $icons = Config::getGlobal('recordlist_icons');
 
+            $buttonIndex = 0;
+            $buttonsCount = count($list['rows'][$i]['actions']);
             foreach ($list['rows'][$i]['actions'] as $name => $url) {
                 if (substr($url, 0, 11) == 'javascript:') {
                     $call = substr($url, 11);
@@ -327,7 +329,7 @@ class DataGridList extends DataGridComponent
 
                 $link = htmlentities($this->text($actionKeys));
 
-                if ($icons == true) {
+                if ($icons) {
                     $normalizedName = strtolower(str_replace('-', '_', $name));
                     $icon = Config::get($module, 'icon_' . $nodetype . '_' . $normalizedName, false);
                     if (!$icon) {
@@ -341,14 +343,29 @@ class DataGridList extends DataGridComponent
                     }
                 }
 
-                $confirmtext = 'false';
+                $confirmText = 'false';
                 if (Config::getGlobal('recordlist_javascript_delete') && $name == 'delete') {
-                    $confirmtext = "'" . $grid->getNode()->confirmActionText($name) . "'";
+                    $confirmText = "'" . $grid->getNode()->confirmActionText($name) . "'";
                 }
-                $str_actions .= $this->_renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext);
+
+                $dropDownStartIndex =  Config::getGlobal('recordList_dropdown_start_index');
+                $showDropdown = $dropDownStartIndex > 0;
+
+                if ($showDropdown && $buttonIndex === $dropDownStartIndex) {
+                    $str_actions .= '<div class="btn-group" role="group"><button id="btnGroupDrop' . $i . '" type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    </button><ul class="dropdown-menu" aria-labelledby="btnGroupDrop' . $i . '">';
+                }
+
+                $str_actions .= $this->_renderRecordActionLink($url, $link, $listName, $i, $name, $confirmText, $showDropdown && $buttonIndex >= $dropDownStartIndex);
+
+                if ($showDropdown && $buttonsCount >= $dropDownStartIndex && $buttonIndex === $buttonsCount - 1) {
+                    $str_actions .= '</ul></div>';
+                }
+
+                $buttonIndex++;
             }
 
-            $str_actions .= '</span>';
+            $str_actions .= '</div>';
             /* actions (left) */
             if ($orientation == 'left' || $orientation == 'both') {
                 if (!empty($list['rows'][$i]['actions'])) {
@@ -537,13 +554,34 @@ class DataGridList extends DataGridComponent
      * @param string $listName The name of the recordlist
      * @param string $i The row index to render the action for
      * @param string $name The action name
-     * @param bool|string $confirmtext The text for the confirmation if set
+     * @param bool|string $confirmText The text for the confirmation if set
      *
      * @return string the html link
      */
-    protected function _renderRecordActionLink($url, $link, $listName, $i, $name, $confirmtext = 'false')
+    protected function _renderRecordActionLink(string $url, string $link, string $listName, int $i, string $name, string $confirmText = 'false', bool $asDropdown = false): string
     {
-        return '<a href="' . "javascript:ATK.RL.rl_do('$listName',$i,'$name',$confirmtext);" . '" class="btn btn-sm btn-default">' . $link . '</a>';
+
+        $showLabelsOnDropdown = Config::getGlobal('recordList_show_dropdown_labels');
+        $result = "";
+
+        $shownLabel = "";
+        if ($asDropdown) {
+            $result .= "<li>";
+
+            if($showLabelsOnDropdown) {
+                $translatedName = $this->text($name);
+                $shownLabel = '<span class="ml-1">' . $translatedName . '</span>';
+            }
+        }
+
+
+        $result .= '<a class="btn btn-sm btn-default ' . ($asDropdown ? 'dropdown-item' : '') . '" type="button" href="' . "javascript:ATK.RL.rl_do('$listName',$i,'$name',$confirmText);" . '">' . $link . $shownLabel .'</a>';
+
+        if ($asDropdown) {
+            $result .= "</li>";
+        }
+
+        return $result;
     }
 
     /**

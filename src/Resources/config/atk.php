@@ -732,6 +732,12 @@ return [
     'recordlist_javascript_delete' => false,
 
     /*
+     * Options for recordActions visualization
+     */
+    'recordList_show_dropdown_labels' => true, //Show button names in the dropdown list
+    'recordList_dropdown_start_index' => 3, //Number of elements to show before putting the rest as a dropdown (if less than 1 no dropdown will be shown)
+
+    /*
      * This should be turned on when an application makes use
      * of OpenSSL encryption (atk.security.encryption.atkopensslencryption)
      * It makes sure that the user password is available in the session

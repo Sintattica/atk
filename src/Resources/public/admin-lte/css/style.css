@@ -159,9 +159,9 @@
 
 /* Table actions */
 table.recordList tr td .actions .btn {
-    min-width: 25px;
-    min-height: 25px;
-    margin: 1px;
+    /* min-width: 25px;
+     min-height: 25px;
+     margin: 1px; */
 }
 
 .recordList {
@@ -170,8 +170,7 @@ table.recordList tr td .actions .btn {
 
 .recordListTdFirst.row-type-actions,
 .recordListTd.row-type-actions {
-    width: 1%;
-    min-width: 110px;
+
 }
 
 table thead th {
