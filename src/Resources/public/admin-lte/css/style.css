@@ -173,6 +173,10 @@ table.recordList tr td .actions .btn {
     text-align: center;
 }
 
+.recordListTdFirst.row-type-actions  .btn-group > .btn-group > .dropdown-toggle::after {
+    margin-left: 0 !important;
+}
+
 table thead th {
     vertical-align: middle !important;
     white-space: nowrap;
