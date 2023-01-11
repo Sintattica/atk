@@ -1,5 +1,15 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.6] - 2023-01-11
+### Added
+- Attribute: added textWrap property
+- Atk: added new layout for "record actions" in DataGridList
+
+### Changed
+- Atk: reduced body font-size
+- Atk: reduced column padding in DataGridList
+
+
 ## [9.9.1] - 2022-12-22
 ### Fixed
 - Menu: added badge on menu action item in the navbar menu
