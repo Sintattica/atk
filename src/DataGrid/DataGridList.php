@@ -575,7 +575,7 @@ class DataGridList extends DataGridComponent
         }
 
 
-        $result .= '<a class="btn btn-sm ' . ($asDropdown ? 'dropdown-item' : '') . '" type="button" href="' . "javascript:ATK.RL.rl_do('$listName',$i,'$name',$confirmText);" . '">' . $link . $shownLabel .'</a>';
+        $result .= '<a class="btn btn-sm ' . ($asDropdown ? 'dropdown-item' : 'btn-default') . '" type="button" href="' . "javascript:ATK.RL.rl_do('$listName',$i,'$name',$confirmText);" . '">' . $link . $shownLabel .'</a>';
 
         if ($asDropdown) {
             $result .= "</li>";
