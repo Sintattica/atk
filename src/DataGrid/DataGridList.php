@@ -217,7 +217,7 @@ class DataGridList extends DataGridComponent
             $page->register_script(Config::getGlobal('assets_url') . 'javascript/formselect.js');
 
             if ($hasMRA) {
-                $liststart .= '<script language="javascript" type="text/javascript">var ' . $listName . ' = {};</script>';
+                $liststart .= '<script type="text/javascript">let ' . $listName . ' = {};</script>';
             }
         }
 
@@ -552,10 +552,10 @@ class DataGridList extends DataGridComponent
      * @param string $url The URL for the record action
      * @param string $link HTML for displaying the link (between the <a></a>)
      * @param string $listName The name of the recordlist
-     * @param string $i The row index to render the action for
+     * @param int $i The row index to render the action for
      * @param string $name The action name
      * @param bool|string $confirmText The text for the confirmation if set
-     *
+     * @param bool $asDropdown Show link as a dropdown item or a simple link
      * @return string the html link
      */
     protected function _renderRecordActionLink(string $url, string $link, string $listName, int $i, string $name, string $confirmText = 'false', bool $asDropdown = false): string

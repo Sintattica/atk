@@ -170,7 +170,7 @@ table.recordList tr td .actions .btn {
 
 .recordListTdFirst.row-type-actions,
 .recordListTd.row-type-actions {
-
+    text-align: center;
 }
 
 table thead th {
