@@ -580,6 +580,7 @@ class Attribute
     private $minWidth = null;
     private $maxHeight = null;
     private $maxChars = null;
+    private $textWrap = true;
 
     /**
      * Display long text in row.
@@ -778,6 +779,28 @@ class Attribute
     public function getAllowedDisplayModes(): array
     {
         return self::MODES_ALLOWED;
+    }
+
+    public function isTextWrap(): bool
+    {
+        return $this->textWrap;
+    }
+
+    public function setTextWrap(bool $textWrap): self
+    {
+        $this->textWrap = $textWrap;
+        return $this;
+    }
+
+    public function getSearchSize(): int
+    {
+        return $this->m_searchsize;
+    }
+
+    public function setSearchSize(int $searchSize): self
+    {
+        $this->m_searchsize = $searchSize;
+        return $this;
     }
 
     /**
@@ -1968,14 +1991,14 @@ class Attribute
                     break;
 
                 case self::MODE_SCROLL:
-                    $classes = 'text-wrap';
+                    $classes = 'text-wrap'; // text-wrap is always enabled in scroll mode
                     if ($this->getMaxHeight() !== null) {
                         $style .= " max-height: {$this->getMaxHeight()}; overflow-y: auto;";
                     }
                     break;
 
                 default:
-                    $classes = 'text-wrap';
+                    $classes = $this->isTextWrap() ? 'text-wrap' : '';
                     if ($maxChars !== null) {
                         $displayContent = $value != null ? Tools::truncateHTML($value, $maxChars, true) : null;
                     }
