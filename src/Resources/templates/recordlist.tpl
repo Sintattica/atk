@@ -17,7 +17,7 @@
             {$mra}</div>
     {/if}
 
-    <div class="overflow-auto">
+    <div class="recordListContent overflow-auto">
 
 
         <!-- todo: table-striped -->

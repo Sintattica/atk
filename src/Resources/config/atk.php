@@ -510,7 +510,7 @@ return [
      * The number of records per page options to display on drop down list
      * @var array
      */
-    'recordsperpage_options' => [2, 10, 25, 50, 100],
+    'recordsperpage_options' => [10, 25, 50, 100, 200],
 
     /*
      * Add a 'show all' option to the records per page selector.
