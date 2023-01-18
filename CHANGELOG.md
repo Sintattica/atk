@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.7] - 2023-01-18
+### Fixed
+- Datagrid: fixed datagrid top scroller design
+- Attribute: fixed hide/show attribute layout
+
+
 ## [9.9.6] - 2023-01-11
 ### Added
 - Attribute: added textWrap property
