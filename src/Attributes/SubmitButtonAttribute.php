@@ -6,6 +6,7 @@ namespace Sintattica\Atk\Attributes;
 class SubmitButtonAttribute extends ButtonAttribute
 {
     private $onClickCallback = null;
+    private $doUpdate = true;
 
     public function display($record, $mode)
     {
@@ -29,6 +30,17 @@ class SubmitButtonAttribute extends ButtonAttribute
     public function onClick(callable $clickCallback): self
     {
         $this->onClickCallback = $clickCallback;
+        return $this;
+    }
+
+    public function isDoUpdate(): bool
+    {
+        return $this->doUpdate;
+    }
+
+    public function setDoUpdate(bool $doUpdate): self
+    {
+        $this->doUpdate = $doUpdate;
         return $this;
     }
 }

@@ -39,40 +39,44 @@ class UpdateHandler extends ActionHandler
         if (isset($this->m_partial) && $this->m_partial != '') {
             $this->partial($this->m_partial);
             return;
-        } else {
+        }
 
-            $record = $this->m_postvars;
-            foreach ($this->m_node->getSubmitBtnAttribList() as $attributeName) {
-                if ($this->m_node->isSubmitBtnClicked($attributeName)) {
+        // search for a submit button clicked
+        $record = $this->m_postvars;
+        foreach ($this->m_node->getSubmitBtnAttribList() as $attributeName) {
+            if ($this->m_node->isSubmitBtnClicked($attributeName)) {
+                /** @var SubmitButtonAttribute $btn */
+                $btn = $this->m_node->getAttribute($attributeName);
 
-                    /** @var SubmitButtonAttribute $btn */
-                    $btn = $this->m_node->getAttribute($attributeName);
+                // do update before callback
+                if ($btn->isDoUpdate()) {
+                    $this->doUpdate();
+                }
 
-                    if ($btn->getOnClickCallback()) {
-                        $result = call_user_func($btn->getOnClickCallback(), $record);
+                if ($btn->getOnClickCallback()) {
+                    $result = call_user_func($btn->getOnClickCallback(), $record);
 
-                        if (isset($result)) {
-                            if ($result) {
-                                $this->m_node->getDb()->commit();
-                            } else {
-                                $this->m_node->getDb()->rollback();
-                            }
+                    if (isset($result)) {
+                        if ($result) {
+                            $this->m_node->getDb()->commit();
+                        } else {
+                            $this->m_node->getDb()->rollback();
                         }
                     }
-
-                    $sm = SessionManager::getInstance();
-                    $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), [
-                        'atkselector' => $this->m_node->primaryKey($record),
-                        'atktab' => $this->m_node->getActiveTab(),
-                    ]), SessionManager::SESSION_BACK);
-
-                    $this->m_node->redirect($location);
-                    return;
                 }
-            }
 
-            $this->doUpdate();
+                $sm = SessionManager::getInstance();
+                $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), $this->getEditAction(), [
+                    'atkselector' => $this->m_node->primaryKey($record),
+                    'atktab' => $this->m_node->getActiveTab(),
+                ]), SessionManager::SESSION_BACK);
+
+                $this->m_node->redirect($location);
+                return;
+            }
         }
+
+        $this->doUpdate();
     }
 
     /**
