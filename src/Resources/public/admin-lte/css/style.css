@@ -780,7 +780,8 @@ img.rounded-circle {
 }
 
 .atkAttrRowHidden {
-    display: none !important;
+    visibility: hidden;
+    position: absolute;
 }
 
 .bg-green-light {
