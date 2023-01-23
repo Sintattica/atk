@@ -71,7 +71,7 @@
                         <{if $row.type == "subtotal"}th{else}td{/if}
                                 class="{if $smarty.section.colloop.index===0}recordListTdFirst{else}recordListTd{/if}{if $row.cols[colloop].type == "data" && $recordlist_onclick} clickable{/if} row-type-{$row.cols[colloop].type}"
                                 {if $row.cols[colloop].type == "data" && $recordlist_onclick} onclick="ATK.RL.rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'
-                    ], false);"{/if}>
+                    ], false);"{/if}{if $smarty.section.colloop.index===0}style="width: {$recordListTdFirstWidth}px;"{/if}>
                             {if $row.cols[colloop].content != ""}{$row.cols[colloop].content}{else}&nbsp;{/if}
                         </{if $row.type == "subtotal"}th{else}td{/if}>
                     {/section}

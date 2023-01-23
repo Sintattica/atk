@@ -320,12 +320,12 @@ class DataGridList extends DataGridComponent
 
                 $module = $grid->getNode()->m_module;
                 $nodetype = $grid->getNode()->m_type;
-                $actionKeys = array(
+                $actionKeys = [
                     'action_' . $module . '_' . $nodetype . '_' . $name,
                     'action_' . $nodetype . '_' . $name,
                     'action_' . $name,
-                    $name,
-                );
+                    $name
+                ];
 
                 $link = htmlentities($this->text($actionKeys));
 
@@ -348,12 +348,13 @@ class DataGridList extends DataGridComponent
                     $confirmText = "'" . $grid->getNode()->confirmActionText($name) . "'";
                 }
 
-                $dropDownStartIndex =  Config::getGlobal('recordList_dropdown_start_index');
+                $dropDownStartIndex =  $this->getNode()->getRecordListDropdownStartIndex() ?? Config::getGlobal('recordList_dropdown_start_index');
                 $showDropdown = $dropDownStartIndex > 0;
 
                 if ($showDropdown && $buttonIndex === $dropDownStartIndex) {
-                    $str_actions .= '<div class="btn-group" role="group"><button id="btnGroupDrop' . $i . '" type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    </button><ul class="dropdown-menu" aria-labelledby="btnGroupDrop' . $i . '">';
+                    $str_actions .= '<div class="btn-group" role="group">
+                                        <button id="btnGroupDrop' . $i . '" type="button" style="min-width: 29px;" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop' . $i . '">';
                 }
 
                 $str_actions .= $this->_renderRecordActionLink($url, $link, $listName, $i, $name, $confirmText, $showDropdown && $buttonIndex >= $dropDownStartIndex);
@@ -512,7 +513,9 @@ class DataGridList extends DataGridComponent
             $mra = '<input type="button" class="btn btn-sm btn-primary" value="' . Tools::atktext('save') . '" onclick="' . htmlentities($this->getGrid()->getSaveCall()) . '">';
         }
 
-        $recordListData = array(
+        $recordListDropDownStartIndex = $this->getNode()->getRecordListDropdownStartIndex() ?? Config::getGlobal('recordList_dropdown_start_index') ?? 3;
+
+        return [
             'rows' => $records,
             'header' => $headercols,
             'search' => $searchcols,
@@ -528,9 +531,8 @@ class DataGridList extends DataGridComponent
             'mra' => $mra,
             'mraposition' => Config::getGlobal('mra_position'),
             'editing' => $this->getGrid()->isEditing(),
-        );
-
-        return $recordListData;
+            'recordListTdFirstWidth' => $recordListDropDownStartIndex * 35 // px
+        ];
     }
 
     /**

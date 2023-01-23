@@ -507,7 +507,7 @@ class Node
      * @access protected
      * @var array
      */
-    public $m_securityImplied = array('view' => 'admin');
+    public $m_securityImplied = ['view' => 'admin'];
 
     /*
      * Name of the node that is used for privilege checking.
@@ -529,7 +529,7 @@ class Node
      * @access private
      * @var array
      */
-    public $m_unsecuredActions = array('select', 'multiselect', 'feedback');
+    public $m_unsecuredActions = ['select', 'multiselect', 'feedback'];
 
     /*
      * Auto search-actions; action that will be performed if only one record
@@ -701,6 +701,9 @@ class Node
     private $adminPageBookmarkLink = null;
 
     private $adminPageNodeHelp = null;
+
+    /** @var int $recordListDropdownStartIndex */
+    private $recordListDropdownStartIndex = null;
 
     /**
      * @param string $nodeUri The nodeuri
@@ -879,7 +882,7 @@ class Node
      * Add an Attribute (or one of its derivatives) to the node.
      *
      * @param Attribute $attribute The attribute you want to add
-     * @param mixed $sections The sections/tab(s) on which the attribute should be
+     * @param string|array $sections The tab(s) on which the attribute should be
      *                             displayed. Can be a tabname (String) or a list of
      *                             tabs (array) or "*" if the attribute should be
      *                             displayed on all tabs.
@@ -5882,5 +5885,16 @@ class Node
         $attr = new JsonAttribute($nestedAttributeField ?? $this->nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD);
         $attr->setForceUpdate(true);
         return $attr;
+    }
+
+    public function getRecordListDropdownStartIndex(): ?int
+    {
+        return $this->recordListDropdownStartIndex;
+    }
+
+    public function setRecordListDropdownStartIndex(?int $recordListDropdownStartIndex): self
+    {
+        $this->recordListDropdownStartIndex = $recordListDropdownStartIndex;
+        return $this;
     }
 }
