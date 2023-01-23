@@ -1,5 +1,13 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.8] - 2023-01-23
+### Added
+- Node: added recordListDropdownStartIndex property to customize recordListTdFirst in the datagrid list
+
+### Fixed
+- Attribute: fix do update when clicked SubmitButtonAttribute
+
+
 ## [9.9.7] - 2023-01-18
 ### Fixed
 - Datagrid: fixed datagrid top scroller design
