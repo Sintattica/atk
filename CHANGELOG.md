@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.9] - 2023-01-30
+### Fixed
+- Relation: fix setAttributesFlags in OneToMany
+
+
 ## [9.9.8] - 2023-01-23
 ### Added
 - Node: added recordListDropdownStartIndex property to customize recordListTdFirst in the datagrid list
