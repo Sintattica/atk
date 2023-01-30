@@ -247,6 +247,8 @@ class OneToManyRelation extends Relation
     {
         $this->createDestination();
 
+        $this->m_destInstance->setAttributesFlags(null, $mode);
+
         $grid = DataGrid::create($this->m_destInstance, str_replace('.', '_', $this->getOwnerInstance()->atkNodeUri()) . '_' . $this->fieldName() . '_grid', null,
             true, $useSession);
 
