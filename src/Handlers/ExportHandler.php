@@ -587,6 +587,21 @@ class ExportHandler extends ActionHandler
         $atkselector = isset($session_back['atkselector']) ? $session_back['atkselector'] : '';
         $condition = $atkselector . ($atkselector != '' && $atkfilter != '' ? ' AND ' : '') . $atkfilter;
         $recordset = $node_bk->select($condition)->orderBy($atkorderby)->includes($list_includes)->mode('export')->getAllRows();
+
+        if($node_bk->hasNestedAttributes()) {
+            $nestedAttributeField = $node_bk->getNestedAttributeField();
+            $nestedAttributesList = $node_bk->getNestedAttributesList();
+            foreach ($recordset as &$record) {
+                foreach ($nestedAttributesList as $nestedAttribute) {
+                    if (in_array($nestedAttribute, $list_includes) && $record[$nestedAttributeField] != null) {
+                        $record[$nestedAttribute] = $record[$nestedAttributeField][$nestedAttribute];
+                    } else {
+                        $record[$nestedAttribute] = null;
+                    }
+                }
+            }
+        }
+
         if (method_exists($this->m_node, 'assignExportData')) {
             $this->m_node->assignExportData($list_includes, $recordset);
         }
