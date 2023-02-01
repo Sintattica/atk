@@ -295,7 +295,7 @@ class AdminHandler extends ActionHandler
             $margin = $label && $icon ? "mr-1" : "";
             $label = '<i class="' . $icon . ' ' . $margin . '"></i>' . $label;
 
-            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export', array('atkfilter' => $filter)),
+            $link .= Tools::href(Tools::dispatch_url($this->m_node->atkNodeUri(), 'export', ['atkfilter' => $filter]),
                 $label, SessionManager::SESSION_NESTED, false, $cssClass);
 
         }
