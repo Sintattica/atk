@@ -104,7 +104,7 @@ class Ui
     public function renderBox($vars, $name = '', $module = ''): string
     {
         if ($name) {
-            return $this->render($name.'.tpl', $vars);
+            return $this->render($name . '.tpl', $vars);
         }
 
         return $this->render('box.tpl', $vars, $module);
@@ -144,7 +144,7 @@ class Ui
         $result = $this->renderSmarty($name, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
-            $result = "\n<!-- START [{$name}] -->\n".$result."\n<!-- END [{$name}] -->\n";
+            $result = "\n<!-- START [{$name}] -->\n" . $result . "\n<!-- END [{$name}] -->\n";
         }
 
         return $result;
@@ -186,61 +186,6 @@ class Ui
         }
         $atk = Atk::getInstance();
 
-        return $this->nodeTitle($atk->atkGetNode($module.'.'.$nodetype), $action, $actiononly);
-    }
-
-    /**
-     * This function returns a suitable title text for an action.
-     * Example: echo $ui->title("users", "employee", "edit"); might return:
-     *          'Edit an existing employee'.
-     *
-     * @param Node $node the node to get the title from
-     * @param string $action the action that we are trying to find a title for
-     * @param bool $actiononly wether or not to return a name of the node
-     *                           if we couldn't find a specific title
-     *
-     * @return string the title for the action
-     */
-    public function nodeTitle($node, $action = null, $actiononly = false): string
-    {
-        if ($node == null) {
-            return '';
-        }
-
-        $nodetype = $node->m_type;
-        $module = $node->m_module;
-
-        if ($action != null) {
-            $keys = array(
-                'title_'.$module.'_'.$nodetype.'_'.$action,
-                'title_'.$nodetype.'_'.$action,
-                'title_'.$action,
-            );
-
-            $label = $node->text($keys, null, '', '', true);
-        } else {
-            $label = '';
-        }
-
-        if ($label == '') {
-            $actionKeys = array(
-                'action_'.$module.'_'.$nodetype.'_'.$action,
-                'action_'.$nodetype.'_'.$action,
-                'action_'.$action,
-                $action,
-            );
-
-            if ($actiononly) {
-                return $node->text($actionKeys);
-            } else {
-                $keys = array('title_'.$module.'_'.$nodetype, 'title_'.$nodetype, $nodetype);
-                $label = $node->text($keys);
-                if ($action != null) {
-                    $label .= ' - '.$node->text($actionKeys);
-                }
-            }
-        }
-
-        return $label;
+        return $atk->atkGetNode($module . '.' . $nodetype)->nodeTitle($action, $actiononly);
     }
 }

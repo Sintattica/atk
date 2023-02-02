@@ -619,7 +619,7 @@ class ExportHandler extends ActionHandler
             $recordSetNew[] = $row;
         }
 
-        $filename = 'export_' . strtolower(str_replace(' ', '_', $this->getUi()->nodeTitle($node)));
+        $filename = $this->getNode()->exportFileName() ?: ('export_' . strtolower(str_replace(' ', '_', $this->getNode()->nodeTitle($node))));
         $customRecordList->render(
             $nodeBk,
             $recordSetNew,

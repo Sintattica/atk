@@ -2138,7 +2138,7 @@ class Node
         }
 
         if (is_object($ui)) {
-            $res .= $ui->nodeTitle($this, $action, $nomodule);
+            $res .= $this->nodeTitle($action, $nomodule);
         }
 
         return $res;
@@ -3149,18 +3149,19 @@ class Node
     }
 
     /**
-     * @deprecated Use buildAdminHeaderFilterButtons() instead
-     *
-     * Builds th box of the filters in the adminHeader.
-     *
      * @param array $filters Filters to show ['name', 'values', 'noFilterText']
      * @param string $sepRows Separator of rows
      * @param string $sepLinks Separator of links
      * @param string $class Css class of links
      * @param string $classActive Css class of active link
      * @return string
+     * @deprecated Use buildAdminHeaderFilterButtons() instead
+     *
+     * Builds th box of the filters in the adminHeader.
+     *
      */
-    function buildAdminHeaderFilters(array $filters, string $sepRows = '', string $sepLinks = '', string $class = '', string $classActive = ''): string
+    function buildAdminHeaderFilters(array  $filters, string $sepRows = '', string $sepLinks = '', string $class = '',
+                                     string $classActive = ''): string
     {
         if (!$sepRows) {
             $sepRows = '<div class="mb-1"></div>';
@@ -3203,7 +3204,8 @@ class Node
      * @param string $uiStateColorActive UIStateColor of the active button
      * @return string
      */
-    private function addAdminHeaderFilter(string $label, array $values, ?string $noFilterLabel, string $sepLinks = '', string $cssClass = '', string $uiStateColorActive = ''): string
+    private function addAdminHeaderFilter(string $label, array $values, ?string $noFilterLabel, string $sepLinks = '', string $cssClass = '',
+                                          string $uiStateColorActive = ''): string
     {
         $sm = SessionManager::getInstance();
         $cssClass .= ' btn btn-sm btn-default mr-1 mb-1';
@@ -5895,5 +5897,63 @@ class Node
     {
         $this->recordListDropdownStartIndex = $recordListDropdownStartIndex;
         return $this;
+    }
+
+    /**
+     * This function returns a suitable title text for an action.
+     * Example: echo $ui->title("users", "employee", "edit"); might return:
+     *          'Edit an existing employee'.
+     *
+     * @param string|null $action the action that we are trying to find a title for
+     * @param bool $actionOnly whether to return a name of the node
+     *                           if we couldn't find a specific title
+     *
+     * @return string the title for the action
+     */
+    public function nodeTitle(string $action = null, bool $actionOnly = false): string
+    {
+        $nodeType = $this->m_type;
+
+        if ($action != null) {
+            $keys = array(
+                'title_' . $this->m_module . '_' . $nodeType . '_' . $action,
+                'title_' . $nodeType . '_' . $action,
+                'title_' . $action,
+            );
+
+            $label = $this->text($keys, null, '', '', true);
+        } else {
+            $label = '';
+        }
+
+        if ($label == '') {
+            $actionKeys = array(
+                'action_' . $this->m_module . '_' . $nodeType . '_' . $action,
+                'action_' . $nodeType . '_' . $action,
+                'action_' . $action,
+                $action,
+            );
+
+            if ($actionOnly) {
+                return $this->text($actionKeys);
+            } else {
+                $keys = array('title_' . $this->m_module . '_' . $nodeType, 'title_' . $nodeType, $nodeType);
+                $label = $this->text($keys);
+                if ($action != null) {
+                    $label .= ' - ' . $this->text($actionKeys);
+                }
+            }
+        }
+
+        return $label;
+    }
+
+    /**
+     * Override to customize the filename of file using default action export
+     * @return string|null
+     */
+    public function exportFileName(): ?string
+    {
+        return null;
     }
 }
