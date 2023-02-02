@@ -1,5 +1,15 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.11] - 2023-02-02
+### Changed
+- Export: updated export filename
+
+
+## [9.9.10] - 2023-02-01
+### Fixed
+- Export: fixed missing nested attribute value on export action
+
+
 ## [9.9.9] - 2023-01-30
 ### Fixed
 - Relation: fix setAttributesFlags in OneToMany
