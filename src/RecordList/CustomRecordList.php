@@ -14,11 +14,11 @@ use Sintattica\Atk\Utils\FileExport;
  */
 class CustomRecordList extends RecordList
 {
-    public $m_exportcsv = true;
+    public $exportCSV = true;
     protected $m_mode;
 
     /**
-     * Creates a special Recordlist that can be used for exporting to files or to make it printable.
+     * Creates a special RecordList that can be used for exporting to files or to make it printable.
      *
      * @param Node $node The node to use as definition for the columns.
      * @param array $recordset The records to render
@@ -56,7 +56,8 @@ class CustomRecordList extends RecordList
         $decode = false,
         $fsep = '',
         $rfeplace = null
-    ) {
+    )
+    {
         $this->setNode($node);
         $this->m_mode = $mode;
         // example      html         csv
@@ -87,7 +88,7 @@ class CustomRecordList extends RecordList
                 $p_attrib = $this->m_node->m_attribList[$attribname];
                 $musthide = (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
-                    $output .= $sof.$this->eolreplace($p_attrib->label(), $rfeplace).$eof.$fsep;
+                    $output .= $sof . $this->eolReplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
                 }
             }
 
@@ -109,19 +110,19 @@ class CustomRecordList extends RecordList
                 if (!$this->isHidden($p_attrib) && !$musthide) {
                     // An <attributename>_display function may be provided in a derived
                     // class to display an attribute.
-                    $funcname = $p_attrib->m_name.'_display';
+                    $funcname = $p_attrib->m_name . '_display';
 
                     if (method_exists($this->m_node, $funcname)) {
-                        $value = $this->eolreplace($this->m_node->$funcname($recordset[$i], $this->m_mode), $rfeplace);
+                        $value = $this->eolReplace($this->m_node->$funcname($recordset[$i], $this->m_mode), $rfeplace);
                     } else {
                         // otherwise, the display function of the particular attribute
                         // is called.
-                        $value = $this->eolreplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
+                        $value = $this->eolReplace($p_attrib->display($recordset[$i], $this->m_mode), $rfeplace);
                     }
                     if (Tools::atkGetCharset() != '' && $decode) {
                         $value = Tools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
                     }
-                    $output .= $sof.($value == '' ? $empty : $value).$eof.$fsep;
+                    $output .= $sof . ($value == '' ? $empty : $value) . $eof . $fsep;
                 }
             }
 
@@ -136,7 +137,7 @@ class CustomRecordList extends RecordList
 
         // html requires table tags
         if ($type == '0') {
-            $output = '<table border="1" cellspacing="0" cellpadding="2">'.$output.'</table>';
+            $output = '<table border="1" cellspacing="0" cellpadding="2">' . $output . '</table>';
         }
 
         Tools::atkdebug(Tools::atk_html_entity_decode($output));
@@ -146,7 +147,7 @@ class CustomRecordList extends RecordList
             $outputparams['filename'] = 'achievo';
         }
 
-        if ($this->m_exportcsv) {
+        if ($this->exportCSV) {
             $ext = ($type == '0' ? 'html' : 'csv');
             $exporter = new FileExport();
             $exporter->export($output, $outputparams['filename'], $ext, $ext, $compression);
@@ -154,7 +155,7 @@ class CustomRecordList extends RecordList
             return $output;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -164,7 +165,7 @@ class CustomRecordList extends RecordList
      *
      * @return bool Boolean to indicate if attribute is hidden or not
      */
-    protected function isHidden(Attribute $attribute)
+    protected function isHidden(Attribute $attribute): bool
     {
         if ($attribute->hasFlag(Attribute::AF_HIDE)) {
             return true;
@@ -183,21 +184,22 @@ class CustomRecordList extends RecordList
      * Set exporting csv to file.
      *
      * @param bool $export
+     * @return CustomRecordList
      */
-    public function setExportingCSVToFile($export = true)
+    public function setExportingCSVToFile(bool $export = true): self
     {
-        if (is_bool($export)) {
-            $this->m_exportcsv = $export;
-        }
+        $this->exportCSV = $export;
+        return $this;
     }
 
     /**
      * Replace any eol character(s) by something else.
      *
      * @param string $string The string to process
-     * @param string $replacement The replacement string for '\r\n', '\n' and/or '\r'
+     * @param string|null $replacement The replacement string for '\r\n', '\n' and/or '\r'
+     * @return array|string|string[]
      */
-    public function eolreplace($string, $replacement)
+    protected function eolReplace(string $string, ?string $replacement)
     {
         if (!is_null($replacement)) {
             $string = str_replace("\r\n", $replacement, $string); // prevent double replacement in the next lines!

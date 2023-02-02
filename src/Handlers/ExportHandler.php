@@ -9,9 +9,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
-use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Attributes\Attribute;
-use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Ui;
 use SmartyException;
 
@@ -622,8 +620,23 @@ class ExportHandler extends ActionHandler
         }
 
         $filename = 'export_' . strtolower(str_replace(' ', '_', $this->getUi()->nodeTitle($node)));
-        $customRecordList->render($nodeBk, $recordSetNew, '', $enclosure, $enclosure, "\r\n", 1, '', '', array('filename' => $filename), 'csv', $source['generatetitlerow'],
-            true, $delimiter);
+        $customRecordList->render(
+            $nodeBk,
+            $recordSetNew,
+            '',
+            $enclosure,
+            $enclosure,
+            "\r\n",
+            1,
+            '',
+            '',
+            ['filename' => $filename],
+            'csv',
+            $source['generatetitlerow'],
+            true,
+            $delimiter,
+            null
+        );
 
         return true;
     }

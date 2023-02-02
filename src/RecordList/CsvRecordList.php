@@ -24,7 +24,7 @@ use Sintattica\Atk\Core\Node;
  */
 class CsvRecordList extends CustomRecordList
 {
-    public $m_exportcsv = true;
+    public $exportCSV = true;
 
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable.
@@ -47,6 +47,22 @@ class CsvRecordList extends CustomRecordList
         $titlerow = true,
         $decode = false
     ) {
-        parent::render($node, $recordset, '', '"', '"', "\n", '1', $compression, $suppressList, $outputparams, 'csv', $titlerow, $decode, ',', null);
+        parent::render(
+            $node,
+            $recordset,
+            '',
+            '"',
+            '"',
+            "\n",
+            '1',
+            $compression,
+            $suppressList,
+            $outputparams,
+            'csv',
+            $titlerow,
+            $decode,
+            ',',
+            null
+        );
     }
 }
