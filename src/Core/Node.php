@@ -1198,10 +1198,9 @@ class Node
      *
      * @return Attribute[] Array with the attributes.
      */
-    public function &getAttributes()
+    public function &getAttributes(): ?array
     {
-        $result = isset($this->m_attribList) ? $this->m_attribList : null;
-
+        $result = $this->m_attribList ?? null;
         return $result;
     }
 
@@ -1210,7 +1209,7 @@ class Node
      *
      * @return array attribute names
      */
-    public function getAttributeNames()
+    public function getAttributeNames(): array
     {
         return array_keys($this->m_attribList);
     }

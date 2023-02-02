@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Exception;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\RecordList\CustomRecordList;
 use Sintattica\Atk\Core\Tools;
@@ -12,6 +13,7 @@ use Sintattica\Atk\RecordList\RecordList;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Ui;
+use SmartyException;
 
 /**
  * Handler for the 'import' action of a node. The import action is a
@@ -70,7 +72,7 @@ class ExportHandler extends ActionHandler
     /**
      * This function shows a form to configure the .csv.
      */
-    public function doInit()
+    public function doInit(): bool
     {
         $content = $this->_getInitHtml();
         $page = $this->getPage();
@@ -138,8 +140,9 @@ class ExportHandler extends ActionHandler
      * Handle partial request.
      *
      * @return string
+     * @throws Exception
      */
-    public function partial_export()
+    public function partial_export(): string
     {
         $value = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue'] : null;
 
@@ -151,7 +154,7 @@ class ExportHandler extends ActionHandler
      *
      * @return string
      */
-    public function partial_selection_name()
+    public function partial_selection_name(): string
     {
         $selected = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue'] : null;
         $value = '';
@@ -174,16 +177,14 @@ class ExportHandler extends ActionHandler
      *
      * @return string
      */
-    public function partial_selection_interact()
+    public function partial_selection_interact(): string
     {
         $selected = array_key_exists('exportvalue', $this->m_postvars) ? $this->m_postvars['exportvalue'] : null;
 
         $url_delete = Tools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export', array('dodelete' => $selected));
 
         if ($selected) {
-            $result = '<a href="' . $url_delete . '" title="' . Tools::atktext('delete_selection') . '" onclick="confirm_delete();">' . Tools::atktext('delete_selection') . '</a>';
-
-            return $result;
+            return '<a href="' . $url_delete . '" title="' . Tools::atktext('delete_selection') . '" onclick="confirm_delete();">' . Tools::atktext('delete_selection') . '</a>';
         }
     }
 
@@ -191,8 +192,9 @@ class ExportHandler extends ActionHandler
      * Gets the HTML for the initial mode of the exporthandler.
      *
      * @return string The HTML for the screen
+     * @throws SmartyException
      */
-    public function _getInitHtml()
+    public function _getInitHtml(): string
     {
         $action = Tools::dispatch_url($this->m_node->m_module . '.' . $this->m_node->m_type, 'export');
         $sm = SessionManager::getInstance();
@@ -245,7 +247,7 @@ class ExportHandler extends ActionHandler
         }
     }
 
-    private function _getOptionsFormRow($rowAttributes, $label, $field)
+    private function _getOptionsFormRow($rowAttributes, $label, $field): string
     {
         $content = '';
 
@@ -267,8 +269,9 @@ class ExportHandler extends ActionHandler
      * Get the options for the export.
      *
      * @return string html
+     * @throws Exception
      */
-    public function _getOptions()
+    public function _getOptions(): string
     {
 
         $content = '';
@@ -321,7 +324,7 @@ class ExportHandler extends ActionHandler
      *
      * @return string
      */
-    private function getExportSelectionDropdown()
+    private function getExportSelectionDropdown(): string
     {
         $html = '
         <select name="export_selection_options" id="export_selection_options" onchange="toggleSelectionName();return false;" class="form-control select-standard">
@@ -409,7 +412,7 @@ class ExportHandler extends ActionHandler
      *
      * @param int $id
      */
-    private function deleteSelection($id)
+    private function deleteSelection(int $id)
     {
         $db = Db::getInstance();
         $db->query('DELETE FROM atk_exportcriteria WHERE id = ' . (int)$id);
@@ -420,7 +423,7 @@ class ExportHandler extends ActionHandler
      *
      * @return array
      */
-    protected function getExportSelections()
+    protected function getExportSelections(): array
     {
         $where = ' nodetype = "' . $this->m_postvars['atknodeuri'] . '"';
         if ('none' !== strtolower(Config::getGlobal('authentication'))) {
@@ -437,10 +440,11 @@ class ExportHandler extends ActionHandler
 
     /**
      * Get all attributes to select for the export.
-     * @param string $value
+     * @param string|null $value
      * @return string HTML code with checkboxes for each attribute to select
+     * @throws Exception
      */
-    public function getAttributeSelect($value = '')
+    public function getAttributeSelect(string $value = ''): string
     {
         $atts = $this->getUsableAttributes($value);
         $content = '<div class="container-fluid ExportHandler">';
@@ -473,10 +477,11 @@ class ExportHandler extends ActionHandler
      * Gives all the attributes that can be used for the import.
      * @param string $value
      * @return array the attributes
+     * @throws Exception
      */
-    public function getUsableAttributes($value = '')
+    public function getUsableAttributes(string $value = ''): array
     {
-        $selected = ($value == 'new') ? false : true;
+        $selected = $value != 'new';
 
         $criteria = [];
         if (!in_array($value, array('new', 'none', ''))) {
@@ -485,9 +490,9 @@ class ExportHandler extends ActionHandler
             $criteria = unserialize($rows[0]['criteria']);
         }
 
-        $atts = [];
-        $attriblist = $this->invoke('getExportAttributes');
-        foreach ($attriblist as $key => $attr) {
+        $attributes = [];
+        $attributesList = $this->invoke('getExportAttributes');
+        foreach ($attributesList as $key => $attr) {
             $flags = $attr->m_flags;
             $class = strtolower(get_class($attr));
             if ($attr->hasFlag(Attribute::AF_AUTOKEY) || $attr->hasFlag(Attribute::AF_HIDE_VIEW) || !(strpos($class, 'dummy') === false) || !(strpos($class,
@@ -500,19 +505,19 @@ class ExportHandler extends ActionHandler
             } else {
                 $group = $attr->m_tabs[0];
             }
-            if (in_array($group, $atts)) {
-                $atts[$group] = [];
+            if (in_array($group, $attributes)) {
+                $attributes[$group] = [];
             }
             // selected options based on a new selection, or no selection
             if (empty($criteria)) {
-                $atts[$group][] = array(
+                $attributes[$group][] = array(
                     'name' => $key,
                     'text' => $attr->label(),
                     'checked' => $selected == true ? !$attr->hasFlag(Attribute::AF_HIDE_LIST) : false,
                 );
             } // selected options based on a selection from DB
             else {
-                $atts[$group][] = array(
+                $attributes[$group][] = array(
                     'name' => $key,
                     'text' => $attr->label(),
                     'checked' => in_array('export_' . $key, $criteria) ? true : false,
@@ -520,7 +525,7 @@ class ExportHandler extends ActionHandler
             }
         }
 
-        return $atts;
+        return $attributes;
     }
 
     /**
@@ -528,72 +533,68 @@ class ExportHandler extends ActionHandler
      *
      * @return array Array with attribs that needs to be exported
      */
-    public function getExportAttributes()
+    public function getExportAttributes(): array
     {
         $attribs = $this->m_node->getAttributes();
-        if (is_null($attribs)) {
-            return [];
-        } else {
-            return $attribs;
-        }
+        return is_null($attribs) ? [] : $attribs;
     }
 
     /**
      * the real import function
      * import the uploaded csv file for real.
      */
-    public function doExport()
+    public function doExport(): bool
     {
         $enclosure = $this->m_postvars['enclosure'];
         $delimiter = $this->m_postvars['delimiter'];
         $source = $this->m_postvars;
-        $list_includes = [];
+        $listIncludes = [];
         foreach ($source as $name => $value) {
             $pos = strpos($name, 'export_');
             if (is_integer($pos) and $pos == 0) {
-                $list_includes[] = substr($name, strlen('export_'));
+                $listIncludes[] = substr($name, strlen('export_'));
             }
         }
         $sm = SessionManager::getInstance();
         $sessionData = &SessionManager::getSession();
-        $session_back = $sessionData['default']['stack'][$sm->atkStackID()][$sm->atkLevel() - 1];
-        $atkorderby = isset($session_back['atkorderby']) ? $session_back['atkorderby'] : null;
+        $sessionBack = $sessionData['default']['stack'][$sm->atkStackID()][$sm->atkLevel() - 1];
+        $atkOrderBy = $sessionBack['atkorderby'] ?? null;
 
         $node = $this->m_node;
-        $node_bk = $node;
-        $atts = &$node_bk->m_attribList;
+        $nodeBk = $node;
+        $nodeBkAttributes = &$nodeBk->m_attribList;
 
-        foreach ($atts as $name => $object) {
-            $att = $node_bk->getAttribute($name);
-            if (in_array($name, $list_includes) && $att->hasFlag(Attribute::AF_HIDE_LIST)) {
+        foreach ($nodeBkAttributes as $name => $object) {
+            $att = $nodeBk->getAttribute($name);
+            if (in_array($name, $listIncludes) && $att->hasFlag(Attribute::AF_HIDE_LIST)) {
                 $att->removeFlag(Attribute::AF_HIDE_LIST);
-            } elseif (!in_array($name, $list_includes)) {
+            } elseif (!in_array($name, $listIncludes)) {
                 $att->addFlag(Attribute::AF_HIDE_LIST);
             }
         }
 
-        $rl = new CustomRecordList();
-        $node_bk->m_postvars = $session_back;
+        $customRecordList = new CustomRecordList();
+        $nodeBk->m_postvars = $sessionBack;
 
-        if (isset($session_back['atkdg']['admin']['atksearch'])) {
-            $node_bk->m_postvars['atksearch'] = $session_back['atkdg']['admin']['atksearch'];
+        if (isset($sessionBack['atkdg']['admin']['atksearch'])) {
+            $nodeBk->m_postvars['atksearch'] = $sessionBack['atkdg']['admin']['atksearch'];
         }
-        if (isset($session_back['atkdg']['admin']['atksearchmode'])) {
-            $node_bk->m_postvars['atksearchmode'] = $session_back['atkdg']['admin']['atksearchmode'];
+        if (isset($sessionBack['atkdg']['admin']['atksearchmode'])) {
+            $nodeBk->m_postvars['atksearchmode'] = $sessionBack['atkdg']['admin']['atksearchmode'];
         }
 
-        $atkfilter = Tools::atkArrayNvl($source, 'atkfilter', '');
+        $atkFilter = Tools::atkArrayNvl($source, 'atkfilter', '');
 
-        $atkselector = isset($session_back['atkselector']) ? $session_back['atkselector'] : '';
-        $condition = $atkselector . ($atkselector != '' && $atkfilter != '' ? ' AND ' : '') . $atkfilter;
-        $recordset = $node_bk->select($condition)->orderBy($atkorderby)->includes($list_includes)->mode('export')->getAllRows();
+        $atkSelector = $sessionBack['atkselector'] ?? '';
+        $condition = $atkSelector . ($atkSelector != '' && $atkFilter != '' ? ' AND ' : '') . $atkFilter;
+        $recordSet = $nodeBk->select($condition)->orderBy($atkOrderBy)->includes($listIncludes)->mode('export')->getAllRows();
 
-        if($node_bk->hasNestedAttributes()) {
-            $nestedAttributeField = $node_bk->getNestedAttributeField();
-            $nestedAttributesList = $node_bk->getNestedAttributesList();
-            foreach ($recordset as &$record) {
+        if ($nodeBk->hasNestedAttributes()) {
+            $nestedAttributeField = $nodeBk->getNestedAttributeField();
+            $nestedAttributesList = $nodeBk->getNestedAttributesList();
+            foreach ($recordSet as &$record) {
                 foreach ($nestedAttributesList as $nestedAttribute) {
-                    if (in_array($nestedAttribute, $list_includes) && $record[$nestedAttributeField] != null) {
+                    if (in_array($nestedAttribute, $listIncludes) && $record[$nestedAttributeField] != null) {
                         $record[$nestedAttribute] = $record[$nestedAttributeField][$nestedAttribute];
                     } else {
                         $record[$nestedAttribute] = null;
@@ -603,24 +604,25 @@ class ExportHandler extends ActionHandler
         }
 
         if (method_exists($this->m_node, 'assignExportData')) {
-            $this->m_node->assignExportData($list_includes, $recordset);
+            $this->m_node->assignExportData($listIncludes, $recordSet);
         }
-        $recordset_new = [];
 
-        foreach ($recordset as $row) {
+        $recordSetNew = [];
+
+        foreach ($recordSet as $row) {
             foreach ($row as $name => $value) {
-                if (in_array($name, $list_includes)) {
+                if (in_array($name, $listIncludes)) {
                     $value = str_replace("\r\n", '\\n', $value);
                     $value = str_replace("\n", '\\n', $value);
                     $value = str_replace("\t", '\\t', $value);
                     $row[$name] = $value;
                 }
             }
-            $recordset_new[] = $row;
+            $recordSetNew[] = $row;
         }
 
         $filename = 'export_' . strtolower(str_replace(' ', '_', $this->getUi()->nodeTitle($node)));
-        $rl->render($node_bk, $recordset_new, '', $enclosure, $enclosure, "\r\n", 1, '', '', array('filename' => $filename), 'csv', $source['generatetitlerow'],
+        $customRecordList->render($nodeBk, $recordSetNew, '', $enclosure, $enclosure, "\r\n", 1, '', '', array('filename' => $filename), 'csv', $source['generatetitlerow'],
             true, $delimiter);
 
         return true;
