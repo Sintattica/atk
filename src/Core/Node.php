@@ -5915,11 +5915,11 @@ class Node
         $nodeType = $this->m_type;
 
         if ($action != null) {
-            $keys = array(
+            $keys = [
                 'title_' . $this->m_module . '_' . $nodeType . '_' . $action,
                 'title_' . $nodeType . '_' . $action,
-                'title_' . $action,
-            );
+                'title_' . $action
+            ];
 
             $label = $this->text($keys, null, '', '', true);
         } else {
@@ -5927,17 +5927,21 @@ class Node
         }
 
         if ($label == '') {
-            $actionKeys = array(
+            $actionKeys = [
                 'action_' . $this->m_module . '_' . $nodeType . '_' . $action,
                 'action_' . $nodeType . '_' . $action,
                 'action_' . $action,
-                $action,
-            );
+                $action
+            ];
 
             if ($actionOnly) {
                 return $this->text($actionKeys);
+
             } else {
-                $keys = array('title_' . $this->m_module . '_' . $nodeType, 'title_' . $nodeType, $nodeType);
+                $keys = [
+                    'title_' . $this->m_module . '_' . $nodeType,
+                    'title_' . $nodeType, $nodeType
+                ];
                 $label = $this->text($keys);
                 if ($action != null) {
                     $label .= ' - ' . $this->text($actionKeys);
@@ -5949,11 +5953,12 @@ class Node
     }
 
     /**
-     * Override to customize the filename of file using default action export
-     * @return string|null
+     * Override to customize the filename of file using default action export.
+     *
+     * @return string
      */
-    public function exportFileName(): ?string
+    public function exportFileName(): string
     {
-        return null;
+        return 'export_' . strtolower(str_replace(' ', '_', $this->nodeTitle('export')));
     }
 }

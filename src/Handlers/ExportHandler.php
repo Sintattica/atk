@@ -619,7 +619,6 @@ class ExportHandler extends ActionHandler
             $recordSetNew[] = $row;
         }
 
-        $filename = $this->getNode()->exportFileName() ?: ('export_' . strtolower(str_replace(' ', '_', $this->getNode()->nodeTitle($node))));
         $customRecordList->render(
             $nodeBk,
             $recordSetNew,
@@ -630,12 +629,11 @@ class ExportHandler extends ActionHandler
             1,
             '',
             '',
-            ['filename' => $filename],
+            ['filename' => $this->getNode()->exportFileName()],
             'csv',
             $source['generatetitlerow'],
             true,
-            $delimiter,
-            null
+            $delimiter
         );
 
         return true;
