@@ -26,6 +26,8 @@ class DateAttribute extends Attribute
     const AF_DATE_EDIT_NO_DAY = 536870912; // Don't display the day of the week in edit mode
     const AF_DATE_DEFAULT_EMPTY = 1073741824; // Display butons to clear and 'touch' date
 
+    const FROM_TO_VALUES_SEPARATOR = '-'; // separator used in datagrid search to simulate from/to values
+
     /**
      * Possible values for sorting the year dropdown.
      */
@@ -975,11 +977,11 @@ class DateAttribute extends Attribute
             // >=: one value followed by "-"
             // <=: one value preceded by "-"
             $value = trim($value);
-            if (strpos($value, '-') !== false) {
+            if (strpos($value, self::FROM_TO_VALUES_SEPARATOR) !== false) {
                 list($from, $to) = explode('-', $value);
-                $value = array('from' => trim($from), 'to' => trim($to));
+                $value = ['from' => trim($from), 'to' => trim($to)];
             } else {
-                $value = array('from' => $value, 'to' => $value);
+                $value = ['from' => $value, 'to' => $value];
             }
             foreach (['from', 'to'] as $k) {
                 if ($v = $value[$k]) {
@@ -994,7 +996,7 @@ class DateAttribute extends Attribute
                     // m/yyyy
                     if (!is_numeric($v) && substr_count($v, '/') == 1 && (strlen($v) == 6 || strlen($v) == 7)) {
                         // if we always set the day to 31, the framework somewhere modifies the query for months with less than 31 days
-                        // eg. '2015-09-31' becomes '2015-10-01'
+                        // e.g. '2015-09-31' becomes '2015-10-01'
                         $parts = explode('/', $v);
                         $daysInMonth = self::daysInMonth($parts[0], $parts[1]);
                         if ($k == 'from') {
@@ -1012,18 +1014,17 @@ class DateAttribute extends Attribute
             }
         }
 
-        $valueFrom = $this->fetchValue(array($this->fieldName() => $value['from']));
-        $valueTo = $this->fetchValue(array($this->fieldName() => $value['to']));
+        $valueFrom = $this->fetchValue([$this->fieldName() => $value['from']]);
+        $valueTo = $this->fetchValue([$this->fieldName() => $value['to']]);
 
-        $fromval = $this->value2db(array($this->fieldName() => $valueFrom));
-        $toval = $this->value2db(array($this->fieldName() => $valueTo));
+        $fromval = $this->value2db([$this->fieldName() => $valueFrom]);
+        $toval = $this->value2db([$this->fieldName() => $valueTo]);
 
         $fieldname = $db->func_datetochar($fieldname ? $fieldname : ($table . '.' . $this->fieldName()));
 
         if ($fromval == null && $toval == null) {
-
-        } // do nothing
-        else {
+            // do nothing
+        } else {
             if ($fromval != null && $toval != null) {
                 if ($fromval > $toval) {
                     // User entered dates in wrong order. Let's put them in the right order.
@@ -1032,15 +1033,19 @@ class DateAttribute extends Attribute
                     $toval = $tmp;
                 }
                 $searchcondition = $query->betweenCondition($fieldname, $fromval, $toval);
+
             } else {
                 if ($fromval != null && $toval == null) {
                     $searchcondition = $query->greaterthanequalCondition($fieldname, $fromval);
+
                 } else {
                     if ($fromval == null && $toval != null) {
                         $searchcondition = $query->lessthanequalCondition($fieldname, $toval);
+
                     } else {
                         if ((is_array($value['from'])) or (is_array($value['to']))) {
                             $searchcondition = $this->_getDateArraySearchCondition($query, $table, $value);
+
                         } else {
                             // plain text search condition
                             $value = $this->_autoCompleteDateString($value);
