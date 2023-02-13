@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.14] - 2023-02-13
+### Added
+- Attribute: added "stream" property in FileAttribute
+
+
 ## [9.9.13] - 2023-02-13
 ### Fixed
 - Relation: fix "remove" button of many-to-many select relation
