@@ -51,6 +51,8 @@ class FileAttribute extends Attribute
      */
     const AF_FILE_POPUP = self::AF_POPUP;
 
+    const DOWNLOAD_STREAM_ACTION = 'download_stream_file';
+
     /*
      * Directory with images
      */
@@ -99,6 +101,7 @@ class FileAttribute extends Attribute
     private $previewHeight = '100px';
     private $previewWidth = '100px';
     private $thumbnail = false; // TODO: handle thumbnail (v. display)
+    private $stream = false;
 
     /**
      * Constructor.
@@ -298,33 +301,46 @@ class FileAttribute extends Attribute
         if ($filename) {
             if (is_file($this->m_dir . $filename)) {
                 $imgInfo = getimagesize($this->m_dir . $filename);
-                // link target blank
-                $url = $this->m_url . $filename; //. '?b=' . mt_rand();
-                $ret = sprintf('<a target="_blank" href="%s">', $url);
 
-                if (!$imgInfo || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
-                    $ret .= basename($filename);
-                }
+                if ($this->isStream()) {
+                    $node = $this->getOwnerInstance();
+                    $downloadAttr = (new ActionButtonAttribute('btn_download_stream_file'))
+                        ->setNode($node)
+                        ->setAction(self::DOWNLOAD_STREAM_ACTION)
+                        ->setTarget('_blank')
+                        ->setParams(['atkselector' => $node->getPrimaryKey($record)]);
+                    $downloadAttr->setOwnerInstance($node);
+                    $ret .= $downloadAttr->display($record, 'view');
 
-                if ($imgInfo && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
-                    if (!$this->onlyPreview) {
-                        $ret .= '<br/>';
+                } else {
+                    // link target blank
+                    $url = $this->m_url . $filename; //. '?b=' . mt_rand();
+                    $ret = sprintf('<a target="_blank" href="%s">', $url);
+
+                    if (!$imgInfo || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
+                        $ret .= basename($filename);
                     }
 
-                    if ($this->thumbnail) {
-                        // show thumbnail
-                        $url = dirname($url) . '/thumbnail/' . basename($url);
-                        $ret .= "<img src='$url?b=$randval' style='margin: 5px 0;'/>";
+                    if ($imgInfo && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
+                        if (!$this->onlyPreview) {
+                            $ret .= '<br/>';
+                        }
 
-                    } else {
-                        $ret .= "<img src='$url?b=$randval' style=' 
+                        if ($this->thumbnail) {
+                            // show thumbnail
+                            $url = dirname($url) . '/thumbnail/' . basename($url);
+                            $ret .= "<img src='$url?b=$randval' style='margin: 5px 0;'/>";
+
+                        } else {
+                            $ret .= "<img src='$url?b=$randval' style=' 
                                 max-height: {$this->getPreviewHeight()};
                                 max-width: {$this->getPreviewWidth()}; 
                                 margin: 5px 0;'
                                 />";
+                        }
                     }
+                    $ret .= '</a>';
                 }
-                $ret .= '</a>';
 
             } else {
                 // file not found
@@ -500,7 +516,7 @@ class FileAttribute extends Attribute
                 }
             }
 
-            $orgFilename = isset($rec[$this->fieldName()]['orgfilename']) ? $rec[$this->fieldName()]['orgfilename'] : null;
+            $orgFilename = $rec[$this->fieldName()]['orgfilename'] ?? null;
             if ($orgFilename) {
                 $extension = $this->getFileExtension($orgFilename);
                 if (in_array($extension, $this->m_allowedFileTypes)) {
@@ -1045,6 +1061,17 @@ class FileAttribute extends Attribute
     function setNoSanitize(bool $value): self
     {
         $this->noSanitize = $value;
+        return $this;
+    }
+
+    function isStream(): bool
+    {
+        return $this->stream;
+    }
+
+    function setStream(bool $stream): self
+    {
+        $this->stream = $stream;
         return $this;
     }
 

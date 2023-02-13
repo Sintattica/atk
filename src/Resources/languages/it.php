@@ -45,6 +45,7 @@ return [
     'back' => 'Indietro',
     'back_to' => 'Indietro a',
     'below_minimum_value' => 'Inferiore al minimo valore consentito',
+    'btn_download_stream_file' => 'Download',
     'cancel' => 'Annulla',
     'cancel_edit' => 'Annulla modifica',
     'cannot create directory' => 'Impossibile creare la cartella: ',

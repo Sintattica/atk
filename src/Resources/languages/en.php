@@ -45,6 +45,7 @@ return [
     'back' => 'Back',
     'back_to' => 'Back to',
     'below_minimum_value' => 'Below the minimum allowed value',
+    'btn_download_stream_file' => 'Download',
     'cancel' => 'Cancel',
     'cancel_edit' => 'Cancel edit',
     'cannot create directory' => 'Cannot create directory: ',
