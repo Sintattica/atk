@@ -313,6 +313,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $descriptor = nl2br(htmlentities($this->getDestination()->descriptor($record)));
 
         // Build the record
+        // atkmanytomanyselectrelation-selected is used as selector when "remove" button is clicked
         return '<div class="atkmanytomanyselectrelation-selected mx-2">
                     <input type="hidden" name="' . $name . '" value="' . htmlentities($key) . '"/>
                     <div class="card pb-2" style="width: 150px">

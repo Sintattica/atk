@@ -4,7 +4,7 @@ if (!window.ATK) {
 
 ATK.ManyToManySelectRelation = {
     deleteItem: function (el) {
-        jQuery(el).closest('li').remove();
+        jQuery(el).closest('.atkmanytomanyselectrelation-selected').remove();
     },
 
     add: function (el, url, makeSortable) {
