@@ -333,6 +333,11 @@ class OneToManyRelation extends Relation
         // for the view mode we use the datagrid and load the records ourselves
         if ($mode === 'view' || ($mode === 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {
             $grid = $this->createGrid($record, 'admin', 'view');
+
+            if ($selectHandler = $this->selectRecordsMethod()) {
+                $grid->setSelectHandler($selectHandler);
+            }
+
             $grid->loadRecords(); // load records early
 
             if ($mode === 'view') {
@@ -341,7 +346,7 @@ class OneToManyRelation extends Relation
 
             // no records
             if ($grid->getCount() == 0) {
-                return $this->text('none');
+                return !in_array($mode, ['csv', 'plain']) ? $this->text('none') : '';
             }
 
             $actions = [];
@@ -432,6 +437,10 @@ class OneToManyRelation extends Relation
 
         $actions = $this->m_destInstance->defaultActions('relation', $params);
         $grid->setDefaultActions($actions);
+
+        if ($selectHandler = $this->selectRecordsMethod()) {
+            $grid->setSelectHandler($selectHandler);
+        }
 
         $grid->loadRecords(); // force early load of records
 
@@ -1327,6 +1336,11 @@ class OneToManyRelation extends Relation
     public function getGridExcludes()
     {
         return $this->m_excludes;
+    }
+
+    protected function selectRecordsMethod(): ?callable
+    {
+        return null;
     }
 
     function getExportButton(array $record): string

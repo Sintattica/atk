@@ -1614,10 +1614,10 @@ class DataGrid
         if ($force || ($this->getRecords() === null && $this->getSelectHandler() === null)) {
             $records = $this->selectRecords();
             $this->setRecords($records);
-        } // retrieve records using a custom select handler
-        else {
-            if ($force || $this->getRecords() === null) {
-                $records = call_user_func_array($this->getSelectHandler(), array($this));
+        } else {
+            // retrieve records using a custom select handler
+            if ($this->getRecords() === null) {
+                $records = call_user_func_array($this->getSelectHandler(), [$this]);
                 $this->setRecords($records);
             }
         }
@@ -1626,9 +1626,9 @@ class DataGrid
         if ($force || ($this->getCount() === null && $this->getCountHandler() === null)) {
             $count = $this->countRecords();
             $this->setCount($count);
-        } // retrieve record count using a custom cont handler
-        else {
-            if ($force || $this->getCount() === null) {
+        } else {
+            // retrieve record count using a custom cont handler
+            if ($this->getCount() === null) {
                 $count = call_user_func_array($this->getCountHandler(), array($this));
                 $this->setCount($count);
             }
