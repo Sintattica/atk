@@ -1,5 +1,13 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.15] - 2023-02-17
+### Added
+- Relation: added selectRecordsMethod to set a record SelectHandler for DataGrid
+
+### Fixed
+- Attribute: fix action of ButtonAttribute when FileAttribute is a stream
+
+
 ## [9.9.14] - 2023-02-13
 ### Added
 - Attribute: added "stream" property in FileAttribute
