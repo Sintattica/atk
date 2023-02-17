@@ -51,7 +51,7 @@ class FileAttribute extends Attribute
      */
     const AF_FILE_POPUP = self::AF_POPUP;
 
-    const DOWNLOAD_STREAM_ACTION = 'download_stream_file';
+    const DOWNLOAD_STREAM_ACTION_PREFIX = 'download_stream_';
 
     /*
      * Directory with images
@@ -101,6 +101,9 @@ class FileAttribute extends Attribute
     private $previewHeight = '100px';
     private $previewWidth = '100px';
     private $thumbnail = false; // TODO: handle thumbnail (v. display)
+
+    // set it TRUE to stream file from a directory that is not public
+    // you need to implement the method 'action_ . DOWNLOAD_STREAM_ACTION_PREFIX . {attribute_file_name}'
     private $stream = false;
 
     /**
@@ -306,7 +309,7 @@ class FileAttribute extends Attribute
                     $node = $this->getOwnerInstance();
                     $downloadAttr = (new ActionButtonAttribute('btn_download_stream_file'))
                         ->setNode($node)
-                        ->setAction(self::DOWNLOAD_STREAM_ACTION)
+                        ->setAction(self::DOWNLOAD_STREAM_ACTION_PREFIX . $this->fieldName())
                         ->setTarget('_blank')
                         ->setParams(['atkselector' => $node->getPrimaryKey($record)]);
                     $downloadAttr->setOwnerInstance($node);
