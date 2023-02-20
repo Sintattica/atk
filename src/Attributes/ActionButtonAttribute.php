@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Atk;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 
@@ -33,7 +34,7 @@ class ActionButtonAttribute extends ButtonAttribute
         }
         if (empty($this->params)) {
             // default params
-            $this->params['atkselector'] = $targetNode->getPrimaryKey($record);
+            $this->params[Node::PARAM_ATKSELECTOR] = $targetNode->getPrimaryKey($record);
         }
         $url = Tools::dispatch_url($this->node, $action, $this->params);
         $extraProps = [];

@@ -15,6 +15,7 @@ use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Utils\BrowserInfo;
 use Sintattica\Atk\Handlers\ActionHandler;
 use Exception;
+use ZipArchive;
 
 class Tools
 {
@@ -1084,6 +1085,75 @@ class Tools
         }
 
         return false;
+    }
+
+    /**
+     * @param string $filepath The path of file to be downloaded
+     * @param string $downloadName The name of the file to be downloaded
+     * @param string $mimeType
+     * @throws Exception
+     */
+    public static function downloadFile(string $filepath, string $downloadName = '', string $mimeType = 'application/octet-stream')
+    {
+        self::streamFile($filepath, $downloadName, $mimeType);
+    }
+
+    /**
+     * Downloads one or more file in a .zip
+     *
+     * @param array $filespath List of files to be downloaded (a file .zip will be generated)
+     * @param string $downloadName The name of the file to be downloaded
+     * @throws Exception
+     */
+    public static function downloadFilesZipped(array $filespath, string $downloadName = '')
+    {
+        // creates the .zip file
+        $downloadPath = Config::getGlobal('atktempdir') . 'downloads/';
+        if (!file_exists($downloadPath)) {
+            mkdir($downloadPath);
+        }
+        if (!file_exists($downloadPath)) {
+            throw new Exception("Unable to create $downloadPath directory");
+        }
+        $downloadPath .= '/' . date('YmdHi') . '_archive.zip';
+        $zip = new ZipArchive();
+        $zip->open($downloadPath, ZipArchive::CREATE);
+        foreach ($filespath as $file) {
+            $zip->addFile($file, pathinfo($file, PATHINFO_BASENAME));
+        }
+        $zip->close();
+        $mimeType = 'application/zip';
+
+        self::streamFile($downloadPath, $downloadName, $mimeType);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function streamFile(string $downloadPath, string $downloadName = '', string $mimeType = 'application/octet-stream')
+    {
+        if ($downloadName) {
+            $filename = $downloadName . '.' . pathinfo($downloadPath, PATHINFO_EXTENSION);
+        } else {
+            $filename = pathinfo($downloadPath, PATHINFO_BASENAME);
+        }
+
+        if (!file_exists($downloadPath)) {
+            // the file doesn't exist
+            throw new Exception("File '$filename' not found");
+        }
+
+        header('Content-Description: File Transfer');
+        header("Content-Type: " . $mimeType);
+        header("Content-Transfer-Encoding: Binary");
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header("Content-Length: " . filesize($downloadPath));
+        flush(); // flush system output buffer
+        readfile($downloadPath);
+        exit;
     }
 
     /**

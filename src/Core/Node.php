@@ -7,6 +7,7 @@ use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\ButtonAttribute;
 use Sintattica\Atk\Attributes\FieldSet;
+use Sintattica\Atk\Attributes\FileAttribute;
 use Sintattica\Atk\Attributes\JsonAttribute;
 use Sintattica\Atk\Attributes\StateColorAttribute;
 use Sintattica\Atk\Db\Db;
@@ -229,6 +230,10 @@ class Node
     const PREFIX_FIELDSET = 'fieldset';
     const PREFIX_DEFAULT = 'fieldset';
     const PREFIX_TABBED_PANE = 'tabbedPaneAttr';
+
+    const ACTION_DOWNLOAD_FILE_ATTRIBUTE = 'download_file_attribute';
+    const PARAM_ATTRIBUTE_NAME = 'attribute_name';
+    const PARAM_ATKSELECTOR = 'atkselector';
 
     /*
      * reference to the class which is used to validate atknodes
@@ -1158,13 +1163,24 @@ class Node
     /**
      * Get an attribute by name.
      *
-     * @param string $name The name of the attribute to retrieve.
+     * @param string $attributeName The name of the attribute to retrieve.
      *
      * @return Attribute|Relation The attribute.
      */
-    public function getAttribute($name)
+    public function getAttribute($attributeName)
     {
-        return isset($this->m_attribList[$name]) ? $this->m_attribList[$name] : null;
+        return $this->m_attribList[$attributeName] ?? null;
+    }
+
+    /**
+     * Check if the node has an attribute with the passed name.
+     *
+     * @param string $attributeName
+     * @return bool
+     */
+    public function hasAttribute(string $attributeName): bool
+    {
+        return $this->getAttribute($attributeName) !== null;
     }
 
     /**
@@ -2757,7 +2773,7 @@ class Node
     {
         $actions = [];
 
-        $params['atkselector'] = "[pk]";
+        $params[self::PARAM_ATKSELECTOR] = "[pk]";
 
         if (!$this->hasFlag(self::NF_NO_VIEW) && $this->allowed('view')) {
             $actions['view'] = Tools::dispatch_url($this->atkNodeUri(), 'view', array_merge($params, ['atkaction' => 'view']));
@@ -4985,12 +5001,12 @@ class Node
         $sessionStatus = SessionManager::SESSION_BACK;
 
         if ((isset($this->m_feedback[$action]) && Tools::hasFlag($this->m_feedback[$action], $status)) || $status == ActionHandler::ACTION_FAILED) {
-            $vars = array(
+            $vars = [
                 'atkaction' => 'feedback',
                 'atkfbaction' => $action,
                 'atkactionstatus' => $status,
                 'atkfbmessage' => $message,
-            );
+            ];
             $atkNodeUri = $this->atkNodeUri();
             $sessionStatus = SessionManager::SESSION_REPLACE;
 
@@ -5317,7 +5333,7 @@ class Node
      * @param bool $check Check the presence of the attributes
      * @return Node
      */
-    public function addAttributesFlag(array $attrsNames, int $flag, bool $check = false): self
+    public function addAttributesFlag(array $attrsNames, int $flag, bool $check = true): self
     {
         foreach ($attrsNames as $name) {
             $attr = $this->getAttribute($name);
@@ -5336,7 +5352,7 @@ class Node
      * @param bool $check
      * @return Node
      */
-    protected function addAttributesFlags(array $attrsNames, array $flags, bool $check = false): self
+    protected function addAttributesFlags(array $attrsNames, array $flags, bool $check = true): self
     {
         foreach ($flags as $flag) {
             $this->addAttributesFlag($attrsNames, $flag, $check);
@@ -5683,7 +5699,7 @@ class Node
     {
         if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
             if (!$atkSelectors) {
-                $atkSelectors = $this->m_postvars['atkselector'];
+                $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR];
             }
             $this->getPage()->addContent($this->renderActionPage(
                 $handler->m_action, [$this->confirmAction($atkSelectors, $handler->m_action)]) // show confirm buttons
@@ -5960,5 +5976,46 @@ class Node
     public function exportFileName(): string
     {
         return 'export_' . strtolower(str_replace(' ', '_', $this->nodeTitle('export')));
+    }
+
+    /**
+     * @throws Exception
+     */
+    function action_download_file_attribute(ActionHandler $handler, string $downloadName = '')
+    {
+        if (!$this->m_postvars[self::PARAM_ATKSELECTOR]) {
+            $errorMsg = sprintf($this->text('error_missing_param'), self::PARAM_ATKSELECTOR);
+            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, [], $errorMsg));
+            return;
+        }
+
+        $attributeName = $this->m_postvars[self::PARAM_ATTRIBUTE_NAME];
+        if (!$attributeName || !$this->hasAttribute($attributeName)) {
+            $errorMsg = sprintf($this->text('error_missing_param'), self::PARAM_ATTRIBUTE_NAME);
+            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, [], $errorMsg));
+            return;
+        }
+
+        $record = $this->select($this->m_postvars[self::PARAM_ATKSELECTOR])->getFirstRow();
+        if (!$record) {
+            $errorMsg = $this->text('error_record_not_found');
+            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, [], $errorMsg));
+            return;
+        }
+
+        if (!$this->allowed($handler->m_action, $record)) {
+            $handler->renderAccessDeniedPage();
+            return;
+        }
+
+        $fileAttr = $this->getAttribute($attributeName);
+        if (!$fileAttr instanceof FileAttribute) {
+            $errorMsg = sprintf($this->text('error_attribute_instance_of_fileattribute'), $attributeName);
+            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, $record, $errorMsg));
+            return;
+        }
+
+        Tools::downloadFile($fileAttr->getDir() . $record[$attributeName]['filename'], $downloadName);
+        exit;
     }
 }

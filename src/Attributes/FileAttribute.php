@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Attributes;
 use Exception;
 use SimpleXMLElement;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
 
@@ -50,8 +51,6 @@ class FileAttribute extends Attribute
      * Show preview in popup instead of inline.
      */
     const AF_FILE_POPUP = self::AF_POPUP;
-
-    const DOWNLOAD_STREAM_ACTION_PREFIX = 'download_stream_';
 
     /*
      * Directory with images
@@ -307,17 +306,21 @@ class FileAttribute extends Attribute
 
                 if ($this->isStream()) {
                     $node = $this->getOwnerInstance();
-                    $downloadAttr = (new ActionButtonAttribute('btn_download_stream_file'))
+                    $downloadAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
                         ->setNode($node)
-                        ->setAction(self::DOWNLOAD_STREAM_ACTION_PREFIX . $this->fieldName())
+                        ->setText($this->text('download'))
+                        ->setAction(Node::ACTION_DOWNLOAD_FILE_ATTRIBUTE)
                         ->setTarget('_blank')
-                        ->setParams(['atkselector' => $node->getPrimaryKey($record)]);
+                        ->setParams([
+                            Node::PARAM_ATKSELECTOR => $node->getPrimaryKey($record),
+                            Node::PARAM_ATTRIBUTE_NAME => $this->fieldName()
+                        ]);
                     $downloadAttr->setOwnerInstance($node);
                     $ret .= $downloadAttr->display($record, 'view');
 
                 } else {
                     // link target blank
-                    $url = $this->m_url . $filename; //. '?b=' . mt_rand();
+                    $url = $this->m_url . $filename;
                     $ret = sprintf('<a target="_blank" href="%s">', $url);
 
                     if (!$imgInfo || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
@@ -896,6 +899,16 @@ class FileAttribute extends Attribute
         }
 
         return $this;
+    }
+
+    public function getDir(): string
+    {
+        return $this->m_dir;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->m_url;
     }
 
     /**
