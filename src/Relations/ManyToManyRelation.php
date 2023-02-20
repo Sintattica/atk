@@ -405,7 +405,7 @@ class ManyToManyRelation extends Relation
                         $descriptor = Tools::actionHref(
                             $this->m_destination,
                             'view',
-                            ['atkselector' => $this->getDestination()->getPrimaryKey($rec)],
+                            [Node::PARAM_ATKSELECTOR => $this->getDestination()->getPrimaryKey($rec)],
                             $descriptor,
                             '',
                             SessionManager::SESSION_NESTED

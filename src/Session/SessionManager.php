@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Session;
 
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Ui\Ui;
 
@@ -535,7 +536,7 @@ class SessionManager
             'atkdg*',
             'atkdgsession',
             'atksearch',
-            'atkselector',
+            Node::PARAM_ATKSELECTOR,
             'atksearchmode',
             'atkorderby',
             'atkstartat',
@@ -551,7 +552,7 @@ class SessionManager
 
         // lockedvars are session or page vars that will not be overwritten in partial mode
         // e.g., the values that are already known in the session will be used
-        $lockedVars = ['atknodeuri', 'atkaction', 'atkselector', 'atkmenu'];
+        $lockedVars = ['atknodeuri', 'atkaction', Node::PARAM_ATKSELECTOR, 'atkmenu'];
 
         // Mental note: We have an $this->atkLevel() function for retrieving the atklevel,
         // but we use the global var itself here, because it gets modified in

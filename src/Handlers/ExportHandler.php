@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Handlers;
 
 use Exception;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\RecordList\CustomRecordList;
 use Sintattica\Atk\Core\Tools;
@@ -583,7 +584,7 @@ class ExportHandler extends ActionHandler
 
         $atkFilter = Tools::atkArrayNvl($source, 'atkfilter', '');
 
-        $atkSelector = $sessionBack['atkselector'] ?? '';
+        $atkSelector = $sessionBack[Node::PARAM_ATKSELECTOR] ?? '';
         $condition = $atkSelector . ($atkSelector != '' && $atkFilter != '' ? ' AND ' : '') . $atkFilter;
         $recordSet = $nodeBk->select($condition)->orderBy($atkOrderBy)->includes($listIncludes)->mode('export')->getAllRows();
 

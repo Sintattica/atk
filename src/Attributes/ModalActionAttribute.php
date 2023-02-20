@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Utils\StringParser;
 
@@ -248,7 +249,7 @@ class ModalActionAttribute extends DummyAttribute
         $result .= '<input type="hidden" name="atkaction" value="' . $this->atkActionName . '">';
         $result .= '<input type="hidden" name="atkmenu" value="' . $sm->globalStackVar('atkmenu') . '">';
         $result .= '<input type="hidden" name="atknodeuri" value="' . $nodeInstance->atkNodeUri() . '">';
-        $result .= '<input type="hidden" name="atkselector" value="' . $nodeInstance->getPrimaryKey($record) . '">';
+        $result .= '<input type="hidden" name="' . Node::PARAM_ATKSELECTOR .'" value="' . $nodeInstance->getPrimaryKey($record) . '">';
 
         foreach ($this->hiddenParams as $key => $val) {
             $result .= '<input type="hidden" name="' . $key . '" value="' . $val . '">';

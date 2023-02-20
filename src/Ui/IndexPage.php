@@ -158,7 +158,7 @@ class IndexPage
             $userRecord = $userNode->select($userAtkSelector)->getFirstRow();
             $action = $userNode->allowed('edit', $userRecord) ? 'edit' : 'view';
             $url = SessionManager::getInstance()->sessionUrl(
-                Tools::dispatch_url($userNode->atkNodeUri(), $action, ['atkselector' => $userAtkSelector]),
+                Tools::dispatch_url($userNode->atkNodeUri(), $action, [Node::PARAM_ATKSELECTOR => $userAtkSelector]),
                 SessionManager::SESSION_NEW
             );
         }
@@ -219,8 +219,8 @@ class IndexPage
             $destination = '';
             if (isset($ATK_VARS['atknodeuri']) && isset($ATK_VARS['atkaction'])) {
                 $destination = '&atknodeuri=' . $ATK_VARS['atknodeuri'] . '&atkaction=' . $ATK_VARS['atkaction'];
-                if (isset($ATK_VARS['atkselector'])) {
-                    $destination .= '&atkselector=' . $ATK_VARS['atkselector'];
+                if (isset($ATK_VARS[Node::PARAM_ATKSELECTOR])) {
+                    $destination .= '&' . Node::PARAM_ATKSELECTOR . '=' . $ATK_VARS[Node::PARAM_ATKSELECTOR];
                 }
             }
 
@@ -309,21 +309,21 @@ class IndexPage
             $node->callHandler($node->m_action);
             $id = '';
 
-            if (isset($node->m_postvars['atkselector']) && is_array($node->m_postvars['atkselector'])) {
+            if (isset($node->m_postvars[Node::PARAM_ATKSELECTOR]) && is_array($node->m_postvars[Node::PARAM_ATKSELECTOR])) {
                 $atkSelectorDecoded = [];
 
-                foreach ($node->m_postvars['atkselector'] as $rowIndex => $selector) {
+                foreach ($node->m_postvars[Node::PARAM_ATKSELECTOR] as $rowIndex => $selector) {
                     list(, $pk) = explode('=', $selector);
                     $atkSelectorDecoded[] = $pk;
                     $id = implode(',', $atkSelectorDecoded);
                 }
             } else {
-                list(, $id) = explode('=', Tools::atkArrayNvl($node->m_postvars, 'atkselector', '='));
+                list(, $id) = explode('=', Tools::atkArrayNvl($node->m_postvars, Node::PARAM_ATKSELECTOR, '='));
             }
 
             $page->register_hiddenvars(array(
                 'atknodeuri' => $node->m_module . '.' . $node->m_type,
-                'atkselector' => str_replace("'", '', $id),
+                Node::PARAM_ATKSELECTOR => str_replace("'", '', $id),
             ));
         } else {
             $page->addContent($this->accessDeniedPage($node->getType()));

@@ -84,7 +84,7 @@ class ManyBoolRelation extends ManyToManyRelation
                         $remotePkAttr = $this->getDestination()->getAttribute($this->getDestination()->primaryKeyField());
                         $remoteValue = $remotePkAttr->value2db($recordset[$i]);
                         $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey().'='.$localValue.''.' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".$remoteValue."'";
-                        $detailLink = Tools::href(Tools::dispatch_url($this->m_link, 'edit', array('atkselector' => $selector)),
+                        $detailLink = Tools::href(Tools::dispatch_url($this->m_link, 'edit', [Node::PARAM_ATKSELECTOR => $selector]),
                             '['.Tools::atktext('edit', 'atk').']', SessionManager::SESSION_NESTED, true);
                     }
                 }

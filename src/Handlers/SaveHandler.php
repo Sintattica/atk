@@ -173,7 +173,7 @@ class SaveHandler extends ActionHandler
         if ($this->m_node->hasFlag(Node::NF_EDITAFTERADD) && $this->m_node->allowed('edit')) {
             // forward atkpkret for newly added records
 
-            $params['atkselector'] = $this->m_node->primaryKey($record);
+            $params[Node::PARAM_ATKSELECTOR] = $this->m_node->primaryKey($record);
 
             if (isset($this->m_postvars['atkpkret'])) {
                 $params['atkpkret'] = $this->m_postvars['atkpkret'];

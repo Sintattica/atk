@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Tools;
 
@@ -36,7 +37,7 @@ class EditcopyHandler extends ActionHandler
             $db->commit();
             $this->clearCache();
             $sm = SessionManager::getInstance();
-            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit', array('atkselector' => $this->m_node->primaryKey($record))),
+            $location = $sm->sessionUrl(Tools::dispatch_url($this->m_node->atkNodeUri(), 'edit', [Node::PARAM_ATKSELECTOR => $this->m_node->primaryKey($record)]),
                 SessionManager::SESSION_REPLACE);
             $this->m_node->redirect($location);
         }
@@ -49,7 +50,7 @@ class EditcopyHandler extends ActionHandler
      */
     protected function getCopyRecord()
     {
-        $selector = $this->m_postvars['atkselector'];
+        $selector = $this->m_postvars[Node::PARAM_ATKSELECTOR];
         $recordset = $this->m_node->select($selector)->mode('copy')->getAllRows();
 
         if (Tools::count($recordset) > 0) {

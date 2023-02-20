@@ -408,7 +408,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getViewActionLink(array $record): string
     {
-        $url = Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'view', ['atkselector' => $this->getDestination()->primaryKey($record)]);
+        $url = Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'view', [Node::PARAM_ATKSELECTOR => $this->getDestination()->primaryKey($record)]);
         return Tools::href($url, $this->text('view'), SessionManager::SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link btn btn-sm btn-default mx-1"');
     }
 
@@ -420,7 +420,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      */
     protected function getEditActionLink(array $record): string
     {
-        $url = Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'edit', ['atkselector' => $this->getDestination()->primaryKey($record)]);
+        $url = Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'edit', [Node::PARAM_ATKSELECTOR => $this->getDestination()->primaryKey($record)]);
         return Tools::href($url, $this->text('edit'), SessionManager::SESSION_NESTED, true, 'class="atkmanytomanyselectrelation-link btn btn-sm btn-warning mx-1"');
     }
 

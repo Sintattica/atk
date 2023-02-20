@@ -351,7 +351,7 @@ class OneToManyRelation extends Relation
 
             $actions = [];
             if (!$this->m_destInstance->hasFlag(Node::NF_NO_VIEW)) {
-                $actions['view'] = Tools::dispatch_url($this->m_destination, 'view', ['atkselector' => '[pk]', 'atkfilter' => $this->m_destinationFilter]);
+                $actions['view'] = Tools::dispatch_url($this->m_destination, 'view', [Node::PARAM_ATKSELECTOR => '[pk]', 'atkfilter' => $this->m_destinationFilter]);
             }
 
             $grid->setDefaultActions($actions);
@@ -381,7 +381,7 @@ class OneToManyRelation extends Relation
             foreach ($records as $currentRecord) {
                 $descriptor = $this->m_destInstance->descriptor($currentRecord);
                 if ($this->hasFlag(ManyToOneRelation::AF_RELATION_AUTOLINK)) {
-                    $descriptor = Tools::actionHref($this->m_destInstance->atkNodeUri(), 'view', ['atkselector' => $currentRecord['atkprimkey']], $descriptor, '', SessionManager::SESSION_NESTED);
+                    $descriptor = Tools::actionHref($this->m_destInstance->atkNodeUri(), 'view', [Node::PARAM_ATKSELECTOR => $currentRecord['atkprimkey']], $descriptor, '', SessionManager::SESSION_NESTED);
                 }
                 if ($this->getDisplayListMode() === parent::MODE_LIST_UL) {
                     $format = '<li>%s</li>';
@@ -1104,10 +1104,10 @@ class OneToManyRelation extends Relation
                 $query->addSearchCondition($searchcondition);
                 $query->setDistinct(true);
 
-                // @todo: is this still needed?
-                if ($this->m_ownerInstance->m_postvars['atkselector']) {
+                // TODO: is this still needed?
+                if ($this->m_ownerInstance->m_postvars[Node::PARAM_ATKSELECTOR]) {
                     $query->addTable($this->m_destInstance->m_table);
-                    $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
+                    $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars[Node::PARAM_ATKSELECTOR]));
                 }
             }
         }
@@ -1227,7 +1227,7 @@ class OneToManyRelation extends Relation
             $atk = Atk::getInstance();
             $rel = $atk->atkGetNode($classname, $cache_id);
             // Get the current atkselector
-            $where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
+            $where = $this->translateSelector($this->m_ownerInstance->m_postvars[Node::PARAM_ATKSELECTOR]);
             if ($where) {
                 $childrecords = $rel->select($where)->getAllRows();
                 if (!empty($childrecords)) {

@@ -50,7 +50,7 @@ class DeleteHandler extends ActionHandler
             // confirmation page yet, so we display it
             $page = $this->getPage();
             $page->addContent($this->m_node->renderActionPage('delete',
-                $this->m_node->confirmAction($this->m_postvars['atkselector'], 'delete', true, true, $this->getCSRFToken())));
+                $this->m_node->confirmAction($this->m_postvars[Node::PARAM_ATKSELECTOR], 'delete', true, true, $this->getCSRFToken())));
         } else {
             $this->_handleCancelAction();
         }
@@ -66,11 +66,11 @@ class DeleteHandler extends ActionHandler
     /**
      * Check if we are allowed to remove the given records.
      *
-     * @return bool is delete action allowed?
+     * @return bool is "delete action" allowed?
      */
     public function _checkAllowed()
     {
-        $atkselector = $this->m_postvars['atkselector'];
+        $atkselector = $this->m_postvars[Node::PARAM_ATKSELECTOR];
         if (is_array($atkselector)) {
             $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
         } else {
@@ -125,7 +125,7 @@ class DeleteHandler extends ActionHandler
     protected function _doDeleteDb()
     {
         $db = $this->m_node->getDb();
-        if ($this->m_node->deleteDb($this->m_postvars['atkselector'])) {
+        if ($this->m_node->deleteDb($this->m_postvars[Node::PARAM_ATKSELECTOR])) {
             $db->commit();
             $this->clearCache();
 
@@ -144,7 +144,7 @@ class DeleteHandler extends ActionHandler
      */
     protected function _doDeleteSession()
     {
-        $selector = Tools::atkArrayNvl($this->m_postvars, 'atkselector', '');
+        $selector = Tools::atkArrayNvl($this->m_postvars, Node::PARAM_ATKSELECTOR, '');
 
         return SessionStore::getInstance()->deleteDataRowForSelector($selector);
     }

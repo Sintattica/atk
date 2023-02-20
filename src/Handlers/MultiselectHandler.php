@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Utils\StringParser;
 use Sintattica\Atk\DataGrid\DataGrid;
@@ -28,7 +29,7 @@ class MultiselectHandler extends AdminHandler
             return;
         }
 
-        if (isset($this->m_postvars['atkselector'])) {
+        if (isset($this->m_postvars[Node::PARAM_ATKSELECTOR])) {
             $output = $this->invoke('handleMultiselect');
         } else {
             $output = $this->invoke('multiSelectPage');
@@ -48,8 +49,12 @@ class MultiselectHandler extends AdminHandler
     {
         $node = $this->getNode();
         $columnConfig = $node->getColumnConfig();
-        $recordset = $node->select(implode(' OR ',
-            $this->m_postvars['atkselector']))->orderBy($columnConfig->getOrderByStatement())->excludes($node->m_listExcludes)->mode('multiselect')->getAllRows();
+        $recordset = $node
+            ->select(implode(' OR ', $this->m_postvars[Node::PARAM_ATKSELECTOR]))
+            ->orderBy($columnConfig->getOrderByStatement())
+            ->excludes($node->m_listExcludes)
+            ->mode('multiselect')
+            ->getAllRows();
 
         // loop recordset to parse atktargetvar
         $atktarget = Tools::atkurldecode($node->m_postvars['atktarget']);

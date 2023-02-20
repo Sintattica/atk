@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 
 /**
@@ -26,7 +27,7 @@ class CopyHandler extends ActionHandler
     public function nodeCopy()
     {
         Tools::atkdebug('CopyHandler::nodeCopy()');
-        $recordset = $this->m_node->select($this->m_postvars['atkselector'])->mode('copy')->getAllRows();
+        $recordset = $this->m_node->select($this->m_postvars[Node::PARAM_ATKSELECTOR])->mode('copy')->getAllRows();
         $db = $this->m_node->getDb();
         if (Tools::count($recordset) > 0) {
             // allowed to copy record?

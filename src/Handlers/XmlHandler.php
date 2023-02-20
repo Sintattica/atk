@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Core\Tools;
 
@@ -17,7 +18,9 @@ class XmlHandler extends ActionHandler
      */
     public function action_xml()
     {
-        $recordset = $this->m_node->select($this->m_postvars['atkselector'])->mode('xml')->getAllRows();
+        $recordset = $this->m_node->select($this->m_postvars[Node::PARAM_ATKSELECTOR])
+            ->mode('xml')
+            ->getAllRows();
 
         $output = Output::getInstance();
 

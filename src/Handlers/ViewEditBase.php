@@ -71,10 +71,8 @@ class ViewEditBase extends ActionHandler
      */
     protected function getRecordFromDb()
     {
-        $selector = Tools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', '');
-        $record = $this->m_node->select($selector)->mode('edit')->getFirstRow();
-
-        return $record;
+        $selector = Tools::atkArrayNvl($this->m_node->m_postvars, Node::PARAM_ATKSELECTOR, '');
+        return $this->m_node->select($selector)->mode('edit')->getFirstRow();
     }
 
     /**
@@ -84,8 +82,7 @@ class ViewEditBase extends ActionHandler
      */
     protected function getRecordFromSession()
     {
-        $selector = Tools::atkArrayNvl($this->m_node->m_postvars, 'atkselector', '');
-
+        $selector = Tools::atkArrayNvl($this->m_node->m_postvars, Node::PARAM_ATKSELECTOR, '');
         return SessionStore::getInstance()->getDataRowForSelector($selector);
     }
 

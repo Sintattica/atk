@@ -530,15 +530,15 @@ class TreeNode extends Node
                     }
                     if ($cnt > 0) {
                         if (!$this->hasFlag(self::NF_NO_EDIT)) {
-                            $actions['edit'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=edit&atkselector='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
+                            $actions['edit'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=edit&' . parent::PARAM_ATKSELECTOR . '='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
                         }
                         if (($this->hasFlag(self::NF_COPY) && $this->allowed('add') && !$this->hasFlag(self::NF_TREE_NO_ROOT_COPY)) || ($this->m_tree[$cnt]['level'] != 1 && $this->hasFlag(self::NF_COPY) && $this->allowed('add'))) {
-                            $actions['copy'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=copy&atkselector='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
+                            $actions['copy'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=copy&' . parent::PARAM_ATKSELECTOR . '='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
                         }
                         if ($this->hasFlag(self::NF_NO_DELETE) || ($this->hasFlag(self::NF_TREE_NO_ROOT_DELETE) && $this->m_tree[$cnt]['level'] == 1)) {
                             // Do nothing
                         } else {
-                            $actions['delete'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=delete&atkselector='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
+                            $actions['delete'] = Config::getGlobal('dispatcher').'?atknodeuri='.$this->atkNodeUri().'&atkaction=delete&' . parent::PARAM_ATKSELECTOR . '='.$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]['id'];
                         }
                     }
 

@@ -2909,13 +2909,13 @@ class Node
         }
 
         if ($mergeSelectors) {
-            $formstart .= '<input type="hidden" name="atkselector" value="' . $atkselector_str . '">';
+            $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector_str . '">';
         } else {
             if (!is_array($atkselector)) {
-                $formstart .= '<input type="hidden" name="atkselector" value="' . $atkselector . '">';
+                $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector . '">';
             } else {
                 foreach ($atkselector as $selector) {
-                    $formstart .= '<input type="hidden" name="atkselector[]" value="' . $selector . '">';
+                    $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '[]" value="' . $selector . '">';
                 }
             }
         }
@@ -3709,7 +3709,7 @@ class Node
      *                           validated
      * @return bool
      */
-    public function validate(&$record, $mode, $ignoreList = array())
+    public function validate(&$record, $mode, $ignoreList = [])
     {
         /** @var NodeValidator $validateObj */
         $validateObj = new $this->m_validate_class();
