@@ -574,7 +574,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      *
      * @return string the position column name of the join
      */
-    public function getPositionAttribute(): string
+    public function getPositionAttribute(): ?string
     {
         return $this->m_positionAttribute;
     }
