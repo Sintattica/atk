@@ -173,11 +173,15 @@ class PasswordAttribute extends Attribute
         }
 
         $result .= '<div class="col-sm mt-1 mt-sm-0 mb-1 mb-sm-0">';
-        $result  .= '<input placeholder="'.Tools::atktext('password_new', 'atk').'" type="' . $typeNew . '" ' .   $cssClass . ' id="' . $id . '[new]"   name="' . $name . '[new]"        value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . $copyPassOnChange . '>';
+
+        $result .= '<style>input.no-autocomplete { cursor: text; background-color: #fff;};</style>';
+
+        $cssClass .= " no-autocomplete";
+        $result  .= '<input onfocus="this.removeAttribute(\'readonly\');" readonly placeholder="'.Tools::atktext('password_new', 'atk').'" type="' . $typeNew . '" ' .   $cssClass . ' id="' . $id . '[new]"   name="' . $name . '[new]"        value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . $copyPassOnChange . '>';
         $result .= '</div>';
 
         $result .= '<div class="col-sm">';
-        $result  .= '<input placeholder="'.Tools::atktext('password_again', 'atk').'" type="' . $typeAgain . '" ' . $cssClass . ' id="' . $id . '[again]" name="' . $name . '[again]"' . ' value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ' >';
+        $result  .= '<input onfocus="this.removeAttribute(\'readonly\');" readonly placeholder="'.Tools::atktext('password_again', 'atk').'" type="' . $typeAgain . '" ' . $cssClass . ' id="' . $id . '[again]" name="' . $name . '[again]"' . ' value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ' >';
         $result .= '</div>';
 
         $result .='</div>';
