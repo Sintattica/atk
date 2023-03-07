@@ -1,5 +1,9 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.9.17] - 2023-03-07
+### Fixed
+- PasswordAttribute: fix password autocomplete
+
 ## [9.9.16] - 2023-02-20
 ### Added
 - Node: added action download_file_attribute
