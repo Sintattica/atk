@@ -916,5 +916,21 @@ return [
 
 
     /******* Admin LTE 3 *********/
-    'enableDevModeNavbar' => true
+    'enableDevModeNavbar' => true,
+
+    'expandSidebarOnHover' => true,
+    'indentSidebarChildren' => true,
+    'flatNavStyle' => false,
+    'compactSidebarStyle' => false,
+    'legacyNavStyle' => false,
+    'bodySmallText' => true,
+    'navSmallText' => false,
+    'sidebarSmallText' => false,
+    'collapsedSidebar' => false,
+    'footerSmallText' => false,
+    'brandSmallText' => false,
+    'sidebarElevation' => 2,
+    'holdTransition' => false,
+    'fixedNavHeader' => true,
+    'menuAccordion' => true,
 ];
