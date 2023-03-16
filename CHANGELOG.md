@@ -1,5 +1,9 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## [9.9.18] - 2023-03-07
+## [9.9.20] - 2023-03-16
+### Fixed
+- Sidebar: collapsed on load
+
+## [9.9.19] - 2023-03-16
 ### Added
 - Config: added UI configurations on config file
 
