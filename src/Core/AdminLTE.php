@@ -172,6 +172,10 @@ class AdminLTE
             $bodyClasses .= " hold-transition";
         }
 
+        if ($this->isCollapsedSidebar()) {
+            $bodyClasses .= " sidebar-collapse";
+        }
+
         $bodyClasses .= $this->getFixedNavHeaderClass();
 
         return $bodyClasses;
@@ -194,6 +198,7 @@ class AdminLTE
         if (!$this->isExpandSidebarOnHover()) {
             $classes .= " sidebar-no-expand";
         }
+
 
         $classes .= " elevation-" . $this->getSidebarElevation();
 
