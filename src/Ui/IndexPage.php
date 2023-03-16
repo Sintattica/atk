@@ -136,7 +136,7 @@ class IndexPage
         $bodyprops = $this->m_extrabodyprops != '' ?: null;
         $headers = $this->m_extraheaders != '' ?: null;
 
-        $content = $this->m_page->render($title, $this->m_flags, $bodyprops, $headers, $this->m_adminLte->getGeneralBodyClassess());
+        $content = $this->m_page->render($title, $this->m_flags, $bodyprops, $headers, $this->m_adminLte->getGeneralBodyClasses());
 
         $this->m_output->output($content);
         $this->m_output->outputFlush();
