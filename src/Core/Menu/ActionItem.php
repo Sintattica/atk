@@ -86,10 +86,14 @@ class ActionItem extends Item
     }
 
     /**
-     * @return int|array|string
+     * @return bool|array
      */
     public function getEnable()
     {
+        // parent actionitem or enable == true
+        if ((!$this->nodeUri && !$this->action) || $this->enable === true) {
+            return true;
+        }
 
         if ($this->nodeUri && $this->action) {
             return [$this->nodeUri, $this->action];

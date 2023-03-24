@@ -33,7 +33,7 @@ abstract class Item
 
     protected $parent = self::DEFAULT_PARENT;
     protected $position = MenuBase::MENU_SIDEBAR;
-    protected $enable = 1;
+    protected $enable = false;
     protected $order = self::DEFAULT_ORDER;
     protected $module = '';
     protected $raw = false;
@@ -118,14 +118,14 @@ abstract class Item
     }
 
     /**
-     * @return int|array|string
+     * @return bool|array
      */
     public function getEnable()
     {
         return $this->enable;
     }
 
-    public function setEnable(int $enable): self
+    public function setEnable(bool $enable): self
     {
         $this->enable = $enable;
         return $this;
