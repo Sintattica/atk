@@ -29,6 +29,9 @@ class ActionItem extends Item
         $this->name = $name;
         $this->nodeUri = $nodeUri;
         $this->action = $action;
+
+        // in ActionItem we will check node permissions by default
+        $this->enable = false;
     }
 
     /**

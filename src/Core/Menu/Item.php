@@ -33,7 +33,7 @@ abstract class Item
 
     protected $parent = self::DEFAULT_PARENT;
     protected $position = MenuBase::MENU_SIDEBAR;
-    protected $enable = false;
+    protected $enable = true;
     protected $order = self::DEFAULT_ORDER;
     protected $module = '';
     protected $raw = false;

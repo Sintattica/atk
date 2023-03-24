@@ -582,7 +582,7 @@ abstract class MenuBase
             $item->getName(),
             "",
             $item->getParent(),
-            $item->getEnable() ? 1 : 0,
+            $this->mapItemEnable($item->getEnable()),
             $item->getOrder(),
             $item->getModule(),
             "",
@@ -610,7 +610,7 @@ abstract class MenuBase
             $item->getName(),
             "",
             $item->getParent(),
-            $item->getEnable() ? 1 : 0,
+            $this->mapItemEnable($item->getEnable()),
             $item->getOrder(),
             $item->getModule(),
             "",
@@ -660,7 +660,7 @@ abstract class MenuBase
             $item->getName(),
             $item->getUrl(),
             $item->getParent(),
-            $item->getEnable() ? 1 : 0,
+            $this->mapItemEnable($item->getEnable()),
             $item->getOrder(),
             $item->getModule(),
             "",
@@ -690,7 +690,7 @@ abstract class MenuBase
             $item->getName(),
             $item->getUrl(),
             $item->getParent(),
-            $item->getEnable() ? 1 : 0,
+            $this->mapItemEnable($item->getEnable()),
             $item->getOrder(),
             $item->getModule(),
             $item->getTarget(),
@@ -740,5 +740,17 @@ abstract class MenuBase
         }
 
         return $this->getMenuTranslation($item['name'], $item['module']) . $append;
+    }
+
+    /**
+     * @param bool|array $enable
+     * @return int|array
+     */
+    private function mapItemEnable($enable)
+    {
+        if (is_array($enable)) {
+            return $enable;
+        }
+        return $enable ? 1 : 0; 
     }
 }
