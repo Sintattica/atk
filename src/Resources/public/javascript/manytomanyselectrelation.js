@@ -22,7 +22,14 @@ ATK.ManyToManySelectRelation = {
                 });
 
                 // adds the new item to the list
-                boxParent.parent().next('.atkmanytomanyselectrelation-selection').append(newItem);
+                let manyToManySelectRelationSelectedBox = boxParent.parent().next('.atkmanytomanyselectrelation-selection');
+                if (manyToManySelectRelationSelectedBox.length === 0) {
+                    // removes list null value
+                    boxParent.parent().next('i').remove();
+                    boxParent.parent().after('<div class="atkmanytomanyselectrelation-selection row justify-content-center"></div>');
+                }
+                manyToManySelectRelationSelectedBox = boxParent.parent().next('.atkmanytomanyselectrelation-selection'); // now must exists
+                manyToManySelectRelationSelectedBox.append(newItem);
 
                 // empty the select
                 boxParent.find('select.ManyToOneRelation').val(null).trigger('change');
