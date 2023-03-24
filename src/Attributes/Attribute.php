@@ -1149,12 +1149,16 @@ class Attribute
     {
         if (Tools::count($this->m_onchangecode)) {
             $page = Page::getInstance();
-            $page->register_scriptcode('
-    function ' . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
-    {
-      $this->m_onchangehandler_init
-      " . implode("\n      ", $this->m_onchangecode) . "
-    }\n");
+
+            $script = "
+               function " . $this->getHtmlId($fieldprefix) . $elementNr . "_onChange(el)
+                {
+                  $this->m_onchangehandler_init
+                  " . implode("\n      ", $this->m_onchangecode) . "
+                }\n
+            ";
+
+            $page->register_scriptcode($script);
         }
     }
 

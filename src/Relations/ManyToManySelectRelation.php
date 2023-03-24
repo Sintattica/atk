@@ -469,7 +469,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
         $relation = $this->getManyToOneRelation();
 
         $hasPositionAttribute = $this->hasPositionAttribute() ? 'true' : 'false';
-        $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '{$url}', {$hasPositionAttribute});");
+        $relation->addOnChangeHandler("ATK.ManyToManySelectRelation.add(el, '$url', $hasPositionAttribute);");
 
         $relation->setNoneLabel($this->text('select_none_obligatory'));
         unset($record[$relation->fieldName()]);
