@@ -2566,4 +2566,18 @@ class Tools
         return false;
     }
 
+    /**
+     * Replaces only N occurrences of $subject, where N == $limit.
+     *
+     * @param string $search
+     * @param string $replace
+     * @param string $subject
+     * @param int $limit
+     * @return string
+     */
+    static function strReplaceOccurrence(string $search, string $replace, string $subject, int $limit = 1): string
+    {
+        $search = '/'.preg_quote($search, '/').'/';
+        return preg_replace($search, $replace, $subject, $limit);
+    }
 }

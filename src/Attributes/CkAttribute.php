@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Language;
+use Sintattica\Atk\Core\Tools;
 
 /**
  * Attribute wrapper for CKEditor (the successor of FCK Editor)
@@ -138,6 +139,7 @@ class CkAttribute extends HtmlAttribute
     {
         switch ($this->enterMode) {
             case self::ENTER_MODE_BR:
+                $record[$this->fieldName()] = Tools::strReplaceOccurrence('</p>', '', $record[$this->fieldName()]);
                 $record[$this->fieldName()] = str_replace('<p>', '', $record[$this->fieldName()]);
                 $record[$this->fieldName()] = str_replace('</p>', '</br></br>', $record[$this->fieldName()]);
                 break;
