@@ -933,4 +933,6 @@ return [
     'holdTransition' => false,
     'fixedNavHeader' => true,
     'menuAccordion' => true,
+
+    'custom_font' => '',
 ];
