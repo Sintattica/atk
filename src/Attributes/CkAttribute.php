@@ -137,17 +137,20 @@ class CkAttribute extends HtmlAttribute
 
     public function value2db(array $record)
     {
-        switch ($this->enterMode) {
-            case self::ENTER_MODE_BR:
-                $record[$this->fieldName()] = Tools::strReplaceOccurrence('</p>', '', $record[$this->fieldName()]);
-                $record[$this->fieldName()] = str_replace('<p>', '', $record[$this->fieldName()]);
-                $record[$this->fieldName()] = str_replace('</p>', '</br></br>', $record[$this->fieldName()]);
-                break;
+        if ($record[$this->fieldName()]) {
 
-            case self:: ENTER_MODE_DIV:
-                $record[$this->fieldName()] = str_replace('<p>', '<div>', $record[$this->fieldName()]);
-                $record[$this->fieldName()] = str_replace('</p>', '</div>', $record[$this->fieldName()]);
-                break;
+            switch ($this->enterMode) {
+                case self::ENTER_MODE_BR:
+                    $record[$this->fieldName()] = Tools::strReplaceOccurrence('</p>', '', $record[$this->fieldName()]);
+                    $record[$this->fieldName()] = str_replace('<p>', '', $record[$this->fieldName()]);
+                    $record[$this->fieldName()] = str_replace('</p>', '</br></br>', $record[$this->fieldName()]);
+                    break;
+
+                case self:: ENTER_MODE_DIV:
+                    $record[$this->fieldName()] = str_replace('<p>', '<div>', $record[$this->fieldName()]);
+                    $record[$this->fieldName()] = str_replace('</p>', '</div>', $record[$this->fieldName()]);
+                    break;
+            }
         }
 
         return parent::value2db($record);
