@@ -13,6 +13,8 @@ class CurrencyAttribute extends NumberAttribute
 {
     public $m_currencysymbol;
 
+    private $maxWidth;
+
     /**
      * Constructor.
      *
@@ -32,53 +34,27 @@ class CurrencyAttribute extends NumberAttribute
         $thousandsseparator = ''
     ) {
         parent::__construct($name, $flags, $decimals);
-        $this->setAttribSize(10);
 
-        if ($currencysymbol == '') {
+        $this->setAttribSize(10);
+        $this->maxWidth = '30px';
+
+        if (empty($currencysymbol)) {
             $currencysymbol = Tools::atktext('currencysymbol', 'atk', '', '', '', true);
         }
         $this->m_currencysymbol = $currencysymbol;
 
-        if ($decimalseparator == '') {
+        if (empty($decimalseparator)) {
             $decimalseparator = Tools::atktext('decimal_separator', 'atk', '', '', '', true);
         }
         $this->m_decimalseparator = $decimalseparator ?: '.';
 
-        if ($thousandsseparator == '') {
+        if (empty($thousandsseparator)) {
             $thousandsseparator = Tools::atktext('thousands_separator', 'atk', '', '', '', true);
         }
         $this->m_thousandsseparator = $thousandsseparator ?: ',';
 
         $this->setUseThousandsSeparator(true);
         $this->setTrailingZeros(true);
-    }
-
-    /**
-     * overrides the edit function to put the currencysymbol in front of the input field.
-     *
-     * @param array $record The record that holds the value for this attribute.
-     * @param string $fieldprefix The fieldprefix to put in front of the name
-     *                            of any html form element for this attribute.
-     * @param string $mode The mode we're in ('add' or 'edit')
-     *
-     * @return string A piece of htmlcode for editing this attribute
-     */
-    public function edit($record, $fieldprefix, $mode)
-    {
-        $input = parent::edit($record, $fieldprefix, $mode);
-        $currency = trim($this->getCurrencySymbolDisplay());
-
-        if (strlen($currency) > 0) {
-            $result = '<div class="input-group">';
-            $result .= $input;
-            $result .= "<span style='max-width: 30px;'{$this->getCSSClassAttribute(['btn', 'btn-sm', 'btn-default'])}>$currency</span>";
-            $result .= '</div>';
-
-        } else {
-            $result = $input;
-        }
-
-        return $result;
     }
 
     /**
@@ -107,11 +83,34 @@ class CurrencyAttribute extends NumberAttribute
     }
 
     /**
-     * Get currency symbol display.
+     * overrides the edit function to put the currencysymbol in front of the input field.
      *
-     * @return string
+     * @param array $record The record that holds the value for this attribute.
+     * @param string $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @param string $mode The mode we're in ('add' or 'edit')
+     *
+     * @return string A piece of htmlcode for editing this attribute
      */
-    public function getCurrencySymbolDisplay()
+    public function edit($record, $fieldprefix, $mode)
+    {
+        $input = parent::edit($record, $fieldprefix, $mode);
+        $currency = trim($this->getCurrencySymbolDisplay());
+
+        if (strlen($currency) > 0) {
+            $result = '<div class="input-group">';
+            $result .= $input;
+            $result .= "<span style='max-width: " . $this->maxWidth. "'{$this->getCSSClassAttribute(['btn', 'btn-sm', 'btn-default'])}>$currency</span>";
+            $result .= '</div>';
+
+        } else {
+            $result = $input;
+        }
+
+        return $result;
+    }
+
+    public function getCurrencySymbolDisplay(): string
     {
         return $this->m_currencysymbol;
     }
@@ -119,6 +118,17 @@ class CurrencyAttribute extends NumberAttribute
     function setCurrencySymbol(string $value): self
     {
         $this->m_currencysymbol = $value;
+        return $this;
+    }
+
+    public function getMaxWidth(): string
+    {
+        return $this->maxWidth;
+    }
+
+    public function setMaxWidth(string $maxWidth): self
+    {
+        $this->maxWidth = $maxWidth;
         return $this;
     }
 }
