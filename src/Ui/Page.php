@@ -221,6 +221,11 @@ class Page
             $this->register_style($assetsUrl . 'admin-lte/css/fullscreen.css');
         }
 
+        $customFont = Config::getGlobal('custom_font');
+        if ($customFont != "") {
+            $this->register_style($assetsUrl . 'admin-lte/css/' . $customFont . '-font.css');
+        }
+
         /*
         $this->register_style($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.css');
         $this->register_style($assetsUrl.'admin-lte/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css');
