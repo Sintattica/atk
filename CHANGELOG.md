@@ -3,6 +3,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 ### Added
 - Font: added UI font & configuration on config file
 
+
 ## [9.9.21] - 2023-03-30
 ### Added
 - Attribute: add maxWidth in CurrencyAttribute
