@@ -8,7 +8,18 @@ use Sintattica\Atk\Core\Tools;
 
 /**
  * Attribute wrapper for CKEditor (the successor of FCK Editor)
- * See http://ckeditor.com.
+ * See https://ckeditor.com
+ *
+ * ckeditor v5
+ *
+ * Plugins:
+ * Autoformat, BlockQuote, Bold, CloudServices, Code, CodeBlock, Essentials, FontBackgroundColor,
+ * FontColor, FontFamily, FontSize, GeneralHtmlSupport, Heading, HorizontalLine, HtmlEmbed, Image,
+ * ImageCaption, ImageInsert, ImageResize, ImageStyle, ImageToolbar, ImageUpload, Indent, Italic, Link, List,
+ * MediaEmbed, Paragraph, PasteFromOffice, RemoveFormat, SourceEditing, SpecialCharacters, SpecialCharactersArrows,
+ * SpecialCharactersCurrency, SpecialCharactersEssentials, SpecialCharactersLatin, SpecialCharactersText, Style,
+ * Subscript, Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar,
+ * TextTransformation, Underline, WordCount
  */
 class CkAttribute extends HtmlAttribute
 {
@@ -32,7 +43,7 @@ class CkAttribute extends HtmlAttribute
                 'link', 'insertTable', 'imageInsert', 'mediaEmbed', '|',
                 'undo', 'redo', '|',
                 'htmlEmbed', 'code', 'codeBlock', '|',
-                'specialCharacters',
+                'specialCharacters', 'sourceEditing', 'generalHtmlSupport'
             ],
             'image' => [
                 'toolbar' => ['imageTextAlternative', 'imageStyle:full', 'imageStyle:side']
@@ -41,7 +52,12 @@ class CkAttribute extends HtmlAttribute
                 'contentToolbar' => ['tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties', 'tableProperties']
             ],
         ],
-        'height' => '200px'
+        'htmlSupport' => [ // useful to insert classes and styles in html tags 
+            'allow' => [
+                ["name" => "table", "styles" => true, "classes" => true]
+            ]
+        ],
+        'height' => '200px',
     ];
 
     /**
