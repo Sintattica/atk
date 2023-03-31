@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "55d300fb3d0d97dfd616d4d5de80410a",
+    "content-hash": "553d9481ce64c189e2d964c67ec43f9f",
     "packages": [
         {
             "name": "fightbulc/moment",
