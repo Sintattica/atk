@@ -10,3 +10,7 @@ html {
 body {
     font-family: var(--system-ui);
 }
+
+.text-sm {
+    font-size: 0.7rem !important;
+}
