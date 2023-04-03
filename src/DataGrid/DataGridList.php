@@ -99,36 +99,42 @@ class DataGridList extends DataGridComponent
             if ($orientation == 'left' || $orientation == 'both') {
                 // empty cell above search button, if zero rows
                 // if $orientation is empty, no search button is shown, so no empty cell is needed
-                $headercols[] = array('content' => '&nbsp;');
+                $headercols[] = ['content' => '&nbsp;'];
             }
         }
 
         if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
-            $headercols[] = array('content' => ''); // Empty leader on top of mra action list.
+            $headercols[] = ['content' => '']; // Empty leader on top of mra action list.
         }
 
         if (($orientation == 'left' || $orientation == 'both') && ($hasActionCol && Tools::count($list['rows']) > 0)) {
-            $headercols[] = array('content' => '');
+            $headercols[] = ['content' => ''];
         }
 
         foreach (array_values($list['heading']) as $head) {
             if (!$grid->hasFlag(DataGrid::SORT) || empty($head['order'])) {
-                $headercols[] = array('content' => $head['title']);
+                $newHeaderItem = ['content' => $head['title']];
             } else {
-                $call = $grid->getUpdateCall(array('atkorderby' => $head['order'], 'atkstartat' => 0));
-                $headercols[] = array('content' => $this->_getHeadingAnchorHtml($call, $head['title']));
+                $call = $grid->getUpdateCall(['atkorderby' => $head['order'], 'atkstartat' => 0]);
+                $newHeaderItem = ['content' => $this->_getHeadingAnchorHtml($call, $head['title'])];
             }
+
+            if (isset($head['css_class'])) {
+                $newHeaderItem['css_class'] = $head['css_class'];
+            }
+
+            $headercols[] = $newHeaderItem;
         }
 
         if (($orientation == 'right' || $orientation == 'both') && ($hasActionCol && Tools::count($list['rows']) > 0)) {
-            $headercols[] = array('content' => '');
+            $headercols[] = ['content' => ''];
         }
 
         if ($hasActionCol && Tools::count($list['rows']) == 0) {
             if ($orientation == 'right' || $orientation == 'both') {
                 // empty cell above search button, if zero rows
                 // if $orientation is empty, no search button is shown, so no empty cell is needed
-                $headercols[] = array('content' => '&nbsp;');
+                $headercols[] = ['content' => '&nbsp;'];
             }
         }
 
@@ -139,25 +145,25 @@ class DataGridList extends DataGridComponent
         $sortstart = '';
         $sortend = '';
         if ($grid->hasFlag(DataGrid::EXTENDED_SORT)) {
-            $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractExtendedSortOverrides'));
+            $call = htmlentities($grid->getUpdateCall(['atkstartat' => 0], [], 'ATK.DataGrid.extractExtendedSortOverrides'));
             $button = '<input type="button" class="btn btn-sm" value="' . Tools::atktext('sort') . '" onclick="' . $call . '">';
 
             if (!$edit && ($hasMRA || $grid->hasFlag(DataGrid::MULTI_RECORD_PRIORITY_ACTIONS))) {
-                $sortcols[] = array('content' => ''); // Empty leader on top of mra action list.
+                $sortcols[] = ['content' => '']; // Empty leader on top of mra action list.
             }
 
             if ($orientation == 'left' || $orientation == 'both') {
-                $sortcols[] = array('content' => $button);
+                $sortcols[] = ['content' => $button];
             }
 
             foreach (array_keys($list['heading']) as $key) {
                 if (isset($list['sort'][$key])) {
-                    $sortcols[] = array('content' => $list['sort'][$key]);
+                    $sortcols[] = ['content' => $list['sort'][$key]];
                 }
             }
 
             if ($orientation == 'right' || $orientation == 'both') {
-                $sortcols[] = array('content' => $button);
+                $sortcols[] = ['content' => $button];
             }
         }
 
@@ -830,6 +836,7 @@ class DataGridList extends DataGridComponent
 
     /**
      * Add the list array header to the result list.
+     * @throws Exception
      */
     private function _addListArrayHeader(&$listArray, $prefix, $suppressList, $flags, $columnConfig)
     {
@@ -842,7 +849,7 @@ class DataGridList extends DataGridComponent
 
             $attr = $this->getNode()->getAttribute($column->attrName);
             if (!is_object($attr)) {
-                throw new Exception("Invalid attribute {$column->attrName} for node " . $this->getNode()->atkNodeUri());
+                throw new Exception("Invalid attribute '$column->attrName' for node {$this->getNode()->atkNodeUri()}");
             }
 
             $attr->addToListArrayHeader($this->getNode()->getAction(), $listArray, $prefix, $flags, $this->getGrid()->getPostvar('atksearch'), $columnConfig,

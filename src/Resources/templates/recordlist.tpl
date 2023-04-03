@@ -28,7 +28,7 @@
             <tr class="recordList-header-row" role="row">
                 {section name=headerloop loop=$header}
                     <th {if $smarty.section.headerloop.index===0}class="recordListThFirst"
-                        {else}class="recordListTh"{/if}>
+                        {else}class="recordListTh{if isset($header[headerloop].css_class)} {$header[headerloop].css_class}{/if}"{/if}>
                         {if $header[headerloop].content != ""}{$header[headerloop].content}{else}&nbsp;{/if}
                     </th>
                 {/section}

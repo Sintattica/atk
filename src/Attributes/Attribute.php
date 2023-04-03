@@ -583,6 +583,12 @@ class Attribute
     private $textWrap = true;
 
     /**
+     * Adds 'text-wrap' class to the recordListTh in the recordlist.tpl
+     * @var bool
+     */
+    private $titleWrap = false;
+
+    /**
      * Display long text in row.
      * You can specify $maxChars for the length of the text to show.
      */
@@ -789,6 +795,17 @@ class Attribute
     public function setTextWrap(bool $textWrap): self
     {
         $this->textWrap = $textWrap;
+        return $this;
+    }
+
+    public function isTitleWrap(): bool
+    {
+        return $this->titleWrap;
+    }
+
+    public function setTitleWrap(bool $titleWrap): self
+    {
+        $this->titleWrap = $titleWrap;
         return $this;
     }
 
@@ -1649,6 +1666,10 @@ class Attribute
 
             if ($grid->hasFlag(DataGrid::SORT) && !$this->hasFlag(self::AF_NO_SORT)) {
                 $arr['heading'][$key]['order'] = $this->listHeaderSortOrder($columnConfig);
+            }
+
+            if ($this->titleWrap) {
+                $arr['heading'][$key]['css_class'] = 'text-wrap';
             }
 
             if ($grid->hasFlag(DataGrid::EXTENDED_SORT)) {
