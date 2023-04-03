@@ -373,7 +373,7 @@ class OneToManyRelation extends Relation
 
         if ($mode === 'list') {
             if ($this->getDisplayListMode() === parent::MODE_LIST_UL) {
-                $result .= '<ul>';
+                $result .= '<ul style="padding-left: 1rem;">';
             } else {
                 $result .= '<div style="max-width: 600px; min-width: 400px; white-space: normal;">';
             }
