@@ -1,6 +1,6 @@
 :root {
-    --system-ui: "Helvetica Neue", Helvetica, Arial, sans-serif system-ui, "Segoe UI", Roboto, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif system-ui, "Segoe UI", Roboto, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --system-ui: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 html {
