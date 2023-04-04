@@ -1,9 +1,22 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [9.10.0] - 2023-04-04
+### Added
+- Attribute: added titleWrap property to handle text-wrap in column th
+- Relation: added descriptorListSep in one-to-many
+
+### Fixed
+- Font: fix supporto to old font
+- Relation: fix padding one-to-many list mode ul
+- Attribute: fix FileAttribute edit to show thumbnail
+
+
 ## [9.9.23] - 2023-03-31
 ### Added
 - Font: added system dependand font (with old-atk)
 - Dependencies: Updated to minor versions
 - UI: added css classes for texts
+
 
 ## [9.9.22] - 2023-03-30
 ### Added
