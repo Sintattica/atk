@@ -125,6 +125,8 @@ class OneToManyRelation extends Relation
      */
     public $m_excludes = [];
 
+    private $descriptorListSep = '';
+
     /**
      * Default constructor.
      *
@@ -227,6 +229,16 @@ class OneToManyRelation extends Relation
     public function setUseRefKeyForFilter($useRefKey)
     {
         $this->m_useRefKeyForFilter = $useRefKey;
+    }
+
+    public function getDescriptorListSep(): string
+    {
+        return $this->descriptorListSep;
+    }
+    public function setDescriptorListSep(string $descriptorListSep): self
+    {
+        $this->descriptorListSep = $descriptorListSep;
+        return $this;
     }
 
     /**
@@ -378,17 +390,37 @@ class OneToManyRelation extends Relation
                 $result .= '<div style="max-width: 600px; min-width: 400px; white-space: normal;">';
             }
 
+            $recordCounter = 0;
+
             foreach ($records as $currentRecord) {
                 $descriptor = $this->m_destInstance->descriptor($currentRecord);
                 if ($this->hasFlag(ManyToOneRelation::AF_RELATION_AUTOLINK)) {
                     $descriptor = Tools::actionHref($this->m_destInstance->atkNodeUri(), 'view', [Node::PARAM_ATKSELECTOR => $currentRecord['atkprimkey']], $descriptor, '', SessionManager::SESSION_NESTED);
                 }
+
                 if ($this->getDisplayListMode() === parent::MODE_LIST_UL) {
-                    $format = '<li>%s</li>';
+                    $result .= "<li>$descriptor</li>";
+
                 } else {
                     $format = '<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">%s</span>';
+
+                    if (!empty($this->descriptorListSep)) {
+                        // divides each record in N parts using the descriptorListSep
+                        $descriptorItems = explode($this->descriptorListSep, $descriptor);
+                        foreach ($descriptorItems as $item) {
+                            $result .= sprintf($format, $item);
+                        }
+
+                        if ($recordCounter !== (count($records) - 1)) {
+                            $result .= '<hr>';
+                        }
+
+                    } else {
+                        $result .= sprintf($format, $descriptor);
+                    }
                 }
-                $result .= sprintf($format, $descriptor);
+
+                $recordCounter++;
             }
 
             if ($this->getDisplayListMode() === parent::MODE_LIST_UL) {
@@ -575,6 +607,7 @@ class OneToManyRelation extends Relation
      * @param array $record
      *
      * @return string filter string
+     * @throws Exception
      */
     public function getAddFilterString($record)
     {
@@ -597,6 +630,7 @@ class OneToManyRelation extends Relation
      * @param array $params
      *
      * @return string The link to add records to the onetomany
+     * @throws Exception
      */
     public function _getNestedAddLink($myrecords, $record, $saveform = true, $fieldprefix = '', $params = [])
     {
@@ -634,6 +668,7 @@ class OneToManyRelation extends Relation
      * @param array $record
      *
      * @return array Array with filter elements
+     * @throws Exception
      */
     public function _getFilterElements($record)
     {
@@ -680,14 +715,14 @@ class OneToManyRelation extends Relation
     {
         $prefix = '';
         if (strpos($columnName, '.') === false) {
-            $prefix = $destAlias ? $destAlias : ($this->m_destInstance->getTable());
+            $prefix = $destAlias ?: ($this->m_destInstance->getTable());
             $prefix .= '.';
         }
 
         return $prefix . $columnName;
     }
 
-    protected function getAddURL($params = array())
+    protected function getAddURL($params = []): string
     {
         return Tools::dispatch_url($this->m_destination, 'add', $params);
     }
