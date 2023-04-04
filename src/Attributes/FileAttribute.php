@@ -203,7 +203,7 @@ class FileAttribute extends Attribute
             if (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] != '') {
                 $fileLink = new SimpleXMLElement($result);
 
-                $result = '<div class="existing-file input-group">
+                $result .= '<div class="existing-file input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-file"></i></span>
                     </div>
@@ -971,12 +971,6 @@ class FileAttribute extends Attribute
         return $file_arr;
     }
 
-    /**
-     * Set filename template.
-     *
-     * @param string $template
-     * @return FileAttribute
-     */
     public function setFilenameTemplate(string $template): self
     {
         $this->m_filenameTpl = $template;
@@ -990,7 +984,6 @@ class FileAttribute extends Attribute
      * @param array $types
      *
      * @return FileAttribute
-     * @throws Exception
      */
     public function setAllowedFileTypes(array $types): self
     {
@@ -1020,49 +1013,31 @@ class FileAttribute extends Attribute
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isCheckUnique(): bool
     {
         return $this->checkUnique;
     }
 
-    /**
-     * @return int|null
-     */
     public function getFileMaxSize(): ?int
     {
         return $this->fileMaxSize;
     }
 
-    /**
-     * @return int|null
-     */
     public function getFileMaxLength(): ?int
     {
         return $this->fileMaxLength;
     }
 
-    /**
-     * @return bool
-     */
     public function isOnlyPreview(): bool
     {
         return $this->onlyPreview;
     }
 
-    /**
-     * @return bool
-     */
     public function isNoSanitize(): bool
     {
         return $this->noSanitize;
     }
 
-    /**
-     * @return bool
-     */
     public function isThumbnail(): bool
     {
         return $this->thumbnail;
