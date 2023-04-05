@@ -1316,8 +1316,6 @@ class Attribute
 
             /* label? */
             $entry['label'] = $this->getLabel($defaults, $mode);
-            /* label position is on top? */
-            $entry['labeltop'] = $this->isLabelPositionTop();
             /* error? */
             $entry['error'] = $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
             // on which tab?

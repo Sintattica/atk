@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Utils\Json;
@@ -324,6 +325,9 @@ class EditHandler extends ViewEditBase
     {
         $field = &$fields[$index];
 
+        /** @var Attribute $attribute */
+        $attribute = $field['attribute'];
+
         // visible sections, both the active sections and the tab names (attribute that are
         // part of the anonymous section of the tab)
         $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
@@ -393,7 +397,7 @@ class EditHandler extends ViewEditBase
             /* edit field */
             $tplfield['type'] = 'attribute';
 
-            if ($field['attribute']->m_ownerInstance->getNumbering()) {
+            if ($attribute->m_ownerInstance->getNumbering()) {
                 $this->_addNumbering($field, $tplfield, $index);
             }
 
@@ -417,8 +421,8 @@ class EditHandler extends ViewEditBase
             }
 
             // Make the attribute and node names available in the template.
-            $tplfield['attribute'] = $field['attribute']->fieldName();
-            $tplfield['node'] = $field['attribute']->m_ownerInstance->atkNodeUri();
+            $tplfield['attribute'] = $attribute->fieldName();
+            $tplfield['node'] = $attribute->m_ownerInstance->atkNodeUri();
 
             /* html source */
             $tplfield['widget'] = $field['html'];
@@ -429,14 +433,14 @@ class EditHandler extends ViewEditBase
 
             $tplfield['full'] = $editsrc;
 
-            $column = $field['attribute']->getColumn();
+            $column = $attribute->getColumn();
             $tplfield['column'] = $column;
 
-            $tplfield['readonly'] = $field['attribute']->isReadonlyEdit($mode);
+            $tplfield['readonly'] = $attribute->isReadonlyEdit($mode);
 
-            $tplfield['help'] = $field['attribute']->getHelp();
+            $tplfield['help'] = $attribute->getHelp();
 
-            $tplfield['labeltop'] = $field['labeltop'];
+            $tplfield['labeltop'] = $attribute->isLabelPositionTop();
         }
 
         // allow passing of extra arbitrary data, for example if a user overloads the editArray method

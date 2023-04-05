@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Handlers;
 
 use Exception;
+use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Config;
@@ -184,6 +185,9 @@ class ViewHandler extends ViewEditBase
             $field = &$data['fields'][$i];
             $tplfield = [];
 
+            /** @var Attribute $attribute */
+            $attribute = $field['attribute'];
+
             $classes = [];
             if ($field['sections'] == '*') {
                 $classes[] = 'alltabs';
@@ -224,17 +228,21 @@ class ViewHandler extends ViewEditBase
             /* check for separator */
             if ($field['html'] == '-' && $i > 0 && $data['fields'][$i - 1]['html'] != '-') {
                 $tplfield['line'] = '<hr>';
+
             } elseif ($field['html'] == '-') {
                 /* double separator, ignore */
+
             } elseif ($field['html'] == 'section') {
                 /* sections */
                 $tplfield['line'] = $this->getSectionControl($field, $mode);
+
             } elseif (isset($field['line'])) {
                 /* only full HTML */
                 $tplfield['line'] = $field['line'];
+
             } else {
                 /* edit field */
-                if ($field['attribute']->m_ownerInstance->getNumbering()) {
+                if ($attribute->m_ownerInstance->getNumbering()) {
                     $this->_addNumbering($field, $tplfield, $i);
                 }
 
@@ -250,8 +258,8 @@ class ViewHandler extends ViewEditBase
                 }
 
                 // Make the attribute and node names available in the template.
-                $tplfield['attribute'] = $field['attribute']->fieldName();
-                $tplfield['node'] = $field['attribute']->m_ownerInstance->atkNodeUri();
+                $tplfield['attribute'] = $attribute->fieldName();
+                $tplfield['node'] = $attribute->m_ownerInstance->atkNodeUri();
 
                 /* html source */
                 $tplfield['widget'] = $field['html'];
@@ -261,8 +269,10 @@ class ViewHandler extends ViewEditBase
 
                 $tplfield['full'] = $editsrc;
 
-                $column = $field['attribute']->getColumn();
+                $column = $attribute->getColumn();
                 $tplfield['column'] = $column;
+
+                $tplfield['labeltop'] = $attribute->isLabelPositionTop();
             }
 
             $fields[] = $tplfield; // make field available in numeric array
