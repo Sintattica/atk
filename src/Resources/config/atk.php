@@ -833,6 +833,11 @@ return [
      */
     'onetomany_addlink_position' => 'top',
 
+    /**
+     * OneToMany position of label: false -> vertically centered (default), true -> top
+     */
+    'onetomany_label_position_top' => false,
+
     /*
      * Optionally set the export file parameters
      */

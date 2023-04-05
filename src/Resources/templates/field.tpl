@@ -5,7 +5,7 @@
     {else}
 
         {if $field.label!=="AF_NO_LABEL"}
-            <label for="{$field.htmlid}" class="col-sm-3 col-md-2 my-auto control-label">
+            <label for="{$field.htmlid}" class="col-sm-3 col-md-2{if !$field.labeltop} my-auto{/if} control-label">
                 {if $field.label!=""}{$field.label}{/if}
             </label>
         {/if}

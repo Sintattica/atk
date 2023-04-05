@@ -164,6 +164,8 @@ class OneToManyRelation extends Relation
         }
 
         $this->setGridExcludes($this->m_refKey);
+
+        $this->setLabelPositionTop(Config::getGlobal('onetomany_label_position_top') === true);
     }
 
     public function addFlag($flag)

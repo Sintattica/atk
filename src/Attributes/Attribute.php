@@ -541,7 +541,6 @@ class Attribute
      */
     private $m_column;
 
-
     /**
      * View callback.
      *
@@ -587,6 +586,8 @@ class Attribute
      * @var bool
      */
     private $titleWrap = false;
+
+    private $labelPositionTop = false;
 
     /**
      * Display long text in row.
@@ -1298,15 +1299,16 @@ class Attribute
             if ($mode == 'edit' || ($mode == 'add' && (!$this->isEmpty($defaults) || $this instanceof HiddenAttribute))) {
                 $arr['hide'][] = $this->hide($defaults, $fieldprefix, $mode);
             }
-        } /* edit */ else {
+        } else {
+            /* edit */
+
             global $ATK_VARS;
 
-
-            $entry = array(
+            $entry = [
                 'name' => $this->m_name,
                 'obligatory' => $this->hasFlag(self::AF_OBLIGATORY),
                 'attribute' => &$this,
-            );
+            ];
 
             $entry['class'] = $this->m_rowCssClasses;
 
@@ -1314,6 +1316,8 @@ class Attribute
 
             /* label? */
             $entry['label'] = $this->getLabel($defaults, $mode);
+            /* label position is on top? */
+            $entry['labeltop'] = $this->isLabelPositionTop();
             /* error? */
             $entry['error'] = $this->getError($error) || (isset($ATK_VARS['atkerrorfields']) && Tools::atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
             // on which tab?
@@ -2613,6 +2617,17 @@ class Attribute
                 return $this->label();
             }
         }
+    }
+
+    public function isLabelPositionTop(): bool
+    {
+        return $this->labelPositionTop;
+    }
+
+    public function setLabelPositionTop(bool $labelPositionTop): self
+    {
+        $this->labelPositionTop = $labelPositionTop;
+        return $this;
     }
 
     /**

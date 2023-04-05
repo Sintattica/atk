@@ -368,20 +368,29 @@ class EditHandler extends ViewEditBase
 
         // ar_ stands for 'attribrow'.
         $tplfield['rowid'] = 'ar_'.(!empty($field['id']) ? $field['id'] : Tools::getUniqueId('anonymousattribrows')); // The id of the containing row
+
         // check for separator
         if (isset($field['html']) && $field['html'] == '-' && $index > 0 && $fields[$index - 1]['html'] != '-') {
             $tplfield['type'] = 'line';
             $tplfield['line'] = '<hr>';
-        } /* double separator, ignore */ elseif (isset($field['html']) && $field['html'] == '-') {
-        } /* sections */ elseif (isset($field['html']) && $field['html'] == 'section') {
+
+        } elseif (isset($field['html']) && $field['html'] == '-') {
+            /* double separator, ignore */
+
+        } elseif (isset($field['html']) && $field['html'] == 'section') {
+            /* sections */
             $tplfield['type'] = 'section';
             list($tab, $section) = explode('.', $field['name']);
-            $tplfield['section_name'] = "section_{$tab}_{$section}";
+            $tplfield['section_name'] = "section_{$tab}_$section";
             $tplfield['line'] = $this->getSectionControl($field, $mode);
-        } /* only full HTML */ elseif (isset($field['line'])) {
+
+        } elseif (isset($field['line'])) {
+            /* only full HTML */
             $tplfield['type'] = 'custom';
             $tplfield['line'] = $field['line'];
-        } /* edit field */ else {
+
+        }  else {
+            /* edit field */
             $tplfield['type'] = 'attribute';
 
             if ($field['attribute']->m_ownerInstance->getNumbering()) {
@@ -426,6 +435,8 @@ class EditHandler extends ViewEditBase
             $tplfield['readonly'] = $field['attribute']->isReadonlyEdit($mode);
 
             $tplfield['help'] = $field['attribute']->getHelp();
+
+            $tplfield['labeltop'] = $field['labeltop'];
         }
 
         // allow passing of extra arbitrary data, for example if a user overloads the editArray method
