@@ -578,7 +578,7 @@ class Attribute
     private $isNestedAttribute = false;
 
     private $minWidth = null;
-    private $maxHeight = null;
+    private $maxHeight = null; // available only in scroll mode
     private $maxChars = null;
     private $textWrap = true;
 
@@ -714,54 +714,33 @@ class Attribute
         return $this->m_flags;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMinWidth(): ?string
     {
         return $this->minWidth;
     }
 
-    /**
-     * @param string|null $minWidth
-     * @return TextAttribute
-     */
     public function setMinWidth(?string $minWidth): self
     {
         $this->minWidth = $minWidth;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMaxHeight(): ?string
     {
         return $this->maxHeight;
     }
 
-    /**
-     * @param string|null $maxHeight
-     * @return TextAttribute
-     */
     public function setMaxHeight(?string $maxHeight): self
     {
         $this->maxHeight = $maxHeight;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMaxChars(): ?int
     {
         return $this->maxChars;
     }
 
-    /**
-     * @param int|null $maxChars
-     * @return TextAttribute
-     */
     public function setMaxChars(?int $maxChars): self
     {
         $this->maxChars = $maxChars;
