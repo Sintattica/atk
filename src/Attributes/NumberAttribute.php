@@ -591,15 +591,17 @@ class NumberAttribute extends Attribute
         $class = $this->getCSSClassAttribute();
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
+
         $style = '';
         $type = $extended ? 'extended_search' : 'search';
+        $this->setSearchCssStyleMinWidth($record, $type);
         foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
 
         if (!$extended) {
             if (is_array($value)) { // values entered in the extended search
-                // TODO we would need to know the searchmode for better handling...
+                // TODO: we would need to know the searchmode for better handling...
                 if ($value['from'] != '' && $value['to'] != '') {
                     $value = $value['from'] . '/' . $value['to'];
                 } elseif ($value['from'] != '') {

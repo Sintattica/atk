@@ -1753,14 +1753,7 @@ class Attribute
 
         $style = '';
         $type = $extended ? 'extended_search' : 'search';
-
-        // set min width using field num_chars * 10
-        $minWidth = 50;
-        if ($record[$this->fieldName()]) {
-            $minWidth = strlen((string)$value) * 10;
-        }
-        $this->setCssStyle($type, 'min-width', $minWidth . 'px');
-
+        $this->setSearchCssStyleMinWidth($record, $type);
         foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
@@ -3428,6 +3421,26 @@ class Attribute
         } else {
             return $this->cssStyles;
         }
+    }
+
+    /**
+     * Sets min width using field num_chars * 10
+     *
+     * @param array $record
+     * @param string $type
+     * @return void
+     */
+    protected function setSearchCssStyleMinWidth($record, $type)
+    {
+        $value = '';
+        if (is_array($record) && isset($record[$this->fieldName()])) {
+            $value = $record[$this->fieldName()];
+        }
+
+        $numChars = strlen((string)$value);
+        $minWidth = $value ? ($numChars * 10) : 50;
+
+        $this->setCssStyle($type, 'min-width', $minWidth . 'px');
     }
 
     /**
