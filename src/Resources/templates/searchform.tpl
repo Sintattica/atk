@@ -31,12 +31,12 @@
     {foreach from=$fields item=field}
         <div class="row form-group">
             {if isset($field.line) && $field.line!=""}
-                <div class="col-md-8 field">{$field.line}</div>
+                <div class="col-md-8 field pt-1">{$field.line}</div>
             {else}
-                <div class="col-sm-2 control-label fieldlabel">{if $field.label!=""}{$field.label}{/if}</div>
-                <div class="col-sm-6 field">{$field.full}</div>
+                <div class="col-2 control-label fieldlabel">{if $field.label!=""}{$field.label}{/if}</div>
+                <div class="col field">{$field.full}</div>
             {/if}
-            <div class="col-sm-4 field">{$field.searchmode}</div>
+            <div class="offset-sm-2 offset-lg-0 col-sm-4 col-md-3 col-lg-2 field pt-1 pt-md-0">{$field.searchmode}</div>
         </div>
     {/foreach}
 
@@ -45,7 +45,8 @@
         <div class="row form-group save_criteria">
             <div class="col-sm-2">
                 <div class="checkbox control-label">
-                    <label>{$saved_criteria.toggle_save_criteria} <span class="fieldlabel">{$saved_criteria.text_save_criteria}</span></label>
+                    <label>{$saved_criteria.toggle_save_criteria} <span
+                                class="fieldlabel">{$saved_criteria.text_save_criteria}</span></label>
                 </div>
             </div>
             <div class="col-sm-10 field">{$saved_criteria.save_criteria}</div>

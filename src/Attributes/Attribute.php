@@ -1817,7 +1817,8 @@ class Attribute
             $field .= "<script>ATK.Tools.enableSelect2ForSelect('.extended-search-generic-attribute-dropdown');</script>";
 
         } else {
-            $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldPrefix) . '" value="' . $searchMode . '">' . ($extended ? Tools::atktext('search_' . $searchMode) : '');
+            $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldPrefix) . '" value="' . $searchMode . '">
+                            <input type="text" class="mt-1 mt-md-0 form-control form-control-sm" readonly value="' . ($extended ? Tools::atktext('search_' . $searchMode) : '') . '"/>';
         }
 
         return $field;

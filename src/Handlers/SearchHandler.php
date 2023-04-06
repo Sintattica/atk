@@ -6,6 +6,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
+use SmartyException;
 
 /**
  * Handler class for the search action of a node. The handler draws a
@@ -113,7 +114,7 @@ class SearchHandler extends AbstractSearchHandler
 
         $attr = $this->m_node->getAttribute($attribute);
         if ($attr == null) {
-            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeUri()."'");
+            Tools::atkerror("Unknown / invalid attribute '$attribute' for node '" . $this->m_node->atkNodeUri() . "'");
 
             return '';
         }
@@ -137,12 +138,12 @@ class SearchHandler extends AbstractSearchHandler
         if (is_object($ui)) {
             $sm = SessionManager::getInstance();
             $params = [];
-            $params['formstart'] = '<form id="entryform" name="entryform" action="'.Config::getGlobal('dispatcher').'" method="post">';
+            $params['formstart'] = '<form id="entryform" name="entryform" action="' . Config::getGlobal('dispatcher') . '" method="post">';
 
             $params['formstart'] .= $sm->formState(SessionManager::SESSION_REPLACE);
             $params['formstart'] .= '<input type="hidden" name="atkaction" value="search">';
 
-            $params['formstart'] .= '<input type="hidden" name="atknodeuri" value="'.$node->atkNodeUri().'">';
+            $params['formstart'] .= '<input type="hidden" name="atknodeuri" value="' . $node->atkNodeUri() . '">';
             $params['formstart'] .= '<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
 
             $params['content'] = $this->invoke('searchForm', $record);
@@ -173,6 +174,7 @@ class SearchHandler extends AbstractSearchHandler
      *                      the search fields.
      *
      * @return string The searchform in html form.
+     * @throws SmartyException
      */
     public function searchForm($record = null)
     {
@@ -187,8 +189,8 @@ class SearchHandler extends AbstractSearchHandler
 
             $params = [];
             $params['searchmode_title'] = Tools::atktext('search_mode', 'atk');
-            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio form-check-input" value="AND" checked>'.Tools::atktext('search_and', 'atk');
-            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio form-check-input" value="OR">'.Tools::atktext('search_or', 'atk');
+            $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio form-check-input" value="AND" checked>' . Tools::atktext('search_and', 'atk');
+            $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio form-check-input" value="OR">' . Tools::atktext('search_or', 'atk');
             $params['saved_criteria'] = $this->getSavedCriteria($name);
 
             $params['fields'] = [];
@@ -212,7 +214,7 @@ class SearchHandler extends AbstractSearchHandler
      *
      * @return array fetched criteria
      */
-    public function fetchCriteria()
+    public function fetchCriteria(): array
     {
         return array(
             'atksearchmethod' => array_key_exists('atksearchmethod', $this->m_postvars) ? $this->m_postvars['atksearchmethod'] : '',

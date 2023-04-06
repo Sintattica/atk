@@ -168,6 +168,7 @@ return [
     'forget_criteria' => 'Remove selected search',
     'fri' => 'Fri',
     'friday' => 'Friday',
+    'from' => 'From',
     'fsa_pleasemakeselection' => 'More than one match was found. Please make a selection.',
     'help' => 'Help',
     'hours' => 'h', // (used in atkDurationAttribute)

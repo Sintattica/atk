@@ -943,9 +943,35 @@ class DateAttribute extends Attribute
         $name = $this->getSearchFieldName($fieldprefix);
 
         $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from']) : $record;
-        $res = $this->draw($rec, $id . '_from', $name, 'atksearch_AE_' . $fieldprefix, '_AE_from', 'search');
+
+        $res ='<div class="row">';
+
+
+        $res .= '<div class="col"><div class="input-group input-group-sm mt-1 d-flex flex-nowrap">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">'.Tools::atktext('from').'</span>
+                    </div>';
+
+        $res .= $this->draw($rec, $id . '_from', $name, 'atksearch_AE_' . $fieldprefix, '_AE_from', 'search');
+
+
+        $res .= '</div></div>';
+
+
         $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to']) : $record;
-        $res .= '<span class="align-middle text-md-center pt-md-2 d-inline-block">&nbsp;' . Tools::atktext('until') . ': </span>' . $this->draw($rec, $id . '_to', $name, 'atksearch_AE_' . $fieldprefix, '_AE_to', 'search');
+
+
+        $res .= '<div class="col"><div class="input-group input-group-sm mt-1 d-flex flex-nowrap">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">'. Tools::atktext('until') . '</span>
+                    </div>';
+
+        $res .= $this->draw($rec, $id . '_to', $name, 'atksearch_AE_' . $fieldprefix, '_AE_to', 'search');
+
+        $res .= '</div></div>';
+
+
+        $res .= '</div>';
 
         return $res;
     }

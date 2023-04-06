@@ -632,10 +632,18 @@ class NumberAttribute extends Attribute
                 $result .= ' style="' . $style . '"';
             }
             $result .= '>';
+
+            $result .= '<div class="input-group input-group-sm">';
+            $result .= '<div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-sm">' . Tools::atktext('from') . '</span></div>';
             $result .= '<input type="text" id="' . $id . '" ' . $class . ' name="' . $name . '[from]" value="' . htmlentities($valueFrom) . '"' . ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
+            $result .= '</div>';
+
+            $result .= '<div class="input-group input-group-sm ml-0 ml-lg-1 mt-1 mt-lg-0">';
+            $result .= '<div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-sm">' . Tools::atktext('until') . '</span></div>';
+            $result .= '<input type="text" id="' . $id . '" class="form-control form-control-sm ' . get_class($this) . '" name="' . $name . '[to]" value="' . htmlentities($valueTo) . '"' . ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>';
+            $result .= '</div>';
 
 
-            $result .= ' (' . Tools::atktext('until') . ' <input type="text" id="' . $id . '" class="form-control ' . get_class($this) . '" name="' . $name . '[to]" value="' . htmlentities($valueTo) . '"' . ($searchsize > 0 ? ' size="' . $searchsize . '"' : '') . '>)';
             $result .= '</div>';
         }
 

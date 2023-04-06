@@ -174,6 +174,7 @@ return [
     'forget_criteria' => 'Rimuovi la ricerca selezionata',
     'fri' => 'Ven',
     'friday' => 'Venerdì',
+    'from' => 'Da',
     'fsa_pleasemakeselection' => 'Trovati diversi elementi corrispondenti. Selezionare quello corretto.',
     'help' => 'Aiuto',
     'hours' => 'h',
