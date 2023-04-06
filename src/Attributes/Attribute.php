@@ -1735,12 +1735,11 @@ class Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @param DataGrid $grid
+     * @param DataGrid|null $grid
      *
      * @return string A piece of html-code
      * @todo  find a better way to search on onetomanys that does not require
      *        something evil in Attribute
-     *
      */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
@@ -1754,14 +1753,21 @@ class Attribute
 
         $style = '';
         $type = $extended ? 'extended_search' : 'search';
+
+        // set min width using field num_chars * 10
+        $minWidth = 50;
+        if ($record[$this->fieldName()]) {
+            $minWidth = strlen((string)$value) * 10;
+        }
+        $this->setCssStyle($type, 'min-width', $minWidth . 'px');
+
         foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
 
         $class = $this->getCSSClassAttribute();
-        $result = '';
 
-        $result .= '<input type="text"';
+        $result = '<input type="text"';
         $result .= ' id="' . $id . '"';
         $result .= ' ' . $class;
         $result .= ' name="' . $name . '"';
@@ -1772,7 +1778,6 @@ class Attribute
 
         return $result;
     }
-
 
     /**
      * Returns piece of html which is used for setting/selecting the search
