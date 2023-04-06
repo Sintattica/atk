@@ -77,6 +77,33 @@ class ExportHandler extends ActionHandler
         $page = $this->getPage();
 
         $page->register_scriptcode("
+        
+         function onSelectAllTabClick(tabId){
+           const allTabFields = getAllFieldsOfTab(tabId);
+           
+           for (let i=0; i<allTabFields.length; i++){
+                const field = allTabFields[i];
+                $(field).prop('checked', true); 
+           }
+          
+         }
+                      
+         function onSelectNoneTabClick(tabId){
+           const allTabFields = getAllFieldsOfTab(tabId);
+           
+           for (let i=0; i<allTabFields.length; i++){
+                const field = allTabFields[i];
+                $(field).prop('checked', false); 
+           }
+          
+          console.log('clicked none on ', allTabFields)
+         }
+         
+         function getAllFieldsOfTab(tabId){
+            const selector = '.' + tabId +' .atkcheckbox';
+            return document.querySelectorAll(selector)
+         }
+        
         function toggleSelectionName( fieldval )
         {
           if( fieldval == undefined )
@@ -116,8 +143,8 @@ class ExportHandler extends ActionHandler
         $page->register_scriptcode("
         function confirm_delete()
         {
-         var where_to = confirm('" . Tools::atktext('confirm_delete') . "');
-         var dodelete = $( 'export_selection_options' ).value;
+         const where_to = confirm('" . Tools::atktext('confirm_delete') . "');
+         const dodelete = $( 'export_selection_options' ).value;
 
          if (where_to == true)
          {
@@ -185,6 +212,8 @@ class ExportHandler extends ActionHandler
         if ($selected) {
             return '<a href="' . $url_delete . '" title="' . Tools::atktext('delete_selection') . '" onclick="confirm_delete();">' . Tools::atktext('delete_selection') . '</a>';
         }
+
+        return "";
     }
 
     /**
@@ -446,28 +475,50 @@ class ExportHandler extends ActionHandler
     public function getAttributeSelect(string $value = ''): string
     {
         $atts = $this->getUsableAttributes($value);
-        $content = '<div class="container-fluid ExportHandler">';
+        $content = '<div class="container-fluid ExportHandler d-flex  flex-wrap m-0 p-0 justify-content-center">';
+
+        $content .= '<div class="row no-gutters"></div>';
+
 
         foreach ($atts as $tab => $group) {
-            $content .= '<div class="row attributes-group">';
 
-            if ($tab != 'default') {
-                $content .= '<div class="col-sm-12 attributes-group-title">';
-                $content .= Tools::atktext(["tab_$tab", $tab], $this->m_node->m_module, $this->m_node->m_type);
-                $content .= '</div>';
-            }
+
+            $tabId = 'tab-' . str_replace(' ', '_', $tab);
+            $content .= '<div id=' . $tabId . ' class="card card-outline card-secondary m-1 attributes-group flex-grow-1 ' . $tabId . '" style="min-width: 300px">';
+
+
+            $tabTitle = "<div class='d-flex flex-grow-1 my-auto px-1 text-bold'>" . ($tab != 'default' ? Tools::atktext(["tab_$tab", $tab], $this->m_node->m_module, $this->m_node->m_type) : Tools::atktext("menu_main", $this->m_node->m_module, $this->m_node->m_type)) . "</div>";
+
+
+            $navButtons = '<div class="d-flex" >
+                               <div class="my-auto px-1">' . Tools::atktext("select", $this->m_node->m_module, $this->m_node->m_type) . '</div>        
+                               <div class="btn-group" role="group">                   
+                                <button type="button" class="btn btn-xs btn-default px-2" onclick="onSelectAllTabClick(\'' . $tabId . '\')">' . Tools::atktext("pf_check_all", $this->m_node->m_module, $this->m_node->m_type) . '</button>
+                                <button type="button" class="btn btn-xs btn-default px-2" onclick="onSelectNoneTabClick(\'' . $tabId . '\')">' . Tools::atktext("pf_check_none", $this->m_node->m_module, $this->m_node->m_type) . '</button>
+                            </div>
+                            </div>';
+
+
+            $content .= '<div class="card-header text-sm d-flex justify-content-between">' . $tabTitle . $navButtons . '</div>';
+
+
+            $content .= '<div class="card-body d-flex justify-content-start flex-wrap">';
 
             foreach ($group as $item) {
                 $checked = $item['checked'] ? 'CHECKED' : '';
-                $content .= '<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2 attributes-checkbox-container">';
-                $content .= '<label><input type="checkbox" name="export_' . $item['name'] . '" class="atkcheckbox" value="export_' . $item['name'] . '" ' . $checked . '> ' . $item['text'] . '</label>';
+                $content .= '<div class="attributes-checkbox-container mx-1">';
+                $content .= '<label class="text-nowrap"><input type="checkbox" name="export_' . $item['name'] . '" class="atkcheckbox" value="export_' . $item['name'] . '" ' . $checked . '> ' . $item['text'] . '</label>';
                 $content .= '</div>';
             }
 
+            $content .= "</div>";
+
+
             $content .= '</div>';
+
         }
 
-        $content .= '</div>';
+        $content .= '</div></div>';
 
         return $content;
     }
