@@ -1793,7 +1793,7 @@ class Attribute
         $searchMode = $this->getSearchMode();
         // Set current searchmode to first searchmode if not searching in extended form or no searchmode is set
         if (!$extended || empty($searchMode) || !in_array($searchMode, $searchModes)) {
-            $searchMode = isset($searchModes[0]) ? $searchModes[0] : null;
+            $searchMode = $searchModes[0] ?? null;
         }
 
         if ($extended && Tools::count($searchModes) > 1) {
@@ -1810,8 +1810,10 @@ class Attribute
             $field .= "<script>ATK.Tools.enableSelect2ForSelect('.extended-search-generic-attribute-dropdown');</script>";
 
         } else {
-            $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldPrefix) . '" value="' . $searchMode . '">
-                            <input type="text" class="mt-1 mt-md-0 form-control form-control-sm" readonly value="' . ($extended ? Tools::atktext('search_' . $searchMode) : '') . '"/>';
+            $field = '<input type="hidden" name="' . $this->getSearchModeFieldname($fieldPrefix) . '" value="' . $searchMode . '">';
+            if ($extended) {
+                $field .= '<input type="text" class="mt-1 mt-md-0 form-control form-control-sm" readonly value="' . Tools::atktext('search_' . $searchMode) . '"/>';
+            }
         }
 
         return $field;
