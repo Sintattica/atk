@@ -474,6 +474,12 @@ class Attribute
      */
     public $m_forceupdate = false;
 
+    /**
+     * Wether to force an export of the attribute
+     * @var bool
+     */
+    private $forceExport = false;
+
     /*
      * Array for containing onchange javascript code
      * @access private
@@ -2299,6 +2305,17 @@ class Attribute
     public function getForceUpdate()
     {
         return $this->m_forceupdate;
+    }
+
+    public function isForceExport(): bool
+    {
+        return $this->forceExport;
+    }
+
+    public function setForceExport(bool $forceExport): self
+    {
+        $this->forceExport = $forceExport;
+        return $this;
     }
 
     /**

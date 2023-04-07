@@ -3,16 +3,15 @@
 namespace Sintattica\Atk\Handlers;
 
 use Exception;
+use Sintattica\Atk\Attributes\DummyAttribute;
+use Sintattica\Atk\Attributes\TabbedPane;
 use Sintattica\Atk\Core\Node;
-use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\RecordList\CustomRecordList;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Ui\Ui;
-use SmartyException;
 
 /**
  * Handler for the 'import' action of a node. The import action is a
@@ -22,30 +21,28 @@ use SmartyException;
  */
 class ExportHandler extends ActionHandler
 {
-    /**
-     * The action handler.
-     */
+    const TO_HIDE_CLASSES = [DummyAttribute::class, TabbedPane::class];
+
     public function action_export()
     {
         global $ATK_VARS;
 
-        // Intercept partial call
+        // intercept partial call
         if (!empty($this->m_partial)) {
             $this->partial($this->m_partial);
-
             return;
         }
 
-        //need to keep the postdata after a Attribute::AF_LARGE selection in the allfield
+        // need to keep the postdata after a Attribute::AF_LARGE selection in the allfield
         if (!isset($this->m_postvars['phase']) && isset($ATK_VARS['atkformdata'])) {
             foreach ($ATK_VARS['atkformdata'] as $key => $value) {
                 $this->m_postvars[$key] = $value;
             }
         }
 
-        //need to keep the selected item after an exporterror
+        // need to keep the selected item after an exporterror
         $phase = Tools::atkArrayNvl($this->m_postvars, 'phase', 'init');
-        if (!in_array($phase, array('init', 'process'))) {
+        if (!in_array($phase, ['init', 'process'])) {
             $phase = 'init';
         }
 
@@ -114,7 +111,7 @@ class ExportHandler extends ActionHandler
      * Gets the HTML for the initial mode of the exporthandler.
      *
      * @return string The HTML for the screen
-     * @throws SmartyException
+     * @throws Exception
      */
     public function _getInitHtml(): string
     {
@@ -157,9 +154,7 @@ class ExportHandler extends ActionHandler
 
     private function _getOptionsFormRow($rowAttributes, $label, $field): string
     {
-        $content = '';
-
-        $content .= '<div class="row form-group"';
+        $content = '<div class="row form-group"';
         if ($rowAttributes) {
             foreach ($rowAttributes as $k => $v) {
                 $content .= ' ' . $k . '="' . $v . '"';
@@ -277,14 +272,23 @@ class ExportHandler extends ActionHandler
         $selected = $value != 'new';
 
         $attributes = [];
+        /** @var Attribute[] $attributesList */
         $attributesList = $this->invoke('getExportAttributes');
         foreach ($attributesList as $key => $attr) {
+
+            $skipAttribute = false;
+            foreach (self::TO_HIDE_CLASSES as $toHideClass) {
+                if ($attr instanceof $toHideClass && !$attr->isForceExport()) {
+                    $skipAttribute = true;
+                    break;
+                }
+            }
+
             $class = strtolower(get_class($attr));
-            if ($attr->hasFlag(Attribute::AF_AUTOKEY) || $attr->hasFlag(Attribute::AF_HIDE_VIEW) || !(strpos($class, 'dummy') === false) || !(strpos($class,
-                        'image') === false) || !(strpos($class, 'tabbedpane') === false)
-            ) {
+            if ($skipAttribute || $attr->hasFlag(Attribute::AF_AUTOKEY) || $attr->hasFlag(Attribute::AF_HIDE_VIEW) || !(strpos($class, 'image') === false)) {
                 continue;
             }
+
             if (method_exists($this->m_node, 'getExportAttributeGroup')) {
                 $group = $this->m_node->getExportAttributeGroup($attr->m_name);
             } else {
@@ -295,12 +299,11 @@ class ExportHandler extends ActionHandler
             }
             // selected options based on a new selection, or no selection
 
-            $attributes[$group][] = array(
+            $attributes[$group][] = [
                 'name' => $key,
                 'text' => $attr->label(),
                 'checked' => $selected == true && !$attr->hasFlag(Attribute::AF_HIDE_LIST),
-            );
-
+            ];
         }
 
         return $attributes;
