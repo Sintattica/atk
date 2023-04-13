@@ -691,18 +691,26 @@ class DateAttribute extends Attribute
         $weekdayFormat = null;
         $str_script = '';
         $result .= "<div class='atk-date-group'>";
+
+        $numDateWidgetToRender = $this->getNumWidgetToRender($str_format);
+
         for ($i = 0; $i < strlen($str_format); ++$i) {
             /* javascript method */
             if (!$this->m_simplemode) {
                 $str_script = "ATK.DateAttribute.adjustDate(this, '" . $id . "');";
             }
 
-            if ($i === 0) {
-                $extraClass = 'atk-date-left';
-            } elseif ($i === strlen($str_format) - 1 && $this->hasFlag(self::AF_DATE_NO_CALENDAR)) {
-                $extraClass = 'atk-date-right';
+            if ($numDateWidgetToRender === 1) {
+                $extraClass = 'atk-date-single-item';
+
             } else {
-                $extraClass = '';
+                if ($i === 0) {
+                    $extraClass = 'atk-date-left';
+                } elseif ($i === $numDateWidgetToRender - 1 && $this->hasFlag(self::AF_DATE_NO_CALENDAR)) {
+                    $extraClass = 'atk-date-right';
+                } else {
+                    $extraClass = '';
+                }
             }
 
             if (Tools::count($this->m_onchangecode)) {
@@ -1643,5 +1651,16 @@ class DateAttribute extends Attribute
         }
 
         return $month == 2 ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29))) : (($month - 1) % 7 % 2 ? 30 : 31);
+    }
+
+    /**
+     * Removes all format chars without specific widget to render from str format and returns the number of remaining chars.
+     *
+     * @param string $strFormat
+     * @return int
+     */
+    private function getNumWidgetToRender(string $strFormat): int
+    {
+        return strlen(trim(str_replace('l', '', str_replace('D', '', $strFormat))));
     }
 }

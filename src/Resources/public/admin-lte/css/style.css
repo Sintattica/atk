@@ -466,9 +466,15 @@ input[type = checkbox].form-control {
     border-radius: 0.2rem 0 0 0.2rem;
 }
 
+.atk-date-group > .select2-container--bootstrap4 .select2-selection--single.atk-date-single-item,
+.atk-date-group > input.atk-date-single-item {
+    border-radius: 0.2rem;
+    border-right: 1px solid #ced4da;
+}
+
 .atk-date-group > .atk-date-right {
     border-radius: 0 0.2rem 0.2rem 0;
-    border-right: solid 1px #dddddd;
+    border-right: 1px solid #ced4da;
 }
 
 /**
