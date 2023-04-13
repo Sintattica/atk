@@ -288,7 +288,6 @@ class TimeAttribute extends Attribute
         $m_minBox .= '</select>';
         if ($this->hasFlag(self::AF_TIME_SECONDS)) {
             $m_secBox .= '</select>';
-            $m_secBox = '&nbsp;:&nbsp;' . $m_secBox;
         } else {
             $m_secBox = '<input type="hidden" id="' . $fieldprefix . $this->fieldName() . '[seconds]" name="' . $fieldprefix . $this->fieldName() . "[seconds]\" value=\"00\">";
         }
