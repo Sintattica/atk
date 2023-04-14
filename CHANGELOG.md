@@ -1,5 +1,23 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.11.0] - 2023-04-14
+### Added
+- Relation: added config onetomany_label_position_top to manage label position of one-to-many
+- Attribute: added min-width in search box
+- Export: hidden attributes with some specific class from export page (e.i. DummyAttribute, TabbedPane)
+
+### Changed
+- Export: export layout updated
+
+### Removed
+- Export: removed atk_export criteria
+
+### Fixed
+- Atk: updated layout for advanced-search
+- Attribute: fix DateAttribute edit
+- Attribute: fix TimeAttribute display without ':'
+
+
 ## [9.10.0] - 2023-04-04
 ### Added
 - Attribute: added titleWrap property to handle text-wrap in column th
