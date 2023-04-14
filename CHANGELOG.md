@@ -1,5 +1,9 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.11.1] - 2023-04-14
+### Added
+- TimeAttribute: Time Chooser Popup utility, configurable with AF_TIME_SECONDS. 
+
 ## [9.11.0] - 2023-04-14
 ### Added
 - Relation: added config onetomany_label_position_top to manage label position of one-to-many
