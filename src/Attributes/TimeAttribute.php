@@ -2,9 +2,11 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
+use Sintattica\Atk\Ui\Page;
 
 /**
  * The TimeAttribute class represents an attribute of a node
@@ -91,7 +93,7 @@ class TimeAttribute extends Attribute
             ];
         }
     }
-    
+
 
     /**
      * Display's text version of Record.
@@ -180,6 +182,10 @@ class TimeAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
+
+        $page = Page::getInstance();
+
+
         if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
             ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
         ) {
@@ -283,22 +289,86 @@ class TimeAttribute extends Attribute
             $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>", $this->m_steps[$i], $sel, $this->m_steps[$i]);
         }
 
+
+        $timePickerHtmlId = $fieldprefix . $this->fieldName() . "-tp";
+
+        $script = '<script type="text/javascript">
+            $( () => { 
+                const dTimePickerContainer = $("#' . $timePickerHtmlId . '");
+                const enableSeconds = (' . ($this->hasFlag(self::AF_TIME_SECONDS) ? "true" : "false") . ') 
+                let defaultSetTime = moment({ hour: ' . $m_defHour . ', minute: ' . $m_defMin . ', second: ' . $m_defSec . ' })
+              
+                dTimePickerContainer.datetimepicker({
+                    timePicker24Hour: true,
+                    widgetPositioning: {
+                        horizontal:"right",
+                        vertical:"top",
+                    },
+                    defaultDate: defaultSetTime,
+                    format: enableSeconds ? "HH:mm:ss" : "HH:mm",
+                    locale: "' . Config::getGlobal('language') . '",   
+                });
+                  
+                //When results are changed
+                dTimePickerContainer.on("change.datetimepicker", changeTimeEvt => {
+                    if (changeTimeEvt.date != null){  
+                        const hours = changeTimeEvt.date.hours() < 10 ? "0" + changeTimeEvt.date.hours() : changeTimeEvt.date.hours();
+                        const minutes = changeTimeEvt.date.minutes() < 10 ? "0" + changeTimeEvt.date.minutes() : changeTimeEvt.date.minutes();
+                        const seconds = changeTimeEvt.date.seconds() < 10 ? "0" + changeTimeEvt.date.seconds() : changeTimeEvt.date.seconds(); 
+                    
+                        const hoursHtmlEl = $(document.getElementById("' . $id . '[hours]"));
+                        const minHtmlEl = $(document.getElementById("' . $id . '[minutes]"));
+                        const secHtmlEl = $(document.getElementById("' . $id . '[seconds]")); 
+                    
+                        changeSelect2Value(hoursHtmlEl, hours);
+                        changeSelect2Value(minHtmlEl, minutes);
+                        changeSelect2Value(secHtmlEl, seconds); 
+                 } 
+                });
+                 
+                function changeSelect2Value(select2HtmlEl, val){
+                    if (select2HtmlEl.find("option[value=\'" + val + "\']").length) {
+                        select2HtmlEl.val(val).trigger("change");
+                     } else {  
+                        const newOption = new Option(val, val, true, true); 
+                        select2HtmlEl.append(newOption).trigger("change");
+                     }
+                }
+               
+                window.addEventListener("click", function(e){
+                    const timePickerPopup = document.getElementsByClassName("timepicker")[0];
+                    if (!document.getElementById("' . $timePickerHtmlId . '-icon").contains(e.target) 
+                            && timePickerPopup != null 
+                            && !timePickerPopup.contains(e.target)
+                       ){ 
+                        dTimePickerContainer.datetimepicker("hide");
+                    }                     
+                }); 
+                
+                
+            });
+        </script>';
+
         // close dropdown structures
         $m_hourBox .= '</select>';
         $m_minBox .= '</select>';
+
         if ($this->hasFlag(self::AF_TIME_SECONDS)) {
             $m_secBox .= '</select>';
         } else {
             $m_secBox = '<input type="hidden" id="' . $fieldprefix . $this->fieldName() . '[seconds]" name="' . $fieldprefix . $this->fieldName() . "[seconds]\" value=\"00\">";
         }
 
-        $iconBox = '<span class="form-control form-control-sm atk-time-right far fa-clock"></span>';
+        $timePickerInput = '<input style="display:none;" data-target="#' . $timePickerHtmlId . '" type="hidden" id="' . $timePickerHtmlId . '-input" name="' . $timePickerHtmlId . '" />';
+
+        $iconBox = '<span id="' . $timePickerHtmlId . '-icon" data-target="#' . $timePickerHtmlId . '" data-toggle="datetimepicker" class="form-control form-control-sm atk-time-right far fa-clock"></span>';
+
 
         // assemble display version
-        $timeedit = $m_hourBox . $m_minBox . $m_secBox . $iconBox;
+        $timeedit = $script . $m_hourBox . $m_minBox . $m_secBox . $iconBox . $timePickerInput;
 
 
-        return '<div class="TimeAttribute form-inline"><div class="atk-time-group">' . $timeedit . '</div></div>';
+        return '<div class="TimeAttribute form-inline"><div class="atk-time-group" id="' . $timePickerHtmlId . '" data-target-input="nearest">' . $timeedit . '</div></div>';
     }
 
     /**

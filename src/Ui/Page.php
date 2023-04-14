@@ -159,9 +159,11 @@ class Page
         //Custom file input lib
         $this->register_script($assetsUrl . 'admin-lte/plugins/bs-custom-file-input/bs-custom-file-input.min.js');
 
+        $this->register_script($assetsUrl . 'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
+
+
         /*
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
-        $this->register_script($assetsUrl.'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
         $this->register_script($assetsUrl.'admin-lte/plugins/daterangepicker/daterangepicker.js');
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js');
         $this->register_script($assetsUrl.'admin-lte/plugins/bs-stepper/js/bs-stepper.min.js');
@@ -172,8 +174,7 @@ class Page
         $this->register_script($assetsUrl . 'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
 
         //Atk - Custom
-        $this->register_scriptcode("var LANGUAGE='" . $lang . "';", true);
-        //$this->register_script($assetsUrl.'javascript/libs.min.js'); //disabled old jQuery Bundle
+        $this->register_scriptcode("const LANGUAGE='" . $lang . "';", true);
 
         //AdminLTE App
         $this->register_script($assetsUrl . 'admin-lte/js/adminlte.min.js');
@@ -232,13 +233,8 @@ class Page
         $this->register_style($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css');
         $this->register_style($assetsUrl.'admin-lte/plugins/bs-stepper/css/bs-stepper.min.css');
         $this->register_style($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.css');
-*/
+        */
 
-
-        $style_url = Config::getGlobal('style_url');
-        if ($style_url) {
-            // $this->register_style(Config::getGlobal('style_url'));
-        }
     }
 
     /**

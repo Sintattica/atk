@@ -339,9 +339,24 @@ table thead th {
 }
 
 
-/**
- * Checkbox style
- */
+.bootstrap-datetimepicker-widget table td,
+.bootstrap-datetimepicker-widget table td span
+{
+    height: 20px;
+    line-height: 20px;
+    width: 20px;
+}
+
+.bootstrap-datetimepicker-widget .timepicker-hour,
+.bootstrap-datetimepicker-widget .timepicker-minute,
+.bootstrap-datetimepicker-widget .timepicker-second {
+    font-size: 0.9rem;
+}
+
+
+    /**
+     * Checkbox style
+     */
 input[type = checkbox].form-control {
     max-width: 30px !important;
 }
