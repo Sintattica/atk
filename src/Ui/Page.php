@@ -174,7 +174,7 @@ class Page
         $this->register_script($assetsUrl . 'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
 
         //Atk - Custom
-        $this->register_scriptcode("const LANGUAGE='" . $lang . "';", true);
+        $this->register_scriptcode("let LANGUAGE='" . $lang . "';", true);
 
         //AdminLTE App
         $this->register_script($assetsUrl . 'admin-lte/js/adminlte.min.js');
