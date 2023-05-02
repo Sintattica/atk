@@ -295,23 +295,22 @@ class TimeAttribute extends Attribute
         $script = '<script type="text/javascript">
             $( () => { 
                 const dTimePickerContainer = $("#' . $timePickerHtmlId . '");
-                const enableSeconds = (' . ($this->hasFlag(self::AF_TIME_SECONDS) ? "true" : "false") . ') 
-                let defaultSetTime = moment({ hour: ' . ($m_defHour != null ? $m_defHour : 0) . ', minute: ' . ($m_defMin != null ? $m_defMin : 0) . ', second: ' . ($m_defSec != null ? $m_defSec : 0) . ' })
+                const enableSeconds = (' . ($this->hasFlag(self::AF_TIME_SECONDS) ? "true" : "false") . ');
+                let defaultSetTime = moment({ hour: ' . ($m_defHour ?: '""') . ', minute: ' . ($m_defMin ?: '""') . ', second: ' . ($m_defSec ?: '""') . ' });
               
                 dTimePickerContainer.datetimepicker({
                     timePicker24Hour: true,
                     widgetPositioning: {
-                        horizontal:"right",
-                        vertical:"top",
+                        horizontal: "right",
+                        vertical: "top",
                     },
                     defaultDate: defaultSetTime,
                     format: enableSeconds ? "HH:mm:ss" : "HH:mm",
-                    locale: "' . Config::getGlobal('language') . '",   
+                    locale: "' . Config::getGlobal('language') . '"   
                 });
-                  
-                //When results are changed
+                
                 dTimePickerContainer.on("change.datetimepicker", changeTimeEvt => {
-                    if (changeTimeEvt.date != null){  
+                    if (changeTimeEvt.date != null) {  
                         const hours = changeTimeEvt.date.hours() < 10 ? "0" + changeTimeEvt.date.hours() : changeTimeEvt.date.hours();
                         const minutes = changeTimeEvt.date.minutes() < 10 ? "0" + changeTimeEvt.date.minutes() : changeTimeEvt.date.minutes();
                         const seconds = changeTimeEvt.date.seconds() < 10 ? "0" + changeTimeEvt.date.seconds() : changeTimeEvt.date.seconds(); 
@@ -323,7 +322,7 @@ class TimeAttribute extends Attribute
                         changeSelect2Value(hoursHtmlEl, hours);
                         changeSelect2Value(minHtmlEl, minutes);
                         changeSelect2Value(secHtmlEl, seconds); 
-                 } 
+                    } 
                 });
                  
                 function changeSelect2Value(select2HtmlEl, val){
@@ -344,8 +343,6 @@ class TimeAttribute extends Attribute
                         dTimePickerContainer.datetimepicker("hide");
                     }                     
                 }); 
-                
-                
             });
         </script>';
 
@@ -363,10 +360,8 @@ class TimeAttribute extends Attribute
 
         $iconBox = '<span id="' . $timePickerHtmlId . '-icon" data-target="#' . $timePickerHtmlId . '" data-toggle="datetimepicker" class="form-control form-control-sm atk-time-right far fa-clock"></span>';
 
-
         // assemble display version
         $timeedit = $script . $m_hourBox . $m_minBox . $m_secBox . $iconBox . $timePickerInput;
-
 
         return '<div class="TimeAttribute form-inline"><div class="atk-time-group" id="' . $timePickerHtmlId . '" data-target-input="nearest">' . $timeedit . '</div></div>';
     }
