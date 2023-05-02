@@ -361,7 +361,8 @@ class TimeAttribute extends Attribute
         $iconBox = '<span id="' . $timePickerHtmlId . '-icon" data-target="#' . $timePickerHtmlId . '" data-toggle="datetimepicker" class="form-control form-control-sm atk-time-right far fa-clock"></span>';
 
         // assemble display version
-        $timeedit = $script . $m_hourBox . $m_minBox . $m_secBox . $iconBox . $timePickerInput;
+        // TODO: removed $script because there is a js bug
+        $timeedit = $m_hourBox . $m_minBox . $m_secBox . $iconBox . $timePickerInput;
 
         return '<div class="TimeAttribute form-inline"><div class="atk-time-group" id="' . $timePickerHtmlId . '" data-target-input="nearest">' . $timeedit . '</div></div>';
     }
