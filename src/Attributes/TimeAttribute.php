@@ -296,7 +296,7 @@ class TimeAttribute extends Attribute
             $( () => { 
                 const dTimePickerContainer = $("#' . $timePickerHtmlId . '");
                 const enableSeconds = (' . ($this->hasFlag(self::AF_TIME_SECONDS) ? "true" : "false") . ') 
-                let defaultSetTime = moment({ hour: ' . $m_defHour . ', minute: ' . $m_defMin . ', second: ' . $m_defSec . ' })
+                let defaultSetTime = moment({ hour: ' . ($m_defHour != null ? $m_defHour : 0) . ', minute: ' . ($m_defMin != null ? $m_defMin : 0) . ', second: ' . ($m_defSec != null ? $m_defSec : 0) . ' })
               
                 dTimePickerContainer.datetimepicker({
                     timePicker24Hour: true,
