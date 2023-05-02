@@ -185,7 +185,6 @@ class TimeAttribute extends Attribute
 
         $page = Page::getInstance();
 
-
         if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
             ($this->m_default == "" && $this->hasFlag(self::AF_OBLIGATORY)) && !$this->hasFlag(self::AF_TIME_DEFAULT_EMPTY))
         ) {
@@ -292,11 +291,30 @@ class TimeAttribute extends Attribute
 
         $timePickerHtmlId = $fieldprefix . $this->fieldName() . "-tp";
 
-        $script = '<script type="text/javascript">
+        // close dropdown structures
+        $m_hourBox .= '</select>';
+        $m_minBox .= '</select>';
+
+        if ($this->hasFlag(self::AF_TIME_SECONDS)) {
+            $m_secBox .= '</select>';
+        } else {
+            $m_secBox = '<input type="hidden" id="' . $fieldprefix . $this->fieldName() . '[seconds]" name="' . $fieldprefix . $this->fieldName() . "[seconds]\" value=\"00\">";
+        }
+
+        $timePickerInput = '<input style="display:none;" data-target="#' . $timePickerHtmlId . '" type="hidden" id="' . $timePickerHtmlId . '-input" name="' . $timePickerHtmlId . '" />';
+
+        $iconBox = '<span id="' . $timePickerHtmlId . '-icon" data-target="#' . $timePickerHtmlId . '" data-toggle="datetimepicker" class="form-control form-control-sm atk-time-right far fa-clock"></span>';
+
+        // assemble display version
+        // TODO: removed $script because there is a js bug
+        $timeedit = $m_hourBox . $m_minBox . $m_secBox . $iconBox . $timePickerInput;
+
+
+        $page->register_loadscript('
             $( () => { 
                 const dTimePickerContainer = $("#' . $timePickerHtmlId . '");
                 const enableSeconds = (' . ($this->hasFlag(self::AF_TIME_SECONDS) ? "true" : "false") . ');
-                let defaultSetTime = moment({ hour: ' . ($m_defHour ?: '""') . ', minute: ' . ($m_defMin ?: '""') . ', second: ' . ($m_defSec ?: '""') . ' });
+                let defaultSetTime = moment({ hour: ' . ($m_defHour ?: 0) . ', minute: ' . ($m_defMin ?: 0) . ', second: (enableSeconds ? "' . $m_defSec . '" : 0) });
               
                 dTimePickerContainer.datetimepicker({
                     timePicker24Hour: true,
@@ -344,25 +362,7 @@ class TimeAttribute extends Attribute
                     }                     
                 }); 
             });
-        </script>';
-
-        // close dropdown structures
-        $m_hourBox .= '</select>';
-        $m_minBox .= '</select>';
-
-        if ($this->hasFlag(self::AF_TIME_SECONDS)) {
-            $m_secBox .= '</select>';
-        } else {
-            $m_secBox = '<input type="hidden" id="' . $fieldprefix . $this->fieldName() . '[seconds]" name="' . $fieldprefix . $this->fieldName() . "[seconds]\" value=\"00\">";
-        }
-
-        $timePickerInput = '<input style="display:none;" data-target="#' . $timePickerHtmlId . '" type="hidden" id="' . $timePickerHtmlId . '-input" name="' . $timePickerHtmlId . '" />';
-
-        $iconBox = '<span id="' . $timePickerHtmlId . '-icon" data-target="#' . $timePickerHtmlId . '" data-toggle="datetimepicker" class="form-control form-control-sm atk-time-right far fa-clock"></span>';
-
-        // assemble display version
-        // TODO: removed $script because there is a js bug
-        $timeedit = $m_hourBox . $m_minBox . $m_secBox . $iconBox . $timePickerInput;
+            ');
 
         return '<div class="TimeAttribute form-inline"><div class="atk-time-group" id="' . $timePickerHtmlId . '" data-target-input="nearest">' . $timeedit . '</div></div>';
     }
