@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.11.2] - 2023-05-03
+### Fixed
+- Attribute: fix TimeAttribute watch widget
+- Node: fix setAttributesFlags in action_admin
+
+
 ## [9.11.1] - 2023-04-14
 ### Added
 - TimeAttribute: Time Chooser Popup utility, configurable with AF_TIME_SECONDS. 
