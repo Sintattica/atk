@@ -16,6 +16,7 @@ use Sintattica\Atk\Handlers\ActionHandler;
 use Sintattica\Atk\Handlers\AddHandler;
 use Sintattica\Atk\Handlers\AdminHandler;
 use Sintattica\Atk\Handlers\EditHandler;
+use Sintattica\Atk\Handlers\SearchHandler;
 use Sintattica\Atk\Handlers\ViewHandler;
 use Sintattica\Atk\RecordList\ColumnConfig;
 use Sintattica\Atk\Relations\Relation;
@@ -3358,9 +3359,14 @@ class Node
         ]);
     }
 
-    function adminPage(AdminHandler $handler, array $actions = []): string
+    function action_admin(AdminHandler $handler)
     {
         $this->setAttributesFlags(null, 'admin');
+        $handler->action_admin();
+    }
+
+    function adminPage(AdminHandler $handler, array $actions = []): string
+    {
         return $handler->adminPage($actions);
     }
 
@@ -3383,8 +3389,17 @@ class Node
     }
 
     /**
+     * @throws Exception
+     */
+    function searchPage(SearchHandler $handler, array $record = null): string
+    {
+        $this->setAttributesFlags($record, 'search');
+        return $handler->searchPage($record);
+    }
+
+    /**
      * use this function to set flags on the attributes of the node.
-     * It is called automatically by adminPage, addPage, viewPage and editPage functions.
+     * It is called automatically by action_admin, addPage, viewPage, editPage and searchPage functions.
      *
      * @param array|null $record
      * @param string $mode 'admin', 'add', 'view' and 'edit'

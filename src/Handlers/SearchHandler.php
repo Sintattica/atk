@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Handlers;
 
+use Exception;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Config;
@@ -85,7 +86,6 @@ class SearchHandler extends AbstractSearchHandler
     public function getPreviousNode()
     {
         $sm = SessionManager::getInstance();
-
         return $sm->atkLevel() > 0 ? $sm->stackVar('atknodeuri', '', $sm->atkLevel() - 1) : $this->m_node->atkNodeUri();
     }
 
@@ -97,7 +97,6 @@ class SearchHandler extends AbstractSearchHandler
     public function getPreviousAction()
     {
         $sm = SessionManager::getInstance();
-
         return $sm->atkLevel() > 0 ? $sm->stackVar('atkaction', '', $sm->atkLevel() - 1) : 'admin';
     }
 
@@ -107,6 +106,7 @@ class SearchHandler extends AbstractSearchHandler
      * @param string $partial full partial
      *
      * @return string
+     * @throws Exception
      */
     public function partial_attribute($partial)
     {
@@ -129,6 +129,7 @@ class SearchHandler extends AbstractSearchHandler
      *                      entered in the searchform.
      *
      * @return string The html search page.
+     * @throws Exception
      */
     public function searchPage($record = null)
     {
@@ -154,12 +155,10 @@ class SearchHandler extends AbstractSearchHandler
 
             $output = $ui->renderAction('search', $params);
 
-            $total = $ui->renderBox(array(
+            return $ui->renderBox([
                 'title' => $node->actionTitle('search'),
                 'content' => $output,
-            ));
-
-            return $total;
+            ]);
         } else {
             Tools::atkerror('ui object failure');
         }
@@ -204,9 +203,12 @@ class SearchHandler extends AbstractSearchHandler
             }
 
             return $ui->render($node->getTemplate('search', $record), $params);
+
         } else {
             Tools::atkerror('ui object error');
         }
+
+        return '';
     }
 
     /**
@@ -216,10 +218,10 @@ class SearchHandler extends AbstractSearchHandler
      */
     public function fetchCriteria(): array
     {
-        return array(
+        return [
             'atksearchmethod' => array_key_exists('atksearchmethod', $this->m_postvars) ? $this->m_postvars['atksearchmethod'] : '',
             'atksearch' => array_key_exists('atksearch', $this->m_postvars) ? $this->m_postvars['atksearch'] : '',
             'atksearchmode' => array_key_exists('atksearchmode', $this->m_postvars) ? $this->m_postvars['atksearchmode'] : '',
-        );
+        ];
     }
 }

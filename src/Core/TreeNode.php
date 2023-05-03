@@ -2,8 +2,10 @@
 
 namespace Sintattica\Atk\Core;
 
+use Exception;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Handlers\ActionHandler;
+use Sintattica\Atk\Handlers\AdminHandler;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Utils\StringParser;
 
@@ -90,9 +92,12 @@ class TreeNode extends Node
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete) in a Treeview.
      *
-     * @param ActionHandler $handler The action handler object
+     * @param AdminHandler $handler The action handler object
+     * @param array $actions
+     * @return string
+     * @throws Exception
      */
-    public function adminPage($handler)
+    function adminPage(AdminHandler $handler, array $actions = []): string
     {
         global $g_maxlevel;
 
