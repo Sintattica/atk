@@ -2,6 +2,7 @@
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Menu\MenuBase;
+use Sintattica\Atk\Ui\Ui;
 
 $_configAppRoot = __DIR__ . '/../../../../../../';
 $_configTempDir = $_configAppRoot . 'var/atktmp/';
@@ -739,6 +740,11 @@ return [
      */
     'recordList_show_dropdown_labels' => true, //Show button names in the dropdown list
     'recordList_dropdown_start_index' => 3, //Number of elements to show before putting the rest as a dropdown (if less than 1 no dropdown will be shown)
+
+    /*
+     * Position of the action form buttons (left, center, right)
+     */
+    'action_form_buttons_position' => Ui::ACTION_FORM_BUTTON_POSITION_RIGHT,
 
     /*
      * This should be turned on when an application makes use

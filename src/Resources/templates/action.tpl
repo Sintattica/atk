@@ -12,20 +12,21 @@
     </div>
 {/if}
 {if isset($header)}
-    <div>{$header}</div>{/if}
+    <div>{$header}</div>
+{/if}
 {$formstart}
 <div> <!-- div added to enable nested forms -->
     <div id="action-content">
         {$content}
     </div>
-    <div id="action-buttons">
 
+    <div id="action-buttons" class="mt-4">
         <div class="overlay-wrapper">
             <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i>
                 <div class="text-bold pt-2">Loading...</div>
             </div>
 
-            <div class="action-buttons-buttons row no-gutters justify-content-start flex-row-reverse">
+            <div class="action-buttons-buttons row no-gutters {$action_form_buttons_position_class} flex-row-reverse">
                 {foreach from=$buttons item=button}
                     {$button}
                 {/foreach}

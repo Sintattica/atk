@@ -230,13 +230,11 @@ class EditHandler extends ViewEditBase
         if (is_object($ui)) {
             $this->getPage()->setTitle(Tools::atktext('app_shorttitle').' - '.$node->actionTitle('edit', $record));
 
-            $output = $ui->render('action.tpl', $params, $node->m_module);
+            $output = $ui->renderAction('edit', $params, $node->m_module);
             $this->addRenderBoxVar('title', $node->actionTitle('edit', $record));
             $this->addRenderBoxVar('content', $output);
 
-            $total = $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
-
-            return $total;
+            return $ui->renderBox($this->m_renderBoxVars, $this->m_boxTemplate);
         }
 
         return '';

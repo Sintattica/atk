@@ -24,6 +24,7 @@ class ViewHandler extends ViewEditBase
      * The action handler method.
      *
      * @param bool $renderbox Render this action in a renderbox or just output the HTML
+     * @throws Exception
      */
     public function action_view($renderbox = true)
     {

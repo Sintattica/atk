@@ -5,7 +5,6 @@ namespace Sintattica\Atk\Ui;
 use Exception;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Atk;
 use SmartyException;
 
@@ -16,6 +15,10 @@ use SmartyException;
  */
 class Ui
 {
+    const ACTION_FORM_BUTTON_POSITION_LEFT = 'left';
+    const ACTION_FORM_BUTTON_POSITION_CENTER = 'center';
+    const ACTION_FORM_BUTTON_POSITION_RIGHT = 'right';
+
     /*
      * Smarty instance, initialised by constructor
      * @access private
@@ -63,10 +66,12 @@ class Ui
     public function renderAction($action, $vars, $module = ''): string
     {
         $tpl = "action_$action.tpl";
-        if (!$this->m_smarty->templateExists($tpl)) // no specific theme for this action
-        {
+        if (!$this->m_smarty->templateExists($tpl)) {
+            // no specific tpl for this action
             $tpl = "action.tpl";
         }
+
+        $this->addActionFormButtonsPositionClassVar($vars);
 
         return $this->render($tpl, $vars, $module);
     }
@@ -144,28 +149,10 @@ class Ui
         $result = $this->renderSmarty($name, $vars);
 
         if (Config::getGlobal('debug') >= 3) {
-            $result = "\n<!-- START [{$name}] -->\n" . $result . "\n<!-- END [{$name}] -->\n";
+            $result = "\n<!-- START [$name] -->\n" . $result . "\n<!-- END [$name] -->\n";
         }
 
         return $result;
-    }
-
-    /**
-     * Render Smarty-based template.
-     *
-     * @param string $path template path
-     * @param array $vars template variables
-     *
-     * @return string rendered template
-     * @throws SmartyException
-     */
-    private function renderSmarty(string $path, array $vars): string
-    {
-        // First clear any existing smarty var.
-        $this->m_smarty->clearAllAssign();
-
-        $this->m_smarty->assign($vars);
-        return $this->m_smarty->fetch($path);
     }
 
     /**
@@ -187,5 +174,39 @@ class Ui
         $atk = Atk::getInstance();
 
         return $atk->atkGetNode($module . '.' . $nodetype)->nodeTitle($action, $actiononly);
+    }
+
+    public function addActionFormButtonsPositionClassVar(array &$tplVars)
+    {
+        $actionFormButtonPosition = Config::getGlobal('action_form_buttons_position');
+        switch ($actionFormButtonPosition) {
+            case self::ACTION_FORM_BUTTON_POSITION_LEFT:
+                $actionFormButtonPositionClass = 'justify-content-end';
+                break;
+            case self::ACTION_FORM_BUTTON_POSITION_CENTER:
+                $actionFormButtonPositionClass = 'justify-content-center';
+                break;
+            default:
+                $actionFormButtonPositionClass = 'justify-content-start';
+        }
+        $tplVars['action_form_buttons_position_class'] = $actionFormButtonPositionClass;
+    }
+
+    /**
+     * Render Smarty-based template.
+     *
+     * @param string $path template path
+     * @param array $vars template variables
+     *
+     * @return string rendered template
+     * @throws SmartyException
+     */
+    private function renderSmarty(string $path, array $vars): string
+    {
+        // First clear any existing smarty var.
+        $this->m_smarty->clearAllAssign();
+
+        $this->m_smarty->assign($vars);
+        return $this->m_smarty->fetch($path);
     }
 }
