@@ -1261,13 +1261,22 @@ class DateAttribute extends Attribute
 
         // array with year / month / day
         if (is_array($value)) {
-            if (empty($value['year']) || empty($value['month']) || empty($value['day'])) {
-                return null;
-            } else {
-                return $value;
+            $resultValue = [];
+            foreach (['year', 'month', 'day'] as $field) {
+                if (empty($value[$field])) {
+                    return null;
+                }
+                $resultValue[$field] = $value[$field];
             }
-        } // text format
-        else {
+
+            // always 2 chars
+            $resultValue['month'] = sprintf('%02d', $resultValue['month']);
+            $resultValue['day'] = sprintf('%02d', $resultValue['day']);
+
+            return $resultValue;
+
+        } else {
+            // text format
             if (!empty($value)) {
                 // maybe we should use strptime in PHP >= 5.1
                 $formats = [];
@@ -1282,11 +1291,12 @@ class DateAttribute extends Attribute
                 $formats[] = str_replace(array('y', 'Y', 'm', 'n', 'F', 'd', 'j'), array('yy', 'yy', 'mm', 'mm', 'mm', 'd', 'd'), $this->m_date_format_edit);
                 $formats[] = str_replace(array('y', 'Y', 'm', 'n', 'F', 'd', 'j'), array('yy', 'yy', 'm', 'm', 'm', 'd', 'd'), $this->m_date_format_edit);
                 $arr = self::parseDate($value, $formats);
+
                 if ($arr['day'] == 0 || $arr['month'] == 0 || $arr['year'] == 0) {
                     return self::dateArray(adodb_date('Ymd', strtotime($value)));
-                } else {
-                    return $arr;
                 }
+
+                return $arr;
             }
         }
 

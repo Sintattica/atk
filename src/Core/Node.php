@@ -6,9 +6,12 @@ use Exception;
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\ButtonAttribute;
+use Sintattica\Atk\Attributes\DateAttribute;
+use Sintattica\Atk\Attributes\DateTimeAttribute;
 use Sintattica\Atk\Attributes\FieldSet;
 use Sintattica\Atk\Attributes\FileAttribute;
 use Sintattica\Atk\Attributes\JsonAttribute;
+use Sintattica\Atk\Attributes\MultiListAttribute;
 use Sintattica\Atk\Attributes\StateColorAttribute;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Db\Query;
@@ -19,6 +22,7 @@ use Sintattica\Atk\Handlers\EditHandler;
 use Sintattica\Atk\Handlers\SearchHandler;
 use Sintattica\Atk\Handlers\ViewHandler;
 use Sintattica\Atk\RecordList\ColumnConfig;
+use Sintattica\Atk\Relations\ManyToOneRelation;
 use Sintattica\Atk\Relations\Relation;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
@@ -5784,12 +5788,12 @@ class Node
 
         // 'special' attributes.
         $attr = $this->getAttribute($attributeName);
-        if ($attr->get_class_name() == 'FileAttribute') {
-            //True if the file has been added or modified.
+        if ($attr instanceof FileAttribute) {
+            // true if the file has been added or modified.
             return strpos($newValue['tmpfile'], sys_get_temp_dir()) !== false;
 
-        } elseif ($attr->get_class_name() == 'MultiListAttribute') {
-            // check foreach id (unordered)
+        } elseif ($attr instanceof MultiListAttribute || $attr instanceof DateAttribute || $attr instanceof DateTimeAttribute) {
+            // check foreach id/key (unordered)
 
             // convert the null values to empty arrays so the array_diff doesn't complain.
             if ($oldValue === null) {
@@ -5802,7 +5806,8 @@ class Node
 
             return array_diff($oldValue, $newValue) or array_diff($newValue, $oldValue);
 
-        } elseif (is_array($newValue) or $attr->get_class_name() == 'ManyToOneRelation') {  // relation attributes
+        } elseif (is_array($newValue) || $attr instanceof ManyToOneRelation) {
+            // relation attributes
 
             if (!is_array($newValue)) {
                 foreach ($checkMtoPrimaryKeys as $key) {

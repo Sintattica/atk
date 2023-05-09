@@ -220,18 +220,18 @@ class DateTimeAttribute extends Attribute
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return array|null The internal value
      */
     public function fetchValue($postvars)
     {
         $date = $this->m_date->fetchValue($postvars);
         if ($date == null) {
-            return;
+            return null;
         }
 
         $time = $this->m_time->fetchValue($postvars);
         if ($time == null) {
-            $time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
+            $time = ['hours' => '00', 'minutes' => '00', 'seconds' => '00'];
         }
 
         return array_merge($date, $time);

@@ -130,40 +130,46 @@ class TimeAttribute extends Attribute
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return array|null The internal value
      */
     public function fetchValue($postvars)
     {
-        $result = $postvars[$this->fieldName()];
+        $value = $postvars[$this->fieldName()];
+        $result = [];
 
-        if (!is_array($result)) {
-            $result = trim($result);
+        if (!is_array($value)) {
+            $value = trim($value);
             // $result could contain "date" data (when TimeAttribute is embedded in the DateTimeAttribute)
             // we extract the time information assuming the space is the separator between data and time
-            if (strpos($result, ' ') !== false) {
-                $result = trim(substr($result, strpos($result, ' ')));
+            if (strpos($value, ' ') !== false) {
+                $value = trim(substr($value, strpos($value, ' ')));
             }
 
-            $exploded = explode(':', $result);
-            if (Tools::count($exploded) <= 1) {
-                return '';
+            $valueExploded = explode(':', $value);
+            if (Tools::count($valueExploded) <= 1) {
+                return null;
             }
-            $result = [];
-            $result['hours'] = $exploded[0];
-            $result['minutes'] = $exploded[1];
-            if ($exploded[2]) {
-                $result['seconds'] = $exploded[2];
+
+            $result['hours'] = $valueExploded[0];
+            $result['minutes'] = $valueExploded[1];
+            if ($valueExploded[2]) {
+                $result['seconds'] = $valueExploded[2];
             }
+
         } else {
-            if (strlen($result['hours']) == 0 || strlen($result['minutes']) == 0) {
-                return;
-            } else {
-                $result = array(
-                    'hours' => $result['hours'],
-                    'minutes' => $result['minutes'],
-                    'seconds' => $result['seconds'],
-                );
+            $result = [
+                'hours' => $value['hours'],
+                'minutes' => $value['minutes'],
+                'seconds' => $value['seconds'],
+            ];
+
+            if (strpos($result['seconds'], ':') !== false) {
+                $result['seconds'] = explode(':', $result['seconds'])[0];
             }
+        }
+
+        if (strlen($result['hours']) == 0 || strlen($result['minutes']) == 0) {
+            return null;
         }
 
         return $result;
@@ -574,11 +580,11 @@ class TimeAttribute extends Attribute
     {
         //Assuming hh:mm:ss
         //Using negative substr because $stringvalue may contains date values (eg: "YYYY-MM-DD hh:mm:ss")
-        $retval = array(
+        $retval = [
             'hours' => substr($stringvalue, -8, 2),
             'minutes' => substr($stringvalue, -5, 2),
             'seconds' => substr($stringvalue, -2, 2),
-        );
+        ];
 
         if (!$retval['seconds']) {
             $retval['seconds'] = '00';
