@@ -1,7 +1,7 @@
 <div class="main-header navbar navbar-expand {$main_header_classes}">
 
     <!-- Left navbar links -->
-    <ul class="navbar-nav">
+    <ul class="navbar-nav navbar-left">
         <!-- Minimize Sidebar Button -->
         <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -12,7 +12,7 @@
     </ul>
 
     <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav navbar-right ml-auto">
         {$menu['right']}
 
         <li class="nav-item d-none">

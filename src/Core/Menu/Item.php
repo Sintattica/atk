@@ -4,6 +4,7 @@
 namespace Sintattica\Atk\Core\Menu;
 
 
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 
@@ -32,7 +33,7 @@ abstract class Item
     protected $name = "";
 
     protected $parent = self::DEFAULT_PARENT;
-    protected $position = MenuBase::MENU_SIDEBAR;
+    protected $position;
     protected $enable = true;
     protected $order = self::DEFAULT_ORDER;
     protected $module = '';
@@ -50,6 +51,7 @@ abstract class Item
 
     public function __construct()
     {
+        $this->position = Config::getGlobal('menu_default_item_position');
     }
 
     protected abstract function createIdentifierComponents(): ?string;

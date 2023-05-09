@@ -1,6 +1,7 @@
 <?php
 
 use Sintattica\Atk\Core\Config;
+use Sintattica\Atk\Core\Menu\MenuBase;
 
 $_configAppRoot = __DIR__ . '/../../../../../../';
 $_configTempDir = $_configAppRoot . 'var/atktmp/';
@@ -484,6 +485,8 @@ return [
      * Enable user link
      */
     'menu_enable_user_link' => true,
+
+    'menu_default_item_position' => MenuBase::MENU_SIDEBAR,
 
     /************************************ LAYOUT ****************************** */
 
