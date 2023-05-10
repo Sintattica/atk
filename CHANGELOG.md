@@ -1,5 +1,14 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.11.3] - 2023-05-10
+### Added
+- Menu: added menu_default_item_position config to manage the default position of menu items
+- Ui: added action_form_buttons_position config to manage the position of action form buttons
+
+### Fixed
+- Attribute: fix DateTimeAttribute fetch value
+
+
 ## [9.11.2] - 2023-05-03
 ### Fixed
 - Attribute: fix TimeAttribute watch widget
