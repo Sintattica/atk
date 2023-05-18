@@ -59,13 +59,16 @@ abstract class MenuBase
     private const SIDEBAR_SEPARATOR_ITEM_TPL = "menu/sidebar/separator_item.tpl";
 
     // Icons from Font Awesome
-    private const DEFAULT_SIDEBAR_PARENT_ITEM_ICON = 'far fa-circle';
-    private const DEFAULT_SIDEBAR_CHILD_ITEM_ICON = 'fas fa-th';
+    private const DEFAULT_SIDEBAR_PARENT_ITEM_ICON = 'fa-regular fa-circle';
+    private const DEFAULT_SIDEBAR_CHILD_ITEM_ICON = 'fa-solid fa-th';
 
     // -------- Navbar Menu  ------------
     private const NAVBAR_PARENT_ITEM_TPL = 'menu/navbar/parent_item.tpl';
     private const NAVBAR_SUBPARENT_ITEM_TPL = 'menu/navbar/subparent_item.tpl';
     private const NAVBAR_CHILD_ITEM_TPL = 'menu/navbar/child_item.tpl';
+
+    private const DEFAULT_NAVBAR_PARENT_ITEM_ICON = 'fa-regular fa-circle';
+    private const DEFAULT_NAVBAR_CHILD_ITEM_ICON = 'fa-solid fa-list';
 
     // General
     private const DEFAULT_ACTIVE_CLASS = 'active';
@@ -279,9 +282,6 @@ abstract class MenuBase
         $classes = $item['classes'] ?? '';
         $active = $item['active'] ? self::DEFAULT_ACTIVE_CLASS : '';
 
-
-        $icon = $item['icon'] ?? null;
-
         if ($this->hasSubmenu($item)) {
             $submenu = $this->processMenu($item['submenu'], true, self::TYPE_MENU_NAVBAR);
             $template = $child ? self::NAVBAR_SUBPARENT_ITEM_TPL : self::NAVBAR_PARENT_ITEM_TPL;
@@ -289,7 +289,7 @@ abstract class MenuBase
                 'title' => $title,
                 'submenu' => $submenu,
                 'classes' => $classes,
-                'icon' => $icon,
+                'icon' => $item['icon'] ?? self::DEFAULT_NAVBAR_PARENT_ITEM_ICON,
                 'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active,
@@ -311,7 +311,7 @@ abstract class MenuBase
             $html .= SmartyProvider::render(self::NAVBAR_CHILD_ITEM_TPL, [
                 'title' => $title,
                 'link' => $link,
-                'icon' => $icon,
+                'icon' => $item['icon'] ?? self::DEFAULT_NAVBAR_CHILD_ITEM_ICON,
                 'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'classes' => $classes,
@@ -751,6 +751,6 @@ abstract class MenuBase
         if (is_array($enable)) {
             return $enable;
         }
-        return $enable ? 1 : 0; 
+        return $enable ? 1 : 0;
     }
 }
