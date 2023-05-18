@@ -2,10 +2,22 @@
 
     <!-- Left navbar links -->
     <ul class="navbar-nav navbar-left">
-        <!-- Minimize Sidebar Button -->
-        <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-        </li>
+
+        {if !$hide_sidebar}
+            <!-- Minimize Sidebar Button -->
+            <li class="nav-item nav-minimize-sidebar">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        {else}
+
+            <!-- Brand Logo -->
+            <li class="nav-item nav-brand-logo">
+                <a href="{$dispatcher}" class="mr-1">
+                    <img src="{$brand_logo}" alt="ATK Logo" class="brand-image img-circle"
+                         style="opacity: .8; max-width: 35px;">
+                </a>
+            </li>
+        {/if}
 
         {$menu['left']}
 

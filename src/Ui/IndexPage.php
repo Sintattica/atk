@@ -105,13 +105,18 @@ class IndexPage
 
             $this->m_adminLte->setNavBarDevMode($_SERVER['APP_ENV'] !== 'prod');
 
+            // render navbar
             $navbar = $this->m_ui->render('menu/navbar.tpl', [
                 'menu' => $menuObj->getMenu(), //formatted smarty menu as ['left', 'right','sidebar']
                 'main_header_classes' => $this->m_adminLte->getMainHeaderClasses(),
+                'hide_sidebar' => Config::getGlobal('hide_sidebar'),
+                'dispatcher' => Config::getGlobal('dispatcher'),
+                'brand_logo' => Config::getGlobal('brand_logo')
             ]);
 
             $this->m_page->addContent($navbar);
 
+            // render sidebar
             $sidebar = $this->m_ui->render("menu/sidebar.tpl", [
                 'title' => ($this->m_title != '' ?: Tools::atktext('app_title')),
                 'app_title' => Tools::atktext('app_title'),
@@ -120,7 +125,9 @@ class IndexPage
                 'sidebar_classes' => $this->m_adminLte->getSidebarClasses(),
                 'brand_text_style' => $this->m_adminLte->getBrandTextStyle(),
                 'menu_accordion' => $this->m_adminLte->isMenuAccordion(),
-                'collapse_sidebar' => $this->m_adminLte->isCollapsedSidebar()
+                'collapse_sidebar' => $this->m_adminLte->isCollapsedSidebar(),
+                'dispatcher' => Config::getGlobal('dispatcher'),
+                'brand_logo' => Config::getGlobal('brand_logo')
             ]);
 
             $this->m_page->addContent($sidebar);

@@ -235,6 +235,16 @@ class Page
         $this->register_style($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.css');
         */
 
+        $style_url = Config::getGlobal('style_url');
+        if (!empty($style_url)) {
+             $this->register_style($style_url);
+        }
+
+        $hideSidebar = Config::getGlobal('hide_sidebar');
+        if ($hideSidebar === true) {
+            // loads css to handle hidden sidebar
+            $this->register_style($assetsUrl . 'admin-lte/css/hide-sidebar.css');
+        }
     }
 
     /**
@@ -829,6 +839,4 @@ class Page
         $this->m_fullscreen = $fullscreenMode;
         return $this;
     }
-
-
 }

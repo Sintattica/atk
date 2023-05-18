@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+.main-sidebar {
+    display: none;
+}
+
+.sidebar-mini.sidebar-collapse .main-header,
+#dashboard,
+.sidebar-mini.sidebar-collapse .main-footer,
+.sidebar-mini.sidebar-collapse .content-wrapper {
+    margin-left: 0!important;
+}

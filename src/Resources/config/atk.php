@@ -489,6 +489,8 @@ return [
 
     'menu_default_item_position' => MenuBase::MENU_SIDEBAR,
 
+    'hide_sidebar' => false,
+
     /************************************ LAYOUT ****************************** */
 
     /*
@@ -577,7 +579,10 @@ return [
      */
     'mra_position' => 'bottom',
 
-    'style_url' => $_configAssetsUrl . 'admin-lte/css/style.css',
+    /*
+     * public path of custom css file
+     */
+    'style_url' => '',
 
     /*********************************** OUTPUT ********************************/
 
