@@ -415,6 +415,7 @@ return [
     'until' => 'fino a',
     'update' => 'Aggiornare',
     'upperchars' => 'caratteri maiuscoli',
+    'user' => 'Utente',
     'username' => 'Nome utente',
     'view' => 'Vedi',
     'view_all' => 'Vedi tutti',

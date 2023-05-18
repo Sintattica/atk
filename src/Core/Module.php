@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core;
 
+use ReflectionException;
 use Sintattica\Atk\Core\Menu\Menu;
 use Sintattica\Atk\Core\Menu\MenuBase;
 
@@ -48,6 +49,9 @@ abstract class Module
         $this->atk->registerNode(static::$module.'.'.$nodeName, $nodeClass, $actions);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function addNodeToMenu($menuName, $nodeName, $action, $parent = 'main', $enable = null, $order = 0, $position = Menu::MENU_SIDEBAR)
     {
         if ($enable === null) {
@@ -56,6 +60,9 @@ abstract class Module
         $this->menu->addMenuItem($menuName, Tools::dispatch_url(static::$module.'.'.$nodeName, $action), $parent, $enable, $order, static::$module, '', $position);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function addMenuItem($name = '', $url = '', $parent = 'main', $enable = 1)
     {
         $this->menu->addMenuItem($name, $url, $parent, $enable, 0, static::$module);

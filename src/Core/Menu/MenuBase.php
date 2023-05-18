@@ -15,8 +15,9 @@ use SmartyException;
 
 abstract class MenuBase
 {
-    public const ICON_ADMIN = 'fas fa-list';
-    public const ICON_ADD = 'fas fa-plus-circle';
+    public const ICON_ADMIN = 'fa-solid fa-list';
+    public const ICON_ADD = 'fa-solid fa-plus-circle';
+    public const ICON_LOGOUT = 'fa-solid fa-sign-out-alt';
 
     public const MENU_SIDEBAR = 'sidebar';
     public const MENU_NAV_LEFT = 'left';
@@ -285,11 +286,16 @@ abstract class MenuBase
         if ($this->hasSubmenu($item)) {
             $submenu = $this->processMenu($item['submenu'], true, self::TYPE_MENU_NAVBAR);
             $template = $child ? self::NAVBAR_SUBPARENT_ITEM_TPL : self::NAVBAR_PARENT_ITEM_TPL;
+            $icon = $item['icon'];
+            if (!$icon && !$item['hide_icon']) {
+                $icon = self::DEFAULT_NAVBAR_PARENT_ITEM_ICON;
+            }
+
             $html .= SmartyProvider::render($template, [
                 'title' => $title,
                 'submenu' => $submenu,
                 'classes' => $classes,
-                'icon' => $item['icon'] ?? self::DEFAULT_NAVBAR_PARENT_ITEM_ICON,
+                'icon' => $icon,
                 'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'active' => $active,
@@ -308,10 +314,15 @@ abstract class MenuBase
 
             $link = $item['url'] ?? '';
             $classes .= $child ? ' dropdown-item' : ' nav-link';
+            $icon = $item['icon'];
+            if (!$icon && !$item['hide_icon']) {
+                $icon = self::DEFAULT_NAVBAR_CHILD_ITEM_ICON;
+            }
+
             $html .= SmartyProvider::render(self::NAVBAR_CHILD_ITEM_TPL, [
                 'title' => $title,
                 'link' => $link,
-                'icon' => $item['icon'] ?? self::DEFAULT_NAVBAR_CHILD_ITEM_ICON,
+                'icon' => $icon,
                 'icon_type' => $item['icon_type'],
                 'icon_classes' => $this->m_adminLte->getSidebarIconsSize(),
                 'classes' => $classes,
@@ -345,7 +356,11 @@ abstract class MenuBase
         if ($this->hasSubmenu($item)) {
             // explore the child before formatting the parent (depth-first)
             $subMenu = $this->processMenu($item['submenu'], true);
-            $icon = $item['icon'] ?? self::DEFAULT_SIDEBAR_PARENT_ITEM_ICON;
+            $icon = $item['icon'];
+            if (!$icon && !$item['hide_icon']) {
+                $icon = self::DEFAULT_SIDEBAR_PARENT_ITEM_ICON;
+            }
+
             $html .= SmartyProvider::render(self::SIDEBAR_PARENT_ITEM_TPL, [
                 'title' => $title,
                 'submenu' => $subMenu,
@@ -370,7 +385,10 @@ abstract class MenuBase
                     $template = self::SIDEBAR_SEPARATOR_ITEM_TPL;
                     break;
                 default:
-                    $icon = $item['icon'] ?? self::DEFAULT_SIDEBAR_CHILD_ITEM_ICON;
+                    $icon = $item['icon'];
+                    if (!$icon && !$item['hide_icon']) {
+                        $icon = self::DEFAULT_SIDEBAR_CHILD_ITEM_ICON;
+                    }
                     $template = self::SIDEBAR_CHILD_ITEM_TPL;
                     break;
             }
@@ -508,7 +526,8 @@ abstract class MenuBase
         $tooltip = null,
         $tooltipPlacement = Item::TOOLTIP_PLACEMENT_BOTTOM,
         $badgeText = null,
-        string $badgeStatus = UIStateColors::STATE_INFO
+        string $badgeStatus = UIStateColors::STATE_INFO,
+        $hideIcon = false
     )
     {
         static $order_value = 100, $s_dupelookup = [];
@@ -521,8 +540,7 @@ abstract class MenuBase
             $type = Tools::getClassName(ActionItem::class);
         }
 
-        $classes = ""; //$active ? ' active' : '';
-        // $classes .= $icon ? ' fas fa-' . $icon : ' fas fa-th';
+        $classes = "";
 
         $item = [
             'name' => $name,
@@ -544,6 +562,7 @@ abstract class MenuBase
             'tooltip_placement' => $tooltipPlacement,
             'badge_text' => $badgeText,
             'badge_status' => $badgeStatus,
+            'hide_icon' => $hideIcon
         ];
 
         if (isset($s_dupelookup[$parent][$name]) && ($name != '-')) {
@@ -634,8 +653,9 @@ abstract class MenuBase
      */
     private function addActionItem(ActionItem $item): ActionItem
     {
+        // default icon for sidebar menu
         if ($item->getPosition() === self::MENU_SIDEBAR) {
-            if (!$item->getIcon()) {
+            if (!$item->getIcon() && !$item->isIconHidden()) {
                 if ($item->getAction() === 'admin') {
                     $item->setIcon(self::ICON_ADMIN);
                 } else if ($item->getAction() === 'add') {
@@ -663,19 +683,20 @@ abstract class MenuBase
             $this->mapItemEnable($item->getEnable()),
             $item->getOrder(),
             $item->getModule(),
-            "",
+            '',
             $item->isRaw(),
             $item->getPosition(),
             $item->getType(),
             $item->isActive(),
             $item->getIcon(),
-            "",
+            '',
             $item->getIconType(),
             $item->isNameHidden(),
             $item->getTooltip(),
             $item->getTooltipPlacement(),
             $item->getBadgeText(),
-            $item->getBadgeStatus()
+            $item->getBadgeStatus(),
+            $item->isIconHidden()
         );
 
         return $item;
@@ -699,11 +720,14 @@ abstract class MenuBase
             $item->getType(),
             $item->isActive(),
             $item->getIcon(),
-            "",
+            '',
             $item->getIconType(),
             $item->isNameHidden(),
             $item->getTooltip(),
-            $item->getTooltipPlacement()
+            $item->getTooltipPlacement(),
+            null,
+            '',
+            $item->isIconHidden()
         );
 
         return $item;

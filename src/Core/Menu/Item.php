@@ -31,7 +31,6 @@ abstract class Item
 
     protected $uuid;
     protected $name = "";
-
     protected $parent = self::DEFAULT_PARENT;
     protected $position;
     protected $enable = true;
@@ -41,13 +40,12 @@ abstract class Item
     protected $urlParams = [];
     protected $tooltip = null;
     protected $tooltipPlacement = self::TOOLTIP_PLACEMENT_BOTTOM;
-
-    private $iconType = self::ICON_FA;
-    private $hideName = false;
-
-    // TODO: how to handle external links?
     protected $icon = null;
     protected $active = false;
+
+    private $hideName = false;
+    private $hideIcon = false;
+    private $iconType = self::ICON_FA;
 
     public function __construct()
     {
@@ -216,9 +214,20 @@ abstract class Item
         return $this->hideName;
     }
 
-    public function hideName(bool $showItemName = true): self
+    public function hideName(bool $hideItemName = true): self
     {
-        $this->hideName = $showItemName;
+        $this->hideName = $hideItemName;
+        return $this;
+    }
+
+    public function isIconHidden(): bool
+    {
+        return $this->hideIcon;
+    }
+
+    public function hideIcon(bool $hideItemIcon = true): self
+    {
+        $this->hideIcon = $hideItemIcon;
         return $this;
     }
 
