@@ -155,6 +155,7 @@
 
 .select2-selection.select2-selection--multiple.form-control.form-control-sm .select2-selection__choice {
     margin-top: 2px;
+    width: max-content;
 }
 
 

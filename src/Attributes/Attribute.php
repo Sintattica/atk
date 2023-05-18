@@ -583,6 +583,7 @@ class Attribute
     private $isNestedAttribute = false;
 
     private $minWidth = null;
+    private $maxWidth = null;
     private $maxHeight = null; // available only in scroll mode
     private $maxChars = null;
     private $textWrap = true;
@@ -729,6 +730,17 @@ class Attribute
     public function setMinWidth(?string $minWidth): self
     {
         $this->minWidth = $minWidth;
+        return $this;
+    }
+
+    public function getMaxWidth(): ?string
+    {
+        return $this->maxWidth;
+    }
+
+    public function setMaxWidth(?string $maxWidth): self
+    {
+        $this->maxWidth = $maxWidth;
         return $this;
     }
 
@@ -1994,6 +2006,9 @@ class Attribute
 
             if ($this->getMinWidth() !== null) {
                 $style .= "min-width: {$this->getMinWidth()};";
+            }
+            if ($this->getMaxWidth() !== null) {
+                $style .= "max-width: {$this->getMaxWidth()};";
             }
 
             switch ($this->getDisplayMode()) {

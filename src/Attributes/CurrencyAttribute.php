@@ -13,8 +13,6 @@ class CurrencyAttribute extends NumberAttribute
 {
     public $m_currencysymbol;
 
-    private $maxWidth;
-
     /**
      * Constructor.
      *
@@ -36,7 +34,7 @@ class CurrencyAttribute extends NumberAttribute
         parent::__construct($name, $flags, $decimals);
 
         $this->setAttribSize(10);
-        $this->maxWidth = '30px';
+        $this->setMaxWidth('30px');
 
         if (empty($currencysymbol)) {
             $currencysymbol = Tools::atktext('currencysymbol', 'atk', '', '', '', true);
@@ -100,7 +98,7 @@ class CurrencyAttribute extends NumberAttribute
         if (strlen($currency) > 0) {
             $result = '<div class="input-group">';
             $result .= $input;
-            $result .= "<span style='max-width: " . $this->maxWidth. "'{$this->getCSSClassAttribute(['btn', 'btn-sm', 'btn-default'])}>$currency</span>";
+            $result .= "<span style='max-width: {$this->getMaxWidth()}'{$this->getCSSClassAttribute(['btn', 'btn-sm', 'btn-default'])}>$currency</span>";
             $result .= '</div>';
 
         } else {
@@ -118,17 +116,6 @@ class CurrencyAttribute extends NumberAttribute
     function setCurrencySymbol(string $value): self
     {
         $this->m_currencysymbol = $value;
-        return $this;
-    }
-
-    public function getMaxWidth(): string
-    {
-        return $this->maxWidth;
-    }
-
-    public function setMaxWidth(string $maxWidth): self
-    {
-        $this->maxWidth = $maxWidth;
         return $this;
     }
 }
