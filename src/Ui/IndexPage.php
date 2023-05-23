@@ -104,7 +104,7 @@ class IndexPage
             $this->m_adminLte->setNavBarDevMode($_SERVER['APP_ENV'] !== 'prod');
 
             // render navbar
-            $navbarTpl = Config::getGlobal('hide_sidebar') === true ? 'navbar_without_sidebar' : 'navbar';
+            $navbarTpl = Config::getGlobal('menu_hide_sidebar') === true ? 'navbar_without_sidebar' : 'navbar';
             $navbar = $this->m_ui->render("menu/$navbarTpl.tpl", [
                 'menu' => $menuObj->getMenu(), // formatted smarty menu as ['left', 'right','sidebar']
                 'main_header_classes' => $this->m_adminLte->getMainHeaderClasses(),

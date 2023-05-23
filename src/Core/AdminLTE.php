@@ -163,7 +163,7 @@ class AdminLTE
     {
         $bodyClasses = "";
 
-        if (Config::getGlobal('hide_sidebar') === true) {
+        if (Config::getGlobal('menu_hide_sidebar') === true) {
             $bodyClasses .= "layout-top-nav";
 
         } else {

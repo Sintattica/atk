@@ -489,7 +489,7 @@ return [
 
     'menu_default_item_position' => MenuBase::MENU_SIDEBAR,
 
-    'hide_sidebar' => false,
+    'menu_hide_sidebar' => false,
 
     /************************************ LAYOUT ****************************** */
 

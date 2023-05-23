@@ -240,7 +240,7 @@ class Page
              $this->register_style($style_url);
         }
 
-        $hideSidebar = Config::getGlobal('hide_sidebar');
+        $hideSidebar = Config::getGlobal('menu_hide_sidebar');
         if ($hideSidebar === true) {
             // loads css to handle hidden sidebar
             $this->register_style($assetsUrl . 'admin-lte/css/hide-sidebar.css');
