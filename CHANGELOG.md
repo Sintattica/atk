@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.12.0] - 2023-05-23
+### Added
+- Menu: added config to hide sidebar
+- Attribute: added maxWidth property
+
+
 ## [9.11.3] - 2023-05-10
 ### Added
 - Menu: added menu_default_item_position config to manage the default position of menu items
