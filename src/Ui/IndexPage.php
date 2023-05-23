@@ -104,10 +104,10 @@ class IndexPage
             $this->m_adminLte->setNavBarDevMode($_SERVER['APP_ENV'] !== 'prod');
 
             // render navbar
-            $navbar = $this->m_ui->render('menu/navbar.tpl', [
+            $navbarTpl = Config::getGlobal('hide_sidebar') === true ? 'navbar_without_sidebar' : 'navbar';
+            $navbar = $this->m_ui->render("menu/$navbarTpl.tpl", [
                 'menu' => $menuObj->getMenu(), // formatted smarty menu as ['left', 'right','sidebar']
                 'main_header_classes' => $this->m_adminLte->getMainHeaderClasses(),
-                'hide_sidebar' => Config::getGlobal('hide_sidebar'),
                 'dispatcher' => Config::getGlobal('dispatcher'),
                 'brand_logo' => Config::getGlobal('brand_logo')
             ]);
@@ -376,7 +376,7 @@ class IndexPage
             Config::getGlobal('dispatcher') . '?atklogout=1', 'main', true, 0,
             '', '', false, MenuBase::MENU_NAV_RIGHT, null, false, MenuBase::ICON_LOGOUT,
             '', null, true, Tools::atktext('logout'), Item::TOOLTIP_PLACEMENT_BOTTOM,
-            null, '', false
+            null, ''
         );
     }
 

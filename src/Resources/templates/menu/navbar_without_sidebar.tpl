@@ -1,28 +1,41 @@
-<div class="main-header navbar navbar-expand {$main_header_classes}">
+<div class="main-header navbar navbar-expand-md {$main_header_classes}">
 
-    <!-- Left navbar links -->
-    <ul class="navbar-nav navbar-left">
+    <div class="d-flex w-100 justify-content-between flex-wrap flex-md-nowrap">
+        <button style="max-height: 40px;" class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <!-- Minimize Sidebar Button -->
-        <li class="nav-item nav-minimize-sidebar">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-        </li>
+        <div class="collapse navbar-collapse order-3 order-md-2" id="navbarCollapse">
 
-        {$menu['left']}
+            <!-- Left navbar links -->
+            <ul class="navbar-nav navbar-left">
 
-    </ul>
+                <li class="nav-item nav-brand-logo mt-2 d-none d-md-block">
+                    <a href="{$dispatcher}" class="mr-1">
+                        <img src="{$brand_logo}" alt="ATK Logo" class="brand-image img-circle"
+                             style="opacity: .8; max-width: 35px;">
+                    </a>
+                </li>
 
-    <!-- Right navbar links -->
-    <ul class="navbar-nav navbar-right ml-auto">
-        {$menu['right']}
+                {$menu['left']}
+            </ul>
 
-        <li class="nav-item d-none">
-            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                <i class="fas fa-expand-arrows-alt"></i>
-            </a>
-        </li>
+        </div>
 
-    </ul>
+        <!-- Right navbar links -->
+        <ul class="navbar-nav navbar-no-expand ml-auto navbar-right order-2 order-md-3">
+            {$menu['right']}
+
+            <li class="nav-item d-none">
+                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
 </div>
 
 

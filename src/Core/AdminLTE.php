@@ -99,7 +99,6 @@ class AdminLTE
     private const ACCENT_OLIVE = 'accent-olive';
 
     private $loginBodyClasses = ['login-page'];
-    private $generalBodyClasses = ["sidebar-mini", "layout-fixed"];
 
     /**
      * Set the default skin combination for navbar and sidebar
@@ -162,7 +161,20 @@ class AdminLTE
 
     public function getGeneralBodyClasses(): string
     {
-        $bodyClasses = implode(' ', $this->generalBodyClasses);
+        $bodyClasses = "";
+
+        if (Config::getGlobal('hide_sidebar') === true) {
+            $bodyClasses .= "layout-top-nav";
+
+        } else {
+            $bodyClasses .= "sidebar-mini layout-fixed";
+
+            if ($this->isCollapsedSidebar()) {
+                $bodyClasses .= " sidebar-collapse";
+            }
+
+            $bodyClasses .= $this->getFixedNavHeaderClass();
+        }
 
         if ($this->isBodySmallText()) {
             $bodyClasses .= " text-sm";
@@ -171,12 +183,6 @@ class AdminLTE
         if ($this->isTransitionHold()) {
             $bodyClasses .= " hold-transition";
         }
-
-        if ($this->isCollapsedSidebar()) {
-            $bodyClasses .= " sidebar-collapse";
-        }
-
-        $bodyClasses .= $this->getFixedNavHeaderClass();
 
         return $bodyClasses;
     }
