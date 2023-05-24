@@ -2302,7 +2302,8 @@ class Node
      *
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
-     * @todo The editArray method should use a set of classes to build the
+     * @throws Exception
+     * TODO: The editArray method should use a set of classes to build the
      *       form, instead of an array with an overly complex structure.
      *
      */
@@ -2319,10 +2320,10 @@ class Node
         // update visibility of some attributes based on the current record
         $this->checkAttributeSecurity($mode, $record);
 
-        /* read metadata */
+        // read metadata
         $this->setAttribSizes();
 
-        /* default values */
+        // default values
         if (!empty($record)) {
             $defaults = $record;
         } else {
@@ -2332,17 +2333,18 @@ class Node
         $result['hide'] = [];
         $result['fields'] = [];
 
-        /* edit mode */
         if ($mode == 'edit') {
             /* nodes can define edit_values */
             $overrides = $this->edit_values($defaults);
             foreach ($overrides as $varname => $value) {
                 $defaults[$varname] = $value;
             }
-        } /* add mode */ else {
-            /* nodes can define initial values, if they don't already have values. */
+
+        } else { // add mode
+            // nodes can define initial values, if they don't already have values.
             if (!isset($defaults['atkerror'])) { // only load initial values the first time (not after an error occured)
                 $overrides = $this->initial_values();
+
                 if (is_array($overrides) && Tools::count($overrides) > 0) {
                     foreach ($overrides as $varname => $value) {
                         if (!isset($defaults[$varname]) || $defaults[$varname] == '') {
@@ -2353,10 +2355,11 @@ class Node
             }
         }
 
-        /* check for forced values */
+        // check for forced values
         if (is_array($forceList)) {
             foreach ($forceList as $forcedvarname => $forcedvalue) {
                 $attribname = '';
+
                 if ($forcedvarname != '') {
                     if (strpos($forcedvarname, '.') > 0) {
                         list($firstpart, $field) = explode('.', $forcedvarname);
@@ -2374,15 +2377,19 @@ class Node
                                 // This is not a filter for this node.
                             }
                         }
+
                     } else {
-                        $defaults[$forcedvarname] = $forcedvalue;
+                        if (!isset($defaults[$forcedvarname]) || $defaults[$forcedvarname] == '') {
+                            $defaults[$forcedvarname] = $forcedvalue;
+                        }
+
                         $attribname = $forcedvarname;
                     }
 
                     if ($attribname != '') {
                         if (isset($this->m_attribList[$attribname])) {
                             $p_attrib = $this->m_attribList[$attribname];
-                            if (is_object($p_attrib) && (!$p_attrib->hasFlag($p_attrib::AF_NO_FILTER))) {
+                            if (is_object($p_attrib) && !$p_attrib->hasFlag($p_attrib::AF_NO_FILTER)) {
                                 $p_attrib->m_flags |= $p_attrib::AF_READONLY | $p_attrib::AF_HIDE_ADD;
                             }
                         } else {
@@ -2421,7 +2428,7 @@ class Node
                     continue;
                 }
 
-                /* fields that have not yet been initialised may be overriden in the url */
+                // fields that have not yet been initialised may be overriden in the url
                 if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars)) {
                     $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
                 }
@@ -2430,7 +2437,7 @@ class Node
                     $p_attrib->m_flags |= ($mode == 'add' ? $p_attrib::AF_HIDE_ADD : $p_attrib::AF_HIDE_EDIT);
                 }
 
-                /* we let the attribute add itself to the edit array */
+                // we let the attribute add itself to the edit array
                 $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
             } else {
                 Tools::atkerror("Attribute $attribname not found!");
@@ -2441,11 +2448,10 @@ class Node
             $this->injectSections($result['fields']);
         }
 
-        /* check for errors */
+        // check for errors
         $result['error'] = $record['atkerror'];
 
-        /* return the result array */
-
+        // return the result array
         return $result;
     }
 
