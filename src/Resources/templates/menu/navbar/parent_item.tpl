@@ -1,7 +1,7 @@
 <li class="nav-item dropdown">
-    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown"
+    <a href="#" data-toggle="dropdown"
        aria-haspopup="true" aria-expanded="false"
-       class="nav-link dropdown-toggle {$classes}"
+       class="parent item nav-link dropdown-toggle {$classes}"
     >
         {if $icon}
             {include file='menu/sidebar/icon.tpl'}

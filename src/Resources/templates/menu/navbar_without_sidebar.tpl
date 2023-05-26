@@ -40,6 +40,12 @@
 
 
 <script>
+    //Prevent closing of menu when clicked subparent item
+    const parentItems = document.querySelectorAll('.sub-parent.item');
+    for (let i=0; i<parentItems.length; i++){
+        const parentItem = parentItems[i];
+        parentItem.addEventListener('click', evt => evt.stopPropagation());
+    }
 
     //Check if element is hovered
     const isHover = e => e.parentElement.querySelector(':hover') === e;
