@@ -3,7 +3,6 @@
 namespace Sintattica\Atk\Core;
 
 use Dotenv\Dotenv;
-use Dotenv\Loader;
 use Dotenv\Environment\DotenvFactory;
 use ReflectionException;
 use RuntimeException;
@@ -44,21 +43,18 @@ class Atk
 
         $this->environment = $environment;
 
-        $loader = null;
-        $isBaseDirALoader = 'Dotenv\Loader' === (is_object($basedir) and get_class($basedir));
+        $isBaseDirALoader = 'Dotenv\Loader' == (is_object($basedir) and get_class($basedir));
 
-        if (!$isBaseDirALoader) { //If loader is not provided as input
-            if (file_exists($basedir . ".env")) { //If an env file is provided in the basedir
-                $loader = new Loader([$basedir . ".env"], new DotenvFactory(), true);
-            }
-        } else {
+        if (file_exists($basedir . ".env")) { //If an env file is provided in the basedir
             $loader = $basedir;
+        } else {
+            die ("cannot locate .env file");
         }
 
         //If a loader has been provided
         if ($loader) {
             //load .env variables
-            $dotEnv = new Dotenv($loader);
+            $dotEnv = Dotenv::createImmutable($loader);
             $dotEnv->load();
         }
 
@@ -169,7 +165,8 @@ class Atk
     /**
      * Load all the menu items
      */
-    public function initMenu(){
+    public function initMenu()
+    {
         /** @var Menu $menuClass */
         $menuClass = Config::getGlobal('menu');
         $menuClass::getInstance()->appendMenuItems();
