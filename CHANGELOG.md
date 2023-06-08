@@ -1,8 +1,15 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.12.3] - 2023-06-08
+### Changed
+- Atk: updated phpdotenv dependency to v5.5
+
+
 ## [9.12.2] - 2023-06-08
 ### Changed
-- Atk: updated phpdotenv dependency
+- Atk: updated phpdotenv dependency to v3.5
+### Fixed
+- Atk: fix on mobile menu
 
 
 ## [9.12.1] - 2023-05-24
