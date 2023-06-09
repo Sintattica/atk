@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## [9.12.3] - 2023-06-08
+
+## [9.12.5] - 2023-06-09
+### Fixed
+- Atk: fixed phpdotenv 3 compatibility
+
+
+## [9.12.4] - 2023-06-09
 ### Changed
 - Atk: reverted phpdotenv dependency to v3.6 for backward compatibility
 
