@@ -54,7 +54,7 @@ class Atk
         //If a loader has been provided
         if ($loader) {
             //load .env variables
-            $dotEnv = Dotenv::createImmutable($loader);
+            $dotEnv = Dotenv::create($loader);
             $dotEnv->load();
         }
 
