@@ -214,6 +214,19 @@ class Atk
         }
     }
 
+    public function unregisterNode(string $nodeUri, string $section = null)
+    {
+        unset($this->g_nodesClasses[$nodeUri]);
+
+        $module = Tools::getNodeModule($nodeUri);
+        $type = Tools::getNodeType($nodeUri);
+        if ($section === null) {
+            $section = $module;
+        }
+
+        unset($this->g_nodes[$section][$module][$type]);
+    }
+
     /**
      * Get an instance of a node. If an instance doesn't exist, it is created.  Note that nodes
      * are cached (unless $reset is true); multiple requests for the same node will return exactly
