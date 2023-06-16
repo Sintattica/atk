@@ -190,28 +190,41 @@ class FileAttribute extends Attribute
     {
         $result = '';
 
-        // When in add mode or we have errors, don't show the filename above the input.
+        // When in add mode or when we have errors, don't show the filename above the input.
         $hasErrors = isset($record[$this->fieldName()]['error']) && $record[$this->fieldName()]['error'] != 0;
         if ($mode != 'add' && !$hasErrors) {
             if (method_exists($this->getOwnerInstance(), $this->fieldName() . '_display')) {
                 $method = $this->fieldName() . '_display';
-                $result = $this->m_ownerInstance->$method($record, 'view');
+                $fileLink = $this->m_ownerInstance->$method($record, 'view');
             } else {
-                $result = $this->display($record, $mode);
+                $fileLink = $this->display($record, $mode);
             }
 
             if (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] != '') {
-                $fileLink = new SimpleXMLElement($result);
+                $fileLinkXML = new SimpleXMLElement($fileLink);
 
-                $result .= '<div class="existing-file input-group">
+                $widgetFile = '<div class="existing-file input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-file"></i></span>
                     </div>
                     <input type="text" class="form-control form-control-sm" disabled value="' . $record[$this->fieldName()]['filename'] . '" />
                     <div class="input-group-append">
-                     <a href="' . $fileLink['href'] . '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-alt-circle-down"></i></a>
+                     <a href="' . ($fileLinkXML['href'] ?? "") . '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-alt-circle-down"></i></a>
                     </div>
                   </div>';
+
+                if ($this->fileExists($record)) {
+                    // il file esiste
+                    if (!$this->isStream() && $this->isImage($record) && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
+                        // aggiunge la preview con il link prima del widget
+                        $result .= $fileLink;
+                    }
+                    $result .= $widgetFile;
+
+                } else {
+                    // il file NON esiste: non carica il widget
+                    $result .= $fileLink;
+                }
             }
         }
 
@@ -301,8 +314,8 @@ class FileAttribute extends Attribute
         $ret = '';
         $filename = $record[$this->fieldName()]['filename'];
         if ($filename) {
-            if (is_file($this->m_dir . $filename)) {
-                $imgInfo = getimagesize($this->m_dir . $filename);
+            if ($this->fileExists($record)) {
+                $isImage = $this->isImage($record);
 
                 if ($this->isStream()) {
                     $node = $this->getOwnerInstance();
@@ -323,11 +336,11 @@ class FileAttribute extends Attribute
                     $url = $this->m_url . $filename;
                     $ret = sprintf('<a target="_blank" href="%s">', $url);
 
-                    if (!$imgInfo || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
+                    if (!$isImage || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
                         $ret .= basename($filename);
                     }
 
-                    if ($imgInfo && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
+                    if ($isImage && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
                         if (!$this->onlyPreview) {
                             $ret .= '<br/>';
                         }
@@ -1227,5 +1240,23 @@ class FileAttribute extends Attribute
         } else {
             return $this->filenameMangle($record, $default);
         }
+    }
+
+    private function isImage(array $record): bool
+    {
+        if (!isset($record[$this->fieldName()]['filename'])) {
+            return false;
+        }
+
+        return (bool)getimagesize($this->m_dir . $record[$this->fieldName()]['filename']);
+    }
+
+    private function fileExists(array $record): bool
+    {
+        if (!isset($record[$this->fieldName()]['filename'])) {
+            return false;
+        }
+
+        return is_file($this->m_dir . $record[$this->fieldName()]['filename']);
     }
 }
