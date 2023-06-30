@@ -277,7 +277,7 @@ return [
     'permission_denied' => 'Non hai i diritti necessari per eseguire questa operazione',
     'pf_check_all' => 'Tutti',
     'pf_check_none' => 'Nessuno',
-        'pf_invert_selection' => 'Inverti',
+    'pf_invert_selection' => 'Inverti',
     'previous' => 'Precedente',
     'recordlistsummary' => 'Record [start]-[end] di [count]',
     'relogin' => 'Login',
