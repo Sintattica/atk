@@ -1,5 +1,13 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.12.7] - 2023-06-30
+### Changed
+- Attribute: refactor display/edit of FileAttribute
+
+### Fixed
+- Atk: translations en
+
+
 ## [9.12.6] - 2023-06-13
 ### Added
 - Atk: added function to unregister node
