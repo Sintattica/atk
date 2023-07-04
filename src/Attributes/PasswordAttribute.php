@@ -154,7 +154,7 @@ class PasswordAttribute extends Attribute
 
         $copyPassOnChange = '';
 
-        if($mode != 'edit' && $mode != 'update'){
+        if ($mode != 'edit' && $mode != 'update') {
 
             if ($this->m_generate) {
                 $password = $this->generatePassword(8, true);
@@ -169,26 +169,24 @@ class PasswordAttribute extends Attribute
 
             if (!$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE)) {
                 $result .= '<div class="col-sm">';
-                $result .= '<input no-autocomplete placeholder="'.Tools::atktext('password_current', 'atk').'" autocomplete="off" type="password" ' . $cssClass . ' id="' . $id . '[current]" name="' . $name . '[current]"' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '>';
+                $result .= '<input no-autocomplete autocomplete="off" placeholder="' . Tools::atktext('password_current', 'atk') . '" type="password" ' . $cssClass . ' id="' . $id . '[current]" name="' . $name . '[current]"' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . '>';
                 $result .= '</div>';
             }
         }
 
         $result .= '<div class="col-sm mt-1 mt-sm-0 mb-1 mb-sm-0">';
 
-        $result  .= '<input no-autocomplete onfocus="this.removeAttribute(\'readonly\');" readonly placeholder="'.Tools::atktext('password_new', 'atk').'" type="' . $typeNew . '" ' .   $cssClass . ' id="' . $id . '[new]"   name="' . $name . '[new]"        value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . $copyPassOnChange . '>';
+        $result .= '<input no-autocomplete autocomplete="off" onfocus="this.removeAttribute(\'readonly\');" readonly placeholder="' . Tools::atktext('password_new', 'atk') . '" type="' . $typeNew . '" ' . $cssClass . ' id="' . $id . '[new]" name="' . $name . '[new]" value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . $copyPassOnChange . '>';
         $result .= '</div>';
 
         $result .= '<div class="col-sm">';
-        $result  .= '<input no-autocomplete onfocus="this.removeAttribute(\'readonly\');" readonly placeholder="'.Tools::atktext('password_again', 'atk').'" type="' . $typeAgain . '" ' . $cssClass . ' id="' . $id . '[again]" name="' . $name . '[again]"' . ' value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ' >';
+        $result .= '<input no-autocomplete autocomplete="off" onfocus="this.removeAttribute(\'readonly\');" readonly placeholder="' . Tools::atktext('password_again', 'atk') . '" type="' . $typeAgain . '" ' . $cssClass . ' id="' . $id . '[again]" name="' . $name . '[again]" value ="' . $password . '" ' . ($this->m_maxsize > 0 ? ' maxlength="' . $this->m_maxsize . '"' : '') . ($this->m_size > 0 ? ' size="' . $this->m_size . '"' : '') . ' >';
         $result .= '</div>';
 
-        $result .='</div>';
-
+        $result .= '</div>';
 
         return $result;
     }
-
 
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
@@ -301,7 +299,7 @@ class PasswordAttribute extends Attribute
 
         // Loop through all restrictions
         foreach ($this->m_restrictions as $name => $value) {
-            // Add a human readable form of the current restriction to the text string and append a linebreak
+            // Add a human-readable form of the current restriction to the text string and append a linebreak
             if ($value > 0) {
                 if ($name == 'minsize') {
                     $text .= sprintf(Tools::atktext('the_password_should_be_at_least_%d_characters_long', 'atk'), $value);
@@ -328,13 +326,18 @@ class PasswordAttribute extends Attribute
         $error = false;
         $value = $record[$this->fieldName()];
 
-        if ($mode == 'update' && (Tools::atk_strlen($value['new']) > 0 || Tools::atk_strlen($value['again']) > 0) && !$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE) && !$this->verify($value['current'],
-                $value['hash'])
+        if ($mode == 'update' && (Tools::atk_strlen($value['new']) > 0 || Tools::atk_strlen($value['again']) > 0)
+            && !$this->hasFlag(self::AF_PASSWORD_NO_VALIDATE) && !$this->verify($value['current'], $value['hash'])
         ) {
             Tools::triggerError($record, $this->fieldName(), 'error_password_incorrect');
         }
 
         if (Tools::atk_strlen($value['new']) > 0 && Tools::atk_strlen($value['again']) > 0 && $value['new'] != $value['again']) {
+            $error = true;
+            Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
+        }
+
+        if ((!empty($value['new']) && empty($value['again'])) || (empty($value['new']) && !empty($value['again']))) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), 'error_password_nomatch');
         }
@@ -345,13 +348,12 @@ class PasswordAttribute extends Attribute
         }
 
         // Check if the password meets the restrictions. If not, set error to true and
-        // triger an error with the human readable form of the restrictions as message.
+        // trigger an error with the human-readable form of the restrictions as message.
         if (isset($value['new']) && Tools::atk_strlen($value['new']) > 0 && !$this->validateRestrictions($value['new'])) {
             $error = true;
             Tools::triggerError($record, $this->fieldName(), $this->getRestrictionsText());
         }
 
-        // new password?
         if (!$error && isset($value['new']) && Tools::atk_strlen($value['new']) > 0) {
             $record[$this->fieldName()]['hash'] = $this->encode($record[$this->fieldName()]['new']);
         }
@@ -362,7 +364,7 @@ class PasswordAttribute extends Attribute
      *
      * @param array $record The record that holds this attribute's value.
      *
-     * @return true if it's empty
+     * @return bool true if it's empty
      */
     public function isEmpty($record)
     {
@@ -382,9 +384,7 @@ class PasswordAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        $result = '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '[hash]"' . ' value="' . $record[$this->fieldName()]['hash'] . '">';
-
-        return $result;
+        return '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '[hash]"' . ' value="' . $record[$this->fieldName()]['hash'] . '">';
     }
 
     /**
