@@ -39,6 +39,12 @@
                 </div>
             {/if}
 
+            {if $filterInputs}
+                <div class="card-body-filter-inputs mb-2">
+                    {$filterInputs}
+                </div>
+            {/if}
+
             {if $filterButtons}
                 <div class="card-body-filter-buttons mb-2">
                     {$filterButtons}

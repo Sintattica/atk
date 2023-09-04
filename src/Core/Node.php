@@ -11,6 +11,7 @@ use Sintattica\Atk\Attributes\DateTimeAttribute;
 use Sintattica\Atk\Attributes\FieldSet;
 use Sintattica\Atk\Attributes\FileAttribute;
 use Sintattica\Atk\Attributes\JsonAttribute;
+use Sintattica\Atk\Attributes\ListAttribute;
 use Sintattica\Atk\Attributes\MultiListAttribute;
 use Sintattica\Atk\Attributes\StateColorAttribute;
 use Sintattica\Atk\Db\Db;
@@ -702,9 +703,14 @@ class Node
     private $legendItems = [];
 
     /**
-     * @var array[] - List of filter buttons of admin header ['label', 'values', 'noFilterLabel']
+     * @var array[] - List of button filters of admin header ['label', 'values', 'noFilterLabel']
      */
-    private $adminHeaderFilterButtons = [];
+    private $adminHeaderButtonFilters = [];
+
+    /**
+     * @var array[] - List of input filters of admin header
+     */
+    private $adminHeaderInputFilters = [];
 
     private $hidePageTitle = false;
 
@@ -3056,6 +3062,7 @@ class Node
         $this->setRowColors();
         $this->setLegendItems();
         $this->setAdminHeaderFilterButtons();
+        $this->setAdminHeaderFilter();
         $this->adminPageNodeHelp = $this->buildAdminPageNodeHelp();
 
     }
@@ -3082,9 +3089,16 @@ class Node
     }
 
     /**
-     * Use this to add filter buttons in child nodes.
+     * @deprecated Use setAdminHeaderFilter() instead
      */
     public function setAdminHeaderFilterButtons()
+    {
+    }
+
+    /**
+     * Use this to add button or input filters in child nodes.
+     */
+    public function setAdminHeaderFilter()
     {
     }
 
@@ -3165,57 +3179,56 @@ class Node
         return $ret . '</div>';
     }
 
+    /**
+     * @deprecated Use getAdminHeaderButtonFilters instead
+     */
     public function getAdminHeaderFilterButtons(): array
     {
-        return $this->adminHeaderFilterButtons;
+        return $this->getAdminHeaderButtonFilters();
     }
 
+    public function getAdminHeaderButtonFilters(): array
+    {
+        return $this->adminHeaderButtonFilters;
+    }
+
+    /**
+     * @deprecated Use addAdminHeaderButtonFilter instead
+     */
     public function addAdminHeaderFilterButton(string $label, array $values, ?string $noFilterLabel)
     {
-        // TODO: trasform in object?
-        $this->adminHeaderFilterButtons[] = ['label' => $label, 'values' => $values, 'noFilterLabel' => $noFilterLabel];
+        $this->addAdminHeaderButtonFilter($label, $values, $noFilterLabel);
     }
 
-    /**
-     * @param array $filters Filters to show ['name', 'values', 'noFilterText']
-     * @param string $sepRows Separator of rows
-     * @param string $sepLinks Separator of links
-     * @param string $class Css class of links
-     * @param string $classActive Css class of active link
-     * @return string
-     * @deprecated Use buildAdminHeaderFilterButtons() instead
-     *
-     * Builds th box of the filters in the adminHeader.
-     *
-     */
-    function buildAdminHeaderFilters(array  $filters, string $sepRows = '', string $sepLinks = '', string $class = '',
-                                     string $classActive = ''): string
+    public function addAdminHeaderButtonFilter(string $label, array $values, ?string $noFilterLabel)
     {
-        if (!$sepRows) {
-            $sepRows = '<div class="mb-1"></div>';
-        }
-        $ret = '<div class="mb-3">';
-        foreach ($filters as $filter) {
-            $ret .= $this->addAdminHeaderFilter($filter['name'], $filter['values'], $filter['noFilterText'], $sepLinks, $class, $classActive) . $sepRows;
-        }
-        return $ret . '</div>';
+        // TODO: trasform in object?
+        $this->adminHeaderButtonFilters[] = ['label' => $label, 'values' => $values, 'noFilterLabel' => $noFilterLabel];
     }
 
     /**
-     * Builds th box of the filters in the adminHeader.
+     * @deprecated Use buildAdminHeaderButtonFilters instead
+     */
+    function buildAdminHeaderFilterButtons(string $cssClass = '', string $uiStateColorActive = ''): string
+    {
+        return $this->buildAdminHeaderButtonFilters($cssClass, $uiStateColorActive);
+    }
+
+    /**
+     * Builds the box of the button filters in the adminHeader.
      *
      * @param string $cssClass Css class of the buttons
      * @param string $uiStateColorActive UIStateColor of the active button
      * @return string
      */
-    function buildAdminHeaderFilterButtons(string $cssClass = '', string $uiStateColorActive = ''): string
+    function buildAdminHeaderButtonFilters(string $cssClass = '', string $uiStateColorActive = ''): string
     {
-        if (!$this->adminHeaderFilterButtons) {
+        if (!$this->adminHeaderButtonFilters) {
             return '';
         }
 
         $ret = '<div class="mb-3">';
-        foreach ($this->adminHeaderFilterButtons as $filter) {
+        foreach ($this->adminHeaderButtonFilters as $filter) {
             $ret .= $this->addAdminHeaderFilter($filter['label'], $filter['values'], $filter['noFilterLabel'], '', $cssClass, $uiStateColorActive) . '<div class="mb-1"></div>';
         }
         return $ret . '</div>';
@@ -3265,6 +3278,132 @@ class Node
         }
 
         return $this->text($label) . ': ' . implode($sepLinks, $buttons);
+    }
+
+    /**
+     * Builds the form of the input filters in the adminHeader.
+     */
+    function buildAdminHeaderInputFilters(string $cssClass = ''): string
+    {
+        if (!$this->adminHeaderInputFilters) {
+            return '';
+        }
+
+        $html = '<form action="' . Config::getGlobal('dispatcher') . '" method="get">';
+        $html .= '<input type="hidden" name="atkaction" value="' . $this->getAction() . '">';
+        $html .= '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">';
+
+        $html .= '<div class="filters form-inline ' . $cssClass . '">';
+
+        foreach ($this->adminHeaderInputFilters as $filter) {
+
+            /** @var Attribute $attr */
+            $attr = $filter['attribute'];
+            $attr->setOwnerInstance($this);
+
+            $class = $filter['class'] ?: '';
+            $name = $attr->fieldName();
+
+            if ($filter['newline']) {
+                $html .= '</div> <div class="filters form-inline ' . $cssClass . '">';
+            }
+
+            // setta l'eventuale valore di default
+            if ($this->getAdminHeaderInputFilterValue($name) === null && $attr->initialValue()) {
+                $this->setAdminHeaderInputFilterValue($name, $attr->initialValue());
+            }
+
+            if (!$this->m_postvars['print']) {
+                $html .= '<div class="filter form-group ' . $class . '">';
+                if (!$attr->hasFlag(Attribute::AF_NO_LABEL)) {
+                    $html .= '<span class="mr-1">' . $attr->label() . ':</span>';
+                }
+
+                if ($filter['mode'] == 'edit') {
+                    $html .= $attr->edit($this->m_postvars, '', 'edit');
+                } else if ($filter['mode'] == 'search-ext') {
+                    $html .= $attr->search($this->m_postvars['atksearch'], true);
+                } else {
+                    $html .= $attr->search($this->m_postvars['atksearch']);
+                }
+
+                $html .= '</div>';
+
+            } else { // (print)
+
+                // visualizza il valore del filtro
+
+                // predispone il valore per essere passato alla func. display
+                // TODO altri attributi potrebbero richiedere una gestione particolare...
+                if ($filter['mode'] != 'edit') { // search
+                    $this->m_postvars[$name] = $this->m_postvars['atksearch'][$name];
+                    if ($attr instanceof ListAttribute) {
+                        $this->m_postvars[$name] = $this->m_postvars[$name][0];
+                    }
+                }
+
+                if ($this->m_postvars[$name]) {
+                    $value = $attr->display($this->m_postvars, 'view');
+                    if (trim($value)) {
+                        $html .= '<div class="filter form-group">';
+                        if (!$attr->hasFlag(Attribute::AF_NO_LABEL)) {
+                            $html .= '<strong class="mr-1">' . $attr->label() . '</strong>: ';
+                        }
+                        $html .= $value . '</div>';
+                    }
+                }
+            }
+        }
+
+        if (!$this->m_postvars['print']) {
+            $html .= '<button type="submit" class="btn btn-sm btn-primary ml-1">' . Tools::atktext('aggiorna') . '</button>';
+        }
+
+        $html .= '</div></form>';
+
+        return $html;
+    }
+
+    protected function getAdminHeaderInputFilterValue(string $name)
+    {
+        $filter = $this->adminHeaderInputFilters[$name] ?? null;
+        if ($filter === null) {
+            // eventuale filtro passato da un'altra pagina
+            return $this->m_postvars[$name] ?? null;
+        }
+        if ($filter['mode'] == 'edit') {
+            // TODO per le manyToOne il valore arriva come "table.key=value" e andrebbe convertito (oltre che sovrascritto in m_postvars)
+            $value = $this->m_postvars[$name];
+        } else if ($filter['mode'] == 'search-ext') {
+            $value = $this->m_postvars['atksearch'][$name];
+        } else {
+            $value = $this->m_postvars['atksearch'][$name][0];
+        }
+        if (is_array($value) && count($value) == 1 && $value[0] == '') {
+            return null;
+        }
+        return $value;
+    }
+
+    protected function setAdminHeaderInputFilterValue(string $name, $value)
+    {
+        if ($filter = $this->adminHeaderInputFilters[$name]) {
+            if ($filter['mode'] == 'edit') {
+                $this->m_postvars[$name] = $value;
+            } else if ($filter['mode'] == 'search-ext') {
+                $this->m_postvars['atksearch'][$name] = $value;
+            } else {
+                $this->m_postvars['atksearch'][$name][0] = $value;
+            }
+        }
+    }
+
+    protected function addAdminHeaderInputFilter(Attribute $attribute, string $mode = 'edit')
+    {
+        $this->adminHeaderInputFilters[$attribute->fieldName()] = [
+            'attribute' => $attribute,
+            'mode' => $mode
+        ];
     }
 
     /**

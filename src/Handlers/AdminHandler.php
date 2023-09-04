@@ -114,7 +114,8 @@ class AdminHandler extends ActionHandler
             'content' => $this->renderAdminList(),
             'bookmarkLink' => $this->getNode()->getAdminPageBookmarkLink(),
             'legend' => $this->getNode()->buildAdminHeaderLegend(),
-            'filterButtons' => $this->getNode()->buildAdminHeaderFilterButtons(),
+            'filterInputs' => $this->getNode()->buildAdminHeaderInputFilters(),
+            'filterButtons' => $this->getNode()->buildAdminHeaderButtonFilters(),
             'nodeHelp' => $this->getNode()->getAdminPageNodeHelp()
 //            'boxActions' => $this->getNode()->buildAdminHeaderBoxActions(), TODO
         ];
