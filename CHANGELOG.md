@@ -4,6 +4,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 ### Changed
 - Node: refactor admin header input filters
 
+
 ## [9.13.0] - 2023-09-04
 ### Added
 - Node: admin header input filters
@@ -45,6 +46,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 ## [9.12.2] - 2023-06-08
 ### Changed
 - Atk: updated phpdotenv dependency to v3.5
+
 ### Fixed
 - Atk: fix on mobile menu
 
@@ -78,6 +80,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 ## [9.11.1] - 2023-04-14
 ### Added
 - TimeAttribute: Time Chooser Popup utility, configurable with AF_TIME_SECONDS. 
+
 
 ## [9.11.0] - 2023-04-14
 ### Added
