@@ -3301,19 +3301,19 @@ class Node
             $attr = $filter['attribute'];
             $attr->setOwnerInstance($this);
 
-            $class = $filter['class'] ?: '';
-            $name = $attr->fieldName();
+            $attrName = $attr->fieldName();
 
             if ($filter['newline']) {
                 $html .= '</div> <div class="filters form-inline ' . $cssClass . '">';
             }
 
-            // setta l'eventuale valore di default
-            if ($this->getAdminHeaderInputFilterValue($name) === null && $attr->initialValue()) {
-                $this->setAdminHeaderInputFilterValue($name, $attr->initialValue());
+            // check possible initial value
+            if ($this->getAdminHeaderInputFilterValue($attrName) === null && $attr->initialValue()) {
+                $this->setAdminHeaderInputFilterValue($attrName, $attr->initialValue());
             }
 
             if (!$this->m_postvars['print']) {
+                $class = $filter['class'] ?: '';
                 $html .= '<div class="filter form-group ' . $class . '">';
                 if (!$attr->hasFlag(Attribute::AF_NO_LABEL)) {
                     $html .= '<span class="mr-1">' . $attr->label() . ':</span>';
@@ -3329,20 +3329,19 @@ class Node
 
                 $html .= '</div>';
 
+                $html .= '<button type="submit" class="btn btn-sm btn-primary ml-1">' . Tools::atktext('admin_header_input_submit') . '</button>';
+
             } else { // (print)
 
-                // visualizza il valore del filtro
-
-                // predispone il valore per essere passato alla func. display
-                // TODO altri attributi potrebbero richiedere una gestione particolare...
                 if ($filter['mode'] != 'edit') { // search
-                    $this->m_postvars[$name] = $this->m_postvars['atksearch'][$name];
+                    $this->m_postvars[$attrName] = $this->m_postvars['atksearch'][$attrName];
+                    // TODO: some attributes may require special handling
                     if ($attr instanceof ListAttribute) {
-                        $this->m_postvars[$name] = $this->m_postvars[$name][0];
+                        $this->m_postvars[$attrName] = $this->m_postvars[$attrName][0];
                     }
                 }
 
-                if ($this->m_postvars[$name]) {
+                if ($this->m_postvars[$attrName]) {
                     $value = $attr->display($this->m_postvars, 'view');
                     if (trim($value)) {
                         $html .= '<div class="filter form-group">';
@@ -3353,10 +3352,6 @@ class Node
                     }
                 }
             }
-        }
-
-        if (!$this->m_postvars['print']) {
-            $html .= '<button type="submit" class="btn btn-sm btn-primary ml-1">' . Tools::atktext('aggiorna') . '</button>';
         }
 
         $html .= '</div></form>';
@@ -3371,26 +3366,26 @@ class Node
             // eventuale filtro passato da un'altra pagina
             return $this->m_postvars[$name] ?? null;
         }
-        if ($filter['mode'] == 'edit') {
-            // TODO per le manyToOne il valore arriva come "table.key=value" e andrebbe convertito (oltre che sovrascritto in m_postvars)
+        if ($filter['mode'] === 'edit') {
             $value = $this->m_postvars[$name];
-        } else if ($filter['mode'] == 'search-ext') {
+        } else if ($filter['mode'] === 'search-ext') {
             $value = $this->m_postvars['atksearch'][$name];
         } else {
             $value = $this->m_postvars['atksearch'][$name][0];
         }
+        // TODO: for the manyToOne the value is like "table.key=value" and should be converted (as well as overwritten in the m_postvars)
         if (is_array($value) && count($value) == 1 && $value[0] == '') {
             return null;
         }
         return $value;
     }
 
-    protected function setAdminHeaderInputFilterValue(string $name, $value)
+    private function setAdminHeaderInputFilterValue(string $name, $value)
     {
         if ($filter = $this->adminHeaderInputFilters[$name]) {
-            if ($filter['mode'] == 'edit') {
+            if ($filter['mode'] === 'edit') {
                 $this->m_postvars[$name] = $value;
-            } else if ($filter['mode'] == 'search-ext') {
+            } else if ($filter['mode'] === 'search-ext') {
                 $this->m_postvars['atksearch'][$name] = $value;
             } else {
                 $this->m_postvars['atksearch'][$name][0] = $value;
@@ -3398,11 +3393,12 @@ class Node
         }
     }
 
-    protected function addAdminHeaderInputFilter(Attribute $attribute, string $mode = 'edit')
+    protected function addAdminHeaderInputFilter(Attribute $attribute, string $mode = 'edit', string $class = '')
     {
         $this->adminHeaderInputFilters[$attribute->fieldName()] = [
             'attribute' => $attribute,
-            'mode' => $mode
+            'mode' => $mode,
+            'class' => $class,
         ];
     }
 
@@ -3413,7 +3409,7 @@ class Node
      * @param bool $html True if you want to insert html tags
      * @return string
      */
-    protected function formatTitle(string $title, $html = true): string
+    protected function formatTitle(string $title, bool $html = true): string
     {
         $ret = $this->text($title);
         if ($html) {

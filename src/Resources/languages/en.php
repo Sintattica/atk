@@ -10,6 +10,7 @@ return [
     'addorcopy' => 'Add or copy',
     'add_criterium' => 'Add',
     'admin' => 'List',
+    'admin_header_input_submit' => 'Update',
     'administration_application' => 'Administration application',
     'all' => 'All',
     'alphabeticchars' => 'alphabetic characters',
