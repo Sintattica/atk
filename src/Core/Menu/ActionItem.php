@@ -7,6 +7,7 @@ namespace Sintattica\Atk\Core\Menu;
 use Exception;
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\Language;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 
 class ActionItem extends Item
@@ -110,7 +111,7 @@ class ActionItem extends Item
      */
     public function getUrl(): string
     {
-        $this->addUrlParam('atkmenu', $this->getIdentifier());
+        $this->addUrlParam(Node::PARAM_ATKMENU, $this->getIdentifier());
         return Tools::dispatch_url($this->nodeUri, $this->action, $this->urlParams);
     }
 

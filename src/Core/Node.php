@@ -240,6 +240,7 @@ class Node
     const ACTION_DOWNLOAD_FILE_ATTRIBUTE = 'download_file_attribute';
     const PARAM_ATTRIBUTE_NAME = 'attribute_name';
     const PARAM_ATKSELECTOR = 'atkselector';
+    const PARAM_ATKMENU = 'atkmenu';
 
     /*
      * reference to the class which is used to validate atknodes
@@ -3292,6 +3293,9 @@ class Node
         $html = '<form action="' . Config::getGlobal('dispatcher') . '" method="get">';
         $html .= '<input type="hidden" name="atkaction" value="' . $this->getAction() . '">';
         $html .= '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">';
+        if ($atkMenu = SessionManager::getInstance()->globalStackVar(Node::PARAM_ATKMENU)) {
+            $html .= '<input type="hidden" name="' . Node::PARAM_ATKMENU . '" value="' . $atkMenu . '">';
+        }
 
         $html .= '<div class="filters form-inline ' . $cssClass . '">';
 

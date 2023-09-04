@@ -247,7 +247,7 @@ class ModalActionAttribute extends DummyAttribute
         $sm = SessionManager::getInstance();
         $result .= $sm->formState(SessionManager::SESSION_REPLACE);
         $result .= '<input type="hidden" name="atkaction" value="' . $this->atkActionName . '">';
-        $result .= '<input type="hidden" name="atkmenu" value="' . $sm->globalStackVar('atkmenu') . '">';
+        $result .= '<input type="hidden" name="' . Node::PARAM_ATKMENU . '" value="' . $sm->globalStackVar(Node::PARAM_ATKMENU) . '">';
         $result .= '<input type="hidden" name="atknodeuri" value="' . $nodeInstance->atkNodeUri() . '">';
         $result .= '<input type="hidden" name="' . Node::PARAM_ATKSELECTOR .'" value="' . $nodeInstance->getPrimaryKey($record) . '">';
 

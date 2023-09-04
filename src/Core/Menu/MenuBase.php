@@ -6,6 +6,7 @@ use Exception;
 use ReflectionException;
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\AdminLTE;
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
@@ -666,10 +667,10 @@ abstract class MenuBase
             }
         }
 
-        $menuId = $_GET['atkmenu'];
+        $menuId = $_GET[Node::PARAM_ATKMENU];
 
         if (!$menuId) {
-            $menuId = SessionManager::getInstance()->globalStackVar('atkmenu');
+            $menuId = SessionManager::getInstance()->globalStackVar(Node::PARAM_ATKMENU);
         }
 
         if ($menuId && $item->getIdentifier() === $menuId) {

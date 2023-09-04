@@ -526,7 +526,7 @@ class SessionManager
             'atkpkret',
             'atkstore',
             'atkstore_key',
-            'atkmenu',
+            Node::PARAM_ATKMENU,
         ];
 
         // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
@@ -552,7 +552,7 @@ class SessionManager
 
         // lockedvars are session or page vars that will not be overwritten in partial mode
         // e.g., the values that are already known in the session will be used
-        $lockedVars = ['atknodeuri', 'atkaction', Node::PARAM_ATKSELECTOR, 'atkmenu'];
+        $lockedVars = ['atknodeuri', 'atkaction', Node::PARAM_ATKSELECTOR, Node::PARAM_ATKMENU];
 
         // Mental note: We have an $this->atkLevel() function for retrieving the atklevel,
         // but we use the global var itself here, because it gets modified in
@@ -790,9 +790,9 @@ class SessionManager
             $action = $stack[$i]['atkaction'];
             $title = $ui->title($module, $type, $action);
             $descriptor = Tools::atkArrayNvl($stack[$i], 'descriptor', '');
-            $menuId = $stack[$i]['atkmenu'];
+            $menuId = $stack[$i][Node::PARAM_ATKMENU];
 
-            $entry = array(
+            $entry = [
                 'url' => '',
                 'title' => $title,
                 'descriptor' => $descriptor,
@@ -800,8 +800,8 @@ class SessionManager
                 'nodetitle' => Tools::atktext($type, $module, $type),
                 'action' => $action,
                 'actiontitle' => Tools::atktext($action, $module, $type),
-                'atkmenu' => $menuId
-            );
+                Node::PARAM_ATKMENU => $menuId
+            ];
 
             if ($i < Tools::count($stack) - 1) {
                 $entry['url'] = $this->sessionUrl(Config::getGlobal('dispatcher').'?atklevel='.$i);

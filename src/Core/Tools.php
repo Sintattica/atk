@@ -1336,7 +1336,6 @@ class Tools
      */
     public static function dispatch_url(string $nodeUri, ?string $action, array $params = [], string $phpfile = ''): string
     {
-
         $phpfile = ($phpfile != '') ?: Config::getGlobal('dispatcher');
         $atkParams = [];
         if ($nodeUri != '') {
@@ -1348,10 +1347,10 @@ class Tools
 
         $params = array_merge($atkParams, $params);
 
-        if (!isset($params['atkmenu']) and $_GET['atkmenu']) {
+        if (!isset($params[Node::PARAM_ATKMENU]) and $_GET[Node::PARAM_ATKMENU]) {
             // TODO: refactoring $_GET
             // no atkmenu passed, but one retrieved from query string
-            $params['atkmenu'] = $_GET['atkmenu'];
+            $params[Node::PARAM_ATKMENU] = $_GET[Node::PARAM_ATKMENU];
         }
 
         if ($params != '' && is_array($params) && Tools::count($params) > 0) {
