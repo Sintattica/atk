@@ -4,7 +4,7 @@
 namespace Sintattica\Atk\Attributes\NestedAttributes;
 
 
-use App\Atk\Modules\App\Attributes\MultiListAttribute;
+use Sintattica\Atk\Attributes\MultiListAttribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
@@ -14,7 +14,7 @@ class NestedMultiListAttribute extends MultiListAttribute
     function __construct($name, $flags, $optionArray, $valueArray = null)
     {
         $this->setIsNestedAttribute(true);
-        parent::__construct($name, $flags | self::AF_NO_SORT, $optionArray, $valueArray);
+        parent::__construct($name, $flags | parent::AF_NO_SORT, $optionArray, $valueArray);
     }
 
     /**
@@ -35,7 +35,7 @@ class NestedMultiListAttribute extends MultiListAttribute
 
         // Multiselect attribute has only 1 searchmode, and that is substring.
 
-        $searchconditions = array();
+        $searchconditions = [];
         $field_sql = NestedAttribute::buildJSONExtractValue($this, $table);
 
         if (is_array($value) && $value[0] != "" && count($value) > 0) {
@@ -44,10 +44,10 @@ class NestedMultiListAttribute extends MultiListAttribute
                 return $query->nullCondition($field_sql, true);
             }
             if (count($value) == 1) {
-                $searchconditions[] = $query->substringCondition($field_sql, Tools::escapeSQL($this->m_fieldSeparator.$value[0].$this->m_fieldSeparator));
+                $searchconditions[] = $query->substringCondition($field_sql, Tools::escapeSQL($this->m_fieldSeparator . $value[0] . $this->m_fieldSeparator));
             } else {
                 foreach ($value as $str) {
-                    $searchconditions[] = $query->substringCondition($field_sql, Tools::escapeSQL($this->m_fieldSeparator.$str.$this->m_fieldSeparator));
+                    $searchconditions[] = $query->substringCondition($field_sql, Tools::escapeSQL($this->m_fieldSeparator . $str . $this->m_fieldSeparator));
                 }
             }
         }

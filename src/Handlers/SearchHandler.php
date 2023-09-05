@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Handlers;
 
 use Exception;
 use Sintattica\Atk\Core\Tools;
+use Sintattica\Atk\Relations\OneToManyRelation;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
@@ -197,7 +198,7 @@ class SearchHandler extends AbstractSearchHandler
             foreach ($node->getAttributeNames() as $attribname) {
                 $p_attrib = $node->m_attribList[$attribname];
 
-                if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH)) {
+                if (!$p_attrib->hasFlag(Attribute::AF_HIDE_SEARCH) && !$p_attrib instanceof OneToManyRelation) {
                     $p_attrib->addToSearchformFields($params['fields'], $node, $record, '', true);
                 }
             }
