@@ -430,7 +430,8 @@ class FileAttribute extends Attribute
             return;
         }
 
-        if ($mode == 'add' || (!$this->hasFlag(self::AF_READONLY_EDIT) && strpos($record[$this->fieldName()]['tmpfile'], sys_get_temp_dir()) !== false)) { // è stato caricato un nuovo file (in add o edit)
+        if (strpos($record[$this->fieldName()]['tmpfile'], sys_get_temp_dir()) !== false && ($mode == 'add' || !$this->hasFlag(self::AF_READONLY_EDIT))) {
+            // è stato caricato un nuovo file e siamo in add oppure non è readonly
 
             // check file size
             if ($this->fileMaxSize && $record[$this->fieldName()]['filesize'] > $this->fileMaxSize) {
