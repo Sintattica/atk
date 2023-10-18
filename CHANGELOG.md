@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.13.3] - 2023-10-18
+### Fixed
+- Attribute: search for NestedAttribute
+- Attribute: validate in add for FileAttribute
+
+
 ## [9.13.2] - 2023-09-04
 ### Changed
 - Node: added const PARAM_ATKMENU
