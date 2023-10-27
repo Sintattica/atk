@@ -190,9 +190,6 @@ class Page
          * Global Styles
          */
 
-        //Google Font: Source Sans Pro
-        $this->register_style("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback");
-
         //Font Awesome
         $this->register_style($assetsUrl . 'admin-lte/plugins/fontawesome-free/css/all.min.css');
 
@@ -221,6 +218,11 @@ class Page
         if ($this->m_fullscreen) {
             $this->register_style($assetsUrl . 'admin-lte/css/fullscreen.css');
         }
+
+
+        //Google Font: Source Sans Pro
+        //$this->register_style("$assetsUrl . 'admin-lte/css/sans-font.css");
+
 
         $customFont = Config::getGlobal('custom_font');
         if ($customFont != "") {

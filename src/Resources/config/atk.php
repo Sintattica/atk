@@ -457,7 +457,7 @@ return [
      * Output missing translation "errors".
      * @var String
      */
-    'debug_translations' => false,
+    'debug_translations' => true,
 
     /************************** INDEX *********************************/
 
@@ -855,7 +855,7 @@ return [
     /*
      * Optionally set the export file parameters
      */
-    'export_delimiter' => ',',
+    'export_delimiterexport_delimiter' => ',',
     'export_enclosure' => '&quot;',
     'export_titlerow_checked' => true,
 
@@ -953,5 +953,5 @@ return [
     'fixedNavHeader' => true,
     'menuAccordion' => true,
 
-    'custom_font' => '',
+    'custom_font' => 'sans',
 ];
