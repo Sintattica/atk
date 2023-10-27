@@ -220,7 +220,7 @@ class Page
         }
 
 
-        //Google Font: Source Sans Pro
+        //Google Font: Source Sans 3
         //$this->register_style("$assetsUrl . 'admin-lte/css/sans-font.css");
 
 

@@ -1,5 +1,9 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.13.5] - 2023-10-27
+### Fixed
+- Resources: Font Source Sans 3 al posto di Source Sans Pro
+
 ## [9.13.4] - 2023-10-27
 ### Fixed
 - Resources: il font Sans adesso viene reperito localmente.
