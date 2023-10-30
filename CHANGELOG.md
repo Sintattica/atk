@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.13.8] - 2023-10-30
+### Fixed
+- Resources: uniformato weight degli headings
+
+
 ## [9.13.7] - 2023-10-30
 ### Fixed
 - Resources: Sistemati font weight sugli headings per rendere il font uniforme a prima
