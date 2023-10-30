@@ -6,12 +6,14 @@ use Exception;
 use ReflectionException;
 use Sintattica\Atk\AdminLte\UIStateColors;
 use Sintattica\Atk\Core\AdminLTE;
+use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\SmartyProvider;
+use Sintattica\Atk\Utils\NodeUtils;
 use SmartyException;
 
 abstract class MenuBase
@@ -34,6 +36,9 @@ abstract class MenuBase
     private $menu = [];
 
     private $m_adminLte;
+
+
+    private $atk;
 
     // -------- Sidebar Menu  ------------
     // The submenu works by exploring all the children and then appending data from bottom up.
@@ -91,6 +96,8 @@ abstract class MenuBase
             $s_instance = new static();
             $s_instance->m_adminLte = AdminLTE::getInstance();
         }
+
+        $s_instance->atk = Atk::getInstance();
 
         return $s_instance;
     }
@@ -743,8 +750,36 @@ abstract class MenuBase
         return $items;
     }
 
+    private function isModuleRegistered(array $item): bool
+    {
+        //For these items we don't have enough information (parent menus, separators)
+        //so we should let them pass at this point, well'filter them later.
+        if (!isset($item['url'])) {
+            return true;
+        }
+
+        $moduleNodeArray = NodeUtils::getAtkModuleAndNodeFromUrl($item['url']);
+        if (empty($moduleNodeArray)) {
+            return true;
+        }
+
+        $moduleName = $moduleNodeArray[0];
+
+        if ($this->atk->isModule($moduleName)) {
+            return true;
+        } else {
+            Tools::atkdebug("The module $moduleName is not registered in the config file ", Tools::DEBUG_WARNING);
+            return false;
+        }
+    }
+
     private function parseItem(array &$item): ?array
     {
+
+        if (!$this->isModuleRegistered($item)) {
+            $item['enable'] = false;
+        }
+
         if ($item['enable'] && array_key_exists($item['name'], $this->items)) {
             $item['submenu'] = $this->parseItems($this->items[$item['name']]);
             return $item;
