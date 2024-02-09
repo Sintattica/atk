@@ -246,7 +246,7 @@ class ListAttribute extends Attribute
             if ($this->hasFlag(self::AF_NO_TRANSLATION)) {
                 $res = $lookup[$value];
             } else {
-                $res = $this->text(array($this->fieldName().'_'.$lookup[$value], $lookup[$value]));
+                $res = $this->text(array($this->fieldName() . '_' . $lookup[$value], $lookup[$value]));
             }
         }
 
@@ -286,27 +286,27 @@ class ListAttribute extends Attribute
 
         $onchange = '';
         if (Tools::count($this->m_onchangecode)) {
-            $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
+            $onchange = ' onChange="' . $this->getHtmlId($fieldprefix) . '_onChange(this)"';
             $this->_renderChangeHandler($fieldprefix);
         }
 
         $data = '';
         foreach ($selectOptions as $k => $v) {
-            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+            $data .= ' data-' . $k . '="' . htmlspecialchars($v) . '"';
         }
 
         $style = $styles = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+        foreach ($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
-        if($style != ''){
-            $styles = 'style="'.$style.'"';
+        if ($style != '') {
+            $styles = 'style="' . $style . '"';
         }
 
-        $result = '<select id="'.$id.'" name="'.$name.'" '.$this->getCSSClassAttribute().$onchange.$data.$styles.'>';
+        $result = '<select id="' . $id . '" name="' . $name . '" ' . $this->getCSSClassAttribute() . $onchange . $data . $styles . '>';
 
         if ($hasNullOption) {
-            $result .= '<option value="'.$this->getEmptyValue().'">'.$nullLabel.'</option>';
+            $result .= '<option value="' . $this->getEmptyValue() . '">' . $nullLabel . '</option>';
         }
 
         $values = $this->getValues();
@@ -319,7 +319,7 @@ class ListAttribute extends Attribute
                 $sel = 'selected';
             }
 
-            $result .= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
+            $result .= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i], $record);
         }
 
         $result .= '</select>';
@@ -335,7 +335,7 @@ class ListAttribute extends Attribute
             // use a different (more descriptive) text for obligatory items
             $text_key = $this->hasFlag(self::AF_OBLIGATORY) ? 'list_null_value_obligatory' : 'list_null_value';
 
-            return htmlentities($this->text([$this->fieldName().'_'.$text_key, $text_key,]));
+            return htmlentities($this->text([$this->fieldName() . '_' . $text_key, $text_key,]));
         }
 
         return '';
@@ -361,8 +361,6 @@ class ListAttribute extends Attribute
      * in the search bar of the recordlist, and to display a more extensive
      * search in the 'extended' search screen.
      *
-     * @todo Configurable rows
-     *
      * @param array $record Array with values
      * @param bool $extended if set to false, a simple search input is
      *                            returned for use in the searchbar of the
@@ -372,9 +370,10 @@ class ListAttribute extends Attribute
      *                            make a difference for $extended is true, but
      *                            derived attributes may reimplement this.
      * @param string $fieldprefix The fieldprefix of this attribute's HTML element.
-     * @param DataGrid $grid
+     * @param DataGrid|null $grid
      *
      * @return string A piece of html-code with a checkbox
+     * @todo Configurable rows
      */
     public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
     {
@@ -397,23 +396,22 @@ class ListAttribute extends Attribute
         }
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
-        if($isMultiple && $this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+        if ($isMultiple && $this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
             $this->setCssStyle($type, 'min-width', '220px');
         }
 
-        foreach($this->getCssStyles($type) as $k => $v) {
+        foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
 
-        $result = '<select '.($isMultiple ? 'multiple' : '').' '.$class.' id="'.$id.'" name="'.$name.'[]"';
+        $result = '<select ' . ($isMultiple ? 'multiple' : '') . ' ' . $class . ' id="' . $id . '" name="' . $name . '[]"';
         foreach ($selectOptions as $k => $v) {
-            $result .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+            $result .= ' data-' . $k . '="' . htmlspecialchars($v) . '"';
         }
-        $style = 'width:100%; ';
-        $result .= $style != '' ? ' style="'.$style.'"': '';
+        $result .= $style != '' ? ' style="' . $style . '"' : '';
         $result .= ' >';
 
-        $selValues = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
+        $selValues = $record[$this->fieldName()] ?? null;
         if (!is_array($selValues)) {
             $selValues = [$selValues];
         }
@@ -446,7 +444,7 @@ class ListAttribute extends Attribute
         $onchange = '';
 
         // if is multiple, replace null selection with empty string
-        if($isMultiple) {
+        if ($isMultiple) {
             $onchange .= <<<EOF
 var s=jQuery(this), v = s.val();
 if (v != null && v.length > 0) {
@@ -467,8 +465,8 @@ EOF;
             $onchange .= $grid->getUpdateCall(array('atkstartat' => 0), [], 'ATK.DataGrid.extractSearchOverrides');
         }
 
-        if($onchange != '') {
-            $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#'.$id.'").on("change", function(){'.$onchange.'})');
+        if ($onchange != '') {
+            $this->getOwnerInstance()->getPage()->register_loadscript('jQuery("#' . $id . '").on("change", function(){' . $onchange . '})');
         }
 
         return $result;
@@ -500,18 +498,18 @@ EOF;
 
             if (Tools::count($value) == 1 && $value[0] != '') { // exactly one value
                 if ($value[0] == '__NONE__') {
-                    return $query->nullCondition($table.'.'.$this->fieldName(), true);
+                    return $query->nullCondition($table . '.' . $this->fieldName(), true);
                 } else {
-                    return $query->exactCondition($table.'.'.$this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
+                    return $query->exactCondition($table . '.' . $this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
                 }
             } elseif (Tools::count($value) > 1) { // search for more values
                 if (in_array('__NONE__', $value)) {
                     unset($value[array_search('__NONE__', $value)]);
 
-                    return sprintf('(%s OR %s)', $query->nullCondition($table.'.'.$this->fieldName(), true),
-                        $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')");
+                    return sprintf('(%s OR %s)', $query->nullCondition($table . '.' . $this->fieldName(), true),
+                        $table . '.' . $this->fieldName() . " IN ('" . implode("','", $value) . "')");
                 } else {
-                    return $table.'.'.$this->fieldName()." IN ('".implode("','", $value)."')";
+                    return $table . '.' . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
                 }
             }
         }
@@ -558,7 +556,7 @@ EOF;
         foreach ($valuearr as $value) {
             $conditions[] = "newvalue=='$value'";
         }
-        $this->addOnChangeHandler('if ('.implode('||', $conditions).") ATK.Tools.hideAttrib('$attrib'); else ATK.Tools.showAttrib('$attrib');");
+        $this->addOnChangeHandler('if (' . implode('||', $conditions) . ") ATK.Tools.hideAttrib('$attrib'); else ATK.Tools.showAttrib('$attrib');");
     }
 
     /**
