@@ -7,32 +7,32 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 
 ## [9.13.10] - 2023-10-30
 ### Fixed
-- Menu: stampa warning se nel menu ci sono voci a cui modulo non è stato caricato.
+- Menu: print warning if there are items in the menu whose module has not been loaded
 
 
 ## [9.13.9] - 2023-10-30
 ### Fixed
-- Resources: uniformato weight degli headings
+- Resources: weight of headings
 
 
 ## [9.13.7] - 2023-10-30
 ### Fixed
-- Resources: Sistemati font weight sugli headings per rendere il font uniforme a prima
+- Resources: font weight of headings to make the font uniform at first
 
 
 ## [9.13.6] - 2023-10-30
 ### Fixed
-- Resources: Sistemati Riferimenti Font Source Sans 3
+- Resources: font Source Sans 3
 
 
 ## [9.13.5] - 2023-10-27
 ### Fixed
-- Resources: Font Source Sans 3 al posto di Source Sans Pro
+- Resources: font Source Sans 3 instead of Source Sans Pro
 
 
 ## [9.13.4] - 2023-10-27
 ### Fixed
-- Resources: il font Sans adesso viene reperito localmente.
+- Resources: the Sans font is now loaded locally
 
 
 ## [9.13.3] - 2023-10-18
