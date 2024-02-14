@@ -396,10 +396,6 @@ class ListAttribute extends Attribute
         }
         $selectOptions = array_merge($selectOptions, $this->m_select2Options['search']);
 
-        if ($isMultiple && $this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
-            $this->setCssStyle($type, 'min-width', '220px');
-        }
-
         foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
