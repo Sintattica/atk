@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.13.12] - 2024-02-14
+### Changed
+- Attribute: removed min-width default for multiple ListAttribute
+
+
 ## [9.13.11] - 2024-02-09
 ### Fixed
 - Attribute: search min-width for ListAttribute
