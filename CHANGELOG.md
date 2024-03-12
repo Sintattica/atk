@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.13.14] - 2024-03-12
+### Added
+- Attribute: m_maxsize getter and setter
+
+
 ## [9.13.13] - 2024-03-12
 ### Fixed
 - Attribute: json prettify for list of elements

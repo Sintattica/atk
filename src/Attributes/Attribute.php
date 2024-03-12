@@ -818,6 +818,17 @@ class Attribute
         return $this;
     }
 
+    public function getMaxSize(): int
+    {
+        return $this->m_maxsize;
+    }
+
+    public function setMaxSize(int $maxsize): self
+    {
+        $this->m_maxsize = $maxsize;
+        return $this;
+    }
+
     /**
      * Adds a flag to the attribute.
      * Note that adding flags at any time after the constructor might not
