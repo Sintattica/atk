@@ -5,6 +5,7 @@ namespace Sintattica\Atk\Core;
 use ReflectionClass;
 use ReflectionException;
 use Sintattica\Atk\AdminLte\UIStateColors;
+use Sintattica\Atk\Attributes\FileAttribute;
 use Sintattica\Atk\Db\Db;
 use Sintattica\Atk\Ui\Output;
 use Sintattica\Atk\Session\SessionManager;
@@ -1091,11 +1092,12 @@ class Tools
      * @param string $filepath The path of file to be downloaded
      * @param string $downloadName The name of the file to be downloaded
      * @param string $mimeType
+     * @param bool $inline
      * @throws Exception
      */
-    public static function downloadFile(string $filepath, string $downloadName = '', string $mimeType = 'application/octet-stream')
+    public static function downloadFile(string $filepath, string $downloadName = '', string $mimeType = 'application/octet-stream', bool $inline = false)
     {
-        self::streamFile($filepath, $downloadName, $mimeType);
+        self::streamFile($filepath, $downloadName, $mimeType, $inline);
     }
 
     /**
@@ -1130,7 +1132,7 @@ class Tools
     /**
      * @throws Exception
      */
-    private static function streamFile(string $downloadPath, string $downloadName = '', string $mimeType = 'application/octet-stream')
+    private static function streamFile(string $downloadPath, string $downloadName = '', string $mimeType = 'application/octet-stream', bool $inline = false)
     {
         if ($downloadName) {
             $filename = $downloadName . '.' . pathinfo($downloadPath, PATHINFO_EXTENSION);
@@ -1146,7 +1148,15 @@ class Tools
         header('Content-Description: File Transfer');
         header("Content-Type: " . $mimeType);
         header("Content-Transfer-Encoding: Binary");
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        if ($inline) {
+            if (in_array($mimeType, FileAttribute::ALLOWED_INLINE_MIMETYPE)) {
+                header('Content-Disposition: inline; filename="' . $filename . '"');
+            } else {
+                throw new Exception("Mimetype '$mimeType' not allowed, download the file instead!");
+            }
+        } else {
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+        }
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
@@ -2576,7 +2586,7 @@ class Tools
      */
     static function strReplaceOccurrence(string $search, string $replace, string $subject, int $limit = 1): string
     {
-        $search = '/'.preg_quote($search, '/').'/';
+        $search = '/' . preg_quote($search, '/') . '/';
         return preg_replace($search, $replace, $subject, $limit);
     }
 }

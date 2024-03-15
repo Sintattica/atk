@@ -6181,7 +6181,15 @@ class Node
             return;
         }
 
-        Tools::downloadFile($fileAttr->getDir() . $record[$attributeName]['filename'], $downloadName);
+        $filePath = $fileAttr->getDir() . $record[$attributeName]['filename'];
+        if ($this->m_postvars[FileAttribute::INLINE_PARAM]) {
+            $mimeType = mime_content_type($filePath);
+            if (in_array($mimeType, FileAttribute::ALLOWED_INLINE_MIMETYPE)) {
+                Tools::downloadFile($filePath, $downloadName, $mimeType);
+            }
+        } else {
+            Tools::downloadFile($filePath, $downloadName);
+        }
         exit;
     }
 }

@@ -104,6 +104,10 @@ class FileAttribute extends Attribute
     // set it TRUE to stream file from a directory that is not public
     // you need to implement the method 'action_ . DOWNLOAD_STREAM_ACTION_PREFIX . {attribute_file_name}'
     private $stream = false;
+    // set it TRUE to show ad additional button to open the file in a new tab
+    private $inline = false;
+    const INLINE_PARAM = 'inline_file_attribute';
+    const ALLOWED_INLINE_MIMETYPE = ['application/pdf', 'image/jpeg', 'image/png'];// potenzialmente estendibile
 
     /**
      * Constructor.
@@ -330,6 +334,21 @@ class FileAttribute extends Attribute
                         ]);
                     $downloadAttr->setOwnerInstance($node);
                     $ret .= $downloadAttr->display($record, 'view');
+
+                    if ($this->isInlineButtonEnabled()) {
+                        $openNewTabAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
+                            ->setNode($node)
+                            ->setText($this->text('open'))
+                            ->setAction(Node::ACTION_DOWNLOAD_FILE_ATTRIBUTE)
+                            ->setTarget('_blank')
+                            ->setParams([
+                                Node::PARAM_ATKSELECTOR => $node->getPrimaryKey($record),
+                                Node::PARAM_ATTRIBUTE_NAME => $this->fieldName(),
+                                self::INLINE_PARAM => true
+                            ]);
+                        $openNewTabAttr->setOwnerInstance($node);
+                        $ret .= "<div style='padding-top: 1em; text-align: center'>{$openNewTabAttr->display($record, 'view')}</div>";
+                    }
 
                 } else {
                     // link target blank
@@ -1077,6 +1096,17 @@ class FileAttribute extends Attribute
     function setStream(bool $stream): self
     {
         $this->stream = $stream;
+        return $this;
+    }
+
+    function isInlineButtonEnabled(): bool
+    {
+        return $this->inline;
+    }
+
+    function enableInlineButton(bool $inline): self
+    {
+        $this->inline = $inline;
         return $this;
     }
 
