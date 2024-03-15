@@ -6184,9 +6184,7 @@ class Node
         $filePath = $fileAttr->getDir() . $record[$attributeName]['filename'];
         if ($this->m_postvars[FileAttribute::INLINE_PARAM]) {
             $mimeType = mime_content_type($filePath);
-            if (in_array($mimeType, FileAttribute::ALLOWED_INLINE_MIMETYPE)) {
-                Tools::downloadFile($filePath, $downloadName, $mimeType);
-            }
+            Tools::downloadFile($filePath, $downloadName, $mimeType, true);
         } else {
             Tools::downloadFile($filePath, $downloadName);
         }
