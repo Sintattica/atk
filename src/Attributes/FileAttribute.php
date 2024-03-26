@@ -336,6 +336,7 @@ class FileAttribute extends Attribute
                     $ret .= $downloadAttr->display($record, 'view');
 
                     if ($this->isInlineButtonEnabled() && in_array($mode, ['list', 'view'])) {
+                        $this->setMinWidth('125px');
                         $openNewTabAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
                             ->setNode($node)
                             ->setText($this->text('open'))
@@ -347,11 +348,7 @@ class FileAttribute extends Attribute
                                 self::INLINE_PARAM => true
                             ]);
                         $openNewTabAttr->setOwnerInstance($node);
-                        if ($mode === 'list') {
-                            $ret .= "<div style='padding-top: 0.6em; text-align: center'>{$openNewTabAttr->display($record, 'view')}</div>";
-                        } else {
-                            $ret .= "<span style='padding-left: 1em'>{$openNewTabAttr->display($record, 'view')}</span>";
-                        }
+                        $ret .= "<span style='padding-left: 1em'>{$openNewTabAttr->display($record, 'view')}</span>";
                     }
                 } else {
                     // link target blank
