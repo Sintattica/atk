@@ -29,7 +29,9 @@ class JsonAttribute extends TextAttribute
             $record[$this->fieldName()] = json_encode($record[$this->fieldName()] ?: []);
         }
 
-        $record[$this->fieldName()] = Json::prettify($record[$this->fieldName()]);
+        if ($record[$this->fieldName()]) {
+            $record[$this->fieldName()] = Json::prettify($record[$this->fieldName()]);
+        }
 
         return parent::edit($record, $fieldprefix, $mode);
     }
