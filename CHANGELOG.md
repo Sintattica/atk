@@ -1,6 +1,6 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [9.13.18] - 2024-04-10
+## [9.13.19] - 2024-04-10
 ### Fixed
 - Attribute: JsonAttribute edit when value is null
 
