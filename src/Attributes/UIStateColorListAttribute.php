@@ -6,7 +6,7 @@ use Sintattica\Atk\AdminLte\UIStateColors;
 
 class UIStateColorListAttribute extends ListAttribute
 {
-    private const SPOT_SUFFIX = '_spot';
+    protected const SPOT_SUFFIX = '_spot';
 
     public function __construct($name, $flags = 0)
     {
