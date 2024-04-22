@@ -41,18 +41,22 @@ class UIStateColorListAttribute extends ListAttribute
             const uiStateColorCurr = selectorEl.value;
             const uiStateColorSpotEl = selectorEl.parentNode.parentNode.querySelector('.state-color-attribute');
             
+            // toglie l'unica classe bg-
             for (let i = 0; i < uiStateColorSpotEl.classList.length; i++) {
                 if (uiStateColorSpotEl.classList[i].startsWith('bg-')) {
-                    // toglie l'unica classe bg-
                     uiStateColorSpotEl.classList.remove(uiStateColorSpotEl.classList[i]);
                     break;
                 }
             }
             
-            const bgClass = uiStateColors[uiStateColorCurr]['bg_class'];
-            const borderColor = uiStateColors[uiStateColorCurr]['hex_border_color'];
-            uiStateColorSpotEl.classList.add(bgClass);
-            uiStateColorSpotEl.style.borderColor = borderColor;
+            if (uiStateColorCurr) {
+                const bgClass = uiStateColors[uiStateColorCurr]['bg_class'];
+                uiStateColorSpotEl.classList.add(bgClass);
+                const borderColor = uiStateColors[uiStateColorCurr]['hex_border_color'];
+                uiStateColorSpotEl.style.borderColor = borderColor;
+            } else {
+                uiStateColorSpotEl.style.borderColor = uiStateColors['light']['hex_border_color'];
+            }
         ");
 
         $edit = parent::edit($record, $fieldprefix, $mode);
