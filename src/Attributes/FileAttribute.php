@@ -103,6 +103,9 @@ class FileAttribute extends Attribute
     private $thumbnailDir = 'thumbnail';
     private $thumbnailExt = null;
 
+    // legacy mode: to show only link
+    private $hideEditWidget = false;
+
     // set it TRUE to stream file from a directory that is not public
     // you need to implement the method 'action_ . DOWNLOAD_STREAM_ACTION_PREFIX . {attribute_file_name}'
     private $stream = false;
@@ -209,7 +212,12 @@ class FileAttribute extends Attribute
             if (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] != '') {
                 $fileLinkXML = new SimpleXMLElement($fileLink);
 
-                $widgetFile = '<div class="existing-file input-group">
+                if ($this->hideEditWidget) {
+                    // show only link
+                    $widgetFile = '<div><a href="' . ($fileLinkXML['href'] ?? "") . '" target="_blank">' . $record[$this->fieldName()]['filename'] . '</a></div>';
+
+                } else {
+                    $widgetFile = '<div class="existing-file input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-file"></i></span>
                     </div>
@@ -218,6 +226,7 @@ class FileAttribute extends Attribute
                      <a href="' . ($fileLinkXML['href'] ?? "") . '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-alt-circle-down"></i></a>
                     </div>
                   </div>';
+                }
 
                 if ($this->fileExists($record)) {
                     // il file esiste
@@ -1224,6 +1233,17 @@ class FileAttribute extends Attribute
         }
         return $dirPath . '/' .
             ($this->thumbnailExt ? (pathinfo($filepath, PATHINFO_FILENAME) . '.' . $this->thumbnailExt) : basename($filepath));
+    }
+
+    public function isHideEditWidget(): bool
+    {
+        return $this->hideEditWidget;
+    }
+
+    public function setHideEditWidget(bool $hideEditWidget): self
+    {
+        $this->hideEditWidget = $hideEditWidget;
+        return $this;
     }
 
     /**
