@@ -100,6 +100,8 @@ class FileAttribute extends Attribute
     private $previewHeight = '100px';
     private $previewWidth = '100px';
     private $thumbnail = false; // TODO: handle thumbnail (v. display)
+    private $thumbnailDir = 'thumbnail';
+    private $thumbnailExt = null;
 
     // set it TRUE to stream file from a directory that is not public
     // you need to implement the method 'action_ . DOWNLOAD_STREAM_ACTION_PREFIX . {attribute_file_name}'
@@ -316,13 +318,27 @@ class FileAttribute extends Attribute
         }
 
         $ret = '';
-        $filename = $record[$this->fieldName()]['filename'];
-        if ($filename) {
+        $fileRelativePath = $record[$this->fieldName()]['filename'];
+        if ($fileRelativePath) {
             if ($this->fileExists($record)) {
+                $url = $this->m_url . $fileRelativePath;
                 $isImage = $this->isImage($record);
 
                 if ($this->isStream()) {
                     $node = $this->getOwnerInstance();
+
+                    if ($this->thumbnail) {
+                        // show thumbnail
+                        $thumbnailUrl = $this->getThumbnailPath($url);
+                        $content = base64_encode(file_get_contents($thumbnailUrl));
+                        $ret .= '<div class="row no-gutters justify-content-center">';
+                        $ret .= "<img src='data:image/png;base64,$content' 
+                                style='max-height: {$this->getPreviewHeight()};
+                                max-width: {$this->getPreviewWidth()}; 
+                                margin: 5px 0;'/>";
+                        $ret .= '</div>';
+                    }
+
                     $downloadAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
                         ->setNode($node)
                         ->setText($this->text('download'))
@@ -333,6 +349,7 @@ class FileAttribute extends Attribute
                             Node::PARAM_ATTRIBUTE_NAME => $this->fieldName()
                         ]);
                     $downloadAttr->setOwnerInstance($node);
+                    $ret .= '<div class="row no-gutters justify-content-center">';
                     $ret .= $downloadAttr->display($record, 'view');
 
                     if ($this->isInlineButtonEnabled() && in_array($mode, ['list', 'view'])) {
@@ -348,15 +365,16 @@ class FileAttribute extends Attribute
                                 self::INLINE_PARAM => true
                             ]);
                         $openNewTabAttr->setOwnerInstance($node);
-                        $ret .= "<span style='padding-left: 1em'>{$openNewTabAttr->display($record, 'view')}</span>";
+                        $openNewTabAttr->addCSSClass('ml-1');
+                        $ret .= "{$openNewTabAttr->display($record, 'view')}";
                     }
+                    $ret .= '</div>';
                 } else {
                     // link target blank
-                    $url = $this->m_url . $filename;
                     $ret = sprintf('<a target="_blank" href="%s">', $url);
 
                     if (!$isImage || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
-                        $ret .= basename($filename);
+                        $ret .= basename($fileRelativePath);
                     }
 
                     if ($isImage && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
@@ -366,15 +384,13 @@ class FileAttribute extends Attribute
 
                         if ($this->thumbnail) {
                             // show thumbnail
-                            $url = dirname($url) . '/thumbnail/' . basename($url);
-                            $ret .= "<img src='$url?b=$randval' style='margin: 5px 0;'/>";
-
+                            $thumbnailUrl = $this->getThumbnailPath($url);
+                            $ret .= "<img src='$thumbnailUrl?b=$randval' style='margin: 5px 0;'/>";
                         } else {
                             $ret .= "<img src='$url?b=$randval' style=' 
                                 max-height: {$this->getPreviewHeight()};
                                 max-width: {$this->getPreviewWidth()}; 
-                                margin: 5px 0;'
-                                />";
+                                margin: 5px 0;'/>";
                         }
                     }
                     $ret .= '</a>';
@@ -382,7 +398,7 @@ class FileAttribute extends Attribute
 
             } else {
                 // file not found
-                $ret = '<div>' . basename($filename);
+                $ret = '<div>' . basename($fileRelativePath);
                 if ($mode != 'add') {
                     $ret .= ' (<span style="color: #ff0000">' . Tools::atktext("file_not_exist", "atk") . '</span>)';
                 }
@@ -1185,6 +1201,28 @@ class FileAttribute extends Attribute
     {
         $record[$this->fieldName()]['filename'] = "$filename.$extension";
         $record[$this->fieldName()]['orgfilename'] = "$filename.$extension";
+    }
+
+    public function setThumbnailDir(string $thumbnailDir): self
+    {
+        $this->thumbnailDir = $thumbnailDir;
+        return $this;
+    }
+
+    public function setThumbnailExt(string $thumbnailExt): self
+    {
+        $this->thumbnailExt = $thumbnailExt;
+        return $this;
+    }
+
+    public function getThumbnailPath(string $filepath): string
+    {
+        $dirPath = pathinfo($filepath, PATHINFO_DIRNAME) . '/' . $this->thumbnailDir;
+        if (!is_dir($dirPath)) {
+            mkdir($dirPath);
+        }
+        return $dirPath . '/' .
+            ($this->thumbnailExt ? (pathinfo($filepath, PATHINFO_FILENAME) . '.' . $this->thumbnailExt) : basename($filepath));
     }
 
     /**
