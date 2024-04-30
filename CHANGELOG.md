@@ -6,7 +6,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 
 ## [9.13.22] - 2024-04-30
 ### Added
-- Attribute: aggiunta anteprima immagine in FileAttribute in modalità stream
+- FileAttribute: add preview in stream mode
 
 ## [9.13.21] - 2024-04-22
 ### Fixed
