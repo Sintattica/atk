@@ -327,11 +327,12 @@ class FileAttribute extends Attribute
                 if ($this->isStream()) {
                     $node = $this->getOwnerInstance();
 
+                    $justify = $mode === 'list' ? 'justify-content-center' : '';
                     if ($this->thumbnail) {
                         // show thumbnail
                         $thumbnailUrl = $this->getThumbnailPath($url);
                         $content = base64_encode(file_get_contents($thumbnailUrl));
-                        $ret .= '<div class="row no-gutters justify-content-center">';
+                        $ret .= "<div class='row no-gutters $justify'>";
                         $ret .= "<img src='data:image/png;base64,$content' 
                                 style='max-height: {$this->getPreviewHeight()};
                                 max-width: {$this->getPreviewWidth()}; 
@@ -349,10 +350,10 @@ class FileAttribute extends Attribute
                             Node::PARAM_ATTRIBUTE_NAME => $this->fieldName()
                         ]);
                     $downloadAttr->setOwnerInstance($node);
-                    $ret .= '<div class="row no-gutters justify-content-center">';
+                    $ret .= "<div class='row no-gutters $justify'>";
                     $ret .= $downloadAttr->display($record, 'view');
 
-                    if ($this->isInlineButtonEnabled() && in_array($mode, ['list', 'view'])) {
+                    if ($this->isInlineButtonEnabled() && in_array($mode, ['list', 'view', 'edit'])) {
                         $this->setMinWidth('125px');
                         $openNewTabAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
                             ->setNode($node)
