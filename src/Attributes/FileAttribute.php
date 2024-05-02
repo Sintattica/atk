@@ -392,16 +392,11 @@ class FileAttribute extends Attribute
                             $ret .= '<br/>';
                         }
 
-                        if ($this->thumbnail) {
-                            // show thumbnail
-                            $thumbnailUrl = $this->getThumbnailPath($url);
-                            $ret .= "<img src='$thumbnailUrl?b=$randval' style='margin: 5px 0;'/>";
-                        } else {
-                            $ret .= "<img src='$url?b=$randval' style=' 
+                        $displayUrl = $this->thumbnail ? $this->getThumbnailPath($url) : $url;
+                        $ret .= "<img src='$displayUrl?b=$randval' style=' 
                                 max-height: {$this->getPreviewHeight()};
                                 max-width: {$this->getPreviewWidth()}; 
                                 margin: 5px 0;'/>";
-                        }
                     }
                     $ret .= '</a>';
                 }
@@ -1172,13 +1167,16 @@ class FileAttribute extends Attribute
         return $this;
     }
 
-    public function getPreviewHeight(): string
+    public function getPreviewHeight(): ?string
     {
         return $this->previewHeight;
     }
 
-    public function setPreviewHeight(string $previewHeight): self
+    public function setPreviewHeight(?string $previewHeight): self
     {
+        if (!$previewHeight) {
+            $previewHeight = 'auto';
+        }
         $this->previewHeight = $previewHeight;
         $this->previewWidth = 'auto';
         return $this;
@@ -1190,13 +1188,16 @@ class FileAttribute extends Attribute
         return $this;
     }
 
-    public function getPreviewWidth(): string
+    public function getPreviewWidth(): ?string
     {
         return $this->previewWidth;
     }
 
-    public function setPreviewWidth(string $previewWidth): self
+    public function setPreviewWidth(?string $previewWidth): self
     {
+        if (!$previewWidth) {
+            $previewWidth = 'auto';
+        }
         $this->previewWidth = $previewWidth;
         $this->previewHeight = 'auto';
         return $this;
@@ -1228,9 +1229,6 @@ class FileAttribute extends Attribute
     public function getThumbnailPath(string $filepath): string
     {
         $dirPath = pathinfo($filepath, PATHINFO_DIRNAME) . '/' . $this->thumbnailDir;
-        if (!is_dir($dirPath)) {
-            mkdir($dirPath);
-        }
         return $dirPath . '/' .
             ($this->thumbnailExt ? (pathinfo($filepath, PATHINFO_FILENAME) . '.' . $this->thumbnailExt) : basename($filepath));
     }
