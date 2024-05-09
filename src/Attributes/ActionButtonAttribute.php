@@ -12,6 +12,7 @@ class ActionButtonAttribute extends ButtonAttribute
     private $node = '';
     private $action = '';
     private $params = [];
+    private $paramsFieldNames = [];
     private $target = null;
     private $sessionStatus = SessionManager::SESSION_NESTED;
     private $saveForm = false;
@@ -36,6 +37,12 @@ class ActionButtonAttribute extends ButtonAttribute
             // default params
             $this->params[Node::PARAM_ATKSELECTOR] = $targetNode->getPrimaryKey($record);
         }
+        if ($this->paramsFieldNames){
+            foreach ($this->paramsFieldNames as $fieldName) {
+                $this->params[$fieldName] = $record[$fieldName] ?? null;
+            }
+        }
+
         $url = Tools::dispatch_url($this->node, $action, $this->params);
         $extraProps = [];
         if ($classes) {
@@ -68,6 +75,12 @@ class ActionButtonAttribute extends ButtonAttribute
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    public function addParamFieldName($fieldName): self
+    {
+        $this->paramsFieldNames[] = $fieldName;
+        return $this;
     }
 
     public function getNode(): string
