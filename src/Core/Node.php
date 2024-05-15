@@ -3290,6 +3290,8 @@ class Node
             return '';
         }
 
+        $isPrint = $this->m_postvars['print'];
+
         $html = '<form action="' . Config::getGlobal('dispatcher') . '" method="get">';
         $html .= '<input type="hidden" name="atkaction" value="' . $this->getAction() . '">';
         $html .= '<input type="hidden" name="atknodeuri" value="' . $this->atkNodeUri() . '">';
@@ -3308,7 +3310,7 @@ class Node
             $attrName = $attr->fieldName();
 
             if ($filter['newline']) {
-                $html .= '</div> <div class="filters form-inline ' . $cssClass . '">';
+                $html .= '</div><div class="filters form-inline ' . $cssClass . '">';
             }
 
             // check possible initial value
@@ -3316,7 +3318,7 @@ class Node
                 $this->setAdminHeaderInputFilterValue($attrName, $attr->initialValue());
             }
 
-            if (!$this->m_postvars['print']) {
+            if (!$isPrint) {
                 $class = $filter['class'] ?: '';
                 $html .= '<div class="filter form-group ' . $class . '">';
                 if (!$attr->hasFlag(Attribute::AF_NO_LABEL)) {
@@ -3332,8 +3334,6 @@ class Node
                 }
 
                 $html .= '</div>';
-
-                $html .= '<button type="submit" class="btn btn-sm btn-primary ml-1">' . Tools::atktext('admin_header_input_submit') . '</button>';
 
             } else { // (print)
 
@@ -3356,6 +3356,10 @@ class Node
                     }
                 }
             }
+        }
+
+        if (!$isPrint) {
+            $html .= '<button type="submit" class="btn btn-sm btn-primary ml-1">' . Tools::atktext('admin_header_input_submit') . '</button>';
         }
 
         $html .= '</div></form>';
@@ -3397,13 +3401,15 @@ class Node
         }
     }
 
-    protected function addAdminHeaderInputFilter(Attribute $attribute, string $mode = 'edit', string $class = '')
+    protected function addAdminHeaderInputFilter(Attribute $attribute, string $mode = 'edit', string $class = '', bool $newline = false): self
     {
         $this->adminHeaderInputFilters[$attribute->fieldName()] = [
             'attribute' => $attribute,
             'mode' => $mode,
             'class' => $class,
+            'newline' => $newline
         ];
+        return $this;
     }
 
     /**

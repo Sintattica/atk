@@ -1,20 +1,29 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.13.27] - 2024-05-15
+### Fixed
+- Node: adminHeaderInputFilters submit button and newline param
+
+
 ## [9.13.26] - 2024-05-09
 ### Added
 - ActionButtonAttribute: paramsFieldNames to handle record params in url
+
 
 ## [9.13.25] - 2024-05-02
 ### Fixed
 - FileAttribute: preview in no-stream mode
 
+
 ## [9.13.24] - 2024-04-30
 ### Added
 - FileAttribute: hide widget mode for legacy projects
 
+
 ## [9.13.22] - 2024-04-30
 ### Added
 - FileAttribute: add preview in stream mode
+
 
 ## [9.13.21] - 2024-04-22
 ### Fixed
