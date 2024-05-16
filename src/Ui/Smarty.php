@@ -3,7 +3,7 @@
 namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Config;
-use Smarty as SmartyBase;
+use Smarty\Smarty as SmartyBase;
 
 class Smarty extends SmartyBase
 {

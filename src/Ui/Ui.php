@@ -6,7 +6,6 @@ use Exception;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Atk;
-use SmartyException;
 
 /**
  * Utility class for rendering boxes, lists, tabs or other templates.
@@ -61,7 +60,7 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string the rendered template
-     * @throws SmartyException
+     * @throws \Smarty\Exception
      */
     public function renderAction($action, $vars, $module = ''): string
     {
@@ -104,7 +103,6 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered box
-     * @throws SmartyException
      */
     public function renderBox($vars, $name = '', $module = ''): string
     {
@@ -123,7 +121,6 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string the rendered template
-     * @throws SmartyException
      */
     public function renderTabs(array $vars, $module = ''): string
     {
@@ -142,7 +139,6 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered template
-     * @throws SmartyException
      */
     public function render(string $name, $vars = [], $module = ''): string
     {
@@ -199,7 +195,6 @@ class Ui
      * @param array $vars template variables
      *
      * @return string rendered template
-     * @throws SmartyException
      */
     private function renderSmarty(string $path, array $vars): string
     {

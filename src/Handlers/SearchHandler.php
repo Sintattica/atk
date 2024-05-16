@@ -8,7 +8,6 @@ use Sintattica\Atk\Relations\OneToManyRelation;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Attributes\Attribute;
-use SmartyException;
 
 /**
  * Handler class for the search action of a node. The handler draws a
@@ -174,7 +173,7 @@ class SearchHandler extends AbstractSearchHandler
      *                      the search fields.
      *
      * @return string The searchform in html form.
-     * @throws SmartyException
+     * @throws Exception
      */
     public function searchForm($record = null)
     {

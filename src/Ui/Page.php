@@ -716,7 +716,6 @@ class Page
      * @param string $extra_header HTML code of extra headers to add to the head section
      * @param string|null $appendClasses
      * @return string The HTML page, including <html> and </html> tags.
-     * @throws \SmartyException
      */
     public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', string $appendClasses = null): string
     {

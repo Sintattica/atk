@@ -13,7 +13,6 @@ use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
-use SmartyException;
 
 /**
  * Class that generates an index page.
@@ -82,7 +81,6 @@ class IndexPage
     /**
      * Generate the page.
      *
-     * @throws SmartyException
      * @throws ReflectionException
      */
     public function generate()
@@ -317,7 +315,6 @@ class IndexPage
      *
      * @param string $nodeType
      * @return string A complete html page with generic access denied message.
-     * @throws SmartyException
      */
     private function accessDeniedPage(string $nodeType): string
     {

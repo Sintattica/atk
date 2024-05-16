@@ -5,7 +5,6 @@ namespace Sintattica\Atk\DataGrid;
 use Sintattica\Atk\Utils\Json;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Session\SessionManager;
-use SmartyException;
 
 /**
  * The grid renderer is responsible for rendering the grid components and
@@ -53,7 +52,6 @@ class DataGridRenderer extends DataGridComponent
      * Render the grid components and the grid itself.
      *
      * @return string grid HTML
-     * @throws SmartyException
      */
     protected function renderGrid(): string
     {
@@ -92,7 +90,6 @@ class DataGridRenderer extends DataGridComponent
      * Render the grid.
      *
      * @return string grid HTML
-     * @throws SmartyException
      */
     public function render(): string
     {

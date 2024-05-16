@@ -14,7 +14,6 @@ use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\Ui\Page;
 use Sintattica\Atk\Ui\SmartyProvider;
 use Sintattica\Atk\Utils\NodeUtils;
-use SmartyException;
 
 abstract class MenuBase
 {
@@ -125,7 +124,7 @@ abstract class MenuBase
      * Render the menu.
      *
      * @return string HTML fragment containing the menu.
-     * @throws SmartyException|ReflectionException
+     * @throws ReflectionException
      */
     public function render(): string
     {
@@ -140,7 +139,7 @@ abstract class MenuBase
      * Load a cached version of the menu.
      * The menu gets constructed only if is not present.
      * @return array The menu
-     * @throws SmartyException|ReflectionException
+     * @throws ReflectionException
      */
     public function getMenu(): array
     {
@@ -160,7 +159,7 @@ abstract class MenuBase
      *               sidebar -> containing the html formatted sidebar menu
      *               left -> containing the html formatted items of the left navbar menu
      *               right -> same as the left but contains the items of the right part of the nav menu.
-     * @throws SmartyException|ReflectionException
+     * @throws ReflectionException
      */
     public function load(): array
     {
@@ -209,7 +208,7 @@ abstract class MenuBase
      * @param string $type - Needed for the recursive function to understand if it was exploring
      *                        the nav or the sidebar part on the parent
      * @return string - A complete html formatted menu of the selected type (sidebar, navbar left or navbar right)
-     * @throws SmartyException|ReflectionException
+     * @throws ReflectionException
      */
     private function processMenu(array $menu, bool $child = false, string $type = self::TYPE_MENU_SIDEBAR): string
     {
@@ -272,11 +271,11 @@ abstract class MenuBase
 
     /**
      * The navbar part. This is very similar to the formatSidebarMenu(...)
-     * The main differences are the templates to be used for the the html part.
+     * The main differences are the templates to be used for the html part.
      * @param array $item - The menu Item containing all the submenus
      * @param bool $child - Decides it called from the recursive function or is this the main call.
      * @return string - Containing the generated html for this part of the menu.
-     * @throws SmartyException|ReflectionException
+     * @throws ReflectionException
      * @throws Exception
      */
     private function formatNavBar(array $item, bool $child): string
@@ -350,7 +349,7 @@ abstract class MenuBase
     /**
      * @param array $item - The menu Item containing all the submenus
      * @return string - Containing the generated html for this part of the menu.
-     * @throws SmartyException|ReflectionException
+     * @throws ReflectionException
      * @throws Exception
      */
     private function formatSidebar(array $item): string
