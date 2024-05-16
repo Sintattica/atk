@@ -2,23 +2,19 @@
 
 namespace Sintattica\Atk\Utils;
 
+use Exception;
 use IteratorIterator;
 use Iterator;
 
 /**
- * Selector iterator, makes sure that each each row returned by the internal
+ * Selector iterator, makes sure that each row returned by the internal
  * iterator gets transformed before it is returned to the user.
  *
  * @author Peter C. Verhage <peter@achievo.org>
  */
 class SelectorIterator extends IteratorIterator
 {
-    /**
-     * Selector.
-     *
-     * @var Selector
-     */
-    private $m_selector;
+    private Selector $m_selector;
 
     /**
      * Constructor.
@@ -26,26 +22,22 @@ class SelectorIterator extends IteratorIterator
      * @param Iterator $iterator iterator
      * @param Selector $selector selector
      */
-    public function __construct(\Iterator $iterator, Selector $selector)
+    public function __construct(Iterator $iterator, Selector $selector)
     {
         parent::__construct($iterator);
         $this->m_selector = $selector;
     }
 
-    /**
-     * Returns the selector.
-     *
-     * @return Selector selector
-     */
-    public function getSelector()
+    public function getSelector(): Selector
     {
         return $this->m_selector;
     }
 
     /**
      * Returns the current row transformed.
+     * @throws Exception
      */
-    public function current()
+    public function current(): mixed
     {
         $row = parent::current();
 

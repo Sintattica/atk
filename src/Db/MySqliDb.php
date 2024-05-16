@@ -123,7 +123,7 @@ class MySqliDb extends Db
             case 2005:
                 return self::DB_UNKNOWNHOST;
             default:
-                Tools::atkdebug('mysqldb::translateError -> MySQL Error: '.$this->m_errno.' -> '.$this->m_error);
+                Tools::atkdebug('mysqldb::translateError -> MySQL Error: ' . $this->m_errno . ' -> ' . $this->m_error);
 
                 return self::DB_UNKNOWNERROR;
         }
@@ -260,12 +260,12 @@ class MySqliDb extends Db
         }
 
         $result = @mysqli_query($this->m_link_id, $query);
-        if(!$result && mysqli_errno($this->m_link_id) === 2006) {
+        if (!$result && mysqli_errno($this->m_link_id) === 2006) {
             Tools::atkdebug('DB has gone away, try to reconnect');
             $this->disconnect();
             if ($this->connect() !== Db::DB_SUCCESS) {
                 Tools::atkerror('Cannot connect to database.');
-            }else {
+            } else {
                 $result = @mysqli_query($this->m_link_id, $query);
             }
         }
@@ -363,7 +363,7 @@ class MySqliDb extends Db
         if ($result) {
             $this->m_row = $position;
         } else {
-            $this->halt("seek($position) failed: result has ".$this->num_rows().' rows');
+            $this->halt("seek($position) failed: result has " . $this->num_rows() . ' rows');
         }
     }
 
@@ -471,21 +471,21 @@ class MySqliDb extends Db
             /* lock sequence table */
             if ($this->lock($this->m_seq_table)) {
                 /* get sequence number (locked) and increment */
-                $query = 'SELECT '.$this->m_seq_field.' FROM '.$this->m_seq_table.' WHERE '.$this->m_seq_namefield." = '$sequence'";
+                $query = 'SELECT ' . $this->m_seq_field . ' FROM ' . $this->m_seq_table . ' WHERE ' . $this->m_seq_namefield . " = '$sequence'";
 
                 $id = $this->_query($query, true);
                 $result = @mysqli_fetch_array($id);
 
                 /* no current value, make one */
                 if (!is_array($result)) {
-                    $query = 'INSERT INTO '.$this->m_seq_table." VALUES('$sequence', 1)";
+                    $query = 'INSERT INTO ' . $this->m_seq_table . " VALUES('$sequence', 1)";
                     $this->_query($query, true);
                     $this->unlock();
 
                     return 1;
                 } /* enter next value */ else {
                     $nextid = $result[$this->m_seq_field] + 1;
-                    $query = 'UPDATE '.$this->m_seq_table.' SET '.$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
+                    $query = 'UPDATE ' . $this->m_seq_table . ' SET ' . $this->m_seq_field . " = '$nextid' WHERE " . $this->m_seq_namefield . " = '$sequence'";
 
                     $this->_query($query, true);
                     $this->unlock();
@@ -496,7 +496,7 @@ class MySqliDb extends Db
 
             return 0;
         } /* cannot connect */ else {
-            $this->halt('cannot connect to '.$this->m_host);
+            $this->halt('cannot connect to ' . $this->m_host);
         }
     }
 
@@ -507,7 +507,7 @@ class MySqliDb extends Db
     {
         $tables = $this->table_names();
         foreach ($tables as $table) {
-            $this->query('DROP TABLE `'.$table['table_name'].'`');
+            $this->query('DROP TABLE `' . $table['table_name'] . '`');
         }
     }
 
@@ -524,13 +524,13 @@ class MySqliDb extends Db
         $this->connect();
         if (strpos($table, '.') !== false) {
             list($dbname, $tablename) = explode('.', $table);
-            $id = $this->_query('SHOW TABLES FROM `'.$dbname."` LIKE '".$tablename."'", true);
+            $id = $this->_query('SHOW TABLES FROM `' . $dbname . "` LIKE '" . $tablename . "'", true);
         } else {
-            $id = $this->_query("SHOW TABLES LIKE '".$table."'", true);
+            $id = $this->_query("SHOW TABLES LIKE '" . $table . "'", true);
         }
 
         $result = @mysqli_num_rows($id) > 0;
-        Tools::atkdebug("Table exists? $table => ".($result ? 'yes' : 'no'));
+        Tools::atkdebug("Table exists? $table => " . ($result ? 'yes' : 'no'));
 
         return $result;
     }
@@ -577,7 +577,7 @@ class MySqliDb extends Db
             $format = Config::getGlobal('date_to_char', 'Y-m-d');
         }
 
-        return "DATE_FORMAT($fieldname, '".$this->vendorDateFormat($format)."')";
+        return "DATE_FORMAT($fieldname, '" . $this->vendorDateFormat($format) . "')";
     }
 
     /**
@@ -610,7 +610,7 @@ class MySqliDb extends Db
     public function _getTableType($table)
     {
         $this->connect();
-        $id = $this->_query("SHOW TABLE STATUS LIKE '".$table."'", true);
+        $id = $this->_query("SHOW TABLE STATUS LIKE '" . $table . "'", true);
         $status = @mysqli_fetch_array($id, MYSQLI_ASSOC);
         $result = $status != null && isset($status['Engine']) ? $status['Engine'] : null;
         Tools::atkdebug("Table type? $table => $result");
@@ -676,7 +676,7 @@ class MySqliDb extends Db
                         // for a mysql type DECIMAL, the length is returned as M+2 (signed) or M+1 (unsigned)
                         $offset = ($finfo->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 2;
                         $result[$i]['len'] -= ($offset + $finfo->decimals);
-                        $result[$i]['len'] .= ','.$finfo->decimals;
+                        $result[$i]['len'] .= ',' . $finfo->decimals;
                         // TODO we should also save the "unsigned" flag in $result[$i]["flags"]
                     }
                 }
@@ -723,7 +723,7 @@ class MySqliDb extends Db
     public function table_names($includeViews = true)
     {
         // query
-        $this->query('SHOW '.(!$includeViews ? 'FULL' : '').' TABLES');
+        $this->query('SHOW ' . (!$includeViews ? 'FULL' : '') . ' TABLES');
 
         // get table names
         $result = [];
@@ -764,8 +764,8 @@ class MySqliDb extends Db
      */
     public function savepoint($name)
     {
-        Tools::atkdebug(get_class($this)."::savepoint $name");
-        $this->query('SAVEPOINT '.$name);
+        Tools::atkdebug(get_class($this) . "::savepoint $name");
+        $this->query('SAVEPOINT ' . $name);
     }
 
     /**
@@ -779,8 +779,8 @@ class MySqliDb extends Db
     {
         if ($this->m_link_id) {
             if (!empty($savepoint)) {
-                Tools::atkdebug(get_class($this)."::rollback (rollback to savepoint $savepoint)");
-                $this->query('ROLLBACK TO SAVEPOINT '.$savepoint);
+                Tools::atkdebug(get_class($this) . "::rollback (rollback to savepoint $savepoint)");
+                $this->query('ROLLBACK TO SAVEPOINT ' . $savepoint);
             } else {
                 Tools::atkdebug('Rollback');
                 mysqli_rollback($this->m_link_id);
@@ -797,7 +797,7 @@ class MySqliDb extends Db
      */
     public function toggleForeignKeys($enable)
     {
-        $this->query('SET FOREIGN_KEY_CHECKS = '.($enable ? 1 : 0));
+        $this->query('SET FOREIGN_KEY_CHECKS = ' . ($enable ? 1 : 0));
     }
 
     /**

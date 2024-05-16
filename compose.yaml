@@ -1,0 +1,15 @@
+services:
+  php:
+    container_name: php-atk
+    image: registry.gitlab.com/sintattica-sinlog/docker/sinlog-infrastructure-php8
+    volumes:
+      - ~/.gitconfig:/root/.gitconfig
+      - .:/app
+    working_dir: /app
+    restart: no
+    networks:
+      - sinlog-net
+
+networks:
+  sinlog-net:
+    external: true

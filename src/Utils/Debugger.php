@@ -485,7 +485,7 @@ class Debugger
            '.$label.'
           </div>
           <div class="atkDebugData">
-            '.(Tools::count($g_debug_msg) > 0 ? '<div class="atkDebugLine">'.implode($g_debug_msg, '</div><div class="atkDebugLine">').'</div>' : '').'
+            '.(Tools::count($g_debug_msg) > 0 ? '<div class="atkDebugLine">'.implode('</div><div class="atkDebugLine">', $g_debug_msg).'</div>' : '').'
           </div>
         </div>';
 

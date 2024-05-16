@@ -11,13 +11,14 @@
     "psr-4": {"Sintattica\\Atk\\": "src/"}
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=8.3",
     "fightbulc/moment": "^1.13",
-    "smarty/smarty": "^v3.1.48",
+    "smarty/smarty": "^5.0",
     "vlucas/phpdotenv":  "v3.6.*",
     "ext-zlib": "*",
     "ext-json": "*",
     "ext-simplexml": "*",
-    "ext-zip": "*"
+    "ext-zip": "*",
+    "ext-mysqli": "*"
   }
 }

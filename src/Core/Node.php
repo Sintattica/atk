@@ -3008,7 +3008,7 @@ class Node
      *
      * @return int
      */
-    private static function attrib_cmp($a, $b)
+    private function attrib_cmp($a, $b)
     {
         if ($a['order'] == $b['order']) {
             return 0;
@@ -3472,13 +3472,14 @@ class Node
             return true;
         }
 
-        $db = $this->getDb();
-        $metainfo = $db->tableMeta($this->m_table);
+        if ($this->m_table) {
+            $metainfo = $this->getDb()->tableMeta($this->m_table);
 
-        foreach (array_keys($this->m_attribList) as $attribname) {
-            $p_attrib = $this->m_attribList[$attribname];
-            if (is_object($p_attrib)) {
-                $p_attrib->fetchMeta($metainfo);
+            foreach (array_keys($this->m_attribList) as $attribname) {
+                $p_attrib = $this->m_attribList[$attribname];
+                if (is_object($p_attrib)) {
+                    $p_attrib->fetchMeta($metainfo);
+                }
             }
         }
         $this->m_attribsizesset = true;
@@ -5082,7 +5083,7 @@ class Node
      */
     public function attribSort()
     {
-        usort($this->m_attribIndexList, array('self', 'attrib_cmp'));
+        usort($this->m_attribIndexList, [$this, 'attrib_cmp']);
 
         // after sorting we need to update the attribute indices
         $attrs = [];
@@ -5418,8 +5419,15 @@ class Node
     public function recordStateColor(array $record, int $index = 0): ?string
     {
         if ($this->rowColorConditions) {
-            if ($record['disabilitato'] or $record['disabled']) {
-                return UIStateColors::STATE_LIGHT;
+            $recordDisabled = false;
+            if (isset($record['disabled']) && $record['disabled']) {
+                $recordDisabled = true;
+            }
+            if (isset($record['_disabled']) && $record['_disabled']) {
+                $recordDisabled = true;
+            }
+            if ($recordDisabled) {
+                return UIStateColors::STATE_DISABLED;
             }
             foreach ($this->rowColorConditions as $uiState => $callback) {
                 if (call_user_func($callback, $record)) {

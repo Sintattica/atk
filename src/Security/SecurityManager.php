@@ -586,28 +586,38 @@ class SecurityManager
     /**
      * Retrieve all known information about the currently logged-in user.
      *
-     * @param $key string
-     *
-     * @return array Array with userinfo, or null if no user is logged in.
+     * @return array|null User info or null if no user is logged in.
      */
-    public static function atkGetUser($key = '')
+    public static function atkGetUser(): ?array
     {
+        if (!Config::getGlobal('authentication_session')) {
+            return null;
+        }
+
         $user = null;
         $sm = SessionManager::getInstance();
-        $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : [];
-        if (Config::getGlobal('authentication_session') && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])
-        ) {
-            $user = $session_auth['user'];
-            if (!isset($user['access_level']) || empty($user['access_level'])) {
+        if (is_object($sm)) {
+            $sessionAuth = $sm->getValue('authentication', 'globals');
+        }
+        if (!isset($sessionAuth)) {
+            $sessionAuth = [];
+        }
+        if (!empty($sessionAuth) && $sessionAuth['authenticated'] == 1 && !empty($sessionAuth['user'])) {
+            $user = $sessionAuth['user'];
+            if (empty($user['access_level'])) {
                 $user['access_level'] = 0;
             }
         }
 
-        if ($key) {
-            return $user[$key];
-        }
-
         return $user;
+    }
+
+    public static function atkGetUserKey(string $key)
+    {
+        if ($user = self::atkGetUser()) {
+            return $user[$key] ?? null;
+        }
+        return null;
     }
 
     /**

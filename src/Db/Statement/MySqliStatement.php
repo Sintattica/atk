@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Db\Statement;
 
+use mysqli_stmt;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\MySqliDb;
 use Sintattica\Atk\Utils\Debugger;
@@ -17,32 +18,17 @@ class MySqliStatement extends Statement
 {
     /**
      * MySQLi statement.
-     *
-     * @var mixed $m_stmt
      */
-    private $m_stmt;
-
-    /**
-     * Column names.
-     *
-     * @var array
-     */
-    private $m_columnNames = null;
-
-    /**
-     * Row value bindings.
-     *
-     * @var array
-     */
-    private $m_values = null;
-
+    private mysqli_stmt $m_stmt;
+    private ?array $m_columnNames = null;
+    private ?array $m_values = null;
     private $m_insertId;
 
     /**
      * Prepares the statement for execution.
      * @throws StatementException
      */
-    protected function _prepare()
+    protected function _prepare(): void
     {
         if ($this->getDb()->connect() !== Db::DB_SUCCESS) {
             throw new StatementException('Cannot connect to database.', StatementException::NO_DATABASE_CONNECTION);
@@ -50,24 +36,30 @@ class MySqliStatement extends Statement
 
         $query = $this->_getParsedQuery();
         $conn = $this->getDb()->link_id();
-        Tools::atkdebug('Prepare query: '.$query);
-        $this->m_stmt = mysqli_prepare($conn, $query);
+        Tools::atkdebug("Prepare query: $query");
+        $stmt = mysqli_prepare($conn, $query);
 
-        if(!$this->m_stmt && $conn->errno === 2006) {
+        if (!$stmt && $conn->errno === 2006) {
             // retry
-            Tools::atkdebug('DB has gone away, try to reconnect');
+            Tools::atkdebug('DB has gone away, try to reconnect...');
             $this->getDb()->disconnect();
             if ($this->getDb()->connect() !== Db::DB_SUCCESS) {
                 throw new StatementException('Cannot connect to database.', StatementException::NO_DATABASE_CONNECTION);
             }
             $conn = $this->getDb()->link_id();
-            Tools::atkdebug('Prepare query after reconnection: '.$query);
-            $this->m_stmt = mysqli_prepare($conn, $query);
+            Tools::atkdebug("Prepare query after reconnection: $query");
+            $stmt = mysqli_prepare($conn, $query);
         }
 
-        if (!$this->m_stmt || $conn->errno) {
-            throw new StatementException("Cannot prepare statement (ERROR: {$conn->errno} - {$conn->error}).", StatementException::PREPARE_STATEMENT_ERROR);
+        if ($stmt === false) {
+            throw new StatementException("Cannot prepare the statement (Query: $query).", StatementException::PREPARE_STATEMENT_ERROR);
         }
+
+        if ($conn->errno) {
+            throw new StatementException("Cannot prepare statement (ERROR: $conn->errno - $conn->error).", StatementException::PREPARE_STATEMENT_ERROR);
+        }
+
+        $this->m_stmt = $stmt;
     }
 
     /**
@@ -102,7 +94,7 @@ class MySqliStatement extends Statement
         $args = [];
         $args[] = str_repeat('s', Tools::count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
-            Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
+            Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
             $args[] = &$params[$param];
             ++$i;
         }
@@ -208,15 +200,13 @@ class MySqliStatement extends Statement
             $values[] = $value;
         }
 
-        $row = array_combine($this->m_columnNames, $values);
-
-        return $row;
+        return array_combine($this->m_columnNames, $values);
     }
 
     /**
      * Resets the statement so that it can be re-used again.
      */
-    protected function _reset()
+    protected function _reset(): void
     {
         @$this->m_stmt->free_result();
         @$this->m_stmt->reset();
@@ -226,7 +216,7 @@ class MySqliStatement extends Statement
      * Frees up all resources for this statement. The statement cannot be
      * re-used anymore.
      */
-    public function _close()
+    public function _close(): void
     {
         @$this->m_stmt->close();
     }

@@ -1838,7 +1838,8 @@ EOF;
     {
         if ($column == null || $column == '*') {
             $prefix = $fieldprefix . $this->fieldName() . '_AE_';
-            parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $columnConfig, $grid, null);
+            $atksearchFieldName = $atksearch[$this->fieldName()] ?? null;
+            parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearchFieldName, $columnConfig, $grid, null);
         }
 
         if ($column == '*') {
@@ -2426,14 +2427,14 @@ EOF;
         return $this->m_multipleSearch;
     }
 
-    /**
-     * @param bool $extended
-     * @return bool|null
-     */
     public function isMultipleSearch(bool $extended = false): ?bool
     {
         $ms = $this->getMultipleSearch();
 
-        return $ms[$extended ? 'extended' : 'normal'];
+        if ($ms) {
+            return $ms[$extended ? 'extended' : 'normal'] ?? null;
+        }
+
+        return null;
     }
 }

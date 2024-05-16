@@ -90,14 +90,14 @@ class Tools
      * can be regulated.
      * This function must be registered with set_error_handler("self::atkErrorHandler");.
      *
-     * @param $errtype : One of the PHP errortypes (E_PARSE, E_USER_ERROR, etc)
+     * @param $errorTypeNum : One of the PHP errortypes (E_PARSE, E_USER_ERROR, etc.)
      * (See http://www.php.net/manual/en/function.error-reporting.php)
      * @param $errstr : Error self::text
      * @param $errfile : The php file in which the error occured.
      * @param $errline : The line in the file on which the error occured.
      * @throws Exception
      */
-    public static function atkErrorHandler($errtype, $errstr, $errfile, $errline)
+    public static function atkErrorHandler($errorTypeNum, $errstr, $errfile, $errline): void
     {
         // probably suppressed error using the @ operator, simply ignore
         // Todo: Disable this check in dev; We need to fix all the errors!
@@ -105,7 +105,7 @@ class Tools
             return;
         }
 
-        $errorType = [
+        $errorTypes = [
             E_ERROR => "Error",
             E_WARNING => "Warning",
             E_PARSE => "Parsing Error",
@@ -123,49 +123,42 @@ class Tools
 
         // E_RECOVERABLE_ERROR is available since 5.2.0
         if (defined('E_RECOVERABLE_ERROR')) {
-            $errorType[E_RECOVERABLE_ERROR] = "Recoverable Error";
+            $errorTypes[E_RECOVERABLE_ERROR] = 'Recoverable Error';
         }
 
         // E_DEPRECATED / E_USER_DEPRECATED are available since 5.3.0
         if (defined('E_DEPRECATED')) {
-            $errorType[E_DEPRECATED] = "Deprecated";
-            $errorType[E_USER_DEPRECATED] = "User Deprecated";
+            $errorTypes[E_DEPRECATED] = 'Deprecated';
+            $errorTypes[E_USER_DEPRECATED] = 'User Deprecated';
         }
 
-        // Translate the given errortype into a string
-        $errortypestring = $errorType[$errtype];
+        // Translate the given errorTypeNum into a code
+        $errorCode = $errorTypes[$errorTypeNum];
 
-        if ($errtype == E_STRICT) {
+        if ($errorTypeNum == E_STRICT) {
             // ignore strict notices for now, there is too much stuff that needs to be fixed
             return;
-        } else {
-            if ($errtype == E_NOTICE) {
-                // Just show notices
-                self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
-
-                return;
-            } else {
-                if (defined('E_DEPRECATED') && ($errtype & (E_DEPRECATED | E_USER_DEPRECATED)) > 0) {
-                    // Just show deprecation warnings in the debug log, but don't influence the program flow
-                    self::atkdebug("[$errortypestring] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
-
-                    return;
-                } else {
-                    if (($errtype & (E_WARNING | E_USER_WARNING)) > 0) {
-                        // This is something we should pay attention to, but we don't need to die.
-                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
-
-                        return;
-                    } else {
-                        header("HTTP/1.0 500 Internal Server Error");
-                        self::atkerror("[$errortypestring] $errstr in $errfile (line $errline)", ($errtype == 'EXCEPTION'));
-                        // we must die. we can't even output anything anymore..
-                        // we can do something with the info though.
-                        self::atkhalt($errstr, 'critical');
-                    }
-                }
-            }
         }
+        if ($errorTypeNum == E_NOTICE) {
+            // Just show notices
+            self::atkdebug("[$errorCode] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
+            return;
+        }
+        if (defined('E_DEPRECATED') && in_array($errorTypeNum, [E_DEPRECATED, E_USER_DEPRECATED])) {
+            // Just show deprecation warnings in the debug log, but don't influence the program flow
+            self::atkdebug("[$errorCode] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
+            return;
+        }
+        if (in_array($errorTypeNum, [E_WARNING, E_USER_WARNING])) {
+            // This is something we should pay attention to, but we don't need to die.
+            self::atkerror("[$errorCode] $errstr in $errfile (line $errline)");
+            return;
+        }
+        header("HTTP/1.0 500 Internal Server Error");
+        self::atkerror("[$errorCode] $errstr in $errfile (line $errline)", ($errorTypeNum == 'EXCEPTION'));
+        // we must die. we can't even output anything anymore.
+        // we can do something with the info though.
+        self::atkhalt($errstr, 'critical');
     }
 
     /**
@@ -726,20 +719,19 @@ class Tools
     }
 
     /**
-     * Translates Array("id"=>3,"name"=>"joe") into a string like id='3 AND name='joe''.
+     * Translates Array("id"=>3,"name"=>"joe") into a string like id='3' AND name='joe'.
      *
      * @param array $set the array to be encoded
      *
      * @return string the encoded string
      */
-    public static function encodeKeyValueSet($set)
+    public static function encodeKeyValueSet(array $set): string
     {
         reset($set);
         $items = [];
-        while (list($key, $value) = each($set)) {
-            $items[] = $key . '=' . $value;
+        foreach ($set as $key => $value) {
+            $items[] = "$key='$value'";
         }
-
         return implode(' AND ', $items);
     }
 
@@ -764,7 +756,7 @@ class Tools
      * Performs stripslashes on all vars and translates:
      *                 something_AMDAE_other[] into something[][other]
      *                 something_AE_other into something[other]
-     *                 (and a_AE_b_AE_c into a[b][c] and so on...
+     *                 and a_AE_b_AE_c into a[b][c] and so on...
      *
      * @param array &$vars the array to be stripped and translated
      */
@@ -1357,7 +1349,7 @@ class Tools
 
         $params = array_merge($atkParams, $params);
 
-        if (!isset($params[Node::PARAM_ATKMENU]) and $_GET[Node::PARAM_ATKMENU]) {
+        if (!isset($params[Node::PARAM_ATKMENU]) and isset($_GET[Node::PARAM_ATKMENU]) && $_GET[Node::PARAM_ATKMENU]) {
             // TODO: refactoring $_GET
             // no atkmenu passed, but one retrieved from query string
             $params[Node::PARAM_ATKMENU] = $_GET[Node::PARAM_ATKMENU];

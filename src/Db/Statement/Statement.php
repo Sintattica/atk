@@ -190,13 +190,13 @@ abstract class Statement implements IteratorAggregate
     /**
      * Resets the statement so that it can be re-used again.
      */
-    abstract protected function _reset();
+    abstract protected function _reset(): void;
 
     /**
      * Frees up all resources for this statement. The statement cannot be
      * re-used anymore.
      */
-    abstract protected function _close();
+    abstract protected function _close(): void;
 
     /**
      * Returns the number of affected rows in case of an INSERT, UPDATE
@@ -234,6 +234,7 @@ abstract class Statement implements IteratorAggregate
      * NOTE:
      * Depending on the database driver, using this method might result in the
      * query to be executed again.
+     * @throws StatementException
      */
     public function rewind()
     {
@@ -268,7 +269,7 @@ abstract class Statement implements IteratorAggregate
      *
      * @param array $params bind parameters
      */
-    public function execute(array $params = array())
+    public function execute(array $params = [])
     {
         $this->reset();
         $this->_validateParams($params);
