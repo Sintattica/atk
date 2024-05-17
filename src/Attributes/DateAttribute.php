@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Exception;
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
@@ -352,7 +353,7 @@ class DateAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getHtmlName($fieldprefix);
 
-        return $this->draw($record, $id, $name, $fieldprefix, '', $mode, $this->hasFlag(self::AF_OBLIGATORY));
+        return $this->draw($id, $name, $record, $fieldprefix, '', $mode, $this->hasFlag(self::AF_OBLIGATORY));
     }
 
     /**
@@ -524,17 +525,18 @@ class DateAttribute extends Attribute
      * @todo We can't show a calendar when we have a year dropdown?
      * @todo The calendar doesn't use the min/max values?
      *
-     * @param array $record Array with 3 fields (year, month, day)
      * @param string $id html id
      * @param string $name html name
+     * @param array $record Array with 3 fields (year, month, day)
      * @param string $fieldprefix The fieldprefix
      * @param string $postfix
      * @param string $mode The mode ('add' or 'edit')
      * @param bool $obligatory Is this field obligatory or not
      *
      * @return string Piece an of HTML Code
+     * @throws Exception
      */
-    public function draw($record = [], $id, $name, $fieldprefix = '', $postfix = '', $mode = '', $obligatory = false)
+    public function draw($id, $name, $record = [], $fieldprefix = '', $postfix = '', $mode = '', $obligatory = false)
     {
         $result = '';
 
@@ -960,7 +962,7 @@ class DateAttribute extends Attribute
                         <span class="input-group-text">'.Tools::atktext('from').'</span>
                     </div>';
 
-        $res .= $this->draw($rec, $id . '_from', $name, 'atksearch_AE_' . $fieldprefix, '_AE_from', 'search');
+        $res .= $this->draw($id . '_from', $name, $rec, 'atksearch_AE_' . $fieldprefix, '_AE_from', 'search');
 
 
         $res .= '</div></div>';
@@ -974,7 +976,7 @@ class DateAttribute extends Attribute
                         <span class="input-group-text">'. Tools::atktext('until') . '</span>
                     </div>';
 
-        $res .= $this->draw($rec, $id . '_to', $name, 'atksearch_AE_' . $fieldprefix, '_AE_to', 'search');
+        $res .= $this->draw($id . '_to', $name, $rec, 'atksearch_AE_' . $fieldprefix, '_AE_to', 'search');
 
         $res .= '</div></div>';
 
