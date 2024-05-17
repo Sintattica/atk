@@ -1,6 +1,6 @@
 <?php
 
-namespace Sintattica\Atk\Security\encryption;
+namespace Sintattica\Atk\Security\Encryption;
 
 use Sintattica\Atk\Core\Config;
 

@@ -11,25 +11,15 @@ use Sintattica\Atk\Session\SessionManager;
  * This class is used to retrieve the proper translations for any string
  * displayed in the user interface. It includes only those language files
  * that are actually used, and has several fallback systems to find
- * translations if they can be find in the correct module.
+ * translations if they can be found in the correct module.
  *
  * @author Boy Baukema <boy@ibuildings.nl>
  */
 class Language
 {
-    /**
-     * Instance.
-     *
-     * @var Language
-     */
-    private static $s_instance = null;
+    private static ?Language $s_instance = null;
 
-    /**
-     * Supported languages.
-     *
-     * @var array
-     */
-    private static $s_supportedLanguages = null;
+    private static ?array $s_supportedLanguages = null;
 
     /*
      * Directory where language files are stored.
@@ -64,7 +54,7 @@ class Language
      * @access private
      * @var array
      */
-    public $m_overridemodules = array('langoverrides');
+    public $m_overridemodules = ['langoverrides'];
 
     /*
      * List of custum language string overrides
@@ -162,7 +152,7 @@ class Language
      * @param string $node the node to which the string belongs
      * @param string $lng ISO 639-1 language code, defaults to config variable
      * @param string $firstfallback the first module to check as part of the fallback
-     * @param bool $nodefaulttext if true, then it doesn't returns false when it can't find a translation
+     * @param bool $nodefaulttext if true, then it doesn't return false when it can't find a translation
      * @param bool $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                               when looking for strings
      *
@@ -195,11 +185,12 @@ class Language
         // If multiple strings given, iterate through all strings and return the translation if found
         for ($i = 0, $_i = Tools::count($string); $i < $_i; ++$i) {
             // Try to get the translation
-            $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
-
-            // Return the translation if found
-            if ($translation != '') {
-                return $translation;
+            $keyCurr = $string[$i] ?? null;
+            if ($keyCurr) {
+                $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i - 1)), $firstfallback, $modulefallback);
+                if ($translation != '') {
+                    return $translation;
+                }
             }
         }
 

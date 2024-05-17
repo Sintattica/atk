@@ -1142,7 +1142,7 @@ class ManyToOneRelation extends Relation
 
             // selected values
             $selValues = $record[$this->fieldName()] ?? [];
-            if ($isMultiple && $selValues[0] == '') {
+            if ($isMultiple && isset($selValues[0]) && $selValues[0] == '') {
                 unset($selValues[0]);
             }
 

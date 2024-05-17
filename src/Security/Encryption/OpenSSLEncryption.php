@@ -1,7 +1,8 @@
 <?php
 
-namespace Sintattica\Atk\Security\encryption;
+namespace Sintattica\Atk\Security\Encryption;
 
+use Exception;
 use Sintattica\Atk\Core\Tools;
 
 /**
@@ -33,6 +34,7 @@ class OpenSSLEncryption extends Encryption
      * @param mixed $key the key we want to encrypt the data with
      *
      * @return mixed the encrypted data
+     * @throws Exception
      */
     public function encrypt($input, $key)
     {
@@ -55,6 +57,7 @@ class OpenSSLEncryption extends Encryption
      * @param mixed $key the key we want to encrypt the data with
      *
      * @return mixed the encrypted data
+     * @throws Exception
      */
     public function decrypt($input, $key)
     {
@@ -65,8 +68,8 @@ class OpenSSLEncryption extends Encryption
         if ($key) {
             Tools::atkerror('OpenSSLEncryption::decrypt << not a valid key passed');
         } else {
-            echo "decrypt for: input:$input, decrypted: $decrypted, key: $key";
             openssl_private_decrypt($input, $decrypted, $key);
+            echo "decrypt for: input:$input, decrypted: $decrypted, key: $key";
         }
 
         return $decrypted;
@@ -108,15 +111,15 @@ class OpenSSLEncryption extends Encryption
      */
     public function getNewKeys($privkeypass)
     {
-        $dn = array(
+        $dn = [
             'countryName' => 'NL',
             'stateOrProvinceName' => 'Zeeland',
             'localityName' => 'Vlissingen',
             'organizationName' => 'Ibuildings.nl',
             'organizationalUnitName' => 'IBS-Vlissingen',
             'commonName' => 'Ivo Jansch',
-            'emailAddress' => 'ivo@ibuildings.nl',
-        );
+            'emailAddress' => 'ivo@ibuildings.nl'
+        ];
 
         //generate a private key
         $privkey = openssl_pkey_new($this->m_config_default);

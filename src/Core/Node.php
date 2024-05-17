@@ -3290,7 +3290,7 @@ class Node
             return '';
         }
 
-        $isPrint = $this->m_postvars['print'];
+        $isPrint = $this->m_postvars['print'] ?? false;
 
         $html = '<form action="' . Config::getGlobal('dispatcher') . '" method="get">';
         $html .= '<input type="hidden" name="atkaction" value="' . $this->getAction() . '">';
@@ -3375,11 +3375,11 @@ class Node
             return $this->m_postvars[$name] ?? null;
         }
         if ($filter['mode'] === 'edit') {
-            $value = $this->m_postvars[$name];
+            $value = $this->m_postvars[$name] ?? null;
         } else if ($filter['mode'] === 'search-ext') {
-            $value = $this->m_postvars['atksearch'][$name];
+            $value = $this->m_postvars['atksearch'][$name] ?? null;
         } else {
-            $value = $this->m_postvars['atksearch'][$name][0];
+            $value = $this->m_postvars['atksearch'][$name][0] ?? null;
         }
         // TODO: for the manyToOne the value is like "table.key=value" and should be converted (as well as overwritten in the m_postvars)
         if (is_array($value) && count($value) == 1 && $value[0] == '') {

@@ -298,7 +298,9 @@ class IndexPage
                     $id = implode(',', $atkSelectorDecoded);
                 }
             } else {
-                list(, $id) = explode('=', Tools::atkArrayNvl($node->m_postvars, Node::PARAM_ATKSELECTOR, '='));
+                if ($atkSelector = Tools::atkArrayNvl($node->m_postvars, Node::PARAM_ATKSELECTOR)) {
+                    list(, $id) = explode('=', $atkSelector);
+                }
             }
 
             $page->register_hiddenvars(array(
