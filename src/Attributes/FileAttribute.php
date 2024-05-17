@@ -888,7 +888,7 @@ class FileAttribute extends Attribute
     {
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
             if (empty($rec[$this->fieldName()]['postdel']) && $this->isEmpty($record) && !$this->hasFlag(self::AF_OBLIGATORY) && !$this->isNotNullInDb()) {

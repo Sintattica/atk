@@ -241,7 +241,7 @@ class ManyToOneRelation extends Relation
      * @param int $flags Flags for the relation
      * @param string $destination The node we have a relationship with.
      */
-    public function __construct($name, $flags = 0, $destination)
+    public function __construct($name, $flags, $destination)
     {
         if (Config::getGlobal('manytoone_autocomplete_default', false)) {
             $flags |= self::AF_RELATION_AUTOCOMPLETE;
@@ -1359,7 +1359,7 @@ EOF;
         }
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);

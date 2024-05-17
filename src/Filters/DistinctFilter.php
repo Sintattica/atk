@@ -20,7 +20,7 @@ class DistinctFilter extends Filter
         parent::__construct('distinctfilter');
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         $query->setDistinct(true);
     }

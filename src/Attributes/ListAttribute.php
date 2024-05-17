@@ -96,7 +96,7 @@ class ListAttribute extends Attribute
      * @param array $valueArray Array with values. If you don't use this parameter,
      *                            values are assumed to be the same as the options.
      */
-    public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
+    public function __construct($name, $flags, $optionArray, $valueArray = null)
     {
         if (!is_array($valueArray) || Tools::count($valueArray) == 0) {
             $valueArray = $optionArray;
@@ -227,7 +227,7 @@ class ListAttribute extends Attribute
      */
     public function display($record, $mode)
     {
-        return $this->_translateValue($record[$this->fieldName()], $record);
+        return isset($record[$this->fieldName()]) ? $this->_translateValue($record[$this->fieldName()], $record) : '';
     }
 
     /**

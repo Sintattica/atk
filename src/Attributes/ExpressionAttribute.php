@@ -25,7 +25,7 @@ class ExpressionAttribute extends Attribute
      * @param string $searchType The search type (string) for this attribute.
      * At the moment only search types "string", "number" and "date" are supported.
      */
-    public function __construct($name, $flags = 0, $expression, $searchType = '')
+    public function __construct($name, $flags, $expression, $searchType = '')
     {
         $flags = $flags | self::AF_HIDE_ADD | self::AF_READONLY_EDIT;
         parent::__construct($name, $flags);
@@ -42,7 +42,7 @@ class ExpressionAttribute extends Attribute
         return self::NOSTORE;
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         $expression = str_replace('[table]', $tablename, $this->m_expression);
         $query->addExpression($this->fieldName(), $expression, $fieldaliasprefix);

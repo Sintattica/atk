@@ -28,7 +28,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
      * @param string $destination Destination node for this relation
      *
      */
-    public function __construct($name, $flags = 0, $destination)
+    public function __construct($name, $flags, $destination)
     {
         parent::__construct($name, $flags, $destination);
     }

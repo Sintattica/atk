@@ -65,7 +65,7 @@ class ManyToManyRelation extends Relation
      * @param string|array $local_key field for localKey
      * @param string $remote_key field for remoteKey
      */
-    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
+    public function __construct($name, $flags, $link, $destination, $local_key = null, $remote_key = null)
     {
         $flags = $flags | self::AF_CASCADE_DELETE | self::AF_NO_SORT;
         $this->m_link = $link;
@@ -447,7 +447,7 @@ class ManyToManyRelation extends Relation
         // see children class
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         // we don't add ourselves to the query;
     }

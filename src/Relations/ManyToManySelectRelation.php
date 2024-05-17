@@ -49,7 +49,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
     private $m_positionAttributeHtmlModifier;
 
 
-    public function __construct($name, $flags = 0, $link, $destination, $local_key = null, $remote_key = null)
+    public function __construct($name, $flags, $link, $destination, $local_key = null, $remote_key = null)
     {
         parent::__construct($name, $flags, $link, $destination, $local_key, $remote_key);
 

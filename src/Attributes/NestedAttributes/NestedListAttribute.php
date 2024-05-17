@@ -10,7 +10,7 @@ use Sintattica\Atk\Db\Query;
 
 class NestedListAttribute extends ListAttribute
 {
-    public function __construct($name, $flags = 0, $optionArray, $valueArray = null)
+    public function __construct($name, $flags, $optionArray, $valueArray = null)
     {
         $this->setIsNestedAttribute(true);
         parent::__construct($name, $flags, $optionArray, $valueArray);

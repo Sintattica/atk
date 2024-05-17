@@ -353,7 +353,7 @@ class DateTimeAttribute extends Attribute
         return null;
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
             if ($this->value2db($record) == null) {

@@ -64,7 +64,7 @@ class Relation extends Attribute
      * @param int $flags Flags for the relation
      * @param string $destination The destination node (in module.name notation)
      */
-    public function __construct($name, $flags = 0, $destination)
+    public function __construct($name, $flags, $destination)
     {
         parent::__construct($name, $flags);
         $this->m_destination = $destination;

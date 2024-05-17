@@ -34,7 +34,7 @@ class GroupByFilter extends Filter
         parent::__construct($name, $flags);
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         $query->addGroupBy($this->m_groupbystmt);
     }

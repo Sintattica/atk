@@ -85,7 +85,7 @@ class Tools
 
     /**
      * Function self::atkErrorHandler
-     * This function catches PHP parse errors etc, and passes
+     * This function catches PHP parse errors, etc. and passes
      * them to self::atkerror(), so errors can be mailed and output
      * can be regulated.
      * This function must be registered with set_error_handler("self::atkErrorHandler");.

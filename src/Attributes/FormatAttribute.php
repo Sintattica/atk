@@ -40,7 +40,7 @@ class FormatAttribute extends Attribute
      *                       Any other char is seen as a literal and displayed
      *                       literally as non-editable chars in the editor.
      */
-    public function __construct($name, $flags = 0, $format)
+    public function __construct($name, $flags, $format)
     {
         $this->m_format = $format;
         parent::__construct($name, $flags);

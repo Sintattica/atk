@@ -27,7 +27,7 @@ class MultipleFileAttribute extends FileAttribute
      * @param string|array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      *
      */
-    public function __construct($name, $flags = 0, $dir)
+    public function __construct($name, $flags, $dir)
     {
         $flags = $flags | self::AF_CASCADE_DELETE;
 

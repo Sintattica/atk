@@ -59,7 +59,7 @@ class CalculatorAttribute extends Attribute
      * @param int $flags Flags of the attribute.
      * @param string $calculation The calculation to perform. Must be a valid php expression.
      */
-    public function __construct($name, $flags = 0, $calculation)
+    public function __construct($name, $flags, $calculation)
     {
         $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH | self::AF_READONLY;
         parent::__construct($name, $flags);

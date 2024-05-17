@@ -47,9 +47,9 @@ class AggregatedColumn extends Attribute
      * @param string $name Name of the attribute
      * @param int $flags Flags for this attribute
      * @param string $template Display/sort template.
-     * @param array $searchFields Array with fields, in which search will be perform. If ommited, fields from $template will be used
+     * @param array $searchFields Array with fields, in which search will be performed. If ommited, fields from $template will be used
      */
-    public function __construct($name, $flags = 0, $template, $searchFields = [])
+    public function __construct($name, $flags, $template, $searchFields = [])
     {
         $flags = $flags | self::AF_HIDE_EDIT | self::AF_HIDE_ADD | self::AF_HIDE_VIEW;
 
@@ -141,13 +141,12 @@ class AggregatedColumn extends Attribute
         return true;
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($mode !== 'add' && $mode != 'edit') {
             $allfields = Tools::atk_array_merge($this->m_displayfields, $this->m_searchfields);
             $alias = $fieldaliasprefix . $this->fieldName() . '_AE_';
             foreach ($allfields as $field) {
-                /** @var Attribute $p_attrib */
                 $p_attrib = $this->m_ownerInstance->m_attribList[$field];
                 $p_attrib->addToQuery($query, $tablename, $alias, $record, $level, $mode);
             }

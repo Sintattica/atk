@@ -50,7 +50,7 @@ class RadioDetailsAttribute extends Attribute
      *                        the key should be the option value and the value
      *                        should be the attribute name
      */
-    public function __construct($name, $flags = 0, $options, $details)
+    public function __construct($name, $flags, $options, $details)
     {
         parent::__construct($name, $flags);
 

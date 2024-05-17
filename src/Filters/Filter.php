@@ -26,7 +26,7 @@ class Filter extends Attribute
         parent::__construct($name, $flags | Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD);
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
     }
 }

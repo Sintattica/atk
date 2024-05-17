@@ -2105,11 +2105,11 @@ class Attribute
      *                                 an addToQuery method should pass the $level+1.
      * @param string $mode Indicates what kind of query is being processing:
      *                                 This can be any action performed on a node (edit,
-     *                                 add, etc) Mind you that "add" and "update" are the
+     *                                 add, etc.) Mind you that "add" and "update" are the
      *                                 actions that store something in the database,
      *                                 whereas the rest are probably select queries.
      */
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
             if ($mode == 'add' && $this->hasFlag(self::AF_AUTO_INCREMENT)) {

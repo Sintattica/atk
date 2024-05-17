@@ -73,9 +73,9 @@ class FuzzySearchAttribute extends Attribute
      *                           with the record to store and the results of the search
      *                           Has to return a status (true or false)
      * @param string $mode The mode of the search (all(default)|first|firstperkeyword|
-     *                           select|selectperkeyword|multiselect)
+     *                           select|selectperkeyword|multiselect
      */
-    public function __construct($name, $flags = 0, $searchnode, $callback, $mode = 'all')
+    public function __construct($name, $flags, $searchnode, $callback, $mode = 'all')
     {
         $flags = $flags | self::AF_HIDE_VIEW | self::AF_HIDE_LIST;
         parent::__construct($name, $flags);
@@ -363,7 +363,7 @@ class FuzzySearchAttribute extends Attribute
     }
 
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         //noop
     }

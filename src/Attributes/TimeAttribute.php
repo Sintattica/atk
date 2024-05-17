@@ -469,7 +469,7 @@ class TimeAttribute extends Attribute
         }
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($mode == 'add' || $mode == 'update') {
             $value = $this->value2db($record);

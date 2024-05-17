@@ -45,7 +45,7 @@ class PolymorphicOneToOneRelation extends OneToOneRelation
      * @param string $refKey Specifies the foreign key field from the destination node that points to the master record
      *
      */
-    public function __construct($name, $flags = 0, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey)
+    public function __construct($name, $flags, $typefk, $discriminatorfield, $defaultdest, $modulename, $refKey)
     {
         $flags = $flags | self::AF_HIDE_LIST;
         parent::__construct($name, $flags, '', $refKey);

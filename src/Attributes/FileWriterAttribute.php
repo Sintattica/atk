@@ -30,7 +30,7 @@ class FileWriterAttribute extends TextAttribute
      *                         that can change; the attribute won't remove the old
      *                         files.
      */
-    public function __construct($name, $flags = 0, $filename)
+    public function __construct($name, $flags, $filename)
     {
         $this->m_filename = $filename;
         parent::__construct($name, $flags);

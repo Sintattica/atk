@@ -24,7 +24,7 @@ class FieldSet extends Attribute
      * @param int $flags flags
      * @param string $template template string
      */
-    public function __construct($name, $flags = 0, $template)
+    public function __construct($name, $flags, $template)
     {
         $flags = $flags | self::AF_NO_SORT | self::AF_HIDE_SEARCH;
         parent::__construct($name, $flags);

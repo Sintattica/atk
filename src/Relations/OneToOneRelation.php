@@ -94,7 +94,7 @@ class OneToOneRelation extends Relation
      *                            the master record. In slave mode, this parameter
      *                            should be empty.
      */
-    public function __construct($name, $flags = 0, $destination, $refKey = '')
+    public function __construct($name, $flags, $destination, $refKey = '')
     {
         $flags = $flags | self::AF_ONETOONE_LAZY;
         parent::__construct($name, $flags, $destination);
@@ -142,7 +142,7 @@ class OneToOneRelation extends Relation
         return null;
     }
 
-    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record, $level = 0, $mode = '')
+    public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($this->createDestination()) {
             if ($mode != 'update' && $mode != 'add') {

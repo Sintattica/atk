@@ -84,7 +84,7 @@ class Ui
      *
      * @return string rendered list
      */
-    public function renderList($action = '', $vars, $module = ''): string
+    public function renderList($action = '', $vars = [], $module = ''): string
     {
         return $this->render('list.tpl', $vars, $module);
     }
@@ -139,8 +139,9 @@ class Ui
      * @param string $module the name of the module requesting to render a template
      *
      * @return string rendered template
+     * @throws \Smarty\Exception
      */
-    public function render(string $name, $vars = [], $module = ''): string
+    public function render(string $name, array $vars = [], string $module = ''): string
     {
         $result = $this->renderSmarty($name, $vars);
 
@@ -195,8 +196,9 @@ class Ui
      * @param array $vars template variables
      *
      * @return string rendered template
+     * @throws \Smarty\Exception
      */
-    private function renderSmarty(string $path, array $vars): string
+    private function renderSmarty(string $path, array $vars = []): string
     {
         // First clear any existing smarty var.
         $this->m_smarty->clearAllAssign();

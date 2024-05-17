@@ -151,7 +151,7 @@ class OneToManyRelation extends Relation
      *                            node. In the case of multi-foreign key
      *                            relationships, $refKey can be an array of fields.
      */
-    public function __construct($name, $flags = 0, $destination, $refKey = '')
+    public function __construct($name, $flags, $destination, $refKey = '')
     {
         parent::__construct($name, $flags | self::AF_NO_SORT | self::AF_HIDE_ADD, $destination);
 
