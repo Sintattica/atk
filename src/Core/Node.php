@@ -5823,7 +5823,7 @@ class Node
             return;
         }
 
-        if (!is_array($record[$this->nestedAttributeField])) {
+        if (isset($record[$this->nestedAttributeField]) && !is_array($record[$this->nestedAttributeField])) {
             // decodifico il contenuto del JSON
             $record[$this->nestedAttributeField] = json_decode($record[$this->nestedAttributeField], true);
         }
