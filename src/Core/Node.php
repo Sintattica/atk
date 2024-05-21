@@ -2875,7 +2875,7 @@ class Node
      * Function returns a page in which the user is asked if he really wants
      * to perform a certain action.
      *
-     * @param mixed $atkselector Selector of current record on which the
+     * @param string|array $atkselector Selector of current record on which the
      *                               action will be performed (String), or an
      *                               array of selectors when multiple records are
      *                               processed at once. The method uses the
@@ -2893,6 +2893,7 @@ class Node
      * @return string Complete html fragment containing a box with the
      *                confirmation page, or the output of the custom
      *                override if $checkoverride was true.
+     * @throws \Smarty\Exception
      */
     public function confirmAction(
         $atkselector,
@@ -2910,7 +2911,7 @@ class Node
         $ui = $this->getUi();
 
         if (is_array($atkselector)) {
-            $atkselector_str = '((' . implode($atkselector, ') OR (') . '))';
+            $atkselector_str = '((' . implode(') OR (', $atkselector) . '))';
         } else {
             $atkselector_str = $atkselector;
         }
