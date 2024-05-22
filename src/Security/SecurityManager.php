@@ -374,7 +374,7 @@ class SecurityManager
                 return $this->m_user;
 
             }elseif ($this->auth_response === self::AUTH_ERROR) {
-                $this->m_fatalError = isset($obj->m_fatalError) ? $obj->m_fatalError : 'Login error';
+                $this->m_fatalError = $obj->m_fatalError ?? 'Login error';
             }
         }
 

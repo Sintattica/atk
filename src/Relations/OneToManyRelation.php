@@ -1094,7 +1094,7 @@ class OneToManyRelation extends Relation
      * @param array $path The remaining attribute path.
      * @param Query $query The query to which the condition will be added.
      * @param string $ownerAlias The owner table alias to use.
-     * @param mixed $value The value the user has entered in the searchbox.
+     * @param mixed $value The value the user has entered the searchbox.
      * @param string $mode The searchmode to use.
      */
     public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)
@@ -1107,7 +1107,7 @@ class OneToManyRelation extends Relation
 
             $destAlias = "ss_{$id}_{$nr}_" . $this->fieldName();
 
-            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias), false);
+            $query->addJoin($this->m_destInstance->m_table, $destAlias, $this->getJoinCondition($query, $ownerAlias, $destAlias));
 
             $attrName = array_shift($path);
             $attr = $this->m_destInstance->getAttribute($attrName);
@@ -1126,7 +1126,7 @@ class OneToManyRelation extends Relation
      * @param Query $query The query to which the condition will be added.
      * @param string $table The name of the table in which this attribute
      *                                 is stored
-     * @param mixed $value The value the user has entered in the searchbox
+     * @param mixed $value The value the user has entered the searchbox
      * @param string $searchmode The searchmode to use. This can be any one
      *                                 of the supported modes, as returned by this
      *                                 attribute's getSearchModes() method.
@@ -1218,7 +1218,7 @@ class OneToManyRelation extends Relation
             $alias = $this->fieldName() . '_AE_' . $this->m_destInstance->m_table;
             $attr = $this->m_destInstance->getAttribute($field);
 
-            $query->addJoin($table, $alias, $this->getJoinCondition($query, $reftable, $alias), false);
+            $query->addJoin($table, $alias, $this->getJoinCondition($query, $reftable, $alias));
 
             return $attr->getSearchCondition($query, $alias, $value, $searchmode);
         }

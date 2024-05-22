@@ -28,13 +28,13 @@ class CompatStatement extends Statement
      * Prepares the statement for execution.
      * @throws StatementException
      */
-    protected function _prepare()
+    protected function _prepare(): void
     {
         if ($this->getDb()->connect() != Db::DB_SUCCESS) {
             throw new StatementException('Cannot connect to database.', StatementException::NO_DATABASE_CONNECTION);
         }
 
-        Tools::atkdebug('Prepare query: '.$this->_getParsedQuery());
+        Tools::atkdebug('Prepare query: ' . $this->_getParsedQuery());
     }
 
     /**
@@ -44,17 +44,17 @@ class CompatStatement extends Statement
      *
      * @return string query
      */
-    protected function _bindParams($params)
+    protected function _bindParams(array $params): string
     {
         $query = $this->_getParsedQuery();
-        Tools::atkdebug('Binding parameters for query: '.$this->_getParsedQuery());
+        Tools::atkdebug('Binding parameters for query: ' . $this->_getParsedQuery());
 
         foreach (array_values($this->_getBindPositions()) as $i => $param) {
-            Tools::atkdebug("Bind param {$i}: ".($params[$param] === null ? 'NULL' : $params[$param]));
+            Tools::atkdebug("Bind param $i: " . ($params[$param] === null ? 'NULL' : $params[$param]));
         }
 
         foreach (array_reverse($this->_getBindPositions(), true) as $position => $param) {
-            $query = substr($query, 0, $position).($params[$param] === null ? 'NULL' : "'".$this->getDb()->escapeSQL($params[$param])."'").substr($query,
+            $query = substr($query, 0, $position) . ($params[$param] === null ? 'NULL' : "'" . $this->getDb()->escapeSQL($params[$param]) . "'") . substr($query,
                     $position + 1);
         }
 
@@ -68,7 +68,7 @@ class CompatStatement extends Statement
      *
      * @throws StatementException
      */
-    protected function _execute($params)
+    protected function _execute(array $params): void
     {
         // replace the bind parameters with their values
         $query = $this->_bindParams($params);
@@ -81,7 +81,7 @@ class CompatStatement extends Statement
         $this->getDb()->setHaltOnError(false);
         $result = $this->getDb()->query($query);
 
-        // retrieve and reset the query resource so we can use it later on and
+        // retrieve and reset the query resource, so we can use it later on and
         // the database driver won't free/close it unless we want it
         $this->m_resource = $this->getDb()->getQueryId();
         $this->getDb()->resetQueryId();
@@ -92,7 +92,7 @@ class CompatStatement extends Statement
 
         if (!$result) {
             $this->m_resource = null;
-            throw new StatementException('Cannot execute statement: '.$query, StatementException::STATEMENT_ERROR);
+            throw new StatementException('Cannot execute statement: ' . $query, StatementException::STATEMENT_ERROR);
         }
     }
 
@@ -101,12 +101,12 @@ class CompatStatement extends Statement
      *
      * @return array|false next row from the result set (false if no other rows exist)
      */
-    protected function _fetch()
+    protected function _fetch(): false|array
     {
         // store the current query resource
         $oldId = $this->getDb()->getQueryId();
 
-        // set our own query resource in the database driver so we can use
+        // set our own query resource in the database driver, so we can use
         // the Db::next_record() method and retrieve the new record
         $this->getDb()->setQueryId($this->m_resource);
         $this->getDb()->next_record();
@@ -121,7 +121,7 @@ class CompatStatement extends Statement
     /**
      * Resets the statement so that it can be re-used again.
      */
-    protected function _reset()
+    protected function _reset(): void
     {
         $this->m_resource = null;
     }
@@ -130,7 +130,7 @@ class CompatStatement extends Statement
      * Frees up all resources for this statement. The statement cannot be
      * re-used anymore.
      */
-    public function _close()
+    public function _close(): void
     {
         // There is no proper way to do this which is compatible with all drivers
         // because there is no Db::free() method. We could retrieve all rows,
@@ -150,7 +150,7 @@ class CompatStatement extends Statement
         // store the current query resource
         $oldId = $this->getDb()->getQueryId();
 
-        // set our own query resource in the database driver so we can use
+        // set our own query resource in the database driver, so we can use
         // the Db::affected_rows() method and retrieve the affected row count
         $this->getDb()->setQueryId($this->m_resource);
         $result = $this->getDb()->affected_rows();

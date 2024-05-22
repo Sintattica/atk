@@ -58,7 +58,7 @@ class MySqliDb extends Db
      *
      * @return mixed Connection status
      */
-    public function doConnect($host, $user, $password, $database, $port, $charset)
+    public function doConnect($host, $user, $password, $database, $port, $charset): int
     {
         /* establish connection */
         if (empty($this->m_link_id)) {
@@ -438,7 +438,7 @@ class MySqliDb extends Db
      * Evaluate the result; how many rows
      * were affected by the query.
      *
-     * @return number of affected rows
+     * @return int The number of affected rows
      */
     public function num_rows()
     {
@@ -495,9 +495,11 @@ class MySqliDb extends Db
             }
 
             return 0;
-        } /* cannot connect */ else {
+        } else {
             $this->halt('cannot connect to ' . $this->m_host);
         }
+
+        return 0;
     }
 
     /**

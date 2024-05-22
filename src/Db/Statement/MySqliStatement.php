@@ -70,7 +70,7 @@ class MySqliStatement extends Statement
      * query to be executed again.
      * @throws StatementException
      */
-    public function rewind()
+    public function rewind(): void
     {
         if ($this->_getLatestParams() === null) {
             throw new StatementException('Statement has not been executed yet.', StatementException::STATEMENT_NOT_EXECUTED);
@@ -84,7 +84,7 @@ class MySqliStatement extends Statement
      *
      * @param array $params parameters
      */
-    private function _bindParams($params)
+    private function _bindParams(array $params): void
     {
         if (Tools::count($params) == 0) {
             return;
@@ -94,7 +94,7 @@ class MySqliStatement extends Statement
         $args = [];
         $args[] = str_repeat('s', Tools::count($this->_getBindPositions()));
         foreach ($this->_getBindPositions() as $param) {
-            Tools::atkdebug("Bind param {$i}: " . ($params[$param] === null ? 'NULL' : $params[$param]));
+            Tools::atkdebug("Bind param $i: " . ($params[$param] === null ? 'NULL' : $params[$param]));
             $args[] = &$params[$param];
             ++$i;
         }
@@ -106,7 +106,7 @@ class MySqliStatement extends Statement
      * Store the column names from this statement's metadata.
      * @throws StatementException
      */
-    private function _storeColumnNames()
+    private function _storeColumnNames(): void
     {
         if ($this->m_columnNames !== null) {
             // already stored on previous execution
@@ -130,11 +130,10 @@ class MySqliStatement extends Statement
     }
 
     /**
-     * Bind result columns to values array so we can read the result when
-     * fetching rows.
+     * Bind result columns to values array, so we can read the result when fetching rows.
      * @throws StatementException
      */
-    private function _bindResult()
+    private function _bindResult(): void
     {
         $this->_storeColumnNames();
         if ($this->m_columnNames === null) {
@@ -161,10 +160,10 @@ class MySqliStatement extends Statement
      *
      * @throws StatementException
      */
-    protected function _execute($params)
+    protected function _execute(array $params): void
     {
         if (Config::getGlobal('debug') >= 0) {
-            Debugger::addQuery($this->_getParsedQuery(), false);
+            Debugger::addQuery($this->_getParsedQuery());
         }
 
         $this->_bindParams($params);
@@ -189,7 +188,7 @@ class MySqliStatement extends Statement
      *
      * @return array|false next row from the result set (false if no other rows exist)
      */
-    protected function _fetch()
+    protected function _fetch(): false|array
     {
         if (!$this->m_stmt->fetch()) {
             return false;

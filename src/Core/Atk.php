@@ -3,7 +3,7 @@
 namespace Sintattica\Atk\Core;
 
 use Dotenv\Dotenv;
-use Dotenv\Environment\DotenvFactory;
+use Exception;
 use ReflectionException;
 use RuntimeException;
 use Sintattica\Atk\Core\Menu\Menu;
@@ -30,6 +30,9 @@ class Atk
     /** @var static $s_instance */
     public static $s_instance;
 
+    /**
+     * @throws Exception
+     */
     public function __construct($environment, $basedir)
     {
         global $g_startTime;

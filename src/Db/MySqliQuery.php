@@ -206,7 +206,7 @@ class MySqliQuery extends Query
             for ($i = 0; $i < Tools::count($fields); ++$i) {
                 $fields[$i] = "COALESCE({$fields[$i]}, '###ATKNULL###')";
             }
-            $result .= implode($this->quoteFields($fields), ', ');
+            $result .= implode(', ', $this->quoteFields($fields));
             $result .= ') as count FROM ';
         } else {
             $result = 'SELECT COUNT(*) as count FROM ';

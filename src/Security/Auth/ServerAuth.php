@@ -24,12 +24,12 @@ class ServerAuth extends AuthInterface
      * @param string $user The login of the user to authenticate.
      * @param string $passwd The password of the user. Note: if the canMd5
      *                       function of an implementation returns true,
-     *                       $passwd will be passed as an md5 string.
+     *                       $passwd will be passed as a md5 string.
      *
      * @return int SecurityManager::AUTH_SUCCESS - Authentication succesful
      *             SecurityManager::AUTH_MISMATCH - Authentication failed, wrong
      *             user/password combination
-     *             SecurityManager::AUTH_LOCKED - Account is locked, can not login
+     *             SecurityManager::AUTH_LOCKED - Account is locked, can not log in
      *             with current username.
      *             SecurityManager::AUTH_ERROR - Authentication failed due to some
      *             error which cannot be solved by

@@ -62,7 +62,7 @@ class MultiSelectListAttribute extends ListAttribute
             $values = $this->getValues();
             for ($i = 0; $i < Tools::count($values); ++$i) {
                 if (in_array($values[$i], $record[$this->fieldName()])) {
-                    $result .= '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'[]" value="'.$values[$i].'">';
+                    $result .= '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '[]" value="' . $values[$i] . '">';
                 }
             }
         } else {
@@ -136,7 +136,7 @@ class MultiSelectListAttribute extends ListAttribute
             $res[] = $this->_translateValue($values[$i], $record);
         }
 
-        return $res ? '<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">' . implode('</span><span class="badge-sm d-inline-block badge-pill badge-secondary m-1 text-nowrap">', $res) . "</span>": "";
+        return $res ? '<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">' . implode('</span><span class="badge-sm d-inline-block badge-pill badge-secondary m-1 text-nowrap">', $res) . "</span>" : "";
     }
 
     /**
@@ -166,41 +166,45 @@ class MultiSelectListAttribute extends ListAttribute
 
         $data = '';
         foreach ($selectOptions as $k => $v) {
-            $data .= ' data-'.$k.'="'.htmlspecialchars($v).'"';
+            $data .= ' data-' . $k . '="' . htmlspecialchars($v) . '"';
         }
 
-        if($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
+        if ($this->getCssStyle($type, 'width') === null && $this->getCssStyle($type, 'min-width') === null) {
             $this->setCssStyle($type, 'min-width', '220px');
         }
 
         $style = $styles = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+        foreach ($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
-        if($style != ''){
-            $styles = ' style="'.$style.'"';
+        if ($style != '') {
+            $styles = ' style="' . $style . '"';
         }
 
         $onchange = '';
         if (Tools::count($this->m_onchangecode)) {
-            $onchange = ' onChange="'.$this->getHtmlId($fieldprefix).'_onChange(this)"';
+            $onchange = ' onChange="' . $this->getHtmlId($fieldprefix) . '_onChange(this)"';
             $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result = '<select multiple id="'.$id.'" name="'.$name.'[]" '.$this->getCSSClassAttribute().'" '.$onchange.$data.$styles.'>';
+        $result = '<select multiple id="' . $id . '" name="' . $name . '[]" ' . $this->getCSSClassAttribute() . '" ' . $onchange . $data . $styles . '>';
 
         $values = $this->getValues();
-        if (!is_array($record[$this->fieldName()])) {
-            $recordvalue = $this->db2value($record);
+        if (isset($record[$this->fieldName()])) {
+            if (!is_array($record[$this->fieldName()])) {
+                $recordvalue = $this->db2value($record);
+            } else {
+                $recordvalue = $record[$this->fieldName()];
+            }
         } else {
-            $recordvalue = $record[$this->fieldName()];
+            $recordvalue = null;
         }
 
         for ($i = 0; $i < Tools::count($values); ++$i) {
             // If the current value is selected or occurs in the record
             $sel = (Tools::atk_in_array($values[$i], $recordvalue)) ? 'selected' : '';
 
-            $result .= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i], $record);
+            $result .= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i], $record);
         }
 
         $result .= '</select>';
@@ -217,12 +221,12 @@ class MultiSelectListAttribute extends ListAttribute
             $searchcondition = [];
 
             if (in_array('__NONE__', $value)) {
-                 unset($value[array_search('__NONE__', $value)]);
-                $searchcondition[] = $query->nullCondition($table.'.'.$this->fieldName(), true);
+                unset($value[array_search('__NONE__', $value)]);
+                $searchcondition[] = $query->nullCondition($table . '.' . $this->fieldName(), true);
             }
 
             foreach ($value as $str) {
-                $searchcondition[] = $query->substringCondition($table.'.'.$this->fieldName(), $this->escapeSQL($str));
+                $searchcondition[] = $query->substringCondition($table . '.' . $this->fieldName(), $this->escapeSQL($str));
             }
             $searchcondition = implode(' OR ', $searchcondition);
         }
@@ -266,7 +270,7 @@ class MultiSelectListAttribute extends ListAttribute
     public function _addLinks($fieldprefix)
     {
         if (Tools::count($this->m_values) > 4 && !Tools::hasFlag($this->m_flags, self::AF_NO_TOGGLELINKS)) {
-            return '<div align="left">[<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_all').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('check_none').'</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.Tools::atktext('invert_selection').'</a>]</div>';
+            return '<div align="left">[<a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkAll(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' . Tools::atktext('check_all') . '</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkNone(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' . Tools::atktext('check_none') . '</a> <a href="javascript:void(0)" onclick="ATK.ProfileAttribute.profile_checkInvert(\'' . $fieldprefix . $this->fieldName() . '\'); return false;">' . Tools::atktext('invert_selection') . '</a>]</div>';
         }
 
         return '';
