@@ -2910,9 +2910,9 @@ class Node
         $ui = $this->getUi();
 
         if (is_array($atkselector)) {
-            $atkselector_str = '((' . implode($atkselector, ') OR (') . '))';
+            $atkselectorString = '((' . implode($atkselector, ') OR (') . '))';
         } else {
-            $atkselector_str = $atkselector;
+            $atkselectorString = $atkselector;
         }
 
         $sm = SessionManager::getInstance();
@@ -2927,14 +2927,16 @@ class Node
             $formstart .= '<input type="hidden" name="atkcsrftoken" value="' . $csrfToken . '">';
         }
 
-        if ($mergeSelectors) {
-            $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector_str . '">';
-        } else {
-            if (!is_array($atkselector)) {
-                $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector . '">';
+        if ($atkselectorString) {
+            if ($mergeSelectors) {
+                $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselectorString . '">';
             } else {
-                foreach ($atkselector as $selector) {
-                    $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '[]" value="' . $selector . '">';
+                if (!is_array($atkselector)) {
+                    $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector . '">';
+                } else {
+                    foreach ($atkselector as $selector) {
+                        $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '[]" value="' . $selector . '">';
+                    }
                 }
             }
         }
@@ -2948,24 +2950,30 @@ class Node
         $record = null;
         $content = $this->confirmActionText($atkselector, $action);
 
-        $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
-        if (Tools::count($recs) == 1) {
-            // 1 record, put it in the page title (with the actionTitle call, a few lines below)
-            $record = $recs[0];
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $this->actionTitle($action, $record));
-        } else {
-            // we are gonna perform an action on more than one record
-            // show a list of affected records, at least if we can find a
-            // descriptor_def method
-            if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
-                $content .= '<div class="mt-2">';
-                $content .= '<div>' . $this->text('confirm_action_title_multi') . '</div>';
-                $content .= '<ul class="mt-1">';
-                for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
-                    $content .= '<li>' . str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+        if ($atkselectorString) {
+            $recs = $this->select($atkselectorString)->includes($this->descriptorFields())->getAllRows();
+            if (Tools::count($recs) == 1) {
+                // 1 record, put it in the page title (with the actionTitle call, a few lines below)
+                $record = $recs[0];
+                $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $this->actionTitle($action, $record));
+            } else {
+                // we are going to perform an action on more than one record
+                // show a list of affected records, at least if we can find a
+                // descriptor_def method
+                if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
+                    $content .= '<div class="mt-2">';
+                    $content .= '<div>' . $this->text('confirm_action_title_multi') . '</div>';
+                    $content .= '<ul class="mt-1">';
+                    for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
+                        $content .= '<li>' . str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+                    }
+                    $content .= '</ul></div>';
                 }
-                $content .= '</ul></div>';
             }
+
+        } else {
+            // no record selected
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $this->actionTitle($action));
         }
 
         $output = $ui->renderAction($action, [
@@ -5863,14 +5871,15 @@ class Node
      * Ask the user a confirmation before proceeding with the action.
      *
      * @param ActionHandler $handler
-     * @param string[] $atkSelectors
+     * @param string[]|null $atkSelectors
+     * @param string|null $cancelUrl It goes to this url if the user has cancelled the action
      * @return bool True if the user has confirmed the action.
      */
-    protected function checkConfirmAction(ActionHandler $handler, array $atkSelectors = []): bool
+    protected function checkConfirmAction(ActionHandler $handler, ?array $atkSelectors = null, ?string $cancelUrl = null): bool
     {
         if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
             if (!$atkSelectors) {
-                $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR];
+                $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR] ?? null;
             }
             $this->getPage()->addContent($this->renderActionPage(
                 $handler->m_action, [$this->confirmAction($atkSelectors, $handler->m_action)]) // show confirm buttons
@@ -5880,7 +5889,11 @@ class Node
 
         } elseif ($this->m_postvars['cancel']) {
             // the user has cancelled the action.
-            $this->redirect();
+            if ($cancelUrl) {
+                $this->redirect($cancelUrl);
+            } else {
+                $this->redirect();
+            }
             return false;
         }
 
