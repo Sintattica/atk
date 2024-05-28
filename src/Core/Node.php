@@ -5421,10 +5421,10 @@ class Node
     {
         if ($this->rowColorConditions) {
             $recordDisabled = false;
-            if (isset($record['disabled']) && $record['disabled']) {
+            if (isset($record['disabled']) && ($record['disabled'] === 1 || $record['disabled'] === 't')) {
                 $recordDisabled = true;
             }
-            if (isset($record['_disabled']) && $record['_disabled']) {
+            if (isset($record['_disabled']) && ($record['_disabled'] === 1 || $record['_disabled'] === 't')) {
                 $recordDisabled = true;
             }
             if ($recordDisabled) {

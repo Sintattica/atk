@@ -344,7 +344,7 @@ class PgSqlDb extends Db
                     AND i.indkey[0] = a.attnum
                     LIMIT 1
                 ) AS is_unique,          
-                (CASE WHEN a.attidentity = 'd' THEN 1 ELSE 0 END) AS is_auto_inc,
+                (CASE WHEN a.attidentity = 'd' AND a.attnotnull = true THEN 1 ELSE 0 END) AS is_auto_inc,
                 '' AS default
         FROM pg_class c
         JOIN pg_attribute a ON (a.attrelid = c.oid AND a.attnum > 0)
@@ -354,6 +354,11 @@ class PgSqlDb extends Db
         WHERE c.relname = '$table'
         $schema_condition
         ORDER BY a.attnum";
+
+        // TODO: sembra che non si riesca più a ricavare questi valori...
+        /*(CASE WHEN ad.adsrc LIKE 'nextval(%::text)' THEN 1 ELSE 0 END) AS is_auto_inc,
+          (CASE WHEN ad.adsrc LIKE 'nextval(%::text)' THEN SUBSTRING(ad.adsrc, '''(.*?)''') END) AS sequence,
+          (CASE WHEN t.typname = 'varchar' THEN SUBSTRING(ad.adsrc FROM '^''(.*)''.*$') ELSE ad.adsrc END) AS default*/
 
         $meta = [];
         $rows = $this->getRows($sql);
@@ -367,7 +372,7 @@ class PgSqlDb extends Db
             $meta[$i]['flags'] = ($row['is_primary'] == 1 ? Db::MF_PRIMARY : 0) | ($row['is_unique'] == 1 ? Db::MF_UNIQUE : 0) | ($row['is_not_null'] == 1 ? Db::MF_NOT_NULL : 0) | ($row['is_auto_inc'] == 1 ? Db::MF_AUTO_INCREMENT : 0);
 
             if ($row['is_auto_inc'] == 1) {
-                $meta[$i]['sequence'] = $row['sequence'];
+                $meta[$i]['sequence'] = $row['sequence'] ?? null; // TODO
             } else {
                 if (Tools::atk_strlen($row['default']) > 0) {
                     // date/time/datetime
