@@ -13,7 +13,7 @@
   "require": {
     "php": ">=7.2",
     "fightbulc/moment": "^1.13",
-    "smarty/smarty": "^v3.1.48",
+    "smarty/smarty": "^v4.5.3",
     "vlucas/phpdotenv":  "v3.6.*",
     "ext-zlib": "*",
     "ext-json": "*",
