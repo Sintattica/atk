@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.14.0] - 2024-05-31
+### Changed
+- Smarty: updated to v4.5.3
+
+
 ## [9.13.28] - 2024-05-28
 ### Fixed
 - Node: handled checkConfirmAction without atkSelectors
