@@ -38,7 +38,7 @@
   "description": "A curated set of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library.",
   "devDependencies": {
     "commitplease": "2.3.0",
-    "grunt": "0.4.5",
+    "grunt": "1.5.3",
     "grunt-bowercopy": "1.2.4",
     "grunt-cli": "0.1.13",
     "grunt-compare-size": "0.4.0",
