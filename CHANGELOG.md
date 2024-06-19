@@ -1,6 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [9.14.2] - 2024-06-19
+- dependabot: bump grunt
+
+
 ## [9.14.1] - 2024-06-19
 - StateColors: getBorderColor delta is now a parameter and not hardcoded anymore 
 
