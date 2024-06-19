@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [9.14.1] - 2024-06-19
+- StateColors: getBorderColor delta is now a parameter and not hardcoded anymore 
+
+
 ## [9.14.0] - 2024-05-31
 ### Changed
 - Smarty: updated to v4.5.3
