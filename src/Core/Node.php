@@ -914,15 +914,17 @@ class Node
     {
         // if $attribute is a nested attribute create a fake one and handle the loading/storage through the JsonAttribute
         if ($attribute->isNestedAttribute()) {
-            if (!$this->getAttribute($this->nestedAttributeField)) {
-                $this->add(new JSONAttribute($this->nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD))->setForceUpdate(true);
+            $nestedAttributeFieldName = $attribute->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttributeField = $this->getAttribute($nestedAttributeFieldName);
+            if (!$nestedAttributeField) {
+                $nestedAttributeField = $this->add(new JSONAttribute($nestedAttributeFieldName, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD));
             }
+            $nestedAttributeField->setForceUpdate(true);
 
-            //Set the attribute as not stored/loaded on/from the database (the JsonAttribute will handle the storage)
+            // Set the attribute as not stored/loaded on/from the database (the JsonAttribute will handle the storage)
             $attribute->setStorageType(Attribute::NOSTORE)->setLoadType(Attribute::NOLOAD);
-            $this->addNestedAttribute($attribute->fieldName());
+            $this->addNestedAttribute($attribute->fieldName(), $nestedAttributeFieldName);
         }
-
 
         $tabs = null;
         $column = null;
@@ -5763,39 +5765,25 @@ class Node
         }
     }
 
-    /**
-     * @return string
-     */
     public function getNestedAttributeField(): string
     {
         return $this->nestedAttributeField;
     }
 
-    /**
-     * @param string $nestedAttributeField
-     * @return self
-     */
     public function setNestedAttributeField(string $nestedAttributeField): self
     {
         $this->nestedAttributeField = $nestedAttributeField;
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getNestedAttributesList(): array
     {
         return $this->nestedAttributesList;
     }
 
-    /**
-     * @param string $nestedAttribute
-     * @return self
-     */
-    public function addNestedAttribute(string $nestedAttribute): self
+    public function addNestedAttribute(string $attributeName, ?string $nestedAttributeFieldName = null): self
     {
-        $this->nestedAttributesList[] = $nestedAttribute;
+        $this->nestedAttributesList[$nestedAttributeFieldName ?? $this->nestedAttributeField][] = $attributeName;
         return $this;
     }
 
@@ -5804,17 +5792,13 @@ class Node
         return count($this->nestedAttributesList) > 0;
     }
 
-    public function isNestedAttribute(string $attributeName): bool
+    public function hasNestedAttribute(string $attributeName): bool
     {
-        return in_array($attributeName, $this->nestedAttributesList);
+        return in_array($attributeName, array_values($this->nestedAttributesList));
     }
 
     /**
-     * Load the
-     * Funzione per impostare sulla ui il valore dei vari attributi generici in base al contenuto del JSON
-     * Es: editPage, viewPage ecc...
-     *
-     * @param array $record
+     * Load the value of all nested attributes
      */
     public function loadNestedAttributesValue(array &$record)
     {
@@ -5822,33 +5806,35 @@ class Node
             return;
         }
 
-        if (!is_array($record[$this->nestedAttributeField])) {
-            // decodifico il contenuto del JSON
-            $record[$this->nestedAttributeField] = json_decode($record[$this->nestedAttributeField], true);
-        }
+        $nestedAttributeFields = array_keys($this->nestedAttributesList);
 
-        foreach ($this->nestedAttributesList as $field) {
-
-            // per ogni attributo generico, setto il valore
-            //Todo: Sistemare questa parte
-            $default = null;
-            $list = ['ManyToOneAttribute', 'OneToManyAttribute'];
-
-            if (in_array($this->getAttribute($field)->get_class_name(), $list)) {
-                $default = []; // necessario per il default di quelle classi che si aspettano un array (Relations, etc)
+        foreach ($nestedAttributeFields as $nestedAttributeField) {
+            if (!is_array($record[$nestedAttributeField])) {
+                // decodifico il contenuto del JSON
+                $record[$nestedAttributeField] = json_decode($record[$nestedAttributeField], true);
             }
 
-            $values = [];
-            $values[$field] = $record[$this->nestedAttributeField][$field] ?? $default;
-            $record[$field] = $this->getAttribute($field)->db2value($values);
-        }
+            $nestedAttributes = $this->nestedAttributesList[$nestedAttributeField];
 
+            foreach ($nestedAttributes as $attribute) {
+                // set the value for each nested attribute
+                // TODO: check
+                $default = null;
+                $list = ['ManyToOneAttribute', 'OneToManyAttribute'];
+
+                if (in_array($this->getAttribute($attribute)->get_class_name(), $list)) {
+                    $default = []; // necessario per il default di quelle classi che si aspettano un array (Relations, etc)
+                }
+
+                $values = [];
+                $values[$attribute] = $record[$nestedAttributeField][$attribute] ?? $default;
+                $record[$attribute] = $this->getAttribute($attribute)->db2value($values);
+            }
+        }
     }
 
     /**
-     * Funzione per salvare il valore degli attributi generici nel JSON.
-     *
-     * @param array $record
+     * Store the value of all the nested attributes
      */
     protected function storeNestedAttributesValue(array &$record)
     {
@@ -5856,16 +5842,20 @@ class Node
             return;
         }
 
-        if (!is_array($record[$this->nestedAttributeField])) {
-            $record[$this->nestedAttributeField] = json_decode($record[$this->nestedAttributeField], true);
-        }
+        $nestedAttributeFields = array_keys($this->nestedAttributesList);
 
-        foreach ($this->nestedAttributesList as $field) {
-            $record[$this->nestedAttributeField][$field] = $this->getAttribute($field)->value2db([$field => $record[$field]]);
-        }
+        foreach ($nestedAttributeFields as $nestedAttributeField) {
+            if (!is_array($record[$nestedAttributeField])) {
+                $record[$nestedAttributeField] = json_decode($record[$nestedAttributeField], true);
+            }
 
+            $nestedAttributes = $this->nestedAttributesList[$nestedAttributeField];
+
+            foreach ($nestedAttributes as $attribute) {
+                $record[$nestedAttributeField][$attribute] = $this->getAttribute($attribute)->value2db([$attribute => $record[$attribute]]);
+            }
+        }
     }
-
 
     /**
      * Ask the user a confirmation before proceeding with the action.
@@ -5919,7 +5909,6 @@ class Node
         return false;
     }
 
-
     /**
      * Check if the attribute is present on the current node and if its TRACK_CHANGES flag has been set.
      *
@@ -5930,7 +5919,6 @@ class Node
     {
         return $this->getAttribute($attributeName) and $this->hasFlag(self::NF_TRACK_CHANGES);
     }
-
 
     /**
      * Check if the attribute has been modified before saving it.

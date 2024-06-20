@@ -40,7 +40,7 @@ class NestedNumberAttribute extends NumberAttribute
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->getOwnerInstance()->isNestedAttribute($this->fieldName())) {
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
             return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
         }
 
@@ -118,7 +118,7 @@ class NestedNumberAttribute extends NumberAttribute
      */
     static public function getOrderByStatementStatic(Attribute $attr, $extra = [], $table = '', $direction = 'ASC')
     {
-        if ($attr->getOwnerInstance()->isNestedAttribute($attr->fieldName())) {
+        if ($attr->getOwnerInstance()->hasNestedAttribute($attr->fieldName())) {
             $json_query = self::buildJSONExtractValue($attr, $table);
 
             if ($attr->dbFieldType() == 'string' && $attr->getDb()->getForceCaseInsensitive()) {

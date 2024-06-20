@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.14.4] - 2024-06-20
+### Added
+- NestedAttribute: support to custom nested attribute field for every nested attribute
+
+
 ## [9.14.3] - 2024-06-20
 ### Added
 - NumberAttribute: numberattribute_use_thousands_separator global config
