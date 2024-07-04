@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Sintattica\Atk\Core\Menu;
-
 
 use Exception;
 use Sintattica\Atk\AdminLte\UIStateColors;
@@ -14,17 +12,18 @@ class ActionItem extends Item
 {
     private $nodeUri;
     private $action;
+    protected $urlParams = [];
     protected $badgeText = null;
     protected $badgeStatus = UIStateColors::STATE_INFO;
 
-    public function __construct(string $name, string $nodeUri = "", string $action = "")
+    public function __construct(string $name, string $nodeUri = '', string $action = '')
     {
         parent::__construct();
 
         // Default name is the translation of the node name
         if (!$name) {
-            list($modulo, $nodo) = explode('.', $nodeUri);
-            $name = Language::text($nodo, $modulo);
+            list($module, $nodeName) = explode('.', $nodeUri);
+            $name = Language::text($nodeName, $module);
         }
 
         $this->name = $name;
@@ -35,57 +34,58 @@ class ActionItem extends Item
         $this->enable = false;
     }
 
-    /**
-     * @return string
-     */
     public function getNodeUri(): string
     {
         return $this->nodeUri;
     }
 
-    /**
-     * @param string $nodeUri
-     * @return ActionItem
-     */
-    public function setNodeUri(string $nodeUri): ActionItem
+    public function setNodeUri(string $nodeUri): self
     {
         $this->nodeUri = $nodeUri;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAction(): string
     {
         return $this->action;
     }
 
-    /**
-     * @param string $action
-     * @return ActionItem
-     */
-    public function setAction(string $action): ActionItem
+    public function setAction(string $action): self
     {
         $this->action = $action;
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getActionUrlParams(): array
+    public function getUrlParams(): array
     {
         return $this->urlParams;
     }
 
     /**
-     * @param array $urlParams
-     * @return ActionItem
+     * @deprecated
      */
-    public function setActionUrlParams(array $urlParams): ActionItem
+    public function getActionUrlParams(): array
+    {
+        return $this->getUrlParams();
+    }
+
+    public function setUrlParams(array $urlParams): self
     {
         $this->urlParams = $urlParams;
+        return $this;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function setActionUrlParams(array $urlParams): self
+    {
+        return $this->setUrlParams($urlParams);
+    }
+
+    public function addUrlParam(string $key, string $value): self
+    {
+        $this->urlParams[$key] = $value;
         return $this;
     }
 
@@ -106,18 +106,10 @@ class ActionItem extends Item
         return $this->enable;
     }
 
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         $this->addUrlParam(Node::PARAM_ATKMENU, $this->getIdentifier());
         return Tools::dispatch_url($this->nodeUri, $this->action, $this->urlParams);
-    }
-
-    public function addUrlParam(string $key, string $value)
-    {
-        $this->urlParams[$key] = $value;
     }
 
     public function getBadgeText()
@@ -146,21 +138,19 @@ class ActionItem extends Item
      * The method encodes the url params as a string with separators.
      * This is used to generate unique links for the menu items so the active menu can be displayed.
      * If no associative arrays have been provided the index of the array gets concatenated.
-     * @return string|null
-     * @throws Exception - If UrlParams contain arrays with more than 2 nested levels.
      *
+     * @throws Exception - If UrlParams contain arrays with more than 2 nested levels.
      */
     protected function createIdentifierComponents(): ?string
     {
-
-        $encodedUrlParams = "";
-        $separator = "-";
+        $encodedUrlParams = '';
+        $separator = '-';
 
         foreach ($this->urlParams as $key => $value) {
             if (is_array($value)) {
                 foreach ($value as $subKey => $val) {
                     if (is_array($val)) {
-                        throw new Exception("UrlParams on menu items must have less then 2 levels. More levels have been provided, ...");
+                        throw new Exception('UrlParams on menu items must have less then 2 levels. More levels have been provided, ...');
                     } else {
                         $encodedUrlParams .= $separator . $subKey . $separator . $val;
                     }

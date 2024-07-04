@@ -14,13 +14,7 @@ class UrlItem extends Item
     private $url;
     protected $target;
 
-    /**
-     * UrlItem constructor.
-     * @param string $name
-     * @param string $url
-     * @param string $target
-     */
-    public function __construct(string $name, string $url, $target = self::TARGET_SELF)
+    public function __construct(string $name, string $url, string $target = self::TARGET_SELF)
     {
         parent::__construct();
         $this->name = $name;
@@ -28,38 +22,23 @@ class UrlItem extends Item
         $this->target = $target;
     }
 
-
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         return $this->url;
     }
 
-    /**
-     * @param string $url
-     * @return UrlItem
-     */
-    public function setUrl(string $url): UrlItem
+    public function setUrl(string $url): self
     {
         $this->url = $url;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTarget(): string
     {
         return $this->target;
     }
 
-    /**
-     * @param string $target
-     * @return $this
-     */
-    public function setTarget(string $target): UrlItem
+    public function setTarget(string $target): self
     {
         switch ($target) {
             case $target == self::TARGET_BLANK:
@@ -85,5 +64,4 @@ class UrlItem extends Item
     {
         return $this->url;
     }
-
 }
