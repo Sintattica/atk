@@ -241,6 +241,7 @@ class Node
     const PARAM_ATTRIBUTE_NAME = 'attribute_name';
     const PARAM_ATKSELECTOR = 'atkselector';
     const PARAM_ATKMENU = 'atkmenu';
+    const ATK_ORG_REC = 'atkorgrec';
 
     /*
      * reference to the class which is used to validate atknodes
@@ -1188,13 +1189,44 @@ class Node
 
     /**
      * Check if the node has an attribute with the passed name.
-     *
-     * @param string $attributeName
-     * @return bool
      */
     public function hasAttribute(string $attributeName): bool
     {
         return $this->getAttribute($attributeName) !== null;
+    }
+
+    public function getAttributeValue(array $record, string $attributeName)
+    {
+        $attr = $this->getAttribute($attributeName);
+        $value = $record[$attributeName];
+
+        if (!isset($value) && $attr->isNestedAttribute()) {
+            $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttribute = $record[$nestedAttributeFieldName];
+            if (is_string($nestedAttribute)) {
+                $nestedAttribute = json_decode($nestedAttribute);
+            }
+            $value = $nestedAttribute[$attributeName];
+        }
+
+        return $value;
+    }
+
+    public function getAttributeOldValue(array $record, string $attributeName)
+    {
+        $attr = $this->getAttribute($attributeName);
+        $oldValue = $record[self::ATK_ORG_REC][$attributeName];
+
+        if (!isset($oldValue) && $attr->isNestedAttribute()) {
+            $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttributeOld = $record[self::ATK_ORG_REC][$nestedAttributeFieldName];
+            if (is_string($nestedAttributeOld)) {
+                $nestedAttributeOld = json_decode($nestedAttributeOld);
+            }
+            $oldValue = $nestedAttributeOld[$attributeName];
+        }
+
+        return $oldValue;
     }
 
     /**
@@ -3933,7 +3965,7 @@ class Node
      */
     public function trackChangesIfNeeded(&$record, $excludes = '', $includes = '')
     {
-        if (!$this->hasFlag(self::NF_TRACK_CHANGES) || isset($record['atkorgrec'])) {
+        if (!$this->hasFlag(self::NF_TRACK_CHANGES) || isset($record[self::ATK_ORG_REC])) {
             return;
         }
 
@@ -3942,9 +3974,9 @@ class Node
 
         $this->addFlag(self::NF_NO_FILTER);
 
-        $record['atkorgrec'] = $this->select()->where($record['atkprimkey'])->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
+        $record[self::ATK_ORG_REC] = $this->select()->where($record['atkprimkey'])->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
 
-        // Need to restore the NO_FILTER bit back to its original value.
+        // Need to restore the NO_FILTER flag back to its original value.
         $this->m_flags = $flags;
     }
 
@@ -4055,7 +4087,7 @@ class Node
 
         unset($record['__executedpreUpdate']);
         unset($record['__executedpostUpdate']);
-        unset($record['atkorgrec']);
+        unset($record[self::ATK_ORG_REC]);
 
         $this->trackChangesIfNeeded($record);
 
@@ -4114,18 +4146,19 @@ class Node
      *
      * Primarykeys are automatically regenerated for the copied record. Any
      * detail records (onetomanyrelation) are copied too. Refered records
-     * manytoonerelation) are not copied.
+     * manytoonerelation are not copied.
      *
      * @param array $record The record to copy.
      * @param string $mode The mode we're in (mostly "copy")
      *
      * @return bool True if succesful, false if not.
+     * @throws Exception
      */
     public function copyDb(&$record, $mode = 'copy')
     {
         // add original record
         $original = $record; // force copy
-        $record['atkorgrec'] = $original;
+        $record[self::ATK_ORG_REC] = $original;
 
         //notify precopy listeners
         $this->preNotify('precopy', $record);
@@ -5894,12 +5927,12 @@ class Node
      * Check if at least one of the attribute has been modified before saving.
      *
      * @param array $record
-     * @param string[] $attributes
+     * @param string[] $attributeNames
      * @return bool
      */
-    protected function areAttributesModified(array $record, array $attributes): bool
+    protected function areAttributesModified(array $record, array $attributeNames): bool
     {
-        foreach ($attributes as $attribute) {
+        foreach ($attributeNames as $attribute) {
             if ($this->isAttributeModified($record, $attribute)) {
                 // at least one of the attribute has been modified
                 return true;
@@ -5911,9 +5944,6 @@ class Node
 
     /**
      * Check if the attribute is present on the current node and if its TRACK_CHANGES flag has been set.
-     *
-     * @param string $attributeName
-     * @return bool
      */
     protected function isAttributeTrackChangesAvailable(string $attributeName): bool
     {
@@ -5931,12 +5961,12 @@ class Node
     protected function isAttributeModified(array $record, string $attributeName, array $checkMtoPrimaryKeys = ['id']): ?bool
     {
         if (!$this->isAttributeTrackChangesAvailable($attributeName)) {
-            // cannot check for modifications on this attribute/node.
+            // cannot check the changes for the given attribute on this node.
             return null;
         }
 
-        $oldValue = $record['atkorgrec'][$attributeName];
-        $newValue = $record[$attributeName];
+        $oldValue = $this->getAttributeOldValue($record, $attributeName);
+        $newValue = $this->getAttributeValue($record, $attributeName);
 
         // 'special' attributes.
         $attr = $this->getAttribute($attributeName);
@@ -5980,16 +6010,12 @@ class Node
             return false;
         }
 
-        // default check.
+        // default check
         return $newValue != $oldValue;
     }
 
     /**
      * Verify if the value of the attribute has changed from null or empty to a non-null value.
-     *
-     * @param array $record
-     * @param string $attributeName
-     * @return bool
      */
     protected function attributeGainedValue(array $record, string $attributeName): ?bool
     {
@@ -5998,26 +6024,21 @@ class Node
             return null;
         }
 
-        $oldValue = $record['atkorgrec'][$attributeName];
-        $newValue = $record[$attributeName];
+        $oldValue = $this->getAttributeOldValue($record, $attributeName);
+        $newValue = $this->getAttributeValue($record, $attributeName);
 
         $attr = $this->getAttribute($attributeName);
-        if ($attr->get_class_name() == 'FileAttribute') {
-            // True se il file è stato aggiunto o modificato
-            // True
+        if ($attr instanceof FileAttribute) {
+            // True if the file is just added or edited
             return strpos($newValue['tmpfile'], sys_get_temp_dir()) !== false;
-
         }
 
+        // default check
         return !$oldValue and $newValue;
     }
 
-
     /**
      * Get the list of the attribute names for a given tab.
-     *
-     * @param string $tabName Tab Name
-     * @return array Attribute names
      */
     function getTabAttributeNames(string $tabName): array
     {
@@ -6028,7 +6049,6 @@ class Node
         }
         return $attrNames;
     }
-
 
     /**
      * Get the list of the attributes for a given tab.

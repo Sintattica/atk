@@ -999,7 +999,7 @@ class OneToManyRelation extends Relation
         for ($i = 0; $i < Tools::count($onetomanyrecs); ++$i) {
             // original record
             $original = $onetomanyrecs[$i];
-            $onetomanyrecs[$i]['atkorgrec'] = $original;
+            $onetomanyrecs[$i][Node::ATK_ORG_REC] = $original;
 
             // the referential key of the onetomanyrecs could be wrong, if we
             // are called for example from a copy function. So just in case,
