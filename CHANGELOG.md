@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.14.7] - 2024-07-19
+### Fixed
+- Export: doExport for NestedAttribute
+
+
 ## [9.14.6] - 2024-07-10
 ### Added
 - Attribute: new functions getAttributeValue and getAttributeOldValue to retrieve the value of an attribute
