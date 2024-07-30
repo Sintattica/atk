@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.14.8] - 2024-07-30
+### Fixed
+- Attribute: getAttributeValue and getAttributeOldValue when nestedAttribute is a json encoded string
+
+
 ## [9.14.7] - 2024-07-19
 ### Fixed
 - Export: doExport for NestedAttribute

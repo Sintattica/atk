@@ -1204,7 +1204,7 @@ class Node
             $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
             $nestedAttribute = $record[$nestedAttributeFieldName];
             if (is_string($nestedAttribute)) {
-                $nestedAttribute = json_decode($nestedAttribute);
+                $nestedAttribute = json_decode($nestedAttribute, true);
             }
             $value = $nestedAttribute[$attributeName];
         }
@@ -1221,7 +1221,7 @@ class Node
             $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
             $nestedAttributeOld = $record[self::ATK_ORG_REC][$nestedAttributeFieldName];
             if (is_string($nestedAttributeOld)) {
-                $nestedAttributeOld = json_decode($nestedAttributeOld);
+                $nestedAttributeOld = json_decode($nestedAttributeOld, true);
             }
             $oldValue = $nestedAttributeOld[$attributeName];
         }
