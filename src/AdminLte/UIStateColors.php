@@ -336,12 +336,12 @@ class UIStateColors
         return array_keys(self::getInstance()->colorPalette);
     }
 
-    public static function getBorderColor(?string $uiStateColor): string
+    public static function getBorderColor(?string $uiStateColor, $deltaSub = 15): string
     {
         if (!$uiStateColor) {
             $uiStateColor = self::STATE_WHITE;
         }
-        return Tools::dimColorBy(UIStateColors::getHex($uiStateColor), 15);
+        return Tools::dimColorBy(UIStateColors::getHex($uiStateColor), $deltaSub);
     }
 
     /**

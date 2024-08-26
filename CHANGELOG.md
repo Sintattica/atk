@@ -1,5 +1,61 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.14.8] - 2024-07-30
+### Fixed
+- Attribute: getAttributeValue and getAttributeOldValue when nestedAttribute is a json encoded string
+
+
+## [9.14.7] - 2024-07-19
+### Fixed
+- Export: doExport for NestedAttribute
+
+
+## [9.14.6] - 2024-07-10
+### Added
+- Attribute: new functions getAttributeValue and getAttributeOldValue to retrieve the value of an attribute
+
+### Fixed
+- Attribute: isAttributeModified for NestedAttribute
+
+
+## [9.14.5] - 2024-07-04
+### Changed
+- Menu: refactor Menu Item classes
+
+### Fixed
+- Attribute: ActionButtonAttribute default params
+
+
+## [9.14.4] - 2024-06-20
+### Added
+- NestedAttribute: support to custom nested attribute field for every nested attribute
+
+
+## [9.14.3] - 2024-06-20
+### Added
+- NumberAttribute: numberattribute_use_thousands_separator global config
+
+
+## [9.14.2] - 2024-06-19
+### Fixed
+- dependabot: bump grunt
+
+
+## [9.14.1] - 2024-06-19
+### Added
+- StateColors: getBorderColor delta is now a parameter and not hardcoded anymore 
+
+
+## [9.14.0] - 2024-05-31
+### Changed
+- Smarty: updated to v4.5.3
+
+
+## [9.13.28] - 2024-05-28
+### Fixed
+- Node: handled checkConfirmAction without atkSelectors
+
+
 ## [9.13.27] - 2024-05-15
 ### Fixed
 - Node: adminHeaderInputFilters submit button and newline param

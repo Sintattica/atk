@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Sintattica\Atk\Core\Menu;
-
 
 use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Language;
@@ -37,7 +35,6 @@ abstract class Item
     protected $order = self::DEFAULT_ORDER;
     protected $module = '';
     protected $raw = false;
-    protected $urlParams = [];
     protected $tooltip = null;
     protected $tooltipPlacement = self::TOOLTIP_PLACEMENT_BOTTOM;
     protected $icon = null;
@@ -71,7 +68,6 @@ abstract class Item
 
     /**
      * Called only by children as this class is abstract
-     * @return string
      */
     public function getType(): string
     {
@@ -169,11 +165,6 @@ abstract class Item
         return $this->icon;
     }
 
-    /**
-     * @param string|null $icon
-     * @param string|null $iconType
-     * @return Item
-     */
     public function setIcon(?string $icon, ?string $iconType = self::ICON_FA): self
     {
         switch ($iconType) {

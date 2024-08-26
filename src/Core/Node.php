@@ -241,6 +241,7 @@ class Node
     const PARAM_ATTRIBUTE_NAME = 'attribute_name';
     const PARAM_ATKSELECTOR = 'atkselector';
     const PARAM_ATKMENU = 'atkmenu';
+    const ATK_ORG_REC = 'atkorgrec';
 
     /*
      * reference to the class which is used to validate atknodes
@@ -914,15 +915,17 @@ class Node
     {
         // if $attribute is a nested attribute create a fake one and handle the loading/storage through the JsonAttribute
         if ($attribute->isNestedAttribute()) {
-            if (!$this->getAttribute($this->nestedAttributeField)) {
-                $this->add(new JSONAttribute($this->nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD))->setForceUpdate(true);
+            $nestedAttributeFieldName = $attribute->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttributeField = $this->getAttribute($nestedAttributeFieldName);
+            if (!$nestedAttributeField) {
+                $nestedAttributeField = $this->add(new JSONAttribute($nestedAttributeFieldName, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD));
             }
+            $nestedAttributeField->setForceUpdate(true);
 
-            //Set the attribute as not stored/loaded on/from the database (the JsonAttribute will handle the storage)
+            // Set the attribute as not stored/loaded on/from the database (the JsonAttribute will handle the storage)
             $attribute->setStorageType(Attribute::NOSTORE)->setLoadType(Attribute::NOLOAD);
-            $this->addNestedAttribute($attribute->fieldName());
+            $this->addNestedAttribute($attribute->fieldName(), $nestedAttributeFieldName);
         }
-
 
         $tabs = null;
         $column = null;
@@ -1186,13 +1189,44 @@ class Node
 
     /**
      * Check if the node has an attribute with the passed name.
-     *
-     * @param string $attributeName
-     * @return bool
      */
     public function hasAttribute(string $attributeName): bool
     {
         return $this->getAttribute($attributeName) !== null;
+    }
+
+    public function getAttributeValue(array $record, string $attributeName)
+    {
+        $attr = $this->getAttribute($attributeName);
+        $value = $record[$attributeName];
+
+        if (!isset($value) && $attr->isNestedAttribute()) {
+            $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttribute = $record[$nestedAttributeFieldName];
+            if (is_string($nestedAttribute)) {
+                $nestedAttribute = json_decode($nestedAttribute, true);
+            }
+            $value = $nestedAttribute[$attributeName];
+        }
+
+        return $value;
+    }
+
+    public function getAttributeOldValue(array $record, string $attributeName)
+    {
+        $attr = $this->getAttribute($attributeName);
+        $oldValue = $record[self::ATK_ORG_REC][$attributeName];
+
+        if (!isset($oldValue) && $attr->isNestedAttribute()) {
+            $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttributeOld = $record[self::ATK_ORG_REC][$nestedAttributeFieldName];
+            if (is_string($nestedAttributeOld)) {
+                $nestedAttributeOld = json_decode($nestedAttributeOld, true);
+            }
+            $oldValue = $nestedAttributeOld[$attributeName];
+        }
+
+        return $oldValue;
     }
 
     /**
@@ -2911,9 +2945,9 @@ class Node
         $ui = $this->getUi();
 
         if (is_array($atkselector)) {
-            $atkselector_str = '((' . implode(') OR (', $atkselector) . '))';
+            $atkselectorString = '((' . implode(') OR (', $atkselector) . '))';
         } else {
-            $atkselector_str = $atkselector;
+            $atkselectorString = $atkselector;
         }
 
         $sm = SessionManager::getInstance();
@@ -2928,14 +2962,16 @@ class Node
             $formstart .= '<input type="hidden" name="atkcsrftoken" value="' . $csrfToken . '">';
         }
 
-        if ($mergeSelectors) {
-            $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector_str . '">';
-        } else {
-            if (!is_array($atkselector)) {
-                $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector . '">';
+        if ($atkselectorString) {
+            if ($mergeSelectors) {
+                $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselectorString . '">';
             } else {
-                foreach ($atkselector as $selector) {
-                    $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '[]" value="' . $selector . '">';
+                if (!is_array($atkselector)) {
+                    $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '" value="' . $atkselector . '">';
+                } else {
+                    foreach ($atkselector as $selector) {
+                        $formstart .= '<input type="hidden" name="' . self::PARAM_ATKSELECTOR . '[]" value="' . $selector . '">';
+                    }
                 }
             }
         }
@@ -2949,24 +2985,30 @@ class Node
         $record = null;
         $content = $this->confirmActionText($atkselector, $action);
 
-        $recs = $this->select($atkselector_str)->includes($this->descriptorFields())->getAllRows();
-        if (Tools::count($recs) == 1) {
-            // 1 record, put it in the page title (with the actionTitle call, a few lines below)
-            $record = $recs[0];
-            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $this->actionTitle($action, $record));
-        } else {
-            // we are gonna perform an action on more than one record
-            // show a list of affected records, at least if we can find a
-            // descriptor_def method
-            if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
-                $content .= '<div class="mt-2">';
-                $content .= '<div>' . $this->text('confirm_action_title_multi') . '</div>';
-                $content .= '<ul class="mt-1">';
-                for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
-                    $content .= '<li>' . str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+        if ($atkselectorString) {
+            $recs = $this->select($atkselectorString)->includes($this->descriptorFields())->getAllRows();
+            if (Tools::count($recs) == 1) {
+                // 1 record, put it in the page title (with the actionTitle call, a few lines below)
+                $record = $recs[0];
+                $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $this->actionTitle($action, $record));
+            } else {
+                // we are going to perform an action on more than one record
+                // show a list of affected records, at least if we can find a
+                // descriptor_def method
+                if ($this->m_descTemplate != null || method_exists($this, 'descriptor_def')) {
+                    $content .= '<div class="mt-2">';
+                    $content .= '<div>' . $this->text('confirm_action_title_multi') . '</div>';
+                    $content .= '<ul class="mt-1">';
+                    for ($i = 0, $_i = Tools::count($recs); $i < $_i; ++$i) {
+                        $content .= '<li>' . str_replace(' ', '&nbsp;', htmlentities($this->descriptor($recs[$i])));
+                    }
+                    $content .= '</ul></div>';
                 }
-                $content .= '</ul></div>';
             }
+
+        } else {
+            // no record selected
+            $this->getPage()->setTitle(Tools::atktext('app_shorttitle') . ' - ' . $this->actionTitle($action));
         }
 
         $output = $ui->renderAction($action, [
@@ -3925,7 +3967,7 @@ class Node
      */
     public function trackChangesIfNeeded(&$record, $excludes = '', $includes = '')
     {
-        if (!$this->hasFlag(self::NF_TRACK_CHANGES) || isset($record['atkorgrec'])) {
+        if (!$this->hasFlag(self::NF_TRACK_CHANGES) || isset($record[self::ATK_ORG_REC])) {
             return;
         }
 
@@ -3934,9 +3976,9 @@ class Node
 
         $this->addFlag(self::NF_NO_FILTER);
 
-        $record['atkorgrec'] = $this->select()->where($record['atkprimkey'])->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
+        $record[self::ATK_ORG_REC] = $this->select()->where($record['atkprimkey'])->excludes($excludes)->includes($includes)->mode('edit')->getFirstRow();
 
-        // Need to restore the NO_FILTER bit back to its original value.
+        // Need to restore the NO_FILTER flag back to its original value.
         $this->m_flags = $flags;
     }
 
@@ -4047,7 +4089,7 @@ class Node
 
         unset($record['__executedpreUpdate']);
         unset($record['__executedpostUpdate']);
-        unset($record['atkorgrec']);
+        unset($record[self::ATK_ORG_REC]);
 
         $this->trackChangesIfNeeded($record);
 
@@ -4106,18 +4148,19 @@ class Node
      *
      * Primarykeys are automatically regenerated for the copied record. Any
      * detail records (onetomanyrelation) are copied too. Refered records
-     * manytoonerelation) are not copied.
+     * manytoonerelation are not copied.
      *
      * @param array $record The record to copy.
      * @param string $mode The mode we're in (mostly "copy")
      *
      * @return bool True if succesful, false if not.
+     * @throws Exception
      */
     public function copyDb(&$record, $mode = 'copy')
     {
         // add original record
         $original = $record; // force copy
-        $record['atkorgrec'] = $original;
+        $record[self::ATK_ORG_REC] = $original;
 
         //notify precopy listeners
         $this->preNotify('precopy', $record);
@@ -5764,39 +5807,25 @@ class Node
         }
     }
 
-    /**
-     * @return string
-     */
     public function getNestedAttributeField(): string
     {
         return $this->nestedAttributeField;
     }
 
-    /**
-     * @param string $nestedAttributeField
-     * @return self
-     */
     public function setNestedAttributeField(string $nestedAttributeField): self
     {
         $this->nestedAttributeField = $nestedAttributeField;
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getNestedAttributesList(): array
     {
         return $this->nestedAttributesList;
     }
 
-    /**
-     * @param string $nestedAttribute
-     * @return self
-     */
-    public function addNestedAttribute(string $nestedAttribute): self
+    public function addNestedAttribute(string $attributeName, ?string $nestedAttributeFieldName = null): self
     {
-        $this->nestedAttributesList[] = $nestedAttribute;
+        $this->nestedAttributesList[$nestedAttributeFieldName ?? $this->nestedAttributeField][] = $attributeName;
         return $this;
     }
 
@@ -5805,17 +5834,13 @@ class Node
         return count($this->nestedAttributesList) > 0;
     }
 
-    public function isNestedAttribute(string $attributeName): bool
+    public function hasNestedAttribute(string $attributeName): bool
     {
-        return in_array($attributeName, $this->nestedAttributesList);
+        return in_array($attributeName, array_values($this->nestedAttributesList));
     }
 
     /**
-     * Load the
-     * Funzione per impostare sulla ui il valore dei vari attributi generici in base al contenuto del JSON
-     * Es: editPage, viewPage ecc...
-     *
-     * @param array $record
+     * Load the value of all nested attributes
      */
     public function loadNestedAttributesValue(array &$record)
     {
@@ -5823,33 +5848,35 @@ class Node
             return;
         }
 
-        if (isset($record[$this->nestedAttributeField]) && !is_array($record[$this->nestedAttributeField])) {
-            // decodifico il contenuto del JSON
-            $record[$this->nestedAttributeField] = json_decode($record[$this->nestedAttributeField], true);
-        }
+        $nestedAttributeFields = array_keys($this->nestedAttributesList);
 
-        foreach ($this->nestedAttributesList as $field) {
-
-            // per ogni attributo generico, setto il valore
-            //Todo: Sistemare questa parte
-            $default = null;
-            $list = ['ManyToOneAttribute', 'OneToManyAttribute'];
-
-            if (in_array($this->getAttribute($field)->get_class_name(), $list)) {
-                $default = []; // necessario per il default di quelle classi che si aspettano un array (Relations, etc)
+        foreach ($nestedAttributeFields as $nestedAttributeField) {
+            if (isset($record[$nestedAttributeField]) && !is_array($record[$nestedAttributeField])) {
+                // decodifico il contenuto del JSON
+                $record[$nestedAttributeField] = json_decode($record[$nestedAttributeField], true);
             }
 
-            $values = [];
-            $values[$field] = $record[$this->nestedAttributeField][$field] ?? $default;
-            $record[$field] = $this->getAttribute($field)->db2value($values);
-        }
+            $nestedAttributes = $this->nestedAttributesList[$nestedAttributeField];
 
+            foreach ($nestedAttributes as $attribute) {
+                // set the value for each nested attribute
+                // TODO: check
+                $default = null;
+                $list = ['ManyToOneAttribute', 'OneToManyAttribute'];
+
+                if (in_array($this->getAttribute($attribute)->get_class_name(), $list)) {
+                    $default = []; // necessario per il default di quelle classi che si aspettano un array (Relations, etc)
+                }
+
+                $values = [];
+                $values[$attribute] = $record[$nestedAttributeField][$attribute] ?? $default;
+                $record[$attribute] = $this->getAttribute($attribute)->db2value($values);
+            }
+        }
     }
 
     /**
-     * Funzione per salvare il valore degli attributi generici nel JSON.
-     *
-     * @param array $record
+     * Store the value of all the nested attributes
      */
     protected function storeNestedAttributesValue(array &$record)
     {
@@ -5857,29 +5884,34 @@ class Node
             return;
         }
 
-        if (!is_array($record[$this->nestedAttributeField])) {
-            $record[$this->nestedAttributeField] = json_decode($record[$this->nestedAttributeField], true);
-        }
+        $nestedAttributeFields = array_keys($this->nestedAttributesList);
 
-        foreach ($this->nestedAttributesList as $field) {
-            $record[$this->nestedAttributeField][$field] = $this->getAttribute($field)->value2db([$field => $record[$field]]);
-        }
+        foreach ($nestedAttributeFields as $nestedAttributeField) {
+            if (!is_array($record[$nestedAttributeField])) {
+                $record[$nestedAttributeField] = json_decode($record[$nestedAttributeField], true);
+            }
 
+            $nestedAttributes = $this->nestedAttributesList[$nestedAttributeField];
+
+            foreach ($nestedAttributes as $attribute) {
+                $record[$nestedAttributeField][$attribute] = $this->getAttribute($attribute)->value2db([$attribute => $record[$attribute]]);
+            }
+        }
     }
-
 
     /**
      * Ask the user a confirmation before proceeding with the action.
      *
      * @param ActionHandler $handler
-     * @param string[] $atkSelectors
+     * @param string[]|null $atkSelectors
+     * @param string|null $cancelUrl It goes to this url if the user has cancelled the action
      * @return bool True if the user has confirmed the action.
      */
-    protected function checkConfirmAction(ActionHandler $handler, array $atkSelectors = []): bool
+    protected function checkConfirmAction(ActionHandler $handler, ?array $atkSelectors = null, ?string $cancelUrl = null): bool
     {
         if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
             if (!$atkSelectors) {
-                $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR];
+                $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR] ?? null;
             }
             $this->getPage()->addContent($this->renderActionPage(
                 $handler->m_action, [$this->confirmAction($atkSelectors, $handler->m_action)]) // show confirm buttons
@@ -5889,7 +5921,11 @@ class Node
 
         } elseif ($this->m_postvars['cancel']) {
             // the user has cancelled the action.
-            $this->redirect();
+            if ($cancelUrl) {
+                $this->redirect($cancelUrl);
+            } else {
+                $this->redirect();
+            }
             return false;
         }
 
@@ -5900,12 +5936,12 @@ class Node
      * Check if at least one of the attribute has been modified before saving.
      *
      * @param array $record
-     * @param string[] $attributes
+     * @param string[] $attributeNames
      * @return bool
      */
-    protected function areAttributesModified(array $record, array $attributes): bool
+    protected function areAttributesModified(array $record, array $attributeNames): bool
     {
-        foreach ($attributes as $attribute) {
+        foreach ($attributeNames as $attribute) {
             if ($this->isAttributeModified($record, $attribute)) {
                 // at least one of the attribute has been modified
                 return true;
@@ -5915,18 +5951,13 @@ class Node
         return false;
     }
 
-
     /**
      * Check if the attribute is present on the current node and if its TRACK_CHANGES flag has been set.
-     *
-     * @param string $attributeName
-     * @return bool
      */
     protected function isAttributeTrackChangesAvailable(string $attributeName): bool
     {
         return $this->getAttribute($attributeName) and $this->hasFlag(self::NF_TRACK_CHANGES);
     }
-
 
     /**
      * Check if the attribute has been modified before saving it.
@@ -5939,12 +5970,12 @@ class Node
     protected function isAttributeModified(array $record, string $attributeName, array $checkMtoPrimaryKeys = ['id']): ?bool
     {
         if (!$this->isAttributeTrackChangesAvailable($attributeName)) {
-            // cannot check for modifications on this attribute/node.
+            // cannot check the changes for the given attribute on this node.
             return null;
         }
 
-        $oldValue = $record['atkorgrec'][$attributeName];
-        $newValue = $record[$attributeName];
+        $oldValue = $this->getAttributeOldValue($record, $attributeName);
+        $newValue = $this->getAttributeValue($record, $attributeName);
 
         // 'special' attributes.
         $attr = $this->getAttribute($attributeName);
@@ -5988,16 +6019,12 @@ class Node
             return false;
         }
 
-        // default check.
+        // default check
         return $newValue != $oldValue;
     }
 
     /**
      * Verify if the value of the attribute has changed from null or empty to a non-null value.
-     *
-     * @param array $record
-     * @param string $attributeName
-     * @return bool
      */
     protected function attributeGainedValue(array $record, string $attributeName): ?bool
     {
@@ -6006,26 +6033,21 @@ class Node
             return null;
         }
 
-        $oldValue = $record['atkorgrec'][$attributeName];
-        $newValue = $record[$attributeName];
+        $oldValue = $this->getAttributeOldValue($record, $attributeName);
+        $newValue = $this->getAttributeValue($record, $attributeName);
 
         $attr = $this->getAttribute($attributeName);
-        if ($attr->get_class_name() == 'FileAttribute') {
-            // True se il file è stato aggiunto o modificato
-            // True
+        if ($attr instanceof FileAttribute) {
+            // True if the file is just added or edited
             return strpos($newValue['tmpfile'], sys_get_temp_dir()) !== false;
-
         }
 
+        // default check
         return !$oldValue and $newValue;
     }
 
-
     /**
      * Get the list of the attribute names for a given tab.
-     *
-     * @param string $tabName Tab Name
-     * @return array Attribute names
      */
     function getTabAttributeNames(string $tabName): array
     {
@@ -6036,7 +6058,6 @@ class Node
         }
         return $attrNames;
     }
-
 
     /**
      * Get the list of the attributes for a given tab.

@@ -889,6 +889,8 @@ return [
      */
     'recordlist_top_scroller' => false,
 
+    'numberattribute_use_thousands_separator' => false,
+
     /*
      * logo
      */

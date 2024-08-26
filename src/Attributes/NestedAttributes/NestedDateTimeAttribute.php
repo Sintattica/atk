@@ -24,7 +24,7 @@ class NestedDateTimeAttribute extends DateTimeAttribute
 
     public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
     {
-        if (!$this->getOwnerInstance()->isNestedAttribute($this->fieldName())) {
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
             parent::searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
         }
         $this->m_date->searchCondition($query, $table, $value, $searchmode, $this->buildSQLSearchValue($table));

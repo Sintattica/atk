@@ -10,7 +10,6 @@ namespace Sintattica\Atk\Core\Menu;
  */
 class SeparatorItem extends Item
 {
-
     private $color;
 
     public function __construct(string $color = "#c2c7d0", string $position = MenuBase::MENU_SIDEBAR)
@@ -21,29 +20,19 @@ class SeparatorItem extends Item
         $this->name = uniqid();
     }
 
-    /**
-     * @return string
-     */
     public function getColor(): string
     {
         return $this->color;
     }
 
-    /**
-     * @param string $color
-     * @return SeparatorItem
-     */
-    public function setColor(string $color): SeparatorItem
+    public function setColor(string $color): self
     {
         $this->color = $color;
         return $this;
     }
 
-
     protected function createIdentifierComponents(): ?string
     {
-        return "";
+        return '';
     }
-
-
 }

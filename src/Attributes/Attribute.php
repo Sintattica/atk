@@ -581,6 +581,7 @@ class Attribute
     private $htmlSpecialChars = true;
 
     private $isNestedAttribute = false;
+    private $nestedAttributeField = null;
 
     private $minWidth = null;
     private $maxWidth = null;
@@ -3488,57 +3489,53 @@ class Attribute
         $this->setCssStyle($type, 'min-width', $minWidth . 'px');
     }
 
-    /**
-     * @return bool
-     */
     public function isHtmlSpecialChars(): bool
     {
         return $this->htmlSpecialChars;
     }
 
-    /**
-     * @param bool $htmlSpecialChars
-     * @return Attribute
-     */
     public function setHtmlSpecialChars(bool $htmlSpecialChars): self
     {
         $this->htmlSpecialChars = $htmlSpecialChars;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isNl2br(): bool
     {
         return $this->nl2br;
     }
 
-    /**
-     * @param bool $nl2br
-     * @return Attribute
-     */
     public function setNl2br(bool $nl2br): self
     {
         $this->nl2br = $nl2br;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isNestedAttribute(): bool
     {
         return $this->isNestedAttribute;
     }
 
-    /**
-     * @param bool $isNestedAttribute
-     * @return self
-     */
     public function setIsNestedAttribute(bool $isNestedAttribute): self
     {
         $this->isNestedAttribute = $isNestedAttribute;
+        return $this;
+    }
+
+    public function getNestedAttributeField(): ?string
+    {
+        return $this->nestedAttributeField;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function setNestedAttributeField(?string $nestedAttributeField): self
+    {
+        if ($nestedAttributeField && !$this->isNestedAttribute) {
+            throw new Exception("Attribute '{$this->fieldName()}' must be nested!");
+        }
+        $this->nestedAttributeField = $nestedAttributeField;
         return $this;
     }
 }

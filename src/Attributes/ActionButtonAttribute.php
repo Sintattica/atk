@@ -33,11 +33,11 @@ class ActionButtonAttribute extends ButtonAttribute
             // action edit but user has not access rights: goes to view page
             $action = 'view';
         }
-        if (empty($this->params)) {
-            // default params
+        if (!isset($this->params[Node::PARAM_ATKSELECTOR])) {
             $this->params[Node::PARAM_ATKSELECTOR] = $targetNode->getPrimaryKey($record);
         }
         if ($this->paramsFieldNames){
+            // params mapped to record field
             foreach ($this->paramsFieldNames as $fieldName) {
                 $this->params[$fieldName] = $record[$fieldName] ?? null;
             }
@@ -54,19 +54,19 @@ class ActionButtonAttribute extends ButtonAttribute
         return Tools::href($url, $tranlatedText, $this->sessionStatus, $this->saveForm, implode(' ', $extraProps));
     }
 
-    public function addParam($key, $value): self
+    public function addParam(string $key, $value): self
     {
         $this->params[$key] = $value;
         return $this;
     }
 
-    public function addParams($params = []): self
+    public function addParams(array $params = []): self
     {
         $this->params = array_merge($this->params, $params);
         return $this;
     }
 
-    public function setParams($params = []): self
+    public function setParams(array $params = []): self
     {
         $this->params = $params;
         return $this;
@@ -77,7 +77,7 @@ class ActionButtonAttribute extends ButtonAttribute
         return $this->params;
     }
 
-    public function addParamFieldName($fieldName): self
+    public function addParamFieldName(string $fieldName): self
     {
         $this->paramsFieldNames[] = $fieldName;
         return $this;
@@ -99,7 +99,7 @@ class ActionButtonAttribute extends ButtonAttribute
         return $this->action;
     }
 
-    public function setAction($action): self
+    public function setAction(string $action): self
     {
         $this->action = $action;
         return $this;
@@ -110,7 +110,7 @@ class ActionButtonAttribute extends ButtonAttribute
         return $this->target;
     }
 
-    public function setTarget($target): self
+    public function setTarget(string $target): self
     {
         $this->target = $target;
         return $this;

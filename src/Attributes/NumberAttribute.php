@@ -33,7 +33,7 @@ class NumberAttribute extends Attribute
     public $m_thousandsseparator;
 
     /** When TRUE, the thousands separator will be shown when formatting a number */
-    public $m_use_thousands_separator = false;
+    public $m_use_thousands_separator;
 
     /** When TRUE, trailing zeros will be shown */
     public $m_trailingzeros = false; // Show trailing zeros
@@ -62,6 +62,7 @@ class NumberAttribute extends Attribute
         $this->setDecimals($decimals);
         $this->setDecimalSeparator(Tools::atktext(self::SEPARATOR_DECIMAL, 'atk'));
         $this->setThousandsSeparator(Tools::atktext(self::SEPARATOR_THOUSAND, 'atk'));
+        $this->m_use_thousands_separator = Config::getGlobal('numberattribute_use_thousands_separator');
     }
 
     public function getDecimals()

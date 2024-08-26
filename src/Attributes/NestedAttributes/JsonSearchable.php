@@ -20,7 +20,7 @@ trait JsonSearchable
     {
         $json_query = "";
 
-        if ($this->getOwnerInstance()->isNestedAttribute($this->fieldName())) {
+        if ($this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
             $json_query = $this->buildJSONExtractValue($this, $table);
 
             if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
@@ -46,7 +46,7 @@ trait JsonSearchable
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->getOwnerInstance()->isNestedAttribute($this->fieldName())) {
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
             return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
         }
 

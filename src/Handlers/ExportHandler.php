@@ -371,14 +371,15 @@ class ExportHandler extends ActionHandler
         $recordSet = $nodeBk->select($condition)->orderBy($atkOrderBy)->includes($listIncludes)->mode('export')->getAllRows();
 
         if ($nodeBk->hasNestedAttributes()) {
-            $nestedAttributeField = $nodeBk->getNestedAttributeField();
             $nestedAttributesList = $nodeBk->getNestedAttributesList();
             foreach ($recordSet as &$record) {
-                foreach ($nestedAttributesList as $nestedAttribute) {
-                    if (in_array($nestedAttribute, $listIncludes) && $record[$nestedAttributeField] != null) {
-                        $record[$nestedAttribute] = $record[$nestedAttributeField][$nestedAttribute];
-                    } else {
-                        $record[$nestedAttribute] = null;
+                foreach ($nestedAttributesList as $nestedAttributeField => $nestedAttributeNames) {
+                    foreach ($nestedAttributeNames as $nestedAttributeName) {
+                        if (in_array($nestedAttributeName, $listIncludes) && isset($record[$nestedAttributeField])) {
+                            $record[$nestedAttributeName] = $record[$nestedAttributeField][$nestedAttributeName];
+                        } else {
+                            $record[$nestedAttributeName] = null;
+                        }
                     }
                 }
             }
