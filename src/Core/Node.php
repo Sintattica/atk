@@ -1498,13 +1498,10 @@ class Node
 
     /**
      * Returns the primary key selector of the record.
-     *
-     * @param array $record
-     * @return string
      */
     public function getPrimaryKey(array $record): string
     {
-        if ($atkPrimKey = $record['atkprimkey']) {
+        if (isset($record['atkprimkey']) && $atkPrimKey = $record['atkprimkey']) {
             return $atkPrimKey;
         }
         if ($atkPrimKey = $this->primaryKey($record)) {
@@ -1516,10 +1513,9 @@ class Node
     /**
      * Set default sort order for the node.
      *
-     * @param string $orderby Default order by. Can be an attribute name or a
-     *                        SQL expression.
+     * @param string $orderby Default order by. Can be an attribute name or a SQL expression.
      */
-    public function setOrder(string $orderby)
+    public function setOrder(string $orderby): void
     {
         $this->m_default_order = $orderby;
     }
@@ -1527,8 +1523,7 @@ class Node
     /**
      * Get default sort order for the node.
      *
-     * @return string $orderby Default order by. Can be an attribute name or a
-     *                SQL expression.
+     * @return string Default order by. Can be an attribute name or a SQL expression.
      */
     public function getOrder(): string
     {
@@ -1551,7 +1546,7 @@ class Node
      *                          You can pass either a connection (Db instance), or
      *                          a string containing the name of the connection to use.
      */
-    public function setTable($tablename, $seq = '', $db = null)
+    public function setTable($tablename, $seq = '', $db = null): void
     {
         $this->m_table = $tablename;
         if ($seq == '') {
@@ -1614,9 +1609,9 @@ class Node
     public function setTabIndex($tabname, $index, $action = '')
     {
         Tools::atkdebug("self::setTabIndex($tabname,$index,$action)");
-        $actionList = array('add', 'edit', 'view');
+        $actionList = ['add', 'edit', 'view'];
         if ($action != '') {
-            $actionList = array($action);
+            $actionList = [$action];
         }
         foreach ($actionList as $action) {
             $new_index = $index;
@@ -1628,7 +1623,7 @@ class Node
                 $new_index = Tools::count($list);
             }
             $current_index = array_search($tabname, $list);
-            if ($current_index !== null) {
+            if ($current_index !== false) {
                 $tmp = array_splice($list, $current_index, 1);
                 array_splice($list, $new_index, 0, $tmp);
             }
@@ -1661,7 +1656,7 @@ class Node
      */
     public function getTabs($action)
     {
-        $list = isset($this->m_tabList[$action]) ? $this->m_tabList[$action] : null;
+        $list = $this->m_tabList[$action] ?? null;
         $disable = $this->checkTabRights($list);
 
         if (!is_array($list)) {
@@ -1721,7 +1716,7 @@ class Node
 
         if (is_array($this->m_sectionList[$action])) {
             foreach ($this->m_sectionList[$action] as $element) {
-                list($tab, $sec) = (strpos($element, '.') !== false) ? explode('.', $element) : array($element, null);
+                list($tab, $sec) = (str_contains($element, '.')) ? explode('.', $element) : [$element, null];
 
                 //if this section is on an active tab, we return it.
                 if ($tab == $this->getActiveTab() && $sec !== null) {
@@ -1866,12 +1861,12 @@ class Node
         $activeSections = [];
         if (is_array($this->m_sectionList[$mode])) {
             foreach ($this->m_sectionList[$mode] as $section) {
-                if (substr($section, 0, strlen($tab)) == $tab) {
+                if (str_starts_with($section, $tab)) {
                     $sectionName = 'section_' . str_replace('.', '_', $section);
-                    $key = array(
+                    $key = [
                         'nodetype' => $this->atkNodeUri(),
-                        'section' => $sectionName,
-                    );
+                        'section' => $sectionName
+                    ];
                     $defaultOpen = in_array($section, $this->m_default_expanded_sections);
                     if (State::get($key, $defaultOpen ? 'opened' : 'closed') != 'closed') {
                         $activeSections[] = $section;
@@ -2011,18 +2006,13 @@ class Node
 
     /**
      * Returns the form button with passed html name.
-     *
-     * @param string $name
-     * @param string $mode
-     * @param array $record
-     * @return string|null
      */
     function getFormButton(string $name, string $mode, array $record = []): ?string
     {
         $buttons = self::getFormButtons($mode, $record);
 
         foreach ($buttons as $i => $button) {
-            if (strpos($button, "name=\"$name\"") !== false) {
+            if (str_contains($button, "name=\"$name\"")) {
                 return $button;
             }
         }
@@ -2032,31 +2022,24 @@ class Node
 
     /**
      * Remove the form button with passed html name.
-     *
-     * @param array $buttons
-     * @param string $name
      */
     function removeFormButton(array &$buttons, string $name): void
     {
         foreach ($buttons as $i => $button) {
-            if (strpos($button, "name=\"$name\"") !== false) {
+            if (str_contains($button, "name=\"$name\"")) {
                 unset($buttons[$i]);
-                return;
+                break;
             }
         }
     }
 
     /**
      * Find the form button in the passed array of buttons.
-     *
-     * @param array $buttons
-     * @param string $name
-     * @return bool
      */
     function findFormButton(array $buttons, string $name): bool
     {
         foreach ($buttons as $i => $button) {
-            if (strpos($button, "name=\"$name\"") !== false) {
+            if (str_contains($button, "name=\"$name\"")) {
                 return true;
             }
         }
@@ -2227,7 +2210,7 @@ class Node
             $page->register_script(Config::getGlobal('assets_url') . 'javascript/tabs.js?stateful=' . (Config::getGlobal('dhtml_tabs_stateful') ? '1' : '0'));
 
             // Load default tab show script.
-            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab(\'' . (isset($this->m_postvars['atktab']) ? $this->m_postvars['atktab'] : '') . '\');}');
+            $page->register_loadscript('if ( ATK.Tabs.showTab ) {ATK.Tabs.showTab(\'' . ($this->m_postvars['atktab'] ?? '') . '\');}');
 
             $fulltabs = $this->buildTabs($action);
             $tabscript = "var tabs = new Array();\n";
@@ -2574,7 +2557,7 @@ class Node
             $newSections = array_diff($fieldSections, $addedSections);
             if (Tools::count($newSections) > 0) {
                 foreach ($newSections as $section) {
-                    if (strpos($section, '.') !== false) {
+                    if (str_contains($section, '.')) {
                         $result[] = array(
                             'html' => 'section',
                             'name' => $section,
