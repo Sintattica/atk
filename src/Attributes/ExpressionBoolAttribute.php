@@ -19,7 +19,7 @@ class ExpressionBoolAttribute extends ExpressionListAttribute
         parent::__construct($name, $flags, $expression, $listAttr);
     }
 
-    function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         if ($this->null_item and $record[$this->fieldName()] === null) {
             // the sql query has returned NULL

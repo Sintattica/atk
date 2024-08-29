@@ -294,7 +294,7 @@ class FormatAttribute extends Attribute
      *
      * @return string The internal value
      */
-    public function fetchValue($postvars)
+    public function fetchValue($postvars): string
     {
         $masks = $this->_breakDown();
         $elems = isset($postvars[$this->fieldName()])?$postvars[$this->fieldName()]:null;

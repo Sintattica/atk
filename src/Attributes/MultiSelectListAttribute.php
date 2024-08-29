@@ -119,7 +119,7 @@ class MultiSelectListAttribute extends ListAttribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
@@ -128,7 +128,7 @@ class MultiSelectListAttribute extends ListAttribute
      *
      * @return string HTML String
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $values = $record[$this->fieldName()];
         $res = [];

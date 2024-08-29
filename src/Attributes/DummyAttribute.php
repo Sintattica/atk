@@ -117,20 +117,6 @@ class DummyAttribute extends Attribute
     }
 
     /**
-     * Display a record
-     * Here it will only return the text.
-     *
-     * @param array $record Array with fields
-     * @param string $mode
-     *
-     * @return string Text
-     */
-    public function display($record, $mode)
-    {
-        return $this->m_text;
-    }
-
-    /**
      * Set the text of this attribute.
      *
      * @param string $text
@@ -140,6 +126,20 @@ class DummyAttribute extends Attribute
     {
         $this->m_text = $text;
         return $this;
+    }
+
+    /**
+     * Display a record
+     * Here it will only return the text.
+     *
+     * @param array $record Array with fields
+     * @param string $mode
+     *
+     * @return string Text
+     */
+    public function display(array $record, string $mode): string
+    {
+        return $this->m_text;
     }
 
     /**

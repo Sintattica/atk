@@ -117,7 +117,7 @@ class WeekdayAttribute extends NumberAttribute
      *
      * In this case, the timestamp is returned in human readable format.
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists). The regular
      *                       Attribute does not use this parameter, but
@@ -126,7 +126,7 @@ class WeekdayAttribute extends NumberAttribute
      *
      * @return string HTML String
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $result = '';
         $value = (int)$record[$this->fieldName()];

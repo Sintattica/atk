@@ -373,7 +373,7 @@ class ManyToManyRelation extends Relation
     /**
      * Returns a displayable string for this value.
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
@@ -381,8 +381,9 @@ class ManyToManyRelation extends Relation
      *                       use additional modes.
      *
      * @return string a displayable string for this value
+     * @throws Exception
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $result = '';
 

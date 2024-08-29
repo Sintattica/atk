@@ -54,12 +54,12 @@ class ParserAttribute extends Attribute
     /**
      * Parses a record.
      *
-     * @param array $record Array with fields
+     * @param array<string, mixed> $record Array with fields
      * @param string $mode
      *
      * @return string Parsed string
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $stringparser = new StringParser($this->m_text);
 

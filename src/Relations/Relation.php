@@ -261,7 +261,7 @@ class Relation extends Attribute
         return true;
     }
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         return $record[$this->fieldName()];
     }

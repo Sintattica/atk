@@ -39,7 +39,7 @@ class EmailAttribute extends Attribute
     /**
      * Returns a displayable string for this value.
      *
-     * @param array $record The record to display
+     * @param array<string, mixed> $record The record to display
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
@@ -48,7 +48,7 @@ class EmailAttribute extends Attribute
      *
      * @return string
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         if ($mode == 'csv') {
             return parent::display($record, $mode);

@@ -26,12 +26,12 @@ class RowCounterAttribute extends DummyAttribute
     /**
      * Returns a number corresponding to the row count per record.
      *
-     * @param array $record
+     * @param array<string, mixed> $record
      * @param string $mode
      *
      * @return int Counter, starting at 1
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         static $s_counter = 0;
         $node = $this->m_ownerInstance;

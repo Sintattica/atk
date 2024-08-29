@@ -52,7 +52,7 @@ class UpdatedByAttribute extends ManyToOneRelation
         }
     }
 
-    function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $value = parent::display($record, $mode);
         if (!$value && $mode == 'list') {

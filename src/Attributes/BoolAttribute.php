@@ -210,12 +210,12 @@ class BoolAttribute extends Attribute
     /**
      * Returns a displayable string for this value.
      *
-     * @param array $record Array with boolean field
+     * @param array<string, mixed> $record Array with boolean field
      * @param string $mode
      *
      * @return string yes or no
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '

@@ -1084,7 +1084,7 @@ class Attribute
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string|null The internal value
+     * @return string|array|null The internal value
      */
     public function fetchValue($postvars)
     {
@@ -1978,7 +1978,7 @@ class Attribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
@@ -1987,7 +1987,7 @@ class Attribute
      *
      * @return string HTML String
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         // the next if-statement is a workaround for derived attributes which do
         // not override the display() method properly. This will not give them a

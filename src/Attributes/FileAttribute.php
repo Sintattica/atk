@@ -311,12 +311,12 @@ class FileAttribute extends Attribute
     /**
      * Display values.
      *
-     * @param array $record Array with fields
+     * @param array<string, mixed> $record Array with fields
      * @param string $mode
      *
      * @return string Filename or Nothing
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         // Get random number to use as param when displaying images
         // while updating images was not allways visible due to caching

@@ -52,7 +52,7 @@ class ExpressionListAttribute extends ExpressionAttribute
         return ['exact'];
     }
 
-    function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         // translate the value in the text
         return $this->m_listAttribute->display($record, $mode);

@@ -50,7 +50,7 @@ class NodeValidator
      *
      * @param array $fieldArr List of fields to ignore during validation
      */
-    public function setIgnoreList($fieldArr)
+    public function setIgnoreList(array $fieldArr): void
     {
         $this->m_ignoreList = $fieldArr;
     }
@@ -60,7 +60,7 @@ class NodeValidator
      *
      * @param string $mode The mode ("edit"/"add")
      */
-    public function setMode($mode)
+    public function setMode(string $mode): void
     {
         $this->m_mode = $mode;
     }
@@ -70,7 +70,7 @@ class NodeValidator
      *
      * @param Node $nodeObj The node for validation
      */
-    public function setNode($nodeObj)
+    public function setNode(Node $nodeObj): void
     {
         $this->m_nodeObj = $nodeObj;
     }
@@ -82,7 +82,7 @@ class NodeValidator
      *                      reference, because errors that are found are
      *                      stored in the record.
      */
-    public function setRecord(&$record)
+    public function setRecord(array &$record): void
     {
         $this->m_record = &$record;
     }
@@ -93,7 +93,7 @@ class NodeValidator
      * @param string $mode Override the mode
      * @param array $ignoreList Override the ignoreList
      */
-    public function validate($mode = '', $ignoreList = array())
+    public function validate(string $mode = '', array $ignoreList = array()): bool
     {
         // check overrides
         if (Tools::count($ignoreList)) {
@@ -177,7 +177,7 @@ class NodeValidator
      * @param Attribute $p_attrib pointer to the attribute
      * @param array $record record
      */
-    public function validateAttributeValue($p_attrib, &$record)
+    public function validateAttributeValue(Attribute $p_attrib, array &$record): void
     {
         if (!$p_attrib->isEmpty($record)) {
             $funcname = $p_attrib->m_name.'_validate';
@@ -197,7 +197,7 @@ class NodeValidator
      *
      * @param array $record The record to validate
      */
-    public function validateUniqueFieldSets(&$record)
+    public function validateUniqueFieldSets(array &$record): void
     {
         $db = $this->m_nodeObj->getDb();
         foreach ($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet) {

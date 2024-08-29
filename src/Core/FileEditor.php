@@ -8,6 +8,7 @@ use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\TextAttribute;
 use Sintattica\Atk\Handlers\EditHandler;
 use Sintattica\Atk\Handlers\DeleteHandler;
+use Sintattica\Atk\Utils\Selector;
 
 /**
  * File editing node.
@@ -151,11 +152,11 @@ class FileEditor extends Node
     /**
      * This function sets the actions of the items in the list.
      *
-     * @param string $record Identifier for the record
+     * @param array $record Identifier for the record
      * @param array $actions Result array containing the options
-     * @param mixed $mraactions
+     * @param array $mraactions
      */
-    public function recordActions($record, &$actions, &$mraactions)
+    public function recordActions(array $record, array &$actions, array &$mraactions): void
     {
         $this->m_dir = $this->stripDir($this->m_dir);
         if (is_dir($this->m_dir . '/' . $record['filename'])) {
@@ -177,25 +178,24 @@ class FileEditor extends Node
      * This function loops through the items in a directory and
      * and calls functions to print the results.
      *
-     * @param string $selector Identifier for the selected item
-     * @param string $orderby The list of items is ordered by the item type
+     * @param string|null $condition Identifier for the selected item
+     * @param array $params The list of items is ordered by the item type
      *                         mentioned in this variable
-     * @param mixed $limit
      *
-     * @return array
+     * @return array|Selector
      */
-    public function select($selector = '', $orderby = '', $limit = '')
+    public function select(string|null $condition = '', array $params = array()): array|Selector
     {
         $res = [];
         SessionManager::getInstance()->stackVar('dirname', $this->m_dir);
-        if ($selector == '') {
+        if ($condition == '') {
             // no file selected, generate list..
             $start = 0;
             $max = -1; // no max
 
-            if (is_array($limit) && Tools::count($limit) == 2) {
-                $start = $limit['offset'];
-                $max = $limit['limit'];
+            if (is_array($params) && Tools::count($params) == 2) {
+                $start = $params['offset'];
+                $max = $params['params'];
             }
 
             $d = dir($this->m_dir);
@@ -209,7 +209,7 @@ class FileEditor extends Node
                 $d->close();
 
                 if (Tools::count($arr) > 0) {
-                    if ($orderby == 'dummy.filename DESC') {
+                    if ($params == 'dummy.filename DESC') {
                         rsort($arr);
                     } else {
                         sort($arr);
@@ -230,7 +230,7 @@ class FileEditor extends Node
             // file selected, read file.
             // in the fileeditor, the selector is always dummy.filename=name
             // so we use the value of the decoded pair as a filename.
-            $decodedselector = Tools::decodeKeyValuePair($selector);
+            $decodedselector = Tools::decodeKeyValuePair($condition);
             $filename = $decodedselector['dummy.filename'];
             $record['filename'] = $filename;
 
@@ -254,7 +254,7 @@ class FileEditor extends Node
      * @param array $record Array that contains the identifier of the record
      * @param string $mode The mode we're in
      */
-    public function validate(&$record, $mode, $ignoreList = [])
+    public function validate(array &$record, string $mode, array $ignoreList = []): bool
     {
         if (!preg_match($this->m_filefilter, $record['filename'])) {
             Tools::triggerError($record, 'filename', 'filename_invalid');
@@ -263,6 +263,7 @@ class FileEditor extends Node
                 Tools::triggerError($record, 'filename', 'file_exists');
             }
         }
+        return true;
     }
 
     /**
@@ -270,7 +271,7 @@ class FileEditor extends Node
      *
      * @return string The text containing the directory name
      */
-    public function adminHeader()
+    public function adminHeader(): string
     {
         return '<p><b>' . $this->text('current_dir') . ': ' . substr_replace($this->m_dir, '', 0, strlen($this->m_basedir)) . '</b></p>';
     }
@@ -284,7 +285,7 @@ class FileEditor extends Node
      * @return bool The result of the file addition
      * @throws Exception
      */
-    public function addDb(array &$record, bool $exectrigger = true, string $mode = 'add', $excludelist = []): bool
+    public function addDb(array &$record, bool $exectrigger = true, string $mode = 'add', array $excludelist = []): bool
     {
         $sessmngr = SessionManager::getInstance();
         $this->m_dir = $this->stripDir($sessmngr->stackVar('dirname'));
@@ -312,7 +313,7 @@ class FileEditor extends Node
      * @return bool The result of the file update
      * @throws Exception
      */
-    public function updateDb(array &$record, bool $exectrigger = true, $excludes = '', $includes = ''): bool
+    public function updateDb(array &$record, bool $exectrigger = true, array|string $excludes = '', array|string $includes = ''): bool
     {
         // The record that must be updated is indicated by 'atkorgkey'
         // (not by atkselector, since the primary key might have
@@ -383,7 +384,7 @@ class FileEditor extends Node
      *
      * @param EditHandler $handler
      */
-    public function action_edit(EditHandler $handler)
+    public function action_edit(EditHandler $handler): void
     {
         $this->m_dir = SessionManager::getInstance()->stackVar('dirname');
         $handler->action_edit();
@@ -395,7 +396,7 @@ class FileEditor extends Node
      *
      * @param DeleteHandler $handler
      */
-    public function action_delete(DeleteHandler $handler)
+    public function action_delete(DeleteHandler $handler): void
     {
         $this->m_dir = SessionManager::getInstance()->stackVar('dirname');
         $handler->action_delete();
@@ -405,7 +406,7 @@ class FileEditor extends Node
      * This function implements the functionality to move up
      * and down directories.
      */
-    public function action_dirchange()
+    public function action_dirchange(): void
     {
         $selectedDir = $this->stripDir($this->m_postvars[Node::PARAM_ATKSELECTOR]);
         SessionManager::getInstance()->stackVar('dirname', $selectedDir);
@@ -418,10 +419,9 @@ class FileEditor extends Node
      * This function strips a given directory to a valid relative path.
      *
      * @param string $dirname Path of the dir to change to
-     *
      * @return string Stripped directory path
      */
-    public function stripDir($dirname)
+    public function stripDir(string $dirname): string
     {
         // normalizes the given string to a relative dir that should always start with the base directory
         if (strpos(realpath($dirname), realpath($this->m_basedir)) === 0) {
@@ -441,7 +441,7 @@ class FileEditor extends Node
      *
      * @param bool $bool
      */
-    public function showDirs($bool)
+    public function showDirs(bool $bool): void
     {
         $this->m_showdirs = (bool)$bool;
     }

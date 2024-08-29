@@ -22,7 +22,7 @@ class ActionButtonAttribute extends ButtonAttribute
         parent::__construct($name, $flags | self::AF_HIDE_LIST | self::AF_READONLY);
     }
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $classes = implode(' ', $this->m_cssclasses);
         $tranlatedText = $this->text($this->m_text);
@@ -94,7 +94,7 @@ class ActionButtonAttribute extends ButtonAttribute
         return $this;
     }
 
-    public function getAction(): string
+    public function getAction(): ?string
     {
         return $this->action;
     }

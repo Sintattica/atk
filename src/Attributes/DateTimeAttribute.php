@@ -190,7 +190,7 @@ class DateTimeAttribute extends Attribute
     /**
      * Display's html version of Record.
      *
-     * @param array $record The record
+     * @param array<string, mixed> $record The record
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
@@ -199,7 +199,7 @@ class DateTimeAttribute extends Attribute
      *
      * @return string text string of $record
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $date = $this->m_date->display($record, $mode);
         $time = $this->m_time->display($record, $mode);

@@ -337,12 +337,12 @@ class OneToManyRelation extends Relation
      * mode, in the form of a read-only data grid. In "list" mode, a plain
      * list of detail record descriptors is displayed.
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list" for displaying in record lists)
      *
      * @return string HTML String
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         // for the view mode we use the datagrid and load the records ourselves
         if ($mode === 'view' || ($mode === 'edit' && $this->hasFlag(self::AF_READONLY_EDIT))) {

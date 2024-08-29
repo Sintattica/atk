@@ -59,7 +59,7 @@ class StateColorAttribute extends DummyAttribute
         parent::__construct($name, $flags | self::AF_READONLY | self::AF_DUMMY_SHOW_LABEL);
     }
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $shapeClasses = [];
 

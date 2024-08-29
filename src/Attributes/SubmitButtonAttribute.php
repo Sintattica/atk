@@ -8,7 +8,7 @@ class SubmitButtonAttribute extends ButtonAttribute
     private $onClickCallback = null;
     private $doUpdate = true;
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $classes = implode(' ', $this->m_cssclasses);
         $tranlatedText = $this->text($this->m_text);

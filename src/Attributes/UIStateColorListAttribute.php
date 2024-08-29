@@ -15,7 +15,7 @@ class UIStateColorListAttribute extends ListAttribute
         parent::__construct($name, $flags, $optionArray);
     }
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $display = parent::display($record, $mode);
 

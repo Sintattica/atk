@@ -10,7 +10,7 @@ class JsonAttribute extends TextAttribute
     private $jsonIndentChar = "&nbsp;&nbsp;&nbsp;&nbsp;";
     private $jsonNewlineChar = "<br />";
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $displayContent = '';
         $fieldContent = $record[$this->fieldName()];

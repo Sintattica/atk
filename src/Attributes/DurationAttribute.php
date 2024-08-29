@@ -154,7 +154,7 @@ class DurationAttribute extends Attribute
      * The regular Attribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
@@ -163,7 +163,7 @@ class DurationAttribute extends Attribute
      *
      * @return string with YYYY-MM-DD
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         return self::_minutes2string($record[$this->fieldName()]);
     }

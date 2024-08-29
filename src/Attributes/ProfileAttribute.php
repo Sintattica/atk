@@ -325,12 +325,12 @@ class ProfileAttribute extends Attribute
      * Display rights.
      * It will only display the rights & nodes that are selected for the user.
      *
-     * @param array $record
+     * @param array<string, mixed> $record
      * @param string $mode
      *
      * @return string Displayable string
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         Page::getInstance()->register_script(Config::getGlobal('assets_url') . 'javascript/profileattribute.js');
 

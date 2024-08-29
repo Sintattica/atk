@@ -1390,12 +1390,12 @@ class DateAttribute extends Attribute
     /**
      * Function display's the date.
      *
-     * @param array $record array with date
+     * @param array<string, mixed> $record array with date
      * @param string $mode
      *
      * @return string formatted date string
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $value = isset($record[$this->fieldName()]) ? $record[$this->fieldName()] : null;
         if (!is_array($value) || empty($value['month']) || empty($value['day']) || empty($value['year'])) {

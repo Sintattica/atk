@@ -25,7 +25,7 @@ class ExpressionDateAttribute extends ExpressionAttribute
         $this->m_dateAttribute->setOwnerInstance($this->m_ownerInstance);
     }
 
-    function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         if (!$record[$this->fieldName()]) {
             return '';

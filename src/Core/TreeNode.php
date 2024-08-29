@@ -61,13 +61,13 @@ class TreeNode extends Node
      * @param ActionHandler $handler
      * @param array $record
      */
-    public function action_admin($handler, $record = '')
+    public function action_admin(ActionHandler $handler, array $record = array()): void
     {
         if ($this->hasFlag(self::NF_TREE_NO_ROOT_ADD)) {
             $this->m_flags |= self::NF_NO_ADD;
         }
 
-        return $handler->action_admin($record);
+        $handler->action_admin($record);
     }
 
     /**
@@ -75,7 +75,7 @@ class TreeNode extends Node
      *
      * @return TreeToolsTree Tree object
      */
-    public function buildTree()
+    public function buildTree(): TreeToolsTree
     {
         Tools::atkdebug('treenode::buildtree() '.$this->m_parent);
         $recordset = $this->select(Tools::atkArrayNvl($this->m_postvars, 'atkfilter', ''))->excludes($this->m_listExcludes)->mode('admin')->getAllRows();
@@ -157,13 +157,13 @@ class TreeNode extends Node
     }
 
     /**
-     * Recursive funtion whitch fills an array with all the items of the tree.
+     * Recursive function which fills an array with all the items of the tree.
      * DEPRECATED, use treeToArray instead.
      *
-     * @param mixed $tree Tree
+     * @param mixed|string $tree Tree
      * @param int $level Level
      */
-    public function Fill_tree($tree = '', $level = 0)
+    public function Fill_tree(mixed $tree = '', int $level = 0): string
     {
         Tools::atkdebug('WARNING: use of deprecated function Fill_tree, use treeToArray instead');
 
@@ -171,12 +171,12 @@ class TreeNode extends Node
     }
 
     /**
-     * Recursive funtion whitch fills an array with all the items of the tree.
+     * Recursive function which fills an array with all the items of the tree.
      *
-     * @param mixed $tree Tree
+     * @param mixed|string $tree Tree
      * @param int $level Level
      */
-    public function treeToArray($tree = '', $level = 0)
+    public function treeToArray(mixed $tree = '', int $level = 0): string
     {
         static $s_count = 1;
         global $g_maxlevel, $exp_index;
@@ -209,10 +209,9 @@ class TreeNode extends Node
      * Returns the full path to a tree icon from the current theme.
      *
      * @param string $name Name of the icon (for example "expand" or "leaf")
-     *
      * @return string Path to the icon file
      */
-    public function getIcon($name)
+    public function getIcon(string $name): string
     {
         return $name;
     }
@@ -223,10 +222,9 @@ class TreeNode extends Node
      * @param bool $showactions Show actions?
      * @param bool $expandAll Expand all leafs?
      * @param bool $foldable Is this tree foldable?
-     *
      * @return string
      */
-    public function GraphTreeRender($showactions = true, $expandAll = false, $foldable = true)
+    public function GraphTreeRender(bool $showactions = true, bool $expandAll = false, bool $foldable = true): string
     {
         global $g_maxlevel, $exp_index;
 
@@ -587,10 +585,11 @@ class TreeNode extends Node
     /**
      * Copies a record and the Childs if there are any.
      *
-     * @param array $record The record to copy
+     * @param array &$record The record to copy
      * @param string $mode The mode we're in (usually "copy")
+     * @throws Exception
      */
-    public function copyDb($record, $mode = 'copy')
+    public function copyDb(array &$record, string $mode = 'copy'): bool
     {
         $oldparent = $record[$this->m_primaryKey[0]];
 
@@ -612,10 +611,11 @@ class TreeNode extends Node
      * @todo shouldn't we recursively call copyDb here? instead of ourselves
      *
      * @param string $selector Selector
-     * @param int $parent Parent ID
+     * @param int|string $parent Parent ID
      * @param string $mode The mode we're in
+     * @throws Exception
      */
-    public function copyChildren($selector, $parent = '', $mode = 'copy')
+    public function copyChildren(string $selector, int|string $parent = '', string $mode = 'copy'): string
     {
         $recordset = $this->select($selector)->mode($mode)->getAllRows();
 
@@ -641,9 +641,12 @@ class TreeNode extends Node
      * delete record from the database also the childrecords.
      * todo: instead of delete, set the deleted flag.
      *
-     * @param string $selector Selector
+     * @param string $selector
+     * @param bool $exectrigger
+     * @param bool $failwhenempty
+     * @return bool
      */
-    public function deleteDb($selector)
+    public function deleteDb(string $selector, bool $exectrigger = true, bool $failwhenempty = false): bool
     {
         Tools::atkdebug('Retrieve record');
         $recordset = $this->select($selector)->mode('delete')->getAllRows();
@@ -675,7 +678,7 @@ class TreeNode extends Node
             $this->postDelete($recordset[$i]);
         }
 
-        return $recordset;
+        return true;
         // todo: instead of delete, set the deleted flag.
     }
 
@@ -685,7 +688,7 @@ class TreeNode extends Node
      * @param string $selector Selector
      * @param int $parent Id of the parent
      */
-    public function deleteChildren($selector, $parent)
+    public function deleteChildren(string $selector, int $parent): void
     {
         Tools::atkdebug('Check for child records of the Child');
         $recordset = $this->select($this->m_table.'.'.$this->m_parent.'='.$parent)->mode('delete')->getAllRows();

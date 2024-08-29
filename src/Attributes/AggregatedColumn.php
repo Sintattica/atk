@@ -69,7 +69,7 @@ class AggregatedColumn extends Attribute
     /**
      * The display function for this attribute.
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode ("view" for viewpages, or "list"
      *                       for displaying in recordlists, "edit" for
      *                       displaying in editscreens, "add" for displaying in
@@ -78,7 +78,7 @@ class AggregatedColumn extends Attribute
      *
      * @return string html code to display the value of this attribute
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $rec = [];
         foreach ($this->m_displayfields as $field) {

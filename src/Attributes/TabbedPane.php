@@ -374,7 +374,7 @@ class TabbedPane extends Attribute
     }
 
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $node = $this->m_ownerInstance;
         $arr = ['hide' => []];

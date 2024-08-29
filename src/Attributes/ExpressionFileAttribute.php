@@ -33,7 +33,7 @@ class ExpressionFileAttribute extends ExpressionAttribute
         $this->m_fileAttribute->useThumbnail($value);
     }
 
-    function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $record[$this->fieldName()] = ['filename' => $record[$this->fieldName()]];
         return $this->m_fileAttribute->display($record, $mode);

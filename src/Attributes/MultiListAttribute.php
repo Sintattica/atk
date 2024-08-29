@@ -38,7 +38,7 @@ class MultiListAttribute extends MultiSelectListAttribute
         return $this;
     }
 
-    function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $values = $record[$this->fieldName()];
         $res = [];

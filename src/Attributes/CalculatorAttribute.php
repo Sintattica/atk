@@ -112,12 +112,12 @@ class CalculatorAttribute extends Attribute
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * @param array $record The record that holds the value for this attribute
+     * @param array<string, mixed> $record The record that holds the value for this attribute
      * @param string $mode The display mode.
      *
      * @return string HTML String
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         if ($this->m_ownerInstance->m_partial == 'attribute.'.$this->fieldName().'.refresh') {
             $record[$this->fieldName()] = $this->load($this->m_ownerInstance->getDb(), $record, $mode);

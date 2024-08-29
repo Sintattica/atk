@@ -28,7 +28,7 @@ class HtmlAttribute extends TextAttribute
         $this->setNl2br($nl2br);
     }
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         $record[$this->fieldName()] = Tools::atkArrayNvl($record, $this->fieldName(), '');
 

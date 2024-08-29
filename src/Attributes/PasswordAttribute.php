@@ -390,12 +390,12 @@ class PasswordAttribute extends Attribute
     /**
      * We don't display the password.
      *
-     * @param array $record the record with display data
+     * @param array<string, mixed> $record the record with display data
      * @param string $mode
      *
      * @return string with value to display
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         return Tools::atktext('password_hidden', 'atk');
     }

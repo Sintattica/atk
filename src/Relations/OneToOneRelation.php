@@ -101,10 +101,10 @@ class OneToOneRelation extends Relation
         $this->m_refKey = $refKey;
     }
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         if ($mode == 'view') {
-            return;
+            return '';
         }
 
         $myrecord = $record[$this->fieldName()];

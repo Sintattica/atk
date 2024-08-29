@@ -634,7 +634,7 @@ class ManyToOneRelation extends Relation
         return $label;
     }
 
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         if ($this->createDestination()) {
             $cnt = isset($record[$this->fieldName()]) ? Tools::count($record[$this->fieldName()]) : null;

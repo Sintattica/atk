@@ -126,9 +126,9 @@ class FlagAttribute extends MultiSelectAttribute
      * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      *
-     * @return string The internal value
+     * @return array|string The internal value
      */
-    public function fetchValue($postvars)
+    public function fetchValue($postvars): array|string
     {
         $vars = Tools::atkArrayNvl($postvars, $this->fieldName());
         if (!is_array($vars)) {

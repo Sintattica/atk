@@ -228,12 +228,12 @@ class FieldSet extends Attribute
     /**
      * Display fieldset.
      *
-     * @param array $record
+     * @param array<string, mixed> $record
      * @param string $mode
      *
      * @return string
      */
-    public function display($record, $mode)
+    public function display(array $record, string $mode): string
     {
         return $this->renderFieldSet('display', $record, $mode);
     }
