@@ -1206,9 +1206,9 @@ class Node
     public function getAttributeValue(array $record, string $attributeName): mixed
     {
         $attr = $this->getAttribute($attributeName);
-        $value = $record[$attributeName];
-
-        if (!isset($value) && $attr->isNestedAttribute()) {
+        if (isset($record[$attributeName])) {
+            $value = $record[$attributeName];
+        } elseif ($attr->isNestedAttribute()) {
             $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
             $nestedAttribute = $record[$nestedAttributeFieldName];
             if (is_string($nestedAttribute)) {
