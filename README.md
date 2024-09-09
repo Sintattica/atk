@@ -18,19 +18,16 @@ various versions of ATK. Since we didn't find a true alternative to ATK yet, we 
 We currently have these branches:
 
 * main
-* master (deprecated)
-* 9.2
+* release/v9
 * 9.1
 * 9.0
 * 8.2
 
 ### main
-The main branch contains the latest updates. It starts from v9.2 that was the branch that contained the rolling-releases
+The main branch contains the latest updates. It starts from release/v9 that was the branch that contained the rolling-releases.
 
-### master (deprecated)
-This branch is deprecated and is going to be deleted at the end of 2022. Please checkout main (contains breaking changes with respect to master).
 
-### 9.2
+### release/v9
 This branch starts from v9.1, it contains an updated style based on AdminLte framework.
 We are making other changes that will be rolled out in the future, generally we will be work on fixing existing functionalities on the version 9 line.
 
@@ -43,7 +40,7 @@ The third objective is to create a skeleton project and some documentation so ev
 
 ### 9.1
 Version like 9.0, but with jQuery only
-Currently there's no documentation for v.9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
+Currently there's no documentation for v9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
 
 
 ### 9.0
@@ -60,7 +57,7 @@ This is a deeply refactored version that's not backward compatible. It's been de
 
 
 ### 8.2
-The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica and to give us the sources of two historically valuable resources for ATK: the [forum](http://atk-framework.com/forum/index.php) and the [wiki](http://atk-framework.com/wiki/index.php).
+The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica.
 
 We call this the "classic" ATK, i.e. the closest to iBuildings' version. It's largely backward compatible, with no additional functions:
 
@@ -88,8 +85,6 @@ We kindly ask you to:
 - Keep PSR-4 formatting
 - Make the PR's topic "tight", don't modify dozens of classes or the whole app
 - Only add or fix a well-defined feature, keeping your changes small
-
-
 
 <br>
 <br>
