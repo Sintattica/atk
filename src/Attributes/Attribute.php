@@ -1645,7 +1645,7 @@ class Attribute
      * Framework method. It should not be necessary to call this method directly.
      *
      * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
+     * @param array $arr reference to the recordlist array
      * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)

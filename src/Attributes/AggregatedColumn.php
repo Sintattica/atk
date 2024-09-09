@@ -2,12 +2,12 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Utils\StringParser as StringParser;
 use Sintattica\Atk\Core\Tools as Tools;
 use Sintattica\Atk\Db\Query;
 use Sintattica\Atk\Session\SessionManager;
 use Sintattica\Atk\RecordList\RecordList;
-use Sintattica\Atk\Core\Config;
 
 /**
  * The AggregatedColumn aggregates multiple attributes to one colunm in
@@ -95,15 +95,15 @@ class AggregatedColumn extends Attribute
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
      * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
+     * @param array $arr reference to the recordlist array
      * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
-     * @param string $atkorderby Order by string
+     * @param string $columnConfig Order by string
      *
      * @see Node::listArray
      */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, DataGrid $grid = null, $column = '*')
     {
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
             $arr['heading'][$fieldprefix . $this->fieldName()]['title'] = $this->label();
@@ -114,7 +114,7 @@ class AggregatedColumn extends Attribute
                     $rec[] = $this->m_ownerInstance->m_table . '.' . $field;
                 }
                 $order = implode(', ', $rec);
-                if ($atkorderby == $order) {
+                if ($columnConfig == $order) {
                     $order = implode(' DESC,', $rec);
                     $order .= ' DESC';
                 }
