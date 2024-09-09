@@ -473,12 +473,12 @@ class DataGrid
 
         $this->addComponent('list', __NAMESPACE__.'\\DataGridList');
         $this->addComponent('summary', __NAMESPACE__.'\\DataGridSummary');
-        $this->addComponent('limit', __NAMESPACE__.'\\DataGridLimit', array('showAll' => Config::getGlobal('enable_showall')));
+        $this->addComponent('limit', __NAMESPACE__.'\\DataGridLimit', ['showAll' => Config::getGlobal('enable_showall')]);
         $this->addComponent('norecordsfound', __NAMESPACE__.'\\DataGridNoRecordsFound');
         $this->addComponent('paginator', __NAMESPACE__.'\\DataGridPaginator');
 
         if (!empty($this->getNode()->m_index)) {
-            $this->addComponent('index', 'atk.datagrid.atkdgindex');
+            $this->addComponent('index', __NAMESPACE__ . '\\DataGridIndex');
         }
 
         if (Tools::count($this->getNode()->m_editableListAttributes) > 0) {
