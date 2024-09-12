@@ -3411,17 +3411,13 @@ class Attribute
 
     /**
      * @param $options
-     * @param null|string|array $types null for all types, or string with type or array of types ('edit', 'search')
+     * @param array|null $types array of types ('edit', 'search'), null for all types.
      * @return $this
      */
-    public function setSelect2Options($options, $types = null)
+    public function setSelect2Options($options, array $types = null): static
     {
         if ($types == null) {
             $types = array_keys($this->m_select2Options);
-        }
-
-        if (!is_array($types)) {
-            $types = [$types];
         }
 
         foreach ($types as $type) {

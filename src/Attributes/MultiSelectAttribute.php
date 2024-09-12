@@ -135,7 +135,7 @@ class MultiSelectAttribute extends ListAttribute
         $values = $record[$this->fieldName()];
         $res = [];
         for ($i = 0; $i < Tools::count($values); ++$i) {
-            $res[] = $this->_translateValue($values[$i], $record);
+            $res[] = $this->translateValue($values[$i], $record);
         }
 
         return implode(', ', $res);
@@ -187,7 +187,7 @@ class MultiSelectAttribute extends ListAttribute
 
             $result .= '<div>';
             $result .= '<input type="checkbox" id="'.$checkId.'" name="'.$checkName.'" value="'.$values[$i].'" '.$sel.'> ';
-            $result .= $this->_translateValue($values[$i], $record);
+            $result .= $this->translateValue($values[$i], $record);
             $result .= '</div>';
         }
         $result .= '</div>';

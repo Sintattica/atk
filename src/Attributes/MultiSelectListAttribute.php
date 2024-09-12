@@ -6,7 +6,7 @@ use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
 /**
- * DEPRECATED
+ * @deprecated use MultiListAttribute instead
  *
  * Class MultiSelectListAttribute
  */
@@ -133,7 +133,7 @@ class MultiSelectListAttribute extends ListAttribute
         $values = $record[$this->fieldName()];
         $res = [];
         for ($i = 0; $i < Tools::count($values); ++$i) {
-            $res[] = $this->_translateValue($values[$i], $record);
+            $res[] = $this->translateValue($values[$i], $record);
         }
 
         return $res ? '<span class="badge-sm badge-pill d-inline-block badge-secondary m-1 text-nowrap">' . implode('</span><span class="badge-sm d-inline-block badge-pill badge-secondary m-1 text-nowrap">', $res) . "</span>" : "";
@@ -204,7 +204,7 @@ class MultiSelectListAttribute extends ListAttribute
             // If the current value is selected or occurs in the record
             $sel = (Tools::atk_in_array($values[$i], $recordvalue)) ? 'selected' : '';
 
-            $result .= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i], $record);
+            $result .= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->translateValue($values[$i], $record);
         }
 
         $result .= '</select>';

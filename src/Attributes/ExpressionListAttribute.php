@@ -69,11 +69,11 @@ class ExpressionListAttribute extends ExpressionAttribute
     {
         $expression = "(" . str_replace("[table]", $table, $this->m_expression) . ")";
 
-        // N.B. implementazione di MultiListAttribute/ListAttribute, utilizzando però la expression
+        // N.B. implementation of MultiListAttribute/ListAttribute, but using the expression
 
         if ($this->m_listAttribute instanceof MultiListAttribute) {
             $searchconditions = [];
-            if (is_array($value) && $value[0] != "" && count($value) > 0) {
+            if (is_array($value) && $value[0] != '' && count($value) > 0) {
                 if (in_array('__NONE__', $value)) {
                     return $query->nullCondition($expression, true);
                 }
@@ -94,7 +94,7 @@ class ExpressionListAttribute extends ExpressionAttribute
         } else if ($this->m_listAttribute instanceof ListAttribute) {
             if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
 
-                if ($this->m_listAttribute->isMultipleSearch(false) && count($value) == 1 && strpos($value[0], ',') !== false) {
+                if ($this->m_listAttribute->isMultipleSearch(false) && count($value) == 1 && str_contains($value[0], ',')) {
                     // in case of multiple select in simple search, we have the selected values into a single string (csv)
                     $value = explode(',', $value[0]);
                     // "search all" option has precedence (when another options are selected together)
@@ -125,14 +125,9 @@ class ExpressionListAttribute extends ExpressionAttribute
         return '';
     }
 
-    /**
-     * @param bool $normal
-     * @param bool $extended
-     * @return array
-     */
-    public function setMultipleSearch(bool $normal = true, bool $extended = true): array
+    public function setMultipleSearch(bool $normal = true, bool $extended = true): static
     {
         $this->getListAttribute()->setMultipleSearch($normal, $extended);
-        return $this->getListAttribute()->getMultipleSearch();
+        return $this;
     }
 }
