@@ -1,5 +1,17 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.0.1] - 2024-09-12
+### Added
+- Attribute: nullLabel property in ListAttribute
+
+### Changed
+- Attribute: renamed public const 'TAG_SEPARATOR' in 'DISPLAY_SEPARATOR_TAG'
+- Attribute: default display separator in now DISPLAY_SEPARATOR_TAG instead of DISPLAY_SEPARATOR_COMMA
+
+### Deprecated
+- Attribute: MultiSelectListAttribute
+
+
 ## [11.0.0] - 2024-09-09
 ### Added
 - PHP: v8.3 support
