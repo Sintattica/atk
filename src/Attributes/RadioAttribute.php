@@ -16,25 +16,21 @@ use Sintattica\Atk\Core\Tools;
 class RadioAttribute extends ListAttribute
 {
     /**
-     * Flag(s) specific for atkRadioAttribute.
-     */
-    /**
      * Displays the set of radio buttons vertically.
      */
-    const AF_DISPLAY_VERT = 67108864;
+    const int AF_DISPLAY_VERT = 67108864;
 
     // Default number of cols / rows
-    public $m_amount = 1;
-    public $m_cols = false;
-    public $m_rows = false;
-    public $m_clickableLabel = true;
+    public int $m_amount = 1;
+    public bool $m_cols = false;
+    public bool $m_rows = false;
+    public bool $m_clickableLabel = true;
 
-    /*
+    /**
      * Array with comments per option
-     *
-     * @var array
+     * @var array<string, string>
      */
-    public $m_comments = [];
+    public array $m_comments = [];
     public $m_onchangehandler_init = "var newvalue = el.value;\n";
 
     /**
@@ -64,20 +60,20 @@ class RadioAttribute extends ListAttribute
      * @param string $option The option the comment is for
      * @param string $comment The comment itself
      */
-    public function setComment($option, $comment)
+    public function setComment(string $option, string $comment): static
     {
         $key = array_search($option, $this->m_options);
         $this->m_comments[$key] = $comment;
+        return $this;
     }
 
     /**
      * Set clickablelabel for the radioattribute.
-     *
-     * @param bool $label
      */
-    public function setClickableLabel($label = true)
+    public function setClickableLabel(bool $label = true): static
     {
         $this->m_clickableLabel = $label;
+        return $this;
     }
 
     /**
@@ -110,14 +106,12 @@ class RadioAttribute extends ListAttribute
             $total_items = $this->m_amount;
         }
 
-        //Todo: Rivedere Attributo
+        // TODO: check attribute
         $result = '<table class="table">';
         if (!$this->hasFlag(self::AF_DISPLAY_VERT)) {
             $result .= '<tr>';
         }
         $item_count = 0;
-
-
 
         for ($i = 0; $i < $total_items; ++$i) {
 
@@ -139,16 +133,16 @@ class RadioAttribute extends ListAttribute
                 $this->_renderChangeHandler($fieldprefix);
             }
 
-            $comment = isset($this->m_comments[$i])?$this->m_comments[$i]:'';
+            $comment = $this->m_comments[$i] ?? '';
 
             $commenthtml = '<br/><div class="atkradio_comment">'.$comment.'</div>';
 
             $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute(['atkradio']).' value="'.$values[$i].'" '.$onchange.$sel.'>
-        '.$this->renderValue($labelID, $this->_translateValue($values[$i],
+        '.$this->renderValue($labelID, $this->translateValue($values[$i],
                     $record)).($this->hasFlag(self::AF_DISPLAY_VERT) && $comment != '' ? $commenthtml : '').'</td>';
 
             if ($this->hasFlag(self::AF_DISPLAY_VERT)) {
-                if ($this->hasFlag(self::AF_DISPLAY_VERT) && $this->m_rows) {
+                if ($this->m_rows) {
                     $tmp_items = Tools::count($values);
                 } else {
                     $tmp_items = $items * $this->m_amount;
@@ -162,7 +156,7 @@ class RadioAttribute extends ListAttribute
                     }
                     if ($values[$j] != '') {
                         $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$this->getHtmlName($fieldprefix).'" '.$this->getCSSClassAttribute(['atkradio']).' value="'.$values[$j].'" '.$onchange.$sel.'>
-              '.$this->renderValue($labelID, $this->_translateValue($values[$j], $record)).($comment != '' ? $commenthtml : '').'</td>';
+              '.$this->renderValue($labelID, $this->translateValue($values[$j], $record)).($comment != '' ? $commenthtml : '').'</td>';
                     } else {
                         $result .= '<td>&nbsp;</td>';
                     }
@@ -178,9 +172,7 @@ class RadioAttribute extends ListAttribute
         }
         // Fill with empty boxes when we have a horizontal display
         if (!$this->hasFlag(self::AF_DISPLAY_VERT)) {
-            for ($i = 0; $i < ($items - $item_count); ++$i) {
-                $result .= '<td>&nbsp;</td>';
-            }
+            $result .= str_repeat('<td>&nbsp;</td>', ($items - $item_count));
             $result .= '</tr>';
         }
         $result .= '</table>';
@@ -196,7 +188,7 @@ class RadioAttribute extends ListAttribute
      *
      * @return string Label
      */
-    public function renderValue($labelID, $value)
+    protected function renderValue(string $labelID, string $value): string
     {
         if ($this->m_clickableLabel) {
             return '<label for="'.$labelID.'">'.$value.'</label>';

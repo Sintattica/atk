@@ -972,7 +972,7 @@ class Node
         // constructor, m_ownerInstance ends up being a copy of $this, rather than
         // a reference. Don't ask me why, it has something to do with the way PHP
         // handles the constructor.
-        // To work around this, we reassign the this pointer to the attributes as
+        // To work around this, we reassign the pointer to the attributes as
         // soon as possible AFTER the constructor. (the dispatcher function)
         $attribute->setOwnerInstance($this);
 

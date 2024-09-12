@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Core;
 
+use Countable;
 use ReflectionClass;
 use ReflectionException;
 use Sintattica\Atk\AdminLte\UIStateColors;
@@ -2312,7 +2313,7 @@ class Tools
      */
     public static function count($value): int
     {
-        if (is_array($value) || $value instanceof \Countable) {
+        if (is_array($value) || $value instanceof Countable) {
             return count($value);
         }
         return 0;
@@ -2520,7 +2521,7 @@ class Tools
     public static function formatTagList(array $list = [], string $uiStateColor = UIStateColors::STATE_SECONDARY): string
     {
         if (!$list) {
-            return "";
+            return '';
         }
 
         return '<div style="max-width: 400px; white-space: normal;"><span class="badge-sm badge-pill badge-' . $uiStateColor . ' mr-1 text-nowrap">' . implode('</span><span class="badge-sm badge-pill badge-' . $uiStateColor . ' mr-1 text-nowrap">', $list) . '</span></div>';
