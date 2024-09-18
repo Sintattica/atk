@@ -92,7 +92,7 @@ class Atk
             }
         }
 
-        $debug = 'Created a new Atk (' . self::VERSION . ') instance.';
+        $debug = 'Created a new Atk instance.';
         $debug .= ' Environment: ' . $environment . '.';
         $debug .= ' PHP version: ' . PHP_VERSION . '.';
 

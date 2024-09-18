@@ -4,7 +4,7 @@ namespace Sintattica\Atk\Ui;
 
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Atk;
+use Smarty\Exception;
 
 /**
  * Page renderer.
@@ -716,25 +716,25 @@ class Page
      * @param string $extra_header HTML code of extra headers to add to the head section
      * @param string|null $appendClasses
      * @return string The HTML page, including <html> and </html> tags.
+     * @throws Exception
      */
     public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', string $appendClasses = null): string
     {
-
         if ($title == null) {
             $title = $this->m_title != '' ? $this->m_title : Tools::atktext('app_title');
         }
 
         $ui = Ui::getInstance();
 
-        if (is_bool($flags) && $flags == true) {
+        if ($flags === true) {
             $flags = self::HTML_STRICT;
-        } elseif (is_bool($flags) && $flags == false) {
+        } elseif ($flags === false) {
             $flags = self::HTML_HEADER | self::HTML_DOCTYPE;
         } elseif (Tools::hasFlag($flags, self::HTML_PARTIAL)) {
             return $this->renderPartial();
         }
 
-        $this->m_content = $ui->render('page.tpl', array('content' => $this->m_content));
+        $this->m_content = $ui->render('page.tpl', ['content' => $this->m_content]);
 
         $layout = [];
         $layout['title'] = $title;
@@ -748,8 +748,6 @@ class Page
         }
 
         $layout['hiddenvars'] = $this->hiddenVars();
-        $layout['atkversion'] = Atk::VERSION;
-
 
         return $ui->render('layout.tpl', $layout);
     }
