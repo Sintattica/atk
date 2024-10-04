@@ -1296,11 +1296,15 @@ class FileAttribute extends Attribute
 
     public function getThumbnailUrl(array $record): ?string
     {
+        $relativeThumbnailPath = $this->getRelativeThumbnailPath($record);
+        if (!$relativeThumbnailPath) {
+            return null;
+        }
         $fileUrl = $this->getUrl();
         if (!str_ends_with($fileUrl, '/')) {
             $fileUrl .= '/';
         }
-        return $fileUrl . $this->getRelativeThumbnailPath($record);
+        return $fileUrl . $relativeThumbnailPath;
     }
 
     public function isHideEditWidget(): bool
