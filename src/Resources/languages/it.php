@@ -102,6 +102,7 @@ return [
     'error' => 'Errore',
     'error_attachment_unique' => 'Questo file esiste già (%s)',
     'error_attribute_instance_of_fileattribute' => "L'attributo '%s' deve essere un'istanza di FileAttribute",
+    'error_fileattribute_path_null' => "Il percorso del FileAttribute '%s' è nullo",
     'error_attributeedit_default' => 'Si è verificato un errore.',
     'error_attributeedit_noselectorset' => 'Seleziona i record da modificare.',
     'error_attributeedit_update' => 'Si è verificato un errore aggiornando i record selezionati.',

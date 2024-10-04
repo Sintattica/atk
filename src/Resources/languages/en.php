@@ -101,6 +101,7 @@ return [
     'error' => 'Error',
     'error_attachment_unique' => 'This file already exists (%s)',
     'error_attribute_instance_of_fileattribute' => "The attribute '%s' must be an instance of FileAttribute",
+    'error_fileattribute_path_null' => "The path of FileAttribute '%s' is null",
     'error_attributeedit_default' => 'An unknown error has occurred.',
     'error_attributeedit_noselectorset' => 'Please select the records you wish to edit.',
     'error_attributeedit_update' => 'An error occured when updating the selected records.',

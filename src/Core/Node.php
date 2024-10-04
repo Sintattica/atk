@@ -36,6 +36,7 @@ use Sintattica\Atk\Utils\ActionListener;
 use Sintattica\Atk\Utils\EditFormModifier;
 use Sintattica\Atk\Utils\Selector;
 use Sintattica\Atk\Utils\StringParser;
+use Throwable;
 
 /**
  * The Node class represents a piece of information that is part of an
@@ -6154,45 +6155,48 @@ class Node
      */
     function action_download_file_attribute(ActionHandler $handler, string $downloadName = ''): void
     {
-        if (!$this->m_postvars[self::PARAM_ATKSELECTOR]) {
-            $errorMsg = sprintf($this->text('error_missing_param'), self::PARAM_ATKSELECTOR);
-            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, [], $errorMsg));
-            return;
-        }
+        $record = [];
 
-        $attributeName = $this->m_postvars[self::PARAM_ATTRIBUTE_NAME];
-        if (!$attributeName || !$this->hasAttribute($attributeName)) {
-            $errorMsg = sprintf($this->text('error_missing_param'), self::PARAM_ATTRIBUTE_NAME);
-            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, [], $errorMsg));
-            return;
-        }
+        try {
+            if (!$this->m_postvars[self::PARAM_ATKSELECTOR]) {
+                throw new Exception(sprintf($this->text('error_missing_param'), self::PARAM_ATKSELECTOR));
+            }
 
-        $record = $this->select($this->m_postvars[self::PARAM_ATKSELECTOR])->getFirstRow();
-        if (!$record) {
-            $errorMsg = $this->text('error_record_not_found');
-            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, [], $errorMsg));
-            return;
-        }
+            $attributeName = $this->m_postvars[self::PARAM_ATTRIBUTE_NAME];
+            if (!$attributeName || !$this->hasAttribute($attributeName)) {
+                throw new Exception(sprintf($this->text('error_missing_param'), self::PARAM_ATTRIBUTE_NAME));
+            }
 
-        if (!$this->allowed($handler->m_action, $record)) {
-            $handler->renderAccessDeniedPage();
-            return;
-        }
+            $record = $this->select($this->m_postvars[self::PARAM_ATKSELECTOR])->getFirstRow();
+            if (!$record) {
+                throw new Exception($this->text('error_record_not_found'));
+            }
 
-        $fileAttr = $this->getAttribute($attributeName);
-        if (!$fileAttr instanceof FileAttribute) {
-            $errorMsg = sprintf($this->text('error_attribute_instance_of_fileattribute'), $attributeName);
-            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, $record, $errorMsg));
-            return;
-        }
+            if (!$this->allowed($handler->m_action, $record)) {
+                $handler->renderAccessDeniedPage();
+                return;
+            }
 
-        $filePath = $fileAttr->getDir() . $record[$attributeName]['filename'];
-        if ($this->m_postvars[FileAttribute::INLINE_PARAM]) {
-            $mimeType = mime_content_type($filePath);
-            Tools::downloadFile($filePath, $downloadName, $mimeType, true);
-        } else {
-            Tools::downloadFile($filePath, $downloadName);
+            $fileAttr = $this->getAttribute($attributeName);
+            if (!$fileAttr instanceof FileAttribute) {
+                throw new Exception(sprintf($this->text('error_attribute_instance_of_fileattribute'), $attributeName));
+            }
+
+            $filePath = $fileAttr->getAbsoluteFilePath($record);
+            if (!$filePath) {
+                throw new Exception(sprintf($this->text('error_fileattribute_path_null'), $attributeName));
+            }
+
+            if ($this->m_postvars[FileAttribute::INLINE_PARAM]) {
+                $mimeType = mime_content_type($filePath);
+                Tools::downloadFile($filePath, $downloadName, $mimeType, true);
+            } else {
+                Tools::downloadFile($filePath, $downloadName);
+            }
+            exit;
+
+        } catch (Throwable $e) {
+            $this->redirect($this->feedbackUrl($handler->m_action, ActionHandler::ACTION_FAILED, $record, $e->getMessage()));
         }
-        exit;
     }
 }

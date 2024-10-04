@@ -85,7 +85,7 @@ class FileAttribute extends Attribute
     public $m_autonumbering = false;
 
     /*
-     * List of mime types which a uses is allowed to upload
+     * List of mime types which uses is allowed to upload
      * Example: array('image/jpeg');
      *
      * @var array
@@ -209,19 +209,21 @@ class FileAttribute extends Attribute
                 $fileLink = $this->display($record, $mode);
             }
 
-            if (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] != '') {
+            $relativeFilePath = $this->getRelativeFilePath($record);
+            if (isset($relativeFilePath) && $relativeFilePath != '') {
+                // a file was loaded
                 $fileLinkXML = new SimpleXMLElement($fileLink);
 
                 if ($this->hideEditWidget) {
                     // show only link
-                    $widgetFile = '<div><a href="' . ($fileLinkXML['href'] ?? "") . '" target="_blank">' . $record[$this->fieldName()]['filename'] . '</a></div>';
+                    $widgetFile = '<div><a href="' . ($fileLinkXML['href'] ?? '') . '" target="_blank">' . $relativeFilePath . '</a></div>';
 
                 } else {
                     $widgetFile = '<div class="existing-file input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-file"></i></span>
                     </div>
-                    <input type="text" class="form-control form-control-sm" disabled value="' . $record[$this->fieldName()]['filename'] . '" />
+                    <input type="text" class="form-control form-control-sm" disabled value="' . $relativeFilePath . '" />
                     <div class="input-group-append">
                      <a href="' . ($fileLinkXML['href'] ?? "") . '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-alt-circle-down"></i></a>
                     </div>
@@ -229,15 +231,15 @@ class FileAttribute extends Attribute
                 }
 
                 if ($this->fileExists($record)) {
-                    // il file esiste
+                    // the loaded file exists
                     if (!$this->isStream() && $this->isImage($record) && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
-                        // aggiunge la preview con il link prima del widget
+                        // add the preview before the widget
                         $result .= $fileLink;
                     }
                     $result .= $widgetFile;
 
                 } else {
-                    // il file NON esiste: non carica il widget
+                    // the loaded file does not exist: no widget
                     $result .= $fileLink;
                 }
             }
@@ -273,6 +275,7 @@ class FileAttribute extends Attribute
             $result .= '<input class="mt-2" type="file" id="' . $id . '" name="' . $name . '" ' . $onchange . $style . '>';
         }
 
+        $relativeFilePath = $this->getRelativeFilePath($record);
         if (!$this->hasFlag(self::AF_FILE_NO_SELECT)) {
             $file_arr = $this->getFiles($this->m_dir);
             if (Tools::count($file_arr) > 0) {
@@ -282,7 +285,7 @@ class FileAttribute extends Attribute
                 // Add default option with value NULL
                 $result .= '<option value="" selected>' . Tools::atktext('selection', 'atk');
                 foreach ($file_arr as $val) {
-                    (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename'] == $val) ? $selected = 'selected' : $selected = '';
+                    (isset($relativeFilePath) && $relativeFilePath == $val) ? $selected = 'selected' : $selected = '';
                     if (is_file($this->m_dir . $val)) {
                         $result .= '<option value="' . $val . "\" $selected>" . $val;
                     }
@@ -290,8 +293,8 @@ class FileAttribute extends Attribute
                 $result .= '</select>';
             }
         } else {
-            if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename'])) {
-                $result .= '<input type="hidden" name="' . $name . '[select]" value="' . $record[$this->fieldName()]['filename'] . '">';
+            if (!empty($relativeFilePath)) {
+                $result .= '<input type="hidden" name="' . $name . '[select]" value="' . $relativeFilePath . '">';
             }
         }
 
@@ -322,90 +325,103 @@ class FileAttribute extends Attribute
         // while updating images was not allways visible due to caching
         $randval = mt_rand();
 
-        if (!isset($record[$this->fieldName()]['filename'])) {
+        $relativeFilePath = $this->getRelativeFilePath($record);
+        if (!isset($relativeFilePath)) {
             return '';
         }
 
         $ret = '';
-        $fileRelativePath = $record[$this->fieldName()]['filename'];
-        if ($fileRelativePath) {
+        if ($relativeFilePath) {
             if ($this->fileExists($record)) {
-                $url = $this->m_url . $fileRelativePath;
+                $url = $this->m_url . $relativeFilePath;
                 $isImage = $this->isImage($record);
 
-                if ($this->isStream()) {
-                    $node = $this->getOwnerInstance();
+                if ($this->thumbnail && !$this->thumbnailExists($record)) {
+                    // thumbnail not found
+                    $ret .= '<div>' . $this->getRelativeThumbnailPath($record);
+                    if ($mode != 'add') {
+                        $ret .= ' (<span style="color: #ff0000">' . Tools::atktext('file_not_exist', 'atk') . '</span>)';
+                    }
+                    $ret .= '</div>';
 
-                    $justify = $mode === 'list' ? 'justify-content-center' : '';
-                    if ($this->thumbnail) {
-                        // show thumbnail
-                        $thumbnailUrl = $this->getThumbnailPath($url);
-                        $content = base64_encode(file_get_contents($thumbnailUrl));
-                        $ret .= "<div class='row no-gutters $justify'>";
-                        $ret .= "<img src='data:image/png;base64,$content' 
+                } else {
+
+                    if ($this->isStream()) {
+                        $node = $this->getOwnerInstance();
+
+                        $justify = $mode === 'list' ? 'justify-content-center' : '';
+                        if ($this->thumbnail) {
+                            // show thumbnail
+                            $content = base64_encode(file_get_contents($this->getThumbnailUrl($record)));
+                            $ret .= "<div class='row no-gutters $justify'>";
+                            $ret .= "<img src='data:image/png;base64,$content' 
                                 style='max-height: {$this->getPreviewHeight()};
                                 max-width: {$this->getPreviewWidth()}; 
                                 margin: 5px 0;'/>";
-                        $ret .= '</div>';
-                    }
+                            $ret .= '</div>';
+                        }
 
-                    $downloadAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
-                        ->setNode($node)
-                        ->setText($this->text('download'))
-                        ->setAction(Node::ACTION_DOWNLOAD_FILE_ATTRIBUTE)
-                        ->setTarget('_blank')
-                        ->setParams([
-                            Node::PARAM_ATKSELECTOR => $node->getPrimaryKey($record),
-                            Node::PARAM_ATTRIBUTE_NAME => $this->fieldName()
-                        ]);
-                    $downloadAttr->setOwnerInstance($node);
-                    $ret .= "<div class='row no-gutters $justify'>";
-                    $ret .= $downloadAttr->display($record, 'view');
-
-                    if ($this->isInlineButtonEnabled() && in_array($mode, ['list', 'view', 'edit'])) {
-                        $this->setMinWidth('125px');
-                        $openNewTabAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
+                        $downloadAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
                             ->setNode($node)
-                            ->setText($this->text('open'))
+                            ->setText($this->text('download'))
                             ->setAction(Node::ACTION_DOWNLOAD_FILE_ATTRIBUTE)
                             ->setTarget('_blank')
                             ->setParams([
                                 Node::PARAM_ATKSELECTOR => $node->getPrimaryKey($record),
-                                Node::PARAM_ATTRIBUTE_NAME => $this->fieldName(),
-                                self::INLINE_PARAM => true
+                                Node::PARAM_ATTRIBUTE_NAME => $this->fieldName()
                             ]);
-                        $openNewTabAttr->setOwnerInstance($node);
-                        $openNewTabAttr->addCSSClass('ml-1');
-                        $ret .= "{$openNewTabAttr->display($record, 'view')}";
-                    }
-                    $ret .= '</div>';
-                } else {
-                    // link target blank
-                    $ret = sprintf('<a target="_blank" href="%s">', $url);
+                        $downloadAttr->setOwnerInstance($node);
+                        $ret .= "<div class='row no-gutters $justify'>";
+                        $ret .= $downloadAttr->display($record, 'view');
 
-                    if (!$isImage || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
-                        $ret .= basename($fileRelativePath);
-                    }
+                        if ($this->isInlineButtonEnabled() && in_array($mode, ['list', 'view', 'edit'])) {
+                            $this->setMinWidth('125px');
+                            $openNewTabAttr = (new ActionButtonAttribute('btn_download_file_attribute_' . $this->fieldName()))
+                                ->setNode($node)
+                                ->setText($this->text('open'))
+                                ->setAction(Node::ACTION_DOWNLOAD_FILE_ATTRIBUTE)
+                                ->setTarget('_blank')
+                                ->setParams([
+                                    Node::PARAM_ATKSELECTOR => $node->getPrimaryKey($record),
+                                    Node::PARAM_ATTRIBUTE_NAME => $this->fieldName(),
+                                    self::INLINE_PARAM => true
+                                ]);
+                            $openNewTabAttr->setOwnerInstance($node);
+                            $openNewTabAttr->addCSSClass('ml-1');
+                            $ret .= "{$openNewTabAttr->display($record, 'view')}";
+                        }
+                        $ret .= '</div>';
 
-                    if ($isImage && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
-                        if (!$this->onlyPreview) {
-                            $ret .= '<br/>';
+                    } else {
+                        // not stream
+
+                        // link target blank
+                        $ret = sprintf('<a target="_blank" href="%s">', $url);
+
+                        if (!$isImage || $this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW) || !$this->onlyPreview) {
+                            $ret .= basename($relativeFilePath);
                         }
 
-                        $displayUrl = $this->thumbnail ? $this->getThumbnailPath($url) : $url;
-                        $ret .= "<img src='$displayUrl?b=$randval' style=' 
+                        if ($isImage && !$this->hasFlag(self::AF_FILE_NO_AUTOPREVIEW)) {
+                            if (!$this->onlyPreview) {
+                                $ret .= '<br/>';
+                            }
+
+                            $displayUrl = $this->thumbnail ? $this->getThumbnailUrl($record) : $url;
+                            $ret .= "<img src='$displayUrl?b=$randval' style=' 
                                 max-height: {$this->getPreviewHeight()};
                                 max-width: {$this->getPreviewWidth()}; 
                                 margin: 5px 0;'/>";
+                        }
+                        $ret .= '</a>';
                     }
-                    $ret .= '</a>';
                 }
 
             } else {
                 // file not found
-                $ret = '<div>' . basename($fileRelativePath);
+                $ret = '<div>' . basename($relativeFilePath);
                 if ($mode != 'add') {
-                    $ret .= ' (<span style="color: #ff0000">' . Tools::atktext("file_not_exist", "atk") . '</span>)';
+                    $ret .= ' (<span style="color: #ff0000">' . Tools::atktext('file_not_exist', 'atk') . '</span>)';
                 }
                 $ret .= '</div>';
             }
@@ -470,7 +486,7 @@ class FileAttribute extends Attribute
             return;
         }
 
-        if (strpos($record[$this->fieldName()]['tmpfile'], sys_get_temp_dir()) !== false && ($mode == 'add' || !$this->hasFlag(self::AF_READONLY_EDIT))) {
+        if (str_contains($record[$this->fieldName()]['tmpfile'], sys_get_temp_dir()) && ($mode == 'add' || !$this->hasFlag(self::AF_READONLY_EDIT))) {
             // è stato caricato un nuovo file e siamo in add oppure non è readonly
 
             // check file size
@@ -480,8 +496,8 @@ class FileAttribute extends Attribute
             }
 
             // check filename length
-            if ($this->fileMaxLength && strlen($record[$this->fieldName()]['filename']) > $this->fileMaxLength) {
-                $realMaxLength = $this->fileMaxLength - strlen(pathinfo($record[$this->fieldName()]['filename'], PATHINFO_DIRNAME)) - 1;
+            if ($this->fileMaxLength && strlen($this->getRelativeFilePath($record)) > $this->fileMaxLength) {
+                $realMaxLength = $this->fileMaxLength - strlen(pathinfo($this->getRelativeFilePath($record), PATHINFO_DIRNAME)) - 1;
                 Tools::atkTriggerError($record, $this, sprintf(Tools::atktext('error_file_length'), $realMaxLength));
                 return;
             }
@@ -821,23 +837,24 @@ class FileAttribute extends Attribute
             return $this->deleteFile($file);
         }
 
-        $filename = $record[$this->fieldName()]['filename'];
+        $relativeFilePath = $this->getRelativeFilePath($record);
+        $absoluteFilePath = $this->getAbsoluteFilePath($record);
 
-        if ($record[$this->fieldName()]['tmpfile'] && $this->m_dir . $filename != $record[$this->fieldName()]['tmpfile']) {
-            if ($filename != '') {
-                $dirname = dirname($this->m_dir . $filename);
+        if ($record[$this->fieldName()]['tmpfile'] && $absoluteFilePath != $record[$this->fieldName()]['tmpfile']) {
+            if ($relativeFilePath != '') {
+                $dirname = dirname($absoluteFilePath);
 
                 if (!$this->mkdir($dirname)) {
-                    Tools::atkerror("File could not be saved, unable to make directory '{$dirname}'");
+                    Tools::atkerror("File could not be saved, unable to make directory '$dirname'");
                     return false;
                 }
 
-                if (@copy($record[$this->fieldName()]['tmpfile'], $this->m_dir . $filename)) {
-                    $this->processFile($this->m_dir, $filename);
-                    return $this->escapeSQL($filename);
+                if (@copy($record[$this->fieldName()]['tmpfile'], $absoluteFilePath)) {
+                    $this->processFile($this->m_dir, $relativeFilePath);
+                    return $this->escapeSQL($relativeFilePath);
 
                 } else {
-                    Tools::atkerror("File could not be saved, unable to copy file '{$record[$this->fieldName()]['tmpfile']}' to destination '{$this->m_dir}{$filename}'");
+                    Tools::atkerror("File could not be saved, unable to copy file '{$record[$this->fieldName()]['tmpfile']}' to destination '$absoluteFilePath'");
                     return false;
                 }
             }
@@ -902,7 +919,7 @@ class FileAttribute extends Attribute
     }
 
     /**
-     * Check if the attribute is empty..
+     * Check if the attribute is empty.
      *
      * @param array $record the record
      *
@@ -910,7 +927,7 @@ class FileAttribute extends Attribute
      */
     public function isEmpty($record)
     {
-        return @empty($record[$this->fieldName()]['filename']);
+        return empty($this->getRelativeFilePath($record));
     }
 
     /**
@@ -924,8 +941,9 @@ class FileAttribute extends Attribute
     {
         $del = $record[$this->fieldName()]['postdel'] ?? null;
 
-        if ($record[$this->fieldName()]['tmpfile'] == '' && $record[$this->fieldName()]['filename'] != '' && ($del != null || $del != $record[$this->fieldName()]['filename'])) {
-            return $this->escapeSQL($record[$this->fieldName()]['filename']);
+        $relativeFilePath = $this->getRelativeFilePath($record);
+        if ($record[$this->fieldName()]['tmpfile'] == '' && $relativeFilePath != '' && ($del != null || $del != $relativeFilePath)) {
+            return $this->escapeSQL($relativeFilePath);
         }
 
         if ($del != null) {
@@ -1214,6 +1232,25 @@ class FileAttribute extends Attribute
         $record[$this->fieldName()]['orgfilename'] = "$filename.$extension";
     }
 
+    public function getRelativeFilePath(array $record): ?string
+    {
+        return $record[$this->fieldName()]['filename'] ?? null;
+    }
+
+    public function getAbsoluteFilePath(array $record, bool $realPath = false): ?string
+    {
+        $relativeFilePath = $this->getRelativeFilePath($record);
+        if (!$relativeFilePath) {
+            return null;
+        }
+        $fileDir = $this->getDir();
+        if (!str_ends_with($fileDir, '/')) {
+            $fileDir .= '/';
+        }
+        $absoluteFilePath = $fileDir . $relativeFilePath;
+        return $realPath ? realpath($absoluteFilePath) : $absoluteFilePath;
+    }
+
     public function setThumbnailDir(string $thumbnailDir): self
     {
         $this->thumbnailDir = $thumbnailDir;
@@ -1226,11 +1263,44 @@ class FileAttribute extends Attribute
         return $this;
     }
 
-    public function getThumbnailPath(string $filepath): string
+    public function getRelativeThumbnailPath(array $record): ?string
     {
-        $dirPath = pathinfo($filepath, PATHINFO_DIRNAME) . '/' . $this->thumbnailDir;
-        return $dirPath . '/' .
-            ($this->thumbnailExt ? (pathinfo($filepath, PATHINFO_FILENAME) . '.' . $this->thumbnailExt) : basename($filepath));
+        $realtiveFilePath = $this->getRelativeFilePath($record);
+        if (!$realtiveFilePath) {
+            return null;
+        }
+
+        $relativeThumbnailDir = pathinfo($realtiveFilePath, PATHINFO_DIRNAME) . '/' . $this->thumbnailDir;
+        if (!str_ends_with($relativeThumbnailDir, '/')) {
+            $relativeThumbnailDir .= '/';
+        }
+
+        // per gestire un'eventuale extension diversa dal filename originale
+        return $relativeThumbnailDir .
+            ($this->thumbnailExt ? (pathinfo($realtiveFilePath, PATHINFO_FILENAME) . '.' . $this->thumbnailExt) : basename($realtiveFilePath));
+    }
+
+    public function getAbsoluteThumbnailPath(array $record, bool $realPath = false): ?string
+    {
+        $relativeThumbnailPath = $this->getRelativeThumbnailPath($record);
+        if (!$relativeThumbnailPath) {
+            return null;
+        }
+        $fileDir = $this->getDir();
+        if (!str_ends_with($fileDir, '/')) {
+            $fileDir .= '/';
+        }
+        $absoluteThumbnailPath = $fileDir . $relativeThumbnailPath;
+        return $realPath ? realpath($absoluteThumbnailPath) : $absoluteThumbnailPath;
+    }
+
+    public function getThumbnailUrl(array $record): ?string
+    {
+        $fileUrl = $this->getUrl();
+        if (!str_ends_with($fileUrl, '/')) {
+            $fileUrl .= '/';
+        }
+        return $fileUrl . $this->getRelativeThumbnailPath($record);
     }
 
     public function isHideEditWidget(): bool
@@ -1332,19 +1402,31 @@ class FileAttribute extends Attribute
 
     private function isImage(array $record): bool
     {
-        if (!isset($record[$this->fieldName()]['filename'])) {
+        $relativeFilePath = $this->getRelativeFilePath($record);
+        if (!isset($relativeFilePath)) {
             return false;
         }
 
-        return (bool)getimagesize($this->m_dir . $record[$this->fieldName()]['filename']);
+        return (bool)getimagesize($this->getAbsoluteFilePath($record));
     }
 
     private function fileExists(array $record): bool
     {
-        if (!isset($record[$this->fieldName()]['filename'])) {
+        $relativeFilePath = $this->getRelativeFilePath($record);
+        if (!isset($relativeFilePath)) {
             return false;
         }
 
-        return is_file($this->m_dir . $record[$this->fieldName()]['filename']);
+        return is_file($this->getAbsoluteFilePath($record));
+    }
+
+    private function thumbnailExists(array $record): bool
+    {
+        $relativeThumbnailPath = $this->getRelativeThumbnailPath($record);
+        if (!isset($relativeThumbnailPath)) {
+            return false;
+        }
+
+        return is_file($this->getAbsoluteThumbnailPath($record));
     }
 }
