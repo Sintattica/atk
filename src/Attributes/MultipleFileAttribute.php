@@ -3,12 +3,10 @@
 namespace Sintattica\Atk\Attributes;
 
 use Sintattica\Atk\Core\Tools;
-use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Ui\Page;
 
 /**
- * This is an extend of the famous atkfileattribute :). Now its possible
- * to insert one or more files in one database field.
+ * This is an extent of the famous atkfileattribute :).
+ * Now it's possible to insert one or more files in one database field.
  *
  * @author Martin Roest <martin@ibuildings.nl>
  */

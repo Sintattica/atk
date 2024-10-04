@@ -467,8 +467,7 @@ class FileAttribute extends Attribute
      * @param array $record The record that holds the value for this
      *                       attribute. If an error occurs, the error will
      *                       be stored in the 'atkerror' field of the record.
-     * @param string $mode The mode for which should be validated ("add" or
-     *                       "update")
+     * @param string $mode The mode for which should be validated ('add'|'update')
      */
     public function validate(&$record, $mode)
     {
@@ -486,8 +485,8 @@ class FileAttribute extends Attribute
             return;
         }
 
-        if (str_contains($record[$this->fieldName()]['tmpfile'], sys_get_temp_dir()) && ($mode == 'add' || !$this->hasFlag(self::AF_READONLY_EDIT))) {
-            // è stato caricato un nuovo file e siamo in add oppure non è readonly
+        if ($this->isNewFileLoaded($record) && ($mode == 'add' || !$this->hasFlag(self::AF_READONLY_EDIT))) {
+            // a new file is loaded and we are in add mode or the attribute is not readonly edit
 
             // check file size
             if ($this->fileMaxSize && $record[$this->fieldName()]['filesize'] > $this->fileMaxSize) {
@@ -1318,6 +1317,50 @@ class FileAttribute extends Attribute
         return $this;
     }
 
+    public function isImage(array $record): bool
+    {
+        $absoluteFilePath = $this->getAbsoluteFilePath($record);
+        if (!$absoluteFilePath) {
+            return false;
+        }
+
+        return (bool)getimagesize($absoluteFilePath);
+    }
+
+    public function fileExists(array $record): bool
+    {
+        $absoluteFilePath = $this->getAbsoluteFilePath($record);
+        if (!$absoluteFilePath) {
+            return false;
+        }
+        return is_file($absoluteFilePath);
+    }
+
+    public function thumbnailExists(array $record): bool
+    {
+        $absoluteThumnailPath = $this->getAbsoluteThumbnailPath($record);
+        if (!$absoluteThumnailPath) {
+            return false;
+        }
+        return is_file($absoluteThumnailPath);
+    }
+
+    /**
+     * Call this method only in postAdd() or postUpdate()
+     */
+    public function isNewFileLoaded(array $record): bool
+    {
+        return str_contains($record[$this->fieldName()]['tmpfile'], sys_get_temp_dir());
+    }
+
+    /**
+     * Call this method only postUpdate()
+     */
+    public function isFileRemoved(array $record): bool
+    {
+        return $record[$this->fieldName()]['postdel'];
+    }
+
     /**
      * Give the file a uniquely numbered filename.
      *
@@ -1402,35 +1445,5 @@ class FileAttribute extends Attribute
         } else {
             return $this->filenameMangle($record, $default);
         }
-    }
-
-    private function isImage(array $record): bool
-    {
-        $relativeFilePath = $this->getRelativeFilePath($record);
-        if (!isset($relativeFilePath)) {
-            return false;
-        }
-
-        return (bool)getimagesize($this->getAbsoluteFilePath($record));
-    }
-
-    private function fileExists(array $record): bool
-    {
-        $relativeFilePath = $this->getRelativeFilePath($record);
-        if (!isset($relativeFilePath)) {
-            return false;
-        }
-
-        return is_file($this->getAbsoluteFilePath($record));
-    }
-
-    private function thumbnailExists(array $record): bool
-    {
-        $relativeThumbnailPath = $this->getRelativeThumbnailPath($record);
-        if (!isset($relativeThumbnailPath)) {
-            return false;
-        }
-
-        return is_file($this->getAbsoluteThumbnailPath($record));
     }
 }
