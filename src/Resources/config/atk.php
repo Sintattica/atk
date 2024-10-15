@@ -599,7 +599,6 @@ return [
     /********************************** LANGUAGE *******************************/
 
     /*
-     *
      * @var String
      */
     'language' => 'en',
@@ -607,14 +606,13 @@ return [
     'supported_languages' => ['en'],
 
     /*
-     *
      * @var String
      */
     'language_basedir' => 'languages/',
 
     /*
      * Use browser language to detect application language.
-     * By default set to false to remain backwards compatible.
+     * By default false to remain backwards compatible.
      *
      * @var boolean
      */
@@ -649,7 +647,7 @@ return [
 
     /*
      * The session name. If this configuration option is not set the
-     * 'identifier option is used instead.
+     * identifier option is used instead.
      *
      * @var string
      */

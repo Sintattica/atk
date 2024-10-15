@@ -4,6 +4,7 @@ namespace Sintattica\Atk\Core;
 
 use Dotenv\Dotenv;
 use Exception;
+use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
 use Sintattica\Atk\Core\Menu\Menu;
@@ -15,17 +16,15 @@ use Sintattica\Atk\Ui\IndexPage;
 
 class Atk
 {
-    const VERSION = 'v9.9.1';
-
-    public $g_nodes = [];
-    public $g_nodesClasses = [];
-    public $g_nodeRepository = [];
-    public $g_modules = [];
+    public array $g_nodes = [];
+    public array $g_nodesClasses = [];
+    public array $g_nodeRepository = [];
+    public array $g_modules = [];
     /** @var Module[] */
-    public $g_moduleRepository = [];
-    public $g_nodeHandlers = [];
-    public $g_nodeListeners = [];
-    private $environment;
+    public array $g_moduleRepository = [];
+    public array $g_nodeHandlers = [];
+    public array $g_nodeListeners = [];
+    private string $environment;
 
     /** @var static $s_instance */
     public static $s_instance;
@@ -105,22 +104,19 @@ class Atk
 
     /**
      * Get new Atk object.
-     *
-     * @return static class object
      */
-    public static function getInstance()
+    public static function getInstance(): Atk|static
     {
         if (!is_object(static::$s_instance)) {
             throw new RuntimeException('Atk instance not available');
         }
-
         return static::$s_instance;
     }
 
     /**
      * @throws ReflectionException
      */
-    public function run()
+    public function run(): void
     {
         $sessionManager = SessionManager::getInstance();
         $sessionManager->start();
@@ -148,7 +144,7 @@ class Atk
         }
     }
 
-    public function runCli()
+    public function runCli(): void
     {
         Config::setGlobal('authentication', 'none');
         Config::setGlobal('authorization', 'none');
@@ -157,7 +153,7 @@ class Atk
         $this->bootModules();
     }
 
-    public function bootModules()
+    public function bootModules(): void
     {
         $this->initMenu();
         foreach ($this->g_moduleRepository as $module) {
@@ -168,7 +164,7 @@ class Atk
     /**
      * Load all the menu items
      */
-    public function initMenu()
+    public function initMenu(): void
     {
         /** @var Menu $menuClass */
         $menuClass = Config::getGlobal('menu');
@@ -189,7 +185,7 @@ class Atk
      *              registered.
      * @param string $section
      */
-    public function registerNode($nodeUri, $class, $actions = null, $tabs = [], $section = null)
+    public function registerNode($nodeUri, $class, $actions = null, $tabs = [], $section = null): void
     {
         if (!is_array($tabs)) {
             $section = $tabs;
@@ -217,7 +213,7 @@ class Atk
         }
     }
 
-    public function unregisterNode(string $nodeUri, string $section = null)
+    public function unregisterNode(string $nodeUri, string $section = null): void
     {
         unset($this->g_nodesClasses[$nodeUri]);
 
@@ -237,19 +233,19 @@ class Atk
      *
      * @param string $nodeUri The node uri
      * @param bool $init Initialize the node?
-     * @param string $cache_id The cache id in the node repository
-     * @param bool $reset Whether or not to reset the particular node in the repository
+     * @param string $cacheId The cache id in the node repository
+     * @param bool $reset Whether to reset the particular node in the repository
      *
      * @return Node the node
      */
-    public function atkGetNode($nodeUri, $init = true, $cache_id = 'default', $reset = false)
+    public function atkGetNode(string $nodeUri, bool $init = true, string $cacheId = 'default', bool $reset = false): Node
     {
-        if (!isset($this->g_nodeRepository[$cache_id][$nodeUri]) || !is_object($this->g_nodeRepository[$cache_id][$nodeUri]) || $reset) {
-            Tools::atkdebug("Constructing a new node $nodeUri ($cache_id)");
-            $this->g_nodeRepository[$cache_id][$nodeUri] = $this->newAtkNode($nodeUri, $init);
+        if (!isset($this->g_nodeRepository[$cacheId][$nodeUri]) || !is_object($this->g_nodeRepository[$cacheId][$nodeUri]) || $reset) {
+            Tools::atkdebug("Constructing a new node $nodeUri ($cacheId)");
+            $this->g_nodeRepository[$cacheId][$nodeUri] = $this->newAtkNode($nodeUri, $init);
         }
 
-        return $this->g_nodeRepository[$cache_id][$nodeUri];
+        return $this->g_nodeRepository[$cacheId][$nodeUri];
     }
 
     /**
@@ -259,12 +255,12 @@ class Atk
      *
      * @return Module An instance of the Module
      */
-    public function atkGetModule($moduleName)
+    public function atkGetModule(string $moduleName): Module
     {
         return $this->g_moduleRepository[$moduleName];
     }
 
-    public function isModule($moduleName)
+    public function isModule(string $moduleName): bool
     {
         return array_key_exists($moduleName, $this->g_moduleRepository) && is_object($this->g_moduleRepository[$moduleName]);
     }
@@ -277,7 +273,7 @@ class Atk
      *
      * @return Node new node object
      */
-    public function newAtkNode($nodeUri, $init = true)
+    public function newAtkNode(string $nodeUri, bool $init = true): Node
     {
         $nodeClass = $this->g_nodesClasses[$nodeUri];
 
@@ -298,22 +294,21 @@ class Atk
      * @param string $moduleName name of the module.
      *
      * @return string The path to the module.
+     * @throws ReflectionException
      */
-    public function moduleDir($moduleName)
+    public function moduleDir(string $moduleName): string
     {
         $modules = $this->g_modules;
         if (isset($modules[$moduleName])) {
             $class = $modules[$moduleName];
 
-            $reflection = new \ReflectionClass($class);
+            $reflection = new ReflectionClass($class);
             $dir = dirname($reflection->getFileName());
-            if (substr($dir, -1) != '/') {
+            if (!str_ends_with($dir, '/')) {
                 $dir .= '/';
             }
-
             return $dir;
         }
-
         return '';
     }
 
@@ -323,9 +318,9 @@ class Atk
      * @param string $nodeUri the uri of the node
      * @param string $action the node action
      *
-     * @return ActionHandler full class or object instance (subclass of ActionHandler) or NULL if no handler exists for the specified action
+     * @return ActionHandler|null full class or object instance (subclass of ActionHandler) or NULL if no handler exists for the specified action
      */
-    public function atkGetNodeHandler($nodeUri, $action)
+    public function atkGetNodeHandler(string $nodeUri, string $action): ?ActionHandler
     {
         if (isset($this->g_nodeHandlers[$nodeUri][$action])) {
             $handler = $this->g_nodeHandlers[$nodeUri][$action];
@@ -351,11 +346,11 @@ class Atk
      *
      * @param string $nodeUri the uri of the node (* matches all)
      * @param string $action the node action
-     * @param string /atkActionHandler $handler handler functionname or object (is_subclass_of atkActionHandler)
+     * @param string $handler handler functionname or object (is_subclass_of atkActionHandler)
      *
      * @return bool true if there is no known handler
      */
-    public function atkRegisterNodeHandler($nodeUri, $action, $handler)
+    public function atkRegisterNodeHandler($nodeUri, $action, $handler): bool
     {
         if (isset($this->g_nodeHandlers[$nodeUri][$action])) {
             return false;
@@ -366,9 +361,9 @@ class Atk
         return true;
     }
 
-    public function registerModule($moduleClass)
+    public function registerModule($moduleClass): void
     {
-        $reflection = new \ReflectionClass($moduleClass);
+        $reflection = new ReflectionClass($moduleClass);
         $name = $reflection->getStaticPropertyValue('module');
         $this->g_modules[$name] = $moduleClass;
 
