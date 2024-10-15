@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.1.2] - 2024-10-15
+### Added
+- Atk: added favicon_base_url and manifest_url globalvars
+
+
 ## [11.1.1] - 2024-10-14
 ### Fixed
 - Attribute: fetch value in the search function of BoolAttribute
