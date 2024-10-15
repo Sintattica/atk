@@ -22,17 +22,11 @@ return [
     /********************* FILE LOCATIONS & PATHS ******************************/
 
     'configdirname' => $_configDirName,
-
     'application_dir' => $_configAppRoot,
-
     'application_config_dir' => $_configAppRoot . $_configDirName . '/',
-
     'application_config' => $_configAppRoot . $_configDirName . '/atk.php',
-
     'assets_url' => $_configAssetsUrl,
-
     'template_dir' => __DIR__ . '/../templates/',
-
     'public_dir' => $_public_dir,
 
     'version' => '',
@@ -42,6 +36,12 @@ return [
      */
     'default_upload_dir' => 'uploads',
     'default_upload_url' => 'uploads',
+
+    /**
+     * @see \Sintattica\Atk\Ui\Page::head()
+     */
+    'favicon_base_url' => '/',
+    'manifest_url' => '',
 
     /*
      * The location of a directory that is writable to ATK and that ATK can
@@ -57,7 +57,7 @@ return [
     'use_atkerrorhandler' => true,
 
     /*
-     * Cache table meta data and compiled meta node code.
+     * Cache table metadata and compiled meta node code.
      *
      * On development environments this option should be set to false, but
      * on production environments you should really enable it. If you enable

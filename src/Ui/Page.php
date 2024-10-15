@@ -449,7 +449,7 @@ class Page
      * @param string $code The Cascading Style Sheet code fragment to place in
      *                     the header.
      */
-    public function register_stylecode($code)
+    public function register_stylecode(string $code): void
     {
         if (!in_array($code, $this->m_stylecode)) {
             $this->m_stylecode[] = $code;
@@ -473,7 +473,7 @@ class Page
      *
      * @param array $hiddenvars the hiddenvariables we want to register
      */
-    public function register_hiddenvars($hiddenvars)
+    public function register_hiddenvars(array $hiddenvars): void
     {
         foreach ($hiddenvars as $hiddenvarname => $hiddenvarvalue) {
             $this->m_hiddenvars[$hiddenvarname] = $hiddenvarvalue;
@@ -481,25 +481,29 @@ class Page
     }
 
     /**
-     * Generate the HTML header (<head></head>) statement for the page,
-     * including all scripts and styles.
-     *
-     * @return string The HTML pageheader, including <head> and </head> tags.
+     * Generate the HTML header (content of <head></head>) statement for the page, including all scripts and styles.
      */
-    public function head()
+    public function head(): string
     {
-        $res = '';
-        $this->addMeta($res);
-        $this->addScripts($res);
-        $this->addStyles($res);
+        $header = '';
+        $this->addMeta($header);
+        $this->addScripts($header);
+        $this->addStyles($header);
 
-        $favico = Config::getGlobal('defaultfavico');
-        if ($favico != '') {
-            $res .= '  <link rel="icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
-            $res .= '  <link rel="shortcut icon" href="' . $favico . '" type="image/x-icon" />' . "\n";
+        $faviconBaseUrl = Config::getGlobal('favicon_base_url');
+        if ($faviconBaseUrl !== '') {
+            $header .= '<link rel="icon" type="image/x-icon" href="' . $faviconBaseUrl . 'favicon.ico"/>' . "\n";
+            $header .= '<link rel="shortcut icon" type="image/x-icon" href="' . $faviconBaseUrl . 'favicon.ico"/>' . "\n";
+            $header .= '<link rel="icon" type="image/png" sizes="48x48" href="' . $faviconBaseUrl . 'favicon-48x48.png"/>' . "\n";
+            $header .= '<link rel="apple-touch-icon" sizes="180x180" href="' . $faviconBaseUrl . 'apple-touch-icon.png"/>' . "\n";
         }
 
-        return $res;
+        $manifestUrl = Config::getGlobal('manifest_url');
+        if ($manifestUrl !== '') {
+            $header .= '<link rel="manifest" href="' . $manifestUrl . '">' . "\n";
+        }
+
+        return $header;
     }
 
     /**
