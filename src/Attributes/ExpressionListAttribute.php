@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Attributes;
 
+use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\DataGrid\DataGrid;
 use Sintattica\Atk\Db\Query;
@@ -15,9 +16,7 @@ use Sintattica\Atk\Db\Query;
  */
 class ExpressionListAttribute extends ExpressionAttribute
 {
-    /** @var ListAttribute $m_listAttribute
-     * Useful for search and display
-     */
+    /** @var ListAttribute $m_listAttribute Useful for search and display */
     protected $m_listAttribute;
 
     function __construct($name, $flags, $expression, $listAttribute, $searchType = '')
@@ -29,11 +28,12 @@ class ExpressionListAttribute extends ExpressionAttribute
         $this->m_listAttribute = $listAttribute;
     }
 
-    function setOwnerInstance($instance)
+    function setOwnerInstance(Node $instance): static
     {
         parent::setOwnerInstance($instance);
 
         $this->m_listAttribute->setOwnerInstance($this->m_ownerInstance);
+        return $this;
     }
 
     function getListAttribute()

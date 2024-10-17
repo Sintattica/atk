@@ -675,26 +675,18 @@ class Attribute
 
     /**
      * Sets the owner instance.
-     *
-     * @param Node $instance
      */
-    public function setOwnerInstance($instance)
+    public function setOwnerInstance(Node $instance): static
     {
         $this->m_ownerInstance = $instance;
+        return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getOrder(): int
     {
         return $this->m_order;
     }
 
-    /**
-     * @param int $m_order
-     * @return self
-     */
     public function setOrder(int $m_order): self
     {
         $this->m_order = $m_order;
@@ -777,7 +769,6 @@ class Attribute
         if (in_array($displayMode, $this->getAllowedDisplayModes())) {
             $this->displayMode = $displayMode;
         }
-
         return $this;
     }
 
@@ -868,7 +859,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setFlags($flags = 0)
+    public function setFlags($flags = 0): static
     {
         $this->m_flags = 0;
         $this->addFlag($flags); // always call addFlag
@@ -944,10 +935,9 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setDisabledModes($flags = 0)
+    public function setDisabledModes($flags = 0): static
     {
         $this->m_disabledModes = $flags;
-
         return $this;
     }
 
@@ -1059,7 +1049,6 @@ class Attribute
     public function setInitialValue($value)
     {
         $this->m_initialValue = $value;
-
         return $this;
     }
 
@@ -1368,7 +1357,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setTabs($tabs)
+    public function setTabs($tabs): static
     {
         if (empty($tabs) && isset($this->m_ownerInstance) && is_object($this->m_ownerInstance)) {
             $tabs = array($this->m_ownerInstance->m_default_tab);
@@ -1404,7 +1393,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setSections($sections)
+    public function setSections($sections): static
     {
         if ($sections == null) {
             $this->m_sections = [];
@@ -1428,9 +1417,9 @@ class Attribute
     /**
      * Get column.
      *
-     * @return string column name
+     * @return string|null column name
      */
-    public function getColumn()
+    public function getColumn(): ?string
     {
         return $this->m_column;
     }
@@ -1438,23 +1427,22 @@ class Attribute
     /**
      * Set column.
      *
-     * @param string $name column name
+     * @param string|null $name column name
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setColumn($name)
+    public function setColumn(?string $name): static
     {
         $this->m_column = $name;
-
         return $this;
     }
 
     /**
      * Returns the view callback (if set).
      *
-     * @return mixed callback method
+     * @return callable|null callback method
      */
-    protected function getViewCallback()
+    protected function getViewCallback(): ?callable
     {
         return $this->m_viewCallback;
     }
@@ -1465,11 +1453,12 @@ class Attribute
      * The callback is called instead of the regular display method of the
      * attribute.
      *
-     * @param mixed $callback callback method
+     * @param callable $callback callback method
      */
-    public function setViewCallback($callback)
+    public function setViewCallback(callable $callback): static
     {
         $this->m_viewCallback = $callback;
+        return $this;
     }
 
     /**
@@ -1539,9 +1528,9 @@ class Attribute
     /**
      * Returns the edit callback (if set).
      *
-     * @return mixed callback method
+     * @return callable|null callback method
      */
-    protected function getEditCallback()
+    protected function getEditCallback(): ?callable
     {
         return $this->m_editCallback;
     }
@@ -1549,14 +1538,15 @@ class Attribute
     /**
      * Sets the edit callback.
      *
-     * The callback is called instead of the regular display method of the
+     * The callback is called instead of the regular edit method of the
      * attribute.
      *
-     * @param mixed $callback callback method
+     * @param callable $callback callback method
      */
-    public function setEditCallback($callback)
+    public function setEditCallback(callable $callback): static
     {
         $this->m_editCallback = $callback;
+        return $this;
     }
 
     /**
@@ -1965,10 +1955,9 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setAttributeSearchmode($searchmode)
+    public function setAttributeSearchmode($searchmode): static
     {
         $this->m_searchmode = $searchmode;
-
         return $this;
     }
 
@@ -2278,10 +2267,9 @@ class Attribute
      *
      * @return Attribute Returns the instance of this attribute
      */
-    public function setForceInsert($force)
+    public function setForceInsert(bool $force): static
     {
         $this->m_forceinsert = $force;
-
         return $this;
     }
 
@@ -2290,7 +2278,7 @@ class Attribute
      *
      * @return bool Wether or not an attribute is forced to insert
      */
-    public function getForceInsert()
+    public function getForceInsert(): bool
     {
         return $this->m_forceinsert;
     }
@@ -2303,11 +2291,15 @@ class Attribute
      *
      * @return Attribute Returns the instance of this attribute
      */
-    public function setForceReload($force)
+    public function setForceReload(bool $force): static
     {
         $this->m_forcereload = $force;
-
         return $this;
+    }
+
+    public function isForceReload(): bool
+    {
+        return $this->m_forcereload;
     }
 
     /**
@@ -2317,10 +2309,9 @@ class Attribute
      *
      * @return Attribute Returns the instance of this attribute
      */
-    public function setForceUpdate($value)
+    public function setForceUpdate(bool $value): static
     {
         $this->m_forceupdate = $value;
-
         return $this;
     }
 
@@ -2329,7 +2320,7 @@ class Attribute
      *
      * @return bool Wether or not an attribute is forced to update
      */
-    public function getForceUpdate()
+    public function getForceUpdate(): bool
     {
         return $this->m_forceupdate;
     }
@@ -2339,7 +2330,7 @@ class Attribute
         return $this->forceExport;
     }
 
-    public function setForceExport(bool $forceExport): self
+    public function setForceExport(bool $forceExport): static
     {
         $this->forceExport = $forceExport;
         return $this;
@@ -2442,7 +2433,7 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setAttribSize($size)
+    public function setAttribSize($size): static
     {
         if (is_array($size) && Tools::count($size) > 0) {
             if (!empty($size[2])) {
@@ -2541,10 +2532,9 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setLabel(string $label): self
+    public function setLabel(string $label): static
     {
         $this->m_label = $label;
-
         return $this;
     }
 
@@ -2555,10 +2545,9 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setPostFixLabel(string $label): self
+    public function setPostFixLabel(string $label): static
     {
         $this->m_postfixlabel = $label;
-
         return $this;
     }
 
@@ -2580,10 +2569,9 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setHelp(string $help): self
+    public function setHelp(string $help): static
     {
         $this->m_help = $help;
-
         return $this;
     }
 
@@ -2608,10 +2596,9 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setPlaceholder($placeholder): self
+    public function setPlaceholder(string $placeholder): static
     {
         $this->m_placeholder = $placeholder;
-
         return $this;
     }
 
@@ -2667,7 +2654,7 @@ class Attribute
         return $this->labelPositionTop;
     }
 
-    public function setLabelPositionTop(bool $labelPositionTop): self
+    public function setLabelPositionTop(bool $labelPositionTop): static
     {
         $this->labelPositionTop = $labelPositionTop;
         return $this;
@@ -2683,10 +2670,9 @@ class Attribute
      * @see storageType
      *
      */
-    public function setStorageType($type, $mode = null): self
+    public function setStorageType($type, $mode = null): static
     {
         $this->m_storageType[$mode] = $type;
-
         return $this;
     }
 
@@ -2747,10 +2733,9 @@ class Attribute
      * @see loadType
      *
      */
-    public function setLoadType($type, $mode = null): self
+    public function setLoadType($type, $mode = null): static
     {
         $this->m_loadType[$mode] = $type;
-
         return $this;
     }
 
@@ -3381,10 +3366,9 @@ class Attribute
      *
      * @return Attribute The instance of this Attribute
      */
-    public function setInitialHidden(bool $bool): Attribute
+    public function setInitialHidden(bool $bool): static
     {
         $this->m_initial_hidden = $bool;
-
         return $this;
     }
 
@@ -3397,7 +3381,6 @@ class Attribute
     {
         return $this->m_initial_hidden;
     }
-
 
     /**
      * String representation for this attribute (PHP5 only).
@@ -3432,7 +3415,7 @@ class Attribute
      * @param string $style
      * @param mixed $value
      */
-    public function setCssStyle($type, $style, $value)
+    public function setCssStyle($type, $style, $value): static
     {
         if (is_array($type)) {
             foreach ($type as $t) {
@@ -3441,6 +3424,7 @@ class Attribute
         } else {
             $this->cssStyles[$type][$style] = $value;
         }
+        return $this;
     }
 
     public function getCssStyle($type, $style)
@@ -3470,9 +3454,8 @@ class Attribute
      *
      * @param array $record
      * @param string $type
-     * @return void
      */
-    protected function setSearchCssStyleMinWidth($record, $type)
+    protected function setSearchCssStyleMinWidth($record, $type): static
     {
         $value = '';
         if (is_array($record) && isset($record[$this->fieldName()])) {
@@ -3483,6 +3466,8 @@ class Attribute
         $minWidth = $value ? ($numChars * 10) : 50;
 
         $this->setCssStyle($type, 'min-width', $minWidth . 'px');
+
+        return $this;
     }
 
     public function isHtmlSpecialChars(): bool
@@ -3490,7 +3475,7 @@ class Attribute
         return $this->htmlSpecialChars;
     }
 
-    public function setHtmlSpecialChars(bool $htmlSpecialChars): self
+    public function setHtmlSpecialChars(bool $htmlSpecialChars): static
     {
         $this->htmlSpecialChars = $htmlSpecialChars;
         return $this;
@@ -3501,7 +3486,7 @@ class Attribute
         return $this->nl2br;
     }
 
-    public function setNl2br(bool $nl2br): self
+    public function setNl2br(bool $nl2br): static
     {
         $this->nl2br = $nl2br;
         return $this;
@@ -3512,7 +3497,7 @@ class Attribute
         return $this->isNestedAttribute;
     }
 
-    public function setIsNestedAttribute(bool $isNestedAttribute): self
+    public function setIsNestedAttribute(bool $isNestedAttribute): static
     {
         $this->isNestedAttribute = $isNestedAttribute;
         return $this;
@@ -3526,7 +3511,7 @@ class Attribute
     /**
      * @throws Exception
      */
-    public function setNestedAttributeField(?string $nestedAttributeField): self
+    public function setNestedAttributeField(?string $nestedAttributeField): static
     {
         if ($nestedAttributeField && !$this->isNestedAttribute) {
             throw new Exception("Attribute '{$this->fieldName()}' must be nested!");

@@ -40,7 +40,7 @@ class ShuttleRelation extends ManyToManyRelation
     }
 
     /**
-     * ShuttleRelation expect or an array whith primary keys of the destionation node
+     * ShuttleRelation expect or an array with primary keys of the destination node
      * or a single value that contains the primary key of the destination node.
      *
      * @param mixed $value
@@ -50,7 +50,7 @@ class ShuttleRelation extends ManyToManyRelation
     public function setInitialValue($value)
     {
         if (!is_array($value)) {
-            $this->m_initialValue = array($value);
+            $value = [$value];
         }
 
         $this->m_initialValue = $value;
