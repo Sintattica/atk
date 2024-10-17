@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.1.3] - 2024-10-17
+### Changed
+- Atk: added return type to all methods in Atk.php
+- Attribute: all setter are now fluent in Attribute.php
+
+
 ## [11.1.2] - 2024-10-15
 ### Added
 - Atk: added favicon_base_url and manifest_url globalvars
