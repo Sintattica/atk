@@ -2919,11 +2919,11 @@ class Node
      * @throws \Smarty\Exception
      */
     public function confirmAction(
-        array|string $atkselector,
-        string       $action,
-        bool         $checkoverride = true,
-        bool         $mergeSelectors = true,
-        string       $csrfToken = null
+        array|string|null $atkselector,
+        string            $action,
+        bool              $checkoverride = true,
+        bool              $mergeSelectors = true,
+        string            $csrfToken = null
     ): string
     {
         $method = 'confirm' . $action;
