@@ -2971,7 +2971,7 @@ class Node
             $buttons[] = '<input name="cancel" type="submit" class="btn btn-default btn_cancel mr-1" value="' . $this->text('no') . '">';
         }
 
-        $record = null;
+        $record = [];
         $content = $this->confirmActionText($atkselector, $action);
 
         if ($atkselectorString) {
