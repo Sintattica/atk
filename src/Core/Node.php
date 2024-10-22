@@ -2919,7 +2919,7 @@ class Node
      * @throws \Smarty\Exception
      */
     public function confirmAction(
-        array|string|null $atkselector,
+        array|string $atkselector,
         string            $action,
         bool              $checkoverride = true,
         bool              $mergeSelectors = true,
@@ -5881,7 +5881,7 @@ class Node
     {
         if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
             if (!$atkSelectors) {
-                $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR] ?? null;
+                $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR] ?? '';
             }
             $this->getPage()->addContent($this->renderActionPage(
                 $handler->m_action, [$this->confirmAction($atkSelectors, $handler->m_action)]) // show confirm buttons
