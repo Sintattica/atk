@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.1.7] - 2024-10-28
+### Fixed
+- Handler: fix ImportHandler
+
+
 ## [11.1.6] - 2024-10-22
 ### Fixed
 - Node: atkSelector nullable in confirmAction
