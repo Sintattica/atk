@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.1.8] - 2024-11-12
+### Fixed
+- Attribute: added isset record fieldName check in NumberAttribute hide function
+
+
 ## [11.1.7] - 2024-10-28
 ### Fixed
 - Handler: fix ImportHandler

@@ -201,15 +201,18 @@ class NumberAttribute extends Attribute
      */
     public function hide($record, $fieldprefix, $mode)
     {
-        // the next if-statement is a workaround for derived attributes which do
-        // not override the hide() method properly. This will not give them a
-        // working hide() functionality but at least it will not give error messages.
-        if (!is_array($record[$this->fieldName()])) {
-            $value = $this->formatNumber($record[$this->fieldName()]);
-            return '<input type="hidden" id="' . $this->getHtmlId($fieldprefix) . '" name="' . $this->getHtmlName($fieldprefix) . '" value="' . htmlspecialchars($value) . '">';
-        } else {
-            Tools::atkdebug('Warning attribute ' . $this->m_name . ' has no proper hide method!');
+        $value = '';
+        if (isset($record[$this->fieldName()])) {
+            // the next if-statement is a workaround for derived attributes which do
+            // not override the hide() method properly. This will not give them a
+            // working hide() functionality but at least it will not give error messages.
+            if (!is_array($record[$this->fieldName()])) {
+                $value = $this->formatNumber($record[$this->fieldName()]);
+            } else {
+                Tools::atkdebug('Warning attribute ' . $this->m_name . ' has no proper hide method!');
+            }
         }
+        return '<input type="hidden" id="' . $this->getHtmlId($fieldprefix) . '" name="' . $this->getHtmlName($fieldprefix) . '" value="' . htmlspecialchars($value) . '">';
     }
 
     /**
