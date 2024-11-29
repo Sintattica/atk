@@ -202,7 +202,7 @@ class ProfileAttribute extends Attribute
             $temp = [];
             foreach ($result as $section => $modules) {
                 foreach ($modules as $module => $nodes) {
-                    if (!is_array($temp[$module])) {
+                    if (!isset($temp[$module])) {
                         $temp[$module] = [];
                     }
 
