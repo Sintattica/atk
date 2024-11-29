@@ -3168,7 +3168,7 @@ class Node
         return $this->legendItems;
     }
 
-    public function addLegendItem(string $text, string $uiStateColor = UIStateColors::COLOR_WHITE): void
+    public function addLegendItem(string $text, string $uiStateColor = UIStateColors::STATE_WHITE): void
     {
         // TODO: trasform in object?
         $this->legendItems[] = ['text' => $text, 'color' => $uiStateColor];
