@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.1.11] - 2024-12-09
+### Fixed
+- Relation: fetchValue in MTO when `$postvars[$this->fieldName()]` is an array
+
+
 ## [11.1.10] - 2024-11-29
 ### Fixed
 - Atk: minor fix 
