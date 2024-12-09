@@ -698,16 +698,16 @@ class Tools
      * @todo we should also support <=>, >=, >, <=, <, <>
      *
      */
-    public static function decodeKeyValueSet($set)
+    public static function decodeKeyValueSet(string $set): array
     {
         $result = [];
         $items = explode(' AND ', $set);
         for ($i = 0; $i < Tools::count($items); ++$i) {
             $items[$i] = trim($items[$i], '()'); // trim parenthesis if present, e.g. (id=3) AND (name='joe')
-            if (strstr($items[$i], '!=') !== false) {
+            if (str_contains($items[$i], '!=')) {
                 list($key, $value) = explode('!=', $items[$i]);
                 $result[trim($key)] = self::stripQuotes($value);
-            } elseif (strstr($items[$i], '=') !== false) {
+            } elseif (str_contains($items[$i], '=')) {
                 list($key, $value) = explode('=', $items[$i]);
                 $result[trim($key)] = self::stripQuotes($value);
             } elseif (stristr($items[$i], 'IS NULL') !== false) {

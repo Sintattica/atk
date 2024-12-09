@@ -5876,10 +5876,15 @@ class Node
      * @param string[]|null $atkSelectors
      * @param string|null $cancelUrl It goes to this url if the user has cancelled the action
      * @return bool True if the user has confirmed the action.
+     * @throws \Smarty\Exception
      */
     protected function checkConfirmAction(ActionHandler $handler, ?array $atkSelectors = null, ?string $cancelUrl = null): bool
     {
-        if (!$this->m_postvars['confirm'] and !$this->m_postvars['cancel'] and !$this->m_postvars['atkcancel']) {
+        $confirm = $this->m_postvars['confirm'] ?? false;
+        $cancel = $this->m_postvars['cancel'] ?? false;
+        $atkCancel = $this->m_postvars['atkcancel'] ?? false;
+
+        if (!$confirm && !$cancel && !$atkCancel) {
             if (!$atkSelectors) {
                 $atkSelectors = $this->m_postvars[self::PARAM_ATKSELECTOR] ?? '';
             }
@@ -5888,8 +5893,9 @@ class Node
             );
 
             return false;
+        }
 
-        } elseif ($this->m_postvars['cancel']) {
+        if ($cancel) {
             // the user has cancelled the action.
             if ($cancelUrl) {
                 $this->redirect($cancelUrl);

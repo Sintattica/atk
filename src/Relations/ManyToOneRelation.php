@@ -516,17 +516,21 @@ class ManyToOneRelation extends Relation
     {
         if ($this->isPosted($postvars)) {
             $result = [];
+            $primaryKey = $postvars[$this->fieldName()];
 
             // support specifying the value as a single number if the
             // destination's primary key consists of a single field
-            if (is_numeric($postvars[$this->fieldName()])) {
-                $result[$this->getDestination()->primaryKeyField()] = $postvars[$this->fieldName()];
+            if (is_numeric($primaryKey)) {
+                $result[$this->getDestination()->primaryKeyField()] = $primaryKey;
             } else {
                 // Split the primary key of the selected record into its
                 // referential key elements.
-                $keyelements = Tools::decodeKeyValueSet($postvars[$this->fieldName()]);
+                if (is_array($primaryKey)) {
+                    $primaryKey = $this->getDestination()->getPrimaryKey($primaryKey);
+                }
+                $keyelements = Tools::decodeKeyValueSet($primaryKey);
                 foreach ($keyelements as $key => $value) {
-                    // Tablename must be stripped out because it is in the way..
+                    // Tablename must be stripped out because it is in the way
                     if (strpos($key, '.') > 0) {
                         $field = substr($key, strrpos($key, '.') + 1);
                     } else {
@@ -542,7 +546,7 @@ class ManyToOneRelation extends Relation
 
             // add descriptor fields, this means they can be shown in the title
             // bar etc. when updating failed for example
-            $record = array($this->fieldName() => $result);
+            $record = [$this->fieldName() => $result];
             $this->populate($record);
             return $record[$this->fieldName()];
         }
@@ -1045,7 +1049,7 @@ class ManyToOneRelation extends Relation
      *
      * @return array record
      */
-    protected function filterToArray($filter)
+    protected function filterToArray(string $filter): array
     {
         $result = [];
 
