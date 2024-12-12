@@ -188,7 +188,6 @@ class TimeAttribute extends Attribute
      */
     public function edit($record, $fieldprefix, $mode)
     {
-
         $page = Page::getInstance();
 
         if ((($this->m_default == "NOW" && $this->m_ownerInstance->m_action == "add") ||
@@ -224,15 +223,14 @@ class TimeAttribute extends Attribute
         $escapedFieldHtmlId = $id . '\\\\[seconds\\\\]';
         $m_secBox .= "<script>ATK.Tools.enableSelect2ForSelect('#$escapedFieldHtmlId');</script>";
 
-
         if (is_array($field)) {
-            $m_defHour = $field['hours'];
-            $m_defMin = $field['minutes'];
-            $m_defSec = $field['seconds'];
+            $m_defHour = $field['hours'] ?? null;
+            $m_defMin = $field['minutes'] ?? null;
+            $m_defSec = $field['seconds'] ?? null;
         } else {
             $m_defHour = $default[0];
-            $m_defMin = isset($default[1]) ? $default[1] : null;
-            $m_defSec = isset($default[2]) ? $default[2] : null;
+            $m_defMin = $default[1] ?? null;
+            $m_defSec = $default[2] ?? null;
         }
 
         Tools::atkdebug("defhour=$m_defHour   defmin=$m_defMin");
