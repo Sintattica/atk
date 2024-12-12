@@ -218,13 +218,13 @@ class ManyToOneRelation extends Relation
      */
     protected $m_selectableRecords = null;
 
+    private $selectableRecordsCallback;
 
     /**
      * How many items for each ajax call
      * @var int
      */
     protected $m_autocomplete_pagination_limit;
-
 
     public $m_onchangehandler_init = "var newvalue = el.value;\n";
 
@@ -489,23 +489,34 @@ class ManyToOneRelation extends Relation
         $this->m_autocomplete_pagination_limit = $limit;
     }
 
+    public function getSelectableRecordsCallback(): ?callable
+    {
+        return $this->selectableRecordsCallback;
+    }
+
+    public function setSelectableRecordsCallback(callable $selectableRecordsCallback): static
+    {
+        $this->selectableRecordsCallback = $selectableRecordsCallback;
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
     public function value2db(array $record)
     {
         if ($this->isEmpty($record)) {
             Tools::atkdebug($this->fieldName() . ' IS EMPTY!');
-
             return null;
-        } else {
-            if ($this->createDestination()) {
-                if (is_array($record[$this->fieldName()])) {
-                    $pkfield = $this->m_destInstance->m_primaryKey[0];
-                    $pkattr = $this->m_destInstance->getAttribute($pkfield);
-                    return $pkattr->value2db($record[$this->fieldName()]);
+        }
 
-                } else {
-                    return $record[$this->fieldName()];
-                }
+        if ($this->createDestination()) {
+            if (is_array($record[$this->fieldName()])) {
+                $pkfield = $this->m_destInstance->m_primaryKey[0];
+                $pkattr = $this->m_destInstance->getAttribute($pkfield);
+                return $pkattr->value2db($record[$this->fieldName()]);
             }
+            return $record[$this->fieldName()];
         }
 
         // This never happens, does it?
@@ -1267,6 +1278,9 @@ EOF;
         return ['exact']; // only support exact search when searching with dropdowns
     }
 
+    /**
+     * @throws Exception
+     */
     public function smartSearchCondition($id, $nr, $path, $query, $ownerAlias, $value, $mode)
     {
         if (Tools::count($path) > 0) {
@@ -1287,17 +1301,19 @@ EOF;
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
         if (!$this->createDestination()) {
-            return;
+            return '';
         }
 
         if (is_array($value)) {
             foreach ($this->m_listColumns as $attr) {
                 $attrValue = $value[$attr];
                 if (!empty($attrValue)) {
-                    /** @var Attribute $p_attrib */
                     $p_attrib = $this->m_destInstance->m_attribList[$attr];
                     if (!$p_attrib == null) {
                         $p_attrib->searchCondition($query, $this->fieldName(), $attrValue, $this->getChildSearchMode($searchmode, $p_attrib->fieldName()));
@@ -1310,64 +1326,67 @@ EOF;
             }
         }
 
-
         if (empty($value)) {
             return '';
-        } else {
-            if (!$this->hasFlag(self::AF_LARGE) && !$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE)) {
-                // We only support 'exact' matches.
-                // But you can select more than one value, which we search using the IN() statement,
-                // which should work in any ansi compatible database.
-                if (!is_array($value)) { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-                    $value = array($value);
-                }
-
-                if (Tools::count($value) == 1) { // exactly one value
-
-                    if ($value[0] == '__NONE__') {
-                        return $query->nullCondition($table . '.' . $this->fieldName(), true);
-                    } elseif ($value[0] != '') {
-                        return $query->exactCondition($table . '.' . $this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
-                    }
-                } else { // search for more values using IN()
-                    return $table . '.' . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
-                }
-            } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
-
-                if ($value[0] == '') {
-                    return '';
-                }
-
-
-                // If we have a descriptor with multiple fields, use CONCAT
-                $attribs = $this->m_destInstance->descriptorFields();
-                $alias = $fieldname . $this->fieldName();
-                if (Tools::count($attribs) > 1) {
-                    $searchcondition = $this->getConcatFilter($value, $alias);
-                } else {
-                    // ask the destination node for it's search condition
-                    $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
-                    $conditions = [];
-                    foreach ($value as $v) {
-                        $sc = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode);
-
-                        if ($sc != '') {
-                            $conditions[] = '(' . $sc . ')';
-                        }
-                    }
-                    $searchcondition = implode(' OR ', $conditions);
-                }
-
-                return $searchcondition;
-            }
         }
+
+        if (!$this->hasFlag(self::AF_LARGE) && !$this->hasFlag(self::AF_RELATION_AUTOCOMPLETE)) {
+            // We only support 'exact' matches.
+            // But you can select more than one value, which we search using the IN() statement,
+            // which should work in any ansi compatible database.
+            if (!is_array($value)) { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+                $value = array($value);
+            }
+
+            if (Tools::count($value) == 1) { // exactly one value
+
+                if ($value[0] == '__NONE__') {
+                    return $query->nullCondition($table . '.' . $this->fieldName(), true);
+                } elseif ($value[0] != '') {
+                    return $query->exactCondition($table . '.' . $this->fieldName(), $this->escapeSQL($value[0]), $this->dbFieldType());
+                }
+            } else { // search for more values using IN()
+                return $table . '.' . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+            }
+
+        } else { // AF_LARGE || AF_RELATION_AUTOCOMPLETE
+
+            if ($value[0] == '') {
+                return '';
+            }
+
+            // If we have a descriptor with multiple fields, use CONCAT
+            $attribs = $this->m_destInstance->descriptorFields();
+            $alias = $fieldname . $this->fieldName();
+            if (Tools::count($attribs) > 1) {
+                $searchcondition = $this->getConcatFilter($value, $alias);
+            } else {
+                // ask the destination node for its search condition
+                $searchmode = $this->getChildSearchMode($searchmode, $this->fieldName());
+                $conditions = [];
+                foreach ($value as $v) {
+                    $sc = $this->m_destInstance->getSearchCondition($query, $alias, $fieldname, $v, $searchmode);
+
+                    if ($sc != '') {
+                        $conditions[] = '(' . $sc . ')';
+                    }
+                }
+                $searchcondition = implode(' OR ', $conditions);
+            }
+
+            return $searchcondition;
+        }
+
+        return '';
     }
 
+    /**
+     * @throws Exception
+     */
     public function addToQuery($query, $tablename = '', $fieldaliasprefix = '', &$record = [], $level = 0, $mode = '')
     {
         if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
             parent::addToQuery($query, $tablename, $fieldaliasprefix, $record, $level, $mode);
-
             return;
         }
 
@@ -1408,6 +1427,7 @@ EOF;
      *               method will always return NULL. This is a framework
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
+     * @throws Exception
      */
     public function load($db, $record, $mode)
     {
@@ -1418,18 +1438,18 @@ EOF;
     {
         if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
             return $this->m_loadType[$mode];
-        } else {
-            if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
-                return $this->m_loadType[null];
-            } // Default backwardscompatible behaviour:
-            else {
-                if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
-                    return self::POSTLOAD | self::ADDTOQUERY;
-                } else {
-                    return self::ADDTOQUERY;
-                }
-            }
         }
+
+        if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
+            return $this->m_loadType[null];
+        }
+
+        // Default backwardscompatible behaviour:
+        if ($this->hasFlag(self::AF_MANYTOONE_LAZY)) {
+            return self::POSTLOAD | self::ADDTOQUERY;
+        }
+
+        return self::ADDTOQUERY;
     }
 
     public function validate(&$record, $mode)
@@ -1444,43 +1464,46 @@ EOF;
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function equal($recA, $recB)
     {
         if ($this->createDestination()) {
             return ($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()] == $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) || ($this->isEmpty($recA) && $this->isEmpty($recB));
-            // we must also check empty values, because empty values need not necessarily
-            // be equal (can be "", NULL or 0.
+            // we must also check empty values, because empty values need not necessarily be equal (can be "", NULL or 0)
         }
 
         return false;
     }
 
+    /**
+     * @throws Exception
+     */
     public function dbFieldType()
     {
         // The type of field that we need to store the foreign key, is equal to
-        // the type of field of the primary key of the node we have a
-        // relationship with.
+        // the type of field of the primary key of the node we have a relationship with.
         if ($this->createDestination()) {
             if (Tools::count($this->m_refKey) > 1) {
                 $keys = [];
                 for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                    /** @var Attribute $attrib */
                     $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
                     $keys [] = $attrib->dbFieldType();
                 }
-
                 return $keys;
-            } else {
-                /** @var Attribute $attrib */
-                $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
-
-                return $attrib->dbFieldType();
             }
+
+            $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
+            return $attrib->dbFieldType();
         }
 
         return '';
     }
 
+    /**
+     * @throws Exception
+     */
     public function dbFieldSize()
     {
         // The size of the field we need to store the foreign key, is equal to
@@ -1490,18 +1513,14 @@ EOF;
             if (Tools::count($this->m_refKey) > 1) {
                 $keys = [];
                 for ($i = 0, $_i = Tools::count($this->m_refKey); $i < $_i; ++$i) {
-                    /** @var Attribute $attrib */
                     $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]];
                     $keys [] = $attrib->dbFieldSize();
                 }
-
                 return $keys;
-            } else {
-                /** @var Attribute $attrib */
-                $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
-
-                return $attrib->dbFieldSize();
             }
+
+            $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()];
+            return $attrib->dbFieldSize();
         }
 
         return 0;
@@ -1515,15 +1534,16 @@ EOF;
      * @param string $mode The mode we're in
      *
      * @return array with the selected record
+     * @throws Exception
      */
     public function _getSelectedRecord($record = [], $mode = '')
     {
         $method = $this->fieldName() . '_selected';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
-        } else {
-            return $this->getSelectedRecord($record, $mode);
         }
+
+        return $this->getSelectedRecord($record, $mode);
     }
 
     /**
@@ -1533,21 +1553,19 @@ EOF;
      * @param string $mode The mode we're in
      *
      * @return array with the selected record
+     * @throws Exception
      */
     public function getSelectedRecord($record = [], $mode = '')
     {
         $this->createDestination();
 
         $condition = $this->m_destInstance->m_table . '.' . $this->m_destInstance->primaryKeyField() . "='" . $record[$this->fieldName()][$this->m_destInstance->primaryKeyField()] . "'";
-
         $filter = $this->createFilter($record, $mode);
         if (!empty($filter)) {
             $condition = $condition . ' AND ' . $filter;
         }
 
-        $record = $this->m_destInstance->select($condition)->getFirstRow();
-
-        return $record;
+        return $this->m_destInstance->select($condition)->getFirstRow();
     }
 
     /**
@@ -1558,25 +1576,33 @@ EOF;
      * @param string $mode The mode we're in
      *
      * @return array with the selectable records
+     * @throws Exception
      */
     public function _getSelectableRecords($record = [], $mode = '')
     {
+        if ($this->getSelectableRecordsCallback() != null) {
+            return call_user_func($this->getSelectableRecordsCallback(), $record, $mode, $this);
+        }
+
         $method = $this->fieldName() . '_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
-            return $this->m_ownerInstance->$method($record, $mode);
-        } else {
-            return $this->getSelectableRecords($record, $mode);
+            return $this->m_ownerInstance->$method($record, $mode, $this);
         }
+
+        return $this->getSelectableRecords($record, $mode);
     }
 
+    /**
+     * @throws Exception
+     */
     public function _getSelectableRecordsSelector($record = [], $mode = '')
     {
         $method = $this->fieldName() . '_selectionSelector';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
-        } else {
-            return $this->getSelectableRecordsSelector($record, $mode);
         }
+
+        return $this->getSelectableRecordsSelector($record, $mode);
     }
 
     /**
@@ -1587,15 +1613,16 @@ EOF;
      * @param string $mode The mode we're in
      *
      * @return bool to indicate if the record is selectable
+     * @throws Exception
      */
     public function _isSelectableRecord($record = [], $mode = '')
     {
         $method = $this->fieldName() . '_selectable';
         if (method_exists($this->m_ownerInstance, $method)) {
             return $this->m_ownerInstance->$method($record, $mode);
-        } else {
-            return $this->isSelectableRecord($record, $mode);
         }
+
+        return $this->isSelectableRecord($record, $mode);
     }
 
     /**
@@ -1610,11 +1637,9 @@ EOF;
     {
         if ($this->m_destinationFilter != '') {
             $parser = new StringParser($this->m_destinationFilter);
-
             return $parser->parse($record);
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -1626,6 +1651,7 @@ EOF;
      * @param string $mode The mode we're in
      *
      * @return bool to indicate if the record is selectable
+     * @throws Exception
      */
     public function isSelectableRecord($record = [], $mode = '')
     {
@@ -1633,10 +1659,8 @@ EOF;
             return false;
         }
 
-        if (in_array($mode, array(
-                'edit',
-                'update',
-            )) && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
+        if (in_array($mode, ['edit', 'update'])
+            && ($this->hasFlag(self::AF_READONLY_EDIT) || $this->hasFlag(self::AF_HIDE_EDIT))
         ) { // || ($this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_MANYTOONE_AUTOCOMPLETE))
             // in this case we want the current value is selectable, regardless the destination filters
             return true;
@@ -1647,9 +1671,9 @@ EOF;
         // if the value is set directly in the record field we first
         // need to convert the value to an array
         if (!is_array($record[$this->fieldName()])) {
-            $record[$this->fieldName()] = array(
-                $this->m_destInstance->primaryKeyField() => $record[$this->fieldName()],
-            );
+            $record[$this->fieldName()] = [
+                $this->m_destInstance->primaryKeyField() => $record[$this->fieldName()]
+            ];
         }
 
         $selectedKey = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
@@ -1660,16 +1684,20 @@ EOF;
         // If custom selection method exists we use this one, although this is
         // way more inefficient, so if you create a selection override you should
         // also think about creating a selectable override!
+        if ($this->getSelectableRecordsCallback() != null) {
+            $selectableRecords = call_user_func($this->getSelectableRecordsCallback(), $record, $mode, $this);
+        }
         $method = $this->fieldName() . '_selection';
         if (method_exists($this->m_ownerInstance, $method)) {
-            $rows = $this->m_ownerInstance->$method($record, $mode);
-            foreach ($rows as $row) {
+            $selectableRecords = $this->m_ownerInstance->$method($record, $mode, $this);
+        }
+        if (isset($selectableRecords)) {
+            foreach ($selectableRecords as $row) {
                 $key = $this->m_destInstance->primaryKey($row);
                 if ($key == $selectedKey) {
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -1689,23 +1717,29 @@ EOF;
      * @param string $mode The mode we're in
      *
      * @return array with the selectable records
+     * @throws Exception
      */
     public function getSelectableRecords($record = [], $mode = '')
     {
         return $this->getSelectableRecordsSelector($record, $mode)->getAllRows();
     }
 
+    /**
+     * @throws Exception
+     */
     public function getSelectableRecordsSelector($record = [], $mode = '')
     {
         $this->createDestination();
 
         $selector = $this->createFilter($record, $mode);
-        $result = $this->m_destInstance->select($selector)->orderBy($this->getDestination()->getOrder())->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(),
-            $this->m_destInstance->m_primaryKey));
-
-        return $result;
+        return $this->m_destInstance->select($selector)
+            ->orderBy($this->getDestination()->getOrder())
+            ->includes(Tools::atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
     }
 
+    /**
+     * @throws Exception
+     */
     public function getJoinCondition($query, $tablename = '', $fieldalias = '')
     {
         if (!$this->createDestination()) {
@@ -1725,11 +1759,11 @@ EOF;
 
         if ($this->m_joinFilter != '') {
             $parser = new StringParser($this->m_joinFilter);
-            $filter = $parser->parse(array(
+            $filter = $parser->parse([
                 'table' => $realtablename,
                 'owner' => $realtablename,
                 'destination' => $fieldalias,
-            ));
+            ]);
             $joinconditions[] = $filter;
         }
 
@@ -1746,6 +1780,9 @@ EOF;
         $this->m_hidewhenempty = $hidewhenempty;
     }
 
+    /**
+     * @throws Exception
+     */
     public function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
         if ($this->createDestination()) {
@@ -1762,6 +1799,9 @@ EOF;
         parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
         if (!$this->createDestination()) {
@@ -1786,7 +1826,7 @@ EOF;
 
             foreach ($parts as $part) {
                 $split = preg_split('/\s+/', trim($part));
-                $field = isset($split[0]) ? $split[0] : null;
+                $field = $split[0] ?? null;
                 $fieldDirection = empty($split[1]) ? 'ASC' : strtoupper($split[1]);
 
                 // if our default direction is DESC (the opposite of the default ASC)
@@ -1799,14 +1839,14 @@ EOF;
                     $fieldDirection = $direction;
                 }
 
-                if (strpos($field, '.') !== false) {
+                if (str_contains($field, '.')) {
                     list(, $field) = explode('.', $field);
                 }
 
                 $newPart = $this->getDestination()->getAttribute($field)->getOrderByStatement('', $table, $fieldDirection);
 
                 // realias if destination order contains the wrong tablename.
-                if (strpos($newPart, $this->m_destInstance->m_table . '.') !== false) {
+                if (str_contains($newPart, $this->m_destInstance->m_table . '.')) {
                     $newPart = str_replace($this->m_destInstance->m_table . '.', $table . '.', $newPart);
                 }
                 $newParts[] = $newPart;
@@ -1872,12 +1912,12 @@ EOF;
      *
      * @param string $column child column (null for this attribute, * for this attribute and all childs)
      * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
+     * @param array $arr reference to the recordlist array
      * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param array $atksearch the current ATK search list (if not empty)
      * @param ColumnConfig $columnConfig order by
-     * @param DataGrid $grid The DataGrid this attribute lives on.
+     * @param DataGrid|null $grid The DataGrid this attribute lives on.
      * @throws Exception
      */
     protected function _addColumnToListArrayHeader(
@@ -1915,7 +1955,7 @@ EOF;
 
             $order = $this->fieldName() . '.' . $arr['heading'][$key]['order'];
 
-            if (is_object($columnConfig) && isset($columnConfig->m_colcfg[$this->fieldName()]) && isset($columnConfig->m_colcfg[$this->fieldName()]['extra']) && $columnConfig->m_colcfg[$this->fieldName()]['extra'] == $column) {
+            if (is_object($columnConfig) && isset($columnConfig->m_colcfg[$this->fieldName()]['extra']) && $columnConfig->m_colcfg[$this->fieldName()]['extra'] == $column) {
                 $direction = $columnConfig->getDirection($this->fieldName());
                 if ($direction == 'asc') {
                     $order .= ' desc';
@@ -1966,12 +2006,12 @@ EOF;
      *
      * @param string $column child attribute name
      * @param string $action the action that is being performed on the node
-     * @param array $arr reference to the the recordlist array
+     * @param array $arr reference to the recordlist array
      * @param int $nr the current row number
      * @param string $fieldprefix the fieldprefix
      * @param int $flags the recordlist flags
      * @param bool $edit editing?
-     * @param DataGrid $grid data grid
+     * @param DataGrid|null $grid data grid
      * @throws Exception
      */
     protected function _addColumnToListArrayRow(
@@ -2006,6 +2046,9 @@ EOF;
         $arr['rows'][$nr]['record'] = $backup;
     }
 
+    /**
+     * @throws Exception
+     */
     public function addToSearchformFields(&$fields, $node, &$record, $fieldprefix = '', $extended = true)
     {
         $prefix = $fieldprefix . $this->fieldName() . '_AE_';
@@ -2021,7 +2064,6 @@ EOF;
         }
 
         foreach ($this->m_listColumns as $attribname) {
-            /** @var Attribute $p_attrib */
             $p_attrib = $this->m_destInstance->m_attribList[$attribname];
             $p_attrib->m_flags |= self::AF_HIDE_LIST;
             $p_attrib->m_flags ^= self::AF_HIDE_LIST;
@@ -2144,18 +2186,15 @@ EOF;
         $result .= $this->drawSelect($id, $name, $options, $selValues, $selectOptions, $htmlAttributes);
         $result .= ' ' . $this->createSelectAndAutoLinks($name, $record);
 
-
-        $result = '<span class="select-inline">' . $result . '</span>';
-
-        return $result;
+        return '<span class="select-inline">' . $result . '</span>';
     }
-
 
     /**
      * Auto-complete partial.
      *
      * @param string $mode add/edit mode?
      * @return string html
+     * @throws Exception
      */
     public function partial_autocomplete($mode)
     {
@@ -2205,6 +2244,7 @@ EOF;
      * Auto-complete search partial.
      *
      * @return string HTML code with autocomplete result
+     * @throws Exception
      */
     public function partial_autocomplete_search()
     {
@@ -2267,7 +2307,7 @@ EOF;
         foreach ($parts as $part) {
             $filter = [];
             foreach ($searchfields as $attribname) {
-                if (strstr($attribname, '.')) {
+                if (str_contains($attribname, '.')) {
                     $table = '';
                 } else {
                     $table = $this->m_destInstance->m_table . '.';
@@ -2350,7 +2390,7 @@ EOF;
             $fields = [];
             foreach ($attribs as $attribname) {
                 $post = '';
-                if (strstr($attribname, '.')) {
+                if (str_contains($attribname, '.')) {
                     if ($fieldaliasprefix != '') {
                         $table = $fieldaliasprefix . '_AE_';
                     } else {
@@ -2364,7 +2404,6 @@ EOF;
                     $table = $this->m_destInstance->m_table . '.';
                 }
 
-                /** @var Attribute $p_attrib */
                 $p_attrib = $this->m_destInstance->m_attribList[$attribname];
                 $fields[$p_attrib->fieldName()] = $table . $p_attrib->fieldName() . $post;
             }
@@ -2378,44 +2417,37 @@ EOF;
             $value = str_replace('  ', ' ', $value);
             if (!$value) {
                 return false;
-            } else {
-                $function = $this->getConcatDescriptorFunction();
-                if ($function != '' && method_exists($this->m_destInstance, $function)) {
-                    $descriptordef = $this->m_destInstance->$function();
-                } elseif ($this->m_destInstance->m_descTemplate != null) {
-                    $descriptordef = $this->m_destInstance->m_descTemplate;
-                } elseif (method_exists($this->m_destInstance, 'descriptor_def')) {
-                    $descriptordef = $this->m_destInstance->descriptor_def();
-                } else {
-                    $descriptordef = $this->m_destInstance->descriptor(null);
-                }
-
-                $parser = new StringParser($descriptordef);
-                $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
-                $concatTags = $concatFields['tags'];
-                $concatSeparators = $concatFields['separators'];
-                $concatSeparators[] = ' '; //the query removes all spaces, so let's do the same here [Bjorn]
-                // to search independent of characters between tags, like spaces and comma's,
-                // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
-                foreach ($concatSeparators as $separator) {
-                    $value = str_replace($separator, '', $value);
-                }
-
-                $db = $this->getDb();
-                $searchcondition = 'UPPER(' . $db->func_concat_ws($concatTags, '', true) . ") LIKE UPPER('%" . $value . "%')";
             }
 
-            return $searchcondition;
+            $function = $this->getConcatDescriptorFunction();
+            if ($function != '' && method_exists($this->m_destInstance, $function)) {
+                $descriptordef = $this->m_destInstance->$function();
+            } elseif ($this->m_destInstance->m_descTemplate != null) {
+                $descriptordef = $this->m_destInstance->m_descTemplate;
+            } elseif (method_exists($this->m_destInstance, 'descriptor_def')) {
+                $descriptordef = $this->m_destInstance->descriptor_def();
+            } else {
+                $descriptordef = $this->m_destInstance->descriptor([]);
+            }
+
+            $parser = new StringParser($descriptordef);
+            $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
+            $concatTags = $concatFields['tags'];
+            $concatSeparators = $concatFields['separators'];
+            $concatSeparators[] = ' '; //the query removes all spaces, so let's do the same here [Bjorn]
+            // to search independent of characters between tags, like spaces and comma's,
+            // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
+            foreach ($concatSeparators as $separator) {
+                $value = str_replace($separator, '', $value);
+            }
+
+            $db = $this->getDb();
+            return 'UPPER(' . $db->func_concat_ws($concatTags, '', true) . ") LIKE UPPER('%" . $value . "%')";
         }
 
         return false;
     }
 
-    /**
-     * @param bool $normal
-     * @param bool $extended
-     * @return array $m_multipleSearch
-     */
     public function setMultipleSearch(bool $normal = true, bool $extended = true): array
     {
         $this->m_multipleSearch = [
@@ -2433,9 +2465,7 @@ EOF;
 
     public function isMultipleSearch(bool $extended = false): ?bool
     {
-        $ms = $this->getMultipleSearch();
-
-        if ($ms) {
+        if ($ms = $this->getMultipleSearch()) {
             return $ms[$extended ? 'extended' : 'normal'] ?? null;
         }
 
