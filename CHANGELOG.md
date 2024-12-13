@@ -1,5 +1,13 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.2.0] - 2024-12-13
+### Added
+- Relation: `selectableRecordsCallback` property in MTO
+
+### Fixed
+- Attribute: handled nullable vars (hours, minutes, seconds) in TimeAttribute edit
+
+
 ## [11.1.11] - 2024-12-09
 ### Fixed
 - Relation: fetchValue in MTO when `$postvars[$this->fieldName()]` is an array
@@ -38,7 +46,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 
 ## [11.1.2] - 2024-10-15
 ### Added
-- Atk: added favicon_base_url and manifest_url globalvars
+- Atk: added `favicon_base_url` and `manifest_url` globalvars
 
 
 ## [11.1.1] - 2024-10-14
@@ -59,8 +67,8 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 - Attribute: nullLabel property in ListAttribute
 
 ### Changed
-- Attribute: renamed public const 'TAG_SEPARATOR' in 'DISPLAY_SEPARATOR_TAG'
-- Attribute: default display separator in now DISPLAY_SEPARATOR_TAG instead of DISPLAY_SEPARATOR_COMMA
+- Attribute: renamed public const `TAG_SEPARATOR` in `DISPLAY_SEPARATOR_TAG`
+- Attribute: default display separator in now `DISPLAY_SEPARATOR_TAG` instead of `DISPLAY_SEPARATOR_COMMA`
 
 ### Deprecated
 - Attribute: MultiSelectListAttribute
