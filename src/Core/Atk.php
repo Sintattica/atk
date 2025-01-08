@@ -9,6 +9,7 @@ use ReflectionException;
 use RuntimeException;
 use Sintattica\Atk\Core\Menu\Menu;
 use Sintattica\Atk\Handlers\ActionHandler;
+use Sintattica\Atk\Security\AccessLoggerServiceProvider;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Security\SqlWhereclauseBlacklistChecker;
 use Sintattica\Atk\Session\SessionManager;
@@ -98,6 +99,8 @@ class Atk
         if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_ADDR'])) {
             $debug .= ' Server info: ' . $_SERVER['SERVER_NAME'] . ' (' . $_SERVER['SERVER_ADDR'] . ')';
         }
+
+        AccessLoggerServiceProvider::register();
 
         Tools::atkdebug($debug);
     }
