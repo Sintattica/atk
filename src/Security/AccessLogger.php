@@ -15,7 +15,7 @@ class AccessLogger extends SecurityListener
     public function __construct()
     {
         $this->db = Db::getInstance();
-        $this->logTable = Config::getGlobal('auth_accesslog_table', 'auth_accesslog');
+        $this->logTable = Config::getGlobal('auth_accesslog_table');
     }
 
     protected function logEvent(string $username, string $eventType, string $appName = 'atk',

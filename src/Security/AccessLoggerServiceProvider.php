@@ -11,8 +11,8 @@ class AccessLoggerServiceProvider
     {
         $manager = SecurityManager::getInstance();
 
-        // Registra il logger solo se il logging è abilitato
-        if (Config::getGlobal('auth_accesslog_enabled', false)) {
+        // Logs only if logging is enabled
+        if (Config::getGlobal('auth_accesslog_enabled')) {
             try {
                 $logger = new AccessLogger();
                 $manager->addListener($logger);

@@ -421,6 +421,20 @@ return [
      */
     'authentication_ldap_field' => '',
 
+    /***************** ACCESS LOGGER ****************************/
+
+    /*
+     *
+     * @var boolean
+     */
+    'auth_accesslog_enabled' => false,
+
+    /*
+     *
+     * @var string
+     */
+    'auth_accesslog_table' => 'auth_accesslog',
+
     /***************** DEBUGGING AND ERROR HANDLING ****************************/
 
     /*
