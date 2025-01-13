@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.3.0] - 2025-01-13
+### Added
+- Atk: new Access Logger
+
+
 ## [11.2.0] - 2024-12-13
 ### Added
 - Relation: `selectableRecordsCallback` property in MTO
