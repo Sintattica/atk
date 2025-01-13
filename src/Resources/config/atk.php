@@ -424,14 +424,21 @@ return [
     /***************** ACCESS LOGGER ****************************/
 
     /*
-     *
-     * @var boolean
+     * If enabled, logs user logins to the ATK application in the table specified by the auth_accesslog_table variable
      */
     'auth_accesslog_enabled' => false,
 
     /*
-     *
-     * @var string
+     * Name of the table used by the access logger. The table must have the following structure:
+     * id int NOT NULL PRIMARY KEY,
+     * timestamp datetime,
+     * app_name varchar(255),
+     * username varchar(255),
+     * ip_address varchar(255),
+     * event_type varchar(255),
+     * user_agent varchar(255),
+     * status varchar(255),
+     * details varchar(255)
      */
     'auth_accesslog_table' => 'auth_accesslog',
 
