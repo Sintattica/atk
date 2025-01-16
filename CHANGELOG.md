@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.3.1] - 2025-01-16
+### Fixed
+- Atk: extrafields Access Logger management
+
+
 ## [11.3.0] - 2025-01-13
 ### Added
 - Atk: new Access Logger
