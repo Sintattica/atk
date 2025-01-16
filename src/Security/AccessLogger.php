@@ -46,13 +46,16 @@ class AccessLogger extends SecurityListener
         }
     }
 
-    public function postLogin(string $username, string $appName = 'atk'): void
+    public function postLogin(string $username, array $extra): void
     {
+        $appName = $extra['appName'] ?: 'atk';
         $this->logEvent($username, 'LOGIN', $appName);
     }
 
-    public function errorLogin(string $username, string $appName = 'atk', array $extra = []): void
+    public function errorLogin(string $username, array $extra): void
     {
+        $appName = $extra['appName'] ?: 'atk';
+
         $status = isset($extra['auth_response']) ?
             $this->getAuthResponseLabel($extra['auth_response']) : 'UNKNOWN';
 
@@ -64,8 +67,9 @@ class AccessLogger extends SecurityListener
         $this->logEvent($username, 'LOGIN_FAILED', $appName, $status, $details);
     }
 
-    public function postLogout($username, string $appName = 'atk'): void
+    public function postLogout($username, array $extra): void
     {
+        $appName = $extra['appName'] ?: 'atk';
         $this->logEvent($username, 'LOGOUT', $appName);
     }
 
