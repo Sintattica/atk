@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.3.2] - 2025-01-17
+### Changed
+- Atk: introduced app_name config for access log
+
+
 ## [11.3.1] - 2025-01-16
 ### Fixed
 - Atk: extrafields Access Logger management
