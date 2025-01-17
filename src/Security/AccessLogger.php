@@ -11,19 +11,21 @@ class AccessLogger extends SecurityListener
 {
     protected ?Db $db;
     protected string $logTable;
+    protected string $appName;
 
     public function __construct()
     {
         $this->db = Db::getInstance();
         $this->logTable = Config::getGlobal('auth_accesslog_table');
+        $this->appName = Config::getGlobal('app_name');
     }
 
-    protected function logEvent(string $username, string $eventType, string $appName = 'atk',
+    protected function logEvent(string $username, string $eventType,
                                 string $status = null, string $details = null): void
     {
         $data = [
             'timestamp' => date('Y-m-d H:i:s'),
-            'app_name' => $appName,
+            'app_name' => $this->appName,
             'username' => $username,
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0',
             'event_type' => $eventType,
@@ -48,14 +50,11 @@ class AccessLogger extends SecurityListener
 
     public function postLogin(string $username, array $extra): void
     {
-        $appName = $extra['appName'] ?: 'atk';
-        $this->logEvent($username, 'LOGIN', $appName);
+        $this->logEvent($username, 'LOGIN');
     }
 
     public function errorLogin(string $username, array $extra): void
     {
-        $appName = $extra['appName'] ?: 'atk';
-
         $status = isset($extra['auth_response']) ?
             $this->getAuthResponseLabel($extra['auth_response']) : 'UNKNOWN';
 
@@ -64,13 +63,12 @@ class AccessLogger extends SecurityListener
             $details = ['error_message' => $extra['fatal_error']];
         }
 
-        $this->logEvent($username, 'LOGIN_FAILED', $appName, $status, $details);
+        $this->logEvent($username, 'LOGIN_FAILED', $status, $details);
     }
 
     public function postLogout($username, array $extra): void
     {
-        $appName = $extra['appName'] ?: 'atk';
-        $this->logEvent($username, 'LOGOUT', $appName);
+        $this->logEvent($username, 'LOGOUT');
     }
 
     protected function getAuthResponseLabel(string $authResponse): string

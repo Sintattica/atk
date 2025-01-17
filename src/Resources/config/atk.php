@@ -442,6 +442,11 @@ return [
      */
     'auth_accesslog_table' => 'auth_accesslog',
 
+    /**
+     * Application name, used to identify the application in the access log table
+     */
+    'app_name' => 'atk',
+
     /***************** DEBUGGING AND ERROR HANDLING ****************************/
 
     /*
