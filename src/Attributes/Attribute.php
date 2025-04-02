@@ -3462,10 +3462,12 @@ class Attribute
             $value = $record[$this->fieldName()];
         }
 
-        $numChars = strlen((string)$value);
-        $minWidth = $value ? ($numChars * 10) : 50;
+        if (is_string($value)) {
+            $numChars = strlen($value);
+            $minWidth = $value ? ($numChars * 10) : 50;
 
-        $this->setCssStyle($type, 'min-width', $minWidth . 'px');
+            $this->setCssStyle($type, 'min-width', $minWidth . 'px');
+        }
 
         return $this;
     }
