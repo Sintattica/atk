@@ -6,13 +6,15 @@ use ReflectionException;
 use Sintattica\Atk\Core\AdminLTE;
 use Sintattica\Atk\Core\Atk;
 use Sintattica\Atk\Core\Config;
-use Sintattica\Atk\Core\Menu\Item;
+use Sintattica\Atk\Core\Menu\ActionItem;
 use Sintattica\Atk\Core\Menu\Menu;
 use Sintattica\Atk\Core\Menu\MenuBase;
+use Sintattica\Atk\Core\Menu\UrlItem;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Security\SecurityManager;
 use Sintattica\Atk\Session\SessionManager;
+use Smarty\Exception;
 
 /**
  * Class that generates an index page.
@@ -82,6 +84,7 @@ class IndexPage
      * Generate the page.
      *
      * @throws ReflectionException
+     * @throws Exception
      */
     public function generate()
     {
@@ -90,13 +93,14 @@ class IndexPage
             $menuClass = Config::getGlobal('menu');
             $menuObj = $menuClass::getInstance();
             $username = $this->m_username ?: $this->m_user['name'];
+            if ($username) {
+                if (Config::getGlobal('menu_show_user')) {
+                    $this->addUsernameNavbarLink($menuObj, $username);
+                }
 
-            if (Config::getGlobal('menu_show_user') && $username) {
-                $this->addUsernameNavbarLink($menuObj, $username);
-            }
-
-            if (Config::getGlobal('menu_show_logout_link') && $username) {
-                $this->addLogoutNavbarLink($menuObj);
+                if (Config::getGlobal('menu_show_logout_link')) {
+                    $this->addLogoutNavbarLink($menuObj);
+                }
             }
 
             $this->m_adminLte->setNavBarDevMode($_SERVER['APP_ENV'] !== 'prod');
@@ -113,7 +117,7 @@ class IndexPage
             $this->m_page->addContent($navbar);
 
             // render sidebar
-            $sidebar = $this->m_ui->render("menu/sidebar.tpl", [
+            $sidebar = $this->m_ui->render('menu/sidebar.tpl', [
                 'title' => ($this->m_title != '' ?: Tools::atktext('app_title')),
                 'app_title' => Tools::atktext('app_title'),
                 'menu' => $menuObj->getMenu(), // formatted smarty menu as ['left', 'right','sidebar']
@@ -271,6 +275,7 @@ class IndexPage
      *
      * @param array $postvars The request variables for the node.
      * @param Node $node
+     * @throws Exception
      */
     public function loadDispatchPage($postvars, Node $node)
     {
@@ -313,10 +318,11 @@ class IndexPage
     }
 
     /**
-     * Render a generic access denied page.
+     * Render generic access denied page.
      *
      * @param string $nodeType
      * @return string A complete html page with generic access denied message.
+     * @throws Exception
      */
     private function accessDeniedPage(string $nodeType): string
     {
@@ -336,17 +342,11 @@ class IndexPage
         ]);
     }
 
-    /**
-     * @return Page|null
-     */
     public function getPage(): ?Page
     {
         return $this->m_page;
     }
 
-    /**
-     * @return Ui|null
-     */
     public function getUi(): ?Ui
     {
         return $this->m_ui;
@@ -355,50 +355,41 @@ class IndexPage
     /**
      * @throws ReflectionException
      */
-    private function addUsernameNavbarLink(MenuBase $menuObj, string $username)
+    private function addUsernameNavbarLink(MenuBase $menuObj, string $username): void
     {
-        $url = $this->generateUserUrl();
-        $menuObj->addMenuItem(MenuBase::ATK_MENU_USERNAME_PREFIX . $username,
-            $url, 'main', true, 0, '', '', true, MenuBase::MENU_NAV_RIGHT,
-            null, false, null, '', null, false,
-            Tools::atktext('user'), Item::TOOLTIP_PLACEMENT_BOTTOM,
-            null, '', true
-        );
+        $actionItem = new ActionItem(MenuBase::ATK_MENU_USERNAME_PREFIX . $username);
+
+        $userPk = Config::getGlobal('auth_userpk');
+        if (isset($this->m_user[$userPk])) {
+            // logged user is NOT atk administrator
+            $userId = $this->m_user[$userPk];
+            $userTable = Config::getGlobal('auth_usertable');
+            $userAtkSelector = "$userTable.$userPk=$userId";
+            $userNode = Atk::getInstance()->atkGetNode(Config::getGlobal('auth_usernode'));
+            $userRecord = $userNode->select($userAtkSelector)->getFirstRow();
+            $action = $userNode->allowed('edit', $userRecord) ? 'edit' : 'view';
+            $actionItem->setNodeUri($userNode->atkNodeUri())
+                ->setAction($action)
+                ->addUrlParam(Node::PARAM_ATKSELECTOR, $userAtkSelector)
+                ->setRaw(true)
+                ->setTooltip(Tools::atktext('user'))
+                ->setPosition(MenuBase::MENU_NAV_RIGHT)
+                ->hideIcon();
+        }
+
+        $menuObj->add($actionItem);
     }
 
     /**
      * @throws ReflectionException
      */
-    private function addLogoutNavbarLink(MenuBase $menuObj)
+    private function addLogoutNavbarLink(MenuBase $menuObj): void
     {
-        $menuObj->addMenuItem(Tools::atktext('logout'),
-            Config::getGlobal('dispatcher') . '?atklogout=1', 'main', true, 0,
-            '', '', false, MenuBase::MENU_NAV_RIGHT, null, false, MenuBase::ICON_LOGOUT,
-            '', null, true, Tools::atktext('logout'), Item::TOOLTIP_PLACEMENT_BOTTOM,
-            null, ''
-        );
-    }
-
-    private function generateUserUrl(): string
-    {
-        $url = '';
-        if (Config::getGlobal('menu_enable_user_link')) {
-            $userTable = Config::getGlobal('auth_usertable');
-            $userPk = Config::getGlobal('auth_userpk');
-            if (!isset($this->m_user[$userPk])) {
-                // logged user is atk administrator
-                return '';
-            }
-            $userId = $this->m_user[$userPk];
-            $userAtkSelector = "$userTable.$userPk=$userId";
-            $userNode = Atk::getInstance()->atkGetNode(Config::getGlobal('auth_usernode'));
-            $userRecord = $userNode->select($userAtkSelector)->getFirstRow();
-            $action = $userNode->allowed('edit', $userRecord) ? 'edit' : 'view';
-            $url = SessionManager::getInstance()->sessionUrl(
-                Tools::dispatch_url($userNode->atkNodeUri(), $action, [Node::PARAM_ATKSELECTOR => $userAtkSelector]),
-                SessionManager::SESSION_NEW
-            );
-        }
-        return $url;
+        $logoutUrl = Config::getGlobal('dispatcher') . '?atklogout=1';
+        $menuObj->add((new UrlItem(Tools::atktext('logout'), $logoutUrl))
+            ->setPosition(MenuBase::MENU_NAV_RIGHT)
+            ->setIcon(MenuBase::ICON_LOGOUT)
+            ->hideName()
+            ->setTooltip(Tools::atktext('logout')));
     }
 }
