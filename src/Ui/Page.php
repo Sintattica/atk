@@ -2,6 +2,7 @@
 
 namespace Sintattica\Atk\Ui;
 
+use Sintattica\Atk\Core\Language;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Core\Config;
 use Smarty\Exception;
@@ -112,8 +113,6 @@ class Page
 
     /**
      * Retrieve the one-and-only Page instance.
-     *
-     * @return Page
      */
     public static function getInstance(): ?Page
     {
@@ -133,11 +132,11 @@ class Page
     {
         // register default scripts
         $assetsUrl = Config::getGlobal('assets_url');
-        $lang = Config::getGlobal('language');
+        $lang = Language::getUserLanguage();
 
         $this->m_fullscreen = isset($_GET['atkfullscreen']) && $_GET['atkfullscreen'] === 'true';
 
-        //jQuery
+        // jQuery
         $this->register_script($assetsUrl . 'admin-lte/plugins/jquery/jquery.min.js');
 
         // Bootstrap 4
@@ -145,22 +144,20 @@ class Page
 
         // Select2
         $this->register_script($assetsUrl . 'admin-lte/plugins/select2/js/select2.full.min.js');
-
         if ($lang) {
             $this->register_script($assetsUrl . 'admin-lte/plugins/select2/js/i18n/' . $lang . '.js');
         }
 
-        //Bootstrap DatePicker
+        // Bootstrap DatePicker
         $this->register_script($assetsUrl . 'admin-lte/plugins/moment/moment.min.js');
         $this->register_script($assetsUrl . 'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js');
 
         $this->register_script($assetsUrl . 'admin-lte/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
 
-        //Custom file input lib
+        // Custom file input lib
         $this->register_script($assetsUrl . 'admin-lte/plugins/bs-custom-file-input/bs-custom-file-input.min.js');
 
         $this->register_script($assetsUrl . 'admin-lte/plugins/inputmask/jquery.inputmask.min.js');
-
 
         /*
         $this->register_script($assetsUrl.'admin-lte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js');
@@ -170,49 +167,47 @@ class Page
         $this->register_script($assetsUrl.'admin-lte/plugins/dropzone/min/dropzone.min.js');
         */
 
-        //Fixed Scrollbar
+        // Fixed Scrollbar
         $this->register_script($assetsUrl . 'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js');
 
-        //Atk - Custom
+        // Atk - Custom
         $this->register_scriptcode("var LANGUAGE='" . $lang . "';", true);
 
-        //AdminLTE App
+        // AdminLTE App
         $this->register_script($assetsUrl . 'admin-lte/js/adminlte.min.js');
 
 
-        //Load these scripts as last.
-        //There are parts that overwrite behaviours of the AdminLTE framework.
+        // Load these scripts as last.
+        // There are parts that overwrite behaviours of the AdminLTE framework.
         $this->register_script($assetsUrl . 'javascript/tools.js');
         $this->register_script($assetsUrl . 'javascript/atk.js');
-
 
         /**
          * Global Styles
          */
 
-        //Font Awesome
+        // Font Awesome
         $this->register_style($assetsUrl . 'admin-lte/plugins/fontawesome-free/css/all.min.css');
 
         $this->register_style($assetsUrl . 'admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css');
 
-        //ICheck
+        // ICheck
         $this->register_style($assetsUrl . 'admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css');
 
 
-        //Toastr
+        // Toastr
         $this->register_style($assetsUrl . 'admin-lte/plugins/toastr/toastr.min.css');
 
-        //Select2
+        // Select2
         $this->register_style($assetsUrl . 'admin-lte/plugins/select2/css/select2.min.css');
         $this->register_style($assetsUrl . 'admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css');
 
         $this->register_style($assetsUrl . 'admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css');
 
-
         // Theme style
         $this->register_style($assetsUrl . 'admin-lte/css/adminlte.min.css');
 
-        //Override default with custom styles
+        // Override default with custom styles
         $this->register_style($assetsUrl . 'admin-lte/css/style.css');
 
         if ($this->m_fullscreen) {
@@ -220,7 +215,7 @@ class Page
         }
 
 
-        //Google Font: Source Sans 3
+        // Google Font: Source Sans 3
         //$this->register_style("$assetsUrl . 'admin-lte/css/sans-font.css");
 
 
