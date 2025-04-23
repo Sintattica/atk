@@ -2,13 +2,18 @@
 
 namespace Sintattica\Atk\Attributes\NestedAttributes;
 
+use Exception;
 use Sintattica\Atk\Attributes\DateTimeAttribute;
+use Sintattica\Atk\Db\Query;
 
-class NestedDateTimeAttribute extends DateTimeAttribute
+class NestedDateTimeAttribute extends DateTimeAttribute implements NestedAttributeInterface
 {
-    public function __construct($name, $flags = 0, $format_edit = '', $format_view = '', $min = 0, $max = 0)
+    /**
+     * @throws Exception
+     */
+    public function __construct($name, $flags, string $nestedAttributeField, $format_edit = '', $format_view = '', $min = 0, $max = 0)
     {
-        $this->setIsNestedAttribute(true);
+        $this->setNestedAttributeField($nestedAttributeField);
         parent::__construct($name, $flags, $format_edit, $format_view, $min, $max);
     }
 
@@ -22,13 +27,22 @@ class NestedDateTimeAttribute extends DateTimeAttribute
         return parent::getOrderByStatement($extra, $table, $direction);
     }
 
-    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
+//    public function searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix = '')
+//    {
+//        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName(), $this->getNestedAttributeField())) {
+//            parent::searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+//        }
+//        $this->m_date->searchCondition($query, $table, $value, $searchmode, $this->buildSQLSearchValue($table));
+//    }
+
+    public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
-            parent::searchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName(), $this->getNestedAttributeField())) {
+            return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
         }
-        $this->m_date->searchCondition($query, $table, $value, $searchmode, $this->buildSQLSearchValue($table));
+        return parent::getSearchCondition($query, $table, $value, $searchmode, $this->buildSQLSearchValue($table));
     }
+
 
     protected function buildSQLSearchValue($table): string
     {

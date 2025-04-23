@@ -4,14 +4,18 @@
 namespace Sintattica\Atk\Attributes\NestedAttributes;
 
 
+use Exception;
 use Sintattica\Atk\Attributes\DateAttribute;
 use Sintattica\Atk\Db\Query;
 
-class NestedDateAttribute extends DateAttribute
+class NestedDateAttribute extends DateAttribute implements NestedAttributeInterface
 {
-    public function __construct($name, $flags = 0, $format_edit = '', $format_view = '', $min = 0, $max = 0)
+    /**
+     * @throws Exception
+     */
+    public function __construct($name, $flags, string $nestedAttributeField, $format_edit = '', $format_view = '', $min = 0, $max = 0)
     {
-        $this->setIsNestedAttribute(true);
+        $this->setNestedAttributeField($nestedAttributeField);
         parent::__construct($name, $flags, $format_edit, $format_view, $min, $max);
     }
 
@@ -27,7 +31,7 @@ class NestedDateAttribute extends DateAttribute
 
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName(), $this->getNestedAttributeField())) {
             return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
         }
         return parent::getSearchCondition($query, $table, $value, $searchmode, $this->buildSQLSearchValue($table));

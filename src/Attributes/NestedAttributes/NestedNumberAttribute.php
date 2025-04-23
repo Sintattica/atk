@@ -4,17 +4,21 @@
 namespace Sintattica\Atk\Attributes\NestedAttributes;
 
 
+use Exception;
 use Sintattica\Atk\Attributes\Attribute;
 use Sintattica\Atk\Attributes\NumberAttribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
-class NestedNumberAttribute extends NumberAttribute
+class NestedNumberAttribute extends NumberAttribute implements NestedAttributeInterface
 {
 
-    public function __construct($name, $flags = 0, $decimals = null)
+    /**
+     * @throws Exception
+     */
+    public function __construct($name, $flags, string $nestedAttributeField, $decimals = null)
     {
-        $this->setIsNestedAttribute(true);
+        $this->setNestedAttributeField($nestedAttributeField);
         parent::__construct($name, $flags, $decimals);
     }
 
@@ -40,7 +44,7 @@ class NestedNumberAttribute extends NumberAttribute
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName(), $this->getNestedAttributeField())) {
             return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
         }
 
@@ -101,7 +105,7 @@ class NestedNumberAttribute extends NumberAttribute
             $tableName = $attr->getDb()->quoteIdentifier($table);
         }
 
-        $nestedAttributeFieldName = $attr->getDb()->quoteIdentifier($attr->m_ownerInstance->getNestedAttributeField());
+        $nestedAttributeFieldName = $attr->getDb()->quoteIdentifier($attr->getNestedAttributeField());
         $nestedAttrName = $attr->fieldName();
 
         return "$tableName.$nestedAttributeFieldName->'$.$nestedAttrName'";
@@ -118,7 +122,7 @@ class NestedNumberAttribute extends NumberAttribute
      */
     static public function getOrderByStatementStatic(Attribute $attr, $extra = [], $table = '', $direction = 'ASC')
     {
-        if ($attr->getOwnerInstance()->hasNestedAttribute($attr->fieldName())) {
+        if ($attr->getOwnerInstance()->hasNestedAttribute($attr->fieldName(), $attr->getNestedAttributeField())) {
             $json_query = self::buildJSONExtractValue($attr, $table);
 
             if ($attr->dbFieldType() == 'string' && $attr->getDb()->getForceCaseInsensitive()) {

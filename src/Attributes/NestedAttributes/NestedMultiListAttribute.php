@@ -4,16 +4,20 @@
 namespace Sintattica\Atk\Attributes\NestedAttributes;
 
 
+use Exception;
 use Sintattica\Atk\Attributes\MultiListAttribute;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Db\Query;
 
-class NestedMultiListAttribute extends MultiListAttribute
+class NestedMultiListAttribute extends MultiListAttribute implements NestedAttributeInterface
 {
 
-    function __construct($name, $flags, $optionArray, $valueArray = null)
+    /**
+     * @throws Exception
+     */
+    function __construct($name, $flags, string $nestedAttributeField, $optionArray, $valueArray = null)
     {
-        $this->setIsNestedAttribute(true);
+        $this->setNestedAttributeField($nestedAttributeField);
         parent::__construct($name, $flags | parent::AF_NO_SORT, $optionArray, $valueArray);
     }
 
@@ -29,7 +33,7 @@ class NestedMultiListAttribute extends MultiListAttribute
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName(), $this->getNestedAttributeField())) {
             return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
         }
 

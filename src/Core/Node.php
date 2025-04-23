@@ -691,11 +691,6 @@ class Node
     private $rowColorMode = self::ROW_COLOR_MODE_DEFAULT;
 
     /**
-     * @var string - Name of the nested attributes' field on the db.
-     */
-    private $nestedAttributeField = 'nested_fields_value';
-
-    /**
      * @var array - List of nested attributes stored in the $nestedAttributeField
      */
     private $nestedAttributesList = [];
@@ -916,8 +911,9 @@ class Node
     {
         // if $attribute is a nested attribute create a fake one and handle the loading/storage through the JsonAttribute
         if ($attribute->isNestedAttribute()) {
-            $nestedAttributeFieldName = $attribute->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttributeFieldName = $attribute->getNestedAttributeField();
             $nestedAttributeField = $this->getAttribute($nestedAttributeFieldName);
+            // the first time I add a nested attribute, the related JsonAttribute is also added
             if (!$nestedAttributeField) {
                 $nestedAttributeField = $this->add(new JSONAttribute($nestedAttributeFieldName, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD));
             }
@@ -1206,11 +1202,12 @@ class Node
      */
     public function getAttributeValue(array $record, string $attributeName): mixed
     {
+        $value = null;
         $attr = $this->getAttribute($attributeName);
         if (isset($record[$attributeName])) {
             $value = $record[$attributeName];
         } elseif ($attr->isNestedAttribute()) {
-            $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttributeFieldName = $attr->getNestedAttributeField();
             $nestedAttribute = $record[$nestedAttributeFieldName];
             if (is_string($nestedAttribute)) {
                 $nestedAttribute = json_decode($nestedAttribute, true);
@@ -1232,7 +1229,7 @@ class Node
         $oldValue = $record[self::ATK_ORG_REC][$attributeName];
 
         if (!isset($oldValue) && $attr->isNestedAttribute()) {
-            $nestedAttributeFieldName = $attr->getNestedAttributeField() ?? $this->nestedAttributeField;
+            $nestedAttributeFieldName = $attr->getNestedAttributeField();
             $nestedAttributeOld = $record[self::ATK_ORG_REC][$nestedAttributeFieldName];
             if (is_string($nestedAttributeOld)) {
                 $nestedAttributeOld = json_decode($nestedAttributeOld, true);
@@ -5777,25 +5774,25 @@ class Node
         }
     }
 
-    public function getNestedAttributeField(): string
-    {
-        return $this->nestedAttributeField;
-    }
+//    public function getNestedAttributeField(): string
+//    {
+//        return $this->nestedAttributeField;
+//    }
 
-    public function setNestedAttributeField(string $nestedAttributeField): self
-    {
-        $this->nestedAttributeField = $nestedAttributeField;
-        return $this;
-    }
+//    public function setNestedAttributeField(string $nestedAttributeField): self
+//    {
+//        $this->nestedAttributeField = $nestedAttributeField;
+//        return $this;
+//    }
 
     public function getNestedAttributesList(): array
     {
         return $this->nestedAttributesList;
     }
 
-    public function addNestedAttribute(string $attributeName, ?string $nestedAttributeFieldName = null): self
+    public function addNestedAttribute(string $attributeName, string $nestedAttributeField): self
     {
-        $this->nestedAttributesList[$nestedAttributeFieldName ?? $this->nestedAttributeField][] = $attributeName;
+        $this->nestedAttributesList[$nestedAttributeField][] = $attributeName;
         return $this;
     }
 
@@ -5804,9 +5801,9 @@ class Node
         return count($this->nestedAttributesList) > 0;
     }
 
-    public function hasNestedAttribute(string $attributeName): bool
+    public function hasNestedAttribute(string $attributeName, string $nestedAttributeField): bool
     {
-        return in_array($attributeName, array_values($this->nestedAttributesList));
+        return in_array($attributeName, $this->nestedAttributesList[$nestedAttributeField]);
     }
 
     /**
@@ -6075,9 +6072,10 @@ class Node
         return $this;
     }
 
-    public function getDefaultNestedAttribute(string $nestedAttributeField = null): JsonAttribute
+    // used to retrieve the attribute
+    public function getNestedAttribute(string $nestedAttributeField): JsonAttribute
     {
-        $attr = new JsonAttribute($nestedAttributeField ?? $this->nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD);
+        $attr = new JsonAttribute($nestedAttributeField, Attribute::AF_HIDE | Attribute::AF_FORCE_LOAD);
         $attr->setForceUpdate(true);
         return $attr;
     }

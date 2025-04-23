@@ -8,6 +8,7 @@ use Sintattica\Atk\Db\Query;
 
 /**
  * Converts the queries to work with Json fields.
+ * @deprecated
  */
 trait JsonSearchable
 {
@@ -20,7 +21,7 @@ trait JsonSearchable
     {
         $json_query = "";
 
-        if ($this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
+        if ($this->getOwnerInstance()->hasNestedAttribute($this->fieldName(), $this->getNestedAttributeField())) {
             $json_query = $this->buildJSONExtractValue($this, $table);
 
             if ($this->dbFieldType() == 'string' && $this->getDb()->getForceCaseInsensitive()) {
@@ -46,7 +47,7 @@ trait JsonSearchable
      */
     public function getSearchCondition(Query $query, $table, $value, $searchmode, $fieldname = '')
     {
-        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName())) {
+        if (!$this->getOwnerInstance()->hasNestedAttribute($this->fieldName(), $this->getNestedAttributeField())) {
             return parent::getSearchCondition($query, $table, $value, $searchmode, $fieldname);
         }
 
@@ -102,7 +103,7 @@ trait JsonSearchable
             $tableName = $attr->getDb()->quoteIdentifier($table);
         }
 
-        $nestedAttributeFieldName = $attr->getDb()->quoteIdentifier($attr->m_ownerInstance->getNestedAttributeField());
+        $nestedAttributeFieldName = $attr->getDb()->quoteIdentifier($attr->getNestedAttributeField());
         $nestedAttrName = $attr->fieldName();
 
         return "$tableName.$nestedAttributeFieldName->'$.$nestedAttrName'";

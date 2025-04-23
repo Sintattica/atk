@@ -580,8 +580,7 @@ class Attribute
     private $nl2br = true;
     private $htmlSpecialChars = true;
 
-    private $isNestedAttribute = false;
-    private $nestedAttributeField = null;
+    private ?string $nestedAttributeField = null;
 
     private $minWidth = null;
     private $maxWidth = null;
@@ -3496,13 +3495,7 @@ class Attribute
 
     public function isNestedAttribute(): bool
     {
-        return $this->isNestedAttribute;
-    }
-
-    public function setIsNestedAttribute(bool $isNestedAttribute): static
-    {
-        $this->isNestedAttribute = $isNestedAttribute;
-        return $this;
+        return $this->nestedAttributeField != null;
     }
 
     public function getNestedAttributeField(): ?string
@@ -3513,11 +3506,11 @@ class Attribute
     /**
      * @throws Exception
      */
-    public function setNestedAttributeField(?string $nestedAttributeField): static
+    public function setNestedAttributeField(string $nestedAttributeField): static
     {
-        if ($nestedAttributeField && !$this->isNestedAttribute) {
-            throw new Exception("Attribute '{$this->fieldName()}' must be nested!");
-        }
+//        if ($nestedAttributeField && !$this->isNestedAttribute) {
+//            throw new Exception("Attribute '{$this->fieldName()}' must be nested!");
+//        }
         $this->nestedAttributeField = $nestedAttributeField;
         return $this;
     }
