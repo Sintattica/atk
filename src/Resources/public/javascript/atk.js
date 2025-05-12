@@ -65,9 +65,13 @@ if (typeof (LANGUAGE) !== 'undefined') {
  * and propagates the 'display block' property and 'menu-open' class
  * on the father elements so the menu is displayed as open on that specified element.
  */
-jQuery(window).on("load", () => {
+jQuery(window).on('load', () => {
 
     const sidebar = document.querySelector('#menu-sidebar');
+    if (sidebar === null) {
+        return; // no sidebar menu, nothing to do here.
+    }
+
     const activeEl = sidebar.querySelector('.nav-link.active');
 
     // for sidebar menu entirely but not cover treeview
@@ -81,10 +85,10 @@ jQuery(window).on("load", () => {
         .prev('a').addClass('active');
 
 
-    // ***AdminLTE bug ****:
+    // *** AdminLTE bug ****:
     // ----------------------
     // i don't know why the TreeView plugin for the adminLTE puts a 'display:block' property
-    // on every sibling sub-menu showing these former submenu elements even if their respective
+    // on every sibling submenu showing these former submenu elements even if their respective
     // menus are closed. This is a hack to fix this wrong behavior.
     document.querySelectorAll("ul.nav-treeview.menu-open > .nav-item:not(.menu-open) > ul")
         .forEach(el => el.style.display = 'none');
@@ -93,5 +97,4 @@ jQuery(window).on("load", () => {
     if (activeItem != null) {
         activeItem.scrollIntoView({block: 'start'});
     }
-
 });
