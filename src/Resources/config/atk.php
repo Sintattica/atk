@@ -399,6 +399,11 @@ return [
     'auth_u2f_enabledfield' => '',
 
 
+    /************************** 2FA *********************************/
+
+    'auth_enable_2fa' => false,
+
+
     /***************************** LDAP settings *******************************/
     /*
      * To use LDAP you should fill this config_variables with the right values

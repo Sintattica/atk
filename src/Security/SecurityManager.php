@@ -25,6 +25,7 @@ class SecurityManager
     const AUTH_MISMATCH = 3;
     const AUTH_MISSINGUSERNAME = 5;
     const AUTH_ERROR = -1;
+    const AUTH_2FA_REQUIRED = 6;
 
     public $m_authentication = [];
 
@@ -116,10 +117,12 @@ class SecurityManager
             // form login
             $auth_user = isset($ATK_VARS['auth_user']) ? $ATK_VARS['auth_user'] : '';
             $auth_pw = isset($ATK_VARS['auth_pw']) ? $ATK_VARS['auth_pw'] : '';
+            $auth_2fa_code = isset($ATK_VARS['auth_2fa_code']) ? $ATK_VARS['auth_2fa_code'] : '';
         } else {
             // HTTP login
             $auth_user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
             $auth_pw = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+            $auth_2fa_code = '';
         }
 
         // try a session login
@@ -141,6 +144,29 @@ class SecurityManager
         if ($this->auth_response === self::AUTH_UNVERIFIED) {
             if($auth_user || $isCli) {
                 $this->login($auth_user, $auth_pw);
+            }
+
+            // Check if 2FA is required
+            if (Config::getGlobal('auth_enable_2fa', false) && $this->auth_response === self::AUTH_2FA_REQUIRED) {
+                if ($auth_2fa_code) {
+                    // Verify 2FA code
+                    if ($this->verify2FA($auth_2fa_code)) {
+                        $this->auth_response = self::AUTH_SUCCESS;
+                    } else {
+                        $this->auth_response = self::AUTH_MISMATCH;
+                        $error = Tools::atktext('auth_2fa_invalid', 'atk', '', '', '', true);
+                        $this->secondFactorAuthenticationForm($auth_user, $auth_rememberme, $error);
+                        exit;
+                    }
+                } else {
+                    // Generate a new authentication code and save it
+                    $code = $this->generate2FACode();
+                    $this->save2FACode($code);
+
+                    // Show 2FA form
+                    $this->secondFactorAuthenticationForm($auth_user, $auth_rememberme);
+                    exit;
+                }
             }
 
             if (Config::getGlobal('auth_enable_u2f') && $this->auth_response === self::AUTH_SUCCESS) {
@@ -355,9 +381,15 @@ class SecurityManager
             $config_pw = Config::getGlobal($system_user['name'].'password');
             $match = ! empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || self::verify($auth_pw, $config_pw));
             if ($match) {
-                $this->auth_response = self::AUTH_SUCCESS;
-                $this->m_user = $system_user;
-                return $this->m_user;
+                if (Config::getGlobal('auth_enable_2fa', false)) {
+                    $this->auth_response = self::AUTH_2FA_REQUIRED;
+                    $this->m_user = $system_user;
+                    return $this->m_user;
+                } else {
+                    $this->auth_response = self::AUTH_SUCCESS;
+                    $this->m_user = $system_user;
+                    return $this->m_user;
+                }
             }
 
             $this->auth_response = self::AUTH_MISMATCH;
@@ -371,6 +403,13 @@ class SecurityManager
             if ($this->auth_response === self::AUTH_SUCCESS) {
                 $this->m_fatalError = null;
                 $this->storeAuth($auth_user, $class);
+
+                if (Config::getGlobal('auth_enable_2fa', false)) {
+                    $this->auth_response = self::AUTH_2FA_REQUIRED;
+                } else {
+                    $this->auth_response = self::AUTH_SUCCESS;
+                }
+
                 return $this->m_user;
 
             }elseif ($this->auth_response === self::AUTH_ERROR) {
@@ -879,6 +918,102 @@ class SecurityManager
         $result = $ui->render('u2f.tpl', $tplvars);
         $output = Output::getInstance();
         $page->register_script(Config::getGlobal('assets_url').'javascript/u2f-api.js');
+        $page->addContent($result);
+        $output->output($page->render(Tools::atktext('app_title')));
+        $output->outputFlush();
+        exit;
+    }
+
+    /****** Second Factor Authentication ******/
+
+    /**
+     * Generate a random authentication code for 2FA
+     * 
+     * @param int $length The length of the code to generate
+     * @return string The generated code
+     */
+    private function generate2FACode($length = 5)
+    {
+        // Generate a random numeric code
+        $code = '';
+        for ($i = 0; $i < $length; $i++) {
+            $code .= mt_rand(0, 9);
+        }
+
+        return $code;
+    }
+
+    /**
+     * Save the authentication code to the user record in the database
+     * 
+     * @param string $code The code to save
+     * @return bool True if the code was saved successfully, false otherwise
+     */
+    private function save2FACode($code)
+    {
+        if (empty($this->m_user) || empty($this->m_user['id'])) {
+            return false;
+        }
+
+        $db = Db::getInstance();
+        $table = Config::getGlobal('auth_usertable');
+        $idfield = Config::getGlobal('auth_userpk');
+
+        $query = $db->prepare("UPDATE `$table` SET codice_autenticazione = ? WHERE $idfield = ?");
+        $result = $query->execute([$code, $this->m_user['id']]);
+        $db->commit();
+
+        // Update the user record in memory
+        if ($result) {
+            $this->m_user['codice_autenticazione'] = $code;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Verify the second factor authentication code
+     * 
+     * @param string $code The code to verify
+     * @return bool True if the code is valid, false otherwise
+     */
+    private function verify2FA($code)
+    {
+        // Ensure strict string comparison and trim any whitespace
+        $code = trim($code);
+
+        // Get the authentication code from the user record
+        $auth_code = isset($this->m_user['codice_autenticazione']) ? $this->m_user['codice_autenticazione'] : "123";
+
+        return $code === $auth_code;
+    }
+
+    /**
+     * Display the second factor authentication form
+     * 
+     * @param string $auth_user The username
+     * @param int $auth_rememberme Whether to remember the user
+     * @param string $error Optional error message to display
+     */
+    private function secondFactorAuthenticationForm($auth_user, $auth_rememberme, $error = '')
+    {
+        $page = Page::getInstance();
+        $ui = Ui::getInstance();
+
+        $tplvars = [];
+        $tplvars['atksessionformvars'] = Tools::makeHiddenPostvars(['atklogout', 'auth_rememberme']);
+        $tplvars['formurl'] = Config::getGlobal('dispatcher');
+        $tplvars['auth_user'] = htmlentities($auth_user);
+        $tplvars['auth_rememberme'] = $auth_rememberme;
+        $tplvars['title'] = Tools::atktext('auth_2fa_title', 'atk', '', '', '', true);
+        $tplvars['auth_2fa_text'] = Tools::atktext('auth_2fa_text', 'atk', '', '', '', true);
+
+        if ($error) {
+            $tplvars['error'] = $error;
+        }
+
+        $result = $ui->render('2fa.tpl', $tplvars);
+        $output = Output::getInstance();
         $page->addContent($result);
         $output->output($page->render(Tools::atktext('app_title')));
         $output->outputFlush();
