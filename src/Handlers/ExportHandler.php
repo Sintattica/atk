@@ -394,9 +394,11 @@ class ExportHandler extends ActionHandler
         foreach ($recordSet as $row) {
             foreach ($row as $name => $value) {
                 if (in_array($name, $listIncludes)) {
-                    $value = str_replace("\r\n", '\\n', $value);
-                    $value = str_replace("\n", '\\n', $value);
-                    $value = str_replace("\t", '\\t', $value);
+                    if (is_string($value)) {
+                        $value = str_replace("\r\n", '\\n', $value);
+                        $value = str_replace("\n", '\\n', $value);
+                        $value = str_replace("\t", '\\t', $value);
+                    }
                     $row[$name] = $value;
                 }
             }
