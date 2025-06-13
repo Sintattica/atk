@@ -16,7 +16,7 @@ class JsonAttribute extends TextAttribute
         $fieldContent = $record[$this->fieldName()];
 
         if ($fieldContent !== null && $fieldContent !== '') {
-            $encodedJson = Json::prettify(json_encode($fieldContent, JSON_PRETTY_PRINT), $this->jsonNewlineChar, $this->jsonIndentChar);
+            $encodedJson = Json::prettify(json_encode($fieldContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $this->jsonNewlineChar, $this->jsonIndentChar);
             $displayContent = $this->formatDisplay($encodedJson, $mode);
         }
 
