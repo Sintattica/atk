@@ -163,6 +163,14 @@ ATK.Tools = {
         jQuery('#' + rowId).addClass('atkAttrRowHidden');
     },
 
+    hideTab: function (tabId) {
+        jQuery('#' + tabId).hide();
+    },
+
+    showTab: function (tabId) {
+        jQuery('#' + tabId).show();
+    },
+
     enableSelect2: function ($container) {
         jQuery.each($container.find('select[data-enable-select2]'), function (idx, el) {
             ATK.Tools.enableSelect2ForSelect(el);
