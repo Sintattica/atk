@@ -186,6 +186,26 @@ class EditFormModifier
     }
 
     /**
+     * Hide the tab with the given name.
+     *
+     * @param string $name tab name
+     */
+    public function hideTab(string $name)
+    {
+        $this->scriptCode("ATK.Tools.hideTab('tab_$name');");
+    }
+
+    /**
+     * Show the tab with the given name.
+     *
+     * @param string $name tab name
+     */
+    public function showTab(string $name)
+    {
+        $this->scriptCode("ATK.Tools.showTab('tab_$name');");
+    }
+
+    /**
      * Re-render / refresh the attribute with the given name.
      *
      * @param string $name attribute name
