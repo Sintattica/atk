@@ -111,7 +111,7 @@ class DeleteHandler extends ActionHandler
         if ($result === true) {
             $location = $this->m_node->feedbackUrl('delete', self::ACTION_SUCCESS);
         } else {
-            $location = $this->m_node->feedbackUrl('delete', self::ACTION_FAILED, null, $result);
+            $location = $this->m_node->feedbackUrl('delete', self::ACTION_FAILED, [], $result);
         }
 
         $this->m_node->redirect($location);
@@ -162,7 +162,7 @@ class DeleteHandler extends ActionHandler
             if ($attrib->deleteAllowed() !== true) {
                 $db = $this->m_node->getDb();
                 $db->rollback();
-                $location = $this->m_node->feedbackUrl('delete', self::ACTION_FAILED, null,
+                $location = $this->m_node->feedbackUrl('delete', self::ACTION_FAILED, [],
                     sprintf(Tools::atktext('attrib_delete_not_allowed'), Tools::atktext($attrib->m_name, $this->m_node->m_module, $this->m_node->m_type))
                 );
                 $this->m_node->redirect($location);
