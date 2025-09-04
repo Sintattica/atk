@@ -14,7 +14,7 @@ class ExpressionDateAttribute extends ExpressionAttribute
 
     function __construct($name, $flags, $expression, $dateAttribute = null)
     {
-        parent::__construct($name, $flags, $expression, 'string');
+        parent::__construct($name, $flags, $expression, 'date');
 
         $this->m_dateAttribute = $dateAttribute ?: new DateAttribute($this->fieldName());
     }
