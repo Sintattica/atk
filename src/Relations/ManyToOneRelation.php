@@ -2433,8 +2433,8 @@ EOF;
             $parser = new StringParser($descriptordef);
             $concatFields = $parser->getAllParsedFieldsAsArray($fields, true);
             $concatTags = $concatFields['tags'];
-            $concatSeparators = $concatFields['separators'];
-            $concatSeparators[] = ' '; //the query removes all spaces, so let's do the same here [Bjorn]
+            $concatSeparators = $concatFields['separators'] ?? [];
+            $concatSeparators[] = ' '; // the query removes all spaces, so let's do the same here [Bjorn]
             // to search independent of characters between tags, like spaces and comma's,
             // we remove all these separators so we can search for just the concatenated tags in concat_ws [Jeroen]
             foreach ($concatSeparators as $separator) {
