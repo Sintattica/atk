@@ -57,8 +57,6 @@ This is a deeply refactored version that's not backward compatible. It's been de
 
 
 ### 8.2
-The fine folks at iBuildings were kind enough to transfer the atk-framework.com domain to Sintattica.
-
 We call this the "classic" ATK, i.e. the closest to iBuildings' version. It's largely backward compatible, with no additional functions:
 
 * lots of bug fixes
