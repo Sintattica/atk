@@ -13,7 +13,7 @@ class JsonAttribute extends TextAttribute
     public function display(array $record, string $mode): string
     {
         $displayContent = '';
-        $fieldContent = $record[$this->fieldName()];
+        $fieldContent = $record[$this->fieldName()] ?? null;
 
         if ($fieldContent !== null && $fieldContent !== '') {
             $encodedJson = Json::prettify(json_encode($fieldContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $this->jsonNewlineChar, $this->jsonIndentChar);
