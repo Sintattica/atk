@@ -106,28 +106,28 @@ class BoolAttribute extends Attribute
         $onchange = '';
 
         if (Tools::count($this->m_onchangecode)) {
-            $onchange = 'onClick="'.$id.'_onChange(this);" ';
+            $onchange = 'onClick="' . $id . '_onChange(this);" ';
             $this->_renderChangeHandler($fieldprefix);
         }
         $checked = $this->getValue($record) ? 'checked' : '';
 
         $style = '';
-        foreach($this->getCssStyles('edit') as $k => $v) {
+        foreach ($this->getCssStyles('edit') as $k => $v) {
             $style .= "$k:$v;";
         }
 
         //Max width 50px because in view mode it occupies all the row
         $result .= '<div class="checkbox icheck-primary" style="max-width: 50px;">';
-        $result .= '<input type="checkbox" id="'.$id.'" name="'.$this->getHtmlName($fieldprefix).'" value="1"';
-        $result .= ' '.$onchange.' '.$checked.' '.$this->getCSSClassAttribute(['atkcheckbox']);
-        if($style != ''){
-            $result .= ' style="'.$style.'"';
+        $result .= '<input type="checkbox" id="' . $id . '" name="' . $this->getHtmlName($fieldprefix) . '" value="1"';
+        $result .= ' ' . $onchange . ' ' . $checked . ' ' . $this->getCSSClassAttribute(['atkcheckbox']);
+        if ($style != '') {
+            $result .= ' style="' . $style . '"';
         }
         $result .= ' />';
-        $result .= '<label for="'.$id.'"></label></div>';
+        $result .= '<label for="' . $id . '"></label></div>';
 
         if ($this->hasFlag(self::AF_BOOL_INLINE_LABEL)) {
-            $result .= '&nbsp;<label for="'.$id.'">'.$this->text($this->fieldName().'_label').'</label>';
+            $result .= '&nbsp;<label for="' . $id . '">' . $this->text($this->fieldName() . '_label') . '</label>';
         }
 
         return $result;
@@ -166,28 +166,28 @@ class BoolAttribute extends Attribute
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
         $style = '';
-        $type = $extended ? 'extended_search':'search';
-        foreach($this->getCssStyles($type) as $k => $v) {
+        $type = $extended ? 'extended_search' : 'search';
+        foreach ($this->getCssStyles($type) as $k => $v) {
             $style .= "$k:$v;";
         }
 
-        $result = '<select id="'.$id.'" name="'.$name.'"';
+        $result = '<select id="' . $id . '" name="' . $name . '"';
         $result .= ' class="form-control form-control-sm select-standard"';
-        if($style != ''){
-            $result .= ' style="'.$style.'"';
+        if ($style != '') {
+            $result .= ' style="' . $style . '"';
         }
         $result .= '>';
-        $result .= '<option value="">'.Tools::atktext('search_all', 'atk').'</option>';
+        $result .= '<option value="">' . Tools::atktext('search_all', 'atk') . '</option>';
         $result .= '<option value="0" ';
         if (is_array($record) && $record[$this->fieldName()] === '0') {
             $result .= 'selected';
         }
-        $result .= '>'.Tools::atktext('no', 'atk').'</option>';
+        $result .= '>' . Tools::atktext('no', 'atk') . '</option>';
         $result .= '<option value="1" ';
         if (is_array($record) && $record[$this->fieldName()] === '1') {
             $result .= 'selected';
         }
-        $result .= '>'.Tools::atktext('yes', 'atk').'</option>';
+        $result .= '>' . Tools::atktext('yes', 'atk') . '</option>';
         $result .= '</select>';
 
         $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";
@@ -201,7 +201,7 @@ class BoolAttribute extends Attribute
             $value = $value[$this->fieldName()];
         }
         if (isset($value)) {
-            return $query->exactBoolCondition($table.'.'.$this->fieldName(), $value);
+            return $query->exactBoolCondition($table . '.' . $this->fieldName(), $value);
         }
 
         return '';
@@ -220,7 +220,7 @@ class BoolAttribute extends Attribute
         if ($this->hasFlag(self::AF_BOOL_DISPLAY_CHECKBOX)) {
             return '
     		  <div align="center">
-    		    <input type="checkbox" disabled="disabled" '.($this->getValue($record) ? 'checked="checked"' : '').' />
+    		    <input type="checkbox" disabled="disabled" ' . ($this->getValue($record) ? 'checked="checked"' : '') . ' />
     		  </div>
     		';
         } else {
@@ -327,10 +327,10 @@ class BoolAttribute extends Attribute
     public function hide($record, $fieldprefix, $mode)
     {
         if (!is_array($record[$this->fieldName()])) {
-            $result = '<input type="hidden" name="'.$this->getHtmlName($fieldprefix).'" value="'.($this->getValue($record) ? '1' : '0').'">';
+            $result = '<input type="hidden" name="' . $this->getHtmlName($fieldprefix) . '" value="' . ($this->getValue($record) ? '1' : '0') . '">';
             return $result;
         } else {
-            Tools::atkdebug('Warning attribute '.$this->m_name.' has no proper hide method!');
+            Tools::atkdebug('Warning attribute ' . $this->m_name . ' has no proper hide method!');
         }
     }
 

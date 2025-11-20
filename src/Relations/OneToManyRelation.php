@@ -661,7 +661,7 @@ class OneToManyRelation extends Relation
         $add_url = $this->getAddURL($params);
         $label = $this->getAddLabel();
 
-        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform, $onchange . ' class="atkonetomanyrelation mb-2 btn btn-sm btn-default"');
+        return Tools::href($add_url, $label, SessionManager::SESSION_NESTED, $saveform, $onchange . ' class="atkonetomanyrelation btn btn-sm btn-default mb-2"');
     }
 
     /**
@@ -1389,6 +1389,6 @@ class OneToManyRelation extends Relation
         }
         // open export action in target _blank because in SESSION_NESTED export failed...
         $url = Tools::dispatch_url($this->getDestination()->atkNodeUri(), 'export', $params);
-        return sprintf('<a href="%s" target="_blank" class="btn btn-sm btn-default mb-1">%s</a>', $url, $this->text('export'));
+        return sprintf('<a href="%s" target="_blank" class="btn btn-sm btn-default mb-2">%s</a>', $url, $this->text('export'));
     }
 }

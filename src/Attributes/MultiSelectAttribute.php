@@ -165,8 +165,7 @@ class MultiSelectAttribute extends ListAttribute
             $result .= $this->_addLinks($fieldprefix);
         }
 
-        $css = $this->getCSSClassAttribute();
-        $result .= '<div '.$css.'>';
+        $result .= '<div>';
 
         $values = $this->getValues();
         if (!is_array($record[$this->fieldName()])) {
@@ -185,9 +184,14 @@ class MultiSelectAttribute extends ListAttribute
                 $sel = 'checked';
             }
 
-            $result .= '<div>';
-            $result .= '<input type="checkbox" id="'.$checkId.'" name="'.$checkName.'" value="'.$values[$i].'" '.$sel.'> ';
-            $result .= $this->_translateValue($values[$i], $record);
+            $result .= '<div class="d-flex">';
+            $result .= '<div class="checkbox icheck-primary" style="max-width: 50px;">';
+            // Max width 50px because in view mode it occupies all the row
+            $result .= '<input class="atkcheckbox form-control form-control-sm" style="max-width: 50px;" type="checkbox" 
+                                id="' . $checkId . '" name="' . $checkName . '" value="' . $values[$i] . '" ' . $sel . '>';
+            $result .= '<label for="' . $checkId . '"></label>';
+            $result .= '</div>';
+            $result .= '<div class="d-flex align-self-center ml-2">' . $this->_translateValue($values[$i], $record) . '</div>';
             $result .= '</div>';
         }
         $result .= '</div>';
