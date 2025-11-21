@@ -12,9 +12,9 @@
   },
   "require": {
     "php": ">=8.3",
-    "fightbulc/moment": "^1.13",
-    "smarty/smarty": "v5.4.0",
-    "vlucas/phpdotenv":  "v3.6.*",
+    "fightbulc/moment": "1.34.*",
+    "smarty/smarty": "v5.4.*",
+    "vlucas/phpdotenv":  "v5.6.*",
     "ext-zlib": "*",
     "ext-json": "*",
     "ext-simplexml": "*",
