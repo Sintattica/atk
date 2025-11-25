@@ -479,9 +479,6 @@ class FileAttribute extends Attribute
         if ($error > 0) {
             $error_text = $this->fetchFileErrorType($error);
             Tools::atkTriggerError($record, $this, $error_text, Tools::atktext($error_text, 'atk'));
-        }
-
-        if ($record[$this->fieldName()]['error']) {
             return;
         }
 
@@ -548,7 +545,7 @@ class FileAttribute extends Attribute
     function sanitizeFilename($filename): ?string
     {
         // for some file the orgfilename is an array instead of a string
-        if (is_array($filename) && isset($filename['atkfiles']) && isset($filename['atkfiles']['name'])) {
+        if (isset($filename['atkfiles']['name']) && is_array($filename)) {
             $filename = $filename['atkfiles']['name'];
         }
 
@@ -586,7 +583,7 @@ class FileAttribute extends Attribute
 
             if (function_exists('getimagesize')) {
                 $size = @getimagesize($filename);
-                if (in_array($size['mime'], $this->m_allowedFileTypes)) {
+                if (is_array($size) && in_array($size['mime'], $this->m_allowedFileTypes)) {
                     return true;
                 }
             }
@@ -615,21 +612,11 @@ class FileAttribute extends Attribute
      */
     public static function fetchFileErrorType(int $error): string
     {
-        switch ($error) {
-            case UPLOAD_ERR_INI_SIZE:
-            case UPLOAD_ERR_FORM_SIZE:
-                $error = 'error_file_size';
-                break;
-            case UPLOAD_ERR_EXTENSION:
-                $error = 'error_file_mime_type';
-                break;
-            case UPLOAD_ERR_NO_TMP_DIR:
-            case UPLOAD_ERR_PARTIAL:
-            default:
-                $error = 'error_file_unknown';
-        }
-
-        return $error;
+        return match ($error) {
+            UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'error_file_size',
+            UPLOAD_ERR_EXTENSION => 'error_file_mime_type',
+            default => 'error_file_unknown',
+        };
     }
 
     /**
@@ -991,7 +978,7 @@ class FileAttribute extends Attribute
      */
     public function getFileExtension($filename): string
     {
-        if (is_array($filename) && isset($filename['atkfiles']) && isset($filename['atkfiles']['name'])) {
+        if (isset($filename['atkfiles']['name']) && is_array($filename)) {
             $filename = $filename['atkfiles']['name'];
         }
 
