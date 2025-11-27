@@ -103,7 +103,7 @@ class SecurityManager
         if (isset($ATK_VARS['atklogout'])) {
             $this->logout();
             if (!$isCli) {
-                header('Location: '.Config::getGlobal('dispatcher'));
+                header('Location: ' . Config::getGlobal('dispatcher'));
             }
             exit;
         }
@@ -139,7 +139,7 @@ class SecurityManager
 
         // try a standard login with user / password
         if ($this->auth_response === self::AUTH_UNVERIFIED) {
-            if($auth_user || $isCli) {
+            if ($auth_user || $isCli) {
                 $this->login($auth_user, $auth_pw);
             }
 
@@ -166,23 +166,23 @@ class SecurityManager
                 $location = Config::getGlobal('auth_loginpage', '');
                 if ($location) {
                     $location .= (strpos($location, '?') === false) ? '?' : '&';
-                    $location .= 'login='.$auth_user.'&error='.$this->auth_response;
+                    $location .= 'login=' . $auth_user . '&error=' . $this->auth_response;
 
                     if (Config::getGlobal('debug') >= 2) {
                         $debugger = Debugger::getInstance();
                         $debugger->setRedirectUrl($location);
-                        Tools::atkdebug('Non-debug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
+                        Tools::atkdebug('Non-debug version would have redirected to <a href="' . $location . '">' . $location . '</a>');
                         $output = Output::getInstance();
                         $output->outputFlush();
                     } else {
-                        header('Location: '.$location);
+                        header('Location: ' . $location);
                     }
                 } elseif (Config::getGlobal('auth_loginform')) {
-                    $error =  $this->getAuthResponseTranslation($this->auth_response);
+                    $error = $this->getAuthResponseTranslation($this->auth_response);
                     $this->loginForm($auth_user, $error);
                 } else {
-                    header('WWW-Authenticate: Basic realm="'.Tools::atktext('app_title').(Config::getGlobal('auth_changerealm', true) ? ' - '.strftime('%c',
-                                time()) : '').'"');
+                    header('WWW-Authenticate: Basic realm="' . Tools::atktext('app_title') . (Config::getGlobal('auth_changerealm', true) ? ' - ' . strftime('%c',
+                                time()) : '') . '"');
                     if (preg_match('/Microsoft/', $_SERVER['SERVER_SOFTWARE'])) {
                         header('Status: 401 Unauthorized');
                     } else {
@@ -209,7 +209,8 @@ class SecurityManager
         }
     }
 
-    public function getAuthResponseTranslation($auth_response){
+    public function getAuthResponseTranslation($auth_response)
+    {
         $error = '';
         switch ($auth_response) {
             case self::AUTH_LOCKED:
@@ -263,7 +264,7 @@ class SecurityManager
     {
         // assume that when a type includes a backslash, the fullclassname is used.
         if (!stristr($type, '\\')) {
-            $cls = __NAMESPACE__.'\\Auth\\'.ucfirst(strtolower($type)).'Auth';
+            $cls = __NAMESPACE__ . '\\Auth\\' . ucfirst(strtolower($type)) . 'Auth';
         } else {
             $cls = $type;
         }
@@ -341,7 +342,7 @@ class SecurityManager
         $session_auth = $sessionManager->getValue('authentication', 'globals');
         if (Config::getGlobal('authentication_session') && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])) {
             $this->m_user = &$session_auth['user'];
-            Tools::atkdebug('SecurityManager: Using session for authentication / user = '.$this->m_user['name']);
+            Tools::atkdebug('SecurityManager: Using session for authentication / user = ' . $this->m_user['name']);
             $this->auth_response = self::AUTH_SUCCESS;
         }
     }
@@ -352,8 +353,8 @@ class SecurityManager
 
         // System user
         if ($system_user = $this->getSystemUser($auth_user)) {
-            $config_pw = Config::getGlobal($system_user['name'].'password');
-            $match = ! empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || self::verify($auth_pw, $config_pw));
+            $config_pw = Config::getGlobal($system_user['name'] . 'password');
+            $match = !empty($config_pw) && (Config::getGlobal('auth_ignorepasswordmatch') || self::verify($auth_pw, $config_pw));
             if ($match) {
                 $this->auth_response = self::AUTH_SUCCESS;
                 $this->m_user = $system_user;
@@ -373,13 +374,13 @@ class SecurityManager
                 $this->storeAuth($auth_user, $class);
                 return $this->m_user;
 
-            }elseif ($this->auth_response === self::AUTH_ERROR) {
+            } elseif ($this->auth_response === self::AUTH_ERROR) {
                 $this->m_fatalError = isset($obj->m_fatalError) ? $obj->m_fatalError : 'Login error';
             }
         }
 
         $extra = ['auth_response' => $this->auth_response];
-        if($this->m_fatalError) {
+        if ($this->m_fatalError) {
             $extra['fatal_error'] = $this->m_fatalError;
         }
         $this->notifyListeners('errorLogin', $auth_user, $extra);
@@ -389,7 +390,8 @@ class SecurityManager
     /**
      * @param array $user
      */
-    public function postLogin(&$user) {
+    public function postLogin(&$user)
+    {
         $isCli = php_sapi_name() === 'cli';
 
         $this->m_user = $user;
@@ -397,7 +399,7 @@ class SecurityManager
         $sm = SessionManager::getInstance();
         $sm->globalVar('authentication', ['authenticated' => 1, 'user' => $user], true);
         if (!$isCli) {
-            header('user: '.$user['name']);
+            header('user: ' . $user['name']);
         }
     }
 
@@ -413,7 +415,7 @@ class SecurityManager
 
         $this->m_user['AUTH'] = $auth_name; // something to see which auth scheme is used
         (is_array($this->m_user['level'])) ? $dbg = implode(',', $this->m_user['level']) : $dbg = $this->m_user['level'];
-        Tools::atkdebug('Logged in user: '.$this->m_user['name'].' (level: '.$dbg.')');
+        Tools::atkdebug('Logged in user: ' . $this->m_user['name'] . ' (level: ' . $dbg . ')');
     }
 
     /**
@@ -453,7 +455,7 @@ class SecurityManager
         $tplvars['password'] = Tools::atktext('password');
         $tplvars['defaultname'] = htmlentities($defaultname);
         $tplvars['passwordfield'] = '<input class="loginform" type="password" size="20" name="auth_pw" value="" />';
-        $tplvars['submitbutton'] = '<input name="login" class="button" type="submit" value="'.Tools::atktext('login').'" />';
+        $tplvars['submitbutton'] = '<input name="login" class="button" type="submit" value="' . Tools::atktext('login') . '" />';
         $tplvars['title'] = Tools::atktext('login_form');
         if ($error != '') {
             $tplvars['error'] = $error;
@@ -564,18 +566,18 @@ class SecurityManager
      * The entry is only written to the file, if the level of the message is
      * equal or higher than the setting of $config_logging.
      *
-     * @todo Logging should be moved to a separate atkLogger class.
-     *
      * @param int $level The loglevel.
      * @param string $message The message to log.
+     * @todo Logging should be moved to a separate atkLogger class.
+     *
      */
     public function log($level, $message)
     {
         if (Config::getGlobal('logging') > 0 && Config::getGlobal('logging') >= $level) {
             $fp = @fopen(Config::getGlobal('logfile'), 'a');
             if ($fp) {
-                $logstamp = '['.date('d-m-Y H:i:s').'] ['.$_SERVER['REMOTE_ADDR'].'] '.$this->m_user['name'].' | ';
-                @fwrite($fp, $logstamp.$message."\n");
+                $logstamp = '[' . date('d-m-Y H:i:s') . '] [' . $_SERVER['REMOTE_ADDR'] . '] ' . $this->m_user['name'] . ' | ';
+                @fwrite($fp, $logstamp . $message . "\n");
                 @fclose($fp);
             } else {
                 Tools::atkdebug('error opening logfile');
@@ -594,20 +596,20 @@ class SecurityManager
     {
         $user = null;
         $sm = SessionManager::getInstance();
-        $session_auth = is_object($sm) ? $sm->getValue('authentication', 'globals') : [];
-        if (Config::getGlobal('authentication_session') && $session_auth['authenticated'] == 1 && !empty($session_auth['user'])
+        $session_auth = is_object($sm)
+            ? $sm->getValue('authentication', 'globals')
+            : [];
+        if (Config::getGlobal('authentication_session')
+            && $session_auth
+            && $session_auth['authenticated'] == 1
+            && !empty($session_auth['user'])
         ) {
             $user = $session_auth['user'];
-            if (!isset($user['access_level']) || empty($user['access_level'])) {
+            if (empty($user['access_level'])) {
                 $user['access_level'] = 0;
             }
         }
-
-        if ($key) {
-            return $user[$key];
-        }
-
-        return $user;
+        return $key ? $user[$key] : $user;
     }
 
     /**
@@ -664,14 +666,14 @@ class SecurityManager
             if ($isValid) {
                 $this->storeAuth($remember_user, 'rememberme');
                 $this->auth_response = self::AUTH_SUCCESS;
-                Tools::atkdebug('Using rememberme for authentication / user = '.$remember_user);
+                Tools::atkdebug('Using rememberme for authentication / user = ' . $remember_user);
             }
         }
     }
 
     private function rememberMeCookieName()
     {
-        return Config::getGlobal('identifier').'-'.Config::getGlobal('auth_rememberme_cookiename');
+        return Config::getGlobal('identifier') . '-' . Config::getGlobal('auth_rememberme_cookiename');
     }
 
     /**
@@ -689,17 +691,17 @@ class SecurityManager
         $authenticator = openssl_random_pseudo_bytes(33);
 
         $userfield = Config::getGlobal('auth_userfield');
-        $sql = "INSERT INTO `".$dbTable."` (selector, token, `$userfield`, expires, created) VALUES (?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO `" . $dbTable . "` (selector, token, `$userfield`, expires, created) VALUES (?, ?, ?, ?, NOW())";
 
         $stmt = $db->prepare($sql);
         $stmt->execute([$selector, hash('sha256', $authenticator), $username, $expires->format('Y-m-d H:i:s')]);
         $db->commit();
 
         //get the current tokenId
-        $tokenId = $db->getValue("SELECT id FROM `".$dbTable."` WHERE selector = '".$db->escapeSQL($selector)."'");
+        $tokenId = $db->getValue("SELECT id FROM `" . $dbTable . "` WHERE selector = '" . $db->escapeSQL($selector) . "'");
 
         //create the cookie
-        $tokenValue = $selector.':'.base64_encode($authenticator);
+        $tokenValue = $selector . ':' . base64_encode($authenticator);
         $expires = new \DateTime(Config::getGlobal('auth_rememberme_expireinterval'));
         setcookie($this->rememberMeCookieName(), $tokenValue, $expires->format('U'), '/', null, null, true);
 
@@ -731,7 +733,7 @@ class SecurityManager
         list($selector, $authenticator) = explode(':', $remember);
 
         $db = Db::getInstance();
-        $sql = "SELECT * FROM `$dbTable` WHERE selector = '".$db->escapeSQL($selector)."'";
+        $sql = "SELECT * FROM `$dbTable` WHERE selector = '" . $db->escapeSQL($selector) . "'";
         $row = $db->getRow($sql);
 
         //token found?
@@ -794,7 +796,7 @@ class SecurityManager
         static $s_u2f;
         if ($s_u2f === null) {
             $scheme = isset($_SERVER['HTTPS']) ? "https://" : "http://";
-            $s_u2f = new U2F($scheme.$_SERVER['HTTP_HOST']);
+            $s_u2f = new U2F($scheme . $_SERVER['HTTP_HOST']);
         }
 
         return $s_u2f;
@@ -844,7 +846,7 @@ class SecurityManager
             $res = json_decode($u2f_response, true);
             $error = '';
             if (isset($res['errorCode'])) {
-                $error = Tools::atktext('u2f_errorcode_'.$res['errorCode'], '', '', '', '', true, false);
+                $error = Tools::atktext('u2f_errorcode_' . $res['errorCode'], '', '', '', '', true, false);
             }
 
             if ($error == '') {
@@ -878,7 +880,7 @@ class SecurityManager
 
         $result = $ui->render('u2f.tpl', $tplvars);
         $output = Output::getInstance();
-        $page->register_script(Config::getGlobal('assets_url').'javascript/u2f-api.js');
+        $page->register_script(Config::getGlobal('assets_url') . 'javascript/u2f-api.js');
         $page->addContent($result);
         $output->output($page->render(Tools::atktext('app_title')));
         $output->outputFlush();

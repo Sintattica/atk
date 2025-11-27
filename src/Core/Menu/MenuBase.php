@@ -674,12 +674,10 @@ abstract class MenuBase
             }
         }
 
-        $menuId = $_GET[Node::PARAM_ATKMENU];
-
+        $menuId = $_GET[Node::PARAM_ATKMENU] ?? null;
         if (!$menuId) {
             $menuId = SessionManager::getInstance()->globalStackVar(Node::PARAM_ATKMENU);
         }
-
         if ($menuId && $item->getIdentifier() === $menuId) {
             $item->setActive(true);
         }
