@@ -464,9 +464,6 @@ class FileAttribute extends Attribute
         if ($error > 0) {
             $error_text = $this->fetchFileErrorType($error);
             Tools::atkTriggerError($record, $this, $error_text, Tools::atktext($error_text, 'atk'));
-        }
-
-        if ($record[$this->fieldName()]['error']) {
             return;
         }
 
