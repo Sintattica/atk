@@ -1,5 +1,55 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.5.1] - 2025-11-25
+### Fixed
+- Atk: replaced redundant checks and optimized fetchFileErrorType with match() in FileAttribute
+
+
+## [11.5.0] - 2025-11-21
+### Changed
+- Atk: updated vlucas/phpdotenv from v3.6 to v5.6
+
+
+## [11.4.8] - 2025-11-10
+### Fixed
+- Atk: added null coalescing operator to handle missing field content in JsonAttribute
+
+
+## [11.4.7] - 2025-09-16
+### Fixed
+- Atk: handled nullable separators in ManyToOneRelation parsing
+
+
+## [11.4.6] - 2025-09-04
+### Fixed
+- Atk: corrected parent constructor type from 'string' to 'date' in ExpressionDate/DateTimeAttribute
+
+
+## [11.4.5] - 2025-08-02
+### Fixed
+- Atk: record argument in feedbackUrl must be not null in DeleteHandler
+
+
+## [11.4.4] - 2025-06-26
+### Added
+- Atk: hideTab function added in EditFormModifier
+
+
+## [11.4.3] - 2025-06-13
+### Fixed
+- Atk: added JSON_UNESCAPED_UNICODE flag in JsonAttribute
+
+
+## [11.4.2] - 2025-06-03
+### Fixed
+- Atk: added check is_string before using str_replace in doExport in ExportHandler
+
+
+## [11.4.1] - 2025-05-12
+### Fixed
+- Atk: added check sidebar in case of reloading the page in atk.js
+
+
 ## [11.4.0] - 2025-04-23
 ### Fixed
 - Atk: fix nested attributes order and search
