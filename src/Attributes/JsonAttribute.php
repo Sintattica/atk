@@ -7,30 +7,46 @@ use Sintattica\Atk\Utils\Json;
 
 class JsonAttribute extends TextAttribute
 {
-    private $jsonIndentChar = "&nbsp;&nbsp;&nbsp;&nbsp;";
-    private $jsonNewlineChar = "<br />";
+    private string $jsonIndentChar = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    private string $jsonNewlineChar = "<br />";
+    private bool $isRawModeEnabled = false;
 
     public function display(array $record, string $mode): string
     {
-        $displayContent = '';
         $fieldContent = $record[$this->fieldName()] ?? null;
-
-        if ($fieldContent !== null && $fieldContent !== '') {
-            $encodedJson = Json::prettify(json_encode($fieldContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $this->jsonNewlineChar, $this->jsonIndentChar);
-            $displayContent = $this->formatDisplay($encodedJson, $mode);
+        if ($fieldContent === null || $fieldContent === '') {
+            return '';
         }
 
-        return $displayContent;
+        $asArray = null;
+        if (is_array($fieldContent)) {
+            $asArray = $fieldContent;
+        } elseif (is_string($fieldContent) && Json::isValid($fieldContent)) {
+            $decoded = json_decode($fieldContent, true);
+            if (is_array($decoded)) {
+                $asArray = $decoded;
+            }
+        }
+
+        if (is_array($asArray) && !$this->isRawModeEnabled) {
+            $encodedJson = $this->renderKeyValueList($asArray);
+        } else {
+            // default: JSON prettified
+            $encodedJson = Json::prettify(json_encode($asArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), $this->jsonNewlineChar, $this->jsonIndentChar);
+        }
+
+        return $this->formatDisplay($encodedJson, $mode);
     }
 
     public function edit($record, $fieldprefix, $mode)
     {
-        if (is_array($record[$this->fieldName()])) {
-            $record[$this->fieldName()] = json_encode($record[$this->fieldName()] ?: []);
-        }
-
-        if ($record[$this->fieldName()]) {
-            $record[$this->fieldName()] = Json::prettify($record[$this->fieldName()]);
+        if (isset($record[$this->fieldName()])) {
+            if (is_array($record[$this->fieldName()])) {
+                $record[$this->fieldName()] = json_encode($record[$this->fieldName()] ?: []);
+            }
+            if ($record[$this->fieldName()]) {
+                $record[$this->fieldName()] = Json::prettify($record[$this->fieldName()]);
+            }
         }
 
         return parent::edit($record, $fieldprefix, $mode);
@@ -38,18 +54,20 @@ class JsonAttribute extends TextAttribute
 
     public function validate(&$record, $mode)
     {
-        if (is_array($record[$this->fieldName()])) {
-            if (is_null($record[$this->fieldName()])) {
-                $record[$this->fieldName()] = [];
+        if (isset($record[$this->fieldName()])) {
+            if (is_array($record[$this->fieldName()])) {
+                if (is_null($record[$this->fieldName()])) {
+                    $record[$this->fieldName()] = [];
+                }
+                $record[$this->fieldName()] = json_encode($record[$this->fieldName()]);
+                if (json_last_error() != JSON_ERROR_NONE) {
+                    Tools::atkTriggerError($record, $this, 'error_invalid_json');
+                }
             }
-            $record[$this->fieldName()] = json_encode($record[$this->fieldName()]);
-            if (json_last_error() != JSON_ERROR_NONE) {
+
+            if ($record[$this->fieldName()] && !Json::isValid($record[$this->fieldName()])) {
                 Tools::atkTriggerError($record, $this, 'error_invalid_json');
             }
-        }
-
-        if ($record[$this->fieldName()] && !Json::isValid($record[$this->fieldName()])) {
-            Tools::atkTriggerError($record, $this, 'error_invalid_json');
         }
     }
 
@@ -64,7 +82,7 @@ class JsonAttribute extends TextAttribute
 
     public function value2db(array $record)
     {
-        if ($record[$this->fieldName()] and is_array($record[$this->fieldName()])) {
+        if ($record[$this->fieldName()] && is_array($record[$this->fieldName()])) {
             $record[$this->fieldName()] = json_encode($record[$this->fieldName()]);
         }
 
@@ -72,8 +90,7 @@ class JsonAttribute extends TextAttribute
     }
 
     /**
-     * The character to use for the indentation of the Json string.
-     * @return string
+     * The character to use for the indentation of the Json string
      */
     public function getJsonIndentChar(): string
     {
@@ -94,31 +111,35 @@ class JsonAttribute extends TextAttribute
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getJsonNewlineChar(): string
     {
         return $this->jsonNewlineChar;
     }
 
-    /**
-     * @param string $jsonNewlineChar
-     * @return JsonAttribute
-     */
     public function setJsonNewlineChar(string $jsonNewlineChar): self
     {
         $this->jsonNewlineChar = $jsonNewlineChar;
         return $this;
     }
 
-    /**
-     * @param array|string $array
-     * @param int $level
-     * @param string $itemSep
-     * @return string
-     */
-    public static function arrayToString($array, int $level = 0, string $itemSep = "<br>"): string
+    public function isRawModeEnabled(): bool
+    {
+        return $this->isRawModeEnabled;
+    }
+
+    public function enableRawMode(): self
+    {
+        $this->isRawModeEnabled = true;
+        return $this;
+    }
+
+    public function disableRawMode(): self
+    {
+        $this->isRawModeEnabled = false;
+        return $this;
+    }
+
+    public static function arrayToString(array|bool|string|null $array, int $level = 0, string $itemSep = "<br />"): string
     {
         if (!is_array($array)) {
             if ($array === null) {
@@ -136,13 +157,53 @@ class JsonAttribute extends TextAttribute
                 $level++;
             }
             $result = str_repeat("&nbsp", $level * 3);
-            $result .= "<b>" . $key . "</b>: ";
+            $result .= "<strong>" . $key . "</strong>: ";
             if (is_array($value)) {
-                $result .= "<br>";
+                $result .= $itemSep;
             }
             $result .= self::arrayToString($value, $level, $itemSep);
         }
 
         return $result;
+    }
+
+    /**
+     * Recursive rendering in "key: value" format with indentation and line separator.
+     * Avoids the problems of the base class's arrayToString that overwrites the output.
+     */
+    private function renderKeyValueList(array $value, int $level = 0): string
+    {
+        $indent = str_repeat($this->jsonIndentChar, $level * 3);
+
+        $lines = [];
+        foreach ($value as $key => $val) {
+            $isAssocArray = !is_numeric($key);
+            // adds the key only for assoc arrays
+            $keyHtml = $isAssocArray
+                ? '<strong>' . $this->text($this->escapeScalar($key)) . '</strong>: '
+                : '';
+            if (is_array($val)) {
+                $lines[] = $indent . $keyHtml;
+                $lines[] = $this->renderKeyValueList($val, $level + 1);
+            } else {
+                $lines[] = $indent . $keyHtml . $this->escapeScalar($val);
+            }
+        }
+        return implode($this->jsonNewlineChar, $lines);
+    }
+
+    private function escapeScalar($val): string
+    {
+        if ($val === null) {
+            return 'null';
+        }
+        if ($val === true) {
+            return 'true';
+        }
+        if ($val === false) {
+            return 'false';
+        }
+        // Keep symbols like °C; no special HTML conversion beyond basic
+        return htmlspecialchars((string)$val, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }

@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.6.0] - 2025-12-04
+### Added
+- Attribute: beautified JsonAttribute display and added raw mode
+
+
 ## [11.5.1] - 2025-11-25
 ### Fixed
 - Atk: replaced redundant checks and optimized fetchFileErrorType with match() in FileAttribute
