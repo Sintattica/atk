@@ -42,7 +42,7 @@ class JsonAttribute extends TextAttribute
     {
         if (isset($record[$this->fieldName()])) {
             if (is_array($record[$this->fieldName()])) {
-                $record[$this->fieldName()] = json_encode($record[$this->fieldName()] ?: []);
+                $record[$this->fieldName()] = json_encode($record[$this->fieldName()] ?: [], JSON_UNESCAPED_UNICODE);
             }
             if ($record[$this->fieldName()]) {
                 $record[$this->fieldName()] = Json::prettify($record[$this->fieldName()]);
@@ -59,7 +59,7 @@ class JsonAttribute extends TextAttribute
                 if (is_null($record[$this->fieldName()])) {
                     $record[$this->fieldName()] = [];
                 }
-                $record[$this->fieldName()] = json_encode($record[$this->fieldName()]);
+                $record[$this->fieldName()] = json_encode($record[$this->fieldName()], JSON_UNESCAPED_UNICODE);
                 if (json_last_error() != JSON_ERROR_NONE) {
                     Tools::atkTriggerError($record, $this, 'error_invalid_json');
                 }
@@ -83,7 +83,7 @@ class JsonAttribute extends TextAttribute
     public function value2db(array $record)
     {
         if ($record[$this->fieldName()] && is_array($record[$this->fieldName()])) {
-            $record[$this->fieldName()] = json_encode($record[$this->fieldName()]);
+            $record[$this->fieldName()] = json_encode($record[$this->fieldName()], JSON_UNESCAPED_UNICODE);
         }
 
         return $record[$this->fieldName()] ? Json::compact($record[$this->fieldName()]) : JSON::EMPTY_STRING;
