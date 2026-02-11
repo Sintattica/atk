@@ -19,7 +19,7 @@ class MultiListAttribute extends ListAttribute
     public const string DISPLAY_SEPARATOR_DEFAULT = self::DISPLAY_SEPARATOR_TAG;
     public const string EXPORT_SEPARATOR_DEFAULT = '';
 
-    protected string $m_fieldSeparator = self::FIELD_SEPARATOR_DEFAULT;
+    protected ?string $m_fieldSeparator = self::FIELD_SEPARATOR_DEFAULT;
     private string $m_displaySeparator = self::DISPLAY_SEPARATOR_DEFAULT;
     private string $m_exportSeparator = self::EXPORT_SEPARATOR_DEFAULT;
     /** @var string The color of badge pills */
@@ -208,7 +208,7 @@ class MultiListAttribute extends ListAttribute
         if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== '') {
             // remove initial and final m_fieldSeparator
             $value = substr($record[$this->fieldName()], 1, strlen($record[$this->fieldName()]) - 2);
-            // transform in array
+            // transform in an array
             return explode($this->m_fieldSeparator, $value);
         }
 
@@ -224,11 +224,10 @@ class MultiListAttribute extends ListAttribute
         $searchconditions = [];
 
         if (is_array($value) && $value[0] != "" && count($value) > 0) {
-            // includes the separators in the value to search, in this way the search is more secure
             if (in_array('__NONE__', $value)) {
                 return $query->nullCondition($table . '.' . $this->fieldName(), true);
             }
-
+            // includes the separators in the value to search; in this way the search is more secure
             foreach ($value as $str) {
                 $searchconditions[] = $query->substringCondition($table . '.' . $this->fieldName(), $this->escapeSQL($this->m_fieldSeparator . $str . $this->m_fieldSeparator));
             }
@@ -244,11 +243,10 @@ class MultiListAttribute extends ListAttribute
      */
     public function getSearchModes()
     {
-        // exact match and substring search should be supported by any database.
-        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-        // searches can be implemented using LIKE)
-        // Possible values
-        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+        // any database should support exact match and substring search.
+        // the LIKE function is ANSI standard SQL, and both substring and wildcard searches can be implemented using LIKE
+        // Possible values:
+        // "regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
         return ['substring'];
     }
 

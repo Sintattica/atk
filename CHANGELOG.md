@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [11.7.0] - 2026-02-11
+### Added
+- Attribute: new JsonMultiListAttribute to support JSON array format
+
+
 ## [11.6.1] - 2026-01-15
 ### Fixed
 - Attribute: add JSON_UNESCAPED_UNICODE flag in multiple json_encode calls in JsonAttribute
