@@ -67,16 +67,16 @@ ATK.Tools = {
      */
 
     ucfirst: function (stringtt) {
-        return stringtt.charAt(0).toUpperCase() + stringtt.substring(1, stringtt.length)
+        return stringtt.charAt(0).toUpperCase() + stringtt.substring(1, stringtt.length);
     },
 
     /**
      * Replace an occurrence of a string
      */
     str_replace: function (haystack, needle, replace, casesensitive) {
-        if (casesensitive)
+        if (casesensitive) {
             return (haystack.split(needle)).join(replace);
-
+        }
         needle = needle.toLowerCase();
 
         var replaced = "";
@@ -84,7 +84,7 @@ ATK.Tools = {
         while (needleindex > -1) {
             replaced += haystack.substring(0, needleindex) + replace;
             haystack = haystack.substring(needleindex + needle.length);
-            needleindex = haystack.toLowerCase().indexOf(find);
+            needleindex = haystack.toLowerCase().indexOf(needle);
         }
         return (replaced + haystack);
     },
@@ -183,6 +183,12 @@ ATK.Tools = {
         let options = {};
 
         if ($el.is('select')) {
+            if ($el.attr('multiple') && $el.data('enable-select2')) {
+                options.shouldFocusInput = function () {
+                    return false;
+                };
+            }
+
             if (typeof $el.data('with-empty-value') !== 'undefined') {
                 options.templateSelection = function (data) {
                     if (data.id === $el.data('with-empty-value')) {
@@ -201,6 +207,88 @@ ATK.Tools = {
             }
 
             $el.select2(options);
+
+            if ($el.attr('multiple') && $el.data('enable-select2')) {
+                // store original order of options
+                $el.find('option').each(function (i) {
+                    jQuery(this).data('original-index', i);
+                });
+
+                // preserve selection order on initial load
+                // Select2 usually follows the order of <option> tags.
+                // If they are already ordered by PHP, we just need to make sure Select2 reflects that.
+                const selected = $el.val();
+                if (selected && selected.length > 0) {
+                    for (let i = 0; i < selected.length; i++) {
+                        const option = $el.find('option[value="' + selected[i] + '"]');
+                        option.detach().appendTo($el);
+                    }
+                    $el.trigger('change');
+                }
+
+                $el.on('select2:select', function (e) {
+                    const element = e.params.data.element;
+                    const $element = jQuery(element);
+                    $element.detach();
+                    $el.append($element);
+                    $el.trigger('change');
+
+                    // Update dropdown order
+                    const $options = $el.find('option');
+                    $options.sort(function (a, b) {
+                        const $a = jQuery(a);
+                        const $b = jQuery(b);
+                        const aSel = $a.prop('selected');
+                        const bSel = $b.prop('selected');
+
+                        if (aSel && !bSel) {
+                            return 1;
+                        }
+                        if (!aSel && bSel) {
+                            return -1;
+                        }
+                        if (!aSel && !bSel) {
+                            return $a.data('original-index') - $b.data('original-index');
+                        }
+
+                        // both selected: keep current relative order (selection order)
+                        return $a.index() - $b.index();
+                    });
+                    $el.append($options);
+                });
+
+                $el.on('select2:unselect', function (e) {
+                    const element = e.params.data.element;
+                    const $element = jQuery(element);
+
+                    // Re-sort options to keep selected ones at the end (in selection order)
+                    // and unselected ones at the beginning (in original order).
+                    // This will also fix the order in the dropdown.
+                    const $options = $el.find('option');
+                    $options.sort(function (a, b) {
+                        const $a = jQuery(a);
+                        const $b = jQuery(b);
+                        const aSel = $a.prop('selected');
+                        const bSel = $b.prop('selected');
+
+                        if (aSel && !bSel) {
+                            return 1;
+                        }
+                        if (!aSel && bSel) {
+                            return -1;
+                        }
+                        if (!aSel && !bSel) {
+                            return $a.data('original-index') - $b.data('original-index');
+                        }
+
+                        // both selected: keep current relative order (selection order)
+                        return $a.index() - $b.index();
+                    });
+
+                    $el.append($options);
+                    $el.trigger('change');
+                });
+            }
 
             if ($el.css('min-width') !== '0px') {
                 $el.next('span.select2-container').css({minWidth: $el.css('min-width'), width: ''});
@@ -221,7 +309,7 @@ ATK.Tools = {
                 timeout = null;
                 if (!immediate) {
                     result = func.apply(context, args);
-                    if (!timeout) context = args = null;
+                    context = args = null;
                 }
             }
         };
@@ -231,7 +319,9 @@ ATK.Tools = {
             args = arguments;
             timestamp = Date.now();
             var callNow = immediate && !timeout;
-            if (!timeout) timeout = setTimeout(later, wait);
+            if (!timeout) {
+                timeout = setTimeout(later, wait);
+            }
             if (callNow) {
                 result = func.apply(context, args);
                 context = args = null;

@@ -134,14 +134,35 @@ class MultiListAttribute extends ListAttribute
                 $recordvalue = $record[$this->fieldName()];
             }
         } else {
-            $recordvalue = null;
+            $recordvalue = [];
         }
 
-        for ($i = 0; $i < Tools::count($values); ++$i) {
-            // If the current value is selected or occurs in the record
-            $sel = (Tools::atk_in_array($values[$i], $recordvalue)) ? 'selected' : '';
+        $selectedValues = [];
+        $unselectedValues = [];
 
-            $result .= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->translateValue($values[$i], $record);
+        foreach ($values as $value) {
+            if (Tools::atk_in_array($value, $recordvalue)) {
+                $selectedValues[] = $value;
+            } else {
+                $unselectedValues[] = $value;
+            }
+        }
+
+        // preserve selection order
+        $orderedSelected = [];
+        foreach ($recordvalue as $v) {
+            if (in_array($v, $selectedValues)) {
+                $orderedSelected[] = $v;
+            }
+        }
+
+        $sortedValues = array_merge($orderedSelected, $unselectedValues);
+
+        foreach ($sortedValues as $value) {
+            // If the current value is selected or occurs in the record
+            $sel = (Tools::atk_in_array($value, $recordvalue)) ? 'selected' : '';
+
+            $result .= '<option value="' . $value . '" ' . $sel . '>' . $this->translateValue($value, $record) . '</option>';
         }
 
         $result .= '</select>';
