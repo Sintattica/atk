@@ -1,7 +1,8 @@
 services:
-  php:
-    container_name: php-atk
-    image: registry.gitlab.com/sintattica-sinlog/docker/sinlog-infrastructure-php8
+
+  php-fpm-atk:
+    container_name: php-fpm-atk
+    image: registry.gitlab.com/sintattica-sinlog/docker/php-fpm:v5
     volumes:
       - ~/.gitconfig:/root/.gitconfig
       - .:/app

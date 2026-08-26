@@ -11,30 +11,30 @@ case "$1" in "help"|"h")
   ;;
 
 "composer-install")
-  docker exec -it php-atk composer install
+  docker exec -it php-fpm-atk composer install
   ;;
 
 "composer-require")
-  docker exec -it php-atk composer require "$2"
+  docker exec -it php-fpm-atk composer require "$2"
   ;;
 
 "composer-update")
   filteredArg="$(echo -e "${2}" | tr -d '[:space:]')"
   if [ ! -z "$filteredArg" ];
   then
-       docker exec -it php-atk composer update "$2"
+       docker exec -it php-fpm-atk composer update "$2"
   else
       echo -n "---***---    RISKY OPERATION   ---***---"
       echo -n "Are you sure to update all the dependencies(y/n)? "
       read -r answer
       if [ "$answer" != "${answer#[Yy]}" ] ; then
-        docker exec -it php-atk composer update
+        docker exec -it php-fpm-atk composer update
       fi
   fi
   ;;
 
 "composer-remove")
-  docker exec -it php-atk composer remove "$2"
+  docker exec -it php-fpm-atk composer remove "$2"
   ;;
 
 *)
