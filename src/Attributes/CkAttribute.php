@@ -36,14 +36,45 @@ class CkAttribute extends HtmlAttribute
         'removePlugins' => ['Title', 'MathType', 'ChemType'],
         'toolbar' => [
             'items' => [
-                'heading', '|',
-                'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'horizontalLine', 'blockQuote', '|',
-                'highlight', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily', 'removeFormat', '|',
-                'bulletedList', 'numberedList', 'indent', 'outdent', 'alignment', '|',
-                'link', 'insertTable', 'imageInsert', 'mediaEmbed', '|',
-                'undo', 'redo', '|',
-                'htmlEmbed', 'code', 'codeBlock', '|',
-                'specialCharacters', 'sourceEditing', 'generalHtmlSupport'
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'underline',
+                'strikethrough',
+                'subscript',
+                'superscript',
+                'horizontalLine',
+                'blockQuote',
+                '|',
+                'highlight',
+                'fontBackgroundColor',
+                'fontColor',
+                'fontSize',
+                'fontFamily',
+                'removeFormat',
+                '|',
+                'bulletedList',
+                'numberedList',
+                'indent',
+                'outdent',
+                'alignment',
+                '|',
+                'link',
+                'insertTable',
+                'imageInsert',
+                'mediaEmbed',
+                '|',
+                'undo',
+                'redo',
+                '|',
+                'htmlEmbed',
+                'code',
+                'codeBlock',
+                '|',
+                'specialCharacters',
+                'sourceEditing',
+                'generalHtmlSupport'
             ],
             'image' => [
                 'toolbar' => ['imageTextAlternative', 'imageStyle:full', 'imageStyle:side']
@@ -69,9 +100,10 @@ class CkAttribute extends HtmlAttribute
      */
     public function __construct($name, $flags = 0, $options = [])
     {
-        $this->ckOptions['toolbar']['language'] = Language::getLanguage();
+        $lingua = Language::getLanguage();
         //$this->ckOptions['wsc_lang'] = $this->ckOptions['scayt_sLang'] = Tools::atktext('locale');
         $this->ckOptions = array_merge($this->ckOptions, Config::getGlobal('ck_options'), $options);
+        $this->ckOptions['language'] = $lingua;
 
         $this->setNl2br(false);
         $this->setHtmlSpecialChars(false);
@@ -88,12 +120,16 @@ class CkAttribute extends HtmlAttribute
         $id = $this->getHtmlId($fieldprefix);
 
         // register CKEditor main script
+        if ($this->ckOptions['language'] != 'it') {
+            $page->register_script(Config::getGlobal('assets_url') . 'lib/ckeditor5/translations/' . $this->ckOptions['language'] . '.js');
+        }
         $page->register_script(Config::getGlobal('assets_url') . 'lib/ckeditor5/ckeditor.js');
 
         // activate CKEditor
         $options = json_encode($this->ckOptions);
 
-        $page->register_loadscript("ClassicEditor
+        $page->register_loadscript(
+            "ClassicEditor
             .create( document.querySelector( '#$id' ), $options)
             .then( editor => {
                 editor.editing.view.change( writer => writer.setStyle( 'height', '" . $this->ckOptions['height'] . "', editor.editing.view.document.getRoot() ));
@@ -162,7 +198,7 @@ class CkAttribute extends HtmlAttribute
                     $record[$this->fieldName()] = str_replace('</p>', '</br></br>', $record[$this->fieldName()]);
                     break;
 
-                case self:: ENTER_MODE_DIV:
+                case self::ENTER_MODE_DIV:
                     $record[$this->fieldName()] = str_replace('<p>', '<div>', $record[$this->fieldName()]);
                     $record[$this->fieldName()] = str_replace('</p>', '</div>', $record[$this->fieldName()]);
                     break;
