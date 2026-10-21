@@ -148,7 +148,9 @@ abstract class AbstractSearchHandler extends ActionHandler
         Tools::atk_var_dump(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name), $this->getSearchHandlerType()), 'loadCriteria query');
 
         list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeUri(), Tools::escapeSQL($name), $this->getSearchHandlerType()));
-        $criteria = $row == null ? null : unserialize($row['criteria']);
+        // Disallow object instantiation: saved criteria are plain arrays/scalars, so
+        // refusing classes here prevents PHP object injection from a tampered row.
+        $criteria = $row == null ? null : unserialize($row['criteria'], ['allowed_classes' => false]);
 
         Tools::atk_var_dump($criteria, 'loadCriteria criteria');
 
