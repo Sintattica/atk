@@ -96,7 +96,7 @@ class ManyBoolRelation extends ManyToManyRelation
 
                 $value = $recordset[$i][$this->m_destInstance->primaryKeyField()];
                 $css = $this->getCSSClassAttribute(['atkcheckbox']);
-                $label = $this->m_destInstance->descriptor($recordset[$i]);
+                $label = htmlspecialchars((string)$this->m_destInstance->descriptor($recordset[$i]), ENT_QUOTES, 'UTF-8');
                 $result .= '<div>';
                 $result .= '  <input type="checkbox" id="'.$inputId.'" name="'.$this->getHtmlName($fieldprefix).'[]['.$this->getRemoteKey().']" value="'.$value.'" '.$css.' '.$sel.$onchange.' />';
                 $result .= '  <label for="'.$inputId.'">'.$label.'</label>';
