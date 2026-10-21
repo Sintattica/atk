@@ -71,6 +71,9 @@ class DeleteHandler extends ActionHandler
     public function _checkAllowed()
     {
         $atkselector = $this->m_postvars[Node::PARAM_ATKSELECTOR];
+        if (!$this->isRequestSelectorAllowed($atkselector)) {
+            return false;
+        }
         if (is_array($atkselector)) {
             $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
         } else {
@@ -125,6 +128,9 @@ class DeleteHandler extends ActionHandler
     protected function _doDeleteDb()
     {
         $db = $this->m_node->getDb();
+        if (!$this->isRequestSelectorAllowed($this->m_postvars[Node::PARAM_ATKSELECTOR] ?? '')) {
+            return Tools::atktext('error_node_action_access_denied', '', $this->m_node->getType());
+        }
         if ($this->m_node->deleteDb($this->m_postvars[Node::PARAM_ATKSELECTOR])) {
             $db->commit();
             $this->clearCache();
