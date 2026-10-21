@@ -114,10 +114,39 @@ class UrlAttribute extends Attribute
                 $text = preg_replace('/([?&].)/', ' \1', $text);
             }
 
-            $output = '<a href="'.$url.'"'.$target.'">'.$text.'</a>';
+            // Exports get the raw value, no markup.
+            if (in_array($mode, ['csv', 'plain'])) {
+                return $url;
+            }
+
+            // Block dangerous schemes (javascript:, data:, ...) and escape for HTML.
+            $href = htmlspecialchars($this->sanitizeUrl((string)$url), ENT_QUOTES, 'UTF-8');
+            $label = htmlspecialchars((string)$text, ENT_QUOTES, 'UTF-8');
+            $output = '<a href="'.$href.'"'.$target.'>'.$label.'</a>';
         }
 
         return $output;
+    }
+
+    /**
+     * Neutralise a URL for use in an href: relative URLs pass through, http/https/
+     * ftp/mailto/tel are allowed, anything with another scheme (javascript:, data:,
+     * vbscript: ...) is replaced with '#' so it cannot execute.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    protected function sanitizeUrl(string $url): string
+    {
+        if (preg_match('#^\s*([a-z][a-z0-9+.\-]*)\s*:#i', $url, $m)) {
+            $allowed = ['http', 'https', 'ftp', 'ftps', 'mailto', 'tel'];
+            if (!in_array(strtolower($m[1]), $allowed, true)) {
+                return '#';
+            }
+        }
+
+        return $url;
     }
 
     /**
