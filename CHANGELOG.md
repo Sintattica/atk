@@ -1,7 +1,16 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [11.8.1] - 2026-10-22
+### Security
+- SqlWhereclauseBlacklistChecker: rewritten to inspect the clause outside string literals with collapsed whitespace, blocking function calls, sub-selects, UNION, comments, stacked queries, hex literals and INTO OUTFILE regardless of whitespace/comment obfuscation (previously bypassable). atkprimkey is now also filtered. Mitigates SQL injection / data exfiltration via atkselector/atkfilter/atkprimkey. (Stricter primary-key validation of request selectors follows in 12.0.0.)
+- Search: unserialize saved search criteria with allowed_classes=false to prevent PHP object injection from a tampered saved-search row.
+- ActionHandler: generate the CSRF token with random_bytes() and compare it with hash_equals() (was md5(uniqid(rand())) and a loose ==).
+- CustomRecordList: neutralise CSV/Excel export cells against formula injection (prefix = + - @ / tab / CR with a quote) and double embedded double-quotes.
+- UrlAttribute: escape the href/text and block dangerous URL schemes (javascript:, data:, ...) in display, so a stored URL cannot run script.
+- MultiselectHandler: only redirect to same-origin/relative atktarget values, preventing an open redirect that leaked selected-record data to an external host.
+
 ### Fixed
+- DataGrid: fix PHP 8 TypeError from legacy implode() argument order that broke every record list of nodes with NF_MRA (also DeleteHandler multi-record delete and Query::buildCount distinct count).
 - Encryption: fix PHP 8 fatal in Base64Encryption (curly-brace string offset `$key{6}` replaced with `$key[6]`).
 
 
