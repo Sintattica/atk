@@ -58,6 +58,16 @@ class MultiselectHandler extends AdminHandler
 
         // loop recordset to parse atktargetvar
         $atktarget = Tools::atkurldecode($node->m_postvars['atktarget']);
+
+        // Only redirect to same-origin/relative targets: an external atktarget would
+        // leak the selected record data to another host (open redirect + exfiltration).
+        if ($atktarget === '' || preg_match('#^[\\\\/]{2}#', $atktarget) || strpos($atktarget, '\\') !== false || preg_match('#^[a-z][a-z0-9+.\-]*:#i', $atktarget)) {
+            Tools::atkwarning('MultiselectHandler: ignored non-local atktarget redirect');
+            $node->redirect(Config::getGlobal('dispatcher'));
+
+            return;
+        }
+
         $atktargetvar = $node->m_postvars['atktargetvar'];
         $atktargettpl = $node->m_postvars['atktargetvartpl'];
 
