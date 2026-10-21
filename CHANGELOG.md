@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security
+- UrlAttribute: escape the href/text and block dangerous URL schemes (javascript:, data:, ...) in display, so a stored URL cannot run script.
+- MultiselectHandler: only redirect to same-origin/relative atktarget values, preventing an open redirect that leaked selected-record data to an external host.
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*
