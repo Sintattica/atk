@@ -3815,7 +3815,15 @@ class Node
         }
 
         if (isset($vars['atkprimkey'])) {
-            $record['atkprimkey'] = $vars['atkprimkey'];
+            // atkprimkey comes from the request and is used as the WHERE clause when
+            // updating; only accept it when it is a primary-key based selector, so it
+            // cannot be turned into a mass-update (e.g. atkprimkey="1' OR '1'='1").
+            $atkPrimKey = (string)$vars['atkprimkey'];
+            if (!Config::getGlobal('atkselector_force_primarykey', true) || $this->isValidRequestSelector($atkPrimKey)) {
+                $record['atkprimkey'] = $atkPrimKey;
+            } else {
+                Tools::atkwarning('Rejected request atkprimkey that is not primary-key based: ' . $atkPrimKey);
+            }
         }
 
         return $record;

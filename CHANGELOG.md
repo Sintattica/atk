@@ -3,7 +3,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 ## [Unreleased]
 ### Security
 - SqlWhereclauseBlacklistChecker: rewritten to inspect the clause outside string literals with collapsed whitespace, blocking function calls, sub-selects, UNION, comments, stacked queries, hex literals and INTO OUTFILE regardless of whitespace/comment obfuscation (previously bypassable). Closes SQL injection / data exfiltration via atkselector/atkfilter.
-- Node/Handlers: request-supplied record selectors (atkselector) must address records by their primary key (new Node::isValidRequestSelector(), enforced in the view/edit/delete/copy/editcopy/xml/multiselect handlers), preventing filter-bypass such as deleting or exporting every row via atkselector=1=1. Can be disabled during migration with config atkselector_force_primarykey=false.
+- Node/Handlers: request-supplied record selectors (atkselector and atkprimkey) must address records by their primary key (new Node::isValidRequestSelector(), enforced in the view/edit/delete/copy/editcopy/xml/multiselect/multiupdate handlers and when atkprimkey enters a record), preventing filter-bypass such as deleting, exporting or updating every row via atkselector=1=1 or a tampered atkprimkey. atkprimkey is now also run through the boot blacklist. Can be disabled during migration with config atkselector_force_primarykey=false.
 
 
 ## [11.8.0] - 2026-08-26
