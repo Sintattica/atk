@@ -1,220 +1,340 @@
-# The ATK Book
-[TOC]
+# Tutorial: a conference app
 
-## What is it? 
-ATK is a PHP Framework intended to build business application. ATK has some very high level capabilities for CRUD building, validating inputs and controlling access.
-ATK lets yo build a table "admin", a paginated list of rows in a database table, this list comes paired with create, read, update and delete forms with allmost zero coding on your part.
-ATK is the right tool if you are writing an application where editing database tables is the main functionallity and design and presentation of individual pages are not a strong concern (Because ATK generates the pages for you automagically).
+[← Documentation index](../README.md)
+
+This tutorial builds a small application to manage **speakers**, **conferences** and **attendees**. It covers the everyday ATK workflow: a module, a few nodes, attributes, relations, the menu and translations.
+
+It assumes you have read [Installation](installation.md) and [Configuration basics](configuration-basics.md). The code targets ATK 11.x on PHP 8.3 with MySQL.
+
+## What ATK is
+
+ATK is a PHP framework for building business applications. It shines when editing database tables is the main job of the application. You describe a table as a **node** made of **attributes**, and ATK generates the paginated admin list together with the search, add, edit, view and delete pages. You write almost no HTML: ATK builds the pages for you, while hooks and overrides let you customise everything.
 
 ## A little history
-ATK names comes from "Achievo Tool Kit". Achievo was a project planning software written by a Ducth company called iBuildings. ATK was the framework developed to help create the application and was later released as a stand alone tool, hence it's name.
-iBuildings created and maintained ATK until 2006 when they stopped supporting it, from that time on, several forks has been made by people wanting to keep it alive.
-The guys at Sintattica.it talked to iBuildings founder, Ivo Jansch who handed them the ATK wiki and forum in order to keep those resources online.
-Sintatica made several improvements on ATK, moving the version from 6.7 (The last iBuildings release) to ATK 8. But ATK 8 was irremediably old. ATK was written initially with PHP4 and a lot of water has passed under the bridge since ATK first appearence, so the guys at Sinttatica.it decided to go a little further and rebuild ATK with modern PHP and modern tools, this new version is called ATK 9 and makes use of modern PHP object orientation constructs and tools. 
-This book will cover how to build applications with ATK 9, this book will not discuss differences with previous version at all, if you are an old ATK user keep in mind that while ATK 9 is "philosophically" similar to older versions, it is not retro compatible and if you want to port an old ATK pre 9 app you will find that some heavy lifting is in order, hopefully, you will also find that it worths the trouble too.
 
-## Let's dive in: Building our first app
+ATK stands for "Achievo ToolKit". Achievo was a project management application by the Dutch company iBuildings, and ATK was the framework behind it. ATK was later released as a stand-alone toolkit.
 
-Let build's a conference app our app will allow us to register the Speaker, the onference titles, and the conference attendants for each conference.
+- iBuildings maintained ATK until version 6.x.
+- Sintattica (sintattica.it) then took it over, with the blessing of ATK's founder Ivo Jansch, and continued it as ATK 8.
+- ATK 9 was a deep rewrite: Composer, PSR-4, modern PHP and Bootstrap.
+- The current line (10 and 11) adds the AdminLTE 3 interface, Smarty 5 and PHP 8.3.
 
-### Getting the necesary tools.
+ATK 9 and later are philosophically close to the old versions, but they are not backward compatible with them.
 
-We will be using a debian based Linux distro in this book.
-We will need to have **git** installed, in a debian based Linux distribution it can 
-be installed with:
+## 1. Create the project
 
-`sudo apt-get install git`
-
-
-Now we will need **composer.phar** Composer is a tool for dependency management in PHP. It allows you to declare the libraries your project depends on and it will manage (install/update) them for you.
-To grab a copy please execute:
-`
- php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php 
-`
-
-And then, run the setup script wth:
-`
-./composer-setup.php
-`
-
-This will leave a **composer.phar** file in your work directory, now you can get rid of the setup script with :
-
-`rm composer-setup.php`
-
-To simplify typing, rename **composer.phar** to just composer with:
-
-`mv composer.phar composer`
-
-And make sure it is executable with:
-
-`chmod +x composer`
-
-Finally, you should put composer in the path to be readily available when needed, please run:
-
-`sudo mv composer.phar /usr/local/bin/composer`
-
-Now we are gonna need to clone the Sintattica/atk-skeleton project. The skeleton project is an empty project to serve as boiler plate for your own project. In order to graba a copy you will need git:
-
-`
-git clone https://github.com/Sintattica/atk-skeleton.git conference
-`
-
-This should download a copy of the skeleton project in a directory called **conference**, the directory should have the following structure:
+Follow [Installation](installation.md) to create the project `conference/`. Use the `.env` and `config/atk.php` from [Configuration basics](configuration-basics.md). By the end you should have:
 
 ```
 conference/
-├── composer.json
-├── config
-│   ├── app.php
-│   └── atk.php
-├── README.md
-├── src
-│   ├── atk-skeleton.sql
-│   ├── languages
-│   │   ├── en.php
-│   │   └── it.php
-│   └── Modules
-│       ├── App
-│       │   ├── languages
-│       │   │   ├── en.php
-│       │   │   └── it.php
-│       │   ├── Module.php
-│       │   └── TestNode.php
-│       └── Auth
-│           ├── Groups.php
-│           ├── languages
-│           │   ├── en.php
-│           │   └── it.php
-│           ├── Module.php
-│           ├── UsersGroups.php
-│           └── Users.php
-├── var
-└── web
-    ├── bundles
-    │   └── atk -> ../../vendor/sintattica/atk/src/Resources/public
-    └── index.php
+├── .env
+├── composer.json             # with "App\\": "src/" autoloading
+├── config/atk.php
+├── src/
+├── var/atktmp/
+├── vendor/
+└── web/
+    ├── index.php
+    └── bundles/atk -> ../../vendor/sintattica/atk/src/Resources/public
 ```
 
-Let's take a quick look to some files and directories:
+That configuration uses `authentication => 'config'` with no users defined. The only account that can log in is the built-in **administrator** user, with the password whose hash is in `ADMIN_PASSWORD`. Generate a hash with:
 
-- composer.json: It is the composer dependencies file, any time you need a new software librry you should add its name here and run **composer update**.
-- The config direcory contains the configuration files.
-- The src directory: Our work will go mainly in this directory, this is the diretory where our application sources will reside, more specifically in the modules directory.
-- The var directory is for temporary files
-- The web directory is the directory that will need to be served by a web server (Apache, Nginx, Lighttpd or any other).
-
-Maybe you have observed that the web/bundles subdirectory is a symbolic link to an inexistent vendor directory, that directory is the directory that composer uses to store the downloaded dependencies and it will be created when composer updates the dependencies, let's do that with:
-
-`
-composer update
-`
-
-After composer finishes the updating you will have a vendor directory containing all the project dependencies.
-
-### Creating a Database
-
-As we've said, ATK is a business oriented framework and that implies that building CRUD interfaces for SQL Tables is a breeze, then, it is obvious that we are gonna need a Database, ATK has "drivers" for:
-
-- MySQL
-- PostGress
-
-In this text we will gonna use MySQL.
-Let's create a database called **conference** and grant all privileges to user **conference** with password **conference**.
-The above requirment can be achieved by excuting:
-
-`mysql -u  root -p `
-
-And once you are inside the mysql cli prompt issue the following commands:
-
-`create database conference;`
-
-And :
-
-`grant all on conference.* to conference@localhost identified by 'conference';`
-
-If you take a look around the skeleton project maybe you noticed a file called **atk-skeleton.sql** lying in the **src/** directory, this file contains the table definitions for ATK security system, your database should have these tables, we will create them with:
-
-`mysql -u root -p conference < src/atk-skeleton.sql `
-
-Now, we will need to configure our application.
-
-### Configuring our application
-
-If you take a look at the root directory of our project you will see a file called **.env.example**.  You can set ATK options and parameters by setting environmental variables, i.e. you can set the database user and password by setting two environment vars :
-
-- DB_USER
-- DB_PASSWORD
-
-In linux it can be achieved by issuing:
-
-`export DB_USER=root` and `export DB_PASSWORD=xxxx`
-
-But these setting will last until the job ends, so, how to avoid having to re-enter all the parameters in each session?. That is the job of the .env file. You can set your environment variables in the file and ATK will load all the env vars for you.
-The **.env.example**  file is to be copied to a customized **.env** with the proper values edited in.
-So copy it wit:
-
-`cp .env.example .env`
-
-Let's take a look at the contents of the file:
-
-```
-DB_NAME=atk-skeleton
-DEBUG_LEVEL=1
-
-# adminpwd
-ADMIN_PASSWORD="$2y$10$H17EjSHXZckjBoIWEd.SUe7pHcDqRH5RZhpu.VVv3H48M5Im7Z0Tq"
-
-```
-It's allready obvious that we need to change DB_NAME from atk-skeleton to our database wich is called 'conference', but  what about the funny line ADMIN_PASSWORD?
-The admin password is the administrative ATK password, when you login into an ATK application with the user **administrator**, all security is bypassed and you can do anything. It is the super user password.
-You have to set an administrative password in the **.env** file, but you have to store it encrypted, ATK provides a tool to encrypt the password, and you invoke it like this:
-
-` php ./vendor/sintattica/atk/src/Utils/generatehash.php demo`
-
-The clear password is **demo**, once you run the command you'll get:
-
-``` 
-clean: demo
-hash: $2y$10$HURwCzn3JJmSV.8UZEVW/eaO/RSlYKELKFacIwTyKSPssxp101XDC
+```bash
+php vendor/sintattica/atk/src/Utils/generatehash.php demo
 ```
 
-Let's edit our .env file, to look like this:
+## 2. Create the database
 
+```sql
+CREATE DATABASE conference CHARACTER SET utf8mb4;
+CREATE USER 'conference'@'localhost' IDENTIFIED BY 'conference';
+GRANT ALL ON conference.* TO 'conference'@'localhost';
+
+USE conference;
+
+CREATE TABLE speaker (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150),
+  bio TEXT
+);
+
+CREATE TABLE conference (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(200) NOT NULL,
+  starts_at DATETIME NOT NULL,
+  room VARCHAR(50),
+  speaker_id INT NOT NULL,
+  FOREIGN KEY (speaker_id) REFERENCES speaker(id)
+);
+
+CREATE TABLE attendee (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL,
+  conference_id INT NOT NULL,
+  FOREIGN KEY (conference_id) REFERENCES conference(id) ON DELETE CASCADE
+);
 ```
-DB_NAME=conference
-DB_USER=conference
-DB_PASSWORD=conference
-DEBUG_LEVEL=1
 
-# adminpwd
-ADMIN_PASSWORD="$2y$10$HURwCzn3JJmSV.8UZEVW/eaO/RSlYKELKFacIwTyKSPssxp101XDC"
+The primary keys use MySQL `AUTO_INCREMENT`. `MySqliQuery::addSequenceField()` detects this and uses the generated insert id. Without `AUTO_INCREMENT`, ATK would fall back to its own sequence table.
+
+## 3. Our first module
+
+Every node belongs to a **module**. A module is a `Core\Module` subclass listed in the `modules` config key. It has two methods:
+
+- `register()` runs on every request, before authentication. It tells ATK which nodes exist.
+- `boot()` runs only after the user has logged in. It is the place to add menu items.
+
+`src/Modules/Conference/Module.php`:
+
+```php
+<?php
+
+namespace App\Modules\Conference;
+
+class Module extends \Sintattica\Atk\Core\Module
+{
+    public static string $module = 'conference';
+
+    public function register()
+    {
+        $actions = ['admin', 'add', 'edit', 'view', 'delete'];
+
+        $this->registerNode('speaker', Speaker::class, $actions);
+        $this->registerNode('conference', Conference::class, $actions);
+        $this->registerNode('attendee', Attendee::class, $actions);
+    }
+
+    public function boot()
+    {
+        $this->addNodeToMenu('speakers', 'speaker', 'admin');
+        $this->addNodeToMenu('conferences', 'conference', 'admin');
+        $this->addNodeToMenu('attendees', 'attendee', 'admin');
+    }
+}
 ```
 
-Ok, our basic configuration is done, now we can have a little gratification, let's 
-take a look to our app, in order to do so, let's start our personal php web server with:
+Node URIs are `<module>.<node>`, for example `conference.speaker`. `registerNode()` adds the module prefix for you. Listing the actions also registers the node with the security system (see [Security](../guide/security.md)).
 
-`php -S 0.0.0.0:8000 -t web/`
+The config file references `App\Menu`. Create a minimal menu. Its `appendMenuItems()` can stay empty because the module adds its own items:
 
-Now open your browser and navigate to **http://localhost:8000** you should see a login form. You can now login with user **administrator** and password **demo**.
-Most probably, the login form is shown in the italian language (As the Sintattica.it are italians that should come as not surprising), let's tell our app to show up in good old english, edit de **config/atk.php** file and change the line:
+`src/Menu.php`:
 
-`'language' => 'it', `
+```php
+<?php
 
-to
+namespace App;
 
-`'language' => 'en',`
+use Sintattica\Atk\Core\Menu\MenuBase;
 
-Taking a look to **vendor/sintattica/atk/src/Resources/languages/** you should see:
-
+class Menu extends MenuBase
+{
+    public function appendMenuItems()
+    {
+    }
+}
 ```
-bp.php  cf.php  da.php  el.php  es.php  fr.php  id.php  ja.php  no.php  pt.php  sk.php  tr.php  zh.php  ca.php  cs.php  de.php  en.php  fi.php  hu.php  it.php  nl.php  pl.php  ru.php  sv.php  uk.php
+
+## 4. The first node: speakers
+
+A node maps one table. Attributes are added in the constructor. The attribute name is the column name.
+
+`src/Modules/Conference/Speaker.php`:
+
+```php
+<?php
+
+namespace App\Modules\Conference;
+
+use Sintattica\Atk\Attributes\Attribute as A;
+use Sintattica\Atk\Attributes\EmailAttribute;
+use Sintattica\Atk\Attributes\NumberAttribute;
+use Sintattica\Atk\Attributes\TextAttribute;
+use Sintattica\Atk\Core\Node;
+
+class Speaker extends Node
+{
+    public function __construct($nodeUri)
+    {
+        parent::__construct($nodeUri, Node::NF_ADD_LINK);
+
+        $this->setTable('speaker');
+        $this->setOrder('speaker.name');
+        $this->setDescriptorTemplate('[name]');
+
+        $this->add(new NumberAttribute('id', A::AF_AUTOKEY));
+        $this->add(new A('name', A::AF_OBLIGATORY | A::AF_SEARCHABLE));
+        $this->add(new EmailAttribute('email', A::AF_SEARCHABLE));
+        $this->add(new TextAttribute('bio', A::AF_HIDE_LIST));
+    }
+}
 ```
 
-This is the complete list of languages that atk is translated to, if your language isn't there, copy the **en.php** to your **xx.php**, translate it and add it to the project git.
+What each line does:
 
-### Our first Module
- *this is work in progress *
- 
-## Let's dive further: Adding a Relation				
+- `NF_ADD_LINK` shows an "add" link on the admin page instead of an embedded add form. All node flags are in the [Node flags reference](../reference/node-flags.md).
+- `setDescriptorTemplate('[name]')` defines how a speaker is shown when other nodes refer to it, for example in dropdowns.
+- `AF_AUTOKEY` is a hidden, auto-increment primary key.
+- `AF_SEARCHABLE` adds the column to the quick-search row of the list.
+- `AF_HIDE_LIST` keeps the long bio out of the list.
 
- *this is work in progress *
+Log in as `administrator` and open **Speakers** in the sidebar. You have a complete CRUD interface for the `speaker` table, with search, sorting, pagination and validation.
+
+## 5. Adding a relation
+
+A conference has one speaker: a **many-to-one** relation. A conference also has many attendees: a **one-to-many** relation.
+
+`src/Modules/Conference/Conference.php`:
+
+```php
+<?php
+
+namespace App\Modules\Conference;
+
+use Sintattica\Atk\Attributes\Attribute as A;
+use Sintattica\Atk\Attributes\DateTimeAttribute;
+use Sintattica\Atk\Attributes\ListAttribute;
+use Sintattica\Atk\Attributes\NumberAttribute;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Relations\ManyToOneRelation;
+use Sintattica\Atk\Relations\OneToManyRelation;
+
+class Conference extends Node
+{
+    public function __construct($nodeUri)
+    {
+        parent::__construct($nodeUri, Node::NF_ADD_LINK | Node::NF_EXPORT);
+
+        $this->setTable('conference');
+        $this->setOrder('conference.starts_at DESC');
+        $this->setDescriptorTemplate('[title]');
+
+        $this->add(new NumberAttribute('id', A::AF_AUTOKEY));
+        $this->add(new A('title', A::AF_OBLIGATORY | A::AF_SEARCHABLE));
+        $this->add(new DateTimeAttribute('starts_at', A::AF_OBLIGATORY));
+        $this->add(new ListAttribute('room', A::AF_SEARCHABLE, ['Room A', 'Room B', 'Main hall']));
+
+        // conference.speaker_id -> speaker.id
+        $this->add(new ManyToOneRelation('speaker_id', A::AF_OBLIGATORY | A::AF_SEARCHABLE, 'conference.speaker'));
+
+        // attendee.conference_id -> conference.id, shown on its own tab
+        $this->add(new OneToManyRelation('attendees', A::AF_HIDE_LIST, 'conference.attendee', 'conference_id'), 'attendees');
+    }
+}
+```
+
+`src/Modules/Conference/Attendee.php`:
+
+```php
+<?php
+
+namespace App\Modules\Conference;
+
+use Sintattica\Atk\Attributes\Attribute as A;
+use Sintattica\Atk\Attributes\EmailAttribute;
+use Sintattica\Atk\Attributes\NumberAttribute;
+use Sintattica\Atk\Core\Node;
+use Sintattica\Atk\Relations\ManyToOneRelation;
+
+class Attendee extends Node
+{
+    public function __construct($nodeUri)
+    {
+        parent::__construct($nodeUri, Node::NF_ADD_LINK | Node::NF_MRA);
+
+        $this->setTable('attendee');
+        $this->setDescriptorTemplate('[name] <[email]>');
+
+        $this->add(new NumberAttribute('id', A::AF_AUTOKEY));
+        $this->add(new A('name', A::AF_OBLIGATORY | A::AF_SEARCHABLE));
+        $this->add(new EmailAttribute('email', A::AF_OBLIGATORY | A::AF_SEARCHABLE));
+        $this->add(new ManyToOneRelation('conference_id', A::AF_OBLIGATORY | A::AF_SEARCHABLE, 'conference.conference'));
+    }
+}
+```
+
+What you get:
+
+- **The many-to-one relation.** `ManyToOneRelation('speaker_id', ..., 'conference.speaker')` stores the speaker's primary key in `speaker_id`. It renders as a Select2 dropdown, labelled with the speaker's descriptor. In lists it shows the speaker's name.
+- **The one-to-many relation.** `OneToManyRelation('attendees', ..., 'conference.attendee', 'conference_id')` is not a column. The fourth argument names the many-to-one attribute in the destination node that points back to the conference. When you edit a conference, an **Attendees** tab shows its attendees as an inline grid, with add, edit and delete. The second argument of `add()` (`'attendees'`) puts the attribute on that tab.
+- **Multi-record actions.** `NF_MRA` on `Attendee` adds checkboxes to the list, so you can delete several attendees at once.
+- **CSV export.** `NF_EXPORT` on `Conference` adds an export action.
+
+More relation types (one-to-one and the many-to-many family) are described in [Relations](../guide/relations.md).
+
+## 6. Business rules with hooks
+
+Nodes expose hooks you can override. Two examples follow: forbid conferences in the past, and normalise e-mail addresses.
+
+**Per-attribute validation.** When a node has a method `<attribute>_validate(array &$record, string $mode)`, `Core\NodeValidator` calls it *instead of* the attribute's own `validate()`. It is only called when the value is not empty. Register errors with `Tools::triggerError()`, passing a language key as the error. Form values of date/time attributes are arrays (`year`, `month`, `day`, `hours`, `minutes`, `seconds`):
+
+```php
+use Sintattica\Atk\Core\Tools;
+
+// in Conference
+public function starts_at_validate(array &$record, string $mode): void
+{
+    $v = $record['starts_at'];
+    $timestamp = mktime((int)$v['hours'], (int)$v['minutes'], 0, (int)$v['month'], (int)$v['day'], (int)$v['year']);
+    if ($timestamp < time()) {
+        Tools::triggerError($record, 'starts_at', 'error_date_in_the_past');
+    }
+}
+```
+
+**Triggers.** Triggers run around the database operations. They must return `true` for the operation to continue. The parent `Node::preAdd()` does real work (it stores nested attribute values), so call it:
+
+```php
+// in Attendee
+public function preAdd(array &$record, string $mode = 'add'): bool
+{
+    $record['email'] = strtolower(trim($record['email']));
+
+    return parent::preAdd($record, $mode);
+}
+```
+
+The overriding methods must keep the return types declared by `Core\Node` (`: bool` for triggers), or PHP refuses to load the class.
+
+The full list of triggers (`preAdd`, `postAdd`, `preUpdate`, `postUpdate`, `preDelete`, `postDelete`, …) and naming-convention overrides is in [Node hooks and overrides](../guide/node-hooks.md).
+
+## 7. Translations
+
+Labels default to a humanised attribute name: `starts_at` is shown as "Starts at". To set your own labels, add a language file to the module.
+
+`src/Modules/Conference/languages/en.php`:
+
+```php
+<?php
+
+return [
+    'speakers' => 'Speakers',
+    'conferences' => 'Conferences',
+    'attendees' => 'Attendees',
+    'speaker_id' => 'Speaker',
+    'starts_at' => 'Starts',
+    'error_date_in_the_past' => 'The conference cannot start in the past',
+];
+```
+
+Add an `it.php` (or any other language) with the same keys, and list the language in `supported_languages`. ATK ships its own translations for 25 languages in `vendor/sintattica/atk/src/Resources/languages/`.
+
+The lookup order is described in [Internationalisation](../guide/i18n.md). For example, `conference_starts_at` overrides `starts_at` for the `conference` node only.
+
+## 8. Real users and permissions
+
+The administrator bypasses every check. For real users:
+
+- switch to `authentication => 'db'`;
+- choose a `securityscheme` (`level` or `group`);
+- point the `auth_*` keys at your users, groups and access-rights tables.
+
+The [atk-skeleton](https://github.com/Sintattica/atk-skeleton) `Auth` module is a complete example. See [Security](../guide/security.md).
+
+## Where to go next
+
+- [Core concepts](../guide/concepts.md): the mental model behind what you just built.
+- [Nodes](../guide/nodes.md) and [Attributes](../guide/attributes.md): everything a node and an attribute can do.
+- [Lists, export and import](../guide/lists-export-import.md).
