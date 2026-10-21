@@ -22,7 +22,7 @@ class Base64Encryption extends Encryption
     public function encrypt($input, $key)
     {
         $key = md5($key);
-        $number = ord($key{6}) % 5 + 1;
+        $number = ord($key[6]) % 5 + 1;
 
         $output = $input;
 
@@ -44,7 +44,7 @@ class Base64Encryption extends Encryption
     public function decrypt($input, $key)
     {
         $key = md5($key);
-        $number = ord($key{6}) % 5 + 1;
+        $number = ord($key[6]) % 5 + 1;
 
         $output = $input;
 
