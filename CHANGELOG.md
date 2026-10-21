@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security
+- ActionHandler: generate the CSRF token with random_bytes() and compare it with hash_equals() (was md5(uniqid(rand())) and a loose ==).
+- CustomRecordList: neutralise CSV/Excel export cells against formula injection (prefix = + - @ / tab / CR with a quote) and double embedded double-quotes.
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*
