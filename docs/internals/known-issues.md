@@ -2,7 +2,7 @@
 
 [← Documentation index](../README.md)
 
-This page lists defects on `main` that change how documented features behave. Each entry was verified by reading the source. Other pages link to the anchors below, so keep the headings stable. When an issue is fixed, remove its entry and update the pages that link to it.
+This page lists defects on `main` that change how documented features behave. Each entry was verified by reading the source. Entries marked *Reproduced* were also run on PHP 8.3. Other pages link to the anchors below, so keep the headings stable. When an issue is fixed, remove its entry and update the pages that link to it.
 
 ### Environment variables from `.env` are not visible to `Config::env()`
 
@@ -13,6 +13,8 @@ This page lists defects on `main` that change how documented features behave. Ea
 Real process environment variables, for example those set by Docker `environment:` or PHP-FPM `env[...]`, are still visible.
 
 `Config::env()` also returns the raw `false` when the variable is missing and the default is falsy. For example, `Config::env('DEBUG_LEVEL', 0)` returns `false`, not `0`.
+
+*Reproduced:* after `createImmutable()->load()`, `getenv('DB_HOST')` is `false` while `$_ENV['DB_HOST']` holds the value. `Config::env('DEBUG_LEVEL', 0)` returns `false`.
 
 **Workaround:** in your application `config/atk.php`, read `$_ENV['DB_HOST']` (or `$_SERVER[...]`) and set the config keys explicitly. See [Configuration basics](../getting-started/configuration-basics.md).
 
@@ -74,12 +76,12 @@ The `password_min*` keys in the default config are not read anywhere. Pass restr
 
 ### Legacy `implode()` argument order
 
-Two calls use the pre-PHP-8 argument order `implode($array, $glue)`, which throws a `TypeError` on PHP 8 when reached:
+Two calls use the pre-PHP-8 argument order `implode($array, $glue)`, which throws a `TypeError` on PHP 8:
 
-- `Handlers\DeleteHandler::_checkAllowed()`, when `atkselector` is an array (deleting several records at once);
-- `DataGrid\DataGridList`, in the script that builds the multi-record-action checkboxes.
+- **`DataGrid\DataGridList`**, in the script that builds the multi-record-action checkboxes. It runs for every row that has MRA actions, in the default `MRA_MULTI_SELECT` mode. As a result, the admin list of **any node with `NF_MRA`** fails with `implode(): Argument #2 ($array) must be of type ?array, string given`. So does every page that embeds such a list, such as the edit page of a master record whose `OneToManyRelation` points to an `NF_MRA` node. *Reproduced* on PHP 8.3 with the [tutorial](../getting-started/tutorial.md) app.
+- **`Handlers\DeleteHandler::_checkAllowed()`**, when `atkselector` is an array (deleting several records at once).
 
-> **To verify:** which UI paths reach these lines in practice. The `DataGridList` call sits in a selection-mode branch that may not be the default.
+**Workaround:** do not set `NF_MRA` until the calls are fixed. The fix is `implode('","', $list['rows'][$i]['mra'])` and `implode(') OR (', $atkselector)`.
 
 ### `DataNode` cannot back an admin page
 

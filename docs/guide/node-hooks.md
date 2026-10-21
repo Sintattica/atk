@@ -99,7 +99,11 @@ public function validate(array &$record, string $mode, array $ignoreList = []): 
 }
 ```
 
-`Tools::triggerError(&$rec, $attrib, $err, $msg = '', $tab = '', $label = '', $module = 'atk')` translates `$err` with `atktext()` when `$msg` is empty. Put the key in your module's language file. `Tools::atkTriggerError(&$record, $attribute, $error, $message = '')` does the same but takes the attribute **object** (or an array of them), so it can fill in the label and tab.
+`Tools::triggerError(&$rec, $attrib, $err, $msg = '', $tab = '', $label = '', $module = 'atk')` translates `$err` with `atktext()` when `$msg` is empty, but in the `atk` module by default. A key that exists only in your module's language file is therefore not found, and you get the humanised key ("Error end before start") instead. You have three options:
+
+- pass the module as the last argument;
+- pass a ready-made `$msg`, e.g. `$this->text('error_end_before_start')`;
+- use `Tools::atkTriggerError(&$record, $attribute, $error, $message = '')`. It takes the attribute **object** (or an array of them), translates through the attribute (so module and node keys are found), and fills in the label and tab.
 
 When the record has errors, the handler rolls back and shows the form again with the messages.
 

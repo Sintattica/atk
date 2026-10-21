@@ -85,7 +85,7 @@ class Employee extends Node
     }
 
     // Override a step of the default edit handler
-    public function editPage(ActionHandler $handler, $record)
+    public function editPage(EditHandler $handler, array $record): string
     {
         return '<div class="alert alert-info">Read the policy first.</div>'
             .$handler->editPage($record);

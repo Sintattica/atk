@@ -242,10 +242,10 @@ class Attendee extends Node
 {
     public function __construct($nodeUri)
     {
-        parent::__construct($nodeUri, Node::NF_ADD_LINK | Node::NF_MRA);
+        parent::__construct($nodeUri, Node::NF_ADD_LINK);
 
         $this->setTable('attendee');
-        $this->setDescriptorTemplate('[name] <[email]>');
+        $this->setDescriptorTemplate('[name] ([email])');
 
         $this->add(new NumberAttribute('id', A::AF_AUTOKEY));
         $this->add(new A('name', A::AF_OBLIGATORY | A::AF_SEARCHABLE));
@@ -259,7 +259,7 @@ What you get:
 
 - **The many-to-one relation.** `ManyToOneRelation('speaker_id', ..., 'conference.speaker')` stores the speaker's primary key in `speaker_id`. It renders as a Select2 dropdown, labelled with the speaker's descriptor. In lists it shows the speaker's name.
 - **The one-to-many relation.** `OneToManyRelation('attendees', ..., 'conference.attendee', 'conference_id')` is not a column. The fourth argument names the many-to-one attribute in the destination node that points back to the conference. When you edit a conference, an **Attendees** tab shows its attendees as an inline grid, with add, edit and delete. The second argument of `add()` (`'attendees'`) puts the attribute on that tab.
-- **Multi-record actions.** `NF_MRA` on `Attendee` adds checkboxes to the list, so you can delete several attendees at once.
+- **Multi-record actions.** `Node::NF_MRA` would normally add checkboxes to the attendee list, so you could delete several attendees at once. Do not enable it yet: on PHP 8 every list of an `NF_MRA` node currently fails with a `TypeError`, including the inline grid of the one-to-many relation. See [Known issues](../internals/known-issues.md#legacy-implode-argument-order).
 - **CSV export.** `NF_EXPORT` on `Conference` adds an export action.
 
 More relation types (one-to-one and the many-to-many family) are described in [Relations](../guide/relations.md).
@@ -279,7 +279,7 @@ public function starts_at_validate(array &$record, string $mode): void
     $v = $record['starts_at'];
     $timestamp = mktime((int)$v['hours'], (int)$v['minutes'], 0, (int)$v['month'], (int)$v['day'], (int)$v['year']);
     if ($timestamp < time()) {
-        Tools::triggerError($record, 'starts_at', 'error_date_in_the_past');
+        Tools::atkTriggerError($record, $this->getAttribute('starts_at'), 'error_date_in_the_past');
     }
 }
 ```

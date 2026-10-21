@@ -65,10 +65,12 @@ To try a change in a real application, point the application's `composer.json` a
 
 ```json
 "repositories": [{ "type": "path", "url": "../atk", "options": { "symlink": true } }],
-"require": { "sintattica/atk": "dev-main" }
+"require": { "sintattica/atk": "*@dev" }
 ```
 
-> **To verify:** that `dev-main` resolves for a path repository on your branch. Otherwise use `"version": "11.99.0"` in the repository options, or require your branch name with a `dev-` prefix.
+`*@dev` accepts whatever version Composer infers from the working copy. The tutorial app used to test these docs was installed this way. With `"symlink": true`, your edits to `src/` take effect immediately. Inside a container, the path must be valid there too: mount the working copy and use the in-container path.
+
+The tutorial app also gives a quick end-to-end check without a web server stack. With the repo's PHP image and a MySQL container on the same Docker network, run `php -S 0.0.0.0:8000 -t web/` inside the PHP container.
 
 ## Tests
 
