@@ -7,6 +7,16 @@ Where other application frameworks mainly provide a large set of utility classes
 framework that requires only small amounts of code to get usable applications, while maintaining full flexibility.
 
 
+## Documentation
+
+The technical documentation for the `main` branch is in [`docs/`](docs/README.md):
+
+- [Installation](docs/getting-started/installation.md) and [Tutorial](docs/getting-started/tutorial.md)
+- [Developer guide](docs/README.md#developer-guide): nodes, attributes, relations, security, …
+- [Reference](docs/README.md#reference): configuration keys and flags
+- [Internals](docs/README.md#internals) and [Known issues](docs/internals/known-issues.md)
+
+
 ## Branches
 
 ATK was originally developed by Ivo Jansch and iBuildings back in 2000. 
@@ -40,7 +50,7 @@ The third objective is to create a skeleton project and some documentation so ev
 
 ### 9.1
 Version like 9.0, but with jQuery only
-Currently there's no documentation for v9. Maybe we'll manage to write some docs in the future. If you have one, please tell us.
+The documentation in [`docs/`](docs/README.md) targets `main` (11.x). Most concepts also apply to v9, but APIs and requirements differ.
 
 
 ### 9.0
