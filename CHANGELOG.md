@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security (BREAKING)
+- Request-supplied record selectors (atkselector and atkprimkey) must address records by their primary key (new Node::isValidRequestSelector(), enforced in the view/edit/delete/copy/editcopy/xml/multiselect/multiupdate handlers and when atkprimkey enters a record). Prevents filter-bypass such as deleting, exporting or updating every row via atkselector=1=1 or a tampered atkprimkey. BREAKING for apps that pass custom (non primary-key) WHERE selectors in the request; set config atkselector_force_primarykey=false during migration. Pairs with the hardened blacklist checker (separate change).
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*

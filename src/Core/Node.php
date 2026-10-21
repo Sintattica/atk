@@ -1453,6 +1453,95 @@ class Node
     }
 
     /**
+     * Is a selector that came from the request safe to use as a WHERE clause?
+     *
+     * A request-sourced atkselector legitimately only ever addresses records by
+     * their primary key (that is what primaryKey() generates, and what the add/
+     * edit/view/delete links carry). This method accepts exactly that shape — a
+     * conjunction/disjunction of `[table.]<pkfield> = '<value>'` (or
+     * `<pkfield> IN ('<v>', ...)`) terms, with optional grouping parentheses —
+     * and rejects everything else (bare booleans like 1=1, non-key columns,
+     * functions, sub-selects, ...). String values are masked before parsing, so
+     * their content cannot affect the decision. It is a structural allow-list on
+     * top of SqlWhereclauseBlacklistChecker, and guards against filter-bypass
+     * (e.g. deleting every row via atkselector=1=1).
+     *
+     * @param string $selector the raw selector from the request
+     *
+     * @return bool
+     */
+    public function isValidRequestSelector(string $selector): bool
+    {
+        $selector = trim($selector);
+        if ($selector === '') {
+            return true;
+        }
+
+        if (Tools::count($this->m_primaryKey) === 0) {
+            return false;
+        }
+
+        // Mask quoted string literals to a single placeholder so their content
+        // cannot influence the structural match (handles \ and '' escapes).
+        $masked = '';
+        $len = strlen($selector);
+        $quote = null;
+        for ($i = 0; $i < $len; ++$i) {
+            $ch = $selector[$i];
+            if ($quote === null) {
+                if ($ch === "'" || $ch === '"') {
+                    $quote = $ch;
+                    $masked .= '@V@';
+                } else {
+                    $masked .= $ch;
+                }
+                continue;
+            }
+            if ($ch === '\\') {
+                ++$i;
+                continue;
+            }
+            if ($ch === $quote) {
+                if ($i + 1 < $len && $selector[$i + 1] === $quote) {
+                    ++$i;
+                    continue;
+                }
+                $quote = null;
+            }
+        }
+        if ($quote !== null) {
+            return false; // unterminated string
+        }
+
+        // Normalise: drop grouping parentheses and collapse whitespace.
+        $masked = str_replace(['(', ')'], ' ', $masked);
+        $masked = trim(preg_replace('/\s+/', ' ', $masked));
+
+        // Split into terms on AND / OR.
+        $terms = preg_split('/\s+(?:and|or)\s+/i', $masked);
+        $pk = array_map('strtolower', $this->m_primaryKey);
+        $table = strtolower($this->m_table);
+
+        foreach ($terms as $term) {
+            $term = trim($term);
+            if ($term === '') {
+                return false;
+            }
+            if (!preg_match('/^(?:([a-z0-9_]+)\.)?([a-z0-9_]+)\s*(?:=\s*@V@|in\s+@V@(?:\s*,\s*@V@)*)$/i', $term, $m)) {
+                return false;
+            }
+            if ($m[1] !== '' && strtolower($m[1]) !== $table) {
+                return false;
+            }
+            if (!in_array(strtolower($m[2]), $pk, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Retrieve the name of the primary key attribute.
      *
      * Note: If a node has a primary key that consists of multiple attributes,
@@ -3726,7 +3815,15 @@ class Node
         }
 
         if (isset($vars['atkprimkey'])) {
-            $record['atkprimkey'] = $vars['atkprimkey'];
+            // atkprimkey comes from the request and is used as the WHERE clause when
+            // updating; only accept it when it is a primary-key based selector, so it
+            // cannot be turned into a mass-update (e.g. atkprimkey="1' OR '1'='1").
+            $atkPrimKey = (string)$vars['atkprimkey'];
+            if (!Config::getGlobal('atkselector_force_primarykey', true) || $this->isValidRequestSelector($atkPrimKey)) {
+                $record['atkprimkey'] = $atkPrimKey;
+            } else {
+                Tools::atkwarning('Rejected request atkprimkey that is not primary-key based: ' . $atkPrimKey);
+            }
         }
 
         return $record;
