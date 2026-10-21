@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security
+- FileAttribute: reject uploads with executable/active extensions (php, phtml, svg, html, …) by default, even when no allowed-types list is set, and when any extension segment matches (e.g. shell.php.jpg). Only newly uploaded files are checked, so editing existing records is unaffected. Opt out per attribute with setForbiddenFileTypes([]).
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*

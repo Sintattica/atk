@@ -92,6 +92,23 @@ class FileAttribute extends Attribute
      */
     public $m_allowedFileTypes = [];
 
+    /*
+     * File extensions that are never accepted, regardless of m_allowedFileTypes.
+     * This is a security floor against uploading executable/active content into
+     * a web-served directory. Every extension segment of the uploaded filename is
+     * checked (so "shell.php.jpg" is rejected too). Use setForbiddenFileTypes()
+     * to replace the list, or setForbiddenFileTypes([]) to opt out entirely.
+     *
+     * @var array
+     */
+    public $m_forbiddenFileTypes = [
+        'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'pht', 'phar', 'phps',
+        'cgi', 'pl', 'py', 'rb', 'sh', 'bash',
+        'htaccess', 'htpasswd',
+        'svg', 'svgz', 'xml', 'xhtml', 'html', 'htm', 'shtml',
+        'jsp', 'asp', 'aspx', 'exe',
+    ];
+
     private $checkUnique = true;
     private $fileMaxSize;
     private $fileMaxLength;
@@ -572,6 +589,17 @@ class FileAttribute extends Attribute
      */
     public function isAllowedFileType(array &$rec): bool
     {
+        // Security floor: reject forbidden (executable/active) extensions on a newly
+        // uploaded file, regardless of the allow-list and even when none is set.
+        // Only newly uploaded files are checked (tmpfile outside the storage dir), so
+        // editing an existing record whose stored file predates this rule still works.
+        $tmpfile = $rec[$this->fieldName()]['tmpfile'] ?? '';
+        $isNewUpload = is_string($tmpfile) && $tmpfile !== '' && strpos($tmpfile, $this->m_dir) !== 0;
+        if ($isNewUpload && @empty($rec[$this->fieldName()]['postdel']) && $this->hasForbiddenExtension($rec)) {
+            $rec[$this->fieldName()]['error'] = UPLOAD_ERR_EXTENSION;
+            return false;
+        }
+
         if (Tools::count($this->m_allowedFileTypes) == 0) {
             return true;
         }
@@ -601,6 +629,67 @@ class FileAttribute extends Attribute
         }
 
         return true;
+    }
+
+    /**
+     * Does the uploaded/selected file carry a forbidden extension?
+     *
+     * Every extension segment is checked (case-insensitive), so "shell.php.jpg"
+     * is rejected as well. Returns false when the forbidden list is empty.
+     *
+     * @param array $rec
+     *
+     * @return bool
+     */
+    protected function hasForbiddenExtension(array &$rec): bool
+    {
+        if (Tools::count($this->m_forbiddenFileTypes) == 0) {
+            return false;
+        }
+
+        $name = $rec[$this->fieldName()]['orgfilename'] ?? ($rec[$this->fieldName()]['filename'] ?? '');
+        if (!is_string($name) || $name === '') {
+            return false;
+        }
+
+        $forbidden = array_map('strtolower', $this->m_forbiddenFileTypes);
+        $segments = explode('.', strtolower(basename($name)));
+        array_shift($segments); // drop the base name, keep extension segments only
+
+        foreach ($segments as $segment) {
+            if (in_array($segment, $forbidden, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Replace the list of forbidden file extensions.
+     *
+     * Pass an empty array to disable the forbidden-extension check entirely
+     * (not recommended when the upload directory is served by the web server).
+     *
+     * @param array $types extensions without the leading dot, e.g. ['php', 'svg']
+     * @return FileAttribute
+     */
+    public function setForbiddenFileTypes(array $types): self
+    {
+        $this->m_forbiddenFileTypes = $types;
+        return $this;
+    }
+
+    /**
+     * Add one or more extensions to the forbidden list.
+     *
+     * @param string|array $types extension(s) without the leading dot
+     * @return FileAttribute
+     */
+    public function addForbiddenFileType($types): self
+    {
+        $this->m_forbiddenFileTypes = array_merge($this->m_forbiddenFileTypes, (array)$types);
+        return $this;
     }
 
     /**
