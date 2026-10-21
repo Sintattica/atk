@@ -482,8 +482,8 @@ class ActionHandler
             return $token;
         }
 
-        // generate and store token in sesion stack
-        $token = md5(uniqid(rand(), true));
+        // generate and store token in sesion stack (cryptographically secure)
+        $token = bin2hex(random_bytes(32));
         SessionManager::getInstance()->globalStackVar('ATK_CSRF_TOKEN', $token);
 
         return $token;
@@ -499,6 +499,6 @@ class ActionHandler
      */
     protected function isValidCSRFToken($token)
     {
-        return $this->getCSRFToken() == $token;
+        return is_string($token) && hash_equals($this->getCSRFToken(), $token);
     }
 }

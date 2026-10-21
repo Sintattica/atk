@@ -88,7 +88,11 @@ class CustomRecordList extends RecordList
                 $p_attrib = $this->m_node->m_attribList[$attribname];
                 $musthide = (is_array($suppressList) && Tools::count($suppressList) > 0 && in_array($attribname, $suppressList));
                 if (!$this->isHidden($p_attrib) && !$musthide) {
-                    $output .= $sof . $this->eolReplace($p_attrib->label(), $rfeplace) . $eof . $fsep;
+                    $label = $this->eolReplace($p_attrib->label(), $rfeplace);
+                    if ($type != '0') {
+                        $label = $this->sanitizeCsvValue($label);
+                    }
+                    $output .= $sof . $label . $eof . $fsep;
                 }
             }
 
@@ -121,6 +125,9 @@ class CustomRecordList extends RecordList
                     }
                     if (Tools::atkGetCharset() != '' && $decode) {
                         $value = Tools::atk_html_entity_decode(htmlentities($value, ENT_NOQUOTES), ENT_NOQUOTES);
+                    }
+                    if ($type != '0') {
+                        $value = $this->sanitizeCsvValue($value);
                     }
                     $output .= $sof . ($value == '' ? $empty : $value) . $eof . $fsep;
                 }
@@ -208,5 +215,28 @@ class CustomRecordList extends RecordList
         }
 
         return $string;
+    }
+
+    /**
+     * Neutralise a value for CSV/Excel output.
+     *
+     * Doubles the double-quote (so an embedded quote cannot break out of the
+     * enclosure) and, when the value starts with a character a spreadsheet would
+     * treat as the start of a formula (= + - @ and tab/CR), prefixes it with a
+     * single quote so it is rendered as text (CSV formula-injection guard).
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function sanitizeCsvValue(string $value): string
+    {
+        $value = str_replace('"', '""', $value);
+
+        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            $value = "'" . $value;
+        }
+
+        return $value;
     }
 }
