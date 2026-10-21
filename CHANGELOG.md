@@ -1,5 +1,12 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- DataGrid: fixed PHP 8 TypeError in implode() that broke every record list of nodes with NF_MRA
+- Handler: fixed PHP 8 TypeError in implode() when deleting multiple records at once
+- Db: fixed implode() argument order in Query::buildCount() distinct count
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*
