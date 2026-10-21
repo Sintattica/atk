@@ -1942,6 +1942,47 @@ class Tools
         }
     }
 
+    /**
+     * Is the given URL a safe, same-origin, relative redirect target?
+     *
+     * Used to guard redirects built from request input against open-redirect
+     * attacks. Rejects absolute URLs (any scheme such as http:, https:,
+     * javascript:, data:), protocol-relative URLs (//host, /\host) and
+     * backslash tricks; accepts relative paths such as "index.php?...".
+     *
+     * @param string $url
+     *
+     * @return bool
+     */
+    public static function isLocalUrl($url): bool
+    {
+        if (!is_string($url)) {
+            return false;
+        }
+
+        $url = trim($url);
+        if ($url === '') {
+            return false;
+        }
+
+        // protocol-relative (//host) or mixed-slash (/\host) tricks
+        if (preg_match('#^[\\\\/]{2}#', $url)) {
+            return false;
+        }
+
+        // any backslash is treated as suspicious (browsers normalise \ to /)
+        if (strpos($url, '\\') !== false) {
+            return false;
+        }
+
+        // absolute URL with a scheme (http:, https:, javascript:, data:, mailto:, ...)
+        if (preg_match('#^[a-z][a-z0-9+.\-]*:#i', $url)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function redirect($location, $exit = true)
     {
         // The actual redirect.

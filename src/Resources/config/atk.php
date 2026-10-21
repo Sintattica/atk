@@ -672,6 +672,17 @@ return [
     'cookie_path' => '/',
 
     /*
+     * Session cookie hardening.
+     * - session_cookie_httponly: make the session cookie inaccessible to JavaScript (default true).
+     * - session_cookie_samesite: SameSite attribute, 'Lax' | 'Strict' | 'None' (default 'Lax').
+     * - session_cookie_secure: send the cookie only over HTTPS. null = auto-detect the request
+     *   scheme; set true to force (recommended behind a TLS-terminating proxy), false to disable.
+     */
+    'session_cookie_httponly' => true,
+    'session_cookie_samesite' => 'Lax',
+    'session_cookie_secure' => null,
+
+    /*
      * The session name. If this configuration option is not set the
      * identifier option is used instead.
      *
