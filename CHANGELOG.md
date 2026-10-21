@@ -1,5 +1,10 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security
+- SqlWhereclauseBlacklistChecker: rewritten to inspect the clause outside string literals with collapsed whitespace, blocking function calls, sub-selects, UNION, comments, stacked queries, hex literals and INTO OUTFILE regardless of whitespace/comment obfuscation (previously bypassable). atkprimkey is now also filtered. Mitigates SQL injection / data exfiltration via atkselector/atkfilter/atkprimkey. (A stricter primary-key validation of request selectors follows separately.)
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*
