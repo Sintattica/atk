@@ -593,7 +593,7 @@ class Query
     {
         if (($distinct || $this->m_distinct) && Tools::count($this->m_fields) > 0) {
             $result = 'SELECT COUNT(DISTINCT ';
-            $result .= implode($this->quoteFields($this->m_fields), ', ');
+            $result .= implode(', ', $this->quoteFields($this->m_fields));
             $result .= ') as count FROM ';
         } else {
             $result = 'SELECT COUNT(*) AS count FROM ';

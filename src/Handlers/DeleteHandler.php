@@ -72,7 +72,7 @@ class DeleteHandler extends ActionHandler
     {
         $atkselector = $this->m_postvars[Node::PARAM_ATKSELECTOR];
         if (is_array($atkselector)) {
-            $atkselector_str = '(('.implode($atkselector, ') OR (').'))';
+            $atkselector_str = '(('.implode(') OR (', $atkselector).'))';
         } else {
             $atkselector_str = $atkselector;
         }
