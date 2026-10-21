@@ -1,5 +1,11 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security
+- SqlWhereclauseBlacklistChecker: rewritten to inspect the clause outside string literals with collapsed whitespace, blocking function calls, sub-selects, UNION, comments, stacked queries, hex literals and INTO OUTFILE regardless of whitespace/comment obfuscation (previously bypassable). Closes SQL injection / data exfiltration via atkselector/atkfilter.
+- Node/Handlers: request-supplied record selectors (atkselector) must address records by their primary key (new Node::isValidRequestSelector(), enforced in the view/edit/delete/copy/editcopy/xml/multiselect handlers), preventing filter-bypass such as deleting or exporting every row via atkselector=1=1. Can be disabled during migration with config atkselector_force_primarykey=false.
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*

@@ -3,6 +3,7 @@
 namespace Sintattica\Atk\Handlers;
 
 use Exception;
+use Sintattica\Atk\Core\Config;
 use Sintattica\Atk\Core\Node;
 use Sintattica\Atk\Core\Tools;
 use Sintattica\Atk\Session\SessionManager;
@@ -422,6 +423,36 @@ class ActionHandler
     {
         $page = $this->m_node->getPage();
         $page->addContent($this->_getAccessDeniedPage());
+    }
+
+    /**
+     * Is a selector coming from the request allowed to be used by this handler?
+     *
+     * When the config flag `atkselector_force_primarykey` is on (the default),
+     * request-sourced selectors must address records by their primary key (see
+     * Node::isValidRequestSelector()). This blocks filter-bypass selectors such
+     * as "1=1" that would otherwise match/affect every row. Internal, server-built
+     * selectors never flow through here, so they are unaffected.
+     *
+     * @param mixed $selector the raw selector (string, or an array of selectors)
+     *
+     * @return bool
+     */
+    protected function isRequestSelectorAllowed($selector): bool
+    {
+        if (!Config::getGlobal('atkselector_force_primarykey', true)) {
+            return true;
+        }
+
+        foreach ((array)$selector as $one) {
+            if (!$this->m_node->isValidRequestSelector((string)$one)) {
+                Tools::atkwarning('Rejected request selector that is not primary-key based: ' . $one);
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

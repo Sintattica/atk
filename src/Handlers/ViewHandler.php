@@ -53,6 +53,10 @@ class ViewHandler extends ViewEditBase
      */
     public function getRecordFromDb()
     {
+        if (!$this->isRequestSelectorAllowed($this->m_postvars[Node::PARAM_ATKSELECTOR] ?? '')) {
+            return null;
+        }
+
         return $this->m_node->select($this->m_postvars[Node::PARAM_ATKSELECTOR])
             ->excludes($this->m_node->m_viewExcludes)
             ->mode('view')
