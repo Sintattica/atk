@@ -1,5 +1,12 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security
+- SessionManager: regenerate the session id on login to prevent session fixation.
+- SessionManager: set HttpOnly, SameSite (default Lax) and Secure (auto-detected over HTTPS) on the session cookie. Configurable via session_cookie_httponly / session_cookie_samesite / session_cookie_secure.
+- SessionManager: reject non-local atkescape / atknested redirect targets (open-redirect guard); added Tools::isLocalUrl().
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*

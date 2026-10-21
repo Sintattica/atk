@@ -204,6 +204,11 @@ class SecurityManager
         $this->postLogin($this->m_user);
 
         if (empty($session['login'])) {
+            // Fresh authentication (not a session restore): regenerate the session id
+            // to prevent session fixation. Keeps the session data, drops the old id.
+            if (!$isCli && session_status() === PHP_SESSION_ACTIVE) {
+                session_regenerate_id(true);
+            }
             $session['login'] = 1;
             $this->notifyListeners('postLogin', $this->m_user['name']);
         }
