@@ -1,5 +1,14 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Security
+- Relations: HTML-escape the related-record descriptor in ManyToOne/ManyToMany/OneToOne/ManyBool display (stored XSS); exports keep the raw value.
+- SessionManager: sanitise atkstackid (alphanumeric) and cast atklevel/atkprevlevel to int, and escape sticky-url hidden fields, closing reflected XSS via those request parameters.
+- Ui: escape the page title and breadcrumb (title, descriptor) in the templates (reflected XSS via atkaction, stored XSS via descriptor).
+- DataGrid: emit record-action targets with json_encode in the JS action loader (JS-context breakout via request-controlled action targets, e.g. atktarget on select).
+- Debugger/FeedbackHandler/SecurityManager: escape reflected error text, the feedback message (atkfbmessage), and url-encode the username in the login redirect.
+
+
 ## [11.8.0] - 2026-08-26
 ### Changed
 - Deps: update smarty/smarty to v5.8.*

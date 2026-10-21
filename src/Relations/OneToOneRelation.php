@@ -111,6 +111,10 @@ class OneToOneRelation extends Relation
 
         if ($this->createDestination() && is_array($myrecord)) {
             $result = $this->m_destInstance->descriptor($myrecord);
+            // Escape for HTML output (stored XSS guard); exports keep the raw value.
+            if (!in_array($mode, ['csv', 'plain'])) {
+                $result = htmlspecialchars((string)$result, ENT_QUOTES, 'UTF-8');
+            }
         } else {
             $result = $this->text('none');
         }

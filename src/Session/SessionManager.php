@@ -76,13 +76,17 @@ class SessionManager
         }
 
         if (isset($_REQUEST['atklevel'])) {
-            $this->atklevel = trim($_REQUEST['atklevel']);
+            // Session levels are integers; strip anything else (also closes a reflected
+            // XSS when the value is echoed into hidden form fields).
+            $this->atklevel = (int)$_REQUEST['atklevel'];
         }
         if (isset($_REQUEST['atkprevlevel'])) {
-            $this->atkprevlevel = trim($_REQUEST['atkprevlevel']);
+            $this->atkprevlevel = (int)$_REQUEST['atkprevlevel'];
         }
         if (isset($_REQUEST['atkstackid'])) {
-            $this->atkstackid = trim($_REQUEST['atkstackid']);
+            // Stack ids are generated with uniqid() (hex). Strip anything else so the
+            // value cannot break out of the HTML attributes it is later echoed into.
+            $this->atkstackid = preg_replace('/[^a-zA-Z0-9]/', '', (string)$_REQUEST['atkstackid']);
         }
 
         //session init
@@ -1029,7 +1033,7 @@ class SessionManager
         for ($i = 0; $i < Tools::count($g_stickyurl); ++$i) {
             $value = $GLOBALS[$g_stickyurl[$i]];
             if ($value != '') {
-                $res .= "\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'" />';
+                $res .= "\n".'<input type="hidden" name="'.htmlspecialchars((string)$g_stickyurl[$i], ENT_QUOTES, 'UTF-8').'" value="'.htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8').'" />';
             }
         }
 

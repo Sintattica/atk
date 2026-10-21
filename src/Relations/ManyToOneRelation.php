@@ -659,6 +659,10 @@ class ManyToOneRelation extends Relation
 
             if (!$this->isEmpty($record)) {
                 $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+                // Escape the descriptor for HTML output (stored XSS guard); exports keep the raw value.
+                if (!in_array($mode, ['csv', 'plain'])) {
+                    $result = htmlspecialchars((string)$result, ENT_QUOTES, 'UTF-8');
+                }
                 if ($this->hasFlag(self::AF_RELATION_AUTOLINK) && (!in_array($mode, ['csv', 'plain']))) { // create link to edit/view screen
                     if (($this->m_destInstance->allowed('view')) && !$this->m_destInstance->hasFlag(Node::NF_NO_VIEW) && $result != '') {
                         $saveForm = $mode == 'add' || $mode == 'edit';

@@ -42,7 +42,8 @@ class FeedbackHandler extends ActionHandler
 
         $params['content'] = '<br>'.Tools::atktext('feedback_'.$action.'_'.Tools::atkActionStatus($actionstatus), $node->m_module, $node->m_type);
         if ($message) {
-            $params['content'] .= ' <br>'.$message;
+            // $message can come straight from the request (atkfbmessage): escape it.
+            $params['content'] .= ' <br>'.htmlspecialchars((string)$message, ENT_QUOTES, 'UTF-8');
         }
 
         $sm = SessionManager::getInstance();
