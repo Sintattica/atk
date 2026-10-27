@@ -175,6 +175,15 @@ return [
     'restrictive' => true,
 
     /*
+     * Require request-supplied record selectors (atkselector) to address records
+     * by their primary key. This blocks filter-bypass selectors such as "1=1"
+     * (e.g. deleting/viewing/exporting every row). Set to false only if an
+     * application legitimately passes custom WHERE selectors in the request, and
+     * only during migration. Server-built selectors are never affected.
+     */
+    'atkselector_force_primarykey' => true,
+
+    /*
      *
      * @var boolean
      */

@@ -48,6 +48,11 @@ class MultiselectHandler extends AdminHandler
     public function handleMultiselect()
     {
         $node = $this->getNode();
+        if (!$this->isRequestSelectorAllowed($this->m_postvars[Node::PARAM_ATKSELECTOR] ?? '')) {
+            $this->renderAccessDeniedPage();
+
+            return;
+        }
         $columnConfig = $node->getColumnConfig();
         $recordset = $node
             ->select(implode(' OR ', $this->m_postvars[Node::PARAM_ATKSELECTOR]))

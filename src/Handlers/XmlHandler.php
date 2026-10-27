@@ -18,6 +18,12 @@ class XmlHandler extends ActionHandler
      */
     public function action_xml()
     {
+        if (!$this->isRequestSelectorAllowed($this->m_postvars[Node::PARAM_ATKSELECTOR] ?? '')) {
+            $this->renderAccessDeniedPage();
+
+            return;
+        }
+
         $recordset = $this->m_node->select($this->m_postvars[Node::PARAM_ATKSELECTOR])
             ->mode('xml')
             ->getAllRows();

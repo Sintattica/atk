@@ -12,6 +12,11 @@ class MultiupdateHandler extends ActionHandler
         $data = $this->getNode()->m_postvars['atkdatagriddata'];
         foreach ($data as $entry) {
             $entry = $this->getNode()->updateRecord($entry, $this->getNode()->m_editableListAttributes);
+            // updateRecord() drops a non-primary-key atkprimkey; skip such rows so we
+            // never select/update with an empty or unsafe condition.
+            if (empty($entry['atkprimkey']) || !$this->isRequestSelectorAllowed($entry['atkprimkey'])) {
+                continue;
+            }
             $record = $this->getNode()->select($entry['atkprimkey'])->mode('edit')->getFirstRow();
             $record = array_merge($record, $entry);
             $this->getNode()->updateDb($record, true, '', $this->getNode()->m_editableListAttributes);

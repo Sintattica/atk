@@ -51,6 +51,9 @@ class EditcopyHandler extends ActionHandler
     protected function getCopyRecord()
     {
         $selector = $this->m_postvars[Node::PARAM_ATKSELECTOR];
+        if (!$this->isRequestSelectorAllowed($selector)) {
+            return [];
+        }
         $recordset = $this->m_node->select($selector)->mode('copy')->getAllRows();
 
         if (Tools::count($recordset) > 0) {
