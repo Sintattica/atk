@@ -95,8 +95,8 @@ class FileAttribute extends Attribute
     /*
      * File extensions that are never accepted, regardless of m_allowedFileTypes.
      * This is a security floor against uploading executable/active content into
-     * a web-served directory. Every extension segment of the uploaded filename is
-     * checked (so "shell.php.jpg" is rejected too). Use setForbiddenFileTypes()
+     * a web-served directory. It is checked against the sanitized name the file is
+     * stored under (a single extension; with noSanitize every segment). Use setForbiddenFileTypes()
      * to replace the list, or setForbiddenFileTypes([]) to opt out entirely.
      *
      * @var array
@@ -634,8 +634,11 @@ class FileAttribute extends Attribute
     /**
      * Does the uploaded/selected file carry a forbidden extension?
      *
-     * Every extension segment is checked (case-insensitive), so "shell.php.jpg"
-     * is rejected as well. Returns false when the forbidden list is empty.
+     * The check runs on the name the file will be stored under (see validate()):
+     * after sanitizing it has a single extension, so "shell.php.jpg" is stored as
+     * "shell_php.jpg" and "manual.pl.pdf" as "manual_pl.pdf". With noSanitize every
+     * extension segment is checked (case-insensitive). Returns false when the
+     * forbidden list is empty.
      *
      * @param array $rec
      *
@@ -652,12 +655,24 @@ class FileAttribute extends Attribute
             return false;
         }
 
+        $name = basename($name);
+        if (!$this->noSanitize) {
+            // validate() stores the file under the sanitized name (dots in the base name
+            // become "_"), so check that one: "manual.pl.pdf" is saved as "manual_pl.pdf"
+            // and must not be rejected because of the "pl" segment. Fall back to the raw
+            // name when sanitizing leaves nothing (e.g. ".htaccess").
+            $sanitized = Tools::sanitizeFilename($name);
+            if ($sanitized !== '' && $sanitized !== null) {
+                $name = $sanitized;
+            }
+        }
+
         $forbidden = array_map('strtolower', $this->m_forbiddenFileTypes);
-        $segments = explode('.', strtolower(basename($name)));
+        $segments = explode('.', strtolower($name));
         array_shift($segments); // drop the base name, keep extension segments only
 
         foreach ($segments as $segment) {
-            if (in_array($segment, $forbidden, true)) {
+            if (in_array(trim($segment, " \t\n\r\0\x0B"), $forbidden, true)) {
                 return true;
             }
         }
