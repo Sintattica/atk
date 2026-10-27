@@ -86,10 +86,7 @@ class SessionManager
         }
 
         //session init
-        $cookie_params = session_get_cookie_params();
-        $cookiepath = Config::getGlobal('cookie_path');
-        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : null;
-        session_set_cookie_params($cookie_params['lifetime'], $cookiepath, $cookiedomain);
+        session_set_cookie_params(self::getCookieParams());
 
         // set cache expire (if function exists, or show upgrade hint if not)
         if (function_exists('session_cache_expire')) {
@@ -139,10 +136,16 @@ class SessionManager
 
         // Escape check
         if (isset($_REQUEST['atkescape']) && $_REQUEST['atkescape'] != '') {
-            Tools::redirect(Tools::atkurldecode($_REQUEST['atkescape']));
+            $escape = Tools::atkurldecode($_REQUEST['atkescape']);
+            // Only redirect to same-origin, relative targets (open-redirect guard).
+            if (Tools::isLocalUrl($escape)) {
+                Tools::redirect($escape);
+            } else {
+                Tools::atkwarning('SessionManager: ignored non-local atkescape redirect target');
+            }
         } // Nested URL check
         else {
-            if (isset($_REQUEST['atknested']) && $_REQUEST['atknested'] != '') {
+            if (isset($_REQUEST['atknested']) && $_REQUEST['atknested'] != '' && Tools::isLocalUrl($_REQUEST['atknested'])) {
                 Tools::redirect($this->sessionUrl($_REQUEST['atknested'], self::SESSION_NESTED));
             } // Back check
             else {
@@ -161,10 +164,41 @@ class SessionManager
         unset($_SESSION[Config::getGlobal('identifier')]);
         session_destroy();
 
-        $cookie_params = session_get_cookie_params();
-        $cookiepath = Config::getGlobal('cookie_path');
-        $cookiedomain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : null;
-        session_set_cookie_params($cookie_params['lifetime'], $cookiepath, $cookiedomain);
+        session_set_cookie_params(self::getCookieParams());
+    }
+
+    /**
+     * Build the session cookie parameters, hardened with HttpOnly, SameSite and
+     * (when the request is over HTTPS, or when forced via config) the Secure flag.
+     *
+     * Config keys (all optional):
+     * - session_cookie_httponly (bool, default true)
+     * - session_cookie_samesite (string, default 'Lax')
+     * - session_cookie_secure   (bool|null, default null = auto-detect HTTPS)
+     *
+     * @return array
+     */
+    protected static function getCookieParams(): array
+    {
+        $current = session_get_cookie_params();
+
+        $domain = (Config::getGlobal('cookiedomain') != '') ? Config::getGlobal('cookiedomain') : '';
+
+        $secure = Config::getGlobal('session_cookie_secure', null);
+        if ($secure === null) {
+            $secure = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
+                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+                || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
+        }
+
+        return [
+            'lifetime' => $current['lifetime'],
+            'path' => Config::getGlobal('cookie_path'),
+            'domain' => $domain,
+            'secure' => (bool)$secure,
+            'httponly' => (bool)Config::getGlobal('session_cookie_httponly', true),
+            'samesite' => Config::getGlobal('session_cookie_samesite', 'Lax'),
+        ];
     }
 
     /**
