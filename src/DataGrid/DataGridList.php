@@ -319,9 +319,11 @@ class DataGridList extends DataGridComponent
             foreach ($list['rows'][$i]['actions'] as $name => $url) {
                 if (substr($url, 0, 11) == 'javascript:') {
                     $call = substr($url, 11);
-                    $actionloader .= "\nATK.RL.a['{$listName}'][{$i}]['{$name}'] = function(rlId) { $call; };";
+                    $actionloader .= "\nATK.RL.a['{$listName}'][{$i}][" . json_encode($name) . "] = function(rlId) { $call; };";
                 } else {
-                    $actionloader .= "\nATK.RL.a['{$listName}'][{$i}]['{$name}'] = '$url';";
+                    // json_encode produces a correctly escaped JS string (guards against
+                    // breakout via request-controlled action targets, e.g. atktarget on select).
+                    $actionloader .= "\nATK.RL.a['{$listName}'][{$i}][" . json_encode($name) . "] = " . json_encode($url) . ";";
                 }
 
                 $module = $grid->getNode()->m_module;

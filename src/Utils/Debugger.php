@@ -452,8 +452,10 @@ class Debugger
         if (php_sapi_name() == 'cli') {
             $output = 'error: '.implode("\nerror: ", $g_error_msg)."\n";
         } else {
+            // Escape error text: it can contain request-derived data (reflected XSS guard).
+            $escaped = array_map(static fn($m) => htmlspecialchars((string)$m, ENT_QUOTES, 'UTF-8'), $g_error_msg);
             $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",
-                    $g_error_msg).'</div>';
+                    $escaped).'</div>';
         }
 
         return $output;

@@ -400,6 +400,10 @@ class ManyToManyRelation extends Relation
                         $rec = $this->m_destInstance->select($selector)->includes($this->m_destInstance->descriptorFields())->getFirstRow();
                     }
                     $descriptor = $this->m_destInstance->descriptor($rec);
+                    // Escape for HTML output (stored XSS guard); exports keep the raw value.
+                    if (!in_array($mode, ['csv', 'plain'])) {
+                        $descriptor = htmlspecialchars((string)$descriptor, ENT_QUOTES, 'UTF-8');
+                    }
 
                     if ($rec && $this->hasFlag(self::AF_MANYTOMANY_DETAILVIEW) && $this->m_destInstance->allowed('view')) {
                         // add link to destination
@@ -825,7 +829,7 @@ class ManyToManyRelation extends Relation
             } else {
                 $sel = '';
             }
-            $result .= '<option value="' . $pk . '"' . $sel . '>' . $this->m_destInstance->descriptor($recordset[$i]) . '</option>';
+            $result .= '<option value="' . $pk . '"' . $sel . '>' . htmlspecialchars((string)$this->m_destInstance->descriptor($recordset[$i]), ENT_QUOTES, 'UTF-8') . '</option>';
         }
         $result .= '</select>';
         $result .= "<script>ATK.Tools.enableSelect2ForSelect('#$id');</script>";

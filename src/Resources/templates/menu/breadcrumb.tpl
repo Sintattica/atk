@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-12 col-xl-4">
-                <h1>{$title}</h1>
+                <h1>{$title|escape}</h1>
             </div>
             <div class="col-12 col-xl-8 mt-3 mt-xl-0">
                 {stacktrace}
@@ -16,10 +16,10 @@
                                 <li class="active breadcrumb-item">
                                     <a href="{$item.url}" data-toggle="tooltip"
                                        data-placement="bottom"
-                                       title="{$item.descriptor}">{$item.title}</a>
+                                       title="{$item.descriptor|escape}">{$item.title|escape}</a>
                                 </li>
                             {else}
-                                <li class="breadcrumb-item">{$item.title}</li>
+                                <li class="breadcrumb-item">{$item.title|escape}</li>
                             {/if}
                         {/foreach}
                     </ol>
