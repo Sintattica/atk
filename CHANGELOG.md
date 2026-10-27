@@ -1,5 +1,27 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [12.0.0] - 2026-10-27
+### Security (BREAKING)
+- Node/handlers: request-supplied record selectors (atkselector and atkprimkey) must address records by their primary key (new Node::isValidRequestSelector(), enforced in the view/edit/delete/copy/editcopy/xml/multiselect/multiupdate handlers and when atkprimkey enters a record). Prevents filter-bypass such as deleting, exporting or updating every row via atkselector=1=1 or a tampered atkprimkey. BREAKING for apps that pass custom (non primary-key) WHERE selectors in the request: set config atkselector_force_primarykey=false during migration, then convert those links to Node::primaryKey(). Selectors built server-side are not affected.
+- FileAttribute: reject newly uploaded files with executable/active extensions (php, phtml, phar, cgi, sh, py, svg, xml, html, htm, jsp, asp, exe, ...) by default, even when no allowed-types list is set. The check runs on the sanitized name the file is stored under (a single extension: "manual.pl.pdf" is saved as "manual_pl.pdf" and accepted, "shell.php.jpg" is saved as "shell_php.jpg"); with setNoSanitize() every extension segment is checked. Only newly uploaded files are checked, so editing existing records is unaffected. BREAKING for attributes that legitimately accept xml/svg/html: remove the extension with setForbiddenFileTypes([...]) (custom list) or setForbiddenFileTypes([]) (opt out), or extend the list with addForbiddenFileType().
+- SessionManager: regenerate the session id on login to prevent session fixation.
+- SessionManager: set HttpOnly, SameSite (default Lax) and Secure (auto-detected over HTTPS) on the session cookie. Configurable via session_cookie_httponly / session_cookie_samesite / session_cookie_secure. BREAKING for apps whose session must be sent cross-site (external POSTs, third-party iframes): set session_cookie_samesite to 'None' (requires HTTPS). If the browser uses plain HTTP while the proxy reports HTTPS, set session_cookie_secure to false.
+- SessionManager: reject non-local atkescape / atknested redirect targets (open-redirect guard); added Tools::isLocalUrl().
+- Relations: HTML-escape the related-record descriptor in ManyToOne/ManyToMany/OneToOne/ManyBool display (stored XSS); exports keep the raw value. Descriptors are now plain text: HTML put in a descriptor template is shown literally.
+- SessionManager: sanitise atkstackid (alphanumeric) and cast atklevel/atkprevlevel to int, and escape sticky-url hidden fields, closing reflected XSS via those request parameters.
+- Ui: escape the page title and breadcrumb (title, descriptor) in the templates (reflected XSS via atkaction, stored XSS via descriptor). HTML entities already present in a title (e.g. "Attivit&agrave;") are not encoded twice.
+- DataGrid: emit record-action targets with json_encode in the JS action loader (JS-context breakout via request-controlled action targets, e.g. atktarget on select). The record URLs are unchanged; only the JS quoting changed (double quotes), so code that parses ATK.RL.a by string matching must read the values as normal JS strings.
+- Debugger/FeedbackHandler/SecurityManager: escape reflected error text, the feedback message (atkfbmessage), and url-encode the username in the login redirect.
+
+### Changed (BREAKING)
+- Config: display_errors now defaults to false (it was true), so production no longer renders PHP/ATK error text, stack traces and file paths in the page. Enable it in development with the DISPLAY_ERRORS env var (or the display_errors config key), or raise DEBUG_LEVEL to get the debug console.
+
+### Added
+- Config: atkselector_force_primarykey (default true), session_cookie_httponly (default true), session_cookie_samesite (default 'Lax'), session_cookie_secure (default null, auto-detect).
+- FileAttribute: setForbiddenFileTypes() and addForbiddenFileType() to customise the list of rejected extensions.
+- Tools: isLocalUrl().
+
+
 ## [11.8.1] - 2026-10-22
 ### Security
 - SqlWhereclauseBlacklistChecker: rewritten to inspect the clause outside string literals with collapsed whitespace, blocking function calls, sub-selects, UNION, comments, stacked queries, hex literals and INTO OUTFILE regardless of whitespace/comment obfuscation (previously bypassable). atkprimkey is now also filtered. Mitigates SQL injection / data exfiltration via atkselector/atkfilter/atkprimkey. (Stricter primary-key validation of request selectors follows in 12.0.0.)
