@@ -471,10 +471,14 @@ return [
     'debuglog' => '',
 
     /*
+     * Show PHP/ATK error messages in the page output. Off by default so a
+     * production site does not leak stack traces, file paths and database error
+     * text to visitors. Turn it on in development (or raise DEBUG_LEVEL, which
+     * renders the debug console).
      *
      * @var boolean
      */
-    'display_errors' => true,
+    'display_errors' => Config::env('DISPLAY_ERRORS', false),
 
     /*
      *
