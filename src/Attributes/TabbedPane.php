@@ -482,7 +482,7 @@ class TabbedPane extends Attribute
      *
      * @return string The HTML content
      */
-    public function tabulate($action, $content, $fieldprefix = '', $activeTab)
+    public function tabulate($action, $content, $fieldprefix, $activeTab)
     {
         $activeTabName = 'tabbedPaneTab' . $activeTab;
         $list = $this->getPaneTabs($action);
@@ -524,7 +524,7 @@ class TabbedPane extends Attribute
      *
      * @todo Make translation of tabs module aware
      */
-    public function buildTabs($action = '', $fieldprefix = '', $activeTab)
+    public function buildTabs($action, $fieldprefix, $activeTab)
     {
         $node = $this->m_ownerInstance;
         $result = [];

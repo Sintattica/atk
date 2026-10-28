@@ -1,6 +1,6 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [12.0.0] - 2026-10-27
+## [12.0.0] - 2026-10-28
 ### Security (BREAKING)
 - Node/handlers: request-supplied record selectors (atkselector and atkprimkey) must address records by their primary key (new Node::isValidRequestSelector(), enforced in the view/edit/delete/copy/editcopy/xml/multiselect/multiupdate handlers and when atkprimkey enters a record). Prevents filter-bypass such as deleting, exporting or updating every row via atkselector=1=1 or a tampered atkprimkey. BREAKING for apps that pass custom (non primary-key) WHERE selectors in the request: set config atkselector_force_primarykey=false during migration, then convert those links to Node::primaryKey(). Selectors built server-side are not affected.
 - FileAttribute: reject newly uploaded files with executable/active extensions (php, phtml, phar, cgi, sh, py, svg, xml, html, htm, jsp, asp, exe, ...) by default, even when no allowed-types list is set. The check runs on the sanitized name the file is stored under (a single extension: "manual.pl.pdf" is saved as "manual_pl.pdf" and accepted, "shell.php.jpg" is saved as "shell_php.jpg"); with setNoSanitize() every extension segment is checked. Only newly uploaded files are checked, so editing existing records is unaffected. BREAKING for attributes that legitimately accept xml/svg/html: remove the extension with setForbiddenFileTypes([...]) (custom list) or setForbiddenFileTypes([]) (opt out), or extend the list with addForbiddenFileType().
@@ -23,6 +23,7 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 
 ### Fixed
 - PHP 8.4+ compatibility: declare nullable parameter types explicitly (`?Type $x = null` / `A|B|null $x = null`) instead of relying on implicit nullable defaults, which emit an E_DEPRECATED notice at class load time (breaking tools that turn deprecations into errors, e.g. Deployer). No behaviour change.
+- PHP 8.0+/8.5 deprecations: TabbedPane::tabulate()/buildTabs() no longer declare optional parameters before the required $activeTab (they were already effectively required), and the deprecated (integer)/(double) casts are replaced with (int)/(float). No behaviour change.
 
 
 ## [11.8.1] - 2026-10-22

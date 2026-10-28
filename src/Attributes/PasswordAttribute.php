@@ -422,7 +422,7 @@ class PasswordAttribute extends Attribute
         $charset = is_array($chars) ? $chars : array($chars);
 
         // Seed the random generator using microseconds
-        mt_srand((double)microtime() * 1000000);
+        mt_srand((float)microtime() * 1000000);
 
         // Start with an empty result
         $randomchars = '';
