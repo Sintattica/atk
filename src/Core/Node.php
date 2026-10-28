@@ -907,7 +907,7 @@ class Node
      *
      * @return Attribute the attribute just added
      */
-    public function add(Attribute $attribute, string|array $sections = null, int $order = 0): Attribute
+    public function add(Attribute $attribute, string|array|null $sections = null, int $order = 0): Attribute
     {
         // if $attribute is a nested attribute create a fake one and handle the loading/storage through the JsonAttribute
         if ($attribute->isNestedAttribute()) {
@@ -2154,7 +2154,7 @@ class Node
      * @param string|null $label
      * @return string HTML
      */
-    public function getButton(string $action, bool $default = false, string $label = null): string
+    public function getButton(string $action, bool $default = false, ?string $label = null): string
     {
         $valueAttribute = '';
 
@@ -2353,7 +2353,7 @@ class Node
      * @param string $mode current mode (add, edit, view etc.)
      * @param array|null $record current record (optional)
      */
-    public function checkAttributeSecurity(string $mode, array $record = null): void
+    public function checkAttributeSecurity(string $mode, ?array $record = null): void
     {
         // check if an attribute needs to be read-only or
         // even hidden based on the current record
@@ -2428,7 +2428,7 @@ class Node
      */
     public function editArray(
         string       $mode = 'add',
-        array        $record = null,
+        ?array        $record = null,
         array|string $forceList = '',
         array|string $suppressList = '',
         string       $fieldprefix = '',
@@ -2812,7 +2812,7 @@ class Node
      * @return string HTML fragment containing all hidden elements.
      * @throws Exception
      */
-    public function hideForm(string $mode = 'add', array $record = null, array|string $forceList = '', string $fieldprefix = ''): string
+    public function hideForm(string $mode = 'add', ?array $record = null, array|string $forceList = '', string $fieldprefix = ''): string
     {
         /* suppress all */
         $suppressList = [];
@@ -3009,7 +3009,7 @@ class Node
         string            $action,
         bool              $checkoverride = true,
         bool              $mergeSelectors = true,
-        string            $csrfToken = null
+        ?string            $csrfToken = null
     ): string
     {
         $method = 'confirm' . $action;
@@ -3646,7 +3646,7 @@ class Node
         return $handler->adminPage($actions);
     }
 
-    function addPage(AddHandler $handler, array $record = null): string
+    function addPage(AddHandler $handler, ?array $record = null): string
     {
         $this->setAttributesFlags($record, 'add');
         return $handler->addPage($record);
@@ -3667,7 +3667,7 @@ class Node
     /**
      * @throws Exception
      */
-    function searchPage(SearchHandler $handler, array $record = null): string
+    function searchPage(SearchHandler $handler, ?array $record = null): string
     {
         $this->setAttributesFlags($record, 'search');
         return $handler->searchPage($record);
@@ -3681,7 +3681,7 @@ class Node
      * @param string $mode 'admin', 'add', 'view' and 'edit'
      * @return void
      */
-    function setAttributesFlags(array $record = null, string $mode = ''): void
+    function setAttributesFlags(?array $record = null, string $mode = ''): void
     {
 
     }
@@ -3798,7 +3798,7 @@ class Node
      * @param bool|array $postedOnly Only fetch the value for attributes that have really been posted.
      * @return array A valid record.
      */
-    public function updateRecord(array|string $vars = '', array $includes = null, array $excludes = null, bool|array $postedOnly = false): array
+    public function updateRecord(array|string $vars = '', ?array $includes = null, ?array $excludes = null, bool|array $postedOnly = false): array
     {
         if ($vars == '') {
             $vars = $this->m_postvars;
@@ -4291,7 +4291,7 @@ class Node
      * @param string|null $condition condition
      * @param array $params condition bind parameters
      */
-    protected function _initSelector(Selector $selector, string $condition = null, array $params = array()): void
+    protected function _initSelector(Selector $selector, ?string $condition = null, array $params = array()): void
     {
         $selector->orderBy($this->getOrder());
         $selector->ignoreDefaultFilters($this->hasFlag(self::NF_NO_FILTER));
@@ -4309,7 +4309,7 @@ class Node
      * @param array $params condition bind parameters
      * @return array|Selector
      */
-    public function select(string $condition = null, array $params = array()): array|Selector
+    public function select(?string $condition = null, array $params = array()): array|Selector
     {
         $selector = new Selector($this);
         $this->_initSelector($selector, $condition, $params);
@@ -5280,7 +5280,7 @@ class Node
      * @param int|null $levelskip Number of levels to skip
      * @return string The feedback url.
      */
-    public function feedbackUrl(string $action, int $status, array $record = [], string $message = '', int $levelskip = null): string
+    public function feedbackUrl(string $action, int $status, array $record = [], string $message = '', ?int $levelskip = null): string
     {
         $sm = SessionManager::getInstance();
         $vars = [];
@@ -5430,7 +5430,7 @@ class Node
      * @param bool $forceNew force new instance?
      * @return ColumnConfig
      */
-    public function getColumnConfig(string $id = null, bool $forceNew = false): ColumnConfig
+    public function getColumnConfig(?string $id = null, bool $forceNew = false): ColumnConfig
     {
         return ColumnConfig::getConfig($this, $id, $forceNew);
     }
@@ -5449,7 +5449,7 @@ class Node
      *                              when it can't find a translation
      * @return string the string from the languagefile
      */
-    public function text(array|string $string, string $module = null, string $lng = '', string $firstfallback = '', bool $nodefaulttext = false): string
+    public function text(array|string $string, ?string $module = null, string $lng = '', string $firstfallback = '', bool $nodefaulttext = false): string
     {
         if ($module === null) {
             $module = $this->m_module;
@@ -6199,7 +6199,7 @@ class Node
      *
      * @return string the title for the action
      */
-    public function nodeTitle(string $action = null, bool $actionOnly = false): string
+    public function nodeTitle(?string $action = null, bool $actionOnly = false): string
     {
         $nodeType = $this->m_type;
 

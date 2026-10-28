@@ -475,7 +475,7 @@ class DateAttribute extends Attribute
      * @param string $extraClass
      * @return string
      */
-    protected function renderDay(string $fieldid, string $fieldname, string $str_script, array $current, string $format, bool $obligatory, string $weekdayFormat = null, string $extraClass = ''): string
+    protected function renderDay(string $fieldid, string $fieldname, string $str_script, array $current, string $format, bool $obligatory, ?string $weekdayFormat = null, string $extraClass = ''): string
     {
         $c_mon = $current['mon'] ?? null;
         $c_year = $current['year'] ?? null;
@@ -927,7 +927,7 @@ class DateAttribute extends Attribute
      *
      * @return string piece of HTML code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         if (!$extended) {
             // plain text search, check if we didn't come from extended search (then current value is an array)

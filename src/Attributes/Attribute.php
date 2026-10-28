@@ -1651,7 +1651,7 @@ class Attribute
         $flags,
         $atksearch,
         $columnConfig,
-        DataGrid $grid = null,
+        ?DataGrid $grid = null,
         $column = '*'
     )
     {
@@ -1710,7 +1710,7 @@ class Attribute
         $fieldprefix,
         $flags,
         $edit = false,
-        DataGrid $grid = null,
+        ?DataGrid $grid = null,
         $column = '*'
     )
     {
@@ -1760,7 +1760,7 @@ class Attribute
      * @todo  find a better way to search on onetomanys that does not require
      *        something evil in Attribute
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         $id = $this->getHtmlId($fieldprefix);
         $name = $this->getSearchFieldName($fieldprefix);
@@ -3396,7 +3396,7 @@ class Attribute
      * @param array|null $types array of types ('edit', 'search'), null for all types.
      * @return $this
      */
-    public function setSelect2Options($options, array $types = null): static
+    public function setSelect2Options($options, ?array $types = null): static
     {
         if ($types == null) {
             $types = array_keys($this->m_select2Options);

@@ -392,7 +392,7 @@ class DateTimeAttribute extends Attribute
      * @param DataGrid $grid
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         $this->m_date->m_searchsize = 10;
         $this->m_time->m_htmlid = $this->m_date->m_htmlid;

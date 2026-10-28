@@ -103,7 +103,7 @@ class AggregatedColumn extends Attribute
      *
      * @see Node::listArray
      */
-    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, DataGrid $grid = null, $column = '*')
+    public function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $columnConfig, ?DataGrid $grid = null, $column = '*')
     {
         if (!$this->hasFlag(self::AF_HIDE_LIST) && !($this->hasFlag(self::AF_HIDE_SELECT) && $action == 'select')) {
             $arr['heading'][$fieldprefix . $this->fieldName()]['title'] = $this->label();

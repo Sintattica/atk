@@ -58,7 +58,7 @@ class ExpressionListAttribute extends ExpressionAttribute
         return $this->m_listAttribute->display($record, $mode);
     }
 
-    function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         // render the ListAttribute passed
         return $this->m_listAttribute->search($record, $extended, $fieldprefix, $grid);

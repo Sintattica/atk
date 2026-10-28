@@ -21,7 +21,7 @@ class AccessLogger extends SecurityListener
     }
 
     protected function logEvent(string $username, string $eventType,
-                                string $status = null, string $details = null): void
+                                ?string $status = null, ?string $details = null): void
     {
         $data = [
             'timestamp' => date('Y-m-d H:i:s'),

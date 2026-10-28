@@ -781,7 +781,7 @@ class ManyToManyRelation extends Relation
      *
      * @return string Piece of html code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         $this->createDestination();
 

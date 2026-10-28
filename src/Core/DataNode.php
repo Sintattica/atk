@@ -60,7 +60,7 @@ class DataNode extends Node
      * @param null $params order string
      * @return array|Selector selected records
      */
-    public function select(string $condition = null, $params = null): array|Selector
+    public function select(?string $condition = null, $params = null): array|Selector
     {
         Tools::atkdebug(get_class($this).'::select('.$condition.')');
 
@@ -88,7 +88,7 @@ class DataNode extends Node
      * @param string|null $selector selector string
      * @return int record count
      */
-    public function count(string $selector = null): int
+    public function count(?string $selector = null): int
     {
         $params = array(
             'selector' => $selector,

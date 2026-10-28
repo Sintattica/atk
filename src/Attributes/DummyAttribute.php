@@ -111,7 +111,7 @@ class DummyAttribute extends Attribute
      *
      * @return string A piece of html-code
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         return '&nbsp;';
     }

@@ -188,7 +188,7 @@ class PasswordAttribute extends Attribute
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         // We don't support searching for passwords!
         return '';

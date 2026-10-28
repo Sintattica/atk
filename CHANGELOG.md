@@ -21,6 +21,9 @@ This document's format is based on [Keep a Changelog](https://keepachangelog.com
 - FileAttribute: setForbiddenFileTypes() and addForbiddenFileType() to customise the list of rejected extensions.
 - Tools: isLocalUrl().
 
+### Fixed
+- PHP 8.4+ compatibility: declare nullable parameter types explicitly (`?Type $x = null` / `A|B|null $x = null`) instead of relying on implicit nullable defaults, which emit an E_DEPRECATED notice at class load time (breaking tools that turn deprecations into errors, e.g. Deployer). No behaviour change.
+
 
 ## [11.8.1] - 2026-10-22
 ### Security

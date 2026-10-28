@@ -579,7 +579,7 @@ class NumberAttribute extends Attribute
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         $value = '';
         if (isset($record[$this->fieldName()])) {

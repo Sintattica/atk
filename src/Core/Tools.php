@@ -553,7 +553,7 @@ class Tools
      *
      * @return array The result of the merge between $array1 and $array2
      */
-    public static function atk_array_merge(array $array1, array $array2 = null, array $_ = null)
+    public static function atk_array_merge(array $array1, ?array $array2 = null, ?array $_ = null)
     {
         return array_unique(call_user_func_array('array_merge', func_get_args()), SORT_REGULAR);
     }

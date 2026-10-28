@@ -717,7 +717,7 @@ class Page
      * @return string The HTML page, including <html> and </html> tags.
      * @throws Exception
      */
-    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', string $appendClasses = null): string
+    public function render($title = null, $flags = self::HTML_STRICT, $extrabodyprops = '', $extra_header = '', ?string $appendClasses = null): string
     {
         if ($title == null) {
             $title = $this->m_title != '' ? $this->m_title : Tools::atktext('app_title');

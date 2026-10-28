@@ -56,7 +56,7 @@ class ManyToOneTreeRelation extends ManyToOneRelation
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         $this->createDestination();
         if ($this->m_destinationFilter != '') {

@@ -562,7 +562,7 @@ class ManyToManySelectRelation extends ManyToManyRelation
      * @param string|null $htmlIdentifier is the html string to add to the end of the label.
      *                               Defaults to an up down image.
      */
-    public function setPositionAttribute(string $attr, string $htmlIdentifier = null)
+    public function setPositionAttribute(string $attr, ?string $htmlIdentifier = null)
     {
         $this->m_positionAttribute = $attr;
         $this->m_positionAttributeHtmlModifier = $htmlIdentifier;

@@ -1111,7 +1111,7 @@ class ManyToOneRelation extends Relation
         return $result;
     }
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         $useautocompletion = Config::getGlobal('manytoone_search_autocomplete', true) && $this->hasFlag(self::AF_RELATION_AUTOCOMPLETE);
         $id = $this->getHtmlId($fieldprefix);
@@ -1880,7 +1880,7 @@ EOF;
         $flags,
         $atksearch,
         $columnConfig,
-        DataGrid $grid = null,
+        ?DataGrid $grid = null,
         $column = '*'
     )
     {
@@ -1932,7 +1932,7 @@ EOF;
         $flags,
         $atksearch,
         $columnConfig,
-        DataGrid $grid = null
+        ?DataGrid $grid = null
     )
     {
         $prefix = $fieldprefix . $this->fieldName() . '_AE_';
@@ -1977,7 +1977,7 @@ EOF;
         $fieldprefix,
         $flags,
         $edit = false,
-        DataGrid $grid = null,
+        ?DataGrid $grid = null,
         $column = '*'
     )
     {
@@ -2026,7 +2026,7 @@ EOF;
         $fieldprefix,
         $flags,
         $edit = false,
-        DataGrid $grid = null
+        ?DataGrid $grid = null
     )
     {
         $prefix = $fieldprefix . $this->fieldName() . '_AE_';

@@ -931,7 +931,7 @@ class OneToOneRelation extends Relation
         $flags,
         $atksearch,
         $columnConfig,
-        DataGrid $grid = null,
+        ?DataGrid $grid = null,
         $column = '*'
     ) {
         if ($this->hasFlag(self::AF_HIDE_LIST) || !$this->createDestination()) {
@@ -969,7 +969,7 @@ class OneToOneRelation extends Relation
         $fieldprefix,
         $flags,
         $edit = false,
-        DataGrid $grid = null,
+        ?DataGrid $grid = null,
         $column = '*'
     ) {
         if ($this->hasFlag(self::AF_HIDE_LIST) || !$this->createDestination()) {

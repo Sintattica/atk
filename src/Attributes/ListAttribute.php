@@ -376,7 +376,7 @@ class ListAttribute extends Attribute
      * @return string A piece of html-code with a checkbox
      * @todo Configurable rows
      */
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         $values = $this->getValues();
         $id = $this->getHtmlId($fieldprefix);
@@ -661,7 +661,7 @@ EOF;
     /**
      * Set the option and value array.
      */
-    public function setOptions(array $optionArray, array $valueArray = null): static
+    public function setOptions(array $optionArray, ?array $valueArray = null): static
     {
         // m_options and m_values array are still here for backwardscompatibility
         $this->m_options = $optionArray;

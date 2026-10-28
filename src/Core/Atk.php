@@ -211,7 +211,7 @@ class Atk
         }
     }
 
-    public function unregisterNode(string $nodeUri, string $section = null): void
+    public function unregisterNode(string $nodeUri, ?string $section = null): void
     {
         unset($this->g_nodesClasses[$nodeUri]);
 

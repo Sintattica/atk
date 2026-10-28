@@ -143,7 +143,7 @@ class DurationAttribute extends Attribute
     }
 
 
-    public function search($record, $extended = false, $fieldprefix = '', DataGrid $grid = null): string
+    public function search($record, $extended = false, $fieldprefix = '', ?DataGrid $grid = null): string
     {
         return ''; // currently not searchable.
     }
