@@ -118,7 +118,6 @@ class Tools
             E_USER_ERROR => "User Error",
             E_USER_WARNING => "User Warning",
             E_USER_NOTICE => "User Notice",
-            E_STRICT => "Strict Notice",
             'EXCEPTION' => 'Uncaught exception',
         ];
 
@@ -136,10 +135,6 @@ class Tools
         // Translate the given errorTypeNum into a code
         $errorCode = $errorTypes[$errorTypeNum];
 
-        if ($errorTypeNum == E_STRICT) {
-            // ignore strict notices for now, there is too much stuff that needs to be fixed
-            return;
-        }
         if ($errorTypeNum == E_NOTICE) {
             // Just show notices
             self::atkdebug("[$errorCode] $errstr in $errfile (line $errline)", self::DEBUG_NOTICE);
@@ -180,7 +175,10 @@ class Tools
     {
 
         $error = error_get_last();
-        if ($error) {
+        // error_get_last() also returns non-fatal errors (e.g. deprecations raised
+        // while the error handler was running): only the fatal ones must halt.
+        $fatalTypes = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR];
+        if ($error && in_array($error['type'], $fatalTypes, true)) {
             self::atkErrorHandler(E_ERROR, $error['message'], $error['file'], $error['line']);
         }
     }
@@ -2298,7 +2296,7 @@ class Tools
                 break;
             }
 
-            if ($tag[0] == '&' || ord($tag) >= 0x80) {
+            if ($tag[0] == '&' || ord($tag[0]) >= 0x80) {
                 // Pass the entity or UTF-8 multibyte sequence through unchanged.
                 $result .= $tag;
                 $printedLength++;

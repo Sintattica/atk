@@ -1,5 +1,17 @@
 This document's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [12.0.1] - 2026-10-29
+### Fixed
+- PHP 8.4+ compatibility: the error handler no longer references the deprecated E_STRICT constant. On PHP 8.4/8.5 the resulting deprecation was printed before the page output, so headers and the session could not be sent (login lost, "Critico ... Halted"); in production every page was rendered twice with the error appended, CSV exports included.
+- Tools::atkFatalHandler() now halts only on fatal errors (E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR). It used to turn whatever error_get_last() returned into a fatal error, so a single deprecation (e.g. PDO::MYSQL_ATTR_SSL_CA in the app config on PHP 8.5) halted the request.
+- PHP 8.5 deprecations, no behaviour change:
+  - Attribute/OneToOneRelation/ManyToOneRelation: the "all modes" load/storage type is stored under the '' key instead of null (null array offsets are deprecated); ManyToOneRelation autocomplete no longer uses a null option key.
+  - Query: generated field aliases are incremented with str_increment() instead of ++ on a string.
+  - Tools: the HTML-aware truncation passes a single byte to ord().
+  - BajusEncryption: no longer calls ord('') past the end of the key (still counts as 0).
+- MySqliDb: throw a RuntimeException instead of trigger_error() with E_USER_ERROR (deprecated since PHP 8.4) when the mysqli extension is missing.
+
+
 ## [12.0.0] - 2026-10-28
 ### Security (BREAKING)
 - Node/handlers: request-supplied record selectors (atkselector and atkprimkey) must address records by their primary key (new Node::isValidRequestSelector(), enforced in the view/edit/delete/copy/editcopy/xml/multiselect/multiupdate handlers and when atkprimkey enters a record). Prevents filter-bypass such as deleting, exporting or updating every row via atkselector=1=1 or a tampered atkprimkey. BREAKING for apps that pass custom (non primary-key) WHERE selectors in the request: set config atkselector_force_primarykey=false during migration, then convert those links to Node::primaryKey(). Selectors built server-side are not affected.

@@ -213,7 +213,7 @@ class Query
             $this->m_aliasLookup['al_'.$this->m_generatedAlias] = $fieldaliasprefix.$name;
             $this->m_fieldaliases[$fieldname] = 'al_'.$this->m_generatedAlias;
 
-            ++$this->m_generatedAlias;
+            $this->m_generatedAlias = str_increment($this->m_generatedAlias);
         }
 
         return $this;
@@ -281,7 +281,7 @@ class Query
         if (!empty($fieldAliasPrefix)) {
             $this->m_aliasLookup['al_'.$this->m_generatedAlias] = $fieldAliasPrefix.$fieldName;
             $this->m_fieldaliases[$fieldAliasPrefix.$fieldName] = 'al_'.$this->m_generatedAlias;
-            ++$this->m_generatedAlias;
+            $this->m_generatedAlias = str_increment($this->m_generatedAlias);
         }
 
         return $this;

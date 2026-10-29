@@ -2671,7 +2671,8 @@ class Attribute
      */
     public function setStorageType($type, $mode = null): static
     {
-        $this->m_storageType[$mode] = $type;
+        // null (all modes) is stored under the '' key: null array offsets are deprecated since PHP 8.5
+        $this->m_storageType[$mode ?? ''] = $type;
         return $this;
     }
 
@@ -2705,12 +2706,12 @@ class Attribute
     public function storageType($mode = null)
     {
         // Mode specific storage type.
-        if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null) {
-            return $this->m_storageType[$mode];
-        } // Global storage type (key null is special!)
+        if (isset($this->m_storageType[$mode ?? '']) && $this->m_storageType[$mode ?? ''] !== null) {
+            return $this->m_storageType[$mode ?? ''];
+        } // Global storage type (key '' is special!)
         else {
-            if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null) {
-                return $this->m_storageType[null];
+            if (isset($this->m_storageType['']) && $this->m_storageType[''] !== null) {
+                return $this->m_storageType[''];
             } // Default backwardscompatible behaviour:
             else {
                 if (method_exists($this, 'store')) {
@@ -2734,7 +2735,8 @@ class Attribute
      */
     public function setLoadType($type, $mode = null): static
     {
-        $this->m_loadType[$mode] = $type;
+        // null (all modes) is stored under the '' key: null array offsets are deprecated since PHP 8.5
+        $this->m_loadType[$mode ?? ''] = $type;
         return $this;
     }
 
@@ -2767,11 +2769,11 @@ class Attribute
      */
     public function loadType($mode)
     {
-        if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
-            return $this->m_loadType[$mode];
+        if (isset($this->m_loadType[$mode ?? '']) && $this->m_loadType[$mode ?? ''] !== null) {
+            return $this->m_loadType[$mode ?? ''];
         } else {
-            if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
-                return $this->m_loadType[null];
+            if (isset($this->m_loadType['']) && $this->m_loadType[''] !== null) {
+                return $this->m_loadType[''];
             } // Default backwardscompatible behaviour:
             else {
                 if (method_exists($this, 'load')) {

@@ -27,7 +27,8 @@ class BajusEncryption extends Encryption
         for ($i = 0; $i < strlen($input); ++$i) {
             $char = substr($input, $i, 1);
             $keychar = substr($key, $i, 1);
-            $charvalue = ord($char) + ord($keychar);
+            // ord('') is deprecated since PHP 8.5: past the end of the key the key char counts as 0
+            $charvalue = ord($char) + ($keychar === '' ? 0 : ord($keychar));
             if ($charvalue > 255) {
                 $charvalue -= 255;
             }
@@ -52,7 +53,7 @@ class BajusEncryption extends Encryption
         for ($i = 0; $i < strlen($input); ++$i) {
             $char = substr($input, $i, 1);
             $keychar = substr($key, $i, 1);
-            $charvalue = ord($char) - ord($keychar);
+            $charvalue = ord($char) - ($keychar === '' ? 0 : ord($keychar));
             if ($charvalue < 0) {
                 $charvalue += 255;
             }

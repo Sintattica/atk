@@ -373,12 +373,12 @@ class OneToOneRelation extends Relation
     public function storageType($mode = null)
     {
         // Mode specific storage type.
-        if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null) {
-            return $this->m_storageType[$mode];
-        } // Global storage type (key null is special!)
+        if (isset($this->m_storageType[$mode ?? '']) && $this->m_storageType[$mode ?? ''] !== null) {
+            return $this->m_storageType[$mode ?? ''];
+        } // Global storage type (key '' is special!)
         else {
-            if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null) {
-                return $this->m_storageType[null];
+            if (isset($this->m_storageType['']) && $this->m_storageType[''] !== null) {
+                return $this->m_storageType[''];
             } else {
                 if ($this->m_refKey != '') {
                     // foreign key is in destination node, so we must store the
@@ -415,11 +415,11 @@ class OneToOneRelation extends Relation
      */
     public function loadType($mode)
     {
-        if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
-            return $this->m_loadType[$mode];
+        if (isset($this->m_loadType[$mode ?? '']) && $this->m_loadType[$mode ?? ''] !== null) {
+            return $this->m_loadType[$mode ?? ''];
         } else {
-            if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
-                return $this->m_loadType[null];
+            if (isset($this->m_loadType['']) && $this->m_loadType[''] !== null) {
+                return $this->m_loadType[''];
             } else {
                 if ($this->hasFlag(self::AF_ONETOONE_LAZY)) {
                     return self::POSTLOAD | self::ADDTOQUERY;

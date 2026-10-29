@@ -35,7 +35,8 @@ class MySqliDb extends Db
     public function __construct()
     {
         if (!function_exists('mysqli_connect')) {
-            trigger_error('MySQLi not supported by your PHP version', E_USER_ERROR);
+            // trigger_error() with E_USER_ERROR is deprecated since PHP 8.4
+            throw new \RuntimeException('MySQLi not supported by your PHP version');
         }
 
         parent::__construct();

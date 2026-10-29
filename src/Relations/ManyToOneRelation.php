@@ -1213,7 +1213,7 @@ EOF;
                     $selValues = [$selValues];
                 }
                 foreach ($selValues as $selValue) {
-                    $options[$selValue] = $selValue;
+                    $options[$selValue ?? ''] = $selValue;
                 }
 
                 $selectOptions['enable-manytoonereleation-autocomplete'] = true;
@@ -1440,12 +1440,12 @@ EOF;
 
     public function loadType($mode)
     {
-        if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null) {
-            return $this->m_loadType[$mode];
+        if (isset($this->m_loadType[$mode ?? '']) && $this->m_loadType[$mode ?? ''] !== null) {
+            return $this->m_loadType[$mode ?? ''];
         }
 
-        if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null) {
-            return $this->m_loadType[null];
+        if (isset($this->m_loadType['']) && $this->m_loadType[''] !== null) {
+            return $this->m_loadType[''];
         }
 
         // Default backwardscompatible behaviour:
